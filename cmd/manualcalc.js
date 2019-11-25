@@ -88,17 +88,17 @@ function getMapPP(target, message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    }
+                    			}
 					
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    var npp = droid.ppv2({
+                    			var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -150,7 +150,7 @@ function getMapPP(target, message) {
 					nparser.reset();
                     
 					console.log(nstars.toString());
-                    console.log(npp.toString());
+                    			console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -186,7 +186,6 @@ function getMapPP(target, message) {
 							}
 						]
 					};
-					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					message.channel.send({embed})
 				}
 			)
