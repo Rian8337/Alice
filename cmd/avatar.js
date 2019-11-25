@@ -8,7 +8,6 @@ module.exports.run = (client, message, args) => {
         const embed = new Discord.RichEmbed()
             .setDescription(`**${user.user.tag}**`)
             .setColor(message.member.highestRole.hexColor)
-            .setTimestamp(new Date())
             .setImage(user.user.avatarURL)
             .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg");
 
@@ -18,7 +17,6 @@ module.exports.run = (client, message, args) => {
     const embed = new Discord.RichEmbed()
         .setDescription(`**${user.tag}**`)
         .setColor(message.member.highestRole.hexColor)
-        .setTimestamp(new Date())
         .setImage(user.avatarURL)
         .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg");
 
