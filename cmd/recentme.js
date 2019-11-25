@@ -145,7 +145,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
-					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + osu.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": "")),
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")",
@@ -237,7 +236,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 				const embed = {
 					"title": title,
-					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
+					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` (`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
 					"color": 8311585,
 					"author": {
 						"name": "Recent Play for "+ name,
