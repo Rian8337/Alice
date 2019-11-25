@@ -32,7 +32,6 @@
   "member_cooldown": 180,
   "management_channel": "server-management",
   "report_channel": "reports",
-  "log_channel": ["bills", "chat-log", "testing"],
   "responses": {
     "like": [
       "do you love me?",
