@@ -1,0 +1,175 @@
+3 | 1 | - | What was the name of the first front-wheel-drive car produced by Datsun (now Nissan)? | Cherry | Sunny | Bluebird | Skyline
+1 | 1 | - | The Italian automaker Lamborghini uses what animal as its logo? | Bull | Bat | Horse | Snake
+3 | 1 | - | What part of an automobile engine uses lobes to open and close intake and exhaust valves, and allows an air/fuel mixture into the engine? | Camshaft | Piston | Drive shaft | Crankshaft
+1 | 1 | - | Which Italian city is home of the car manufacturer 'Fiat'? | Turin | Maranello | Modena | Rome
+3 | 1 | - | Which country has the international vehicle registration letter 'A'? | Austria | Afghanistan | Australia | Armenia
+3 | 1 | - | Which Japanese company is the world's largest manufacturer of motorcycles? | Honda | Yamaha | Suzuki | Kawasaki
+3 | 1 | - | Which of the following is NOT a Russian car manufacturer? | BYD | Silant | Dragon | GAZ
+3 | 1 | - | The Japanese Shinkansen beat the French TGV's speed record for fastest electric rail train. | False | True
+3 | 1 | - | Which of the following countries has officially banned the civilian use of dash cams in cars? | Austria | United States | Czechia | South Korea
+5 | 1 | - | The difference between the lengths of a Boeing 777-300ER and an Airbus A350-1000 is closest to: | 0.1m | 1m | 10m  | 100m
+3 | 1 | - | Enzo Ferrari was originally an auto racer for what manufacturer before founding his own car company? | Alfa Romeo | Auto Union | Mercedes Benz | Bentley
+3 | 1 | - | Complete the following analogy: Audi is to Volkswagen as Infiniti is to ? | Nissan | Honda | Hyundai | Subaru
+1 | 1 | - | Jaguar Cars was previously owned by which car manfacturer? | Ford | Chrysler | General Motors | Fiat
+3 | 1 | - | Which of the following car models has been badge-engineered (rebadged) the most? | Isuzu Trooper | Holden Monaro | Suzuki Swift | Chevy Camaro
+3 | 1 | - | The Chevrolet Corvette has always been made exclusively with V8 engines only. | False | True
+3 | 1 | - | When was Tesla founded? | 2003 | 2008 | 2005 | 2007
+1 | 1 | - | What UK Train does NOT go over 125MPH? | Sprinter | Class 43 | Javelin | Pendolino
+1 | 1 | - | Which of the following collision avoidance systems helps airplanes avoid colliding with each other? | TCAS | GPWS | OCAS | TAWS
+5 | 1 | - | Which of these is NOT a car model produced by Malaysian car manufacturer Proton? | Kelisa | Saga | Perdana | Inspira
+1 | 1 | - | Which of these companies does NOT manufacture motorcycles? | Toyota | Honda | Kawasaki | Yamaha
+1 | 1 | - | The full English name of the car manufacturer BMW is Bavarian Motor Works | True | False
+5 | 1 | - | Which one of these chassis codes are used by BMW 3-series? | E46 | E39 | E85 | F10
+3 | 1 | - | Which supercar company is from Sweden? | Koenigsegg | Bugatti | Lamborghini | McLaren
+1 | 1 | - | Automobiles produced by Telsa Motors operate on which form of energy? | Electricity | Gasoline | Diesel | Nuclear
+5 | 1 | - | Which car is the first mass-produced hybrid vehicle? | Toyota Prius | Chevrolet Volt | Honda Fit | Peugeot 308 R HYbrid
+3 | 1 | - | Which of these car models are produced by Lamborghini? | Aventador | Huayra | 918 | Chiron
+5 | 1 | - | Which Variable Valve Timing technology is used by BMW? | VANOS | VVT-iw | VVEL | MultiAir
+3 | 1 | - | When BMW was established in 1916, it was producing automobiles. | False | True
+3 | 1 | - | What do the 4 Rings in Audi's Logo represent? | Previously independent automobile manufacturers | States in which Audi makes the most sales | Main cities vital to Audi | Countries in which Audi makes the most sales
+3 | 1 | - | Which one is NOT the function of engine oil in car engines? | Combustion | Lubrication | Cooling | Reduce corrosion
+5 | 1 | - | How much horsepower is produced by the SD40-2 Locomotive? | 3,000 | 3,200 | 2,578 | 2,190
+5 | 1 | - | What engine is in the Lexus SC400? | 1UZ-FE | 2JZ-GTE | 7M-GTE | 5M-GE
+3 | 1 | - | Volkswagen's legendary VR6 engine has cylinders positioned at what degree angle? | 15 Degree | 30 Degree | 45 Degree | 90 Degree
+3 | 1 | - | Arriva is owned by the Deutsche Bahn. | True | False
+5 | 1 | - | Which one of the following is NOT a sub-company of the Volkswagen Group? | Opel | Porsche | Bugatti | Bentley
+3 | 1 | - | Ferrari has never made a V10 engine for any of its cars. | False | True
+3 | 1 | - | The General Motors EV1 was the first street-legal production electric vehicle. | False | True
+1 | 1 | - | Which car tire manufacturer is famous for its "Eagle" brand of tires, and is the official tire supplier of NASCAR? | Goodyear | Pirelli | Bridgestone | Michelin
+1 | 1 | - | Which car tire manufacturer is famous for its "P Zero" line? | Pirelli | Goodyear | Bridgestone | Michelin
+3 | 1 | - | When was Cadillac founded? | 1902 | 1964 | 1898 | 1985
+1 | 1 | - | What are the cylinder-like parts that pump up and down within the engine? | Pistons | Leaf Springs | Radiators | ABS
+3 | 1 | - | Which one of the following is not made by Ford? | Camry | Fusion | Model A | F-150
+1 | 1 | - | The LS2 engine is how many cubic inches? | 364 | 346 | 376 | 402
+1 | 1 | - | The LS7 engine is how many cubic inches? | 427 | 346 | 364 | 376
+1 | 1 | - | The LS3 engine is how many cubic inches? | 376 | 346 | 364 | 427
+1 | 1 | - | What is the name of Nissan's most popular electric car? | Leaf | Tree | Deer | Roots
+5 | 1 | - | Which Audi does not use Haldex based all wheel drive system? | Audi A8 | Audi TT | Audi S3 | Audi A3
+5 | 1 | - | What kind of train was Stepney, a train on the Bluebell Railway notable for his appearance in "The Railway Series"? | LB&SCR A1X | LB&SCR E2 | LB&SCR J1 | LB&SCR D1
+3 | 1 | - | The majority of Subaru vehicles are made in China. | False | True
+1 | 1 | - | BMW M GmbH is a subsidiary of BMW AG that focuses on car performance. | True | False
+1 | 1 | - | In 1993 Swedish car manufacturer Saab experimented with replacing the steering wheel with a joystick in a Saab 9000. | True | False
+3 | 1 | - | Which animal features on the logo for Abarth, the motorsport division of Fiat? | Scorpion | Snake | Bull | Horse
+3 | 1 | - | What country is the Hussarya supercar, made by the car manufacturer "Arrinera", assembled in? | Poland | China | Sweden | Italy
+3 | 1 | - | Which of the following passenger jets is the longest? | Boeing 747-8 | Airbus A350-1000 | Airbus A330-200 | Boeing 787-10
+3 | 1 | - | Which of the following vehicles featured a full glass roof at base model? | Renault Avantime | Chevy Volt | Mercedes-Benz A-Class | Honda Odyssey
+3 | 1 | - | Which car brand does NOT belong to General Motors? | Ford | Buick | Cadillac | Chevrolet
+3 | 1 | - | Bugatti was an Italian car manufacturer. | False | True
+5 | 1 | - | What model was the sports car gifted to Yuri Gagarin by the French government in 1965? | Matra Djet | Porsche 911 | Alpine A110 | AC Cobra
+3 | 1 | - | Which car manufacturer created the "Aventador"? | Lamborghini | Ferrari | Pagani | Bugatti
+5 | 1 | - | What year did the Chevrolet LUV mini truck make its debut? | 1972 | 1982 | 1975 | 1973
+1 | 1 | - | Where are the cars of the brand 'Ferrari' manufactured? | Italy | Romania | Germany | Russia
+1 | 1 | - | Which of the following car manufacturers had a war named after it? | Toyota | Honda | Ford | Volkswagen
+5 | 1 | - | In 2014, over 6 million General Motors vehicles were recalled due to what critical flaw? | Faulty ignition switch | Malfunctioning gas pedal | Breaking fuel lines | Faulty brake pads
+3 | 1 | - | What nickname was given to Air Canada Flight 143 after it ran out of fuel and glided to safety in 1983? | Gimli Glider | Gimli Microlight | Gimli Chaser | Gimli Superb
+1 | 1 | - | The LS1 engine is how many cubic inches? | 346 | 350 | 355 | 360
+3 | 2 | http://i.imgur.com/00lgfBA.jpg | What car is this?  | Hummer H3 | H3
+3 | 2 | http://i.imgur.com/08RU3gg.jpg | What car is this?  | BMW 740i | BMW 740li | 740i | 740li
+3 | 2 | http://i.imgur.com/0hiabXk.jpg | What car is this?  | Bugatti Veyron | Veyron
+3 | 2 | http://i.imgur.com/23aME2z.jpg | What car is this?  | BMW M3 E46 | BMW M3 | M3 | E46 M3 | M3 E46 | E46
+3 | 2 | http://i.imgur.com/2RloUuq.jpg | What car is this?  | Alfa Romeo Spider | Spider
+3 | 2 | http://i.imgur.com/34W6ivD.jpg | What car is this?  | Mercedes GLS 63 | GLS 63
+3 | 2 | http://i.imgur.com/4Dxe2wr.jpg | What car is this?  | Ferrari F40 | F40
+3 | 2 | http://i.imgur.com/4NeysNc.jpg | What car is this?  | Lotus Elise | Elise
+3 | 2 | http://i.imgur.com/6hEIMPv.jpg | What car is this?  | Holden Commodore | Commodore
+3 | 2 | http://i.imgur.com/6l2WugR.jpg | What car is this?  | Mini Cooper S | Cooper S
+3 | 2 | http://i.imgur.com/7yJctRM.jpg | What car is this?  | Aston Martin Vulcan | Vulcan
+3 | 2 | http://i.imgur.com/91Qr2qU.jpg | What car is this?  | Ariel Atom | Atom
+3 | 2 | http://i.imgur.com/98oRdwe.jpg | What car is this?  | Mazda 6
+3 | 2 | http://i.imgur.com/ByN5HvO.jpg | What car is this?  | Jaguar F-TYPE | Jaguar F TYPE | F-TYPE | F TYPE
+3 | 2 | http://i.imgur.com/Em4lvkt.jpg | What car is this?  | Dodge Viper | Viper
+3 | 2 | http://i.imgur.com/F1dO1Zv.jpg | What car is this?  | Jeep Wrangler | Wrangler
+3 | 2 | http://i.imgur.com/FUhK0aW.jpg | What car is this?  | Honda Civic | Civic
+3 | 2 | http://i.imgur.com/Fnnqpek.jpg | What car is this?  | Nissan Fairlady Z | Fairlady Z
+3 | 2 | http://i.imgur.com/GdfZKwg.jpg | What car is this?  | Pagani Zonda R | Zonda R | Zonda
+3 | 2 | http://i.imgur.com/H3SK6uq.jpg | What car is this?  | Nissan R35 GTR | R35 GTR | R35
+3 | 2 | http://i.imgur.com/JJb0DEN.jpg | What car is this?  | Ford Mustang | Mustang
+3 | 2 | http://i.imgur.com/KCd50kw.jpg | What car is this?  | Rolls Royce Wraith | Rolls Wraith | Wraith
+3 | 2 | http://i.imgur.com/KGCsWGo.jpg | What car is this?  | Lamborghini Aventador | Lambo Aventador | Aventador
+3 | 2 | http://i.imgur.com/Khv7UOz.jpg | What car is this?  | Peugeot RCZ | RCZ
+3 | 2 | http://i.imgur.com/LpEAyAJ.jpg | What car is this?  | Ford Focus ST | Focus ST
+3 | 2 | http://i.imgur.com/LwMyFVe.jpg | What car is this?  | Mazda Miata | Miata | Mazda MX5 | MX5
+3 | 2 | http://i.imgur.com/MT6vGov.jpg | What car is this?  | Subaru WRX STI | WRX STI | WRX
+3 | 2 | http://i.imgur.com/Mo38uCR.jpg | What car is this?  | Renult Clio | Clio
+3 | 2 | http://i.imgur.com/Mq9brzi.jpg | What car is this?  | Ferrari FF | FF
+3 | 2 | http://i.imgur.com/OJZeJJL.jpg | What car is this?  | Mercedes Sprinter | Sprinter
+3 | 2 | http://i.imgur.com/PlnDBzc.jpg | What car is this?  | Honda S2000 | S2000
+3 | 2 | http://i.imgur.com/SGDwuza.jpg | What car is this?  | Volkswagen Golf R32 | VW Golf R32 | VW Golf | VW 32 | Golf | R32
+3 | 2 | http://i.imgur.com/Sx277Np.jpg | What car is this?  | Jeep Grand Cherokee | Grand Cherokee | Cherokee
+3 | 2 | http://i.imgur.com/UDNVozm.jpg | What car is this?  | BMW 135i | 135i | E82 135i | 135i E82
+3 | 2 | http://i.imgur.com/WRwLTEi.jpg | What car is this?  | Mercedes Benz C63 AMG | Mercedes C63 AMG | C63 AMG | C63
+3 | 2 | http://i.imgur.com/XDczAbn.jpg | What car is this?  | Audi R8 | R8
+3 | 2 | http://i.imgur.com/Xfvt15w.jpg | What car is this?  | Nissan Skyline R34 GTR | Skyline R34 GTR | R34 GTR | R34
+3 | 2 | http://i.imgur.com/Y1npBzd.jpg | What car is this?  | Porsche Cayenne | Cayenne
+3 | 2 | http://i.imgur.com/YYmMMp6.jpg | What car is this?  | BMW M3 | M3
+3 | 2 | http://i.imgur.com/Z359mLS.jpg | What car is this?  | Mercedes Benz A45 AMG | Mercedes A45 AMG | A45 AMG | A45
+3 | 2 | http://i.imgur.com/ZLzZkiQ.jpg | What car is this?  | Ferrari 451 Italia | 451 Italia | 451
+3 | 2 | http://i.imgur.com/ZRW6msa.jpg | What car is this?  | Audi TT | TT
+3 | 2 | http://i.imgur.com/adKTlrb.jpg | What car is this?  | Honda Integra Type R | Integra Type R | Honda Integra | Integra
+3 | 2 | http://i.imgur.com/bCq4ePD.jpg | What car is this?  | Mclaren P1 | P1
+3 | 2 | http://i.imgur.com/cOXNsmp.jpg | What car is this?  | Mitsubishi 3000GT | 3000GT
+3 | 2 | http://i.imgur.com/cyLaOzo.jpg | What car is this?  | Ford GT40 | GT40
+3 | 2 | http://i.imgur.com/drWpps4.jpg | What car is this?  | Aston Martin DBS | DBS
+3 | 2 | http://i.imgur.com/dy9Czy9.jpg | What car is this?  | Chevrolet Camaro Z28 | Camaro Z28 | Z28
+3 | 2 | http://i.imgur.com/ePOQioV.jpg | What car is this?  | Ford GT
+3 | 2 | http://i.imgur.com/ehK34nf.jpg | What car is this?  | BMW X5 | X5
+3 | 2 | http://i.imgur.com/j9YLUhp.jpg | What car is this?  | Hennessey Venom GT | Venom GT
+3 | 2 | http://i.imgur.com/kYXfqli.jpg | What car is this?  | Mazda 3
+3 | 2 | http://i.imgur.com/lEqHceK.jpg | What car is this?  | BMW M5 | M5
+3 | 2 | http://i.imgur.com/oORkbPu.jpg | What car is this?  | BMW Z8 | Z8
+3 | 2 | http://i.imgur.com/oVr6FPH.jpg | What car is this?  | Subaru BRZ | BRZ
+3 | 2 | http://i.imgur.com/pwAIBeS.jpg | What car is this?  | Honda NSX | NSX
+3 | 2 | http://i.imgur.com/pzkLMpQ.jpg | What car is this?  | Porsche 911 | 911
+3 | 2 | http://i.imgur.com/qiHToqo.jpg | What car is this?  | Ford Falcon XR8 | Falcon XR8 | Falcon | XR8
+3 | 2 | http://i.imgur.com/qxG9gDx.jpg | What car is this?  | Shelby Cobra | Cobra
+3 | 2 | http://i.imgur.com/qyWZlNp.jpg | What car is this?  | Toyota FT86 | FT86
+3 | 2 | http://i.imgur.com/rl6uDya.jpg | What car is this?  | Nissan Skyline R33 GTR | Skyline R33 GTR | R33 GTR | R33
+3 | 2 | http://i.imgur.com/sScLnok.jpg | What car is this?  | BMW Z4 | Z4
+3 | 2 | http://i.imgur.com/sUklkcm.jpg | What car is this?  | Nissan Silvia | Silvia
+3 | 2 | http://i.imgur.com/taY3NLJ.jpg | What car is this?  | McLaren F1 | F1
+3 | 2 | http://i.imgur.com/tfmqVrR.jpg | What car is this?  | Mitsubishi Lancer Evolution | Lancer Evolution | Lancer Evo | Evo
+3 | 2 | http://i.imgur.com/tz6AaI5.jpg | What car is this?  | Holden Marloo | Marloo
+3 | 2 | http://i.imgur.com/u18TuTM.jpg | What car is this?  | Honda Odyssey | Odyssey
+3 | 2 | http://i.imgur.com/uuirrWV.jpg | What car is this?  | Chevrolet Corvette C7 Z06 | Corvette C7 Z06 | C7 Z06 | Corvette Z06 | Z06
+3 | 2 | http://i.imgur.com/xODGOOa.jpg | What car is this?  | BMW M1 Procar | M1 Procar | M1
+3 | 2 | http://i.imgur.com/yUzmtGU.jpg | What car is this?  | Toyota Landcruiser | Landcruiser
+3 | 2 | http://i.imgur.com/yXgbowC.jpg | What car is this?  | Toyota Celica | Celica
+3 | 2 | http://i.imgur.com/yzmQqoz.jpg | What car is this?  | Ferrari 250 GTO | 250 GTO | 250
+3 | 2 | http://i.imgur.com/ze0s5Kl.jpg | What car is this?  | Nissan 350Z | Nissan 350 Z | 350Z | 350 Z
+3 | 2 | https://i.imgur.com/STHmXOc.jpg | What car is this?  | Factory Five | 818C
+1 | 1 | - | The nuts that hold the rim onto the car are called? | Lug nuts | Wheel nuts | Nuts | Wheel Fasteners
+1 | 1 | - | Lock-in hubs are used to engage? | Four wheel drive | Limited slip differential | Posi-trac | Theft protection
+1 | 1 | - | Three on the tree refers to the shifting gear being located on what part of the vehicle? | Steering column | Center Console | Steering wheel | Floor
+1 | 1 | - | M+S combination tires are intended for? | Mud and snow use | Off roading | Messy and slippery situation use | General use
+1 | 1 | - | The headers are part of which vehicle system? | Exhaust | Drive train | Seating | Wheel assembly
+1 | 1 | - | The distributor cap controls what function? | Spark distribution | Lubrication distribution | Cooling distribution | Power distribution
+1 | 1 | - | Coupe vehicles have how many doors? | Two | Three | Four | One
+1 | 1 | - | Spoilers are used to perform what function? | Add down force | Increase fuel economy | Look cool | Add up force
+1 | 1 | - | Ram air forces air into what part of the vehicle? | Into the engine compartment | Into the Cab | Over the Car | Into the air conditioning unit
+1 | 1 | - | Halo headlights are controversial because of their? | Brightness | Color | Shape | Fragile nature
+1 | 1 | - | Before it got into the car business, Saab originally made planes. Where? | Sweden | Japan | Italy | France
+1 | 1 | - | The 1963 Sting Ray was actually a model of which car? | Chevrolet Corvette | Ford Thunderbird | Ford Mustang | Cadillac Coupe
+1 | 1 | - | Inspired by the Mustang, what Ford compact car was introduced in 1969 to compete with Volkswagen? | Maverick | Pinto | Focus | Bronco
+1 | 1 | - | What foreign car company rescued AMC from bankruptcy when it bought a controlling interest in the failing company in 1979? | Renault | Volkswagen | Peugeot | BMW
+1 | 1 | - | What compact car did Chevrolet soup up as the Z24? | Cavalier | Camaro | Impala | Malibu
+1 | 1 | - | The line between "foreign" and "domestic" cars blurred in 1982, when what Japanese company set up an assembly plant in Ohio? | Honda | Nissan | Toyota | Mitsubishi
+1 | 1 | - | With more than 10,000 built, what is the most successful transport plane of all time? | Douglas DC-3 | Boeing 747 | Concorde | Boeing 707
+1 | 1 | - | Had it not been for a design flaw that caused it to crash, what country's Comet might have dominated the commercial aviation business? | Great Britain | Canada | Australia | France
+1 | 1 | - | Which of these planes did Douglas design in the late 1950s to compete with Boeing's 707? | DC-8 | DC-707 | DC-10 | DC-707
+1 | 1 | - | One of the world's oldest airlines (and possibly the oldest) is Avianca. What country is it from? | Colombia | Portugal | Spain | Italy
+1 | 1 | - | What does the name of "Lufthansa", Germany's national air carrier, literally mean in English? | Air Association | Clear Skies | Carried Away | Safe Flight
+1 | 1 | - | In 1804, what "father of aerodynamics" is credited with building the first successful glider? | George Cayley | Orville Wright | Leonardo da Vinci | Thomas Edison
+1 | 1 | - | undefined wings="" the="" pushing="" air="" of="" opposite="" and="" equal="">How does a plane use Bernoulli's principle? | To get off the ground | To fly in darkness | To maximize revenue per seat | To land safely
+1 | 1 | - | A plane's ailerons trade lift on one wing for drag on the other. What happens then? | The plane banks | The plane reverses | The plane takes off | The plane descends
+1 | 1 | - | In 1938, Douglas "Wrong Way" Corrigan blamed dense clouds and compass failure when his flight from New York failed to land in California. Where did he land instead? | London, England | Tokyo, Japan | Toronto, Ontario | Havana, Cuba
+1 | 1 | - | What airport is abbreviated ORD because it was once known as Orchard Field? | O'Hare | LAX | Heathrow | JFK
+1 | 1 | - | In a Lockheed Vega named Winnie Mae, what was Wiley Post the first person to do in 1933? | Fly solo around the world | Bail out of an airplane | Fly a jet airplane successfully | Fly over the North Pole
+1 | 1 | - | During World War I, which country's pilots would you most likely have found in a SPAD? | France | Italy | Germany | Japan
+1 | 1 | - | Most aircraft are classified as fixed wing. But which of these would be rotary wing? | Helicopter | Jet | Airship | VTOL
+1 | 1 | - | What is the difference between a dirigible and a blimp? | Dirigibles are rigid | Dirigibles use helium | Dirigibles are much, much smaller | Dirigibles are British
+1 | 1 | - | Which of these is not one of the four primary forces acting on an airplane? | Yaw | Lift | Drag | Thrust
+1 | 1 | - | For what leader is a major Paris airport named? | Charles De Gaulle | Napoleon | Charlemagne | Robespierre
+1 | 1 | - | What did the "DC" stand for in the names of such planes as the DC-3? | Douglas Commercial | District of Columbia | Direct Continental | Don't Crash
+1 | 1 | - | Although Alberto Santos-Dumont was from a family of Brazilian coffee barons, he was the first person to fly in what continent, doing so in 1906? | Europe | Asia | North America | Australia
+1 | 1 | - | Thomas Selfridge holds what unfortunate aviation distinction? | First person to die in a plane crash | First person to be bumped from a flight | First person to get airsick | First pilot shot down in war
+1 | 1 | - | Most airports have three-letter abbreviations. In what country do almost all of these abbreviations begin with the letter Y? | Canada | Yugoslavia | Japan | Great Britain

@@ -1,0 +1,863 @@
+ 
+<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+  <meta charset="utf-8" />
+  <title>Profile | iBancho | Enjoy your free time</title>
+  <meta name="description" content="ibancho, osu, droid, game, mobile, android" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="assets/css/animate.css" type="text/css" />
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="assets/css/simple-line-icons.css" type="text/css" />
+  <link rel="stylesheet" href="assets/css/font.css" type="text/css" />
+  <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
+    <!--[if lt IE 9]>
+    <script src="assets/js/ie/html5shiv.js"></script>
+    <script src="assets/js/ie/respond.min.js"></script>
+    <script src="assets/js/ie/excanvas.js"></script>
+  <![endif]-->
+</head>
+<body class="">
+  <section class="vbox">
+    <header class="bg-white-only header header-md navbar navbar-fixed-top-xs">
+      <div class="navbar-header aside bg-info dk">
+        <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
+          <i class="icon-list"></i>
+        </a>
+        <a href="index.php" class="navbar-brand text-lt">
+          <i class="icon-earphones"></i>
+          <img src="assets/images/logo.png" alt="." class="hide">
+          <span class="hidden-nav-xs m-l-sm">iBancho</span>
+        </a>
+        <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".user">
+          <i class="icon-settings"></i>
+        </a>
+      </div>      <ul class="nav navbar-nav hidden-xs">
+        <li>
+          <a href="#nav,.navbar-header" data-toggle="class:nav-xs,nav-xs" class="text-muted">
+            <i class="fa fa-indent text"></i>
+            <i class="fa fa-dedent text-active"></i>
+          </a>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left input-s-lg m-t m-l-n-xs hidden-xs" role="search">
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-sm bg-white btn-icon rounded"><i class="fa fa-search"></i></button>
+            </span>
+            <input type="text" class="form-control input-sm no-border rounded" placeholder="Search beatmaps...">
+          </div>
+        </div>
+      </form>
+      <div class="navbar-right ">
+        <ul class="nav navbar-nav m-n hidden-xs nav-user user">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle bg clear" data-toggle="dropdown">
+              <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
+                <img src="assets/images/demo_face.png" alt="...">
+              </span>
+              Hélodie Jaqueline <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight">
+              <li>
+                <a href="#">Profile</a>
+              </li>
+              <li>
+                <a href="#">Settings</a>
+              </li>
+              <li>
+                <a href="#">Help</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#" >Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section>
+      <section class="hbox stretch">
+        <!-- .aside -->
+        <aside class="bg-black dk aside hidden-print" id="nav">
+          <section class="vbox">
+            <section class="w-f-md scrollable">
+              <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="10px" data-railOpacity="0.2">
+
+
+
+                <!-- nav -->
+                <nav class="nav-primary hidden-xs">
+                  <ul class="nav bg clearfix">
+                    <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">
+                      Discover
+                    </li>
+                    <li>
+                      <a href="index.php">
+                        <i class="icon-fire icon text-danger"></i>
+                        <span class="font-bold">Beatmaps</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i class="icon-speedometer icon text-info"></i>
+                        <span class="font-bold">Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="score.php">
+                        <i class="icon-trophy icon text-primary-lter"></i>
+                        <span class="font-bold">Ranking</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i class="icon-question icon  text-info-dker"></i>
+                        <span class="font-bold">Wiki</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" data-target="#content" data-el="#bjax-el" data-replace="true">
+                        <i class="icon-bubbles icon text-primary"></i>
+                        <span class="font-bold">Community</span>
+                      </a>
+                    </li>
+                    <li class="m-b hidden-nav-xs"></li>
+                  </ul>
+                  <ul class="nav" data-ride="collapse">
+                    <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">
+                      Advanced
+                    </li>
+                    <li >
+                      <a href="#" class="auto">
+                        <span class="pull-right text-muted">
+                          <i class="fa fa-angle-left text"></i>
+                          <i class="fa fa-angle-down text-active"></i>
+                        </span>
+                        <i class="icon-bar-chart icon">
+                        </i>
+                        <span>Statistics</span>
+                      </a>
+                      <ul class="nav dk text-sm">
+                        <li >
+                          <a href="#" class="auto">
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>Hot Beatmaps</span>
+                          </a>
+                        </li>
+                        <li >
+                          <a href="#" class="auto">
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>Online Users</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li >
+                      <a href="#" class="auto">
+                        <span class="pull-right text-muted">
+                          <i class="fa fa-angle-left text"></i>
+                          <i class="fa fa-angle-down text-active"></i>
+                        </span>
+                        <i class="icon-grid icon">
+                        </i>
+                        <span>Dashboard</span>
+                      </a>
+                      <ul class="nav dk text-sm">
+                        <li>
+                          <a href="#" class="auto">
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>Monthly Tournament</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="auto">
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>User Manage</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="auto">
+                            <b class="badge bg-info pull-right">9</b>
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>Score Audit</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="auto">
+                            <i class="fa fa-angle-right text-xs"></i>
+                            <span>Beatmaps</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </nav>
+                <!-- / nav -->
+              </div>
+            </section>
+
+            <footer class="footer hidden-xs no-padder text-center-nav-xs">
+              <div class="bg hidden-xs ">
+                <div class="dropdown dropup wrapper-sm clearfix">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="thumb-sm avatar pull-left m-l-xs">
+                      <img src="assets/images/osu.png" class="dker" alt="...">
+                      <i class="on b-light"></i>
+                    </span>
+                    <span class="hidden-nav-xs clear">
+                      <span class="block m-l">
+                        <strong class="font-bold text-lt">iBancho 2014</strong>
+                        <b class="caret"></b>
+                      </span>
+                      <span class="text-muted text-xs block m-l">ICP-14041034</span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu animated fadeInRight aside text-left">
+                    <li>
+                      <a href="#">About Us</a>
+                    </li>
+                    <li>
+                      <a href="#" >Links</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </footer>
+          </section>
+        </aside>
+        <!-- /.aside --><section id="content">
+          <section class="vbox">
+            <section class="scrollable">
+              <section class="hbox stretch">
+                <aside class="aside-lg bg-light lter b-r">
+                  <section class="vbox">
+                    <section class="scrollable">
+                      <div class="wrapper">
+                        <div class="text-center m-b m-t">
+                          <a href="#" class="thumb-lg">
+                            <img src="https://secure.gravatar.com/avatar/821be462469a9fb934dfceedba368246?s=200" class="img-circle">
+                          </a>
+                          <div>
+                            <div class="h3 m-t-xs m-b-xs">Luxray241</div>
+                            <small class="text-muted"><i class="fa fa-map-marker"></i> Unknown, VN</small>
+                          </div>                
+                        </div>
+                        <div class="panel wrapper">
+                          <div class="row text-center">
+                            <div class="col-xs-6">
+                              <a href="#">
+                                <span class="m-b-xs h4 block">99</span>
+                                <small class="text-muted">Rank</small>
+                              </a>
+                            </div>
+                            <div class="col-xs-6">
+                              <a href="#">
+                                <span class="m-b-xs h4 block">1402</span>
+                                <small class="text-muted">Performance Point</small>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="btn-group btn-group-justified m-b">
+                          <a class="btn btn-success btn-rounded" data-toggle="button">
+                            <span class="text">
+                              <i class="fa fa-eye"></i> Follow
+                            </span>
+                            <span class="text-active">
+                              <i class="fa fa-eye"></i> Following
+                            </span>
+                          </a>
+                          <a class="btn btn-dark btn-rounded">
+                            <i class="fa fa-twitter"></i> Chat
+                          </a>
+                        </div>
+                        <div>
+                          <small class="text-uc text-xs text-muted">about me</small>
+                          <p>Michael Jack</p>
+                        </div>
+                      </div>
+                    </section>
+                  </section>
+                </aside>
+                <aside class="bg-white">
+                  <section class="vbox">
+                    <header class="header bg-light lt">
+                      <ul class="nav nav-tabs nav-white">
+                        <li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
+                        <li class=""><a href="#events" data-toggle="tab">Top Ranks</a></li>
+                      </ul>
+                    </header>
+                    <section class="scrollable">
+                      <div class="tab-content">
+                        <div class="tab-pane active" id="activity">
+                          <ul class="list-group no-radius m-b-none m-t-n-xxs list-group-lg no-border">
+    
+            
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [Speed of Link]</strong>
+                        <small>2018-05-28 04:07:50 / 741,436 / HardRock, HalfTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [Ascension to Heaven]</strong>
+                        <small>2018-05-28 04:05:52 / 1,066,379 / HardRock, HalfTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-C-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [Soldiers of the Wasteland]</strong>
+                        <small>2018-05-27 03:54:18 / 458,585 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Kommisar - Chipstream (viptwo) [Challenge]</strong>
+                        <small>2018-05-27 03:25:44 / 11,045,916 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [Chipstream]</strong>
+                        <small>2018-05-27 03:04:00 / 2,114,601 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [squartatrice]</strong>
+                        <small>2018-05-26 08:42:57 / 2,192,492 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Various Artists - Stream Compilation Vol. 1 (KnightC0re) [Seasons]</strong>
+                        <small>2018-05-26 08:39:26 / 372,510 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Halozy - Genryuu Kaiko (Hollow Wings) [Higan Torrent]</strong>
+                        <small>2018-05-26 08:26:34 / 13,739,484 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">VINXIS - Sidetracked Day (SnowNiNo ) [THREE DIMENSIONS]</strong>
+                        <small>2018-05-25 15:59:20 / 14,014,591 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Function Phantom - Algebra (Raikozen) [Unsolvable Equation]</strong>
+                        <small>2018-05-25 01:54:25 / 29,951,942 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Yooh - Ice Angel (ktgster) [Saint]</strong>
+                        <small>2018-05-25 01:47:05 / 81,909,168 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">GUHROOVY - Beastie Starter (sionKotori) [come to an end]</strong>
+                        <small>2018-05-23 17:07:49 / 2,658,254 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Envy - Paladin (Aldwych) [Insane]</strong>
+                        <small>2018-05-23 11:03:07 / 10,063,043 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">B0UNC3 - Distorted Reality (I Tatsuo I) [simplistiC s Jump Style]</strong>
+                        <small>2018-05-23 11:00:20 / 2,761,584 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Mariah Carey - All I Want For Christmas Is You (MariahCarey) [2017 Christmas Extravaganza]</strong>
+                        <small>2018-05-23 10:49:21 / 551,247 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Hatsune Miku - Rubik s Cube (rui) [6x6x6]</strong>
+                        <small>2018-05-23 10:42:21 / 3,130,760 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Yooh - LegenD. (toybot) [LEGEND]</strong>
+                        <small>2018-05-23 03:23:35 / 3,069,066 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Solkrieg - Lavender Town (Dream Eater Dubstep Remix) (Dustice) [Nightmare]</strong>
+                        <small>2018-05-23 02:45:42 / 10,924,601 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">The Chainsmokers & Coldplay - Something Just Like This (handsome) [Master x1.4]</strong>
+                        <small>2018-05-23 02:33:49 / 3,091,428 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">JAM Project - THE HERO!!~Ikareru Kobushi ni Hi o Tsukero~ (TV Size) (Sonnyc) [HLW s ONE PUNCH x1.2]</strong>
+                        <small>2018-05-23 02:30:48 / 3,742,000 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">ESTi - HELIX (Edit Ver.) (FreeSongs) [Helix x1.2]</strong>
+                        <small>2018-05-23 02:29:18 / 4,423,125 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">AAAA + Umeboshi Chazuke - Sayonara Cosmonaut (Jaitonat) [Interstellar]</strong>
+                        <small>2018-05-23 02:22:24 / 2,480,250 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Nightcore - Pika Girl (Amai Chocolate) [A.C -AR10-]</strong>
+                        <small>2018-05-22 11:06:33 / 2,591,097 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Kuroneko Dungeon - Lilieze to Enryuu Laevateinn (Axarious) [Muspell]</strong>
+                        <small>2018-05-22 11:00:47 / 4,884,434 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">REOL - Give me a break Stop now (SnowNiNo ) [Sigma]</strong>
+                        <small>2018-05-22 10:53:11 / 15,715,698 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Lime - Chronomia (Shiirn) [One Last Time]</strong>
+                        <small>2018-05-22 10:39:32 / 5,642,694 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">TERRASPEX - AMAZING BREAK (Monstrata) [DESPAIR X1.2]</strong>
+                        <small>2018-05-22 08:43:36 / 7,472,299 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-C-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Memme - Acid Burst (Priti) [Priti & Bonzi s Ultra x1.2]</strong>
+                        <small>2018-05-22 08:37:47 / 746,582 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Eisyo-kobu - Oriental Blossom (Crystal) [Karen s Extra x1.2]</strong>
+                        <small>2018-05-22 08:35:53 / 895,842 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Zekk - Calling (NeilPerry) [Iridescent x1.2]</strong>
+                        <small>2018-05-22 08:34:04 / 859,958 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-SH-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Suara - Amakakeru Hoshi TV ver. (Taeyang) [Masquerade x1.2]</strong>
+                        <small>2018-05-22 08:27:50 / 5,105,201 / HardRock, Hidden</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-C-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Squarepusher - Dark Steering (dsco) [Nuclear x1.2]</strong>
+                        <small>2018-05-22 01:28:42 / 2,719,254 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">eldjsh - HoneypackHellv3 (Honeymap) [Chaos x1.5 Nostream]</strong>
+                        <small>2018-05-22 01:04:25 / 1,440,314 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Nasko - Break Through (Sqeez23) [Percussion x1.4]</strong>
+                        <small>2018-05-21 12:33:17 / 973,550 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">ESTi - HELIX (Edit Ver.) (FreeSongs) [Helix x1.4]</strong>
+                        <small>2018-05-21 12:29:33 / 2,045,943 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">JAM Project - THE HERO!!~Ikareru Kobushi ni Hi o Tsukero~ (TV Size) (Sonnyc) [HLW s ONE PUNCH x1.4]</strong>
+                        <small>2018-05-21 11:17:47 / 581,900 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">USAO - Get on (sionKotori) [Injection x1.2]</strong>
+                        <small>2018-05-21 11:09:45 / 6,069,801 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Suara - Amakakeru Hoshi TV ver. (Taeyang) [Masquerade x1.5]</strong>
+                        <small>2018-05-21 11:04:46 / 874,854 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Nasko - Break Through (Sqeez23) [Percussion x1.2]</strong>
+                        <small>2018-05-21 10:58:59 / 3,181,293 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">cYsmix - Moonlight Sonata (Okorin) [Expert x1.5]</strong>
+                        <small>2018-05-21 10:56:04 / 6,579,267 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-C-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">BanYa - Moonlight (fartownik) [Streammania]</strong>
+                        <small>2018-05-21 09:46:55 / 1,228,724 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-C-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">BanYa - Rolling Christmas (Sushi971) [Insane]</strong>
+                        <small>2018-05-21 09:39:52 / 1,323,121 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-B-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Hatsune Miku - Hatsune Miku no Shuuen (DJPop) [Demise]</strong>
+                        <small>2018-05-21 09:34:44 / 6,604,715 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">V.A. - osu!droid Winter Tournament Semi Final (-Nero Yuki- & Kawashiro) [(TB) BlackY - Max Burning!! (2014 Update XXXtended!!!!) (spro) [EXHAUST CS5 Edit]]</strong>
+                        <small>2018-05-20 16:50:31 / 25,002,174 / None</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">V.A. - osu!droid Winter Tournament Semi Final (-Nero Yuki- & Kawashiro) [(HR) Reol & nqrse - Ooedo Ranvu (Pho) [Wild Dance CS5.5 Edit]]</strong>
+                        <small>2018-05-20 16:43:31 / 21,424,392 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-S-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">V.A. - osu!droid Winter Tournament Semi Final (-Nero Yuki- & Kawashiro) [(FM) Tokisawa Nao - BRYNHILDR IN THE DARKNESS(tamame s bootleg edit) (Axarious) [Normal]]</strong>
+                        <small>2018-05-20 16:27:04 / 6,764,945 / HardRock</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">V.A. - osu!droid Winter Tournament Semi Final (-Nero Yuki- & Kawashiro) [(DT) Doin - Leakage Voltage (Sangzin) [Insane]]</strong>
+                        <small>2018-05-20 16:22:55 / 1,682,085 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">V.A. - osu!droid Winter Tournament Semi Final (-Nero Yuki- & Kawashiro) [(DT) Maksim Mrvica - Croatian Rhapsody (haha5957) [Vivace]]</strong>
+                        <small>2018-05-20 16:14:32 / 8,180,406 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-D-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">xi - Ascension to Heaven (Shiirn) [Death]</strong>
+                        <small>2018-05-20 09:49:02 / 591,540 / DoubleTime</small>
+                	  </a>
+                    </li>
+                	<li class="list-group-item">
+                	  <a href="#" class="thumb-sm pull-left m-r-sm">
+                	    <img src="assets/images/ranking-A-small.png"/>
+                	  </a>
+                	  <a href="#" class="clear">
+                	    <strong class="pull-right">53pp</strong>
+                	    <strong class="block">Pegboard Nerds - Heartbit (feat. Tia) (Mel) [Deluxe for Osu!droid]</strong>
+                        <small>2018-05-20 09:36:33 / 6,580,621 / HardRock</small>
+                	  </a>
+                    </li>                          </ul>
+                        </div>
+                        <div class="tab-pane" id="events">
+                          <div class="text-center wrapper">
+                            <i class="fa fa-spinner fa fa-spin fa fa-large"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </section>
+                </aside>
+                <aside class="col-lg-3 b-l">
+                  <section class="vbox">
+                    <section class="scrollable padder-v">
+                      <div class="panel">
+                        <h4 class="font-thin padder">Technical Analysis</h4>
+                        <ul class="list-group no-radius">
+                          <li class="list-group-item">
+                            <span class="pull-right">10,461,267,945</span>
+                            <i class="fa fa-circle text-primary text-xs"></i>
+                            Ranked Score
+                          </li>
+                          <li class="list-group-item">
+                            <span class="pull-right">100.00%</span>
+                            <i class="fa fa-circle text-danger text-xs"></i>
+                            Hit Accuracy
+                          </li>
+                          <li class="list-group-item">
+                            <span class="pull-right">1628</span>
+                            <i class="fa fa-circle text-success text-xs"></i>
+                            Play Count
+                          </li>
+                          <li class="list-group-item">
+                            <span class="pull-right">0</span>
+                            <i class="fa fa-circle text-info text-xs"></i>
+                            Total Hits
+                          </li>
+                          <li class="list-group-item">
+                            <span class="pull-right">0</span>
+                            <i class="fa fa-circle text-light text-xs"></i>
+                            Maximum Combo
+                          </li>
+                        </ul>
+                      </div>
+                    </section>
+                  </section>
+                </aside>
+              </section>
+            </section>
+
+          </section>
+          <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen,open" data-target="#nav,html"></a>
+        </section>
+      </section>
+    </section>
+  </section>
+  <script src="assets/js/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="assets/js/bootstrap.js"></script>
+  <!-- App -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/app.plugin.js"></script>
+</body>
+</html>

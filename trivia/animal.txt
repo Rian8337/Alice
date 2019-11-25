@@ -1,0 +1,55 @@
+1 | 1 | - | The Axolotl is an amphibian that can spend its whole life in a larval state. | True | False
+3 | 1 | - | What does "hippopotamus" mean and in what langauge? | River Horse (Greek) | River Horse (Latin) | Fat Pig (Greek) | Fat Pig (Latin)
+3 | 1 | - | A carnivorous animal eats flesh, what does a nucivorous animal eat? | Nuts | Nothing | Fruit | Seaweed
+3 | 1 | - | What type of animal is a natterjack? | Toad | Bird | Fish | Insect
+1 | 1 | - | What is the fastest  land animal? | Cheetah | Lion | Thomson’s Gazelle | Pronghorn Antelope
+3 | 1 | - | The Ceratosaurus, a dinosaur known for having a horn on the top of its nose, is also known to be a decendent of the Tyrannosaurus Rex. | False | True
+3 | 1 | - | An octopus can fit through any hole larger than its beak. | True | False
+1 | 1 | - | A slug’s blood is green. | True | False
+1 | 1 | - | What is the scientific name for modern day humans? | Homo Sapiens | Homo Ergaster | Homo Erectus | Homo Neanderthalensis
+1 | 1 | - | The Kākāpō is a large, flightless, nocturnal parrot native to which country? | New Zealand | South Africa | Australia | Madagascar
+5 | 1 | - | Which species of Brown Bear is not extinct? | Syrian Brown Bear | California Grizzly Bear | Atlas Bear | Mexican Grizzly Bear
+3 | 1 | - | What color/colour is a polar bear's skin? | Black | White | Pink | Green
+1 | 1 | - | Hippocampus is the Latin name for which marine creature? | Seahorse | Dolphin | Whale | Octopus
+3 | 1 | - | Cashmere is the wool from which kind of animal? | Goat | Sheep | Camel | Llama
+1 | 1 | - | Kangaroos keep food in their pouches next to their children. | False | True
+3 | 1 | - | "Kamea," the Gilbertese Islander word for dog, is derived from the English phrase "Come here!" | True | False
+3 | 1 | - | What is the scientific name for the "Polar Bear"? | Ursus Maritimus | Polar Bear | Ursus Spelaeus | Ursus Arctos
+1 | 1 | - | A bear does NOT defecate during hibernation.  | True | False
+3 | 1 | - | What are rhino's horn made of? | Keratin | Bone | Ivory | Skin
+1 | 1 | - | How many legs do butterflies have? | 6 | 2 | 4 | 0
+5 | 1 | - | What scientific suborder does the family Hyaenidae belong to? | Feliformia | Haplorhini | Caniformia | Ciconiiformes
+5 | 1 | - | How many known living species of hyenas are there? | 4 | 8 | 2 | 6
+5 | 1 | - | What scientific family does the Aardwolf belong to? | Hyaenidae | Canidae | Felidae | Eupleridae
+3 | 1 | - | For what reason would a spotted hyena "laugh"? | Nervousness | Excitement | Aggression | Exhaustion
+1 | 1 | - | What do you call a baby bat? | Pup | Cub | Chick | Kid
+5 | 1 | - | What is the scientific name of the cheetah? | Acinonyx jubatus | Panthera onca | Lynx rufus | Felis catus
+5 | 1 | - | What is the scientific name of the Budgerigar? | Melopsittacus undulatus | Nymphicus hollandicus | Pyrrhura molinae | Ara macao
+3 | 1 | - | Which animal was part of an Russian domestication experiment in 1959? | Foxes | Pigeons | Bears | Alligators
+1 | 1 | - | In 2016, the IUCN reclassified the status of Giant Pandas from endangered to vulnerable. | True | False
+3 | 1 | - | The now extinct species "Thylacine" was native to where? | Tasmania, Australia | Baluchistan, Pakistan | Wallachia, Romania | Oregon, United States
+3 | 1 | - | The average lifespan of a wildcat is only around 5-6 years.  | False | True
+5 | 1 | - | What is the Gray Wolf's scientific name? | Canis Lupus | Canis Aureus | Canis Latrans | Canis Lupus Lycaon
+1 | 1 | - | Rabbits are rodents. | False | True
+1 | 1 | - | A flock of crows is known as a homicide. | False | True
+1 | 1 | - | What is Grumpy Cat's real name? | Tardar Sauce | Sauce | Minnie | Broccoli
+5 | 1 | - | What type of creature is a Bonobo? | Ape | Lion | Parrot | Wildcat
+3 | 1 | - | Which of these species is not extinct? | Komodo dragon | Japanese sea lion | Tasmanian tiger | Saudi gazelle
+1 | 1 | - | Which class of animals are newts members of? | Amphibian | Fish | Reptiles | Mammals
+3 | 1 | - | What is the name of the family that the domestic cat is a member of? | Felidae | Felinae | Felis | Cat
+1 | 1 | - | A caterpillar has more muscles than humans do. | True | False
+1 | 1 | - | Cats have whiskers under their legs. | True | False
+3 | 1 | - | What dog bread is one of the oldest breeds of dog and has flourished since before 400 BCE. | Pugs | Bulldogs | Boxers | Chihuahua
+5 | 1 | - | What is the name of the copper-rich protein that creates the blue blood in the Antarctic octopus? | Hemocyanin | Cytochrome | Iron | Methionine
+5 | 1 | - | Which species is a "mountain chicken"? | Frog | Chicken | Horse | Fly
+3 | 1 | - | What is the fastest animal? | Peregrine Falcon | Golden Eagle | Cheetah | Horsefly
+3 | 1 | - | The dish Fugu, is made from what family of fish? | Pufferfish | Bass | Salmon | Mackerel
+3 | 1 | - | Finnish Lapphund dogs were used for herding reindeer. | True | False
+1 | 1 | - | What is the collective noun for a group of crows? | Murder | Pack | Gaggle | Herd
+5 | 1 | - | Which of the following is another name for the "Poecilotheria Metallica Tarantula"? | Gooty | Hopper | Silver Stripe | Woebegone
+3 | 1 | - | What is the scientific name of the Common Chimpanzee? | Pan troglodytes | Gorilla gorilla | Pan paniscus | Panthera leo
+5 | 1 | - | What was the name of the Ethiopian Wolf before they knew it was related to wolves? | Simien Jackel | Ethiopian Coyote | Amharic Fox | Canis Simiensis
+5 | 1 | - | Which of these animals is NOT a lizard? | Tuatara | Komodo Dragon | Gila Monster | Green Iguana
+3 | 1 | - | The Platypus is a mammal. | True | False
+5 | 1 | - | Unlike on most salamanders, this part of a newt is flat? | Tail | Head | Teeth | Feet
+1 | 1 | - | The Killer Whale is considered a type of dolphin. | True | False

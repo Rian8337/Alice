@@ -1,0 +1,817 @@
+1 | 1 | - | Which city is the capital of the United States of America? | Washington D.C | Seattle | Albany | Los Angeles
+3 | 1 | - | What European country is not a part of the EU? | Norway | Lithuania | Ireland | Czechia
+1 | 1 | - | What is the capital of the American state of Arizona? | Phoenix | Montgomery | Tallahassee | Raleigh
+5 | 1 | - | What is the largest city and commercial capital of Sri Lanka? | Colombo | Moratuwa | Negombo | Kandy
+3 | 1 | - | On a London Underground map, what colour is the Circle Line? | Yellow | Red | Blue | Green
+3 | 1 | - | How many countries are inside the United Kingdom? | Four | Two | Three | One
+1 | 1 | - | Greenland is almost as big as Africa. | False | True
+3 | 1 | - | Which of these is NOT a city in Saudi Arabia? | Dubai | Riyadh | Mecca | Medina
+3 | 1 | - | The surface area of Russia is slightly larger than that of the dwarf planet Pluto. | True | False
+1 | 1 | - | The Republic of Malta is the smallest microstate worldwide. | False | True
+1 | 1 | - | Which country does Austria not border? | France | Slovenia | Switzerland | Slovakia
+1 | 1 | - | San Marino is the only country completely surrounded by another country. | False | True
+5 | 1 | - | The prefix Sino- (As in Sino-American) is used to refer to what nationality? | Chinese | Japanese | Russian | Indian
+1 | 1 | - | How many federal states does Germany have? | 16 | 13 | 32 | 25
+1 | 1 | - | What colour is the circle on the Japanese flag? | Red | White | Yellow | Black
+5 | 1 | - | Which country is completely landlocked by South Africa? | Lesotho | Swaziland | Botswana | Zimbabwe
+3 | 1 | - | Kuala Lumpur is the capital of which country? | Malaysia | Indonesia | Singapore | Thailand
+1 | 1 | - | What is the capital of Jamaica? | Kingston | Rio de Janeiro | Dar es Salaam | Kano
+5 | 1 | - | The mountainous Khyber Pass connects which of the two following countries? | Afghanistan and Pakistan | India and Nepal | Pakistan and India | Tajikistan and Kyrgyzstan
+1 | 1 | - | Which of the following former Yugoslavian states is landlocked? | Serbia | Bosnia and Herzegovina | Montenegro | Croatia
+3 | 1 | - | Where is the area commonly known as the Bermuda Triangle? | North Atlantic Ocean, between Florida and Puerto Rico | North Pacific Ocean, between Japan and the USA | In the Caribbean Sea | South Pacific Ocean, far off Chile
+3 | 1 | - | Which of these is NOT an island that is part of the Philippines? | Java | Luzon | Mindanao | Palawan
+3 | 1 | - | How many countries are larger than Australia? | 5 | 4 | 3 | 6
+5 | 1 | - | Which is the largest freshwater lake in the world? | Lake Superior  | Caspian Sea | Lake Michigan | Lake Huron
+1 | 1 | - | What is the Capital of the United States? | Washington, D.C. | Los Angelas, CA | New York City, NY | Houston, TX
+5 | 1 | - | Fucking is a village in which country? | Austria | Germany | Switzerland | Czech Republic
+5 | 1 | - | Which country was NOT formerly part of Yugoslavia? | Albania | Croatia | Serbia | Macedonia
+3 | 1 | - | What tiny principality lies between Spain and France? | Andorra | Liechtenstein | Monaco | San Marino
+3 | 1 | - | Where is the world's oldest still operational space launch facility located? | Kazakhstan | Russia | Iran | United States
+3 | 1 | - | Liechtenstein does not have an airport. | True | False
+3 | 1 | - | What is the largest Muslim country in the world? | Indonesia | Pakistan | Saudi Arabia | Iran
+3 | 1 | - | What is the busiest port in Europe? | Port of Rotterdam | Port of Antwerp | Port of Hamburg | Port of Amsterdam
+5 | 1 | - | What is the Finnish word for "Finland"? | Suomi | Eesti | Magyarország | Sverige
+5 | 1 | - | What is the name of rocky region that spans most of eastern Canada? | Canadian Shield | Rocky Mountains | Appalachian Mountains | Himalayas
+5 | 1 | - | What is the name of the formerly rich fishing grounds off the island of Newfoundland, Canada? | Grand Banks | Great Barrier Reef | Mariana Trench | Hudson Bay
+1 | 1 | - | Which of the following Japanese islands is the biggest? | Honshu | Hokkaido | Shikoku | Kyushu
+3 | 1 | - | What is the capital of Belarus? | Minsk | Warsaw | Kiev | Vilnius
+3 | 1 | - | How many timezones does Russia have? | 11 | 6 | 24 | 16
+1 | 1 | - | What is the capital of Spain? | Madrid | Barcelona | Sevilla | Toledo
+1 | 1 | - | What is the capital of India? | New Delhi | Bejing | Montreal | Tithi
+3 | 1 | - | Which of these countries is the smallest by population? | Norway | Slovakia | Finland | Hong Kong
+3 | 1 | - | What is the highest mountain in the world? | Mt. Everest | Mount Godwin Austen | Kangchenjunga | Annapurna
+1 | 1 | - | Tokyo is the capital of Japan. | True | False
+5 | 1 | - | The Andaman and Nicobar Islands in South East Asia are controlled by which country? | India | Vietnam | Thailand | Indonesia
+1 | 1 | - | What is the largest country in the world? | Russia | Canada | China | United States
+3 | 1 | - | Colchester Overpass, otherwise known as "Bunny Man Bridge", is located where? | Fairfax County, Virginia | Medford, Oregon | Braxton County, Virgina | Lemon Grove, California
+3 | 1 | - | How many independent countries are there within the continent of South America? | 12 | 8 | 9 | 10
+3 | 1 | - | What continent is the country Lesotho in? | Africa | Asia | South America | Europe
+1 | 1 | - | What is the capital of Scotland? | Edinburgh | Glasgow | Dundee | London
+3 | 1 | - | How many rivers are in Saudi Arabia? | 0 | 1 | 2 | 3
+3 | 1 | - | Montreal is in which Canadian province? | Quebec | Ontario | Nova Scotia | Alberta
+1 | 1 | - | What state is the largest state of the United States of America? | Alaska | California | Texas | Washington
+3 | 1 | - | Seoul is the capital of North Korea. | False | True
+5 | 1 | - | Which of these countries is NOT a part of the Asian continent? | Suriname | Georgia | Russia | Singapore
+3 | 1 | - | What is the largest non-continental island in the world? | Greenland | New Guinea | Borneo | Madagascar
+5 | 1 | - | Which of these island countries is located in the Caribbean? | Barbados | Fiji | Maldives | Seychelles
+1 | 1 | - | Which of these is NOT an Australian state or territory? | Alberta | New South Wales | Victoria | Queensland
+1 | 1 | - | Vatican City is a country. | True | False
+3 | 1 | - | Which is the largest city in Morocco? | Casablanca | Rabat | Fes | Sale
+3 | 1 | - | In which English county is Stonehenge? | Wiltshire | Somerset | Cumbria | Herefordshire
+3 | 1 | - | What is the capital of Australia? | Canberra | Sydney | Melbourne | Brisbane
+3 | 1 | - | Israel is 7 hours ahead of New York. | True | False
+3 | 1 | - | All of the following are towns/villages in the Pacific Island nation of Kiribati EXCEPT: | Urutora | Rungata | London | Washington
+1 | 1 | - | There is a city called Rome in every continent on Earth. | False | True
+1 | 1 | - | Alaska is the largest state in the United States. | True | False
+3 | 1 | - | What African country has Portuguese as its official language? | Mozambique | Botswana | Gabon | Togo
+3 | 1 | - | Where is Earth's South Magnetic Pole? | The North Pole | The South Pole | The Tropic of Cancer | The Equator
+1 | 1 | - | Which nation claims ownership of Antarctica? | No one, but there are claims. | United States of America | United Nations | Australia
+3 | 1 | - | The World Health Organization headquarters is located in which European country? | Switzerland | United Kingdom | France | Belgium
+1 | 1 | - | What name was historically used for the Turkish city currently known as Istanbul? | Constaninople | Hüdavendigar | Söğüt | Adrianople
+3 | 1 | - | What is the capital of the US state Nevada? | Carson City | Las Vegas | Henderson | Reno
+3 | 1 | - | What event led to Liechenstein adding a crown to its flag? | The 1936 Olympics | Coronation of Prince Johann I Joseph in 1805 | Charles VI's decree in 1719 | Signing of the 1862 Constitution of Liechtenstein
+3 | 1 | - | The historical city Timbuktu is located in which West African country? | Mali | Senegal | Niger | Burkina Faso
+3 | 1 | - | Where are the Nazca Lines located? | Peru | Brazil | Colombia | Ecuador
+5 | 1 | - | Where is the fast food chain "Panda Express" headquartered? | Rosemead, California | Sacremento, California | Fresno, California | San Diego, California
+1 | 1 | - | Which of these African countries list "Spanish" as an official language? | Equatorial Guinea | Guinea | Cameroon | Angola
+5 | 1 | - | Llanfair­pwllgwyngyll­gogery­chwyrn­drobwll­llan­tysilio­gogo­goch is located on which Welsh island? | Anglesey | Barry | Bardsey | Caldey
+5 | 1 | - | What is the area of Vatican City? | 0.44km^2 | 0.10km^2 | 0.86km^2 | 12.00km^2
+3 | 1 | - | The capital of the US State Ohio is the city of Chillicothe. | False | True
+3 | 1 | - | You could walk from Norway to North Korea while only passing through Russia. | True | False
+3 | 1 | - | The towns of Brugelette, Arlon and Ath are located in which country? | Belgium | Andorra | France | Luxembourg
+3 | 1 | - | Japan has left-hand side traffic. | True | False
+1 | 1 | - | California is larger than Japan. | True | False
+1 | 1 | - | What is Canada's smallest province? | Prince Edward Island | New Brunswick | Nova Scotia | Yukon
+5 | 1 | - | What North American tourist attraction is served by the "Maid of the Mist" tour company? | Niagara Falls | Whistler, British Columbia | Disney World | Yosemite National Park
+3 | 1 | - | What is the capital of British Columbia, Canada? | Victoria | Vancouver | Hope | Kelowna
+5 | 1 | - | What is the tallest mountain in Canada? | Mount Logan | Mont Tremblant | Whistler Mountain | Blue Mountain
+1 | 1 | - | What is the Polish city known to Germans as Danzig? | Gdańsk | Warsaw | Zakopane | Poznań
+3 | 1 | - | What is the capital of Seychelles? | Victoria | Luanda | N'Djamena | Tripoli
+3 | 1 | - | What is the region conjoining Pakistan, India, and China with unknown leadership called? | Kashmir | Andorra | Gibraltar | Quin
+3 | 1 | - | Norway has a larger land area than Sweden. | False | True
+3 | 1 | - | What was the most populous city in the Americas in 2015? | São Paulo | New York | Mexico City | Los Angeles
+3 | 1 | - | What is the capital city of New Zealand? | Wellington | Auckland | Christchurch | Melbourne
+1 | 1 | - | New Haven is the capital city of the state of Connecticut in the United States. | False | True
+3 | 1 | - | What is the fifth largest country by area? | Brazil | United States | Australia | India
+5 | 1 | - | What is the capital of Mauritius? | Port Louis | Port Moresby | Port Vila | Port-au-Prince
+1 | 1 | - | What is the capital of South Korea? | Seoul | Pyongyang | Taegu | Kitakyushu
+1 | 1 | - | Nova Scotia is on the east coast of Canada. | True | False
+1 | 1 | - | Which country was NOT part of the Soviet Union? | Romania | Turkmenistan | Belarus | Tajikistan
+3 | 1 | - | Which of these country's capitals starts with the letter B? | Lebanon | Jordan | Kuwait | Qatar
+3 | 1 | - | What is the only country in the world with a flag that doesn't have four right angles? | Nepal | Panama | Angola | Egypt
+3 | 1 | - | Which country inside the United Kingdom does NOT appear on its flag, the Union Jack? | Wales | Scotland | Ireland | Isle of Wight
+1 | 1 | - | What is the capital of Indonesia? | Jakarta | Bandung | Medan | Palembang
+3 | 1 | - | The flag of South Africa features 7 colours. | False | True
+3 | 1 | - | Which of these countries is "doubly landlocked" (surrounded entirely by one or more landlocked countries)? | Uzbekistan | Switzerland | Bolivia | Ethiopia
+3 | 1 | - | How many counties in the Republic of Ireland. | 26 | 32 | 28 | 30
+1 | 1 | - | Greenland is covered with grass and Iceland covered with ice. | False | True
+3 | 1 | - | What is the capital of Chile? | Santiago | Valparaíso | Copiapó | Antofagasta
+3 | 1 | - | Which European city has the highest mileage of canals in the world? | Birmingham | Venice | Amsterdam | Berlin
+1 | 1 | - | Which of the following European languages is classified as a "language isolate?" | Basque | Galician | Maltese | Hungarian
+3 | 1 | - | The following Spanish provinces are located in the northern area of Spain except: | Murcia | Asturias | Navarre | León
+3 | 1 | - | The land of Gotland is located in which European country? | Sweden | Denmark | Norway | Germany
+3 | 1 | - | Which of the following countries does NOT recognize Armenia as an independent country? | Pakistan | Iran | Turkey | Azerbaijan
+1 | 1 | - | What is the 15th letter of the Greek alphabet? | Omicron (Ο) | Sigma (Σ) | Pi (Π) | Nu (Ν)
+3 | 1 | - | Which of these countries is NOT located in Africa? | Suriname | Burkina Faso | Mozambique | Algeria
+1 | 1 | - | How many time zones does China have? | 1 | 3 | 4 | 2
+1 | 1 | - | How many countries does the United States share a land border with? | 2 | 1 | 3 | 4
+3 | 1 | - | Gibraltar, located just south of the Iberian peninsula, is a territory of which West Europe country? | United Kingdom | Spain | Portugal | France
+3 | 1 | - | What is the capital of the State of Washington, United States? | Olympia | Washington D.C. | Seattle | Yukon
+1 | 1 | - | Which of the following Arab countries does NOT have a flag containing only Pan-Arab colours? | Qatar | Kuwait | United Arab Emirates | Jordan
+1 | 1 | - | What country has a horizontal bicolor red and white flag? | Monaco | Bahrain | Malta | Liechenstein
+1 | 1 | - | Which of these is the name of the largest city in the US state Tennessee? | Memphis | Thebes | Alexandria | Luxor
+3 | 1 | - | Which German city is located on the River Isar? | Munich | Berlin | Hamburg | Dortmund
+3 | 1 | - | What is the largest lake in the African continent? | Lake Victoria | Lake Tanganyika | Lake Malawi | Lake Turkana
+3 | 1 | - | Vietnam is the only country in the world that starts with V.  | False | True
+5 | 1 | - | How many countries border Kyrgyzstan? | 4 | 3 | 1 | 6
+3 | 1 | - | There exists an island named "Java". | True | False
+3 | 1 | - | What is the capital of Senegal? | Dakar | Nouakchott | Conakry | Monrovia
+3 | 1 | - | "Mongolia" was a part of the now non-existent U.S.S.R. | False | True
+1 | 1 | - | What is the nickname for the US state Delaware? | The First State | The Fiftieth State | The Second State | The Sixteenth State
+1 | 1 | - | St. Louis is the capital of the US State Missouri. | False | True
+3 | 1 | - | Antarctica is the largest desert in the world. | True | False
+3 | 1 | - | Which country has the abbreviation "CH"? | Switzerland | China | Canada | No Country
+5 | 1 | - | What is the official German name of the Swiss Federal Railways? | Schweizerische Bundesbahnen | Schweizerische Nationalbahnen | Bundesbahnen der Schweiz | Schweizerische Staatsbahnen
+5 | 1 | - | Switzerland has four national languages, English being one of them. | False | True
+1 | 1 | - | Harvard University is located in which city? | Cambridge | Providence | New York | Washington D.C.
+3 | 1 | - | What is the smallest country in South America by area? | Suriname | Brazil | Uruguay | Chile
+1 | 1 | - | Which country is the home of the largest Japanese population outside of Japan? | Brazil | China | Russia | The United States
+5 | 1 | - | When does Finland celebrate their independence day? | December 6th | January 2nd | November 12th | February 8th
+1 | 1 | - | How many countries does Mexico border? | 3 | 2 | 4 | 1
+3 | 1 | - | What city  has the busiest airport in the world? | Atlanta, Georgia USA | London, England | Chicago,Illinois ISA | Tokyo,Japan
+5 | 1 | - | What is the land connecting North America and South America? | Isthmus of Panama | Isthmus of Suez | Urals | Australasia
+5 | 1 | - | Which of these cities has a 4° East longitude.  | Amsterdam | Rio de Janero | Toronto | Hong Kong
+3 | 1 | - | Where is the "Sonoran Desert" located? | North America | South America | Asia | Africa
+1 | 1 | - | Hungary is the only country in the world beginning with H. | False | True
+5 | 1 | - | In which country is Tallinn located? | Estonia | Finland | Sweden | Poland
+3 | 1 | - | What is the capital of Lithuania? | Vilnius | Tallinn | Helsinki | Riga
+1 | 1 | - | Which small country is located between the borders of France and Spain? | Andorra | San Marino | Vatican City | Lichtenstein
+5 | 1 | - | The two largest ethnic groups of Belgium are Flemish and Walloon.  | True | False
+3 | 1 | - | Which of the following is NOT a capital city? | Sydney | Cairo | Moscow | Beijing
+5 | 1 | - | What country is not a part of Scandinavia? | Finland | Norway | Sweden | Denmark
+3 | 1 | - | What is the capital of Peru? | Lima | Santiago | Montevideo | Buenos Aires
+3 | 1 | - | The Principality of Sealand is an unrecognized micronation off the coast of what country? | The United Kingdom | Japan | Austrailia | Argentina
+3 | 1 | - | How many sovereign states are members of the United Nations? | 195 | 201 | 153 | 178
+3 | 1 | - | What is the name of the former country that was succeeded by countries such as Serbia, Croatia and Slovenia? | Yugoslavia | Czechoslovakia | Abkhazia | South Ossetia
+3 | 1 | - | Which city is the capital of Switzerland? | Bern | Zürich | Frankfurt | Wien
+3 | 1 | - | There are no roads in/out of Juneau, Alaska. | True | False
+1 | 1 | - | What is the capital of Jamaica? | Kingston | San Juan | Port-au-Prince | Bridgetown
+1 | 1 | - | What is the capital of Denmark? | Copenhagen | Aarhus | Odense | Aalborg
+5 | 1 | - | Which of these is NOT a province in China? | Yangtze | Fujian | Sichuan | Guangdong
+1 | 1 | - | If soccer is called football in England, what is American football called in England? | American football | Combball | Handball | Touchdown
+3 | 1 | - | Which of the following countries is within the Eurozone but outside of the Schengen Area? | Cyprus | Malta | Greece | Portugal
+5 | 1 | - | What is the name of one of the Neo-Aramaic languages spoken by the Jewish population from Northwestern Iraq? | Lishana Deni | Hulaulá | Lishan Didan | Chaldean Neo-Aramaic
+1 | 1 | - | What is the only state in the United States that does not have a flag in a shape with 4 edges? | Ohio | Florida | Idaho | New Mexico
+3 | 1 | - | The longest place named in the United States is Lake Chargoggagoggmanchauggagoggchaubunagungamaugg, located near Webster, MA. | True | False
+1 | 1 | - | Which of the following languages does NOT use the Latin alphabet? | Georgian | Turkish | Swahili | Vietnamese
+5 | 1 | - | In 2012 the German-speaking microstate "Liechtenstein" in Central Europe had a population of how many inhabitants? | 36,600 | 2,400 | 90,000 | 323,400
+5 | 1 | - | Where is the Luxor Hotel & Casino located? | Paradise, Nevada | Las Vegas, Nevada | Winchester, Nevada | Jackpot, Nevada
+3 | 1 | - | Which of these countries is located the FURTHEST away from the South China Sea? | Bangladesh | Malaysia | Vietnam | Philippines
+3 | 1 | - | The Japanese district Akihabara is also known by what nickname? | Electric Town | Moon Walk River | Otaku Central  | Big Eyes
+1 | 1 | - | Which US state has the highest population? | California | New York | Texas | Florida
+1 | 1 | - | What is the official language of Costa Rica? | Spanish | English | Portuguese | Creole
+5 | 1 | - | What year is on the flag of the US state Wisconsin? | 1848 | 1634 | 1783 | 1901
+3 | 1 | - | Gothenburg is the capital of Sweden. | False | True
+1 | 1 | - | Ottawa is the capital of Canada. | True | False
+1 | 1 | - | There are no deserts in Europe. | True | False
+3 | 1 | - | The Sonoran Desert is located in eastern Africa. | False | True
+5 | 1 | - | The Hunua Ranges is located in... | New Zealand | Nepal | China | Mexico
+5 | 1 | - | What is the most populous Muslim-majority nation in 2010? | Indonesia | Saudi Arabia | Iran | Sudan
+3 | 1 | - | What is the official language of Bhutan? | Dzongkha | Ladakhi | Karen | Groma
+3 | 1 | - | Which country has three capital cities? | South Africa | Somalia | China | United Kingdom
+1 | 1 | - | What is the capital of the US State of New York? | Albany | Buffalo | New York | Rochester
+1 | 1 | - | The Space Needle is located in which city? | Seattle | Los Angles | Toronto | Vancouver
+5 | 1 | - | What city is known as the Rose Capital of the World? | Tyler, Texas | San Diego, California | Miami, Florida | Anaheim, California
+3 | 1 | - | What is the capital of Slovakia? | Bratislava | Sofia | Ljubljana | Sarajevo
+3 | 1 | - | Which Canadian province has Charlottetown as its capital? | Prince Edward Island | Saskachewan | Northwest Terrirories | Ontario
+5 | 1 | - | What is the name of the Canadian national anthem? | O Canada | O Red Maple | Leaf-Spangled Banner | March of the Puck Drop
+3 | 1 | - | Which one of these countries borders with Poland? | Lithuania | France | Norway | Netherlands
+1 | 1 | - | How many stars are featured on New Zealand's flag? | 4 | 5 | 2 | 0
+3 | 1 | - | The land mass of modern day Turkey is called what? | Anatolia | Ismuth of Ottoma | Ottoma | Ismuth of Anatolia
+1 | 1 | - | What is the smallest country in the world? | Vatican City | Maldives | Monaco | Malta
+3 | 1 | - | Broome is a town in which state of Australia? | Western Australia | Northern Territory | South Australia | Tasmania
+3 | 1 | - | What is the capital of Estonia? | Tallinn | Helsinki | Tartu | Riga
+5 | 1 | - | What is the capital city of Bermuda? | Hamilton | Santo Dominigo | San Juan | Havana
+1 | 1 | - | Which of the following countries has a flag featuring a yellow lion wielding a sword on a dark red background? | Sri Lanka | Kiribati | Scotland | Bhutan
+5 | 1 | - | How many stations does the Central Line have on the London Underground? | 49 | 51 | 43 | 47
+1 | 1 | - | Which ocean borders the west coast of the United States? | Pacific | Atlantic | Indian | Arctic
+5 | 1 | - | What is the most common climbing route for the second highest mountain in the world, K2? | Abruzzi Spur | Magic Line | Cesen Route | Polish Line
+3 | 1 | - | Which of the following is the longest river in Europe? | Volga | Danube | Ural | Dnieper
+3 | 1 | - | Which is the world's longest river? | Nile | Missouri | Amazon | Yangtze
+3 | 1 | - | In which city, is the Big Nickel located in Canada? | Sudbury, Ontario | Calgary, Alberta | Halifax, Nova Scotia  | Victoria, British Columbia
+3 | 1 | - | Which state of the United States is the smallest? | Rhode Island  | Maine | Vermont | Massachusetts
+1 | 1 | - | The body of the Egyptian Sphinx was based on which animal? | Lion | Bull | Horse | Dog
+1 | 1 | - | What country is the second largest in the world by area? | Canada | Russia | China | United States of America
+1 | 1 | - | A group of islands is called an 'archipelago'. | True | False
+5 | 1 | - | Which of these is NOT a city in India? | Islamabad | Hyderabad | Ahmedabad | Ghaziabad
+3 | 1 | - | What is the name of the capital of Turkey? | Ankara | Istanbul | Izmir | Bursa
+3 | 1 | - | What are the four corner states of the US? | Utah, Colorado, Arizona, New Mexico | Oregon, Idaho, Nevada, Utah | Kansas, Oklahoma, Arkansas, Louisiana | South Dakota, Minnesota, Nebraska, Iowa
+1 | 1 | - | All of the following are classified as Finno-Ugric languages EXCEPT: | Samoyedic | Hungarian | Finnish | Estonian
+1 | 1 | - | The derisive acronym "PIIGS" refers to which of the following European countries and their economic statuses? | Portugal, Ireland, Italy, Greece, Spain | Poland, Iceland, Italy, Greece, Serbia | Poland, Iceland, Italy, Greenland, Spain | Portugal, Iceland, Ireland, Greece, Serbia
+3 | 1 | - | Which of the following language families is the most controversial amongst modern linguists? | Altaic | Sino-Tibetan | Dravidian | Indo-European
+1 | 1 | - | Which Russian oblast forms a border with Poland? | Kaliningrad | Samara | Nizhny Novgorod | Omsk
+3 | 1 | - | Which of the following countries banned the use of personal genetic ancestry tests? | Germany | Austria | Canada | Sweden
+3 | 1 | - | All of the following countries have official claims to territory in Antartica EXCEPT: | United States | Australia | Chile | Norway
+3 | 1 | - | On which continent is the country of Angola located? | Africa | South America | Europe | Asia
+5 | 1 | - | Which of the following Inuit languages was the FIRST to use a unique writing system not based on the Latin alphabet? | Inuktitut | Inuinnaqtun | Greenlandic | Inupiat
+1 | 1 | - | Which UK country features a dragon on their flag? | Wales | England | North Ireland | Scotland
+3 | 1 | - | How many countries does Spain have a land border with? | 5 | 2 | 3 | 4
+3 | 1 | - | What is the right way to spell the capital of Hungary? | Budapest | Boodapest | Bhudapest | Budapast
+1 | 1 | - | Toronto is the capital city of the North American country of Canada. | False | True
+1 | 1 | - | What is the name of the peninsula containing Spain and Portugal? | Iberian Peninsula | European Peninsula | Peloponnesian Peninsula | Scandinavian Peninsula
+5 | 1 | - | What is the second-largest city in Lithuania? | Kaunas | Panevėžys | Vilnius | Klaipėda
+1 | 1 | - | What is the name of New Zealand's indigenous people? | Maori | Vikings | Polynesians | Samoans
+3 | 1 | - | What is the capital city of Slovenia? | Ljubljana | Maribor | Velenje | Trbovlje
+1 | 1 | - | The Alps are a mountain range on which continent? | Europe | North America | Asia | Africa
+3 | 1 | - | The Southeast Asian island of Borneo is politically divided among 3 countries. | True | False
+3 | 1 | - | How tall is One World Trade Center in New York City? | 1,776 ft | 1,888 ft | 1,225 ft | 1,960 ft
+5 | 1 | - | What is Canada's largest island? | Baffin Island | Prince Edward Island | Vancouver Island | Newfoundland
+3 | 1 | - | In the 2016 Global Peace Index poll, out of 163 countries, what was the United States of America ranked? | 103 | 10 | 59 | 79
+3 | 1 | - | What's the first National Park designated in the United States? | Yellowstone | Sequoia  | Yosemite | Rocky Mountain
+3 | 2 | - | Name one of the capitals of South Africa? | Pretoria | Cape Town | capetown | Bloemfontein
+3 | 2 | - | Name one of Bolivia's capitals? | La Paz | Sucre
+3 | 2 | - | What is the capital of Afghanistan? | Kabul
+3 | 2 | - | What is the capital of Albania? | Tirana
+3 | 2 | - | What is the capital of Algeria? | Algiers
+3 | 2 | - | What is the capital of Andorra? | Andorra la Vella
+3 | 2 | - | What is the capital of Angola? | Luanda
+3 | 2 | - | What is the capital of Antigua and Barbuda? | Saint John's | saint johns | st johns | st. johns | st john's | st. john's | saintjohns | saintjohn's | stjohns | stjohn's | st.johns | st.john's
+3 | 2 | - | What is the capital of Argentina? | Buenos Aires
+3 | 2 | - | What is the capital of Armenia? | Yerevan
+3 | 2 | - | What is the capital of Australia? | Canberra
+3 | 2 | - | What is the capital of Austria? | Vienna
+3 | 2 | - | What is the capital of Azerbaijan? | Baku
+3 | 2 | - | What is the capital of Bahamas? | Nassau
+3 | 2 | - | What is the capital of Bahrain? | Manama
+3 | 2 | - | What is the capital of Bangladesh? | Dhaka
+3 | 2 | - | What is the capital of Barbados? | Bridgetown
+3 | 2 | - | What is the capital of Belarus? | Minsk
+3 | 2 | - | What is the capital of Belgium? | Brussels
+3 | 2 | - | What is the capital of Belize? | Belmopan
+3 | 2 | - | What is the capital of Benin? | Porto-Novo | porto novo | portonovo
+3 | 2 | - | What is the capital of Bhutan? | Thimphu
+3 | 2 | - | What is the capital of Bosnia and Herzegovina? | Sarajevo
+3 | 2 | - | What is the capital of Botswana? | Gaborone
+3 | 2 | - | What is the capital of Brazil? | Brasilia
+3 | 2 | - | What is the capital of Brunei: | Bandar Seri Begawan | bandarseribegawan
+3 | 2 | - | What is the capital of Bulgaria? | Sofia
+3 | 2 | - | What is the capital of Burkina Faso? | Ouagadougou
+3 | 2 | - | What is the capital of Burundi? | Bujumbura
+3 | 2 | - | What is the capital of Cabo Verde? | Praia
+3 | 2 | - | What is the capital of Cambodia? | Phnom Penh
+3 | 2 | - | What is the capital of Cameroon? | Yaoundé | yaounde
+3 | 2 | - | What is the capital of Canada? | Ottawa
+3 | 2 | - | What is the capital of Central African Republic? | Bangui
+3 | 2 | - | What is the capital of Chad? | N'Djamena | ndjamena | n djamena
+3 | 2 | - | What is the capital of Chile? | Santiago
+3 | 2 | - | What is the capital of China? | Beijing
+3 | 2 | - | What is the capital of Colombia? | Bogotá | Bogota
+3 | 2 | - | What is the capital of Comoros? | Moroni
+3 | 2 | - | What is the capital of Costa Rica: | San Jose | Sanjose
+3 | 2 | - | What is the capital of Cote d'Ivoire? | Yamoussoukro
+3 | 2 | - | What is the capital of Croatia? | Zagreb
+3 | 2 | - | What is the capital of Cuba? | Havana
+3 | 2 | - | What is the capital of Cyprus? | Nicosia
+3 | 2 | - | What is the capital of Czech Republic? | Prague
+3 | 2 | - | What is the capital of Denmark? | Copenhagen
+3 | 2 | - | What is the capital of Djibouti? | Djibouti
+3 | 2 | - | What is the capital of Dominica? | Roseau
+3 | 2 | - | What is the capital of Dominican Republic? | Santo Domingo | santodomingo
+3 | 2 | - | What is the capital of Ecuador? | Quito
+3 | 2 | - | What is the capital of Egypt? | Cairo
+3 | 2 | - | What is the capital of El Salvador? | San Salvador | sansalvador
+3 | 2 | - | What is the capital of Equatorial Guinea? | Malabo
+3 | 2 | - | What is the capital of Eritrea? | Asmara
+3 | 2 | - | What is the capital of Estonia? | Tallinn
+3 | 2 | - | What is the capital of eSwatini (Swaziland)? | Mbabane
+3 | 2 | - | What is the capital of Ethiopia? | Addis Ababa | addisababa
+3 | 2 | - | What is the capital of Fiji? | Suva
+3 | 2 | - | What is the capital of Finland? | Helsinki
+3 | 2 | - | What is the capital of France? | Paris
+3 | 2 | - | What is the capital of Gabon? | Libreville
+3 | 2 | - | What is the capital of Gambia? | Banjul
+3 | 2 | - | What is the capital of Georgia? | Tbilisi
+3 | 2 | - | What is the capital of Germany? | Berlin
+3 | 2 | - | What is the capital of Ghana? | Accra
+3 | 2 | - | What is the capital of Greece? | Athens
+3 | 2 | - | What is the capital of Grenada? | St. George's | st georges | st george's | st.george's | stgeorges | stgeorge's
+3 | 2 | - | What is the capital of Guatemala? | Guatemala City
+3 | 2 | - | What is the capital of Guinea-Bissau? | Bissau
+3 | 2 | - | What is the capital of Guinea? | Conakry
+3 | 2 | - | What is the capital of Guyana? | Georgetown
+3 | 2 | - | What is the capital of Haiti? | Port-au-Prince | port au prince | portauprince
+3 | 2 | - | What is the capital of Honduras? | Tegucigalpa
+3 | 2 | - | What is the capital of Hungary? | Budapest
+3 | 2 | - | What is the capital of Iceland? | Reykjavik
+3 | 2 | - | What is the capital of India? | New Delhi | newdelhi
+3 | 2 | - | What is the capital of Indonesia? | Jakarta
+3 | 2 | - | What is the capital of Iran? | Tehran
+3 | 2 | - | What is the capital of Iraq? | Baghdad
+3 | 2 | - | What is the capital of Ireland? | Dublin
+3 | 2 | - | What is the capital of Israel? | Jerusalem
+3 | 2 | - | What is the capital of Italy? | Rome
+3 | 2 | - | What is the capital of Jamaica? | Kingston
+3 | 2 | - | What is the capital of Japan? | Tokyo
+3 | 2 | - | What is the capital of Jordan? | Amman
+3 | 2 | - | What is the capital of Kazakhstan? | Astana
+3 | 2 | - | What is the capital of Kenya? | Nairobi
+3 | 2 | - | What is the capital of Kiribati? | South Tarawa | southtarawa
+3 | 2 | - | What is the capital of Kosovo? | Pristina
+3 | 2 | - | What is the capital of Kuwait? | Kuwait City | kuwaitcity
+3 | 2 | - | What is the capital of Kyrgyzstan? | Bishkek
+3 | 2 | - | What is the capital of Laos? | Vientiane
+3 | 2 | - | What is the capital of Latvia? | Riga
+3 | 2 | - | What is the capital of Lebanon? | Beirut
+3 | 2 | - | What is the capital of Lesotho? | Maseru
+3 | 2 | - | What is the capital of Liberia? | Monrovia
+3 | 2 | - | What is the capital of Libya? | Tripoli
+3 | 2 | - | What is the capital of Liechtenstein? | Vaduz
+3 | 2 | - | What is the capital of Lithuania? | Vilnius
+3 | 2 | - | What is the capital of Luxembourg? | Luxembourg
+3 | 2 | - | What is the capital of Macedonia? | Skopje
+3 | 2 | - | What is the capital of Madagascar? | Antananarivo
+3 | 2 | - | What is the capital of Malawi? | Lilongwe
+3 | 2 | - | What is the capital of Malaysia? | Kuala Lumpur | kualalumpur
+3 | 2 | - | What is the capital of Maldives? | Male
+3 | 2 | - | What is the capital of Mali? | Bamako
+3 | 2 | - | What is the capital of Malta? | Valletta
+3 | 2 | - | What is the capital of Mauritania? | Nouakchott
+3 | 2 | - | What is the capital of Mauritius? | Port Louis | portlouis
+3 | 2 | - | What is the capital of Mexico? | Mexico City | mexicocity
+3 | 2 | - | What is the capital of Micronesia? | Palikir
+3 | 2 | - | What is the capital of Moldova? | Chisinau
+3 | 2 | - | What is the capital of Monaco? | Monaco
+3 | 2 | - | What is the capital of Mongolia? | Ulaanbaatar
+3 | 2 | - | What is the capital of Montenegro? | Podgorica
+3 | 2 | - | What is the capital of Morocco? | Rabat
+3 | 2 | - | What is the capital of Mozambique? | Maputo
+3 | 2 | - | What is the capital of Myanmar (Burma)? | Naypyidaw
+3 | 2 | - | What is the capital of Namibia? | Windhoek
+3 | 2 | - | What is the capital of Nauru? | Yaren District | yarendistrict
+3 | 2 | - | What is the capital of Nepal? | Kathmandu
+3 | 2 | - | What is the capital of New Zealand? | Wellington
+3 | 2 | - | What is the capital of Nicaragua? | Managua
+3 | 2 | - | What is the capital of Niger? | Niamey
+3 | 2 | - | What is the capital of Nigeria? | Abuja
+3 | 2 | - | What is the capital of North Korea? | Pyongyang | pyong yang
+3 | 2 | - | What is the capital of Norway? | Oslo
+3 | 2 | - | What is the capital of Oman? | Muscat
+3 | 2 | - | What is the capital of Pakistan? | Islamabad
+3 | 2 | - | What is the capital of Palau? | Ngerulmud
+3 | 2 | - | What is the capital of Palestine? | Ramallah
+3 | 2 | - | What is the capital of Panama? | Panama City | panamacity
+3 | 2 | - | What is the capital of Papua New Guinea? | Port Moresby | portmoresby
+3 | 2 | - | What is the capital of Paraguay? | Asunción | asuncion
+3 | 2 | - | What is the capital of Peru? | Lima
+3 | 2 | - | What is the capital of Philippines? | Manila
+3 | 2 | - | What is the capital of Poland? | Warsaw
+3 | 2 | - | What is the capital of Portugal? | Lisbon
+3 | 2 | - | What is the capital of Qatar? | Doha
+3 | 2 | - | What is the capital of Romania? | Bucharest
+3 | 2 | - | What is the capital of Russia? | Moscow
+3 | 2 | - | What is the capital of Rwanda? | Kigali
+3 | 2 | - | What is the capital of Saint Kitts and Nevis? | Basseterre
+3 | 2 | - | What is the capital of Saint Lucia? | Castries
+3 | 2 | - | What is the capital of Saint Vincent and the Grenadines? | Kingstown
+3 | 2 | - | What is the capital of Samoa? | Apia
+3 | 2 | - | What is the capital of San Marino? | San Marino | sanmarino
+3 | 2 | - | What is the capital of Sao Tome and Principe? | São Tomé | sao tome | saotome
+3 | 2 | - | What is the capital of Saudi Arabia? | Riyadh
+3 | 2 | - | What is the capital of Senegal? | Dakar
+3 | 2 | - | What is the capital of Serbia? | Belgrade
+3 | 2 | - | What is the capital of Seychelles? | Victoria
+3 | 2 | - | What is the capital of Sierra Leone? | Freetown
+3 | 2 | - | What is the capital of Singapore? | Singapore
+3 | 2 | - | What is the capital of Slovakia? | Bratislava
+3 | 2 | - | What is the capital of Slovenia? | Ljubljana
+3 | 2 | - | What is the capital of Solomon Islands? | Honiara
+3 | 2 | - | What is the capital of Somalia? | Mogadishu
+3 | 2 | - | What is the capital of South Korea? | Seoul
+3 | 2 | - | What is the capital of South Sudan? | Juba
+3 | 2 | - | What is the capital of Spain? | Madrid
+3 | 2 | - | What is the capital of Sri Lanka? | Sri Jayawardenepura Kotte | srijawawardenpurakotte
+3 | 2 | - | What is the capital of Sudan? | Khartoum
+3 | 2 | - | What is the capital of Suriname? | Paramaribo
+3 | 2 | - | What is the capital of Sweden? | Stockholm
+3 | 2 | - | What is the capital of Switzerland? | Bern
+3 | 2 | - | What is the capital of Syria? | Damascus
+3 | 2 | - | What is the capital of Taiwan? | Taipei
+3 | 2 | - | What is the capital of Tajikistan? | Dushanbe
+3 | 2 | - | What is the capital of Tanzania? | Dodoma
+3 | 2 | - | What is the capital of Thailand? | Bangkok
+3 | 2 | - | What is the capital of Timor-Leste? | Dili
+3 | 2 | - | What is the capital of Togo? | Lomé | lome
+3 | 2 | - | What is the capital of Tonga? | Nuku'alofa | nukualofa
+3 | 2 | - | What is the capital of Trinidad and Tobago? | Port of Spain | portofspain
+3 | 2 | - | What is the capital of Tunisia? | Tunis
+3 | 2 | - | What is the capital of Turkey? | Ankara
+3 | 2 | - | What is the capital of Turkmenistan? | Ashgabat
+3 | 2 | - | What is the capital of Tuvalu? | Funafuti
+3 | 2 | - | What is the capital of Uganda? | Kampala
+3 | 2 | - | What is the capital of Ukraine? | Kyiv
+3 | 2 | - | What is the capital of United Arab Emirates? | Abu Dhabi | abudhabi
+3 | 2 | - | What is the capital of Uruguay? | Montevideo
+3 | 2 | - | What is the capital of Uzbekistan? | Tashkent
+3 | 2 | - | What is the capital of Vanuatu? | Port Vila | portvila
+3 | 2 | - | What is the capital of Venezuela? | Caracas
+3 | 2 | - | What is the capital of Vietnam? | Hanoi
+3 | 2 | - | What is the capital of Yemen? | Sana'a | sanaa | sana a
+3 | 2 | - | What is the capital of Zambia? | Lusaka
+3 | 2 | - | What is the capital of Zimbabwe? | Harare
+3 | 2 | - | What is the capital of the Democratic Republic of the Congo? | Kinshasa
+3 | 2 | - | What is the capital of the Marshall Islands? | Majuro
+3 | 2 | - | What is the capital of the Netherlands? | Amsterdam
+3 | 2 | - | What is the capital of the Republic of the Congo? | Brazzaville
+3 | 2 | - | What is the capital of the United Kingdom? | London
+3 | 2 | - | What is the capital of the United States of America? | Washington, D.C. | washingtondc | washington dc | washington d.c. | washington, dc | washington,d.c. | washington,dc | washingtond.c.
+3 | 2 | - | What is the capital of the Vatican City (Holy See)? | Vatican City | vatican city3 | 2 | https://i.imgur.com/00SGRuz.png | What country is represented by this flag?  | Myanmar | Burma
+3 | 2 | https://i.imgur.com/02a0Xre.png | What country is represented by this flag?  | Croatia
+3 | 2 | https://i.imgur.com/18t0zMj.png | What country is represented by this flag?  | Brunei
+3 | 2 | https://i.imgur.com/1KBFTgX.png | What country is represented by this flag?  | Sierra Leone
+3 | 2 | https://i.imgur.com/1VsVFYK.png | What country is represented by this flag?  | Maldives
+3 | 2 | https://i.imgur.com/1dQ8NBz.png | What country is represented by this flag?  | Brazil
+3 | 2 | https://i.imgur.com/1o8hBla.png | What country is represented by this flag?  | Mauritania
+3 | 2 | https://i.imgur.com/1tH3blw.png | What country is represented by this flag?  | Denmark
+3 | 2 | https://i.imgur.com/222q836.png | What country is represented by this flag?  | Libya
+3 | 2 | https://i.imgur.com/2Wxbjv5.png | What country is represented by this flag?  | South Korea
+3 | 2 | https://i.imgur.com/3H3Lfat.png | What country is represented by this flag?  | Republic of the Philippines | Philippines
+3 | 2 | https://i.imgur.com/3KXMyBS.png | What country is represented by this flag?  | Georgia
+3 | 2 | https://i.imgur.com/3LN2uSA.png | What country is represented by this flag?  | Eritrea
+3 | 2 | https://i.imgur.com/3rcX6U2.png | What country is represented by this flag?  | Portugal
+3 | 2 | https://i.imgur.com/3vTYQpq.png | What country is represented by this flag?  | Bahamas
+3 | 2 | https://i.imgur.com/4ExD2Ub.png | What country is represented by this flag?  | Yemen
+3 | 2 | https://i.imgur.com/524Qfs3.png | What country is represented by this flag?  | Spain
+3 | 2 | https://i.imgur.com/5E9Hkzb.png | What country is represented by this flag?  | Bhutan
+3 | 2 | https://i.imgur.com/5Gr6Eyw.png | What country is represented by this flag?  | Turkmenistan
+3 | 2 | https://i.imgur.com/5IRTv2m.png | What country is represented by this flag?  | Cuba
+3 | 2 | https://i.imgur.com/5NbPMRh.png | What country is represented by this flag?  | Belarus
+3 | 2 | https://i.imgur.com/5TEduqP.png | What country is represented by this flag?  | United Kingdom | UK | GB | Great Britain | Britain
+3 | 2 | https://i.imgur.com/6UkAfly.png | What country is represented by this flag?  | Kenya
+3 | 2 | https://i.imgur.com/7qSsp7Z.png | What country is represented by this flag?  | Samoa
+3 | 2 | https://i.imgur.com/7weskDc.png | What country is represented by this flag?  | Macedonia
+3 | 2 | https://i.imgur.com/8F5aqVG.png | What country is represented by this flag?  | Germany
+3 | 2 | https://i.imgur.com/8LFhQVn.png | What country is represented by this flag?  | North Korea | People's Republic of Korea
+3 | 2 | https://i.imgur.com/8OzbswS.png | What country is represented by this flag?  | Armenia
+3 | 2 | https://i.imgur.com/AKvyrB8.png | What country is represented by this flag?  | Sao Tome and Principe | Sao Tome
+3 | 2 | https://i.imgur.com/AMccj7Q.png | What country is represented by this flag?  | Venezuela
+3 | 2 | https://i.imgur.com/AVX1jHf.png | What country is represented by this flag?  | Japan
+3 | 2 | https://i.imgur.com/Acc9xZt.png | What country is represented by this flag?  | Poland
+3 | 2 | https://i.imgur.com/Ag2D0nx.png | What country is represented by this flag?  | Sri Lanka
+3 | 2 | https://i.imgur.com/AkfQ9aV.png | What country is represented by this flag?  | Turkey
+3 | 2 | https://i.imgur.com/B5JXE6s.png | What country is represented by this flag?  | Zimbabwe
+3 | 2 | https://i.imgur.com/BTYy0J0.png | What country is represented by this flag?  | Lebanon
+3 | 2 | https://i.imgur.com/BgdKIb2.png | What country is represented by this flag?  | Mozambique
+3 | 2 | https://i.imgur.com/BqwHKYv.png | What country is represented by this flag?  | Malta | Hvid RÃ¸d
+3 | 2 | https://i.imgur.com/C3kWeQw.png | What country is represented by this flag?  | Bahrain
+3 | 2 | https://i.imgur.com/CEetl8W.png | What country is represented by this flag?  | Peru
+3 | 2 | https://i.imgur.com/CXQK227.png | What country is represented by this flag?  | Morocco
+3 | 2 | https://i.imgur.com/CpPkgpU.png | What country is represented by this flag?  | Cabo Verde | Cape Verde
+3 | 2 | https://i.imgur.com/DGQwjWZ.png | What country is represented by this flag?  | Suriname
+3 | 2 | https://i.imgur.com/DeINlqb.png | What country is represented by this flag?  | Niger
+3 | 2 | https://i.imgur.com/DhviZ7r.png | What country is represented by this flag?  | Kiribati
+3 | 2 | https://i.imgur.com/FQyZE9l.png | What country is represented by this flag?  | Czech Republic | Czechia
+3 | 2 | https://i.imgur.com/FoEC4xl.png | What country is represented by this flag?  | Italy
+3 | 2 | https://i.imgur.com/FxoBzcY.png | What country is represented by this flag?  | Tajikistan
+3 | 2 | https://i.imgur.com/GUUtDv6.png | What country is represented by this flag?  | Nauru
+3 | 2 | https://i.imgur.com/H230Is8.png | What country is represented by this flag?  | Switzerland
+3 | 2 | https://i.imgur.com/HZyUD1Y.png | What country is represented by this flag?  | Australia
+3 | 2 | https://i.imgur.com/HsyQ0WU.png | What country is represented by this flag?  | Bangladesh
+3 | 2 | https://i.imgur.com/Il8Gkxe.png | What country is represented by this flag?  | Kazakhstan
+3 | 2 | https://i.imgur.com/J20AEe0.png | What country is represented by this flag?  | Lesotho
+3 | 2 | https://i.imgur.com/J3xd0eK.png | What country is represented by this flag?  | Colombia
+3 | 2 | https://i.imgur.com/KejcQ5w.png | What country is represented by this flag?  | Tuvalu
+3 | 2 | https://i.imgur.com/KxMALzR.png | What country is represented by this flag?  | Serbia
+3 | 2 | https://i.imgur.com/Kytf2Mm.png | What country is represented by this flag?  | Romania
+3 | 2 | https://i.imgur.com/LHZxJCE.png | What country is represented by this flag?  | Azerbaijan
+3 | 2 | https://i.imgur.com/LPm5b84.png | What country is represented by this flag?  | Israel
+3 | 2 | https://i.imgur.com/LbQj8rK.png | What country is represented by this flag?  | Austria
+3 | 2 | https://i.imgur.com/LgBw3JD.png | What country is represented by this flag?  | Gambia
+3 | 2 | https://i.imgur.com/LgwBULL.png | What country is represented by this flag?  | Canada
+3 | 2 | https://i.imgur.com/Ls07jJq.png | What country is represented by this flag?  | Democratic Republic of the Congo | Dem. Rep. of Congo
+3 | 2 | https://i.imgur.com/Ma1ivs0.png | What country is represented by this flag?  | Liberia
+3 | 2 | https://i.imgur.com/MrAUl3e.png | What country is represented by this flag?  | Jamaica
+3 | 2 | https://i.imgur.com/Mtz46LH.png | What country is represented by this flag?  | Iceland
+3 | 2 | https://i.imgur.com/NGR2LNi.png | What country is represented by this flag?  | Senegal
+3 | 2 | https://i.imgur.com/NMMpFNh.png | What country is represented by this flag?  | Seychelles
+3 | 2 | https://i.imgur.com/OJ3jk8h.png | What country is represented by this flag?  | Russia
+3 | 2 | https://i.imgur.com/OS83E0Y.png | What country is represented by this flag?  | Comoros
+3 | 2 | https://i.imgur.com/Os7kijz.png | What country is represented by this flag?  | Mexico
+3 | 2 | https://i.imgur.com/PJpxYhW.png | What country is represented by this flag?  | China | People's Republic of China
+3 | 2 | https://i.imgur.com/PTjhJ38.png | What country is represented by this flag?  | Zambia
+3 | 2 | https://i.imgur.com/PmWAhic.png | What country is represented by this flag?  | Honduras
+3 | 2 | https://i.imgur.com/QclX66O.png | What country is represented by this flag?  | Pakistan
+3 | 2 | https://i.imgur.com/QpwAZCH.png | What country is represented by this flag?  | Belgium
+3 | 2 | https://i.imgur.com/R36hcy9.png | What country is represented by this flag?  | Cote d'Ivoire | Ivory Coast
+3 | 2 | https://i.imgur.com/RLgBmmx.png | What country is represented by this flag?  | Finland
+3 | 2 | https://i.imgur.com/RTVaeeT.png | What country is represented by this flag?  | Jordan
+3 | 2 | https://i.imgur.com/RgnmHkX.png | What country is represented by this flag?  | Chile
+3 | 2 | https://i.imgur.com/RhbzmE9.png | What country is represented by this flag?  | Guinea-Bissau
+3 | 2 | https://i.imgur.com/RpLNeK5.png | What country is represented by this flag?  | Ecuador
+3 | 2 | https://i.imgur.com/SUTmKC3.png | What country is represented by this flag?  | France
+3 | 2 | https://i.imgur.com/Sd5FQj9.png | What country is represented by this flag?  | Liechtenstein
+3 | 2 | https://i.imgur.com/SiMqs1f.png | What country is represented by this flag?  | Vanuatu
+3 | 2 | https://i.imgur.com/THNCPFu.png | What country is represented by this flag?  | Rwanda
+3 | 2 | https://i.imgur.com/TPz5Gaj.png | What country is represented by this flag?  | Montenegro
+3 | 2 | https://i.imgur.com/UN8GHa4.png | What country is represented by this flag?  | Haiti
+3 | 2 | https://i.imgur.com/UzHuET8.png | What country is represented by this flag?  | India
+3 | 2 | https://i.imgur.com/V0y3m1h.png | What country is represented by this flag?  | Malawi
+3 | 2 | https://i.imgur.com/V3IdT58.png | What country is represented by this flag?  | Slovenia
+3 | 2 | https://i.imgur.com/VZLff6p.png | What country is represented by this flag?  | Chad
+3 | 2 | https://i.imgur.com/Vbr5Tam.png | What country is represented by this flag?  | Panama
+3 | 2 | https://i.imgur.com/VeiCyLB.png | What country is represented by this flag?  | Namibia
+3 | 2 | https://i.imgur.com/WElCUGn.png | What country is represented by this flag?  | New Zealand
+3 | 2 | https://i.imgur.com/WJYeKvC.png | What country is represented by this flag?  | Ukraine
+3 | 2 | https://i.imgur.com/WSCunIE.png | What country is represented by this flag?  | Vatican City | Vatican
+3 | 2 | https://i.imgur.com/WjFxXYM.png | What country is represented by this flag?  | Iran
+3 | 2 | https://i.imgur.com/WtPvwLD.png | What country is represented by this flag?  | Costa Rica
+3 | 2 | https://i.imgur.com/Xd2tgrz.png | What country is represented by this flag?  | Guyana
+3 | 2 | https://i.imgur.com/XoL54ql.png | What country is represented by this flag?  | Dominica
+3 | 2 | https://i.imgur.com/YUA6oU2.png | What country is represented by this flag?  | Saudi Arabia
+3 | 2 | https://i.imgur.com/YaA07yt.png | What country is represented by this flag?  | Belize
+3 | 2 | https://i.imgur.com/Yvry0ap.png | What country is represented by this flag?  | Central African Republic
+3 | 2 | https://i.imgur.com/ZZJK5He.png | What country is represented by this flag?  | Republic of the Congo | Congo | Republic of Congo
+3 | 2 | https://i.imgur.com/ZnhOID0.png | What country is represented by this flag?  | Lithuania
+3 | 2 | https://i.imgur.com/Zphmsnu.png | What country is represented by this flag?  | San Marino
+3 | 2 | https://i.imgur.com/b9STlvA.png | What country is represented by this flag?  | Micronesia
+3 | 2 | https://i.imgur.com/bMd1cb8.png | What country is represented by this flag?  | Saint Vincent and the Grenadines | St Vincent and the Grenadines | St Vincent | Grenadines
+3 | 2 | https://i.imgur.com/bRF5q3c.png | What country is represented by this flag?  | Antigua and Barbuda | Antigua | Barbuda
+3 | 2 | https://i.imgur.com/bWDivLK.png | What country is represented by this flag?  | Taiwan | Republic of China
+3 | 2 | https://i.imgur.com/begWgBT.png | What country is represented by this flag?  | Djibouti
+3 | 2 | https://i.imgur.com/biZHNNQ.png | What country is represented by this flag?  | Singapore
+3 | 2 | https://i.imgur.com/bjtyCp5.png | What country is represented by this flag?  | Mauritius
+3 | 2 | https://i.imgur.com/chOrWHr.png | What country is represented by this flag?  | Indonesia | Monaco
+3 | 2 | https://i.imgur.com/d8hPELu.png | What country is represented by this flag?  | Latvia
+3 | 2 | https://i.imgur.com/dBo8TPh.png | What country is represented by this flag?  | Grenada
+3 | 2 | https://i.imgur.com/dLexEX4.png | What country is represented by this flag?  | Cambodia
+3 | 2 | https://i.imgur.com/dPkirdh.png | What country is represented by this flag?  | Guatemala
+3 | 2 | https://i.imgur.com/dZe1Bd4.png | What country is represented by this flag?  | Ethiopia
+3 | 2 | https://i.imgur.com/dmlTGO4.png | What country is represented by this flag?  | Nicaragua
+3 | 2 | https://i.imgur.com/duJRErG.png | What country is represented by this flag?  | Saint Kitts and Nevis | Saint Kitts | St Kitts | St Kitts and Nevis
+3 | 2 | https://i.imgur.com/eDocaIL.png | What country is represented by this flag?  | Sudan
+3 | 2 | https://i.imgur.com/eMO7Y0z.png | What country is represented by this flag?  | Burkina Faso
+3 | 2 | https://i.imgur.com/eT28D3B.png | What country is represented by this flag?  | Bulgaria
+3 | 2 | https://i.imgur.com/f8OOur7.png | What country is represented by this flag?  | Somalia
+3 | 2 | https://i.imgur.com/gGhBri9.png | What country is represented by this flag?  | Sweden
+3 | 2 | https://i.imgur.com/gI250YG.png | What country is represented by this flag?  | Thailand
+3 | 2 | https://i.imgur.com/h6qegtn.png | What country is represented by this flag?  | Bolivia
+3 | 2 | https://i.imgur.com/h9YUraD.png | What country is represented by this flag?  | Uruguay
+3 | 2 | https://i.imgur.com/hY4fbYf.png | What country is represented by this flag?  | Tanzania
+3 | 2 | https://i.imgur.com/hbJ4J2A.png | What country is represented by this flag?  | Nigeria
+3 | 2 | https://i.imgur.com/hiNRJUm.png | What country is represented by this flag?  | South Africa | Republic of South Africa
+3 | 2 | https://i.imgur.com/hr9515B.png | What country is represented by this flag?  | Equatorial Guinea
+3 | 2 | https://i.imgur.com/hy3crgu.png | What country is represented by this flag?  | Benin
+3 | 2 | https://i.imgur.com/i4srkYW.png | What country is represented by this flag?  | Norway
+3 | 2 | https://i.imgur.com/iO3sAPy.png | What country is represented by this flag?  | Madagascar
+3 | 2 | https://i.imgur.com/iT92sev.png | What country is represented by this flag?  | United States of America | USA | U.S.A | US | U.S. | United States
+3 | 2 | https://i.imgur.com/ins1BsE.png | What country is represented by this flag?  | Laos
+3 | 2 | https://i.imgur.com/j7Ig3Bu.png | What country is represented by this flag?  | Moldova
+3 | 2 | https://i.imgur.com/jHWTNbi.png | What country is represented by this flag?  | Fiji
+3 | 2 | https://i.imgur.com/jKRkoe5.png | What country is represented by this flag?  | Paraguay
+3 | 2 | https://i.imgur.com/jXpxd9Q.png | What country is represented by this flag?  | Trinidad and Tobago | Trinidad & Tobago | Trinidad | Tobago
+3 | 2 | https://i.imgur.com/jwBaTxq.png | What country is represented by this flag?  | Tunisia
+3 | 2 | https://i.imgur.com/jwR0mTj.png | What country is represented by this flag?  | Luxembourg
+3 | 2 | https://i.imgur.com/kB3rCke.png | What country is represented by this flag?  | Andorra
+3 | 2 | https://i.imgur.com/kRM1chU.png | What country is represented by this flag?  | Botswana
+3 | 2 | https://i.imgur.com/kj2Rl6U.png | What country is represented by this flag?  | Togo
+3 | 2 | https://i.imgur.com/kxgws8z.png | What country is represented by this flag?  | Burundi
+3 | 2 | https://i.imgur.com/l6TGY4c.png | What country is represented by this flag?  | Bosnia and Herzegovina | Bosnia | Herzegovina
+3 | 2 | https://i.imgur.com/li2uTFU.png | What country is represented by this flag?  | Timor-Leste | Timor | Timor Leste | East Timor
+3 | 2 | https://i.imgur.com/lkJ72mO.png | What country is represented by this flag?  | Gabon
+3 | 2 | https://i.imgur.com/mAgkfeH.png | What country is represented by this flag?  | Nepal
+3 | 2 | https://i.imgur.com/mQvZHZH.png | What country is represented by this flag?  | Dominican Republic
+3 | 2 | https://i.imgur.com/mbWf2iq.png | What country is represented by this flag?  | Ghana
+3 | 2 | https://i.imgur.com/mdyAHBg.png | What country is represented by this flag?  | Greece
+3 | 2 | https://i.imgur.com/nKgkQci.png | What country is represented by this flag?  | South Sudan
+3 | 2 | https://i.imgur.com/nieDYXN.png | What country is represented by this flag?  | Malaysia
+3 | 2 | https://i.imgur.com/njfbYnM.png | What country is represented by this flag?  | Qatar
+3 | 2 | https://i.imgur.com/o8tYKMr.png | What country is represented by this flag?  | Argentina
+3 | 2 | https://i.imgur.com/oMLG5ri.png | What country is represented by this flag?  | Mongolia
+3 | 2 | https://i.imgur.com/pATL0sO.png | What country is represented by this flag?  | Saint Lucia | St Lucia
+3 | 2 | https://i.imgur.com/qGrb426.png | What country is represented by this flag?  | Uganda
+3 | 2 | https://i.imgur.com/qNyJQ5d.png | What country is represented by this flag?  | The Netherlands | Netherlands | Holland
+3 | 2 | https://i.imgur.com/qZEuijY.png | What country is represented by this flag?  | Ireland | Republic of Ireland | ROI | R.O.I.
+3 | 2 | https://i.imgur.com/qtDaw2f.png | What country is represented by this flag?  | Western Sahara
+3 | 2 | https://i.imgur.com/qvcmPb7.png | What country is represented by this flag?  | Albania
+3 | 2 | https://i.imgur.com/rbLk4Kr.png | What country is represented by this flag?  | Tonga
+3 | 2 | https://i.imgur.com/re1GuyK.png | What country is represented by this flag?  | Mali
+3 | 2 | https://i.imgur.com/rmUviUv.png | What country is represented by this flag?  | El Salvador
+3 | 2 | https://i.imgur.com/svMrHDC.png | What country is represented by this flag?  | Egypt
+3 | 2 | https://i.imgur.com/t8qnUGP.png | What country is represented by this flag?  | Kosovo
+3 | 2 | https://i.imgur.com/tOVpE44.png | What country is represented by this flag?  | Slovakia
+3 | 2 | https://i.imgur.com/ttIhE04.png | What country is represented by this flag?  | Oman
+3 | 2 | https://i.imgur.com/uW7bNGe.png | What country is represented by this flag?  | United Arab Emirates | UAE | U.A.E.
+3 | 2 | https://i.imgur.com/uZ5WnBU.png | What country is represented by this flag?  | Angola
+3 | 2 | https://i.imgur.com/uaJ6QQD.png | What country is represented by this flag?  | Guinea
+3 | 2 | https://i.imgur.com/ub1Krgd.png | What country is represented by this flag?  | Barbados
+3 | 2 | https://i.imgur.com/vBZvx28.png | What country is represented by this flag?  | Cameroon
+3 | 2 | https://i.imgur.com/vqtZ8V4.png | What country is represented by this flag?  | Kyrgyzstan
+3 | 2 | https://i.imgur.com/w7y4yrx.png | What country is represented by this flag?  | Uzbekistan
+3 | 2 | https://i.imgur.com/wG5ipco.png | What country is represented by this flag?  | Vietnam
+3 | 2 | https://i.imgur.com/wKXsrWD.png | What country is represented by this flag?  | Afghanistan
+3 | 2 | https://i.imgur.com/weIW0md.png | What country is represented by this flag?  | Palau | Palaos Bandera | Bandera de Palaos
+3 | 2 | https://i.imgur.com/wr0KhwF.png | What country is represented by this flag?  | Cyprus
+3 | 2 | https://i.imgur.com/wwxWE9U.png | What country is represented by this flag?  | Solomon Islands | Solomon
+3 | 2 | https://i.imgur.com/xhVuaYj.png | What country is represented by this flag?  | eSwatini | Swaziland
+3 | 2 | https://i.imgur.com/y5PJwXq.png | What country is represented by this flag?  | Papua New Guinea
+3 | 2 | https://i.imgur.com/y7JWUm0.png | What country is represented by this flag?  | Iraq
+3 | 2 | https://i.imgur.com/yKhcXV9.png | What country is represented by this flag?  | Kuwait
+3 | 2 | https://i.imgur.com/ykTTjRD.png | What country is represented by this flag?  | Estonia
+3 | 2 | https://i.imgur.com/yt02VIz.png | What country is represented by this flag?  | Syria
+3 | 2 | https://i.imgur.com/zBYYxpN.png | What country is represented by this flag?  | Marshall Islands
+3 | 2 | https://i.imgur.com/zLuBq1l.png | What country is represented by this flag?  | Algeria
+3 | 2 | https://i.imgur.com/zTOVfhf.png | What country is represented by this flag?  | Hungary3 | 2 | https://i.imgur.com/09dDNah.png | What country is highlighted on this map?  | Egypt
+3 | 2 | https://i.imgur.com/0iRnWAj.png | What country is highlighted on this map?  | Papua New Guinea
+3 | 2 | https://i.imgur.com/0oN9MFH.png | What country is highlighted on this map?  | Central African Republic | Car
+3 | 2 | https://i.imgur.com/14nAY83.png | What country is highlighted on this map?  | Mongolia
+3 | 2 | https://i.imgur.com/15fLQVC.png | What country is highlighted on this map?  | Ghana
+3 | 2 | https://i.imgur.com/19AMqVD.png | What country is highlighted on this map?  | Finland
+3 | 2 | https://i.imgur.com/1GT6807.png | What country is highlighted on this map?  | Guinea
+3 | 2 | https://i.imgur.com/1MHPIUv.png | What country is highlighted on this map?  | Sao Tome and Principe
+3 | 2 | https://i.imgur.com/1xVJiLb.png | What country is highlighted on this map?  | Nepal
+3 | 2 | https://i.imgur.com/21wXDZ6.png | What country is highlighted on this map?  | Kazakhstan
+3 | 2 | https://i.imgur.com/2K0IRgL.png | What country is highlighted on this map?  | Bosnia and Herzegovina | Bosnia-Herzegovina | Bosnia
+3 | 2 | https://i.imgur.com/2uGKX9L.png | What country is highlighted on this map?  | Palau
+3 | 2 | https://i.imgur.com/2uS8GOx.png | What country is highlighted on this map?  | Tajikistan
+3 | 2 | https://i.imgur.com/39SLm9G.png | What country is highlighted on this map?  | Iraq
+3 | 2 | https://i.imgur.com/3OagNHl.png | What country is highlighted on this map?  | Democratic Republic of the Congo | Democratic Republic of Congo | DRC
+3 | 2 | https://i.imgur.com/3kgZ94y.png | What country is highlighted on this map?  | Belgium
+3 | 2 | https://i.imgur.com/3nivCwN.png | What country is highlighted on this map?  | Mauritius
+3 | 2 | https://i.imgur.com/3vcsCuu.png | What country is highlighted on this map?  | United Arab Emirates | UAE | U.A.E. | U.A.E
+3 | 2 | https://i.imgur.com/3xcUQ1X.png | What country is highlighted on this map?  | Saint Kitts and Nevis | St. Kitts and Nevis | St Kitts and Nevis
+3 | 2 | https://i.imgur.com/3xyML6S.png | What country is highlighted on this map?  | San Marino
+3 | 2 | https://i.imgur.com/4Gj2aj7.png | What country is highlighted on this map?  | Luxembourg
+3 | 2 | https://i.imgur.com/4Owvdkh.png | What country is highlighted on this map?  | Nicaragua
+3 | 2 | https://i.imgur.com/4kPlmgp.png | What country is highlighted on this map?  | Rwanda
+3 | 2 | https://i.imgur.com/4qUSgcH.png | What country is highlighted on this map?  | Yemen
+3 | 2 | https://i.imgur.com/5WjbgUb.png | What country is highlighted on this map?  | Saudi Arabia
+3 | 2 | https://i.imgur.com/5el1VgN.png | What country is highlighted on this map?  | United Kingdom | UK | U.K. | U.K | Britain | The United Kingdom of Great Britain and Northern Ireland | the uk
+3 | 2 | https://i.imgur.com/5m63w4b.png | What country is highlighted on this map?  | Italy
+3 | 2 | https://i.imgur.com/68B62BL.png | What country is highlighted on this map?  | The Netherlands | Netherlands | Holland
+3 | 2 | https://i.imgur.com/6EiH9ia.png | What country is highlighted on this map?  | Kenya
+3 | 2 | https://i.imgur.com/6QzQjXb.png | What country is highlighted on this map?  | Chile
+3 | 2 | https://i.imgur.com/78BVep1.png | What country is highlighted on this map?  | Laos
+3 | 2 | https://i.imgur.com/7DXx3lu.png | What country is highlighted on this map?  | Antigua and Barbuda
+3 | 2 | https://i.imgur.com/7OqhNc4.png | What country is highlighted on this map?  | Peru
+3 | 2 | https://i.imgur.com/7XrAS6L.png | What country is highlighted on this map?  | Swaziland
+3 | 2 | https://i.imgur.com/837JSrU.png | What country is highlighted on this map?  | Kosovo
+3 | 2 | https://i.imgur.com/8KwkBwG.png | What country is highlighted on this map?  | Tuvalu
+3 | 2 | https://i.imgur.com/8Q88Bgd.png | What country is highlighted on this map?  | Ireland
+3 | 2 | https://i.imgur.com/91UkD8N.png | What country is highlighted on this map?  | Djibouti
+3 | 2 | https://i.imgur.com/9RWwaqH.png | What country is highlighted on this map?  | Algeria
+3 | 2 | https://i.imgur.com/9wPtgE9.png | What country is highlighted on this map?  | Syria
+3 | 2 | https://i.imgur.com/AKegLx8.png | What country is highlighted on this map?  | Sierra Leone
+3 | 2 | https://i.imgur.com/ATkQzc0.png | What country is highlighted on this map?  | Ecuador
+3 | 2 | https://i.imgur.com/B2lSacI.png | What country is highlighted on this map?  | Benin
+3 | 2 | https://i.imgur.com/BTErr4h.png | What country is highlighted on this map?  | Qatar
+3 | 2 | https://i.imgur.com/CK2BgyY.png | What country is highlighted on this map?  | South Africa
+3 | 2 | https://i.imgur.com/CVIIiJk.png | What country is highlighted on this map?  | Belarus
+3 | 2 | https://i.imgur.com/ClAoPEy.png | What country is highlighted on this map?  | Switzerland
+3 | 2 | https://i.imgur.com/CtgmsgG.png | What country is highlighted on this map?  | Indonesia
+3 | 2 | https://i.imgur.com/CvCiNbs.png | What country is highlighted on this map?  | Serbia
+3 | 2 | https://i.imgur.com/D39yjB7.png | What country is highlighted on this map?  | Tunisia
+3 | 2 | https://i.imgur.com/Df9bPdT.png | What country is highlighted on this map?  | Burundi
+3 | 2 | https://i.imgur.com/E6lQFbg.png | What country is highlighted on this map?  | Greece
+3 | 2 | https://i.imgur.com/EE9jicV.png | What country is highlighted on this map?  | Tonga
+3 | 2 | https://i.imgur.com/EQSChbH.png | What country is highlighted on this map?  | Macedonia | FYROM | the former Yugoslav Republic of Macedonia
+3 | 2 | https://i.imgur.com/EdETzhx.png | What country is highlighted on this map?  | Paraguay
+3 | 2 | https://i.imgur.com/FHCjY5w.png | What country is highlighted on this map?  | Kuwait
+3 | 2 | https://i.imgur.com/G3LOenX.png | What country is highlighted on this map?  | Armenia
+3 | 2 | https://i.imgur.com/G6wI2vs.png | What country is highlighted on this map?  | Libya
+3 | 2 | https://i.imgur.com/GFiOrdK.png | What country is highlighted on this map?  | Colombia
+3 | 2 | https://i.imgur.com/GvlNpbw.png | What country is highlighted on this map?  | Iran
+3 | 2 | https://i.imgur.com/Gxo6qKW.png | What country is highlighted on this map?  | North Korea | Democratic People's Republic of Korea
+3 | 2 | https://i.imgur.com/J0RBGiH.png | What country is highlighted on this map?  | Turkey
+3 | 2 | https://i.imgur.com/JebFraA.png | What country is highlighted on this map?  | Moldova
+3 | 2 | https://i.imgur.com/Kb7Stmu.png | What country is highlighted on this map?  | Georgia
+3 | 2 | https://i.imgur.com/Knkr0a9.png | What country is highlighted on this map?  | France
+3 | 2 | https://i.imgur.com/Lolt4Ap.png | What country is highlighted on this map?  | The Bahamas | Bahamas
+3 | 2 | https://i.imgur.com/MQAQnR3.png | What country is highlighted on this map?  | Venezuela
+3 | 2 | https://i.imgur.com/Mc08OmO.png | What country is highlighted on this map?  | Taiwan
+3 | 2 | https://i.imgur.com/Msr7M5X.png | What country is highlighted on this map?  | Suriname
+3 | 2 | https://i.imgur.com/NSIImmk.png | What country is highlighted on this map?  | Saint Lucia | St. Lucia | St Lucia
+3 | 2 | https://i.imgur.com/NVNX75x.png | What country is highlighted on this map?  | Malawi
+3 | 2 | https://i.imgur.com/Nb6JWmK.png | What country is highlighted on this map?  | Cuba
+3 | 2 | https://i.imgur.com/OOOKn0t.png | What country is highlighted on this map?  | Uganda
+3 | 2 | https://i.imgur.com/OOfkrcw.png | What country is highlighted on this map?  | Ukraine
+3 | 2 | https://i.imgur.com/OasYVi7.png | What country is highlighted on this map?  | Fiji
+3 | 2 | https://i.imgur.com/OrELojX.png | What country is highlighted on this map?  | Cabo Verde | Cape Verde
+3 | 2 | https://i.imgur.com/PI437lH.png | What country is highlighted on this map?  | Poland
+3 | 2 | https://i.imgur.com/PIPWOaE.png | What country is highlighted on this map?  | Gabon
+3 | 2 | https://i.imgur.com/QLqUluS.png | What country is highlighted on this map?  | Cyprus
+3 | 2 | https://i.imgur.com/QdfTUTy.png | What country is highlighted on this map?  | Togo
+3 | 2 | https://i.imgur.com/Qvcygs3.png | What country is highlighted on this map?  | Turkmenistan
+3 | 2 | https://i.imgur.com/RHCDHts.png | What country is highlighted on this map?  | Liechtenstein
+3 | 2 | https://i.imgur.com/RfS5v01.png | What country is highlighted on this map?  | Vanuatu
+3 | 2 | https://i.imgur.com/RzNq1Xy.png | What country is highlighted on this map?  | Malaysia
+3 | 2 | https://i.imgur.com/S9DpuSt.png | What country is highlighted on this map?  | Vatican City | Holy See
+3 | 2 | https://i.imgur.com/S9Gs60x.png | What country is highlighted on this map?  | Jordan
+3 | 2 | https://i.imgur.com/SoraDd9.png | What country is highlighted on this map?  | Bangladesh
+3 | 2 | https://i.imgur.com/TJt5Up0.png | What country is highlighted on this map?  | Bhutan
+3 | 2 | https://i.imgur.com/U1CTmUQ.png | What country is highlighted on this map?  | Malta
+3 | 2 | https://i.imgur.com/U1yIGyq.png | What country is highlighted on this map?  | Nauru
+3 | 2 | https://i.imgur.com/UJDYieb.png | What country is highlighted on this map?  | Austria
+3 | 2 | https://i.imgur.com/ULnrMWZ.png | What country is highlighted on this map?  | Uruguay
+3 | 2 | https://i.imgur.com/UTGGdgf.png | What country is highlighted on this map?  | Bulgaria
+3 | 2 | https://i.imgur.com/UammPKQ.png | What country is highlighted on this map?  | Jamaica
+3 | 2 | https://i.imgur.com/UghsBw6.png | What country is highlighted on this map?  | USA | U.S.A. | U.S.A | United States of America | America | United States
+3 | 2 | https://i.imgur.com/W0OhBRP.png | What country is highlighted on this map?  | Tanzania
+3 | 2 | https://i.imgur.com/W9z0vCV.png | What country is highlighted on this map?  | Iceland
+3 | 2 | https://i.imgur.com/WwhW48O.png | What country is highlighted on this map?  | Zambia
+3 | 2 | https://i.imgur.com/X8p2uxu.png | What country is highlighted on this map?  | Romania
+3 | 2 | https://i.imgur.com/XBzAfST.png | What country is highlighted on this map?  | Grenada
+3 | 2 | https://i.imgur.com/XRE6MfO.png | What country is highlighted on this map?  | Trinidad and Tobago
+3 | 2 | https://i.imgur.com/XqSTmsr.png | What country is highlighted on this map?  | Niger
+3 | 2 | https://i.imgur.com/YOBQKuj.png | What country is highlighted on this map?  | Comoros
+3 | 2 | https://i.imgur.com/YUtwP7k.png | What country is highlighted on this map?  | Guatemala
+3 | 2 | https://i.imgur.com/YVpXfK9.png | What country is highlighted on this map?  | Brunei
+3 | 2 | https://i.imgur.com/Yw4rHyu.png | What country is highlighted on this map?  | Namibia
+3 | 2 | https://i.imgur.com/YxDKxsY.png | What country is highlighted on this map?  | Estonia
+3 | 2 | https://i.imgur.com/Z25ne9q.png | What country is highlighted on this map?  | Japan
+3 | 2 | https://i.imgur.com/Z4fBWUQ.png | What country is highlighted on this map?  | Cambodia
+3 | 2 | https://i.imgur.com/ZRSfjjh.png | What country is highlighted on this map?  | Slovakia
+3 | 2 | https://i.imgur.com/ZVwazGD.png | What country is highlighted on this map?  | Philippines | The Philippines
+3 | 2 | https://i.imgur.com/a3iNPku.png | What country is highlighted on this map?  | The Gambia | Gambia
+3 | 2 | https://i.imgur.com/aOwReBL.png | What country is highlighted on this map?  | Bahrain
+3 | 2 | https://i.imgur.com/ajxvx35.png | What country is highlighted on this map?  | Azerbaijan
+3 | 2 | https://i.imgur.com/alsunVI.png | What country is highlighted on this map?  | Equatorial Guinea
+3 | 2 | https://i.imgur.com/anbGYX6.png | What country is highlighted on this map?  | Eritrea
+3 | 2 | https://i.imgur.com/ayWNbsX.png | What country is highlighted on this map?  | Latvia
+3 | 2 | https://i.imgur.com/b7k0qRD.png | What country is highlighted on this map?  | Senegal
+3 | 2 | https://i.imgur.com/bIntHEX.png | What country is highlighted on this map?  | Vietnam
+3 | 2 | https://i.imgur.com/bIywJac.png | What country is highlighted on this map?  | Mauritania
+3 | 2 | https://i.imgur.com/bQ5oH2c.png | What country is highlighted on this map?  | Australia
+3 | 2 | https://i.imgur.com/bbMyyZ3.png | What country is highlighted on this map?  | Sudan
+3 | 2 | https://i.imgur.com/c5HtaHJ.png | What country is highlighted on this map?  | Canada
+3 | 2 | https://i.imgur.com/c6xcsvO.png | What country is highlighted on this map?  | India
+3 | 2 | https://i.imgur.com/cy5v0Z1.png | What country is highlighted on this map?  | South Korea | Republic of Korea
+3 | 2 | https://i.imgur.com/cyeXSdW.png | What country is highlighted on this map?  | Sri Lanka
+3 | 2 | https://i.imgur.com/dfyqbj6.png | What country is highlighted on this map?  | Russia
+3 | 2 | https://i.imgur.com/dsdpFLv.png | What country is highlighted on this map?  | Portugal
+3 | 2 | https://i.imgur.com/ec33YRO.png | What country is highlighted on this map?  | Guinea-Bissau | Guinea Bissau
+3 | 2 | https://i.imgur.com/erHBEQe.png | What country is highlighted on this map?  | Myanmar | Burma
+3 | 2 | https://i.imgur.com/f7VQNrF.png | What country is highlighted on this map?  | Slovenia
+3 | 2 | https://i.imgur.com/fJZatC4.png | What country is highlighted on this map?  | Mozambique
+3 | 2 | https://i.imgur.com/fSZjTZk.png | What country is highlighted on this map?  | Nigeria
+3 | 2 | https://i.imgur.com/faZodc6.png | What country is highlighted on this map?  | Mali
+3 | 2 | https://i.imgur.com/gB2Sa2K.png | What country is highlighted on this map?  | Guyana
+3 | 2 | https://i.imgur.com/gYXvpLp.png | What country is highlighted on this map?  | Somalia
+3 | 2 | https://i.imgur.com/gr5BLLs.png | What country is highlighted on this map?  | Chad
+3 | 2 | https://i.imgur.com/gxGbZhB.png | What country is highlighted on this map?  | China
+3 | 2 | https://i.imgur.com/h63XZgg.png | What country is highlighted on this map?  | Bolivia
+3 | 2 | https://i.imgur.com/h8nW7MC.png | What country is highlighted on this map?  | Zimbabwe
+3 | 2 | https://i.imgur.com/hgwQJbw.png | What country is highlighted on this map?  | Kyrgyzstan
+3 | 2 | https://i.imgur.com/hoITwnY.png | What country is highlighted on this map?  | Denmark
+3 | 2 | https://i.imgur.com/iDv5aUS.png | What country is highlighted on this map?  | Belize
+3 | 2 | https://i.imgur.com/iNmZn0K.png | What country is highlighted on this map?  | Haiti
+3 | 2 | https://i.imgur.com/iOjKozb.png | What country is highlighted on this map?  | Lebanon
+3 | 2 | https://i.imgur.com/iYM9ofo.png | What country is highlighted on this map?  | Dominican Republic
+3 | 2 | https://i.imgur.com/ii5rr9F.png | What country is highlighted on this map?  | Samoa
+3 | 2 | https://i.imgur.com/j27MKzM.png | What country is highlighted on this map?  | Kiribati
+3 | 2 | https://i.imgur.com/j2Mhnuo.png | What country is highlighted on this map?  | Spain
+3 | 2 | https://i.imgur.com/jEafSQr.png | What country is highlighted on this map?  | Dominica
+3 | 2 | https://i.imgur.com/jxPvm6J.png | What country is highlighted on this map?  | Marshall Islands
+3 | 2 | https://i.imgur.com/kBdjnEv.png | What country is highlighted on this map?  | Mexico
+3 | 2 | https://i.imgur.com/kHtsSx9.png | What country is highlighted on this map?  | Cote d'Ivoire | Ivory Coast
+3 | 2 | https://i.imgur.com/lHMAntb.png | What country is highlighted on this map?  | Pakistan
+3 | 2 | https://i.imgur.com/lIIYtBD.png | What country is highlighted on this map?  | Montenegro
+3 | 2 | https://i.imgur.com/lLbmaym.png | What country is highlighted on this map?  | Solomon Islands
+3 | 2 | https://i.imgur.com/m1aPu8l.png | What country is highlighted on this map?  | Panama
+3 | 2 | https://i.imgur.com/mFhyd3u.png | What country is highlighted on this map?  | Sweden
+3 | 2 | https://i.imgur.com/mM0RJG0.png | What country is highlighted on this map?  | Croatia
+3 | 2 | https://i.imgur.com/mUXpeOu.png | What country is highlighted on this map?  | Germany | Deutschland
+3 | 2 | https://i.imgur.com/mWfKGSn.png | What country is highlighted on this map?  | Burkina Faso
+3 | 2 | https://i.imgur.com/mYOwWRb.png | What country is highlighted on this map?  | Brazil
+3 | 2 | https://i.imgur.com/mcDugwB.png | What country is highlighted on this map?  | Costa Rica
+3 | 2 | https://i.imgur.com/nlzjaBI.png | What country is highlighted on this map?  | Afghanistan
+3 | 2 | https://i.imgur.com/oSSaB7a.png | What country is highlighted on this map?  | Norway
+3 | 2 | https://i.imgur.com/ofiwdPY.png | What country is highlighted on this map?  | East-Timor | Timor-Leste | East Timor | Timor Leste
+3 | 2 | https://i.imgur.com/pQmzZ6S.png | What country is highlighted on this map?  | Singapore
+3 | 2 | https://i.imgur.com/pZXybV8.png | What country is highlighted on this map?  | Morocco
+3 | 2 | https://i.imgur.com/ph52UhZ.png | What country is highlighted on this map?  | St Vincent | St. Vincent | Saint Vincent | Saint Vincent and the Grenadines | St. Vincent and the Grenadines | St Vincent and the Grenadines
+3 | 2 | https://i.imgur.com/piTTm6z.png | What country is highlighted on this map?  | Argentina
+3 | 2 | https://i.imgur.com/q7TKXaJ.png | What country is highlighted on this map?  | Monaco
+3 | 2 | https://i.imgur.com/qMZ1AHl.png | What country is highlighted on this map?  | Albania
+3 | 2 | https://i.imgur.com/qR9uVfe.png | What country is highlighted on this map?  | Liberia
+3 | 2 | https://i.imgur.com/qSwv9RO.png | What country is highlighted on this map?  | Lesotho
+3 | 2 | https://i.imgur.com/qcnevI9.png | What country is highlighted on this map?  | Angola
+3 | 2 | https://i.imgur.com/qoA2rYB.png | What country is highlighted on this map?  | Andorra
+3 | 2 | https://i.imgur.com/qqKx7hp.png | What country is highlighted on this map?  | South Sudan
+3 | 2 | https://i.imgur.com/qssRZBv.png | What country is highlighted on this map?  | Federated States of Micronesia | Micronesia
+3 | 2 | https://i.imgur.com/rGAxHB7.png | What country is highlighted on this map?  | Barbados
+3 | 2 | https://i.imgur.com/rRTyhTj.png | What country is highlighted on this map?  | Honduras
+3 | 2 | https://i.imgur.com/rkjXq7k.png | What country is highlighted on this map?  | Thailand
+3 | 2 | https://i.imgur.com/s88SrzP.png | What country is highlighted on this map?  | Hungary
+3 | 2 | https://i.imgur.com/sU7T64y.png | What country is highlighted on this map?  | Czech Republic | Czechia
+3 | 2 | https://i.imgur.com/tX9BQ5V.png | What country is highlighted on this map?  | Oman
+3 | 2 | https://i.imgur.com/tv8zqCC.png | What country is highlighted on this map?  | Republic of Congo | Republic of the Congo
+3 | 2 | https://i.imgur.com/twTqP40.png | What country is highlighted on this map?  | Ethiopia
+3 | 2 | https://i.imgur.com/uazYsHm.png | What country is highlighted on this map?  | El Salvador
+3 | 2 | https://i.imgur.com/ujCmF8i.png | What country is highlighted on this map?  | Botswana
+3 | 2 | https://i.imgur.com/v7l7s3H.png | What country is highlighted on this map?  | Lithuania
+3 | 2 | https://i.imgur.com/wXiBoYO.png | What country is highlighted on this map?  | New Zealand
+3 | 2 | https://i.imgur.com/whUGoHr.png | What country is highlighted on this map?  | Uzbekistan
+3 | 2 | https://i.imgur.com/wqm7dx5.png | What country is highlighted on this map?  | Seychelles
+3 | 2 | https://i.imgur.com/yF1LWYJ.png | What country is highlighted on this map?  | Israel
+3 | 2 | https://i.imgur.com/zChCrog.png | What country is highlighted on this map?  | Maldives | Republic of Maldives
+3 | 2 | https://i.imgur.com/zKslICy.png | What country is highlighted on this map?  | Cameroon
+3 | 2 | https://i.imgur.com/zRYwJsw.png | What country is highlighted on this map?  | Madagascar

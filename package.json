@@ -1,0 +1,22 @@
+{
+  "name": "Alice Synthesis Thirty",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mybot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node mybot.js"
+  },
+  "keywords": [
+    "discord.js"
+  ],
+  "author": "Rian8337",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "dotenv": "^6.0.0",
+    "mongodb": "^3.1.6",
+    "ojsama": "^1.2.1",
+    "request": "^2.88.0"
+  }
+}

@@ -1,0 +1,50 @@
+5 | 1 | - | The board game 'Monopoly' is a variation of what board game? | The Landlord's Game | Territorial Dispute | Property Feud | The Monopolist's Game
+1 | 1 | - | Carcassonne is based on which French town? | Carcassonne | Paris | Marseille | Clermont-Ferrand
+1 | 1 | - | How many spaces are there on a standard Monopoly board? | 40 | 28 | 55 | 36
+1 | 1 | - | How many dice are used in the game of Yahtzee? | Five | Four | Six | Eight
+1 | 1 | - | How many pieces are there on the board at the start of a game of chess? | 32 | 16 | 20 | 36
+1 | 1 | - | On a standard Monopoly board, which square is diagonally opposite 'Go'?  | Free Parking | Go to Jail | Jail | The Electric Company
+1 | 1 | - | How many dots are on a single die? | 21 | 24 | 15 | 18
+3 | 1 | - | At the start of a standard game of the Monopoly, if you throw a double six, which square would you land on? | Electric Company | Water Works | Chance | Community Chest
+5 | 1 | - | What is the world's oldest board game? | Senet | Chess | Checkers | Go
+3 | 1 | - | In the game "Racko" you may pick up ANY card from the discard pile. | False | True
+3 | 1 | - | The board game, Nightmare was released in what year? | 1991 | 1992 | 1989 | 1995
+3 | 1 | - | Who is the main character in the VHS tape included in the board game Nightmare? | The Gatekeeper | The Kryptkeeper | The Monster | The Nightmare
+3 | 1 | - | How many points is the Z tile worth in Scrabble? | 10 | 8 | 5 | 6
+3 | 1 | - | What special item did the creators of Cards Against Humanity ship for their Black Friday pack? | Bull Feces | A Card Expansion | A Racist Toy | Cat Urine
+1 | 1 | - | Which of these games includes the phrase "Do not pass Go, do not collect $200"? | Monopoly | Pay Day | Cluedo | Coppit
+1 | 1 | - | The card game "Munchkin" won the 2001 Origins Award for Best Traditional Card Game. | True | False
+1 | 1 | - | The Angry Video Game Nerd's alter ego is "Board James". | True | False
+1 | 1 | - | There is a Donald Trump Board Game, which was made in 1989. | True | False
+5 | 1 | - | On a standard Monopoly board, how much do you have to pay for Tennessee Ave? | $180 | $200 | $160 | $220
+5 | 1 | - | In standard Monopoly, what's the rent if you land on Park Place with no houses? | $35 | $30 | $50 | $45
+1 | 1 | - | Which one of these is not a real game in the Dungeons & Dragons series? | Extreme Dungeons & Dragons | Advanced Dungeons & Dragons | Dungeons & Dragons 3.5th edition | Advanced Dungeons & Dragons 2nd edition
+1 | 1 | - | The board game Monopoly takes its street names from which real American city? | Atlantic City, New Jersey | Las Vegas, Nevada | Duluth, Minnesota | Charleston, South Carolina
+5 | 1 | - | What do you declare in Rīchi Mahjong when you've drawn your winning tile? | Tsumo | Ron | Rīchi | Kan
+3 | 1 | - | In Chess, the Queen has the combined movement of which two pieces? | Bishop and Rook | Rook and King | Knight and Bishop | King and Knight
+1 | 1 | - | "PAYDAY: The Heist" is a sequel to the board game "Payday". | False | True
+5 | 1 | - | How many rooms are there, not including the hallways and the set of stairs, in the board game "Clue"? | 9 | 1 | 6 | 10
+3 | 1 | - | In Yu-Gi-Oh, how does a player perform an Xyz Summon? | Overlay at least 2 Monsters of the Same Level | Activate a Spell and Send Monsters to the Graveyard | Add the Monsters' Levels Together to Match the Xyz Monster | Banish A Number of Monsters From Your Hand And Deck
+3 | 1 | - | Which of the following tabletop games is the oldest? | Go | Chess | Mahjong | Shogi
+5 | 1 | - | The board game Go has more possible legal positions than the number of atoms in the visible universe. | True | False
+3 | 1 | - | "Rich Uncle Pennybags" from the board game "Monopoly" wears a monocle. | False | True
+1 | 1 | - | In which year was the pen and paper RPG "Deadlands" released? | 1996 | 2003 | 1999 | 1993
+5 | 1 | - | The board game "Ra" was designed by which designer?  | Reiner Knizia | Bruno Cathala | Uwe Rosenburg | Allison Kline
+5 | 1 | - | What is the most challenging monster in the Dungeons & Dragons 5th Edition Monster Manual? | Tarrasque | Beholder | Displacer Beast | Lich
+3 | 1 | - | In "Magic: The Gathering", what instant card has the highest converted mana cost? | Blinkmoth Infusion | Vitalizing Wind |  Chant of Vitu-Ghazi | Assert Authority
+3 | 1 | - | In "Magic: The Gathering", during the design for Planar Chaos, what color did the developers think of adding in as the sixth color? | Purple | Brown | Pink | Orange
+5 | 1 | - | What was the development code name for the "Urza's Destiny" expansion for "Magic: The Gathering", released in 1999? | Chimichanga | Burrito | Taquito | Enchilada
+5 | 1 | - | What was the development code name for the "Weatherlight" expansion for "Magic: The Gathering", released in 1997? | Mocha Latte | Decaf | Frappuccino | Macchiato
+5 | 1 | - | Which ability from the "Magic: The Gathering" Scars of Mirrodin expansion involves having at least three artifacts in play? | Metalcraft | Affinity | Imprint | Living Weapon
+5 | 1 | - | Some of the "Fallen Empires" cards from "Magic: The Gathering" were misprinted on the backs of which other card game? | Wyvern | Pokemon | Dominion | Yu-Gi-Oh
+5 | 1 | - | Which of these cards from "Magic: The Gathering" has a flavor text that begins with "Oi oi oi"? | Uthden Troll | Lotleth Troll | Albino Troll | Harvester Troll
+5 | 1 | - | Which card is on the cover of the Beta rulebook of "Magic: The Gathering"? | Bog Wraith | Island | Rock Hydra | Elvish Archers
+5 | 1 | - | In Magic: The Gathering, what was a tribute card to Jamie Wakefield's late wife Marilyn, who loved horses? | Timbermare | Loyal Pegasus | Vryn Wingmare | Sungrace Pegasus
+5 | 1 | - | When Magic: The Gathering was first solicited, which of the following was it originally titled? | Mana Clash | Magic | Magic Clash | Mana Duels
+5 | 1 | - | In Magic: The Gathering, which of the following was the first publicly released foil card? | Lightning Dragon | Revenant | Beast of Burden | Dirtcowl Wurm
+5 | 1 | - | In Magic: The Gathering, what term for blocking was established in the Portal set? | Intercepting | Blocking | Resisting | Shielding
+3 | 1 | - | Europa Universalis is a strategy video game based on which French board game? | Europa Universalis | Europe and the Universe | Europa! | Power in Europe
+5 | 1 | - | What Magic: The Gathering card's flavor text is just 'Ribbit.'? | Turn to Frog | Spore Frog | Bloated Toad | Frogmite
+5 | 1 | - | In Magic: The Gathering, what card's flavor text is "Catch!"? | Lava Axe | Stone-Throwing Devils | Ember Shot | Throwing Knife
+1 | 1 | - | When was the board game Twister, released to the public? | April 1966 | September 1965 | January 1969 | February 1966
+5 | 1 | - | Which character class in Dungeons and Dragons 5th edition gains it's powers from making a pact with a being of higher power? | Warlock | Wizard | Sorceror | Cleric

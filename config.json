@@ -1,0 +1,94 @@
+{
+  "prefix": "%",
+  "question_weight" : [
+      1 , 14, 11, 1 , 20, 1 , 1 ,
+      6 , 5 , 6 , 4 , 1 , 20, 17,
+      17 , 5 , 1 , 6 , 4 , 10, 17 ,
+      5 , 9 , 4 , 3 , 20, 1 , 4 ,
+      20
+  ],
+  "mute_perm" : [
+      ["528942452116160519", -1],
+      ["325668893446373376", 1800],
+      ["595667274707370024", 1800],
+      ["635533690750894145", 0]
+  ],
+  "mudae_ban" : [
+    ["635533001312305152", -1],
+    ["635533688196694016", 1800]
+  ],
+  "mudae_immune" : [
+    "635533001312305152", "635533688196694016"
+  ],
+  "mute_immune" : [
+      "369108742077284353", "595667274707370024"
+  ],
+  "verify_perm" : [
+      "529313445074698261", ""
+  ],
+  "dan_perm" : [
+      "", ""
+  ],
+  "member_cooldown": 180,
+  "management_channel": "server-management",
+  "report_channel": "reports",
+  "log_channel": ["bills", "chat-log", "testing"],
+  "responses": {
+    "like": [
+      "do you love me?",
+      "do you like me?",
+      "will you love me forever?",
+      "will you stay with me forever?",
+      "will you marry me?"
+    ],
+    "hate": [
+      "do you hate me?",
+      "will you ever hate me?",
+      "will you ever leave me?",
+      "are you ignoring me?"
+    ],
+    "response": [
+      "Yes, I'm very certain.",
+      "Yes, I'm pretty sure.",
+      "Most likely yes.",
+      "I don't know, you should probably ask me later.",
+      "Probably.",
+      "Probably not.",
+      "I'm not sure about that.",
+      "No, I don't think so.",
+      "That's a no for me.",
+      "No, that's impossible."
+    ],
+    "badword": [
+      "gay",
+      "lesbian",
+      "hentai",
+      "nhentai",
+      "pornhub",
+      "xnxx",
+      "rape",
+      "yaoi",
+      "yuri",
+      "kill",
+      "sex",
+      "nekopoi",
+      "nekopara",
+      "ngentot",
+      "babi",
+      "bangsat",
+      "titit",
+      "kontol",
+      "memek",
+      "pussy",
+      "dick",
+      "penis",
+      "anjing",
+      "ajg",
+      "anjg",
+      "bangsat",
+      "cbt",
+      "futa",
+      "nigga"
+    ]
+  }
+}

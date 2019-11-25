@@ -1,0 +1,804 @@
+2 | 2 | - | What is the unit measurement for the activity of a radioactive source? (Full name) | Becqueral
+1 | 1 | - | If you mix all light colours, what do you get? | White | Black | Rainbow
+1 | 1 | - | How many separate patents did Thomas Edison file? | 1093 | 963 | 965 | 1095
+1 | 1 | - | Is a white gold ring pure gold? | False | True
+1 | 1 | - | What is the symbol for Silver? | Ag | Sv | Si | Au
+2 | 2 | - | What does ATP stand for? | Adenosine triphosphate
+1 | 1 | - | What survives impacting Earth’s surface? | Meteorite | Meteor | Asteroid
+1 | 1 | - | What is the strongest known magnet in the Universe? | Neutron Star | Black Hole | White Dwaft Star | Big Red Giant
+1 | 1 | - | Which is the hottest planet in the solar system? | Venus | Mercury | Earth | Mars
+1 | 1 | - | How far is the moon away from Earth? | 376 600 km | 371 600 km | 366 600 km | 361 600 km
+1 | 1 | - | Where does sound travel faster? | Metal | Water | Air | Vacuum
+2 | 2 | - | What is opposite to matter | Antimatter
+1 | 1 | - | Do have the same number of neck vertebrae as giraffe’s | Yes | No
+1 | 1 | - | How much salt does the average human body contain? | ~250 g | ~150 g | ~50 g | ~350 g
+1 | 1 | - | There are more bones in an adult human body than in an infants body? | False | True
+1 | 1 | - | Most of the dust in your home is made of human skin | True | False
+1 | 1 | - | What does a manometer measure? | The pressure of a closed system | The temprature of a closed system  | The volume of a closed system  | The energy of a closed system  
+1 | 1 | - | How old is the oldest known fossil found | 3.2 Billion years old | 4.2 Billion years old | 2.2 Billion years old | 2.7 Billion years old
+1 | 1 | - | What does the Scoville Heat Unit Scale measure | The heat of chillies | The temprature of heaters | The heat of fruits | The temprature of factories
+1 | 1 | - | Is a tomato a fruit or vegetable? | Fruit | Vegetable
+1 | 1 | - | Which is the rarest blood type in humans? | AB+ | AB- | B+ | B-
+1 | 1 | - | Nitroglycerine can be used to treat heart attacks? | True | False
+1 | 1 | - | When lighting hits a tree the water inside the tree boils and expands, blowing the tree apart? | True | False
+2 | 2 | - | What is the world’s tallest grass? | Bamboo
+1 | 1 | - | What type of rock is Obsidian | Igneous | Sedimentary | Metamorphic
+1 | 1 | - | Which country has the longest coastline | Canada | Russia | Denmark | The United States
+1 | 1 | - | Is a Tsunami and a tidal wave the same thing? | No | Yes
+1 | 1 | - | When was the first seismograph invented? | ~A.D. 200 | ~B.C. 200 | ~B.C. 100 | ~A.D. 100 
+1 | 1 | - | Is the stratosphere above or below the troposphere | Above | Below
+1 | 1 | - | What’s the lifespan of a human red blood cell? | ~120 days | ~100 days | ~80 days | ~60 days
+2 | 2 | - | What is the collective name of animals and plants that live on a lake bottom? | Benthos
+1 | 1 | - | What is the largest living structure on Earth? | The Great Barrier Reef
+1 | 1 | - | What’s the highest recorded surface wind speed? | 372km/h | 472km/h | 460km/h | 360km/h 
+2 | 2 | - | What is the name of the layer of air closest to us in the atmosphere? | Troposphere
+1 | 1 | - | How many time lightning is hotter than the Sun? | 3 times | 4 times | 2 times | 5 times
+2 | 2 | - | What formation on Earth can have the names tabular, blocky, wedge, dome, pinnacle, dry dock, growler or bergy bit | Icebergs
+1 | 1 | - | Which crystalline formations are on cave ceilings | Stalactites | Stalagmites
+1 | 1 | - | Sterling silver is pure silver | False | True
+2 | 2 | - | Which chemical causes the burning taste sensation when eating chilies? | Capcaicin
+1 | 1 | - | Which planet is closest to the sun? | Mercury | Venus | Earth | Mars
+1 | 1 | - | Where is the Suez Canal? | Egypt | Arab Saudi | Yemen | Jordan
+1 | 1 | - | What’s the Symbol to iron? | Fe | Cu | Ir | Io
+1 | 1 | - | Which planet spins the fastest? | Jupiter | Earth | Mercury | Mars1 | 1 | - | Which of the following bones is not in the leg? | Radius | Patella | Tibia | Fibula 
+3 | 1 | - | The Neanderthals were a direct ancestor of modern humans. | False | True
+1 | 1 | - | Igneous rocks are formed by excessive heat and pressure. | False | True
+3 | 1 | - | Chickens can live without a head. | True | False
+1 | 1 | - | Which is the longest bone in the human body?  | Femur | Scapula | Fibula | Ulna
+3 | 1 | - | In aeronautics, flaps and slats are used to control what on an aircraft? | Lift | Thrust | Drag | Weight 
+5 | 1 | - | The 'Islets of Langerhans' is found in which human organ? | Pancreas | Kidney | Liver | Brain
+3 | 1 | - | The "Gympie Stinger" is the deadliest plant in the world. | False | True
+5 | 1 | - | How many legs is it biologically impossible for a centipede to have? | 100 | 26 | 50 | 74
+5 | 1 | - | You can calculate Induced Voltage using: ε =-N * (dΦB)/(d) | False | True
+1 | 1 | - | Which gas forms about 78% of the Earth’s atmosphere? | Nitrogen | Oxygen | Argon | Carbon Dioxide
+3 | 1 | - | How many degrees Fahrenheit is 100 degrees Celsius?  | 212 | 326 | 100 | 451
+3 | 1 | - | To the nearest minute, how long does it take for light to travel from the Sun to the Earth? | 8 Minutes | 6 Minutes | 2 Minutes | 12 Minutes
+3 | 1 | - | Which chemical element has the lowest boiling point? | Helium | Hydrogen | Neon | Nitrogen
+1 | 1 | - | What is the powerhouse of the cell? | Mitochondria | Ribosome | Redbull | Nucleus
+1 | 1 | - | Which of the following blood vessels carries deoxygenated blood? | Pulmonary Artery | Pulmonary Vein | Aorta | Coronary Artery
+3 | 1 | - | Like with the Neanderthals, Homo sapiens sapiens also interbred with the Denisovans. | True | False
+3 | 1 | - | A defibrillator is used to start up a heartbeat once a heart has stopped beating. | False | True
+3 | 1 | - | Which psychological term refers to the stress of holding contrasting beliefs? | Cognitive Dissonance | Flip-Flop Syndrome | Split-Brain | Blind Sight
+1 | 1 | - | What is the chemical makeup of water? | H20 | C12H6O2 | CO2 | H
+5 | 1 | - | What is the scientific name of the knee cap? | Patella | Femur | Foramen Magnum | Scapula
+5 | 1 | - | It was once believed that injecting shark cartilage into people would prevent them from contracting cancer. | True | False
+3 | 1 | - | Who developed the first successful polio vaccine in the 1950s? | Jonas Salk | John F. Enders | Thomas Weller | Frederick Robbins
+5 | 1 | - | Which of these chemical compounds is NOT found in gastric acid? | Sulfuric acid | Hydrochloric acid | Potassium chloride | Sodium chloride
+5 | 1 | - | What is the scientific name of the red fox? | Vulpes Vulpes | Vulpes Redus | Red Fox | Vulpes Vulpie
+3 | 1 | - | Where did the dog breed "Chihuahua" originate? | Mexico | France | Spain | Russia
+5 | 1 | - | Which is not a type of neuron? | Perceptual Neuron | Sensory Neuron | Motor Neuron | Interneuron
+3 | 1 | - | The medical condition osteoporosis affects which part of the body? | Bones | Skin | Brain | Heart
+3 | 1 | - | What is the atomic number of the element Strontium? | 38 | 73 | 47 | 11
+1 | 1 | - | Salt is 100% composed of Sodium. | False | True
+5 | 1 | - | Which of the following is NOT a real element? | Vitrainium | Praseodymium | Hassium | Lutetium
+5 | 1 | - | Which one of these is scientific term for "Brain Freeze"? | Sphenopalatine Ganglioneuralgia | Hyacinthoides Italica | Amaranthus Retroflexus | Amblyomma Americanum
+1 | 1 | - | The human heart has how many chambers? | 4 | 2 | 6 | 3
+1 | 1 | - | The asteroid belt is located between which two planets? | Mars and Jupiter | Jupiter and Saturn | Mercury and Venus | Earth and Mars
+1 | 1 | - | The medical term for the belly button is which of the following? | Umbilicus | Nevus | Nares | Paxillus
+5 | 1 | - | The core of the Sun can reach which temperature? | 27° Million F (15° Million C) | 938,000° F (521093.3° C) | 8° Billion F (°4.4 Billion C) | Absolute Zero (Both F and C)
+3 | 1 | - | Deuterium is an isotope of which element? | Hydrogen | Nitrogen | Helium | Neon
+5 | 1 | - | What element on the periodic table has 92 electrons? | Uranium | Sulfur | Hydrogen | Iron
+3 | 1 | - | About how old is Earth? | 4.5 Billion Years | 3.5 Billion Years | 2.5 Billion Years | 5.5 Billion Years
+3 | 1 | - | Sugar contains fat. | False | True
+1 | 1 | - | What is the unit of electrical resistance? | Ohm | Mho | Tesla | Joule
+3 | 1 | - | Which desert is the only desert in the world where the "Saguaro" cactus grows indigenously? | The Sonoran Desert | The Gobi Desert | The Yuma Desert | The Arabian Desert
+5 | 1 | - | Which of the following is NOT a word used to describe an earthquake? | Drop-slide | Foreshock | Strike-slip | Temblor
+1 | 1 | - | Celiac Disease is a disease that effects the heart, causing those effected to be unable to eat meat. | False | True
+5 | 1 | - | Where is the Gluteus Maximus muscle located? | Butt | Arm | Head | Torso
+3 | 1 | - | What is the largest living organism currently known to man? | Honey Fungus | Blue Whale | Redwood Tree | The Coral Reef
+3 | 1 | - | Pneumonoultramicroscopicsilicovolcanoconiosis is a synonym for the disease known as silicosis. | True | False
+5 | 1 | - | How long is a light-year? | 9.461 Trillion Kilometres | 1 AU | 105.40 Earth-years | 501.2 Million Miles
+5 | 1 | - | What is the scientific name for the extinct hominin known as "Lucy"? | Australopithecus Afarensis | Australopithecus Africanus | Australopithecus Architeuthis | Australopithecus Antaris
+3 | 1 | - | What part of the brain takes its name from the Greek for seahorse? | Hippocampus | Cerebellum | Thalamus | Amygdala
+1 | 1 | - | Which Apollo mission was the first one to land on the Moon? | Apollo 11 | Apollo 10 | Apollo 9 | Apollo 13
+5 | 1 | - | What is considered the rarist form of color blindness? | Blue | Red | Green | Purple
+3 | 1 | - | Along with Oxygen, which element is primarily responsible for the sky appearing blue? | Nitrogen | Helium | Carbon | Hydrogen
+5 | 1 | - | Which of the following liquids is least viscous? Assume temperature is 25°C. | Acetone | Water | Mercury | Benzene
+1 | 1 | - | Which of these bones is hardest to break? | Femur | Cranium | Humerus | Tibia
+3 | 1 | - | You can be sunburned on a cloudy day. | True | False
+3 | 1 | - | What is the colour of unoxidized blood? | Red | Blue | Purple | Green
+5 | 1 | - | Which is the chemical name of H2O? | Dihydrogen Monoxide | Ammonium chloride | Anhydrous Sodium Carbonate | Manganese dioxide
+1 | 1 | - | Which element has the chemical symbol 'Fe'? | Iron | Gold | Silver | Tin
+1 | 1 | - | What name is given to all baby marsupials? | Joey | Calf | Pup | Cub
+1 | 1 | - | What is the "powerhouse" of the Eukaryotic animal cell? | Mitochondria | Nucleus | Chloroplast | Endoplasmic Reticulum
+1 | 1 | - | How many planets are in our Solar System? | Eight | Nine | Seven | Ten
+1 | 1 | - | What is the hottest planet in the Solar System? | Venus | Mars | Mercury | Jupiter
+1 | 1 | - | What is the first element on the periodic table? | Hydrogen | Helium | Oxygen | Lithium
+5 | 1 | - | On the Beaufort Scale of wind force, what wind name is given to number 8? | Gale | Storm | Hurricane | Breeze
+1 | 1 | - | How many planets make up our Solar System? | 8 | 7 | 9 | 6
+3 | 1 | - | Which element has the atomic number of 7? | Nitrogen | Oxygen | Hydrogen | Neon
+3 | 1 | - | All the following metal elements are liquids at or near room temperature EXCEPT: | Beryllium | Gallium | Caesium | Mercury
+3 | 1 | - | The "Tibia" is found in which part of the body? | Leg | Arm | Hand | Head
+5 | 1 | - | If you planted the seeds of Quercus robur what would grow? | Trees | Flowers | Vegtables | Grains
+1 | 1 | - | What is the primary addictive substance found in tobacco? | Nicotine | Cathinone | Ephedrine | Glaucine
+1 | 1 | - | What was the name of the first artificial Earth satellite, launched by the Soviet Union in 1957? | Sputnik 1 | Soyuz 7K-OK | Zenit-2 | Voskhod 3KV
+5 | 1 | - | What is isobutylphenylpropanoic acid more commonly known as? | Ibuprofen | Morphine | Ketamine | Aspirin
+3 | 1 | - | What polymer is used to make CDs, safety goggles and riot shields? | Polycarbonate | Rubber | Nylon | Bakelite
+5 | 1 | - | Folic acid is the synthetic form of which vitamin? | Vitamin B | Vitamin A | Vitamin C | Vitamin D
+5 | 1 | - | Scientists can grow teeth from urine. | True | False
+3 | 1 | - | Scientists accidentally killed the once known world's oldest living creature, a mollusc, known to be aged as 507 years old. | True | False
+3 | 1 | - | Centripedal force is an apparent force that acts outward on a body moving around a center, arising from the body's inertia. | False | True
+3 | 1 | - | Which of these is a type of stretch/deep tendon reflex? | Ankle jerk reflex | Gag reflex | Pupillary light reflex | Scratch reflex
+3 | 1 | - | The human right lung has how many lobes? | 3 | 4 | 2 | 1
+1 | 1 | - | Human cells typically have how many copies of each gene? | 2 | 1 | 4 | 3
+1 | 1 | - | Which is the most abundant element in the universe? | Hydrogen | Helium | Lithium | Oxygen
+5 | 1 | - | What is the molecular formula of Ozone? | O3 | C6H2O6 | N2O | SO4
+1 | 1 | - | Which element has the highest melting point? | Carbon | Tungsten | Platinum | Osmium
+3 | 1 | - | What stage of development do the majority of eukaryotic cells remain in for most of their life? | Interphase | Prophase | Stasis | Telophase
+3 | 1 | - | Who made the discovery of X-rays? | Wilhelm Conrad Röntgen | Thomas Alva Edison | James Watt | Albert Einstein
+3 | 1 | - | In the periodic table, Potassium's symbol is the letter K. | True | False
+5 | 1 | - | What nucleotide pairs with guanine? | Cytosine | Thymine | Adenine | Uracil
+5 | 1 | - | What genetic disease is caused by having an extra Y chromosome (XYY)? | Jacob's Syndrome | Klinefelter's Syndrome | Turner's Syndrome | Down Syndrome
+5 | 1 | - | The chemical element Lithium is named after the country of Lithuania. | False | True
+5 | 1 | - | What does the term "isolation" refer to in microbiology? | The separation of a strain from a natural, mixed population of living microbes | A lack of nutrition in microenviroments | The nitrogen level in soil | Testing effects of certain microorganisms in an isolated enviroments, such as caves
+5 | 1 | - | How much radiation does a banana emit? | 0.1 Microsievert | 0.3 Microsievert | 0.5 Microsievert | 0.7 Microsievert
+1 | 1 | - | An average human can go two weeks without water. | False | True
+3 | 1 | - | What is the unit of electrical capacitance? | Farad | Gauss | Henry | Watt
+1 | 1 | - | What animal takes part in Schrödinger's most famous thought experiment? | Cat | Dog | Bat | Butterfly
+3 | 1 | - | What are human nails made of? | Keratin | Bone | Chitin | Calcium
+3 | 1 | - | The Sun consists of mostly which two elements? | Hydrogen & Helium | Hydrogen & Nitrogen | Carbon & Nitrogen | Carbon & Helium
+3 | 1 | - | On which mission did the Space Shuttle Columbia break up upon re-entry? | STS-107 | STS-51-L | STS-61-C | STS-109
+3 | 1 | - | What do you study if you are studying entomology? | Insects | Humans | the Brain | Fish
+3 | 1 | - | Down Syndrome is usually caused by an extra copy of which chromosome? | 21 | 23 | 15 | 24
+1 | 1 | - | What is the largest animal currently on Earth? | Blue Whale | Orca | Colossal Squid | Giraffe
+1 | 1 | - | What does the letter 'S' stand for in 'NASA'? | Space | Science | Society | Star
+3 | 1 | - | The humerus, paired radius, and ulna come together to form what joint? | Elbow | Knee | Sholder | Ankle
+1 | 1 | - | Rhinoplasty is a surgical procedure on what part of the human body? | Nose | Ears | Chin | Neck
+1 | 1 | - | Which type of rock is created by intense heat AND pressure? | Metamorphic | Sedimentary | Igneous | Diamond
+1 | 1 | - | This element, when overcome with extreme heat and pressure, creates diamonds. | Carbon | Nitrogen | Oxygen | Hydrogen
+1 | 1 | - | What is the elemental symbol for mercury? | Hg | Me | Mc | Hy
+3 | 1 | - | Which of these stars is the largest? | UY Scuti | VY Canis Majoris | Betelgeuse | RW Cephei
+3 | 1 | - | The planet Mars has two moons orbiting it. | True | False
+3 | 1 | - | What was the first living creature in space? | Fruit Flies  | Monkey | Dog | Mouse
+5 | 1 | - | What common name is given to the medial condition, tibial stress syndrome (MTSS)? | Shin Splints | Tennis Elbow | Carpal Tunnel | Housemaid's Knee
+3 | 1 | - | Gannymede is the largest moon of which planet? | Jupiter | Uranus | Neptune | Mars
+5 | 1 | - | What is the molecular formula of Glucose? | C6H12O6 | C2H4O2 | K+ | CH4
+3 | 1 | - | Steel is an alloy of Iron and Carbon. | True | False
+5 | 1 | - | An organic compound is considered an alcohol if it has what functional group? | Hydroxyl | Carbonyl | Alkyl | Aldehyde
+3 | 1 | - | Au on the Periodic Table refers to which element? | Gold | Silver | Oxygen | Nickel
+5 | 1 | - | All of the following human genetic haplogroup names are shared between Y-chromosome and mitochondrial DNA haplogroups EXCEPT: | Haplogroup U | Haplogroup L | Haplogroup T | Haplogroup J
+3 | 1 | - | How many officially recognized dwarf planets in the solar system are named after Polynesian deities? | 2 | 0 | 1 | 5
+3 | 1 | - | Shrimp can swim backwards. | True | False
+5 | 1 | - | Which horizon in a soil profile consists of bedrock? | R | O | B | D
+3 | 1 | - | Type 1 diabetes is a result of the liver working improperly. | False | True
+1 | 1 | - | Alzheimer's disease primarily affects which part of the human body? | Brain | Lungs | Skin | Heart
+3 | 1 | - | What is the chemical formula for ammonia? | NH3 | CO2 | NO3 | CH4
+1 | 1 | - | How many bones are in the human body? | 206 | 203 | 209 | 200
+1 | 1 | - | What does DNA stand for? | Deoxyribonucleic Acid | Deoxyribogenetic Acid | Deoxyribogenetic Atoms | Detoxic Acid
+1 | 1 | - | An atom contains a nucleus. | True | False
+5 | 1 | - | "The Big Bang Theory" was first theorized by a priest of what religious ideology? | Catholic | Christian | Jewish | Islamic
+3 | 1 | - | What term is best associated with Sigmund Freud? | Psychoanalysis | Cognitive-Behavioral Therapy | Theory of Gravity | Dialectical Behavior Therapy
+3 | 1 | - | Which one of these scientists conducted the Gold Foil Experiment which concluded that atoms are mostly made of empty space? | Ernest Rutherford | Joseph John Thomson | Archimedes | Niels Henrik David Bohr
+3 | 1 | - | What does the yellow diamond on the NFPA 704 fire diamond represent? | Reactivity | Health | Flammability | Radioactivity
+5 | 1 | - | Which moon is the only satellite in our solar system to possess a dense atmosphere? | Titan | Europa | Miranda | Callisto
+1 | 1 | - | The biggest distinction between a eukaryotic cell and a prokaryotic cell is: | The presence or absence of a nucleus | The overall size | The presence or absence of certain organelles | The mode of reproduction
+5 | 1 | - | Which of these is a stop codon in DNA? | TAA | ACT | ACA | GTA
+3 | 1 | - | In Chemistry, how many isomers does Butanol (C4H9OH) have? | 4 | 3 | 5 | 6
+3 | 1 | - | At what temperature does water boil? | 212°F | 200°F | 181°F | 178°F
+1 | 1 | - | How many chromosomes are in your body cells? | 23 | 21 | 22 | 24
+1 | 1 | - | What is the standard atomic weight of a Plutonium nucleus? | 244 | 94 | 481 | 128
+1 | 1 | - | An exothermic reaction is a chemical reaction that releases energy by radiating electricity. | False | True
+1 | 1 | - | 71% of the Earth's surface is made up of | Water | Deserts | Continents | Forests
+3 | 1 | - | What is radiation measured in? | Gray  | Watt | Decibel | Kelvin
+5 | 1 | - | Botanically speaking, which of these fruits is NOT a berry? | Strawberry | Blueberry | Banana | Concord Grape
+5 | 1 | - | What is the unit of electrical inductance? | Henry | Weber | Coulomb | Mho
+5 | 1 | - | The value of one Calorie is different than the value of one calorie. | True | False
+3 | 1 | - | In Psychology, which need appears highest in the "Maslow's hierarchy of needs" pyramid? | Esteem | Love | Safety | Physiological
+1 | 1 | - | Psychology is the science of behavior and mind. | True | False
+3 | 1 | - | Which planet did the "Viking 1" spacecraft send surface images of, starting in 1976? | Mars | Saturn | Jupiter | Venus
+3 | 1 | - | Approximately how long is a year on Uranus? | 84 Earth years | 47 Earth years | 62 Earth years | 109 Earth years
+5 | 1 | - | Coulrophobia is the irrational fear of what? | Clowns | Cemeteries | Needles | Tunnels
+3 | 1 | - | Which chemical element was originally known as Alabamine? | Astatine | Selenium | Antimony | Molybdenum
+5 | 1 | - | The Western Lowland Gorilla is scientifically know as? | Gorilla Gorilla Gorilla | Gorilla Gorilla Diehli | Gorilla Beringei Graueri | Gorilla Beringei Beringei
+3 | 1 | - | The Doppler effect applies to light. | True | False
+1 | 1 | - | How many objects are equivalent to one mole? | 6.022 x 10^23 | 6.002 x 10^22 | 6.022 x 10^22 | 6.002 x 10^23
+3 | 1 | - | The moons, Miranda, Ariel, Umbriel, Titania and Oberon orbit which planet? | Uranus | Jupiter | Venus | Neptune
+3 | 1 | - | Hippopotomonstrosesquippedaliophobia is the irrational fear of long words. | True | False
+3 | 1 | - | What mineral has the lowest number on the Mohs scale? | Talc | Quartz | Diamond | Gypsum
+1 | 1 | - | What is the standard SI unit for temperature? | Kelvin | Fahrenheit | Celsius | Rankine
+3 | 1 | - | The Axiom of Preventive Medicine states that people with ___ risk for a disease should be screened and we should treat ___ of those people. | low, all | low, some | high, all | high, some
+1 | 1 | - | Who is the chemical element Curium named after? | Marie & Pierre Curie | The Curiosity Rover | Curious George | Stephen Curry
+3 | 1 | - | Which of these is NOT a part of the structure of a typical neuron? | Islets of Langerhans | Node of Ranvier | Schwann cell | Myelin sheath
+3 | 1 | - | Which part of the body does glaucoma affect? | Eyes | Throat | Stomach | Blood
+3 | 1 | - | Anatomy considers the forms of macroscopic structures such as organs and organ systems. | True | False
+3 | 1 | - | After which Danish city is the 72th element on the periodic table named? | Copenhagen | Odense | Herning | Skagen
+1 | 1 | - | The element involved in making human blood red is which of the following? | Iron | Copper | Iridium | Cobalt
+5 | 1 | - | A comet's gaseous envelope (which creates the tail) is called what? | The coma | The wake | The backwash | The ablative
+3 | 1 | - | Myopia is the scientific term for which condition? | Shortsightedness | Farsightedness | Double Vision | Clouded Vision
+5 | 1 | - | Which of the following plastic is commonly used for window frames, gutters and drain pipes? | Polyvinylchloride (PVC)  | Polyethylene (PE) | Polypropylene (PP) | Polystyrene (PS)
+3 | 1 | - | Which of these elements on the Periodic Table is a Noble Gas? | Neon | Potassium | Iodine | Colbalt
+3 | 1 | - | A positron is an antiparticle of a what? | Electron | Neutron | Proton | Photon
+1 | 1 | - | An Astronomical Unit is the distance between Earth and the Moon. | False | True
+5 | 1 | - | What is the same in Celsius and Fahrenheit? | -40 | 32 | -39 | -42
+1 | 1 | - | What does LASER stand for? | Light amplifiaction by stimulated eminission of radioation | Lite analysing by stereo ecorazer | Light ampiflier by standby energy of radio | Life antimatter by standing entry of range
+5 | 1 | - | Burning which of these metals will produce a bright white flame? | Magnesium | Copper | Lithium | Lead
+5 | 1 | - | Muscle fiber is constructed of bundles small long organelles called what? | Myofibrils | Epimysium | Myofiaments | Myocardium
+5 | 1 | - | Which of the following is the term for "surgical complications resulting from surgical sponges left inside the patient's body? | Gossypiboma | Gongoozler | Jentacular | Meupareunia
+3 | 1 | - | Which of the following men does not have a chemical element named after him? | Sir Isaac Newton | Albert Einstein | Niels Bohr | Enrico Fermi
+3 | 2 | - | What is the element symbol of "Actinium"? | Ac
+3 | 2 | - | What is the element symbol of "Aluminum"? | Al
+3 | 2 | - | What is the element symbol of "Americium"? | Am
+3 | 2 | - | What is the element symbol of "Antimony"? | Sb
+3 | 2 | - | What is the element symbol of "Argon"? | Ar
+3 | 2 | - | What is the element symbol of "Arsenic"? | As
+3 | 2 | - | What is the element symbol of "Astatine"? | At
+3 | 2 | - | What is the element symbol of "Barium"? | Ba
+3 | 2 | - | What is the element symbol of "Berkelium"? | Bk
+3 | 2 | - | What is the element symbol of "Berylium"? | Be
+3 | 2 | - | What is the element symbol of "Bismuth"? | Bi
+3 | 2 | - | What is the element symbol of "Bohrium"? | Bh
+3 | 2 | - | What is the element symbol of "Boron"? | B
+3 | 2 | - | What is the element symbol of "Bromine"? | Br
+3 | 2 | - | What is the element symbol of "Cadmium"? | Cd
+3 | 2 | - | What is the element symbol of "Calcium"? | Ca
+3 | 2 | - | What is the element symbol of "Califormium"? | Cf
+3 | 2 | - | What is the element symbol of "Carbon"? | C
+3 | 2 | - | What is the element symbol of "Cerium"? | Ce
+3 | 2 | - | What is the element symbol of "Cesium"? | Cs
+3 | 2 | - | What is the element symbol of "Chlorine"? | Cl
+3 | 2 | - | What is the element symbol of "Chromium"? | Cr
+3 | 2 | - | What is the element symbol of "Cobalt"? | Co
+3 | 2 | - | What is the element symbol of "Copernicium"? | Cn
+3 | 2 | - | What is the element symbol of "Copper"? | Cu
+3 | 2 | - | What is the element symbol of "Curium"? | Cm
+3 | 2 | - | What is the element symbol of "Darmstadtium"? | Ds
+3 | 2 | - | What is the element symbol of "Dubnium"? | Db
+3 | 2 | - | What is the element symbol of "Dysprosium"? | Dy
+3 | 2 | - | What is the element symbol of "Einsteinium"? | Es
+3 | 2 | - | What is the element symbol of "Erbium"? | Er
+3 | 2 | - | What is the element symbol of "Europium"? | Eu
+3 | 2 | - | What is the element symbol of "Fermium"? | Fm
+3 | 2 | - | What is the element symbol of "Flerovium"? | Fl
+3 | 2 | - | What is the element symbol of "Fluorine"? | F
+3 | 2 | - | What is the element symbol of "Francium"? | Fr
+3 | 2 | - | What is the element symbol of "Gadolinium"? | Gd
+3 | 2 | - | What is the element symbol of "Gallium"? | Ga
+3 | 2 | - | What is the element symbol of "Germanium"? | Ge
+3 | 2 | - | What is the element symbol of "Gold"? | Au
+3 | 2 | - | What is the element symbol of "Hafnium"? | Hf
+3 | 2 | - | What is the element symbol of "Hassium"? | Hs
+3 | 2 | - | What is the element symbol of "Helium"? | He
+3 | 2 | - | What is the element symbol of "Holmium"? | Ho
+3 | 2 | - | What is the element symbol of "Hydrogen"? | H
+3 | 2 | - | What is the element symbol of "Indium"? | In
+3 | 2 | - | What is the element symbol of "Iodine"? | I
+3 | 2 | - | What is the element symbol of "Iridium"? | Ir
+3 | 2 | - | What is the element symbol of "Iron"? | Fe
+3 | 2 | - | What is the element symbol of "Krypton"? | Kr
+3 | 2 | - | What is the element symbol of "Lanthanum"? | La
+3 | 2 | - | What is the element symbol of "Lawrencium"? | Lr
+3 | 2 | - | What is the element symbol of "Lead"? | Pb
+3 | 2 | - | What is the element symbol of "Lithium"? | Li
+3 | 2 | - | What is the element symbol of "Livermorium"? | Lv
+3 | 2 | - | What is the element symbol of "Lutetium"? | Lu
+3 | 2 | - | What is the element symbol of "Magnesium"? | Mg
+3 | 2 | - | What is the element symbol of "Manganese"? | Mn
+3 | 2 | - | What is the element symbol of "Meitnerium"? | Mt
+3 | 2 | - | What is the element symbol of "Mendelevium"? | Md
+3 | 2 | - | What is the element symbol of "Mercury"? | Hg
+3 | 2 | - | What is the element symbol of "Molybdenum"? | Mo
+3 | 2 | - | What is the element symbol of "Moscovium"? | Mc
+3 | 2 | - | What is the element symbol of "Neodymium"? | Nd
+3 | 2 | - | What is the element symbol of "Neon"? | Ne
+3 | 2 | - | What is the element symbol of "Neptunium"? | Np
+3 | 2 | - | What is the element symbol of "Nickel"? | Ni
+3 | 2 | - | What is the element symbol of "Nihonium"? | Nh
+3 | 2 | - | What is the element symbol of "Niobium"? | Nb
+3 | 2 | - | What is the element symbol of "Nitrogen"? | N
+3 | 2 | - | What is the element symbol of "Nobelium"? | "No"
+3 | 2 | - | What is the element symbol of "Oganesson"? | Og
+3 | 2 | - | What is the element symbol of "Osmium"? | Os
+3 | 2 | - | What is the element symbol of "Oxygen"? | O
+3 | 2 | - | What is the element symbol of "Palladium"? | Pd
+3 | 2 | - | What is the element symbol of "Phosphorus"? | P
+3 | 2 | - | What is the element symbol of "Platinum"? | Pt
+3 | 2 | - | What is the element symbol of "Plutonium"? | Pu
+3 | 2 | - | What is the element symbol of "Polonium"? | Po
+3 | 2 | - | What is the element symbol of "Potassium"? | K
+3 | 2 | - | What is the element symbol of "Praseodymium"? | Pr
+3 | 2 | - | What is the element symbol of "Promethium"? | Pm
+3 | 2 | - | What is the element symbol of "Protactinium"? | Pa
+3 | 2 | - | What is the element symbol of "Radium"? | Ra
+3 | 2 | - | What is the element symbol of "Radon"? | Rn
+3 | 2 | - | What is the element symbol of "Rhenium"? | Re
+3 | 2 | - | What is the element symbol of "Rhodium"? | Rh
+3 | 2 | - | What is the element symbol of "Roentgnium"? | Rg
+3 | 2 | - | What is the element symbol of "Rubidium"? | Rb
+3 | 2 | - | What is the element symbol of "Ruthenium"? | Ru
+3 | 2 | - | What is the element symbol of "Rutherfordium"? | Rf
+3 | 2 | - | What is the element symbol of "Samarium"? | Sm
+3 | 2 | - | What is the element symbol of "Scandium"? | Sc
+3 | 2 | - | What is the element symbol of "Seaborgium"? | Sg
+3 | 2 | - | What is the element symbol of "Selenium"? | Se
+3 | 2 | - | What is the element symbol of "Silicon"? | Si
+3 | 2 | - | What is the element symbol of "Silver"? | Ag
+3 | 2 | - | What is the element symbol of "Sodium"? | Na
+3 | 2 | - | What is the element symbol of "Strontium"? | Sr
+3 | 2 | - | What is the element symbol of "Sulfur"? | S
+3 | 2 | - | What is the element symbol of "Tantalum"? | Ta
+3 | 2 | - | What is the element symbol of "Technetium"? | Tc
+3 | 2 | - | What is the element symbol of "Tellurium"? | Te
+3 | 2 | - | What is the element symbol of "Tennessine"? | Ts
+3 | 2 | - | What is the element symbol of "Terbium"? | Tb
+3 | 2 | - | What is the element symbol of "Thallium"? | Tl
+3 | 2 | - | What is the element symbol of "Thorium"? | Th
+3 | 2 | - | What is the element symbol of "Thulium"? | Tm
+3 | 2 | - | What is the element symbol of "Tin"? | Sn
+3 | 2 | - | What is the element symbol of "Titanium"? | Ti
+3 | 2 | - | What is the element symbol of "Tungsten"? | W
+3 | 2 | - | What is the element symbol of "Uranium"? | U
+3 | 2 | - | What is the element symbol of "Vanadium"? | V
+3 | 2 | - | What is the element symbol of "Xenon"? | Xe
+3 | 2 | - | What is the element symbol of "Ytterbium"? | Yb
+3 | 2 | - | What is the element symbol of "Yttrium"? | Y
+3 | 2 | - | What is the element symbol of "Zinc"? | Zn
+3 | 2 | - | What is the element symbol of "Zirconium"? | Zr
+2 | 1 | - | When was the rubber balloon invented? | 1824 | 1736 | 1910 | 1609
+2 | 1 | - | What shape is the galaxy called the Milky Way? | A flattened spiral | A corkscrew | A flat tube | A sphere
+2 | 1 | - | How many eyelids does a cat have? | 3 | 1 | 4 | 2
+2 | 1 | - | Which of these is an ingredient in gunpowder? | Saltpeter | Hydrogen | Pepper | Mercury
+2 | 1 | - | How is an igneous rock formed? | Cooled magma | Water | Pressure | Fossilized bones
+2 | 1 | - | Which of your five senses is most related to your memory? | Smell | Sight | Touch | Taste
+2 | 1 | - | What kind of bird is the smallest in the world? | Hummingbird | Nightingale | Chickadee | Swallow
+2 | 1 | - | What part of the brain is sometimes referred to as the "Fear Center"? | Amygdala | Solitary nucleus | Medullary pyramids | Tectum
+2 | 1 | - | How many astronauts were on the Mercury flights? | 1 | 7 | 3 | 5
+2 | 1 | - | Which of these inventers had more than 1000 patents at the time of their death? | Thomas Edison | Benjamin Franklin | Eli Whitney | Henry ford
+2 | 1 | - | What was Mary Mallon famous for? | Spreading typhoid fever | Designing the space needle | First woman in space | Inventing the cotton gin
+2 | 1 | - | Which of these vegetables is a perennial? | Rhubarb | Potato | Squash | Corn
+2 | 1 | - | What turns litmus paper blue? | Base | Acid | Copper | Blood
+2 | 1 | - | How many colors are there in a rainbow? | 7 | 9 | 15 | 12
+2 | 1 | - | What is the correct term for young female cow? | Heifer | Filly | Ox | Steer
+2 | 1 | - | Which direction does the needle on a compass point to? | North | West | South | East
+2 | 1 | - | How far away is the sun? | 93 million miles | 150 million miles | 50 million miles | 20 million miles
+2 | 1 | - | What does the Fujita Scale measure? | Tornados | Temperature | Atmospheric pressure | Earthquakes
+2 | 1 | - | What is the nearest galaxy to the Milky Way? | Canis Major Dwarf | Magellanic Clouds | Andromeda | Ursa Major II Dwarf
+2 | 1 | - | Harley Earl designed chrome trim, two-tone paint, hardtops, wrap-around windshields and (especially) tailfins for what company? | General Motors | Chrysler | Ford | Tucker
+2 | 1 | - | Happily, it only eats teeny tiny food like plankton. At up to 60 feet, what is the largest known fish? | Whale shark | Hammerhead | Giant catfish | Jumbo shrimp
+2 | 1 | - | Originally, a gram was defined as how much pure water, at the temperature of melting ice? | 1 cc | 1 teaspoon | 1 cup | 1 tablespoon
+2 | 1 | - | What distinctive feature of the Stegosaurus was named the thagomizer, a term that originally appeared in a Far Side comic strip about the late Thag Simmons? | Double row of kite-shaped plates on its back | A turtle-like shell | Fins | Two horns and a bony facial frill
+2 | 1 | - | No, this drug was never used as an appetite suppressant or as a stimulant for the military, but Merck did hope it would stop abnormal bleeding. What? | Ecstasy (MDMA) | Angel dust (PCP) | Cannabis (THC) | Acid (LSD)
+2 | 1 | - | When would a gerontologist take an interest in you? | When you grow old | When you exercise | When you enjoy a hobby | When you study your ancestry
+2 | 1 | - | The largest single living animal cell on Earth is the yolk found in what animal's egg, which in turn is the largest egg in the world? | Ostrich | Komodo dragon | Elephant | Blue whale
+2 | 1 | - | Supersonic is at least Mach 1, roughly. What word is used for Mach 5, or five times the speed of sound? | Hypersonic | Megasonic | Transonic | Ultrasonic
+2 | 1 | - | In 1919, while flying the Lame Duck, Albert "Putty" Reed and his crew became the first people to fly across which ocean? | Atlantic | Indian | Arctic | Pacific
+2 | 1 | - | Although the agouti gene is responsible for bay-colored horses and the stripes on a tabby, what is an agouti itself? | A South American rodent | A North American wildcat | An African antelope | An Asian primate
+2 | 1 | - | Henrietta Lacks, who lived in a segregated community, died of cervical cancer in 1951, but she's still saving lives today. How so? | Her cells are still being used in medical research | Her body was used to model the CPR dummy | Her death led to tighter meat packing standards | She appeared in one of the first anti-smoking videos
+2 | 1 | - | If you're converting from metric, how many inches are there to the meter? | 39.37 | 19.37 | 79.37 | 59.37
+2 | 1 | - | The appendix hangs off the cecum. Where would you find the cecum? | Large intestine | Stomach | Small intestine | Liver
+2 | 1 | - | The male deep-sea angler only feeds when it bites the larger female and sucks her blood, giving him even more incentive to do something. What? | Mate | Hatch | Hunt | Surface
+2 | 1 | - | 1930 saw the introduction of a Disney character and the discovery of a planet, both of which had the same name. Which one? | Pluto | Goofy | Neptune | Uranus
+2 | 1 | - | On average, how much does human hair grow in one year? | 6 inches | 9 inches | 12 inches | 3 inches
+2 | 1 | - | Besides creating the now-worthless slide rule, what is mathematician William Oughtred's claim to fame? | Created the multiplication sign X | Helped Newton develop calculus | Did pioneering Sanskrit research | Founded the Royal Society
+2 | 1 | - | Who discovered X-Rays? | Wilhelm Roentgen | Sir Isaac Newton | Arthur Schopenhauer | Martin Luther
+2 | 1 | - | Which of the following is the most acidic pH? | 1.0 | 9.0 | 2.5 | 6.0
+2 | 1 | - | After pooling his money with friends to buy a diamond, which scientist burned it in 1772 to discover that diamonds are made of carbon? | Antoinet Lavoisier | Carl Scheele | Joseph Priestley | Humphrey Davy
+2 | 1 | - | Which is the second most abundant chemical element on Earth? | Silicon | Hydrogen | Nitrogen | Oxygen
+2 | 1 | - | Which group does not fit the unicellular definition of Kingdom Protista? | Seaweeds | Protozoans | Algae | Slime Molds
+2 | 1 | - | How many "Earth's" could be formed out of the volume of the Sun? | 1.3 Million | 252,000 | 300,100 | 201,000
+2 | 1 | - | Can you identify the branch of mathematics that primarily deals with apothems? | Geometry | Calculus | Algebra | Differential calculus
+2 | 1 | - | What is the largest and heaviest organ of the human body? | Skin | Liver | Stomach | Heart
+2 | 1 | - | What does the goliath birdeater spider use in its web to help catch its prey? | A trip wire | They scent the web | Flowers | They bait the web with insects
+2 | 1 | - | Which principle, first stated by Antoine-Laurent Lavoisier in 1789, was revised in 1905 by Albert Einstein? | Conservation of Mass | Conservation of Momentum | Lagrangian Function | Principle of First Action
+2 | 1 | - | Famed scientist, chemist Jons Jakob Berzelius (1779-1848) was a native of what country? | Sweden | Germany | Austria | Switzerland
+2 | 1 | - | In 1820, which metal was the first substance after iron, shown to be capable of being magnetized? | Copper | Silver | Gold | Nickel
+2 | 1 | - | Who invented dynamite? | Alfred Nobel | Alfred E | Tzun Ling | Albert Einstein
+2 | 1 | - | A proton has what type of charge? | Positive | Sometimes Positive, Sometimes Negative | Neutral | Negative
+2 | 1 | - | Although credit is often given to Hermann von Helmholtz in 1851, which 19th-Century scientist may have invented the Ophthalmoscope in 1847? | Charles Babbage | Joseph Henry | Thomas Edison | Henry Cavendish
+2 | 1 | - | The standard atmospheric temperature of earth at sea level is? | 15 degrees Celsius | 18 degrees Celsius | 21 degrees Celsius | 12 degrees Celsius
+2 | 1 | - | How many memory locations can an 8-bit CPU address? | 65,536 | 65,535 | 65,537 | 32,768
+2 | 1 | - | The Hubble Space Telescope blasted off aboard the space shuttle Discovery from Cape Canaveral on April 24, 1990. What was its price tag? | About $1.5 Billion | About $1 Billion | About $500 Million | About $200 Million
+2 | 1 | - | How long does it take light from the sun to reach the earth? | About 8 minutes and 20 seconds | About 9 hours and 8 minutes | About 12 seconds | About 12 minutes and 20 seconds
+2 | 1 | - | Which metal has the highest melting point? | Tungsten | Titanium | Platinum | Gold
+2 | 1 | - | When did Sir William Herschel discover the planet Uranus? | March 13, 1781 | March 13, 1581 | March 13, 1881 | March 13, 1681
+2 | 1 | - | A virus is a minuscule parasitic organism that can do what? | Reproduce only inside a host | Cause the body temperature to drop | Cause insanity | Destroy data on a disk
+2 | 1 | - | When did the United States detonate its first atomic bomb in an underwater test at the Bikini Atoll? | July 25, 1946 | July 25, 1952 | July 25, 1950 | July 25, 1948
+2 | 1 | - | Which celestial body did the philosopher Pythagoras name in 530 BC, although its name has now been translated into Latin? | Venus | Saturn | Mercury | Jupiter
+2 | 1 | - | Who invented the telescope? | Hans Lippershey | Galileo | Nicolaus Copernicus | Edwin Powell Hubble
+2 | 1 | - | First published in 1687, who wrote "Mathematical Principles of Natural Philosophy"? | Sir Isaac Newton | Gottfried Leibniz | Charles Babbage | Pierre de Fermat
+2 | 1 | - | The symbol for Germanium is what? | Ge | Gr | Ga | Gm
+2 | 1 | - | Some types of this plant can grow over three feet in just one day. | Bamboo | Cactus | Creeping Thyme | Lemon Grass
+2 | 1 | - | How many hearts does an Octopus have? | 3 | 1 | 4 | 2
+2 | 1 | - | Which of the following letters does not represent a chemical element within the periodic table of elements? | J | Z | K | A
+2 | 1 | - | Which of the following scientists laid the foundations for the present classification system of life using binomial nomenclature? | Carl Linnaeus | William Thomson | Georges Cuvier | Charles Darwin
+2 | 1 | - | Which of the following is one of the four valves of the heart? | Tricuspid | Cuboid | Metacarpal | Cardiac
+2 | 1 | - | Which 1970 space mission was the first to successfully land a craft on Venus? | Venera 7 | Mariner 2 | Viking 1 | Pioneer 1
+2 | 1 | - | Which fundamental force was predicted by Enrico Fermi in 1934 to explain beta decay? | Weak interaction | Strong interaction | Gravity | Electromagnetism
+2 | 1 | - | Most of the planets orbiting our sun spin counter-clockwise. Which of the following planets listed rotates clockwise? | Venus | Neptune | Earth | Jupiter
+2 | 1 | - | Insulin was the first human protein to be synthesized. In what year? | 1965 | 1955 | 1945 | 1935
+2 | 1 | - | Which subatomic particle was the first to be discovered? | Electron | Proton | Neutron | Positron
+2 | 1 | - | How many microns are in one metric metre? | 1 million | 10 million | 1000 million | 100 million
+2 | 1 | - | Which are the only people who do not experience REM sleep? | Blind from birth | Schizophrenic | Insane | Do not dream
+2 | 1 | - | Which principle, first stated by Faraday in 1831, states that a magnet's motion relative to a metal conductor generates an electric pulse? | Magnetic induction | Magnetic conduction | Paramagnetic reduction | Electric inversion
+2 | 1 | - | Which of these are a unit of electrical resistance? | Ohm | Hertz | Alamo | Farad
+2 | 1 | - | Who is credited with developing "Coordinate Geometry"? | Descartes | Kelvin | Leibnitz | Newton
+2 | 1 | - | As of 2012, how many Russian Cosmonauts have been on the Moon? | None | 4 | 8 | 12
+2 | 1 | - | In 1655, Christian Huygens became the first person to discover a moon orbiting a planet other than ours or Jupiter. He called it, simply, Saturni Luna ("moon of Saturn"). What do we call it today? | Titan | Ganymede | Triton | Europa
+2 | 1 | - | Many mammals, such as cats, can detect chemicals in the air with their Jacobson's organ. Where is this organ? | Roof of the mouth | Inside the nose | Behind the ears | At the corners of the eyes
+2 | 1 | - | Castor oil comes, not from beavers, but from the castor bean. What poison comes from the castor bean plant's seeds? | Ricin | Anthrax | Sarin | Mustard gas
+2 | 1 | - | With about 25,000 species, what group of animals makes up almost half of all known vertebrate species? | Fish | Birds | Insects | Mammals
+2 | 1 | - | What blue pill is known chemically as sildenafil citrate? | Viagra | Prozac | Claritin | Zoloft
+2 | 1 | - | What kind of radiation produces tans by releasing the pigment melanin into the skin's cells? | UV rays | Infrared rays | Gamma rays | X-rays
+2 | 1 | - | The Queen Alexandra's birdwing is considered the largest species of what type of animal? | Butterfly | Songbird | Bat | Dinosaur
+2 | 1 | - | This isn't lactose. It's actually a hydroxide of element #12. But it helps with indigestion and constipation. What is it? | Milk of magnesia | Antacid | Sodium bicarbonate | Calcium carbonate
+2 | 1 | - | If you have Tay-Sachs, a fatal brain disease, your family tree almost certainly includes which people? | Eastern European Jews | African Americans | Irish and Scots | Armenians and Arabs
+2 | 1 | - | What is unusual about kids with progeria? | They are aging incredibly rapidly | They have extremely heightened senses | They have stratospheric IQs | They never grow taller than 3 feet
+2 | 1 | - | Dr Juliers Wagner von Jauregg won a Nobel Prize for figuring out a way to fight syphilis with what other disease? | Malaria | Smallpox | Influenza | Tuberculosis
+2 | 1 | - | Who or what would have lanugo hairs? | Fetuses | Whales and dolphins | Fur-bearing animals | Reptiles and birds
+2 | 1 | - | The poorwill was the first bird discovered to be doing something that we once thought no birds did. What? | Hibernating | Attacking with poison | Bonding in same-sex partnerships | Using human words intelligently
+2 | 1 | - | French and British astronomers predicted the existence of what planet in 1846, which Johann Gottfried Galle found later that year? | Neptune | Saturn | Uranus | Pluto
+2 | 1 | - | The smallest true member of the bear family is Ursus malayanus, known popularly by what name? | Sun bear | Koala bear | Panda bear | Sloth bear
+2 | 1 | - | The CIA is believed to have targeted Fidel Castro with this toxic element, also used as a murder weapon in Agatha Christie's The Pale Horse. What is this 81st element? | Thallium | Cadmium | Arsenic | Mercury
+2 | 1 | - | Honda built the first humanoid robot capable of walking, calling the process "advanced step-in mobility". But what did they name the robot? | Asimo | Grio | Aibo | Kismet
+2 | 1 | - | In 2004, a potential tenth planet was named Sedna, for a sea goddess in whose legends? | Inuit (Eskimos) | Mayans | Vikings | Celtic
+2 | 1 | - | The year the Wright brothers actually flew, they kept it quiet, because newspapers were laughing at whose failed attempts? | Samuel Langley | Tennessee Williams | Henry Ford | Thomas Edison
+2 | 1 | - | In 1909, Louis Bleriot won £1000 for being the first person to fly across what body of water? | English Channel | Lake Superior | Atlantic Ocean | Mediterranean Sea
+2 | 1 | - | According to Isaac Newton's first law of motion, what happens to a body in motion, thanks to inertia? | It stays in motion | It slows down | It speeds up | It stops
+2 | 1 | - | Based on its Messier number, Andromeda is known scientifically as M31. What is it? | A galaxy | A star | A constellation | An asteroid
+2 | 1 | - | In its pure form, what metal has the highest thermal conductivity, highest optical reflectivity and lowest contact resistance? | Silver | Copper | Aluminum | Graphite
+2 | 1 | - | Based in New Mexico, Ed Roberts sold kits for what is called the first PC, even though you had to build it yourself. What was it? | Altair-8800 | Apple II | TRS-80 | Commodore 64
+2 | 1 | - | John Harrison, a barely educated craftsman, invented a H-4 chronometer that beat out London's smartest scientists to win a £20,000 prize for doing something. What? | Determining longitude | Setting standard time | Dating fossils | Calculating the speed of light
+2 | 1 | - | Often called the first roller coaster, the Gravity Pleasure Switchback Railway rocketed along at 6 mph, and was built by a preacher named LeMarcus Thompson to keep people away from what location's beer halls? | Coney Island | Las Vegas | Atlantic City | Fort Lauderdale
+2 | 1 | - | Where would you find a plane's empennage? | Tail | Underneath it | Wings | Cockpit
+2 | 1 | - | In what century did the Montgolfier brothers make their famous balloon ride over Paris? | 1700s | 1500s | 1600s | 1900s
+2 | 1 | - | Al Stewart sold ferric hexacyanoferrate, which people added to their laundry to combat yellowing. What is this chemical? | Prussian blue | Danish red | American white | Asian yellow
+2 | 1 | - | When are astronomers likely to observe a peculiar phenomenon called Baily's beads? | During a solar eclipse | During a supernova | During the landing of a Martian probe | During the Northern Lights
+2 | 1 | - | What is the value of 5! (ie, 5 factorial)? | 120 | 15 | 3125 | 0
+2 | 1 | - | A heavy-duty style of number crunching called sabermetrics gets its name from SABR, founded by a warehouse security guard named Bill James. What is the SABR? | Society for American Baseball Research | South Atlanta Brotherhood of Railroaders | Statistical Analysis of Backward Records | Stars-and-Bars Resurgent
+2 | 1 | - | The periodic table is based on the atomic number of the elements. But what is the atomic number based on? | Protons | Electrons | Neutrons | Bygones
+2 | 1 | - | A staple of science fiction, what theoretical particle can theoretically go faster than light? | Tachyon | Quark | Baryon | Photon
+2 | 1 | - | In the 1986 book "Engines of Creation," Eric Drexler described what then-futuristic technology? | Nanotechnology | Cloning | Fiber optics | Robotics
+2 | 1 | - | Although popularized by Leonard Euler, what symbol was first used in 1706 by William Jones, who picked it because it was the first letter in the Greek word for perimeter? | Pi | Rho | Chi | Iota
+2 | 1 | - | What pioneer of computing also backed SpaceShipOne, the private spacecraft that won the $10 million Ansari X Prize in 2004? | Paul Allen | Steve Jobs | Steve Wozniak | Steve Ballmer
+2 | 1 | - | There's 3D and Einstein added time. The Fifth Dimension took us "Up, Up and Away". But how many dimensions are required by superstring theory? | Ten | An infinite number | Six | None
+2 | 1 | - | What unit of electrical charge is named for a French pioneer in electrical theory who was once a military engineer in the West Indies? | Coulomb | Ampere | Joule | Ohm
+2 | 1 | - | What element did its discoverer, Paul Lecoq de Boisbaudran, name for both his native country and as a pun on the Latin translation of his name? | Gallium | Francium | Polonium | Americium
+2 | 1 | - | In math, what word describes the average of a group of numbers? | Mean | Median | Mode | Middle
+2 | 1 | - | Sometimes, you find a beautiful bit of glass called a fulgurite. What created it? | A bolt of lightning | Pressures of the earth | Constant flow of saltwater | Volcanic reactions
+2 | 1 | - | Eratosthenes of Cyrene is said to be the first to estimate accurately the diameter of the earth. What does the Sieve of Eratosthenes do? | Finds prime numbers | Calculates pi | Helps divide large numbers | Estimates square roots
+2 | 1 | - | What Apple computer, the first commercial PC with a mouse, was purportedly named for Steve Jobs' illegitimate daughter? | Lisa | Jennifer | Michelle | Kathleen
+2 | 1 | - | Where did the NEAR Shoemaker spacecraft land on February 12, 2001? | The asteroid 433 Eros | The comet Borrelly | The International Space Station | Pluto
+2 | 1 | - | Created by Mitch Kapor, what killer app spreadsheet was named for the padmasana yoga position? | Lotus 1-2-3 | Microsoft Excel | VisiCalc | Quattro Pro
+2 | 1 | - | When the University of Cambridge was closed due to plague, I retreated to Woolsthorpe, where I did some of my most important work on motion, optics and mathematics. Who am I? | Isaac Newton | Michael Faraday | John Locke | Thomas Hobbes
+2 | 1 | - | Proving you can't be a genius all the time, William Shockley shocked folks with shocking racist theories. But he and his crew at Bell Labs also developed what invention, which replaced vacuum tubes and changed the technological world? | Transistor | Fiber optics | Particle accelerator | Microwave ovens
+2 | 1 | - | As a boy, Joseph Meister was the first person I saved from rabies. And he in turn became caretaker of the institute named for me. Who am I? | Louis Pasteur | Jonas Salk | Joseph Lister | Bernard Christian
+2 | 1 | - | The ceremonial first American AMPS cellular call was made on October 13, 1983, at Soldier's Field in Chicago, when Bob Barnett, Ameritech Mobile's president, called what inventor's grandson in Berlin? | Alexander Graham Bell | Werner Von Braun | Nikola Tesla | Thomas Edison
+2 | 1 | - | Possibly because it does less damage when it hits its targets, what less lethal metal does the Lone Ranger have his bullets made from? | Silver | Lead | Gold | Tin
+2 | 1 | - | What constellation would you take by the horns if you wanted to see the Crab Nebula and such star clusters as the Hyades and the Pleiades? | Taurus | Sagittarius | Capricorn | Ursa Major
+2 | 1 | - | Element 106 was the first element that IUPAC named for somebody still alive, although only after adamant Americans rejected any other compromise. Who? | Glenn Seaborg | Stephen Hawking | Carl Sagan | Ernest Lawrence
+2 | 1 | - | While working with a magnetron at Raytheon, Percy Spencer noticed that its rays melted the candy bar in his pocket. What rays were these? | Microwaves | X-rays | Gamma rays | Manta rays
+2 | 1 | - | Irving Kahn invented the TelePrompTer for what body, which wanted it for presentations to Congress? | US Army | Academy of Motion Picture Arts and Sciences | National Bar Association | NAACP
+2 | 1 | - | What is 16, raised to the power of one half? | 4 | -8 | 8 | 2
+2 | 1 | - | Found in the constellation Bootes, what third brightest star in the night sky is mentioned twice in Job, at 9.9 and 38.32, where it is called Ash? | Arcturus | Sirius | Rigel | Vega
+2 | 1 | - | Roy Plunkett was working on refrigerating coolants for Du Pont when he came across polytetrafluoroethylene. Marc Gregoire went fishing in France, and found that it helped keep his tackle from tangling. What is it? | Teflon | Lycra | Velcro | WD40
+2 | 1 | - | Brooklyn chemist Robert Chesebrough lived to be 96, crediting his longevity to daily ingestion of which product, which he invented in 1879? | Vaseline | Rubber | Corn flakes | Ice cream
+2 | 1 | - | In a famous ecology bet in 1980, economist Julian Simon bet biologist Paul Ehrlich that the price of a portfolio of $200 of each of five mineral commodities would fall over the next 10 years. He even let Ehrlich pick the metals - copper, chrome, nickel, tin, and tungsten. The loser would pay the difference in the 1990 price. What happened? | Ehrlich paid Simon $576.07 | Simon paid Ehrlich $576.07 | Ehrlich paid Simon $57.60 | Simon paid Ehrlich $57.60
+2 | 1 | - | What was Othniel C. Marsh famous for doing? | Finding and naming dinosaurs | Naming pants | Naming stars | Undersea exploration
+2 | 1 | - | Which of these would you find in most eukaryotic cells? | Golgi body | Carob | Fennel | Rue
+2 | 1 | - | If someone told you they had seen a knob, a plump or a volary, what did they actually see? | A group of birds | A herd of grazing animals | A school of fish | A cluster of stars
+2 | 1 | - | What is the name of Saturn's largest moon? | Titan | Hera | Zeus | Jupiter
+2 | 1 | - | What does an ohm measure? | Electric resistance | Atmospheric pressure | Distance | Gravity
+2 | 1 | - | Which planet is the second largest in our solar system? | Saturn | Neptune | Uranus | Mars
+2 | 1 | - | What is the first element on the periodic table? | Hydrogen | Oxygen | Gold | Silver
+2 | 1 | - | What would you do with a caliper? | Use it | Feed it | Wear it | Eat it
+2 | 1 | - | Who is generally credited with designing the first periodic table? | Dmitri Mendeleev | Louis Pasteur | Ivan Pavlov | Gregor Mendel
+2 | 1 | - | Who is credited with creating the smallpox vaccine? | Edward Jenner | Hans Winkler | Karl Stetter | Jonas Salk
+2 | 1 | - | Which of these is not a part of a cell? | Chevril | Nucleus | Cytoplasm | Ribosome
+2 | 1 | - | What is the study of fish called? | Ichthyology | Taxonomy | Virology | Limnology
+2 | 1 | - | Where would you find a filament? | In a light bulb | On a cell | Part of a bird's feather | On the human body
+2 | 1 | - | Which famous scientist is known for his theory of relativity? | Albert Einstein | Gabriel Mouton | Jonas Salk | Andres Celsius
+2 | 1 | - | The word Brontosaurus has been replaced by which dinosaur name? | Apatosaurus | Kryptops | Neosodon | Parasaurolophus
+2 | 1 | - | The controversial OPV hypothesis says that HIV was transmitted to humans from chimps after Africans took an oral vaccine that had been cultivated in chimp kidneys. What was this vaccine for? | Polio | Malaria | Cholera | Diphtheria
+2 | 1 | - | Nowadays, the BTU is defined as 1055 of what metric unit? | Joule | Watt | Ampere | Volt
+2 | 1 | - | M and K are both used to represent what number? | Thousand | Twelve | Hundred | One
+2 | 1 | - | The Devonian period, the fourth division of the Paleozoic Era, is named for Devonshire, which is found in what country, where that period's sedimentary rocks were first studied in the 1830s? | England | Australia | Kenya | Scotland
+2 | 1 | - | Back when people thought that the universe rotated around the Earth, where did they think the sun was? | Between Venus and Mars | Past Uranus | Between the earth and the moon | Between Jupiter and Mars
+2 | 1 | - | Chester Carlson called it xerography, from the Greek words for "dry writing." What do we call it today? | Photocopying | Faxing | Cuneiform | Hieroglyphics
+2 | 1 | - | The second American to fly in space, what Mercury astronaut had also been a front-running candidate to be the first man to land on the Moon? | Gus Grissom | John Glenn | Buzz Aldrin | Roger Chaffee
+2 | 1 | - | What product was originally made thermal-shock resistant borosilicate glass? | Pyrex | Ceramics | Plexiglas | Safety glass
+2 | 1 | - | In 1926, Clifford Harmon established a series of trophies to honor people in what scientific field? | Aviation | Ecology | Paleontology | Computing
+2 | 1 | - | You might blow hot and cold on this one, but who would most likely use a synoptic chart? | Meteorologist | Eye doctor | Bible student | Mathematician
+2 | 1 | - | Because the shape of his nose apparently indicated a character flaw, who was initially denied a berth on the HMS Beagle by its captain, Robert Fitz Roy? | Charles Darwin | Robert Louis Stevenson | James Cook | Horatio Hornblower
+2 | 1 | - | What part of your body has to shut down before you're not just clinically dead, but really, irreversibly, dead? | Brain | Lungs | Heart | Appendix
+2 | 1 | - | Which branch of science studies sound? | Acoustics | Botany | Earth Science | Systems Theory
+2 | 1 | - | Which three colours are used to display the picture on your TV screen? | Red, Green and Blue | Red, Green and Yellow | Red, Green and Black | Red, Green and Brown
+2 | 1 | - | Which of the following was traditionally a major component of blackboard chalk? | Calcium carbonate | Calcium bicarbonate | Sodium bicarbonate | Sodium bisulfate
+2 | 1 | - | What animal's heart kept Baby Fae alive in 1999? | Baboon | Guinea pig | Cat | Dog
+2 | 1 | - | This animal's memory isn't so special, it doesn't die en masse in graveyards, and it's not so much that they're scared of mice, but that they can be surprised by them in confined spaces. What are these pachyderms? | Elephants | Hippos | Rhinos | Crocodiles
+2 | 1 | - | What theory first appeared in a 1905 paper called "On the Electrodynamics of Moving Bodies"? | Special theory of relativity | Plate tectonics | Ego, id and superego | Atomic theory
+2 | 1 | - | Which of these units of distance is longest? | Parsec | Astronomical unit | Light-year | Cubit
+2 | 1 | - | He flew on Gemini 3 and Gemini 10, went to the Moon twice on Apollo 10 and Apollo 16 and flew two space shuttle missions (including the first). Who was he? | John Young | Mike Melvill | Alan Shepard | Franklin Chang-Diaz
+2 | 1 | - | In 1903, Serbian mathematician Mileva Maric married one of her classmates and may have played a key role in his most famous discovery. Who was her hubby? | Albert Einstein | Nikola Tesla | Pierre Curie | Guglielmo Marconi
+2 | 1 | - | In August 1983, who became the first black person in space? | Arnaldo Tamayo Mendez | Guion Bluford | Ronald McNair | Mae Jemison
+2 | 1 | - | What does an astronomer use a bolometer for? | To measure the heat of stars | To gauge parallax | To measure the distance of a star | To measure bolos
+2 | 1 | - | Which of these is not one of the three periods in the Mesozoic Era? | Precambrian | Jurassic | Triassic | Cretaceous
+2 | 1 | - | Amedeo Avogadro's eponymous law covers the volume, temperature and pressure of what? | Gases | Liquids | Solids | Love in Venice
+2 | 1 | - | Who is credited for coming up with the idea for a working atomic bomb on September 12, 1933, while he was waiting for a red light on Southampton Row in Bloomsbury? | Leo Szilard | Enrico Fermi | Ernest Rutherford | Neils Bohr
+2 | 1 | - | The spin of the Earth's axis in not a straight line. This "wobble" has a name that sounds like it was named for one of NBC's "Friends". What is it called? | Chandler Wobble | Phoebe Wobble | Gellar Wobble | Tribbiani Wobble
+2 | 1 | - | In 1886, Karl Benz and Gottlieb Daimler drove the first car, a three-wheeled vehicle with an internal-combustion engine, through the streets of what city? | Munich | Vienna | Detroit | London
+2 | 1 | - | What did Albert Einstein write to Franklin Roosevelt about in a famous 1939 letter? | The atomic bomb | The possibility of space flight | His need for a US visa | The Holocaust
+2 | 1 | - | In 1983, what unit of measure was defined as the distance that light can travel in 1/299,792,458 of a second? | 1 meter | 1 mile | 1 foot | 1 inch
+2 | 1 | - | What word describes trees of the genus Fraxinus, as well as something you get when you burn those trees? | Ash | Pine | Straw | Smoke
+2 | 1 | - | What fish is named for the Trinidadian clergyman who donated samples of them to the British Museum? | Guppy | Trout | Piranha | Herring
+2 | 1 | - | Because perspiration pools in your umbilicus, lint is attracted there and left behind when it dries out. Where? | Navel | Ear | Nostril | Anus
+2 | 1 | - | What part of your body would move if you flicked your carpal bones? | Wrist | Elbow | Knee | Toes
+2 | 1 | - | What lagomorph can rotate each of its ears nearly 270 degrees so that it can pinpoint sounds, and not to improve its TV's reception? | Rabbit | Giraffe | Cat | Cheetah
+2 | 1 | - | If you remember your high school biology, you remember that X and Y chromosomes have something to do with whether you turn out to be a boy or a girl. What combination means pink cribs and dolls for Christmas? | XX | XY | YX | YY
+2 | 1 | - | This controversial sleeping pill is a benzodiazepine depressant. George HW Bush used it until 1992, when it was banned in Britain, which linked it to confusion, hallucinations and hostility. What is it? | Halcion | Valium | Xanax | Librium
+2 | 1 | - | If somebody gives a doctor the finger, the doctor can name the finger. What would he call it? | Medius | Pollex | Annularius | Auricularius
+2 | 1 | - | What Mongolian "desert rat" has been a popular pet since Victor Schwentker used it for research in the 1950s? | Gerbil | Rabbit | Hamster | Guinea pig
+2 | 1 | - | Sometimes called "hillbilly heroin," what prescription drug did Rush Limbaugh get himself addicted to? | OxyContin (Oxycodone) | Methadone (Dolophine) | Tramadol (Ultram) | Celecoxib (Celebrex)
+2 | 1 | - | True bugs are in the order Hemiptera, so the June bug isn't a real bug. What is it? | Beetle | Cockroach | Arthropod | Tick
+2 | 1 | - | Something "bovine" has something to do with cattle. Take away a B, and you get "ovine," an adjective that describes what fellow even-toed ungulate? | Sheep | Goats | Deer | Pigs
+2 | 1 | - | According to Gray's Anatomy, what would you find on either side of a vomer? | Nostrils | Halves of the upper lip | Eyebrows | Dimples of a chin
+2 | 1 | - | What animal, for which a car company and an NFL team are named, is also the largest cat in the Americas? | Jaguar | Cougar | Mountain lion | Puma
+2 | 1 | - | On September 10, 1984, this was the first clue answered on Alex Trebek's Jeopardy. Animals for $100. These rodents first got to America by stowing away on ships. | What are rats? | What are bats? | What are mice? | What are squirrels?
+2 | 1 | - | What flightless pigeon became extinct in 1681, only 80 years after its discovery? | Dodo | Passenger pigeon | Carolina parakeet | Kiwi
+2 | 1 | - | If in Back to the Future, Marty McFly replaced his flux capacitor with a plain old everyday capacitor, what would it do? | Store electrical charge | Send electricity to the gears | Prevent electrical shorts | Measure electrical current
+2 | 1 | - | In the Kevin Bacon game, as well as in Stanley Milgram's Small World Experiment, how many degrees of separation supposedly separate you from anybody else on Earth? | Six | Twenty-five | Twelve | Ninety-nine
+2 | 1 | - | If Sabrina the Teenage Witch needs to make a tincture of something, what will that something be dissolved into? | Alcohol | Blood | Saltwater | Acid
+2 | 1 | - | What do gluons "glue" together within hadrons? | Quarks | Quasars | Quirks | Quickies
+2 | 1 | - | 3D is height, width and breadth. Under Einstein's general theory of relativity, what is the fourth dimension? | Time | Gravity | Light | That "Age of Aquarius" band
+2 | 1 | - | When you pass gas, the gases are a combination of nitrogen, carbon dioxide and methane. If an aristocratic nobleman were to only pass noble gases, which of these gases would not be in the recipe? | Ammonia | Helium | Neon | Argon
+2 | 1 | - | The Mizar was a flying car, made in the early 1970s by adding the rear portion of a Cessna Skymaster to what Ford car, whose fuel tank was prone to explosions if messed with from behind? | Ford Pinto | Ford Escort | Ford Corsair | Ford Focus
+2 | 1 | - | What famous painter also designed a bat-like flying device that never got off the ground? | Leonardo da Vinci | Michelangelo | Samuel Morse | James Whistler
+2 | 1 | - | Why is it unusual that Oklahoma City's two airports are named for Will Rogers and Wiley Post? | They died in the same plane crash | They famously were afraid to fly | They co-wrote, "Man Will Never Fly" | They hated Oklahoma and opposed building the airports
+2 | 1 | - | For whom were the Oldsmobile and the Reo Speedwagon named? | Ransom Eli Olds | Richard Evert Oldman | O Henry Reo | Old Man Reo Ford
+2 | 1 | - | If Auric Goldfinger had all the gold ever extracted in a typical year, what would he need to store it all in? | A good sized room | A football stadium | One of the Great Lakes | The Empire State Building
+2 | 1 | - | In 2000, I founded the Justin Timberlake Fans4Ever Club. When will my club celebrate its quasiquicentennial? | 2125 | 2250 | 2500 | 2050
+2 | 1 | - | What is the chemical symbol of the element with the shortest English name? | Sn | Cu | Pb | Fe
+2 | 1 | - | Mintaka is the Arabic word for "belt". Mintaka, Alnilam and Alnitak are the stars that keep what constellation's pants from falling down? | Orion | Aquarius | Cassiopeia | Sagittarius
+2 | 1 | - | In 2001, a physicist named John Keogh used a loophole in Australian law to patent a "circular transportation facilitation device". By what name is this device usually known? | Wheel | Perpetual motion machine | Bicycle | Running shoes
+2 | 1 | - | Which Wright brother was actually at the controls when their plane first flew? | Orville | Wilbur | Cecil | Douglas
+2 | 1 | - | Who reportedly shouted "Eureka!" when his bath revealed the secret to finding an object's density? | Archimedes | Pythagoras | Euclid | Socrates
+2 | 1 | - | Which American became famous for conducting an insane 1752 experiment with a kite and a key in a thunderstorm to prove that atmospheric electricity causes lightning? | Benjamin Franklin | Thomas Edison | John James Audubon | James Whistler
+2 | 1 | - | All 12 people who walked on the Moon did so in whose presidency? | Richard Nixon | Lyndon Johnson | John Kennedy | Gerald Ford
+2 | 1 | - | By applying electric current to dead frogs' legs, I got the legs to twitch, and became convinced that this "animal electricity" was its life force. Who am I? | Luigi Galvani | Antoine Lavoissier | Alessandro Volta | Benjamin Franklin
+2 | 1 | - | This bookbinder's apprentice had no formal education, but picked up enough science to get a job as Humphry Davy's assistant and then went on to revolutionize electromagnetic theory. Who was he? | Michael Faraday | Isaac Newton | William Gilbert | James Clerk Maxwell
+2 | 1 | - | Mathematician Bertrand Russell won a Nobel Prize, even though there is no Nobel Prize for Mathematics. In what field? | Literature | Peace | Economics | Square Dancing
+2 | 1 | - | To a meteorologist, March comes in like a lion and out like a lamb. But if you're an astrologer, March comes in like a Pisces and out like what sign? | Aries | Aquarius | Taurus | Gemini
+2 | 1 | - | If Ralph Kramden even did manage to send Alice "to the Moon", how far would she have had to travel? | 384,403 kilometers (238,857 miles) | 3,844 kilometers (238,857 miles) | 38,440 kilometers (238,857 miles) | 3,843,033 kilometers (238,857 miles)
+2 | 1 | - | The first astronauts were military test pilots. Who was the first US civilian in space? | Neil Armstrong | Jake Garn | Christa McAuliffe | Harrison Schmitt
+2 | 1 | - | Aside from the fact that it's a flying saucer, what else is unusual about a spy plane called the DarkStar? | It has no pilot | It is used exclusively by civilians | It can become invisible at night | It can reach the Moon and back
+2 | 1 | - | When the Montgolfier brothers launched their first balloon, whom or what was it carrying? | A duck, rooster and sheep | France's crown prince | The brothers themselves | Weather instruments
+2 | 1 | - | Shortly after winning the Nobel Prize, Pierre Curie died. What killed him? | A horse-drawn carriage | Radiation poisoning | A bad egg | Marie Curie's gun
+2 | 1 | - | Arguably, Germany's Heinrich Gobel, Britain's Joseph Swan and Canada's Henry Woodward all beat Thomas Edison to which of his inventions? | Light bulb | Motion pictures | Phonograph | Radio
+2 | 2 | - | As part of the Manhattan Project, what did Enrico Fermi produce in a basement squash court under Stagg Field at the University of Chicago? | Nuclear fission
+2 | 2 | - | About 80 percent of the world's earthquakes and many of the worst volcanoes are found along the Ring of Fire around what body of water? | Pacific
+2 | 2 | - | undefined calcined="">What element is symbolized by a K, because it was named for "kalium", the Arabic word for "alkali"? | Potassium
+2 | 2 | - | In 1901, something peculiar was discovered off the Greek island of Antikythera. It was an ancient version of what object? | Computer
+2 | 2 | - | Now found mostly in high school science classes and horror movies, what electrostatic generator was invented as a kind of particle accelerator? | Van De Graaff generator
+2 | 2 | - | In the 1040s, Bi Sheng invented something, getting a 400-year jump on a goldsmith from Mainz. What was it? | Printing press
+2 | 2 | - | If, per the title of the Jules Verne book, you really were "20,000 Leagues Under the Sea," how far down would you be? | 70,000 miles
+2 | 2 | - | The first person in space who was neither a Soviet nor an American citizen was Vladimir Remek, who went up in 1978. What country was he from? | Czechoslovakia
+2 | 2 | - | As the ancient Listerine ad campaign warned us, what is halitosis? | Bad breath
+2 | 2 | - | Immune to its host's poison, what funny fish hides among the sea anemone's tentacles? | Clownfish
+2 | 2 | - | If you're leaking lacrimal fluid, what part of your body is it dripping from? | Eyes
+2 | 2 | - | In addition to being a field of mathematics, "calculus" also refers to what dental condition? | Tartar
+2 | 2 | - | What drug did chemists at Pfizer discover while looking for a way to treat heart disease? | Viagra
+2 | 2 | - | Based on the volume of a typical barrow, New York state wildlife expert Richard Thomas calculated how much a woodchuck could chuck (if, of course, it could chuck wood). How much? | 700 lbs
+2 | 2 | - | The Disney documentary "White Wilderness" popularized the myth that what creature has a suicidal urge to leap en masse into the ocean? | Lemming
+2 | 1 | - | Whose 1988 book, "A Brief History of Time", sold 729,000 copies, about 728,000 of which were probably never read? | Stephen Hawking | Richard Feynman | Carl Sagan | Albert Einstein
+2 | 1 | - | What is the only even prime number? | Two | One | Zero | Ten
+2 | 1 | - | In 1989, Stanley Pons and Martin Fleischmann claimed to have produced what frigid phenomenon? | Cold fusion | A solution to Fermat's Theorem | Superconductivity | Cloning
+2 | 1 | - | Although the Askesian Society was best known for sniffing laughing gas, it was here that English pharmacist Luke Howard presented his scheme for dividing what meteorological phenomenon into stratus, cumulus and cirrus? | Clouds | Rainbows | Raindrops | Hurricanes
+2 | 1 | - | What letters do you add to the name of an Austrian geneticist to get the name of the Russian chemist who designed the periodic table? | EYEV | OSKY | IMOV | CHEV
+2 | 1 | - | undefined gobi="" the="" from="" divine="">You know astronauts and cosmonauts. But what country was the third in space when it launched its taikonauts? | China | India | Japan | Taikoland
+2 | 1 | - | Sagittarius is aiming at the constellation that killed Orion. That constellation's brightest star is a red supergiant called Antares. What is it? | Scorpius | Ursa Major | Perseus | Taurus
+2 | 1 | - | Alchemist Henning Brandt is the first person known to have discovered an element. And he found it because he was fascinated with human urine. What is it? | Phosphorus | Sulfur | Arsenic | Methane
+2 | 1 | - | If you were being electrocuted, what exactly would kill you? | The amperes | The coulombs | The ohms | The volts
+2 | 1 | - | Imagine that it's midnight on December 31 and that the entire Earth was created just one year ago. On this time scale, how long have humans been on earth? | 11 minutes | 2 weeks | 3 days | Four months
+2 | 1 | - | What French mathematician and amateur theologian is said to have invented the roulette wheel en route to the perpetual motion machine? | Blaise Pascal | Jean-Jacques Rousseau | Voltaire | Antoine Lavoisier
+2 | 1 | - | Which of the following isn't true of organic sulfur compounds called thiols or mercaptans? | Active ingredient in marijuana | Responsible for the smell of skunk spray | Part of the aroma of garlic and coffee | Used so you can smell natural gas
+2 | 1 | - | Who says astronomers can't have a sense of humor? Massive astrophysical compact halo objects and weakly interacting massive particles may sound dull, but MACHOs and WIMPs may explain which intergalactic mystery? | The source of dark matter | The fate of black holes | The edge of the universe | Whether particle physicists or astrophysicists are more manly
+2 | 1 | - | Two people filed patents for the same invention on the same Valentine's Day in 1876. Who beat Elisha Gray by just hours? | Alexander Graham Bell | George Westinghouse | Thomas Edison | Robert Fulton
+2 | 1 | - | The constellation Sagittarius might have use for a constellation called Sagitta. What is Sagitta? | An arrow | A chariot | A target | A shield
+2 | 1 | - | "Apiology" is the scientific study of what?  | Honey Bees | Trout | Earthquakes | Mars
+2 | 1 | - | Which of the following elements has the lowest atomic mass?  | Neon | Chlorine | Silicon | Phosphorus
+2 | 1 | - | "Black Holes and Time Warps - Einstein's Outrageous Legacy" is a popular science book by whom?  | Kip S. Thorne | Anil Ananthaswamy | Stephen Hawking | Leonard Susskind | Kip S
+2 | 1 | - | For what discovery did Albert Einstein get the Nobel Prize in Physics in 1921?  | The photoelectric effect | Cosmological constant | Brownian motion | Special relativity
+2 | 1 | - | Pneumonia affects which part of the human body?  | Lungs | Kidneys | Gums | Rectum
+2 | 1 | - | The "Greater Siren" is a type of which animal?  | Salamander | Toad | Spider | Frog
+2 | 1 | - | What element has the Atomic number thirteen on the Periodic Table?  | Aluminum | Silicon | Sulfur | Phosphorous
+2 | 1 | - | Neurologists are doctors who diagnose and treat problems with what part of the human body?  | Brain | Digestive system | Feet | Heart
+2 | 1 | - | Which of these has a higher number on the "Mohs Scale"?  | Fluorite | Calcite | Talc | Gypsum
+2 | 1 | - | Who became the 1st woman to win a Nobel Prize, and the only woman to win in two different fields?  | Marie Curie | Janaki Ammal | Rachel Carson | Barbara McClintok
+2 | 1 | - | Who is credited for having discovered the "Law of Refraction" in 1621?  | Willebrord Snellius | Alfred Wallace | Humphry Davy | Robert Boyle
+2 | 1 | - | Who wrote the seminal work "A Brief History of Time"?  | Stephen Hawking | Roger Penrose | Carl Sagan | Albert Einstein
+2 | 1 | - | The medical specialty field of "Angiology" deals with what diseases?  | Circulatory system | Respiratory system | Hands | Digestive system
+2 | 1 | - | Brass is a metallic alloy that is made from copper and what other chemical element?  | Zinc | Lead | Iron | Carbon
+2 | 1 | - | Nicolaus Copernicus believed that the size of each planet's orbit depended on its distance from what?  | Sun | Earth | Milky Way | North Star
+2 | 1 | - | Calcium has what atomic number on the Periodic Table of Elements? | 20 | 16 | 12 | 18
+2 | 1 | - | Hematology is an area of medical specialism that focuses on what part of the human body? | Blood | Eyes | Cells | Brain
+2 | 1 | - | What element did British scientist Henry Cavendish discover in 1766? | Hydrogen | Carbon | Boron | Radon
+2 | 1 | - | Who is most famous for his theory of the law of gravitation? | Isaac Newton | Stephen Gould | Albert Einstein | Alfred Wegener
+2 | 1 | - | Eleven on the Beaufort Wind Force Scale indicates what? | Violent Storm | Light Breeze | Calm | Hurricane
+2 | 1 | - | Eyes are affected by which of these diseases? | Conjunctivitis | Cystitis | Encephalitis | Dermatitis
+2 | 1 | - | English geologist and naturalist, he is best known for his contributions to evolutionary theory. Who is he? | Charles Darwin | Albert Einstein | James Watson | David Baltimore
+2 | 1 | - | In what decade was Sir Henry Dale awarded the Nobel Prize for Physiology? | 1930s | 1950s | 1960s | 1940s
+2 | 1 | - | Name the Polish-born French physicist famous for her work on radioactivity. | Marie Curie | Lise Meitner | Ada Lovelace | Rosalind Franklin
+2 | 1 | - | Consisting of countless small particles, the "Encke Gap" is a feature of which planet? | Saturn | Neptune | Uranus | Jupiter
+2 | 1 | - | Found in the eastern part of North America, the common mudpuppy is what type of animal? | Salamander | Toad | Crocodile | Frog
+2 | 1 | - | The medical branch that deals with the study of bones is known as what? | Orthopedics | Periodontics | Pediatrics | Otology
+2 | 1 | - | The only remaining species in the genus Dermochelys, which turtle is the largest of all living turtles? | Leatherback Sea Turtle | Mud Turtle | Wood Turtle | Reeves Turtle
+2 | 1 | - | The energy in a sound wave can be measured using what unit of measurement? | Decibels | Radio Waves | Moles | Pascals
+2 | 1 | - | The explosion of a star that has reached the end of its life is known as? | Supernova | Black Hole | Bolide | Solstice
+2 | 1 | - | What is the proper term for the layer of earth found between the crust and the outer core? | Mantle | Corolla | Magna | Inner Core
+2 | 1 | - | Which element is represented by Na? | Sodium | Plutonium | Silver | Tin
+2 | 1 | - | Varieties of this bird include the grasshopper, reed and marsh. | Warbler | Falcon | Wren | Duck
+2 | 1 | - | Known as the father of nuclear physics, which of these men is credited with splitting the atom? | Sir Ernest Rutherford | Sir John Percy | Sir Henry Adams | Sir William King
+2 | 1 | - | Where would you find your triceps? | The upper arm | Stomach | The lower back | Lower leg
+2 | 1 | - | What does the acronym "FM" stand for on your radio? | Frequency modulation | Frequency meter | Fifteenth modulation | Fast meter
+2 | 1 | - | Which of these organs filters foreign substances out of the blood? | Spleen | Pancreas | Stomach | Heart
+2 | 1 | - | What is the boiling point for grain or ethanol alcohol? | 173F | 455F | 231F | 100F
+2 | 1 | - | Which planet from our solar system has the shortest day? | Jupiter | Mercury | Mars | Neptune
+2 | 1 | - | Who is credited with inventing the aqualung in 1943? | Jacques Cousteau | Leonardo di Vinci | William Sturgeon | Nikola Tesla
+2 | 1 | - | Who is often referred to as the “Father of the atomic bomb”? | Enrico Fermi | Nicolas Cugnot | Christian Huygens | Karl Whilliem
+2 | 1 | - | Where would you find an anvil, a stirrup and a hammer? | The ear | A radio | The foot | A battery
+2 | 1 | - | What is oxygen's atomic number? | 8 | 40 | 2 | 11
+2 | 1 | - | Sir Frank Whittle is best-known for inventing what? | Turbojet engine | Flour mill | Stapler | Machine gun
+2 | 1 | - | Often used for theatrical effects, what is dry ice? | Carbon dioxide | Carbonate | Nitrous oxide | Ammonium sulfate
+2 | 1 | - | Which of the following elements is not a noble gas? | Boron | Neon | Radon | Helium
+2 | 1 | - | Where is the thickest skin found on the human body? | The palm | The head | The bum | The back
+2 | 1 | - | What did Canadian inventor Joseph Armand Bombardier invent in 1936? | Snowmobile | Electric car | Solar battery | Motorcycle
+2 | 1 | - | Which of these men is associated with the creation of penicillin? | Alexander Fleming | Emile Roux | Norman Crick | James Salk
+2 | 1 | - | Who won a Noble Prize for his work in quantum theory and atomic structure? | Niels Bohr | Carl Roman Abt | Larry Page | Lucien Olivier
+2 | 1 | - | Who developed the Google search engine with Larry Page? | Sergey Brin | Leland Clark | Ali Javan | Scott Jones
+2 | 1 | - | Cytology is the study of which of the following? | Cells | Maps | Large cats | Magnets
+2 | 1 | - | Bamboo is known for being? | The fastest growing plant in the world | Growing only at night | Having above ground roots | Having two colors of flowers
+2 | 1 | - | Which culture is credited with inventing the abacus? | Chinese | Egyptian | Russian | Mayan
+2 | 1 | - | What is another name for Vitamin A? | Retinol | Thiamin | Niacin | Riboflavin
+2 | 1 | - | When was the electric battery invented? | 1800 | 1967 | 1876 | 1903
+2 | 1 | - | Venus and which other planet are sometimes called the "Blue Planet"? | Earth | Mercury | Neptune | Mars
+2 | 1 | - | The hypodermic syringe was invented during which of these wars? | American Civil War | The Hundred-Year War | World War II | World War I
+2 | 1 | - | Which of these inventions dates back to about 1500 BC? | Glass | Comb | Paintbrush | Paper
+2 | 1 | - | Which planet did Mariner 9 orbit in 1971? | Mars | Jupiter | Saturn | Mercury
+2 | 1 | - | About the size of a fist, which organ in the human body helps it to fight infections and filter foreign objects? | Spleen | Kidney | Pancreas | Liver
+2 | 1 | - | What is Agent Orange? | A herbicide | A math problem | A character in a cartoon | A nickname for an element
+2 | 1 | - | Which of the following scientists have not won a Nobel Prize for chemistry? | Peter Higgs | Hans Fischer | Gerhard Erti | Marie Currie
+2 | 1 | - | Which of the following items was not invented in 1965? | Cash Dispenser  | Respirator | Optical Disk (now Compact Disk)  | Hypertext 
+2 | 1 | - | Approximately, what percentage of the population has an IQ above 100? | 50 percent | 60 percent | 70 percent | 80 percent
+2 | 1 | - | One of the largest land carnivores of all time, on which continent did the Tyrannosaurus Rex once live? | North America | South America | Asia | Africa
+2 | 1 | - | Although its development was achieved with the work of many scientists, who is generally regarded as the chief inventor of the television? | John Logie Baird | Charles Babbage | Charles Francis Jenkins | Alexander Graham Bell
+2 | 1 | - | The malleable metal alloy pewter is made from which of the following? | Copper, Antimony, Bismuth and Tin | Lead and Bronze | Copper, Gold and Tin | Copper and Bronze
+2 | 1 | - | The fifth planet from the Sun, which planet can be found between Mars and Saturn in our Solar System? | Jupiter | Mercury | Venus | Earth
+2 | 1 | - | Which well-known English theoretical physicist suffers from a motor neuron disease, which leaves him almost entirely paralysed? | Stephen Hawking | Leonard Mlodinow | Richard Dawkins | Carl Sagan
+2 | 1 | - | Ascorbic acid is a vitamin which most of us consume every day. By what name is ascorbic acid better known? | Vitamin C | Vitamin B | Vitamin D | Vitamin A
+2 | 1 | - | What unit of measurement do we use to measure electrical current? | Amperes | Volts | Capacitors | Resistors
+2 | 1 | - | Having written close to 500 books, what science fiction writer wrote the three laws of robotics? | Isaac Asimov | Douglas Adams | Ray Bradbury | H
+2 | 1 | - | What is the colored part of your eye that controls how much light passes through your pupil called? | Iris | Cornea | Pupil | Lens
+2 | 1 | - | Most flowers contain a male reproductive organ called the "stamen" and a female organ called? | Pistil | Sepal | Peduncle | Stigma
+2 | 1 | - | The double-helix shaped molecule that forms the genetic material of all organisms is known as? | DNA | DNZ | DNI | DNB
+2 | 1 | - | I'm not a superhero's nemesis, but rather a noble gas. What am I? | Krypton | Caesium | Dubnium | Lithium
+2 | 1 | - | Which of the following is the study of the interaction of organisms with each other and their environment? | Ecology | Bromatology | Histopathology | Agrobiology
+2 | 1 | - | How many moons does the closest planet to the Sun have? | 0 | 2 | 3 | 1
+2 | 1 | - | If I had one liter of beer, how many centiliters of beer would I have? | 100 centiliters | 10 centiliters | 1000 centiliters | 10,000 centiliters
+2 | 1 | - | Which constellation derives its name from the Greek word for swan? | Cygnus | Lyra | Helios | Phaethon
+2 | 1 | - | What is the name of the biological system that controls breathing? | Respiratory | Digestive | Reproductive | Immune
+2 | 1 | - | Often referred to as the "sunshine vitamin," which vitamin does exposure to the sun provide? | Vitamin D | Vitamin C | Vitamin B | Vitamin E
+2 | 1 | - | What kind of tree produces acorns? | Oak | Birch | Pine | Maple
+2 | 1 | - | Which biological system controls glands and hormones? | Endocrine | Nervous | Lymphatic | Reproductive
+2 | 1 | - | What is the chemical symbol for Titanium? | Ti | Ta | TT | T
+2 | 1 | - | The process by which flowering plants are pollinated by birds is called? | Ornithophily | Anemophily | Entomophily | Autogamy
+2 | 1 | - | Which element is represented by Nb on the periodic table? | Niobium | Potassium | Nobelium | Nickel
+2 | 1 | - | Where are your quadriceps located? | Thigh | Arm | Stomach | Back
+2 | 1 | - | Which of these would be considered a fossil fuel? | Coal | Geothermic | Wind | Solar
+2 | 1 | - | Zinc and copper make up what alloy? | Brass | Inconel | Pewter | Steel
+2 | 1 | - | What are the two elements in water? | Hydrogen and oxygen | Carbon and oxygen | Hydrogen and carbon | Oxygen and helium
+2 | 1 | - | Benjamin Franklin is often associated with what natural phenomena? | Lightening | Earth quakes | Tornadoes | Southern lights
+2 | 1 | - | The second lightest halogen, which gas is often used as a disinfectant in drinking water? | Chlorine | Fluorine | Lithium | Hydrogen
+2 | 1 | - | What did Charles Parson invent? | The steam turbine | The refrigerator | The electric telegraph | The telescope
+2 | 1 | - | Where are the majority of blood cells produced? | Bone marrow | Pancreas | Heart | Liver
+2 | 1 | - | What is the name of the condition that prevents blood clotting called? | Hemophilia | Myeloma | Leukemia | Anemia
+2 | 1 | - | What is the name of the force that keeps planets in their orbits? | Gravitational | Kinetic | Nuclear | Electromagnetic
+2 | 1 | - | France launched its first satellite, a 92.6-pound device named Asterix, in what year? | 1965 | 1975 | 1958 | 1957
+2 | 1 | - | The moon's distance from the Earth varies by about 30,500 miles. What is the average distance? | About 238,857 miles | About 124,240 miles | About 1 million miles | About 502,280 miles
+2 | 1 | - | According to studies and statistics gathered, when do most heart attacks tend to occur? | 6 to 9 a.m. | 6 to 9 p.m. | 12 to 5 p.m. | 1 to 5 a.m.
+2 | 1 | - | What is "Petrology"? | Study of rocks | Science of vegetation | Study of pets | Science of petroleum
+2 | 1 | - | What is the approximate temperature at the center of the Earth? | 9,800 degrees F | 2,800 degrees F | 5,800 degrees F | 15,800 degrees F
+2 | 1 | - | Which astronomer and mathematician initally developed the idea of "Retrograde Motion"? | Ptolemy | Copernicus | Sagan | Gallileo
+2 | 1 | - | How is the median length of a trapezoid calculated? | It is the average of the two bases | It is the product of the bases | It is the difference of the bases | It is the difference of the bases squared
+2 | 1 | - | Which computer scientist is best known as the inventor of the World Wide Web? | Tim Berners-Lee | William Netscape | Steve Jobs | Bill Gates
+2 | 1 | - | Whose theorem states that an angle inscribed in a semicircle is a right angle? | Thales | Euclid | Pythagoras | Rhazes
+2 | 1 | - | Discovered by accident in 1856 by a British chemistry student named William Perkin, what is the name of the first aniline dye? | Mauveine | Lavenine | Magentine | Orangine
+2 | 1 | - | Who would most likely use a "Venn Diagram"? | A Set Theorist | A Pathologist | A Botanist | A Cardiologist
+2 | 1 | - | Which of the following materials is stronger than steel? | Kevlar | Teflon | Flak | Rayon
+2 | 1 | - | What name is given to plants whose seeds are enclosed inside the fruit they produce? | Angiosperms | Deciduous | Gymnosperms | Coniferophyta
+2 | 1 | - | Nucleic acid which includes DNA was first discovered in 1869 by which physician and biologist? | Friedrich Miescher | Francis Crick | Gregor Mendel | James D
+2 | 1 | - | Roughly the size of a soccer ball, the eyes of what animal are the largest on the planet? | Colossal Squid | Blue Whale | Large Swordfish | Spook Fish
+2 | 1 | - | In which of the following countries did Charles Lindbergh land after his historic first solo transatlantic flight in 1927? | France | Russia | United States | England
+2 | 1 | - | When heated, which of the following metals will expand the most? | Caesium | Aluminum | Lead | Tin
+2 | 1 | - | There are two classes of sex chromosomes, X and Y. Males have one X and one Y. What do females have? | Two Xs | None | Two Ys | One X and one Y
+2 | 1 | - | In chemistry, what type of matter is established when an acid is mixed with an alkali? | Salt | Arsenic | Barium | Chlorine
+2 | 1 | - | Which of your organs manufactures urine from waste? | Kidneys | Large Intestine | Liver | Bladder
+2 | 1 | - | What do you get when you add up the three angles of a right triangle? | 180 Degrees | 120 Degrees | 160 Degrees | 90 Degrees 
+2 | 1 | - | In 1447, the German blacksmith Johannes Gutenberg devised the printing press and introduced printing to Europe. What was the first publication he printed? | The Bible | Advertisement | Newspaper | Children's Stories
+2 | 1 | - | An American chemist, who invented nylon in 1935? | William Hume Carothers | John Moses Browning | Seth Boyden | William Edward Addis
+2 | 1 | - | What theory or set of laws is generally associated with the equation Albert Einstein introduced to the world in 1905 - E = mc2? | Theory Of Relativity | Laws of Motion | Big-Bang Theory | Laws of Thermodynamics
+2 | 1 | - | Originally developed in the 15th century, what is an anemometer? | Device for Measuring Wind Speed | Device for Measuring Temperature | Device for Measuring Humidity | Device for Measuring Rainfall
+2 | 1 | - | Deimos and Phobos are the only two moons of which planet? | Mars | Mercury | Jupiter | Neptune
+2 | 1 | - | What is the biblical (or old name) for the chemical element "Sulfur"? | Brimstone | Gun Powder | Redstone | Limestone
+2 | 1 | - | Which German car engineer is widely regarded as the architect of the petrol-powered automobile? | Karl Benz | Wilhelm Maybach | Thomas Davenport | Henry Ford
+2 | 1 | - | Found primarily in Africa's tropical forests, which of the following is the largest known species of beetle? | Goliath Beetle | Eastern Hercules Beetle | Powder Post Beetle | Blister Beetle
+2 | 1 | - | Which of the following scientific jobs would be involved in the study of plants? | Botanist | Hydrologist | Geoscientist  | Physicist
+2 | 1 | - | The practice of drilling holes in a skull is known as... | Trepanning | Trajectory | Lobotomy | Mastectomy
+2 | 1 | - | The Scoville Heat Unit Scale can be used to measure which of the following? | Chilli pepper spiciness | Radiation | The movement of tectonic plates in magma | Heat of gamma rays in outer space.
+2 | 1 | - | Bleeding gums and extreme weakness, often happening at sea, are symptoms of which disease? | Scurvy | Rabies | Mildronate | Angina
+2 | 1 | - | Which human body part contains the smallest bones? | Ear | Foot | Hand | Mouth
+2 | 1 | - | The layer of atmosphere closest to us is known as... | Troposphere | Magnetosphere | Mesosphere | Stratosphere
+2 | 1 | - | Where can we find the Karman line? | In the atmosphere | On a map of the oceans | On the verge of the Solar System | In the depths of Earth
+2 | 1 | - | What is the lifespan of a red blood cell? | Around 120 days | No more than 48 hours. | About 3 weeks | At least 2 years
+2 | 1 | - | The Viking space probe was the first one to send photographs of which planet? | Mars | Venus | Saturn | Jupiter
+2 | 1 | - | Tabular, blocky, wedge, dome, pinnacle, dry dock, growler and bergy bit. These are all terms used for which of the following? | Icebergs | Viruses | Asteroids | Volcanos
+2 | 1 | - | What is the symbol for Calcium? | Ca | Cs | Cl | Co
+2 | 1 | - | How many square millimetres is there in a square kilometer? | 1 trillion (10^12) | 1 million (10^6) | 1 quadrillion (10^15) | 1 billion (10^9)
+2 | 1 | - | Which blood type is the rarest? | AB | O | A | B
+2 | 1 | - | Ichthyology is the study of... | Fish | Reptiles | Bugs | Birds
+2 | 1 | - | How long does a full day last in Jupiter? | Less than 10 hours | Less than 6 hours | Less than 4 hours | Over 15000 hours.
+2 | 1 | - | What is a feldspar? | A mineral | An insect | A tree | A structural part of a building
+1 | 1 | - | Where would you find the Sea of Tranquility? | The Moon | Mars | The Pacific Ocean | The Atlantic Ocean
+1 | 1 | - | What is the chemical symbol for gold? | Au | G | A | Go
+1 | 1 | - | Which of these animals is an herbivore? | Cow | Shark | Dog | Eagle
+1 | 1 | - | If you suffer from lygophobia, what are you afraid of? | The Dark | Water | Dust | Clouds
+1 | 1 | - | What did astronauts claim the moon smelled like? | Burnt gunpowder | Manure | Propane gas | Mold
+1 | 1 | - | Where would you find a proboscis? | A person's face | In Africa | On a tree | In the ocean
+1 | 1 | - | How many bones are in a shark's body? | 0 | 130 | 97 | 228
+1 | 1 | - | Which of these is another word/phrase for Tsunami? | Tidal wave | Hurricane | Earthquake | Tornado
+1 | 1 | - | What do you call a person who studies rocks? | A geologist | A biologist | An ornithologist | An Archeologist
+1 | 1 | - | Where is the largest desert on earth? | Antarctica | Africa | Europe | North America
+1 | 1 | - | Gregor Mendel performed experiments on which of the following? | Plants | Monkeys | Dogs | Trees
+1 | 1 | - | If it is -40 Celsius, what is the temperature in Fahrenheit? | -40 | 10 | 0 | 20
+1 | 1 | - | What does a cord measure? | Wood | Hay | Yarn | Milk
+1 | 1 | - | When was the planet Neptune discovered? | 1846 | 1637 | 1289 | 1945
+1 | 1 | - | Which of these planets does not have any satellites? | Mercury | Earth | Jupiter | Neptune
+2 | 2 | - | Where can Olympus Mons be found? | Mars
+2 | 2 | - | The red spot of Jupiter is how many times the size of Earth? | 3
+2 | 2 | - | In what year was the planet Neptune discovered? | 1846
+2 | 2 | - | The orbit of Pluto crosses the orbit of what planet? | Neptune
+2 | 2 | - | In what year was Pluto reclassified as a dwarf planet? | 2006
+2 | 2 | - | The asteroid belt is located between the orbits of what two planets? | Mars and Jupiter
+2 | 2 | - | Halley's Comet appears roughly how often? | 76 years
+2 | 2 | - | What is the only planet to rotate clockwise? | Venus
+2 | 2 | - | The surface gravity of the sun is estimated to be how many times greater than that of Earths? | 28
+2 | 2 | - | The planet Uranus is almost identical in size to what other planet? | Neptune
+2 | 2 | - | Which planet was discovered by William Herschel? | Uranus
+2 | 2 | - | Where would you find the Caloris Basin? | Mercury
+2 | 2 | - | Which planet has the 'Red Spot'? | Jupiter
+2 | 2 | - | What was the first spacecraft to visit Jupiter? | Pioneer 10
+2 | 2 | - | On which planet would you find Olympus Mons? | Mars
+2 | 2 | - | Which is the only dwarf planet that has not been visited by a space craft? | Pluto
+2 | 2 | - | Which of these is not one of Jupiter's Galilean Moons? | Galatea
+2 | 2 | - | Which spacecraft orbited Jupiter for 8 years? | Galileo
+2 | 2 | - | Calypso orbits which planet? | Saturn
+2 | 2 | - | What is the main chemical element in the sun? | Hydrogen
+2 | 2 | - | Which of these planets is a gas giant? Mercury, Mars or Jupiter? | Jupiter
+2 | 2 | - | How many moons does Mars have? | 2
+2 | 2 | - | Which planet do the moons Io, Europa, Callistro and Ganymede orbit? | Jupiter
+2 | 2 | - | Which planet has eleven rings? | Uranus
+2 | 2 | - | Which is the only planet named after the Greek sky god? | Uranus
+2 | 2 | - | Which planet spins on its axis in ten hours? | Saturn
+2 | 2 | - | Which planet was named after the god of the underworld? | Neptune
+2 | 2 | - | Which of these planets is a gas giant? | Neptune
+2 | 2 | - | Which planet is named after the goddess of love? | Venus
+2 | 2 | - | How many moons does Venus have? | 0
+2 | 2 | - | How many satellites does the earth have? (not manmade) | 1
+2 | 2 | - | Approximately how many years does it take Halley&rsquo;s Comet to make its full orbit? | 76
+2 | 2 | - | What do North Americans call the constellation "The Plough"? | The Big Dipper
+2 | 2 | - | Our solar system is part of which galaxy? | The Milky Way
+2 | 2 | - | What is the hottest planet? | Venus
+2 | 2 | - | Which planet is named after the King of the gods? | Jupiter
+2 | 2 | - | Which planet is named after the god of the sea? | Neptune
+2 | 2 | - | How many stars are in the Big dipper? | 7
+2 | 2 | - | How many planets are in the solar system? | 8
+2 | 2 | - | Which planet is closest to the sun? | Mercury
+2 | 2 | - | What is the name of the smallest planet? | Mercury
+2 | 2 | - | How many moons does Jupiter have? | 63
+2 | 2 | - | Which planet has the big red spot? | Jupiter
+2 | 2 | - | How long does it take for Venus for travel around the sun? | 225 days
+2 | 2 | - | Which planet is named for the Roman messenger god? | Mercury
+2 | 2 | - | Which planet did William Herschel discover? | Uranus
+2 | 2 | - | Which planet is often referred to as the red planet? | Mars
+2 | 2 | - | How many moons does Neptune have? | 13
+2 | 2 | - | Which planet is the farthest from the sun? | Neptune
+2 | 2 | - | Which planet has a moon named Triton? | Neptune
+2 | 2 | - | Which planet is named after the goddess of love? | Venus
+2 | 2 | - | How many moons does Venus have? | 0

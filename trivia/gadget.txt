@@ -1,0 +1,20 @@
+3 | 1 | - | The Western Electric Model 500 telephone uses tone dialing to dial phone numbers. | False | True
+1 | 1 | - | Microphones can be used not only to pick up sound, but also to project sound similar to a speaker. | True | False
+3 | 1 | - | In what year was the Oculus Rift revealed to the public through a Kickstarter campaign? | 2012 | 2010 | 2011 | 2013
+1 | 1 | - | When did the CD begin to appear on the consumer market? | 1982 | 1992 | 1972 | 1962
+3 | 1 | - | Mobile hardware and software company "Blackberry Limited" was founded in which country? | Canada | Norway | United States of America | United Kingdom
+3 | 1 | - | What are the base station trackers used for the HTC Vive called? | Lighthouse | Motion | Constellation  | Trackers
+1 | 1 | - | When was the iPhone released? | 2007 | 2005 | 2006 | 2004
+3 | 1 | - | Which company developed the Hololens? | Microsoft | HTC | Oculus | Tobii
+5 | 1 | - | Which of the following cellular device companies is NOT headquartered in Asia? | Nokia | LG Electronics | Samsung | HTC
+1 | 1 | - | What round is a classic AK-47 chambered in? | 7.62x39mm | 7.62x51mm | 5.56x45mm | 5.45x39mm
+1 | 1 | - | The term "battery" to describe an electrical storage device was coined by? | Benjamin Franklin | Nikola Tesla | Luigi Galvani |  Alessandro Volta
+1 | 1 | - | Which buzzword did Apple Inc. use to describe their removal of the headphone jack? | Courage | Innovation | Revolution | Bravery
+5 | 1 | - | Which of the following is the standard THX subwoofer crossover frequency? | 80 Hz | 70 Hz | 90 Hz | 100 Hz
+1 | 1 | - | When was the Tamagotchi digital pet released? | 1996 | 1989 | 1992 | 1990
+5 | 1 | - | Which round does a WW2 M1 Garand fire? | .30-06 | .308 | 7.62 | 7.62x51mm
+1 | 1 | - | The communication protocol NFC stands for Near-Field Control. | False | True
+3 | 1 | - | Which company designed the "Betamax" video cassette format? | Sony | Panasonic | LG | Fujitsu
+3 | 1 | - | Who patented a steam engine that produced continuous rotary motion? | James Watt | Nikola Tesla | Albert Einstein | Alessandro Volta
+1 | 1 | - | When was the DVD invented? | 1995 | 2000 | 1990 | 1980
+5 | 1 | - | Who built the first laser? | Theodore Harold Maiman | Nikola Tesla | Jack Kilby | Edith Clarke
