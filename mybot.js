@@ -69,7 +69,7 @@ client.on("message", message => {
 	}
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
-		if (cmd && cmd !== 'sayit') {
+		if (cmd && cmd !== 'sayit' && cmd !== 'response') {
 			cmd.run(client, message, args, maindb);
 		}
 	}
