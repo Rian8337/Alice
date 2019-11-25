@@ -3,8 +3,9 @@ module.exports.run = (client, message, args) => {
 	if (message.attachments.size > 0) return;
 	let sayMessage = args.join(" ");
 	if (!sayMessage) return;
-	message.author.lastMessage.delete().then (() => {});
-	message.channel.send(sayMessage)
+	message.author.lastMessage.delete().then (() => {
+		message.channel.send(sayMessage)
+	});
 };
 
 module.exports.help = {
