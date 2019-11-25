@@ -67,29 +67,12 @@ client.on("message", message => {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
-
-	let cmd = client.commands.get(command.slice(config.prefix.length));
-	if (cmd && cmd !== 'sayit') {
-		cmd.run(client, message, args, maindb);
+	if (message.content.startsWith(config.prefix)) {
+		let cmd = client.commands.get(command.slice(config.prefix.length));
+		if (cmd && cmd !== 'sayit') {
+			cmd.run(client, message, args, maindb);
+		}
 	}
 });
-
-/*client.on("messageDelete", message => {
-	if (message.author.bot) return;
-	let channelList = config.log_channel;
-	channelList.forEach((id) => {
-		let channel = client.channels.find("name", id);
-		if (channel) {
-			const embed = new Discord.RichEmbed()
-				.setAuthor(message.author.tag, message.author.avatarURL)
-				.setColor("#527ea3")
-				.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-				.setTimestamp(new Date())
-				.setDescription(`**Message deleted in ${message.channel}**`)
-				.addField("Deleted message:", message.cleanContent);
-			channel.send({embed});
-		}
-	})
-});*/
 
 client.login(process.env.BOT_TOKEN);
