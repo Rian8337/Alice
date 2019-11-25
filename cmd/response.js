@@ -31,7 +31,6 @@ function responsefactor(msg) {
 }
 
 module.exports.run = (client, message, args) => {
-    if (message.author.id != '386742340968120321') return;
     if (!args[0]) return;
     let factor = 0;
     const index = Math.floor(Math.random() * (response.length - 1) + 1);
