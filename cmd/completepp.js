@@ -21,6 +21,10 @@ function test(uid, page, cb) {
     console.log("Current page: " + page);
     var url = 'http://ops.dgsrz.com/api/scoresearch.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
     request(url, function (err, response, data) {
+        if (!data) {
+            console.log("Empty response from droid API");
+            page--;
+        }
         //console.log(data);
         var entries = [];
         var line = data.split('<br>');
@@ -38,7 +42,7 @@ function calculatePP(ppentries, entry, cb) {
     var url = "https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + entry[8];
     request(url, function (err, response, data) {
         if (!data) {
-            console.log("empty respond");
+            console.log("Empty response from osu! API");
             cb();
             return;
         }
