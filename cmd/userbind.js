@@ -2,10 +2,9 @@ const mongodb = require('mongodb');
 const http = require('http');
 
 module.exports.run = (client, message, args, maindb) => {
-	if (!args[0]) {message.channel.send("Your uid please!"); return;}
+	let uid = Number(args[0]);
 	if (!Number.isInteger(args[0])) {message.channel.send("Invalid uid")}
 	else {
-		let uid = parseInt(args[0]);
 		let name="";
 		var options = {
 			host: "ops.dgsrz.com",
