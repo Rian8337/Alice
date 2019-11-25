@@ -236,7 +236,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 				const embed = {
 					"title": title,
-					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` (`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
+					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%`\n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
 					"color": 8311585,
 					"author": {
 						"name": "Recent Play for "+ name,
