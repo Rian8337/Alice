@@ -54,7 +54,7 @@ module.exports.run = async (client, message, args) => {
         logchannel.send({embed})
     }).catch(() => {
         message.channel.send("User is already banned!")
-    }
+    })
 
    
 };
