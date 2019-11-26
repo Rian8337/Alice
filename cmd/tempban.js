@@ -21,10 +21,10 @@ module.exports.run = (client, message, args) => {
         return;
     }
     let toban = message.guild.members.get(userid);
-    if (!toban) {
-        toban = userid
-    }
-    else if (!toban.bannable) {
+    if (!toban) toban = userid;
+
+
+    if (!toban.bannable) {
         message.channel.send("This user cannot be banned!");
         return;
     }
