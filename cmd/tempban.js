@@ -77,7 +77,7 @@ module.exports.run = async (client, message, args) => {
         }, bantime * 24 * 3600 * 1000)
     }).catch(() => {
         message.channel.send("User is already banned!")
-    }
+    })
 
 };
 
