@@ -75,9 +75,9 @@ module.exports.run = async (client, message, args) => {
         setTimeout(() => {
             message.guild.unban(toban, "Ban time is over").catch();
         }, bantime * 24 * 3600 * 1000)
-    }).catch(() => {
-        message.channel.send("User is already banned or cannot be banned!")
-    })
+    }).catch(()
+
+
 };
 
 module.exports.help = {
