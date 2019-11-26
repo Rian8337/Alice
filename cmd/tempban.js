@@ -58,7 +58,7 @@ module.exports.run = async (client, message, args) => {
         message.channel.send("Please enter your reason.");
         return;
     }
-    message.guild.ban(toban, {days: bantime, reason: reason}).then (() => {
+    message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
 
         const embed = new Discord.RichEmbed()
