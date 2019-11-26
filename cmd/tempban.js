@@ -30,6 +30,10 @@ module.exports.run = (client, message, args) => {
 
 
     let bantime = args[1];
+    if (!bantime) {
+        message.channel.send("Please specify ban time!");
+        return;
+    }
     if (bantime.content.endsWith("h")) bantime = parseFloat(bantime) / 24;
     else if (bantime.content.endsWith("d")) bantime = parseFloat(bantime);
     else {
