@@ -2,7 +2,7 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel || message.author.id !== '386742340968120321') return;
+    if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) {
@@ -24,12 +24,13 @@ module.exports.run = async (client, message, args) => {
         return;
     }
 
-    if (userid === message.author.id) {
+    if (userid == message.author.id) {
         message.channel.send("You cannot ban yourself!");
         return;
     }
 
-    let banned = message.guild.fetchBans().find(user => user.id === userid);
+    let banlist = await message.guild.fetchBans();
+    let banned = banlist.get(userid);
     if (banned) {
         message.channel.send("User is already banned!");
         return;
