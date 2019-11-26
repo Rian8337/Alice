@@ -30,12 +30,16 @@ module.exports.run = async (client, message, args) => {
         message.channel.send("User not found!");
         return;
     }
+    if (!toban.bannable) {
+        message.channel.send("User cannot be banned!");
+        return;
+    }
     let reason = args.slice(1).join(" ");
     if (!reason) {
         message.channel.send("Please enter your reason.");
         return;
     }
-    await message.guild.ban(toban, {reason: reason}).then (() => {
+    message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
 
         const embed = new Discord.RichEmbed()
@@ -48,9 +52,9 @@ module.exports.run = async (client, message, args) => {
             .addField("=================", "Reason:\n" + reason);
 
         logchannel.send({embed})
-    }).catch(() => {
-        message.channel.send("User is already banned or cannot be banned!")
     })
+
+   
 };
 
 module.exports.help = {
