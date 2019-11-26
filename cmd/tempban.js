@@ -20,8 +20,11 @@ module.exports.run = (client, message, args) => {
         message.channel.send("You cannot ban yourself!");
         return;
     }
-    userid = message.guild.members.get(userid);
-    if (!userid.bannable) {
+    let toban = message.guild.members.get(userid);
+    if (!toban) {
+        toban = userid
+    }
+    else if (!toban.bannable) {
         message.channel.send("This user cannot be banned!");
         return;
     }
@@ -45,7 +48,7 @@ module.exports.run = (client, message, args) => {
         message.channel.send("Please enter your reason.");
         return;
     }
-    message.guild.ban(userid, {days: bantime, reason: reason}).then (() => {
+    message.guild.ban(toban, {days: bantime, reason: reason}).then (() => {
         message.author.lastMessage.delete();
 
         const embed = new Discord.RichEmbed()
@@ -60,7 +63,7 @@ module.exports.run = (client, message, args) => {
         logchannel.send({embed})
        
         setTimeout(() => {
-            message.guild.unban(userid, "Ban time is over").catch();
+            message.guild.unban(toban, "Ban time is over").catch();
         }, bantime * 24 * 3600 * 1000)
     }).catch(() => {
         message.channel.send("User is already banned!")
