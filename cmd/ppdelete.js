@@ -2,7 +2,8 @@ var Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '386742340968120321') return;
-	let logchannel = client.channels.find("name", "pp-log");
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('638671295470370827');
 	if (!logchannel) {message.channel.send("Please create #pp-log first!"); return;}
 
 	let ufind = args[0];
