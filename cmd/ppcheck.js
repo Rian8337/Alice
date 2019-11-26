@@ -4,13 +4,15 @@ require('mongodb');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
-	if (args[0]) {
+	if (args[0] && args[0] > 15) {
 		ufind = args[0];
 		ufind = ufind.replace('<@!','');
 		ufind = ufind.replace('<@','');
 		ufind = ufind.replace('>','');
 	}
-	console.log(ufind);
+	let page = args[0];
+	if (isNaN(page) || page <= 0 || page > 15) page = args[1];
+	if (isNaN(page) || page <= 0 || page > 15) page = 1;
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
@@ -28,15 +30,14 @@ module.exports.run = (client, message, args, maindb) => {
 			let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
 
 			const embed = new Discord.RichEmbed()
-				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ')**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 				.setColor(message.member.highestRole.hexColor)
 				.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg");
 
-			for (var x = 0; x < 5; x++) {
+			for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 				if (ppentry[x]) {
 					let combo = ppentry[x][3].toString();
 					if (combo.indexOf("x") == -1) combo = combo + "x";
-                                        else if (combo.indexOf(" ") != -1) combo = combo.trimRight();
 
 					let acc = ppentry[x][4].toString();
 					if (acc.indexOf('\r') != -1) acc = acc.replace(" ", "").replace("\r", "");
@@ -44,7 +45,7 @@ module.exports.run = (client, message, args, maindb) => {
 					else acc = acc + "%";
 
 					let miss = ppentry[x][5].toString() + " miss(es)";
-					embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__')
+					embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
 				}
 				else embed.addField((x+1) + '. -', '-')
 			}
