@@ -30,10 +30,6 @@ module.exports.run = async (client, message, args) => {
         message.channel.send("User not found!");
         return;
     }
-    if (!toban.bannable) {
-        message.channel.send("User cannot be banned!");
-        return;
-    }
     let reason = args.slice(1).join(" ");
     if (!reason) {
         message.channel.send("Please enter your reason.");
