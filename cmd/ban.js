@@ -52,7 +52,9 @@ module.exports.run = async (client, message, args) => {
             .addField("=================", "Reason:\n" + reason);
 
         logchannel.send({embed})
-    })
+    }).catch(() => {
+        message.channel.send("User is already banned!")
+    }
 
    
 };
