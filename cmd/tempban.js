@@ -36,10 +36,10 @@ module.exports.run = (client, message, args) => {
         message.channel.send("Invalid ban time");
         return;
     }
-    if (bantime > 7) {
-        message.channel.send("Maximum ban time is 7 days");
-        return;
-    }
+
+
+
+
     let reason = args.slice(2).join(" ");
     if (!reason) {
         message.channel.send("Please enter your reason.");
@@ -58,6 +58,10 @@ module.exports.run = (client, message, args) => {
             .addField("=================", "Reason:\n" + reason);
 
         logchannel.send({embed})
+       
+        setTimeout(() => {
+            message.guild.unban(userid, "Ban time is over").catch();
+        }, bantime * 24 * 3600 * 1000)
     }).catch(() => {
         message.channel.send("User is already banned!")
     })
