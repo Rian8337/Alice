@@ -24,10 +24,11 @@ module.exports.run = (client, message, args) => {
     if (!toban) toban = userid;
 
 
-    if (!toban.bannable) {
-        message.channel.send("This user cannot be banned!");
-        return;
-    }
+
+
+
+
+
     let bantime = args[1];
     if (bantime.content.endsWith("h")) bantime = parseFloat(bantime) / 24;
     else if (bantime.content.endsWith("d")) bantime = parseFloat(bantime);
