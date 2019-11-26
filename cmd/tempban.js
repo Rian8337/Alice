@@ -9,13 +9,17 @@ module.exports.run = async (client, message, args) => {
         return;
     }
     let userid = args[0];
-    if (!userid || isNaN(userid)) {
+    if (!userid) {
         message.channel.send("Please specify the correct user to ban!");
         return;
     }
     userid = userid.replace('<@!','');
     userid = userid.replace('<@','');
     userid = userid.replace('>','');
+    if (isNaN(userid)) {
+        message.channel.send("Please specify the correct user to ban!");
+        return;
+    }
     if (userid == message.author.id) {
         message.channel.send("You cannot ban yourself!");
         return;
