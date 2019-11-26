@@ -24,10 +24,11 @@ module.exports.run = async (client, message, args) => {
         message.channel.send("You cannot ban yourself!");
         return;
     }
-    let toban = message.guild.members.get(userid);
-    if (!toban) toban = await client.fetchUser(userid);
-
-
+    let toban = await client.fetchUser(userid);
+    if (!toban) {
+        message.channel.send("User not found!");
+        return;
+    }
 
 
 
