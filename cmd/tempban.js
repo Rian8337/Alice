@@ -1,7 +1,7 @@
 let Discord = require('discord.js');
 let config = require('../config.json');
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) {
@@ -21,7 +21,7 @@ module.exports.run = (client, message, args) => {
         return;
     }
     let toban = message.guild.members.get(userid);
-    if (!toban) toban = userid;
+    if (!toban) toban = await client.fetchUser(userid);
 
 
 
