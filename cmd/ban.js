@@ -28,7 +28,8 @@ module.exports.run = async (client, message, args) => {
         return;
     }
 
-    let banned = message.guild.fetchBans().find(user => user.id === userid);
+    let banlist = await message.guild.fetchBans();
+    let banned = banlist.get(userid);
     if (banned) {
         message.channel.send("User is already banned!");
         return;
