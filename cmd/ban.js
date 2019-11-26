@@ -20,8 +20,9 @@ module.exports.run = (client, message, args) => {
         message.channel.send("You cannot ban yourself!");
         return;
     }
-    userid = message.guild.members.get(userid);
-    if (!userid.bannable) {
+    let toban = message.guild.members.get(userid);
+    if (!toban) toban = userid;
+    if (!toban.bannable) {
         message.channel.send("This user cannot be banned!");
         return;
     }
