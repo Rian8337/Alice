@@ -57,7 +57,7 @@ module.exports.run = async (client, message, args) => {
             .setColor(message.member.highestRole.hexColor)
             .setDescription("**Ban executed**")
             .addField("Banned user: " + toban.username, "User ID: " + userid)
-            .addField("====================", "Reason:\n" + reason);
+            .addField("=========================", "Reason:\n" + reason);
 
         logchannel.send({embed})
     })
