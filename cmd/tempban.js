@@ -9,7 +9,7 @@ module.exports.run = async (client, message, args) => {
         return;
     }
     let userid = args[0];
-    if (!userid) {
+    if (!userid || isNaN(userid)) {
         message.channel.send("Please specify the correct user to ban!");
         return;
     }
