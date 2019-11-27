@@ -42,6 +42,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (ppentry[x]) {
 					let combo = ppentry[x][3].toString();
 					if (combo.indexOf("x") == -1) combo = combo + "x";
+					else if (combo.indexOf(" ") != -1) combo = combo.trimRight();
 
 					let acc = ppentry[x][4].toString();
 					if (acc.indexOf('\r') != -1) acc = acc.replace(" ", "").replace("\r", "");
