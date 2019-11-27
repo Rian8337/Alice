@@ -34,6 +34,7 @@ pp [<a>] [<b>]
 a: number of play you want to submit (limit at 5 - default at 1)
 b: the position in your recent play list that you want to start submitting (a + b - 1 < 50 limit)
 ex: &pp 4 23 submit your 23th 24th 25th 26th most recent play
+
 ppcheck [page/discord user] [page]
 
 3. Malody
