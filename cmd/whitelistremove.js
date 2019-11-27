@@ -18,34 +18,31 @@ function mapstatusread(status) {
 module.exports.run = (client, message, args, maindb) => {
     if (message.author.id != '386742340968120321') return;
     var whitelist = maindb.collection("mapwhitelist");
-    if (message.member.roles.find("name", "pp-project Map Validator")) {
-        var link_in = args[0];
-        var hash_in = args[1];
-        whitelistInfo(link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
-            if (res > 0) {
-                var dupQuery = {mapid: parseInt(mapid)};
-                whitelist.findOne(dupQuery, (err, wlres) => {
-                    console.log(wlres);
-                    if (err) throw err;
-                    if (wlres) {
-                        var updateData = { $set: {
-                                mapid: parseInt(mapid),
-                                hashid: hashid,
-                                mapname: mapstring
-                            }};
-                        try {
-                            whitelist.deleteOne(dupQuery, updateData, () => {
-                                console.log("Whitelist entry removed");
-                                message.channel.send("Whitelist entry removed | `" + mapstring + "`")
-                            })
-                        } catch (e) {}
-                    }
-                    else message.channel.send("Beatmap is not whitelisted")
-                })
-            }
-        })
-    }
-    else message.channel.send("You don't have enough permission for this")
+    var link_in = args[0];
+    var hash_in = args[1];
+    whitelistInfo(link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
+        if (res > 0) {
+            var dupQuery = {mapid: parseInt(mapid)};
+            whitelist.findOne(dupQuery, (err, wlres) => {
+                console.log(wlres);
+                if (err) throw err;
+                if (wlres) {
+                    var updateData = { $set: {
+                            mapid: parseInt(mapid),
+                            hashid: hashid,
+                            mapname: mapstring
+                        }};
+                    try {
+                        whitelist.deleteOne(dupQuery, updateData, () => {
+                            console.log("Whitelist entry removed");
+                            message.channel.send("Whitelist entry removed | `" + mapstring + "`")
+                        })
+                    } catch (e) {}
+                }
+                else message.channel.send("Beatmap is not whitelisted")
+            })
+        }
+    })
 };
 
 function whitelistInfo(link_in, hash_in, message, callback) {
