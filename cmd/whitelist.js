@@ -91,8 +91,8 @@ function whitelistInfo(link_in, hash_in, message, callback) {
                 "url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id ,
                 "color": mapstatusread(parseInt(mapinfo.approved)),
                 "footer": {
-                    "icon_url": "https://images-ext-2.discordapp.net/external/d0iu_mPMvyoLQWnBSEnW4RL0-07KYm7zG9mjWdfWl7M/https/image.frl/p/yaa1nf94dho5f962.jpg",
-                    "text": "Elaina owo by -Nero Yuki-"
+                    "icon_url": "https://i.imgur.com/S5yspQs.jpg",
+                    "text": "Alice Synthesis Thirty"
                 },
                 "author": {
                     "name": "Map Found",
