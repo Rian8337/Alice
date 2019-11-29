@@ -59,7 +59,7 @@ function modname(mod) {
 	if (mod.includes("n")) {res += 'NoFail '; count++}
 	if (mod.includes("e")) {res += 'Easy '; count++}
 	if (mod.includes("t")) {res += 'HalfTime '; count++}
-	if (count > 1) return res.replace(" ", ", ").trimRight().trimRight();
+	if (count > 1) return res.trimRight().split(" ").join(", ");
 	else return res.trimRight()
 }
 
