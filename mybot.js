@@ -85,7 +85,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 		.setTimestamp(new Date())
 		.setColor("#00cb16")
 		.setTitle("Message edited")
-		.addField( "Channel", oldMessage.channel)
+		.addField("Channel", oldMessage.channel)
 		.addField("Old Message", oldMessage.content)
 		.addField("New Message", newMessage.content);
 	logchannel.send(embed)
