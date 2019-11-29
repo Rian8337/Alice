@@ -2,6 +2,10 @@ let Discord = require('discord.js');
 
 module.exports.run = (client, message, args) => {
     if (message.author.id != '386742340968120321') return;
+    if (!message.guild.me.hasPermission("CREATE_INSTANT_INVITE")) {
+        message.channel.send("Missing bot permissions");
+        return;
+    }
     let maxage = args[0];
     if (!maxage) {
       message.channel.send("Please enter time (seconds) until invite link expires!");
