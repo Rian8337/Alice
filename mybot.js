@@ -70,6 +70,7 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd && cmd !== 'sayit' && cmd !== 'response') {
+			if (message.author.id == '386742340968120321') message.author.lastMessage.delete();
 			cmd.run(client, message, args, maindb);
 		}
 	}
