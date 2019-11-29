@@ -75,4 +75,35 @@ client.on("message", message => {
 	}
 });
 
+client.on("messageUpdate", (oldMessage, newMessage) => {
+	if (oldMessage.author.bot) return;
+	let logchannel = oldMessage.guild.channels.find(c => c.name === config.log_channel);
+	if (!logchannel) return;
+	const embed = new Discord.RichEmbed()
+		.setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
+		.setFooter(`Author ID: ${oldMessage.author.id} | Message ID: ${oldMessage.id}`)
+		.setTimestamp(new Date())
+		.setColor("#00cb16")
+		.setTitle("Message edited")
+		.addField( "Channel", oldMessage.channel)
+		.addField("Old Message", oldMessage.content)
+		.addField("New Message", newMessage.content);
+	logchannel.send(embed)
+});
+
+client.on("messageDelete", message => {
+	if (message.author.id == '386742340968120321' || message.author.bot) return;
+	let logchannel = message.guild.channels.find(c => c.name === config.log_channel);
+	if (!logchannel) return;
+	const embed = new Discord.RichEmbed()
+		.setAuthor(message.author.tag, message.author.avatarURL)
+		.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+		.setTimestamp(new Date())
+		.setColor("#cb8900")
+		.setTitle("Message deleted")
+		.addField( "Channel", message.channel)
+		.addField("Content", message.content);
+	logchannel.send(embed)
+});
+
 client.login(process.env.BOT_TOKEN);
