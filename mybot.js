@@ -101,7 +101,7 @@ client.on("messageDelete", message => {
 		.setTimestamp(new Date())
 		.setColor("#cb8900")
 		.setTitle("Message deleted")
-		.addField( "Channel", message.channel)
+		.addField("Channel", message.channel)
 		.addField("Content", message.content);
 	logchannel.send(embed)
 });
