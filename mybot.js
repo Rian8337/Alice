@@ -77,6 +77,7 @@ client.on("message", message => {
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	if (oldMessage.author.bot) return;
+	if (oldMessage.content == newMessage.content) return;
 	let logchannel = oldMessage.guild.channels.find(c => c.name === config.log_channel);
 	if (!logchannel) return;
 	const embed = new Discord.RichEmbed()
