@@ -1,10 +1,14 @@
 let Discord = require('discord.js');
 
 module.exports.run = (client, message, args) => {
-    if (message.author.id != '386742340968120321') return;
-    if (!message.guild.me.hasPermission("CREATE_INSTANT_INVITE")) {
-        message.channel.send("Missing bot permissions");
-        return;
+    if (!message.member.roles.find(r => r.name === "Manager")) {
+        message.channel.send("You don't have permission to do this");
+        return
+    }
+    let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
+    if (!logchannel) {
+        message.channel.send(`Please create ${config.management_channel} first!`);
+        return
     }
     let maxage = args[0];
     if (!maxage) {
@@ -25,7 +29,10 @@ module.exports.run = (client, message, args) => {
       return
     }
     let reason = args.slice(2).join(" ");
-    if (!reason) reason = "Not specified";
+    if (!reason) {
+        message.channel.send("Please enter your reason.");
+        return
+    }
 
     message.channel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
         let hours = Math.floor(maxage / 3600);
