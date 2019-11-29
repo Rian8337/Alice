@@ -1,5 +1,5 @@
 let Discord = require('discord.js');
-let config = require('../config.json');
+let config = require("../config.json");
 
 module.exports.run = (client, message, args) => {
     if (!message.member.roles.find(r => r.name === "Manager")) {
@@ -35,7 +35,7 @@ module.exports.run = (client, message, args) => {
         return
     }
 
-    message.channel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
+    message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
         let hours = Math.floor(maxage / 3600);
         let minutes = Math.floor((maxage - hours * 3600) / 60);
         let seconds = (maxage - hours * 3600 - minutes * 60);
@@ -49,7 +49,7 @@ module.exports.run = (client, message, args) => {
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
             .setTitle("Invite link created")
-            .addField("Channel", message.channel)
+            .addField("Created in", message.channel)
             .addField("Maximum usage", maxuses)
             .addField("Expiration time", time)
             .addField("Reason", reason)
