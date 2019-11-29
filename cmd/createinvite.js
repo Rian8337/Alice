@@ -1,4 +1,5 @@
 let Discord = require('discord.js');
+let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
     if (!message.member.roles.find(r => r.name === "Manager")) {
