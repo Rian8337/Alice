@@ -53,7 +53,7 @@ module.exports.run = (client, message, args) => {
             .addField("Maximum usage", maxuses)
             .addField("Expiration time", time)
             .addField("Reason", reason)
-            .addField("Invite link", `${invite.url}`);
+            .addField("Invite link", invite.url);
 
         message.channel.send({embed})
     })
