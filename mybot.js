@@ -56,7 +56,7 @@ client.on("message", message => {
 	}
 
 	if (message.author.id == '386742340968120321') {
-		if (!message.content.startsWith(config.prefix) && !message.content.startsWith("```")) {
+		if (!message.content.startsWith("```")) {
 			let cmd = client.commands.get("sayit");
 			let args = msgArray.slice(0);
 			cmd.run(client, message, args)
@@ -70,7 +70,6 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd && cmd !== 'sayit' && cmd !== 'response') {
-			if (message.author.id == '386742340968120321') client.commands.get("sayit").run(client, message, args);
 			cmd.run(client, message, args, maindb);
 		}
 	}
