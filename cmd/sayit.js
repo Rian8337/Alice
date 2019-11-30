@@ -1,3 +1,5 @@
+let config = require('../config.json');
+
 module.exports.run = (client, message, args) => {
 	if (message.author.id != '386742340968120321') return;
 	let attachments = [];
@@ -7,6 +9,11 @@ module.exports.run = (client, message, args) => {
 		})
 	}
 	let sayMessage = args.join(" ");
+        if (sayMessage.startsWith(config.prefix)) {
+                message.author.lastMessage.delete().then (() => {
+                        return
+                })
+        }
 	if (attachments.length > 0) {
 		message.author.lastMessage.delete(500).catch();
 		if (sayMessage) message.channel.send(sayMessage, {files: attachments});
