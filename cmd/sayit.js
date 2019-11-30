@@ -7,12 +7,15 @@ module.exports.run = (client, message, args) => {
 		})
 	}
 	let sayMessage = args.join(" ");
-	message.author.lastMessage.delete().then (() => {});
 	if (attachments.length > 0) {
+		message.author.lastMessage.delete(500).catch();
 		if (sayMessage) message.channel.send(sayMessage, {files: attachments});
 		else message.channel.send({files: attachments})
 	}
-	else message.channel.send(sayMessage)
+	else {
+		message.author.lastMessage.delete().catch();
+		message.channel.send(sayMessage)
+	}
 };
 
 module.exports.help = {
