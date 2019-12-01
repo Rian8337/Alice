@@ -67,7 +67,7 @@ client.on("message", message => {
 			.setColor(message.member.highestRole.hexColor)
 			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
 			.addField("Channel", message.channel)
-			.addField("Content", message.content);
+			.addField("Content", message.content.replace(client.user.id, owner.id));
 
 		owner.send(embed).catch(e => console.log(e));
 		return
