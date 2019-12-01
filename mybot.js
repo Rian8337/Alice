@@ -105,6 +105,15 @@ client.on("messageDelete", message => {
 		.setTitle("Message deleted")
 		.addField("Channel", message.channel)
 		.addField("Content", message.content);
+	
+	if (message.attachments.size > 0) {
+		let attachments = [];
+		message.attachments.forEach(attachment => {
+			attachments.push(attachment.proxyURL)
+		});
+		embed.attachFiles(attachments)
+	}
+	
 	logchannel.send(embed)
 });
 
