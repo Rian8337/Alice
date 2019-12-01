@@ -103,8 +103,9 @@ client.on("messageDelete", message => {
 		.setTimestamp(new Date())
 		.setColor("#cb8900")
 		.setTitle("Message deleted")
-		.addField("Channel", message.channel)
-		.addField("Content", message.content);
+		.addField("Channel", message.channel);
+	
+	if (message.content) embed.addField("Content", message.content);
 	
 	if (message.attachments.size > 0) {
 		let attachments = [];
