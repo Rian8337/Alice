@@ -135,4 +135,17 @@ client.on("messageDelete", message => {
 	}
 });
 
+client.on("messageDeleteBulk", messages => {
+	let message = messages.first();
+	let logchannel = message.guild.channels.find(c => c.name === config.log_channel);
+	if (!logchannel) return;
+	const embed = new Discord.RichEmbed()
+		.setTitle("Bulk delete performed")
+		.setColor("#4354a3")
+		.setTimestamp(new Date())
+		.addField("Channel", message.channel)
+		.addField("Amount of messages", messages.size);
+	logchannel.send(embed)
+});
+
 client.login(process.env.BOT_TOKEN);
