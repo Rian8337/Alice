@@ -52,7 +52,7 @@ module.exports.run = (client, message, args) => {
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setColor(message.member.highestRole.hexColor)
         .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
-        .addField(`**Q**: Alice,${msg}`, `**A**: ${answer}`);
+        .addField(`**Q**: ${msg}`, `**A**: ${answer}`);
 
     message.channel.send({embed})
 };
