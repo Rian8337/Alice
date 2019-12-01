@@ -47,9 +47,8 @@ client.on("message", message => {
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
 
-	if (message.content.startsWith("Alice,") && message.content.endsWith("?")) {
-		let msgArray = message.content.split(",");
-		let args = msgArray.slice(1);
+	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
+		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
 		cmd.run(client, message, args);
 		return;
