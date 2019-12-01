@@ -15,7 +15,8 @@ module.exports.run = (client, message, args) => {
         message.channel.send("Invalid number of messages to delete, must be in range of 2-100");
         return;
     }
-    message.channel.bulkDelete(todelete + 1).then (() => {
+    message.author.lastMessage.delete().catch(e => console.log(e));
+    message.channel.bulkDelete(todelete).then (() => {
         const embed = new Discord.RichEmbed()
           .setAuthor(message.author.tag, message.author.avatarURL)
           .setDescription("**Bulk delete executed**")
