@@ -42,6 +42,11 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+	let owner = message.guild.members.get('386742340968120321');
+	if (!owner) {
+		message.channel.send("Bot owner needs to be in the server for the bot to function!").catch(e => console.log(e));
+		return
+	}
 	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
@@ -54,9 +59,18 @@ client.on("message", message => {
 		return
 	}
 	
-	if (message.isMemberMentioned(client.user) && message.author.id != '386742340968120321') {
-		let cmd = client.commands.get("mention");
-		cmd.run(client, message);
+	if (message.isMemberMentioned(client.user) && message.author.id != owner.id) {
+		
+		const embed = new Discord.RichEmbed()
+			.setAuthor(message.author.tag, message.author.avatarURL)
+			.setTitle("You were mentioned!")
+			.setTimestamp(new Date())
+			.setColor(message.member.highestRole.hexColor)
+			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+			.addField("Channel", message.channel)
+			.addField("Content", message.content);
+
+		owner.send(embed).catch(e => console.log(e));
 		return
 	}
 
