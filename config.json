@@ -33,6 +33,10 @@
   "management_channel": "server-management",
   "log_channel": "bills",
   "report_channel": "reports",
+  "activity_list": [
+    ["LiSA - unlasting with Rian8337", "LISTENING"],
+    ["SAO Alicization: War of Underworld Episode ", "WATCHING"]
+  ],
   "responses": {
     "like": [
       "do you love me?",
