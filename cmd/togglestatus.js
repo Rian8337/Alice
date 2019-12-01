@@ -14,11 +14,11 @@ module.exports.run = (client, message, args) => {
             message.channel.send("Invalid episode");
             return
         }
-        client.setActivity(activity[x][0] + episode, {type: activity[x][1], url: "https://github.com/Rian8337/Alice"}).catch();
+        client.user.setActivity(activity[x][0] + episode, {type: activity[x][1], url: "https://github.com/Rian8337/Alice"}).catch();
         message.channel.send("Status changed to " + activity[x][0] + episode + ", activity type: " + activity[x][1])
     }
     else {
-        client.setActivity(activity[x][0], {type: activity[x][1], url: "https://github.com/Rian8337/Alice"}).catch();
+        client.user.setActivity(activity[x][0], {type: activity[x][1], url: "https://github.com/Rian8337/Alice"}).catch();
         message.channel.send("Status changed to " + activity[x][0] + ", activity type: " + activity[x][1])
     }
 };
