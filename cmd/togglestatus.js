@@ -19,7 +19,7 @@ module.exports.run = (client, message, args) => {
     }
     else {
         client.setActivity(activity[x][0], {type: activity[x][1], url: "https://github.com/Rian8337/Alice"}).catch();
-        message.channel.send("Status changed to " + activity[x][0] + ", activity type: " + activity[x][1]
+        message.channel.send("Status changed to " + activity[x][0] + ", activity type: " + activity[x][1])
     }
 };
 
