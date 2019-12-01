@@ -42,12 +42,12 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+	if (message.author.bot) return;
 	let owner = message.guild.members.get('386742340968120321');
 	if (!owner) {
 		message.channel.send("Bot owner needs to be in the server for the bot to function!").catch(e => console.log(e));
 		return
 	}
-	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
