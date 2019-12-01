@@ -51,7 +51,13 @@ client.on("message", message => {
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
 		cmd.run(client, message, args);
-		return;
+		return
+	}
+	
+	if (message.isMemberMentioned(client.user) && message.author.id != '386742340968120321') {
+		let cmd = client.commands.get("mention");
+		cmd.run(client, message);
+		return
 	}
 
 	if (message.author.id == '386742340968120321') {
