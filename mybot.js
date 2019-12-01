@@ -124,16 +124,15 @@ client.on("messageDelete", message => {
 		.addField("Channel", message.channel);
 	
 	if (message.content) embed.addField("Content", message.content);
-	
+	logchannel.send(embed);
+
 	if (message.attachments.size > 0) {
 		let attachments = [];
 		message.attachments.forEach(attachment => {
 			attachments.push(attachment.proxyURL)
 		});
-		embed.attachFiles(attachments)
+		logchannel.send({files: attachments})
 	}
-	
-	logchannel.send(embed)
 });
 
 client.login(process.env.BOT_TOKEN);
