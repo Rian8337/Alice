@@ -58,29 +58,6 @@ client.on("message", message => {
 		cmd.run(client, message, args);
 		return
 	}
-	
-	if (message.isMemberMentioned(client.user) && message.author.id != owner.id) {
-                let link = `https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`;
-		const embed = new Discord.RichEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL)
-			.setTitle("Honey, you were mentioned!")
-			.setTimestamp(new Date())
-			.setColor(message.member.highestRole.hexColor)
-			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
-			.addField("Channel", `${message.channel} | [Go to message](${link})`)
-			.addField("Content", message.content.replace(client.user.id, owner.id));
-
-		owner.send(embed).catch(e => console.log(e));
-		return
-	}
-
-	if (message.author.id == '386742340968120321') {
-		if (!message.content.startsWith("```") && !message.content.startsWith(config.prefix)) {
-			let cmd = client.commands.get("sayit");
-			let args = msgArray.slice(0);
-			cmd.run(client, message, args)
-		}
-	}
 
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
