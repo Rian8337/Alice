@@ -75,7 +75,7 @@ client.on("message", message => {
 	}
 
 	if (message.author.id == '386742340968120321') {
-		if (!message.content.startsWith("```")) {
+		if (!message.content.startsWith("```") && !message.content.startsWith(config.prefix)) {
 			let cmd = client.commands.get("sayit");
 			let args = msgArray.slice(0);
 			cmd.run(client, message, args)
