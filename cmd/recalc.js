@@ -5,7 +5,7 @@ var mongodb = require("mongodb");
 var request = require("request");
 var apikey = process.env.OSU_API_KEY;
 
-function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
+function recalc(target, tlength, i, newtarget, binddb, uid, whitelist, name) {
 
     if (i >= tlength) {
         newtarget.sort(function(a, b) {return b[2] - a[2];});
@@ -22,7 +22,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 			pp: newtarget
 		}};
         binddb.updateOne({uid: uid}, updatedata, (err, res) => {
-			console.log("user pp is updated. Total pp:" + totalpp);
+			console.log(name + "'s pp is updated. Total pp:" + totalpp);
 			return;
 		});
 		return;
@@ -160,7 +160,7 @@ module.exports.run = (client, message, args, maindb) => {
         var ppentry = res.pp;
         var uid = res.uid;
         console.log(ppentry[0]);
-        recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist);
+        recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist, name);
 	})
 };
 
