@@ -60,13 +60,14 @@ client.on("message", message => {
 	}
 	
 	if (message.isMemberMentioned(client.user) && message.author.id != owner.id) {
+                let link = `https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`;
 		const embed = new Discord.RichEmbed()
 			.setAuthor(message.author.tag, message.author.avatarURL)
-			.setTitle("You were mentioned!")
+			.setTitle("Honey, you were mentioned!")
 			.setTimestamp(new Date())
 			.setColor(message.member.highestRole.hexColor)
 			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
-			.addField("Channel", message.channel)
+			.addField("Channel", `${message.channel} | [Go to message](${link})`)
 			.addField("Content", message.content.replace(client.user.id, owner.id));
 
 		owner.send(embed).catch(e => console.log(e));
