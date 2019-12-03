@@ -3,38 +3,28 @@ var config = require("../config.json");
 var cd = new Set();
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        message.channel.send("This command is not allowed in DMs");
-        return;
-    }
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!args[0]) return;
     if (message.member.roles.find("name", "report-ban")) {
         message.author.lastMessage.delete();
-        message.reply("you were banned from submitting reports!").then (message => {
+        return message.reply("you were banned from submitting reports!").then (message => {
             message.delete(5000)
         });
-        return;
     }
     let channel = message.guild.channels.find(c => c.name === config.report_channel);
-    if (!channel) {
-        message.reply(`please create #${config.report_channel} first!`);
-        return;
-    }
+    if (!channel) return message.reply(`please create #${config.report_channel} first!`);
     let user = message.author.id;
     if (message.member.roles.find("name", "Helper") || message.member.roles.find("name", "Moderator")) cd.delete(user);
-    if (cd.has(user)) {
-        message.reply("you are still on cooldown!").then(message => {
+    if (cd.has(user)) return message.reply("you are still on cooldown!").then(message => {
             message.delete(5000)
         });
-        return;
-    }
+
     let toreport = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!toreport) return;
+    if (!toreport) return message.reply("please make sure you have entered the correct user!");
+    if (toreport.hasPermission("ADMINISTRATOR")) return message.reply("you cannot report this user!");
+    if (toreport.id == message.author.id) return message.reply("you cannot report yourself!");
     let reason = args.slice(1).join(" ");
-    if (!reason) {
-        message.reply("please add a reason.");
-        return;
-    }
+    if (!reason) return message.reply("please add a reason.");
 
     message.author.lastMessage.delete();
 
