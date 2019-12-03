@@ -1,5 +1,5 @@
 {
-  "prefix": "%",
+  "prefix": "&&",
   "question_weight" : [
       1 , 14, 11, 1 , 20, 1 , 1 ,
       6 , 5 , 6 , 4 , 1 , 20, 17,
@@ -35,7 +35,8 @@
   "report_channel": "reports",
   "activity_list": [
     ["LiSA - unlasting with Rian8337", "LISTENING"],
-    ["SAO Alicization: War of Underworld Episode ", "WATCHING"]
+    ["SAO Alicization: War of Underworld Episode ", "WATCHING"],
+    ["Use &&"]
   ],
   "responses": {
     "like": [
