@@ -61,7 +61,9 @@ client.on("message", message => {
 	}
 	
 	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
-		let cmd = client.commands.get(command.slice(config.prefix.length) || command.slice(1));
+		let cmd = '';
+		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
+		else cmd = client.commands.get(command.slice(1));
 		if (cmd) {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
 			cmd.run(client, message, args, maindb);
