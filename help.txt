@@ -2,42 +2,42 @@ Alice Synthesis Thirty's Guide
 <...>: required syntax
 [...]: optional syntax
 
-Prefix: %
+Prefix: &&
 
 1. General
 
-help
-ping
-setgame (Bot Owner only)
-setstatus (Bot Owner only)
-say
-report <discord user> <reason>
+- help
+- ping
+- setgame (Bot Owner only)
+- setstatus (Bot Owner only)
+- say
+- report <discord user> <reason>
 
 2. osu!droid
 
-profilesearch <player's name - CaSe Sensitive>
-profileid <uid>
-recent <uid>
-recent5 <uid> [page]
-serbind <uid> (use to bind user to specific uid)
-profileme [discord user] (only binded user)
-recentme [discord user] (only binded user)
-recent5me [page/discord user] [page] (only binded user)
-manualcalc <map link / map id> [(+<mod>) (<combo>x) (<acc>%) (<miss>m)]
+- profilesearch <player's name - CaSe Sensitive>
+- profileid <uid>
+- recent <uid>
+- recent5 <uid> [page]
+- userbind <uid> (use to bind user to specific uid)
+- profileme [discord user] (only binded user)
+- recentme [discord user] (only binded user)
+- recent5me [page/discord user] [page] (only binded user)
+- manualcalc <map link / map id> [(+<mod>) (<combo>x) (<acc>%) (<miss>m)]
 
-addtrack (Owner only)
-deletetrack (Owner only)
+- addtrack (Owner only)
+- deletetrack (Owner only)
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
-pp [<a>] [<b>]
+- pp [<a>] [<b>]
 a: number of play you want to submit (limit at 5 - default at 1)
 b: the position in your recent play list that you want to start submitting (a + b - 1 < 50 limit)
 ex: &pp 4 23 submit your 23th 24th 25th 26th most recent play
 
-ppcheck [page/discord user] [page]
+- ppcheck [page/discord user] [page]
 
 3. Malody
 
-malodyprofile <player> <mode:all|key|step|dj|catch|pad|taiko|ring>
-malodyrecent <player> <mode> <recent limit:1-10>
+- malodyprofile <player> <mode:all|key|step|dj|catch|pad|taiko|ring>
+- malodyrecent <player> <mode> <recent limit:1-10>
