@@ -5,7 +5,7 @@ var mongodb = require("mongodb");
 var request = require("request");
 var apikey = process.env.OSU_API_KEY;
 
-function recalc(target, tlength, i, newtarget, binddb, uid, whitelist, name) {
+function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 
     if (i >= tlength) {
         newtarget.sort(function(a, b) {return b[2] - a[2];});
@@ -160,7 +160,7 @@ module.exports.run = (client, message, args, maindb) => {
         var ppentry = res.pp;
         var uid = res.uid;
         console.log(ppentry[0]);
-        recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist, name);
+        recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist);
 	})
 };
 
