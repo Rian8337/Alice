@@ -44,10 +44,7 @@ client.on("ready", () => {
 client.on("message", message => {
 	if (message.author.bot) return;
 	let owner = message.guild.members.get('386742340968120321');
-	if (!owner) {
-		message.channel.send("Bot owner needs to be in the server for the bot to function!").catch(e => console.log(e));
-		return
-	}
+	if (!owner) return message.channel.send("Bot owner needs to be in the server for the bot to function!").catch(e => console.log(e));
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
@@ -55,17 +52,18 @@ client.on("message", message => {
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
-		cmd.run(client, message, args);
-		return
+		return cmd.run(client, message, args)
 	}
 
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
-	if (message.content.startsWith(config.prefix)) {
-		let cmd = client.commands.get(command.slice(config.prefix.length));
-		if (cmd && cmd !== 'sayit' && cmd !== 'response') {
+	
+	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
+		let cmd = client.commands.get(command.slice(config.prefix.length) || command.slice(1));
+		if (cmd) {
+			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
 			cmd.run(client, message, args, maindb);
 		}
 	}
