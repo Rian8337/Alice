@@ -3,8 +3,9 @@ let config = require('../config.json');
 module.exports.run = (client, message, args) => {
     if (message.author.id != '386742340968120321') return;
     let x = args[0];
-    if (!x || x < 0 || isNaN(x)) return;
+    if (!x || x < 0 || isNaN(x)) return message.channel.send("Invalid input");
     let activity = config.activity_list;
+    if (!activity[x]) return message.channel.send("There is no activity!");
     if (x == 1) {
         let episode = args[1];
         if (episode <= 0 || isNaN(episode)) return;
