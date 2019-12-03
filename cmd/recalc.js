@@ -22,7 +22,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 			pp: newtarget
 		}};
         binddb.updateOne({uid: uid}, updatedata, (err, res) => {
-			console.log(name + "'s pp is updated. Total pp:" + totalpp);
+			console.log("User pp is updated. Total pp:" + totalpp);
 			return;
 		});
 		return;
