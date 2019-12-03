@@ -2,7 +2,7 @@ Alice Synthesis Thirty's Guide
 <...>: required syntax
 [...]: optional syntax
 
-Prefix: a!
+Prefix: "a!"
 
 1. General
 
