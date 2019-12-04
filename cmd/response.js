@@ -15,17 +15,17 @@ function responseFactor(msg) {
     });
     let badword = config.responses.badword;
     badword.forEach((word) => {
-       if (msg.toLowerCase().indexOf(word) != -1) res = 3
+       if (msg.toLowerCase().includes(word)) res = 3
     });
     return res
 }
 
 function responsefactor(msg) {
     let res = 0;
-    if (msg.toLowerCase().indexOf("rian") != -1) res = 4;
+    if (msg.toLowerCase().includes("rian")) res = 4;
     let badword = config.responses.badword;
     badword.forEach((word) => {
-        if (msg.toLowerCase().indexOf(word) != -1) res = 4
+        if (msg.toLowerCase().includes(word)) res = 4
     });
     return res
 }
