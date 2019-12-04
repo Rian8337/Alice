@@ -150,15 +150,14 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
-    var name = args[0];
+    var uid = args[0];
     var newppentry = [];
 	var binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
-    binddb.findOne({username: name}, function(err, res) {
+    binddb.findOne({uid: uid}, function(err, res) {
         if (err) throw err;
         if (!res) {console.log("user not found "); return;}
         var ppentry = res.pp;
-        var uid = res.uid;
         console.log(ppentry[0]);
         recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist);
 	})
