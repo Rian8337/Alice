@@ -138,7 +138,7 @@ function calculatePP(ppentries, entry, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return;
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
     var ppentries = [];
     var page = 0;
     var ufind = message.author.id;
