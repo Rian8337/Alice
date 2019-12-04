@@ -149,7 +149,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '386742340968120321') return;
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
     var name = args[0];
     var newppentry = [];
 	var binddb = maindb.collection("userbind");
