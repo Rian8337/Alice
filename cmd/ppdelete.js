@@ -4,18 +4,18 @@ module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('638671295470370827');
-	if (!logchannel) {message.channel.send("Please create #pp-log first!"); return;}
+	if (!logchannel) return message.channel.send("Please create #pp-log first!");
 
 	let ufind = args[0];
-	if (!args[0]) {message.channel.send("Please mention a user"); return;}
+	if (!args[0]) return message.channel.send("Please mention a user");
 	ufind = ufind.replace('<@!','');
 	ufind = ufind.replace('<@','');
 	ufind = ufind.replace('>','');
 
 	let todelete = args[1];
-	if (!todelete) {message.channel.send("Please specify play number to delete"); return;}
-	if (todelete <= 0) {message.channel.send("Invalid play number, minimum is 1"); return;}
-	if (isNaN(todelete)) {message.channel.send("Invalid play number to delete"); return;}
+	if (!todelete) return message.channel.send("Please specify play number to delete");
+	if (todelete <= 0) return message.channel.send("Invalid play number, minimum is 1");
+	if (isNaN(todelete)) return message.channel.send("Invalid play number to delete");
 
 	console.log(ufind);
 	let binddb = maindb.collection("userbind");
@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
+		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`");
 	});
 };
 
