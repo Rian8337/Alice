@@ -62,7 +62,7 @@ module.exports.run = (client, message, args, maindb) => {
 				.setTimestamp(new Date())
 				.addField("**User stats**", `Discord User: <@${discordid}>\nUsername: ${username}\nUid: ${uid}`)
 				.addField("**Play stats**", `Map Name: ${scdelete[1]}\nPP: ${scdelete[2]} pp\nCombo: ${scdelete[3]}\nAccuracy: ${scdelete[4]}\nMiss count: ${scdelete[5]} miss(es)`)
-				.addField("**PP stats**", `Pre-PP count: ${parseFloat(pre_pptotal).toFixed(2)} pp\nPost-PP count: ${parseFloat(pptotal).toFixed(2)} pp`);
+				.addField("**PP stats**", `Pre-PP count: ${parseFloat(pre_pptotal).toFixed(2)} pp\nPost-PP count: ${parseFloat(pptotal).toFixed(2)} pp\nPP difference: ${(parseFloat(pre_pptotal) - parseFloat(pptotal)).toFixed(2)}`);
 			logchannel.send({embed});
 
 			playc--;
@@ -79,7 +79,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`");
+		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
 	});
 };
 
