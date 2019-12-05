@@ -12,6 +12,7 @@ module.exports.run = (client, message) => {
         return;
     }
     let role = message.guild.roles.find("name", "Mudae Player");
+    if (!role) return message.channel.send("There is no Mudae in this server!");
     let user = message.guild.member(message.author);
     if (message.member.roles.has(role.id)) {
         user.removeRole(role.id).catch(console.error);
