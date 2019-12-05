@@ -20,7 +20,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve user data from database! Please try again");
+		}
 		if (res[0]) {
 			var uid = res[0].uid;
 			var username = res[0].username;
