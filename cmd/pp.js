@@ -3,7 +3,6 @@ var droid = require("./ojsamadroid");
 var https = require("https");
 var request = require("request");
 require("dotenv").config();
-require('mongodb');
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 
