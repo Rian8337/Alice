@@ -21,7 +21,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = {discordid: ufind};
 	binddb.find(query).toArray(function (err, userres) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve user data from database! Please try again")
+		}
 		if (userres[0]) {
 			let uid = userres[0].uid;
 			let discordid = userres[0].discordid;
@@ -75,7 +78,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`");
+		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
 	});
 };
 
