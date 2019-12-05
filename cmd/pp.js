@@ -126,6 +126,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') return message.channel.send("This command is only allowed in #bot-ground and #elaina-pp-project!");
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
