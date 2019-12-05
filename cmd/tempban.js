@@ -2,68 +2,38 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
-    if (!logchannel) {
-        message.channel.send(`Please create ${config.management_channel} first!`);
-        return;
-    }
+    if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
 
     let userid = args[0];
-    if (!userid) {
-        message.channel.send("Please specify the correct user to ban!");
-        return;
-    }
+    if (!userid) return message.channel.send("Please specify the correct user to ban!");
     userid = userid.replace('<@!','');
     userid = userid.replace('<@','');
     userid = userid.replace('>','');
 
-    if (isNaN(userid)) {
-        message.channel.send("Please specify the correct user to ban!");
-        return;
-    }
+    if (isNaN(Number(userid))) return message.channel.send("Please specify the correct user to ban!");
 
-    if (userid == message.author.id) {
-        message.channel.send("You cannot ban yourself!");
-        return;
-    }
+    if (userid === message.author.id) return message.channel.send("You cannot ban yourself!");
 
     let banlist = await message.guild.fetchBans();
     let banned = banlist.get(userid);
-    if (banned) {
-        message.channel.send("User is already banned!");
-        return;
-    }
+    if (banned) return message.channel.send("User is already banned!");
 
     let toban = await client.fetchUser(userid);
-    if (!toban) {
-        message.channel.send("User not found!");
-        return;
-    }
+    if (!toban) return message.channel.send("User not found!");
 
     let bantime = args[1];
-    if (!bantime) {
-        message.channel.send("Please specify ban time!");
-        return;
-    }
+    if (!bantime) return message.channel.send("Please specify ban time!");
     if (bantime.endsWith("h")) bantime = parseFloat(bantime) / 24;
     else if (bantime.endsWith("d")) bantime = parseFloat(bantime);
-    else {
-        message.channel.send("Please specify if time is in hours or days!");
-        return;
-    }
-
-    if (isNaN(bantime) || bantime <= 0) {
-        message.channel.send("Invalid ban time");
-        return;
-    }
+    else return message.channel.send("Please specify if time is in hours or days!");
+    if (isNaN(bantime) || bantime <= 0) return message.channel.send("Invalid ban time");
 
     let reason = args.slice(2).join(" ");
-    if (!reason) {
-        message.channel.send("Please enter your reason.");
-        return;
-    }
+    if (!reason) return message.channel.send("Please enter your reason.");
 
     message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
