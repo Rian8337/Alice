@@ -25,7 +25,10 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 	var whitelistQuery = {hashid: input};
 
 	whitelist.findOne(whitelistQuery, (err, wlres) => {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve map data from database! Please try again");
+		}
 		if (wlres) isWhitelist = true; 
 		console.log(input);
 
@@ -131,10 +134,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) offset = 1;
-	if (start + offset - 1 > 50) {
-		console.log('Out of limit');
-		return;
-	}
+	if (start + offset - 1 > 50) return message.channel.send('Out of limit');
 	let ufind = message.author.id;
 	/*if (args[0]) {
 		ufind = args[0];
@@ -147,7 +147,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let whitelist = maindb.collection("mapwhitelist");
 	let query = {discordid: ufind};
 	binddb.find(query).toArray(function (err, userres) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve user data from database! Please try again");
+		}
 		if (userres[0]) {
 			console.log(offset);
 			let uid = userres[0].uid;
@@ -246,9 +249,7 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 			});
 			req.end();
-		} else {
-			message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
-		}
+		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
 };
 
