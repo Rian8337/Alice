@@ -30,7 +30,7 @@ function mapstatusread(status) {
 	}
 }
 
-function getMapPP(target, message) {
+function getMapPP(target, message, detail) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + target[0]);
 
@@ -186,6 +186,7 @@ function getMapPP(target, message) {
 							}
 						]
 					};
+					if (detail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					message.channel.send({embed})
 				}
 			)
@@ -199,6 +200,7 @@ module.exports.run = (client, message, args) => {
 	var acc;
 	var missc;
 	var mod;
+	var detail = false;
 	if (!args[0]) {message.channel.send("Hey at least give me the map :/"); return;}
 	var a = args[0].split("/");
 	beatmapid = a[a.length-1];
@@ -207,10 +209,11 @@ module.exports.run = (client, message, args) => {
 		if (args[i].endsWith("m")) missc = args[i];
 		if (args[i].endsWith("x")) combo = args[i];
 		if (args[i].startsWith("+")) mod = args[i];
+		if (args[i].startsWith("-d")) detail = true;
 	}
 	console.log(acc);
 	var target = [beatmapid, combo, acc, missc, mod];
-	getMapPP(target, message);
+	getMapPP(target, message, detail);
 };
 
 module.exports.help = {
