@@ -25,7 +25,10 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 	var whitelistQuery = {hashid: input};
 
 	whitelist.findOne(whitelistQuery, (err, wlres) => {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve map data from database! Please try again")
+		}
 		if (wlres) isWhitelist = true; 
 		console.log(input);
 
@@ -123,8 +126,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '386742340968120321') return;
-	if (!args[0]) {message.channel.send("Please mention a user"); return;}
+	if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+	if (!args[0]) return message.channel.send("Please mention a user");
 	var ufind = args[0];
 	ufind = ufind.replace('<@!','');
 	ufind = ufind.replace('<@','');
@@ -137,16 +140,16 @@ module.exports.run = (client, message, args, maindb) => {
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) offset = 1;
-	if (start + offset - 1 > 50) {
-		console.log('Out of limit');
-		return;
-	}
+	if (start + offset - 1 > 50) return message.channel.send('Out of limit');
 	console.log(ufind);
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
 	let query = {discordid: ufind};
 	binddb.find(query).toArray(function (err, userres) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve user data from database! Please try again")
+		}
 		if (userres[0]) {
 			console.log(offset);
 			let uid = userres[0].uid;
