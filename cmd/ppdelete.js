@@ -11,6 +11,7 @@ module.exports.run = (client, message, args, maindb) => {
 	ufind = ufind.replace('<@!','');
 	ufind = ufind.replace('<@','');
 	ufind = ufind.replace('>','');
+	if (isNaN(Number(ufind))) return message.channel.send("Please make sure you have specified the correct user!");
 
 	let todelete = args[1];
 	if (!todelete) return message.channel.send("Please specify play number to delete");
