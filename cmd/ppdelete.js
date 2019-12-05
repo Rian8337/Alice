@@ -79,7 +79,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
+		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`");
 	});
 };
 
