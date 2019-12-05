@@ -1,6 +1,5 @@
 var Discord = require('discord.js');
 require('http');
-require('mongodb');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
