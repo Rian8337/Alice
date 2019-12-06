@@ -1,6 +1,7 @@
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+var cd = new Set();
 
 function modread(input) {
 	var res = '';
@@ -32,6 +33,7 @@ function rankEmote(input) {
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
+	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -105,6 +107,10 @@ module.exports.run = (client, message, args, maindb) => {
 				})
 			});
 			req.end();
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 5000)
 		} else {
 			message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 		}
