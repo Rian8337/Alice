@@ -1,8 +1,10 @@
 var Discord = require('discord.js');
+var cd = new Set();
 require('http');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
+	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 15) ufind = args[0];
@@ -58,6 +60,10 @@ module.exports.run = (client, message, args, maindb) => {
 			}
 
 			message.channel.send(embed);
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 3000)
 		}
 		else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
