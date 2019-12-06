@@ -27,9 +27,8 @@ module.exports.run = async (client, message, args) => {
     }
     console.log(verifying.id);
     verifying.addRole(memberrole.id).catch(console.error);
-    if (!verifying.roles.has(memberrole.id)) {
-        message.channel.send("User has been verified")
-    }
+    if (!verifying.roles.has(memberrole.id)) message.channel.send("User has been verified");
+    else message.channel.send("User is already verified")
 };
 
 module.exports.help = {
