@@ -3,8 +3,10 @@ var droid = require("./ojsamadroid");
 var https = require("https");
 var request = require("request");
 require("dotenv").config();
+require('mongodb');
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
+var cd = new Set();
 
 function modenum(mod) {
 	var res = 4;
@@ -127,6 +129,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') return message.channel.send("This command is only allowed in #bot-ground and #elaina-pp-project!");
+	let ufind = message.author.id;
+	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
@@ -136,7 +140,6 @@ module.exports.run = (client, message, args, maindb) => {
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) offset = 1;
 	if (start + offset - 1 > 50) return message.channel.send('Out of limit');
-	let ufind = message.author.id;
 	/*if (args[0]) {
 		ufind = args[0];
 		ufind = ufind.replace('<@!','');
@@ -250,6 +253,10 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 			});
 			req.end();
+			cd.add(ufind);
+			setTimeout(() => {
+				cd.delete(ufind)
+			}, 3000)
 		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
 };
