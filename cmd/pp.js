@@ -256,7 +256,7 @@ module.exports.run = (client, message, args, maindb) => {
 			cd.add(ufind);
 			setTimeout(() => {
 				cd.delete(ufind)
-			}, 3000)
+			}, 5000)
 		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
 };
