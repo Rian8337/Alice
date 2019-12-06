@@ -1,3 +1,4 @@
+var Discord = require('discord.js');
 var config = require("../config.json");
 
 function isEligible(member) {
@@ -11,6 +12,7 @@ function isEligible(member) {
 }
 
 module.exports.run = async (client, message, args) => {
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!isEligible(message.member)) {
         message.channel.send("You don't have permission to use this");
         return;
