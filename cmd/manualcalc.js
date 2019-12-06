@@ -30,6 +30,19 @@ function mapstatusread(status) {
 	}
 }
 
+function mapstatus(status) {
+	switch (status) {
+		case -2: return "Graveyard";
+		case -1: return "WIP";
+		case 0: return "Pending";
+		case 1: return "Ranked";
+		case 2: return "Approved";
+		case 3: return "Qualified";
+		case 4: return "Loved";
+		default: return "Unspecified"
+	}
+}
+
 function getMapPP(target, message, detail) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + target[0]);
@@ -88,17 +101,17 @@ function getMapPP(target, message, detail) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    			}
+                    }
 					
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -143,22 +156,23 @@ function getMapPP(target, message, detail) {
 					
 					var nx = strain_array.length;
 					var output_test = "```30% strain: " + max_30p/nx + "\n50% strain: " + max_50p/nx + "\n70% strain: " + max_70p/nx + "\n90% strain: " + max_90p/nx + "```";
-					message.channel.send(output_test) ;*/
+					message.channel.send(output_test) ;
 
-					//console.log(object_list);
+					console.log(object_list);*/
 					
 					nparser.reset();
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					var objc = parseInt(mapinfo.count_normal) + parseInt(mapinfo.count_slider) + parseInt(mapinfo.count_spinner);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + target[4],
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")" ,
-						"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id ,
+						"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id,
 						"color": mapstatusread(parseInt(mapinfo.approved)),
 						"footer": {
 							"icon_url": "https://i.imgur.com/S5yspQs.jpg",
@@ -174,10 +188,10 @@ function getMapPP(target, message, detail) {
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s"
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Object count: " + objc
 							},
 							{
-								"name": "Last Update: " + mapinfo.last_update,
+								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
 								"value": "Result: " + combo + "/" + mapinfo.max_combo + "x / " + acc_percent + "% / " + nmiss + " miss(es)"
 							},
 							{
