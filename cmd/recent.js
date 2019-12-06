@@ -63,6 +63,19 @@ function modname(mod) {
 	else return res.trimRight()
 }
 
+function mapstatus(status) {
+	switch (status) {
+		case -2: return "Graveyard";
+		case -1: return "WIP";
+		case 0: return "Pending";
+		case 1: return "Ranked";
+		case 2: return "Approved";
+		case 3: return "Qualified";
+		case 4: return "Loved";
+		default: return "Unspecified"
+	}
+}
+
 function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + input);
@@ -152,6 +165,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + osu.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": "")),
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")",
@@ -174,7 +188,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Max combo: " + mapinfo.max_combo + "x"
 							},
 							{
-								"name": "Last Update: " + mapinfo.last_update,
+								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
 								"value": "❤️ " + mapinfo.favourite_count + " - ▶️ " + mapinfo.playcount
 							},
 							{
@@ -229,7 +243,7 @@ module.exports.run = (client, message, args) => {
 		
 		const embed = {
 			  "title": title,
-			  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%`\n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
+			  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
 			  "color": 8311585,
 			  "author": {
 					"name": "Recent Play for "+ name,
