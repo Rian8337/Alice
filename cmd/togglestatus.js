@@ -25,6 +25,7 @@ module.exports.run = (client, message, args) => {
     else {
         if (x == 'c') {
             let activity = args.slice(1).join(" ");
+            if (!activity) return message.channel.send("Please enter status")
             client.user.setActivity(activity).catch(e => console.log(e))
         }
         else message.channel.send("Invalid input")
