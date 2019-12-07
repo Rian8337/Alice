@@ -33,7 +33,7 @@
   "member_cooldown": 180,
   "management_channel": "server-management",
   "log_channel": "bills",
-  "report_channel": "server-management",
+  "report_channel": "reports",
   "activity_list": [
     ["LiSA - unlasting with Rian8337", "LISTENING"],
     ["SAO Alicization: War of Underworld Episode ", "WATCHING"],
