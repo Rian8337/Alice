@@ -39,12 +39,6 @@ clientdb.connect( function(err, db) {
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("Use a!").catch(e => console.log(e));
-
-    const avatar = config.avatar_list;
-    setInterval(() => {
-    	const index = Math.floor(Math.random() * (avatar.length - 1) + 1);
-    	client.user.setAvatar(avatar[index]).catch(e => console.log(e))
-    }, 300000)
 });
 
 client.on("message", message => {
