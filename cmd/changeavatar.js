@@ -8,12 +8,13 @@ module.exports.run = (client, message, args) => {
     if (isNaN(x)) return message.channel.send("Invalid input");
     let avatar = config.avatar_list;
     if (!avatar[x]) return message.channel.send("There is no avatar!");
-    client.user.setAvatar(avatar[x]).catch();
-    message.channel.send(`Changed avatar to ${avatar[x]}`)
-    cd.add(message.author.id);
-    setTimeout(() => {
-        cd.delete(message.author.id)
-    }, 5000)
+    client.user.setAvatar(avatar[x]).then (() => {
+        message.channel.send(`Changed avatar to ${avatar[x]}`)
+        cd.add(message.author.id);
+        setTimeout(() => {
+            cd.delete(message.author.id)
+        }, 5000)
+    }).catch(() => message.channel.send("You are changing avatar too fast!"));
 };
 
 module.exports.help = {
