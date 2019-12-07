@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args) => {
                     ADD_REACTIONS: false
                 });
             });
-        }catch(e){
+        } catch(e){
             console.log(e.stack);
         }
     }
@@ -86,8 +86,10 @@ module.exports.run = async (client, message, args) => {
     }
 
     let muteembed = new Discord.RichEmbed()
-        .setDescription(`Mute executed by ${message.author}`)
+        .setAuthor(message.author.tag, message.author.avatarURL)
+        .setTitle("Mute executed")
         .setColor("#000000")
+        .setTimestamp(new Date())
         .addField("Muted User: " + tomute.user.username, "Muted in: " + message.channel)
         .addField("Length: " + mutetime + "s", "=========================")
         .addField("Reason: ", reason);
