@@ -56,7 +56,7 @@ module.exports.run = async (client, message, args) => {
             .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
-            .setDescription("**Ban executed**")
+            .setTitle("Ban executed")
             .addField("Banned user: " + toban.username, "User ID: " + userid)
             .addField("=========================", "Reason:\n" + reason);
 
