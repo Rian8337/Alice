@@ -6,7 +6,6 @@ require("dotenv").config();
 require('mongodb');
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
-var cd = new Set();
 
 function modenum(mod) {
 	var res = 4;
@@ -29,7 +28,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 	whitelist.findOne(whitelistQuery, (err, wlres) => {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve map data from database! Please try again");
+			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (wlres) isWhitelist = true; 
 		console.log(input);
@@ -46,6 +45,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 			});
 
 			res.on("end", function () {
+				if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 				var obj = JSON.parse(content);
 				if (!obj[0]) {
 					console.log("Map not found"); 
@@ -130,7 +130,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') return message.channel.send("This command is only allowed in #bot-ground and #elaina-pp-project!");
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
@@ -253,10 +252,6 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 			});
 			req.end();
-			cd.add(ufind);
-			setTimeout(() => {
-				cd.delete(ufind)
-			}, 5000)
 		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
 };
