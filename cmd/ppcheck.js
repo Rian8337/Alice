@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb) => {
 	binddb.find(query).toArray(function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve user data from database! Please try again");
+			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (res[0]) {
 			var uid = res[0].uid;
