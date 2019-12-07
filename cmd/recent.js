@@ -89,6 +89,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 		});
 
 		res.on("end", function () {
+			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
@@ -131,17 +132,17 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    }
+                    			}
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    var npp = droid.ppv2({
+                    			var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -220,38 +221,39 @@ module.exports.run = (client, message, args) => {
     	});
 
     	res.on("end", function () {
-    	var resarr = content.split('<br>');
-    	var headerres = resarr[0].split(" ");
-    	if (headerres[0] == 'FAILED') {
-    		message.channel.send("User doesn't exist");
-    		return;
-		}
-		let name = resarr[0].split(" ")[2];
-		var obj = JSON.parse(resarr[1]);
-		var play = obj.recent[0];
-		let title = play.filename;
-		let score = play.score.toLocaleString();
-		let combo = play.combo;
-		let rank = rankread(play.mark);
-		let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
-		let acc = play.accuracy.toPrecision(4) / 1000;
-		let miss = play.miss;
-		let mod = play.mode;
-		let hash = play.hash;
-		if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
-		
-		const embed = {
-			  "title": title,
-			  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
-			  "color": 8311585,
-			  "author": {
-					"name": "Recent Play for "+ name,
-					"icon_url": rank
-			  },
-			"footer": {
-				"icon_url": "https://i.imgur.com/S5yspQs.jpg",
-				"text": "Alice Synthesis Thirty"
+    		if (!content) return message.channel.send("Error: Empty API response. Please try again!");
+			var resarr = content.split('<br>');
+			var headerres = resarr[0].split(" ");
+			if (headerres[0] == 'FAILED') {
+				message.channel.send("User doesn't exist");
+				return;
 			}
+			let name = resarr[0].split(" ")[2];
+			var obj = JSON.parse(resarr[1]);
+			var play = obj.recent[0];
+			let title = play.filename;
+			let score = play.score.toLocaleString();
+			let combo = play.combo;
+			let rank = rankread(play.mark);
+			let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
+			let acc = play.accuracy.toPrecision(4) / 1000;
+			let miss = play.miss;
+			let mod = play.mode;
+			let hash = play.hash;
+			if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
+
+			const embed = {
+				  "title": title,
+				  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
+				  "color": 8311585,
+				  "author": {
+						"name": "Recent Play for " + name,
+						"icon_url": rank
+				  },
+				"footer": {
+					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"text": "Alice Synthesis Thirty"
+				}
 		};
 		message.channel.send({embed});
     	});
