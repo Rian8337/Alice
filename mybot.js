@@ -88,26 +88,39 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 });
 
 client.on("messageDelete", message => {
-	if (message.author.id == '386742340968120321' || message.author.bot) return;
-	let logchannel = message.guild.channels.find(c => c.name === config.log_channel);
-	if (!logchannel) return;
-	const embed = new Discord.RichEmbed()
-		.setAuthor(message.author.tag, message.author.avatarURL)
-		.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-		.setTimestamp(new Date())
-		.setColor("#cb8900")
-		.setTitle("Message deleted")
-		.addField("Channel", message.channel);
-	
-	if (message.content) embed.addField("Content", message.content);
-	logchannel.send(embed);
-
-	if (message.attachments.size > 0) {
+	if (message.author.bot) return;
+	let logchannel;
+	if (message.guild.id == '316545691545501706') {
+		if (message.attachments.size == 0) return;
+		logchannel = message.guild.channels.find(c => c.name === 'dyno-log');
+		if (!logchannel) return;
 		let attachments = [];
-		message.attachments.forEach(attachment => {
+		message.attachments.forEach((attachment) => {
 			attachments.push(attachment.proxyURL)
 		});
-		logchannel.send({files: attachments})
+		logchannel.send("Image attached", {files: attachments})
+	}
+	else {
+		logchannel = message.guild.channels.find(c => c.name === config.log_channel);
+		if (!logchannel) return;
+		const embed = new Discord.RichEmbed()
+			.setAuthor(message.author.tag, message.author.avatarURL)
+			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+			.setTimestamp(new Date())
+			.setColor("#cb8900")
+			.setTitle("Message deleted")
+			.addField("Channel", message.channel);
+
+		if (message.content) embed.addField("Content", message.content);
+		logchannel.send(embed);
+
+		if (message.attachments.size > 0) {
+			let attachments = [];
+			message.attachments.forEach(attachment => {
+				attachments.push(attachment.proxyURL)
+			});
+			logchannel.send({files: attachments})
+		}
 	}
 });
 
