@@ -44,7 +44,7 @@ client.on("ready", () => {
     setInterval(() => {
     	const index = Math.floor(Math.random() * (avatar.length - 1) + 1);
     	client.user.setAvatar(avatar[index]).catch(e => console.log(e))
-    }, 600000)
+    }, 300000)
 });
 
 client.on("message", message => {
