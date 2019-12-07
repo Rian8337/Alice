@@ -1,7 +1,6 @@
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
-var cd = new Set();
 
 function modread(input) {
 	var res = '';
@@ -33,7 +32,6 @@ function rankEmote(input) {
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -52,7 +50,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = {discordid: ufind};
 	binddb.find(query).toArray(function (err, res) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Empty database response. Please try again!")
+		}
 		if (res[0]) {
 			let uid = res[0].uid;
 			var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -65,6 +66,7 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 
 				res.on("end", function () {
+					if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 					curpos = 0;
 					var resarr = content.split('<br>');
 					var headerres = resarr[0].split(' ');
@@ -107,10 +109,6 @@ module.exports.run = (client, message, args, maindb) => {
 				})
 			});
 			req.end();
-			cd.add(message.author.id);
-			setTimeout(() => {
-				cd.delete(message.author.id)
-			}, 5000)
 		} else {
 			message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 		}
