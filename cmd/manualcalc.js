@@ -56,6 +56,7 @@ function getMapPP(target, message, detail) {
 		});
 
 		res.on("end", function () {
+			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {message.channel.send("Map not found"); return;}
 			var mapinfo = obj[0];
