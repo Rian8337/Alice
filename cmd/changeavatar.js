@@ -9,7 +9,7 @@ module.exports.run = (client, message, args) => {
     let avatar = config.avatar_list;
     if (!avatar[x]) return message.channel.send("There is no avatar!");
     client.user.setAvatar(avatar[x]).then (() => {
-        message.channel.send(`Changed avatar to ${avatar[x]}`)
+        message.channel.send(`Changed avatar to ${avatar[x]}`);
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id)
