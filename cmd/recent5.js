@@ -1,7 +1,6 @@
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
-var cd = new Set();
 
 function modread(input) {
 	var res = '';
@@ -32,7 +31,6 @@ function rankEmote(input) {
 }
 
 module.exports.run = (client, message, args) => {
-	if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) {message.channel.send("Invalid uid"); return;}
 	let page = 1;
@@ -48,6 +46,7 @@ module.exports.run = (client, message, args) => {
 		});
 
 		res.on("end", function () {
+			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') {message.channel.send("User doesn't exist"); return;}
@@ -82,10 +81,6 @@ module.exports.run = (client, message, args) => {
 		})
 	});
 	req.end();
-	cd.add(message.author.id);
-	setTimeout(() => {
-		cd.delete(message.author.id)
-	}, 5000)
 };
 
 module.exports.help = {
