@@ -89,6 +89,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 		});
 
 		res.on("end", function () {
+			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
@@ -127,15 +128,15 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    }
+                    			}
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
-                    var npp = droid.ppv2({
+                    			var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -208,7 +209,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Empty database response. Please try again!")
+		}
 		if (res[0]) {
 			let uid = res[0].uid;
 			var options = {
@@ -226,6 +230,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 
 			res.on("end", function () {
+				if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 				var resarr = content.split('<br>');
 				var headerres = resarr[0].split(" ");
 				if (headerres[0] == 'FAILED') {
@@ -265,7 +270,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 			req.end();
 		}
-		else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")}
+		else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
 };
 
