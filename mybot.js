@@ -29,16 +29,22 @@ let uri = 'mongodb://' + dbkey + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,
 let maindb = '';
 let clientdb = new mongodb.MongoClient(uri, {useNewUrlParser: true});
     
-    clientdb.connect( function(err, db) {
-        if (err) throw err;
-        //if (db) 
-        maindb = db.db('ElainaDB');
-        console.log("DB connection established");
-    });
+clientdb.connect( function(err, db) {
+	if (err) throw err;
+	//if (db) 
+	maindb = db.db('ElainaDB');
+	console.log("DB connection established");
+});
 
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
-    client.user.setActivity("Use a!").catch();
+    client.user.setActivity("Use a!").catch(e => console.log(e));
+
+    setInterval(() => {
+    	const avatar = config.avatar_list;
+    	const index = Math.floor(Math.random() * (avatar.length - 1) + 1);
+    	client.user.setAvatar(avatar[index]).catch(e => console.log(e))
+    }, 600000)
 });
 
 client.on("message", message => {
