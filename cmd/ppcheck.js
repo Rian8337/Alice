@@ -72,8 +72,8 @@ module.exports.run = (client, message, args, maindb) => {
 				msg.react("⬅️").then(() => {
 					msg.react("➡️");
 				});
-				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id, {time: 60000});
-				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id, {time: 60000});
+				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
 
 				back.on('collect', () => {
 					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
