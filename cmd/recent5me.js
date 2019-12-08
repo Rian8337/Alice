@@ -1,6 +1,7 @@
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+let config = require('../config.json');
 
 function modread(input) {
 	var res = '';
@@ -94,12 +95,13 @@ module.exports.run = (client, message, args, maindb) => {
 						message.channel.send("This player haven't submitted any play");
 						return;
 					}
-
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
 						"description": "Recent play for **" + name + " (Page " + page + ")**",
 						"color": 8102199,
 						"footer": {
-							"icon_url": "https://i.imgur.com/8Fkb6Us.jpg",
+							"icon_url": footer[index],
 							"text": "Alice Synthesis Thirty"
 						},
 						"fields": entries
