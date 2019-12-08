@@ -6,6 +6,7 @@ var request = require("request");
 require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
+let config = require('../config.json');
 
 function rankread(imgsrc) {
 	let rank="";
@@ -132,17 +133,17 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    			}
+                    }
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -161,18 +162,21 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + osu.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": "")),
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")",
 						"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id ,
 						"color": mapstatusread(parseInt(mapinfo.approved)),
 						"footer": {
-							"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+							"icon_url": footer[index],
 							"text": "Alice Synthesis Thirty"
 						},
 						"author": {
@@ -241,6 +245,8 @@ module.exports.run = (client, message, args) => {
 			let mod = play.mode;
 			let hash = play.hash;
 			if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
 			const embed = {
 				  "title": title,
@@ -251,7 +257,7 @@ module.exports.run = (client, message, args) => {
 						"icon_url": rank
 				  },
 				"footer": {
-					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				}
 		};
