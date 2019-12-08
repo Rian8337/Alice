@@ -22,7 +22,6 @@ module.exports.run = (client, message, args) => {
         message.channel.send({embed});
         return;
     }
-    console.log(user);
     const embed = new Discord.RichEmbed()
         .setDescription(`**${user.tag}**`)
         .setColor(message.member.highestRole.hexColor)
