@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args) => {
                     ADD_REACTIONS: false
                 });
             });
-        } catch(e){
+        }catch(e){
             console.log(e.stack);
         }
     }
@@ -81,15 +81,18 @@ module.exports.run = async (client, message, args) => {
 
     try{
         await tomute.send(`Hi! You've been muted for ${mutetime} seconds. Sorry!`)
-    } catch (e){
+    } catch (e) {
         message.channel.send(`A user has been muted... but their DMs are locked. They will be muted for ${mutetime} seconds`)
     }
+    let footer = config.avatar_list;
+    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
     let muteembed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setTitle("Mute executed")
         .setColor("#000000")
         .setTimestamp(new Date())
+        .setFooter("User ID: " + tomute.id, footer[index])
         .addField("Muted User: " + tomute.user.username, "Muted in: " + message.channel)
         .addField("Length: " + mutetime + "s", "=========================")
         .addField("Reason: ", reason);
