@@ -37,14 +37,15 @@ module.exports.run = async (client, message, args) => {
 
     message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
-
+        let footer = config.avatar_list;
+        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
         const embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
-            .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+            .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
-            .setDescription("**Temporary ban executed**")
-            .addField("Banned user: " + toban.username + "\nUser ID: " + userid, "Duration: " + (bantime * 24) + " hour(s)")
+            .setTitle("Temporary ban executed")
+            .addField("Banned user: " + toban.username + "\nUser ID: " + userid, "Length: " + (bantime * 24) + " hour(s)")
             .addField("=========================", "Reason:\n" + reason);
 
         logchannel.send({embed});
