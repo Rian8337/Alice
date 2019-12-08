@@ -2,16 +2,17 @@ var http = require('http');
 var mongodb = require('mongodb');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+let config = require('../config.json');
 
 function modread(input) {
 	var res = '';
-	if (input.includes('n')) res += 'NF'
-	if (input.includes('h')) res += 'HD'
-	if (input.includes('r')) res += 'HR'
-	if (input.includes('e')) res += 'EZ'
-	if (input.includes('t')) res += 'HT'
-	if (input.includes('c')) res += 'NC'
-	if (input.includes('d')) res += 'DT'
+	if (input.includes('n')) res += 'NF';
+	if (input.includes('h')) res += 'HD';
+	if (input.includes('r')) res += 'HR';
+	if (input.includes('e')) res += 'EZ';
+	if (input.includes('t')) res += 'HT';
+	if (input.includes('c')) res += 'NC';
+	if (input.includes('d')) res += 'DT';
 	if (res) res = '+' + res;
 	return res;
 }
@@ -111,11 +112,13 @@ function apiFetch(uid, avalink, location, message, client) {
 			var date = new Date(rplay.date*1000);
 			date.setUTCHours(date.getUTCHours() + 8);
 			if (!rplay) {message.channel.send("This player haven't submitted any play"); return;}
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
 				"description": "**Username: **"+name+"\n**Rank**: "+rank,
 				"color": 8102199,
 				"footer": {
-					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				},
 				"thumbnail": {
