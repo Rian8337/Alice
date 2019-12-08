@@ -28,7 +28,7 @@ module.exports.run = (client, message, args) => {
             if (!type) return message.channel.send("Please provide activity type!");
             let activity = args.slice(2).join(" ");
             if (!activity) return message.channel.send("Please provide activity!");
-            client.user.setActivity(activity, {type: type}).catch(e => console.log(e));
+            client.user.setActivity(activity, {type: type, url: "https://github.com/Rian8337/Alice"}).catch(e => console.log(e));
             message.channel.send("Status changed to " + activity + ", activity type: " + type)
         }
         else message.channel.send("Invalid input")
