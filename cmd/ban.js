@@ -2,8 +2,7 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) {
@@ -41,22 +40,23 @@ module.exports.run = async (client, message, args) => {
         message.channel.send("User not found!");
         return;
     }
-    
     let reason = args.slice(1).join(" ");
     if (!reason) {
         message.channel.send("Please enter your reason.");
         return;
     }
-    
     message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
 
+        let footer = config.avatar_list;
+        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+
         const embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
-            .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+            .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
-            .setTitle("Ban executed")
+            .setDescription("**Ban executed**")
             .addField("Banned user: " + toban.username, "User ID: " + userid)
             .addField("=========================", "Reason:\n" + reason);
 
