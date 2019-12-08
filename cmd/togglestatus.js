@@ -24,7 +24,7 @@ module.exports.run = (client, message, args) => {
     }
     else {
         if (x == 'c') {
-            let type = args[1];
+            let type = args[1].toUpperCase();
             if (!type) return message.channel.send("Please provide activity type!");
             let activity = args.slice(2).join(" ");
             if (!activity) return message.channel.send("Please provide activity!");
