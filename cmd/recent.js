@@ -166,8 +166,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
-					var pcppline = pcpp.toString().split("(");
-					message.channel.send(`Raw droid pp: ${npp.toString()}`);
+					var pcppline = pcpp.toString().split("(");;
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
