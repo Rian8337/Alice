@@ -2,9 +2,7 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
-    
+    if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) {
         message.channel.send(`Please create ${config.management_channel} first!`);
@@ -26,13 +24,15 @@ module.exports.run = async (client, message, args) => {
     }
     message.guild.unban(userid, reason).then (() => {
         message.author.lastMessage.delete().catch();
+        let footer = config.avatar_list;
+        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
         const embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
-            .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+            .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
-            .setTitle("Unban executed")
+            .setDescription("**Unban executed**")
             .addField("Unbanned user: " + userid.username, "User ID: " + userid.id)
             .addField("=================", "Reason:\n" + reason);
 
