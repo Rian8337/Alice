@@ -4,6 +4,7 @@ var https = require("https");
 var request = require("request");
 require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
+let config = require('../config.json');
 
 function modenum(mod) {
 	var res = 4;
@@ -170,13 +171,15 @@ function getMapPP(target, message, detail) {
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
 					var objc = parseInt(mapinfo.count_normal) + parseInt(mapinfo.count_slider) + parseInt(mapinfo.count_spinner);
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + target[4],
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")" ,
 						"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id,
 						"color": mapstatusread(parseInt(mapinfo.approved)),
 						"footer": {
-							"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+							"icon_url": footer[index],
 							"text": "Alice Synthesis Thirty"
 						},
 						"author": {
@@ -216,7 +219,7 @@ module.exports.run = (client, message, args) => {
 	var missc;
 	var mod;
 	var detail = false;
-	if (!args[0]) {message.channel.send("Hey at least give me the map :/"); return;}
+	if (!args[0]) return message.channel.send("Hey at least give me the map :/");
 	var a = args[0].split("/");
 	beatmapid = a[a.length-1];
 	for (var i = 1; i < args.length; i++) {
