@@ -40,10 +40,10 @@ module.exports.run = (client, message, args, maindb) => {
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
-			const embed = new Discord.RichEmbed()
+			let embed = new Discord.RichEmbed()
 				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 				.setColor(message.member.highestRole.hexColor)
-				.setFooter("Alice Synthesis Thirty", footer[index]);
+				.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
 
 			for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 				if (ppentry[x]) {
@@ -62,7 +62,71 @@ module.exports.run = (client, message, args, maindb) => {
 				else embed.addField((x+1) + '. -', '-')
 			}
 
-			message.channel.send(embed);
+			message.channel.send(embed).then(msg => {
+				msg.react("⬅").then(() => {
+					msg.react("➡");
+
+					const previous = (reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id;
+					const forward = (reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id;
+
+					const back = msg.createReactionCollector(previous, {time: 60000});
+					const next = msg.createReactionCollector(forward, {time: 60000});
+
+					back.on('collect', () => {
+						if (page === 1) return;
+						page--;
+						embed = new Discord.RichEmbed()
+							.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+							.setColor(message.member.highestRole.hexColor)
+							.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
+
+						for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
+							if (ppentry[x]) {
+								let combo = ppentry[x][3].toString();
+								if (combo.indexOf("x") == -1) combo = combo + "x";
+								else if (combo.indexOf(" ") != -1) combo = combo.trimRight();
+
+								let acc = ppentry[x][4].toString();
+								if (acc.indexOf('\r') != -1) acc = acc.replace(" ", "").replace("\r", "");
+								else if (acc.indexOf("%") != -1) acc = parseFloat(acc.trimRight()).toFixed(2) + "%";
+								else acc = acc + "%";
+
+								let miss = ppentry[x][5].toString() + " ❌";
+								embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
+							}
+							else embed.addField((x+1) + '. -', '-')
+						}
+						msg.edit(embed)
+					});
+
+					next.on('collect', () => {
+						if (page === 15) return;
+						page++;
+						embed = new Discord.RichEmbed()
+							.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+							.setColor(message.member.highestRole.hexColor)
+							.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
+
+						for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
+							if (ppentry[x]) {
+								let combo = ppentry[x][3].toString();
+								if (combo.indexOf("x") == -1) combo = combo + "x";
+								else if (combo.indexOf(" ") != -1) combo = combo.trimRight();
+
+								let acc = ppentry[x][4].toString();
+								if (acc.indexOf('\r') != -1) acc = acc.replace(" ", "").replace("\r", "");
+								else if (acc.indexOf("%") != -1) acc = parseFloat(acc.trimRight()).toFixed(2) + "%";
+								else acc = acc + "%";
+
+								let miss = ppentry[x][5].toString() + " ❌";
+								embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
+							}
+							else embed.addField((x+1) + '. -', '-')
+						}
+						msg.edit(embed)
+					})
+				})
+			});
 			cd.add(message.author.id);
 			setTimeout(() => {
 				cd.delete(message.author.id)
