@@ -73,7 +73,7 @@ module.exports.run = (client, message, args, maindb) => {
 					const next = msg.createReactionCollector(forward, {time: 60000});
 
 					back.on('collect', () => {
-						if (page === 1) return;
+						if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
 						page--;
 						embed = new Discord.RichEmbed()
 							.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
@@ -96,11 +96,12 @@ module.exports.run = (client, message, args, maindb) => {
 							}
 							else embed.addField((x+1) + '. -', '-')
 						}
-						msg.edit(embed)
+						msg.edit(embed);
+						msg.reactions.forEach(reaction => reaction.remove(message.author.id))
 					});
 
 					next.on('collect', () => {
-						if (page === 15) return;
+						if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
 						page++;
 						embed = new Discord.RichEmbed()
 							.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
@@ -123,7 +124,8 @@ module.exports.run = (client, message, args, maindb) => {
 							}
 							else embed.addField((x+1) + '. -', '-')
 						}
-						msg.edit(embed)
+						msg.edit(embed);
+						msg.reactions.forEach(reaction => reaction.remove(message.author.id))
 					})
 				})
 			});
