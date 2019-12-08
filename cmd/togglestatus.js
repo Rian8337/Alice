@@ -24,9 +24,12 @@ module.exports.run = (client, message, args) => {
     }
     else {
         if (x == 'c') {
-            let activity = args.slice(1).join(" ");
-            if (!activity) return message.channel.send("Please enter status")
-            client.user.setActivity(activity).catch(e => console.log(e))
+            let type = args[1];
+            if (!type) return message.channel.send("Please provide activity type!");
+            let activity = args.slice(2).join(" ");
+            if (!activity) return message.channel.send("Please provide activity!");
+            client.user.setActivity(activity, {type: type}).catch(e => console.log(e));
+            message.channel.send("Status changed to " + activity + ", activity type: " + type)
         }
         else message.channel.send("Invalid input")
     }
