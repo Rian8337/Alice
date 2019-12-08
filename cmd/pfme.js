@@ -1,20 +1,7 @@
 var http = require('http');
-var mongodb = require('mongodb');
+require('mongodb');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
-
-function modread(input) {
-	var res = '';
-	if (input.includes('n')) res += 'NF'
-	if (input.includes('h')) res += 'HD'
-	if (input.includes('r')) res += 'HR'
-	if (input.includes('e')) res += 'EZ'
-	if (input.includes('t')) res += 'HT'
-	if (input.includes('c')) res += 'NC'
-	if (input.includes('d')) res += 'DT'
-	if (res) res = '+' + res;
-	return res;
-}
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
@@ -57,7 +44,7 @@ module.exports.run = (client, message, args, maindb) => {
 							avalink = b[x-3];
 							b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
 							b[x+1]=b[x+1].replace("<\/small>","");
-							b[x+1]=b[x+1].trim()
+							b[x+1]=b[x+1].trim();
 							location=b[x+1]
 						}
 					}
@@ -68,7 +55,7 @@ module.exports.run = (client, message, args, maindb) => {
 		}
 		else { message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`") };
 	});
-}
+};
 
 function apiFetch(uid, avalink, location, message) {
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -85,13 +72,15 @@ function apiFetch(uid, avalink, location, message) {
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') {message.channel.send("User not exist"); return;}
 			resarr.shift();
-			content = resarr.join("")
+			content = resarr.join("");
 			var obj = JSON.parse(content);
 			var name = headerres[2];
 			var tscore = headerres[3];
 			var pcount = headerres[4];
 			var oacc = parseFloat(headerres[5])*100;
 			var rank = obj.rank;
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
 				"description": "**Username: **"+name+"  /  **Rank**: "+rank + "\n" + location,
 				"color": 8102199,
@@ -99,7 +88,7 @@ function apiFetch(uid, avalink, location, message) {
 						"url": avalink
 				},
 				"footer": {
-					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				},
 				"author": {
@@ -121,4 +110,4 @@ function apiFetch(uid, avalink, location, message) {
 
 module.exports.help = {
 	name: "pfme"
-}
+};
