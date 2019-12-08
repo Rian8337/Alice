@@ -37,12 +37,14 @@ module.exports.run = async (client, message, args) => {
         .addField("Reason: ", reason);
 
     channel.send(reportembed);
+    let footer = config.avatar_list;
+    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
     let replyembed = new Discord.RichEmbed()
         .setTitle("Report statistics")
         .setColor("#527ea3")
         .setTimestamp(new Date())
-        .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+        .setFooter("Alice Synthesis Thirty", footer[index])
         .addField("Reported user: " + toreport.user.username, "Reported in: " + message.channel)
         .addField("Reason: " + reason, "Make sure you have evidence ready!\nAbuse of this command will make you unable to submit reports.");
 
