@@ -239,7 +239,7 @@ module.exports.run = (client, message, args) => {
 			let combo = play.combo;
 			let rank = rankread(play.mark);
 			let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
-			let acc = play.accuracy.toPrecision(4) / 1000;
+			let acc = play.accuracy.toFixed(2) / 1000;
 			let miss = play.miss;
 			let mod = play.mode;
 			let hash = play.hash;
