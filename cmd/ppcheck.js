@@ -63,8 +63,8 @@ module.exports.run = (client, message, args, maindb) => {
 			}
 
 			message.channel.send(embed).then(msg => {
-				msg.react("⬅").then(() => {
-					msg.react("➡");
+				msg.react("⬅️").then(() => {
+					msg.react("➡️");
 				});
 				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id, {time: 60000});
 				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id, {time: 60000});
