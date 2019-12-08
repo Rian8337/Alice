@@ -2,6 +2,7 @@ var http = require('http');
 require('mongodb');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
