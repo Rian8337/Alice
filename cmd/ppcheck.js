@@ -1,6 +1,7 @@
 var Discord = require('discord.js');
 var cd = new Set();
 require('http');
+let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
@@ -36,11 +37,13 @@ module.exports.run = (client, message, args, maindb) => {
 
 			let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 			let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
 			const embed = new Discord.RichEmbed()
 				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 				.setColor(message.member.highestRole.hexColor)
-				.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg");
+				.setFooter("Alice Synthesis Thirty", footer[index]);
 
 			for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 				if (ppentry[x]) {
