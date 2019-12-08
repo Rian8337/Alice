@@ -1,23 +1,11 @@
 var http = require("http");
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
-
-function modread(input) {
-	var res = '';
-	if (input.includes('n')) res += 'NF'
-	if (input.includes('h')) res += 'HD'
-	if (input.includes('r')) res += 'HR'
-	if (input.includes('e')) res += 'EZ'
-	if (input.includes('t')) res += 'HT'
-	if (input.includes('c')) res += 'NC'
-	if (input.includes('d')) res += 'DT'
-	if (res) res = '+' + res;
-	return res;
-}
+let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) {message.channel.send("Invalid uid"); return};
+    if (isNaN(uid)) return message.channel.send("Invalid uid");
     var options = {
     	host: "ops.dgsrz.com",
     	port: 80,
@@ -52,7 +40,7 @@ module.exports.run = (client, message, args) => {
 		});
 	});
 	req.end();
-}
+};
 
 function apiFetch(uid, avalink, location, message) {
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -76,6 +64,8 @@ function apiFetch(uid, avalink, location, message) {
 			var pcount = headerres[4];
 			var oacc = parseFloat(headerres[5])*100;
 			var rank = obj.rank;
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
 				"description": "**Username: **"+name+"  /  **Rank**: "+rank + "\n" + location,
 				"color": 8102199,
@@ -83,7 +73,7 @@ function apiFetch(uid, avalink, location, message) {
 						"url": avalink
 				},
 				"footer": {
-					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				},
 				"author": {
@@ -105,4 +95,4 @@ function apiFetch(uid, avalink, location, message) {
 
 module.exports.help = {
 	name: "pfid"
-}
+};
