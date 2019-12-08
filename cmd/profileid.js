@@ -1,16 +1,17 @@
 var http = require("http");
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+let config = require('../config.json');
 
 function modread(input) {
 	var res = '';
-	if (input.includes('n')) res += 'NF'
-	if (input.includes('h')) res += 'HD'
-	if (input.includes('r')) res += 'HR'
-	if (input.includes('e')) res += 'EZ'
-	if (input.includes('t')) res += 'HT'
-	if (input.includes('c')) res += 'NC'
-	if (input.includes('d')) res += 'DT'
+	if (input.includes('n')) res += 'NF';
+	if (input.includes('h')) res += 'HD';
+	if (input.includes('r')) res += 'HR';
+	if (input.includes('e')) res += 'EZ';
+	if (input.includes('t')) res += 'HT';
+	if (input.includes('c')) res += 'NC';
+	if (input.includes('d')) res += 'DT';
 	if (res) res = '+' + res;
 	return res;
 }
@@ -32,7 +33,7 @@ function rankEmote(input) {
 
 module.exports.run = (client, message, args) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) {message.channel.send("Invalid uid"); return};
+    if (isNaN(uid)) return message.channel.send("Invalid uid");
     var options = {
     	host: "ops.dgsrz.com",
     	port: 80,
@@ -67,7 +68,7 @@ module.exports.run = (client, message, args) => {
 		});
 	});
 	req.end();
-}
+};
 
 function apiFetch(uid, avalink, location, message, client) {
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -97,11 +98,13 @@ function apiFetch(uid, avalink, location, message, client) {
 			[shortcut] = "https://ppboard.herokuapp.com/profile?uid="+uid;
 			date.setUTCHours(date.getUTCHours() + 8);
 			if (!rplay) {message.channel.send("This player haven't submitted any play"); return;}
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
 				"description": "**Username: **"+name+"\n**Rank**: "+rank,
 				"color": 8102199,
 				"footer": {
-					"icon_url": "https://i.imgur.com/S5yspQs.jpg",
+					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				},
 					"thumbnail": {
@@ -135,4 +138,4 @@ function apiFetch(uid, avalink, location, message, client) {
 
 module.exports.help = {
 	name: "profileid"
-}
+};
