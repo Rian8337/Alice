@@ -2,6 +2,7 @@ var https = require("https");
 require("mongodb");
 require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
+let config = require('../config.json');
 
 function mapstatusread(status) {
 	switch (status) {
@@ -17,7 +18,7 @@ function mapstatusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return;
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
     var whitelist = maindb.collection("mapwhitelist");
     var link_in = args[0];
     whitelistInfo(link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
@@ -91,14 +92,15 @@ function whitelistInfo(link_in, message, callback) {
             }
 
             var mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
-
+            let footer = config.avatar_list;
+            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
             const embed = {
                 "title": mapstring,
                 "description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat]()",
                 "url": "https://osu.ppy.sh/b/" + firstmapinfo.beatmap_id ,
                 "color": mapstatusread(parseInt(firstmapinfo.approved)),
                 "footer": {
-                    "icon_url": "https://i.imgur.com/S5yspQs.jpg",
+                    "icon_url": footer[index],
                     "text": "Alice Synthesis Thirty"
                 },
                 "author": {
@@ -124,7 +126,6 @@ function whitelistInfo(link_in, message, callback) {
         });
     })
 }
-
 
 module.exports.help = {
 	name: "whitelistremoveset"
