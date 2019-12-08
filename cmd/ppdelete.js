@@ -1,4 +1,5 @@
 var Discord = require('discord.js');
+let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
@@ -24,7 +25,7 @@ module.exports.run = (client, message, args, maindb) => {
 	binddb.find(query).toArray(function (err, userres) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve user data from database! Please try again")
+			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		if (userres[0]) {
 			let uid = userres[0].uid;
@@ -54,11 +55,13 @@ module.exports.run = (client, message, args, maindb) => {
 				pptotal += weight * pplist[i][2];
 				weight *= 0.95;
 			}
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
 			const embed = new Discord.RichEmbed()
 				.setTitle("__Deleted play data__")
 				.setColor("#6699cb")
-				.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setTimestamp(new Date())
 				.addField("**User stats**", `Discord User: <@${discordid}>\nUsername: ${username}\nUid: ${uid}`)
 				.addField("**Play stats**", `Map Name: ${scdelete[1]}\nPP: ${scdelete[2]} pp\nCombo: ${scdelete[3]}\nAccuracy: ${scdelete[4]}\nMiss count: ${scdelete[5]} miss(es)`)
