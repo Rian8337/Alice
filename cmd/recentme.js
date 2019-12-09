@@ -129,15 +129,15 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    }
+                    			}
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
-                    var npp = droid.ppv2({
+                    			var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -155,12 +155,11 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    console.log(npp.toString());
+                    			console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
-					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
