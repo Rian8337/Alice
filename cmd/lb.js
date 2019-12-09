@@ -1,5 +1,3 @@
-require('mongodb');
-
 function spaceFill (s, l) {
     var a = s.length;
     for (var i = 1; i < l-a; i++) {
