@@ -1,6 +1,5 @@
 var Discord = require('discord.js');
 var cd = new Set();
-require('http');
 let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
@@ -70,7 +69,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⬅️").then(() => {
-					msg.react("➡️");
+					msg.react("➡️").catch(e => console.log(e));
 				});
 				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
 				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
@@ -105,8 +104,8 @@ module.exports.run = (client, message, args, maindb) => {
 						}
 						else embed.addField((x+1) + '. -', '-')
 					}
-					msg.edit(embed);
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+					msg.edit(embed).catch(e => console.log(e));
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
 
 				next.on('collect', () => {
@@ -139,8 +138,8 @@ module.exports.run = (client, message, args, maindb) => {
 						}
 						else embed.addField((x+1) + '. -', '-')
 					}
-					msg.edit(embed);
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+					msg.edit(embed).catch(e => console.log(e));
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				})
 			});
 			cd.add(message.author.id);
