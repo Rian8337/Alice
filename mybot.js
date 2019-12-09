@@ -42,7 +42,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-	if (message.author.bot || message.author.id != '386742340968120321') return;
+	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
