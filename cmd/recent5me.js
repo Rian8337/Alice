@@ -105,11 +105,8 @@ module.exports.run = (client, message, args, maindb) => {
 						let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
 
 						back.on('collect', () => {
-							if (page === 1) {
-								page = 10;
-								return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-							}
-							page--;
+							if (page === 1) page = 10;
+							else page--;
 							embed = new Discord.RichEmbed()
 								.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
 								.setColor(8102199)
@@ -128,11 +125,8 @@ module.exports.run = (client, message, args, maindb) => {
 						});
 
 						next.on('collect', () => {
-							if (page === 10) {
-								page = 1;
-								return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-							}
-							page++;
+							if (page === 10) page = 1;
+							else page++;
 							embed = new Discord.RichEmbed()
 								.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
 								.setColor(8102199)
@@ -156,7 +150,7 @@ module.exports.run = (client, message, args, maindb) => {
 		} else {
 			message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 		}
-	});
+	})
 };
 
 module.exports.help = {
