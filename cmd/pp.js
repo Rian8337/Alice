@@ -232,7 +232,8 @@ module.exports.run = (client, message, args, maindb) => {
 										weight *= 0.95;
 									}
 									var diff = pptotal - pre_pptotal;
-									message.channel.send('<@' + discordid + '> Submitted ' + submitted + ' play(s): + ' + diff.toFixed(2) + ' pp');
+									if (submitted === 1) message.channel.send('<@' + discordid + '> Submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp');
+									else message.channel.send('<@' + discordid + '> Submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp');
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
