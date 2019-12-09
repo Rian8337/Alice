@@ -123,7 +123,7 @@ module.exports.run = (client, message, args, maindb) => {
 							if (!combo) combo = '0x';
 							combo = combo.toString();
 							if (combo.indexOf("x") == -1) combo = combo + "x";
-							else if (combo.indexOf(" ") != -1) combo = combo..replace(" ", "");
+							else if (combo.indexOf(" ") != -1) combo = combo.replace(" ", "");
 
 							let acc = ppentry[x][4];
 							if (!acc) acc = '100.00%';
