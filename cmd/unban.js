@@ -32,7 +32,7 @@ module.exports.run = async (client, message, args) => {
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
-            .setDescription("**Unban executed**")
+            .setTitle("Unban executed")
             .addField("Unbanned user: " + userid.username, "User ID: " + userid.id)
             .addField("=================", "Reason:\n" + reason);
 
