@@ -64,7 +64,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
                 msg.edit('```' + output + '```').catch(e => console.log(e));
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             })
         })
     });
