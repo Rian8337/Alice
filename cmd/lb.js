@@ -1,3 +1,5 @@
+var cd = new Set();
+
 function spaceFill (s, l) {
     var a = s.length;
     for (var i = 1; i < l-a; i++) {
@@ -7,6 +9,7 @@ function spaceFill (s, l) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+    if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
     var page = 0;
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
     var output = '#  | Username         | UID    | Play | PP \n';
@@ -64,8 +67,12 @@ module.exports.run = (client, message, args, maindb) => {
                 msg.edit('```' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             })
-        })
-    });
+        });
+        cd.add(message.author.id);
+        setTimeout(() => {
+            cd.delete(message.author.id)
+        }, 10000)
+    })
 };
 
 module.exports.help = {
