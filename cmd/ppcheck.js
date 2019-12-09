@@ -76,7 +76,10 @@ module.exports.run = (client, message, args, maindb) => {
 				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
 
 				back.on('collect', () => {
-					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					if (page === 1) {
+						page = 15;
+						return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					}
 					page--;
 					embed = new Discord.RichEmbed()
 						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
@@ -110,7 +113,10 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 
 				next.on('collect', () => {
-					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					if (page === 15) {
+						page = 1;
+						return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					}
 					page++;
 					embed = new Discord.RichEmbed()
 						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
