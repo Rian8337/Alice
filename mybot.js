@@ -1,3 +1,95 @@
+const Discord = require("discord.js");
+const client = new Discord.Client();
+const config = require("./config.json");
+const fs = require("fs");
+require("https");
+require("util");
+var mongodb = require('mongodb');
+require("dotenv").config();
+var dbkey = process.env.DB_KEY;
+
+client.commands = new Discord.Collection();
+fs.readdir("./cmd/" , (err, files) => {
+	if (err) throw err;
+	let cmdfile = files.filter (f => f.split(".").pop() === "js");
+	if (cmdfile.length <= 0) {
+		console.log("No command found uwu");
+		return;
+	}
+
+	console.log(`Loading ${cmdfile.length} command(s), please wait...`);
+	cmdfile.forEach((f, i) => {
+		let props = require(`./cmd/${f}`);
+		console.log(`${i+1} : ${f} loaded`);
+		if(f !== 'ojsamadroid.js') client.commands.set(props.help.name, props);
+	});
+});
+
+let uri = 'mongodb://' + dbkey + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true';
+let maindb = '';
+let clientdb = new mongodb.MongoClient(uri, {useNewUrlParser: true});
+
+    clientdb.connect( function(err, db) {
+        if (err) throw err;
+        //if (db)
+        maindb = db.db('ElainaDB');
+        console.log("DB connection established");
+    });
+
+client.on("ready", () => {
+    console.log("Alice Synthesis Thirty is up and running");
+    client.user.setActivity("LiSA - unlasting with Rian8337", {type: "LISTENING"}).catch(e => console.log(e));
+});
+
+client.on("message", message => {
+	if (message.author.bot || message.author.id != '386742340968120321') return;
+	let msgArray = message.content.split(/\s+/g);
+	let command = msgArray[0];
+	let args = msgArray.slice(1);
+
+	/*if (message.author.id == '386742340968120321') {
+		let cmd = client.commands.get("sayit");
+		let args = msgArray.slice(0);
+		cmd.run(client, message, args);
+		return;
+	}
+
+	if (message.isMemberMentioned(client.user) && message.author.id != owner.id) {
+		const embed = new Discord.RichEmbed()
+			.setAuthor(message.author.tag, message.author.avatarURL)
+			.setTitle("You were mentioned!")
+			.setTimestamp(new Date())
+			.setColor(message.member.highestRole.hexColor)
+			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+			.addField("Channel", message.channel)
+			.addField("Content", message.content.replace(client.user.id, owner.id));
+
+		owner.send(embed).catch(e => console.log(e));
+		return
+	}*/
+
+	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
+		let args = msgArray.slice(0);
+		let cmd = client.commands.get("response");
+		return cmd.run(client, message, args)
+	}
+
+	if (message.content.includes("m.mugzone.net/chart/")) {
+		let cmd = client.commands.get("malodychart");
+		cmd.run(client, message, args)
+	}
+	
+	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
+		let cmd = '';
+		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
+		else cmd = client.commands.get(command.slice(1));
+		if (cmd) {
+			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
+			cmd.run(client, message, args, maindb);
+		}
+	}
+});
+
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	if (oldMessage.author.bot) return;
 	if (oldMessage.content == newMessage.content) return;
@@ -65,3 +157,5 @@ client.on("messageDeleteBulk", messages => {
 		.addField("Amount of messages", messages.size);
 	logchannel.send(embed)
 });
+
+client.login(process.env.BOT_TOKEN);
