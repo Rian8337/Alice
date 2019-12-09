@@ -1,3 +1,4 @@
+var Discord = require('discord.js');
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
@@ -55,32 +56,77 @@ module.exports.run = (client, message, args) => {
 			content = resarr.join("");
 			var obj = JSON.parse(content);
 			var name = headerres[2];
-			var entries = [];
 			var rplay = obj.recent;
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			let embed = new Discord.RichEmbed()
+				.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
+				.setColor(8102199)
+				.setFooter("Alice Synthesis Thirty", footer[index]);
+
 			for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 				if (!rplay[i]) break;
 				var date = new Date(rplay[i].date*1000);
 				date.setUTCHours(date.getUTCHours() + 8);
-				var entry = {
-					"name": client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode),
-					"value": rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`'
-				};
-				entries.push(entry);
+				var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
+				var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+				embed.addField(play, score)
 			}
 			if (!rplay[0]) {message.channel.send("This player haven't submitted any play"); return;}
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			const embed = {
-				"description": "Recent play for **" + name + " (Page " + page + ")**",
-				"color": 8102199,
-				"footer": {
-					"icon_url": footer[index],
-					"text": "Alice Synthesis Thirty"
-				},
-				"fields": entries
-			};
 			
-			message.channel.send({embed});
+			message.channel.send({embed}).then (msg => {
+				msg.react("⬅️").then(() => {
+					msg.react("➡️");
+				});
+				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
+
+				back.on('collect', () => {
+					if (page === 1) {
+						page = 10;
+						return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					}
+					page--;
+					embed = new Discord.RichEmbed()
+						.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
+						.setColor(8102199)
+						.setFooter("Alice Synthesis Thirty", footer[index]);
+
+					for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
+						if (!rplay[i]) break;
+						var date = new Date(rplay[i].date*1000);
+						date.setUTCHours(date.getUTCHours() + 8);
+						var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
+						var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+						embed.addField(play, score)
+					}
+					msg.edit(embed);
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+				});
+
+				next.on('collect', () => {
+					if (page === 10) {
+						page = 1;
+						return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					}
+					page++;
+					embed = new Discord.RichEmbed()
+						.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
+						.setColor(8102199)
+						.setFooter("Alice Synthesis Thirty", footer[index]);
+
+					for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
+						if (!rplay[i]) break;
+						var date = new Date(rplay[i].date*1000);
+						date.setUTCHours(date.getUTCHours() + 8);
+						var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
+						var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+						embed.addField(play, score)
+					}
+					msg.edit(embed);
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+				})
+			});
 		})
 	});
 	req.end();
