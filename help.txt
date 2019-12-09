@@ -25,7 +25,7 @@ All commands that are not listed here are restricted to certain roles/bot owner 
 - profileme [discord user] (only binded user)
 - recentme [discord user] (only binded user)
 - recent5me [page/discord user] [page] (only binded user)
-- manualcalc <map link / map id> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d (if you want detailed response))]
+- manualcalc <map link / map id> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
