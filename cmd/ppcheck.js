@@ -41,9 +41,9 @@ module.exports.run = (client, message, args, maindb) => {
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
 			let embed = new Discord.RichEmbed()
-				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+				.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 				.setColor(message.member.highestRole.hexColor)
-				.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
+				.setFooter("Alice Synthesis Thirty", footer[index]);
 
 			for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 				if (ppentry[x]) {
@@ -79,9 +79,9 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
 					page--;
 					embed = new Discord.RichEmbed()
-						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 						.setColor(message.member.highestRole.hexColor)
-						.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
+						.setFooter("Alice Synthesis Thirty", footer[index]);
 
 					for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 						if (ppentry[x]) {
@@ -113,9 +113,9 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id));
 					page++;
 					embed = new Discord.RichEmbed()
-						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + ']**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
+						.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 						.setColor(message.member.highestRole.hexColor)
-						.setFooter(`Alice Synthesis Thirty | Page ${page}/15`, footer[index]);
+						.setFooter("Alice Synthesis Thirty", footer[index]);
 
 					for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 						if (ppentry[x]) {
