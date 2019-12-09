@@ -38,7 +38,7 @@ let clientdb = new mongodb.MongoClient(uri, {useNewUrlParser: true});
 
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
-    client.user.setActivity("LiSA - unlasting with Rian8337", {type: "LISTENING"}).catch(e => console.log(e));
+    client.user.setActivity("Use a!", {type: "PLAYING"}).catch(e => console.log(e));
 });
 
 client.on("message", message => {
