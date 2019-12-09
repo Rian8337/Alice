@@ -2,6 +2,7 @@ var Discord = require('discord.js');
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+var cd = new Set();
 let config = require('../config.json');
 
 function modread(input) {
@@ -34,6 +35,7 @@ function rankEmote(input) {
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
+	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -99,7 +101,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 					message.channel.send({embed}).then (msg => {
 						msg.react("⬅️").then(() => {
-							msg.react("➡️");
+							msg.react("➡️").catch(e => console.log(e));
 						});
 						let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
 						let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
@@ -120,8 +122,8 @@ module.exports.run = (client, message, args, maindb) => {
 								var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 								embed.addField(play, score)
 							}
-							msg.edit(embed);
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+							msg.edit(embed).catch(e => console.log(e));
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 						});
 
 						next.on('collect', () => {
@@ -140,13 +142,17 @@ module.exports.run = (client, message, args, maindb) => {
 								var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 								embed.addField(play, score)
 							}
-							msg.edit(embed);
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+							msg.edit(embed).catch(e => console.log(e));
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
 						})
 					});
 				})
 			});
 			req.end();
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 10000)
 		} else {
 			message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 		}
