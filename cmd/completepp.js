@@ -138,17 +138,17 @@ function calculatePP(ppentries, entry, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this. Please ask <@386742340968120321>!");
     var ppentries = [];
     var page = 0;
-    var ufind = message.author.id;
+    var ufind = args[0];
 
     if (args[0]) {
         ufind = args[0];
         ufind = ufind.replace('<@!','');
         ufind = ufind.replace('<@','');
         ufind = ufind.replace('>','');
-    }
+    } else return message.channel.send("Please mention a user or user ID");
 
     let binddb = maindb.collection("userbind");
     let whitelist = maindb.collection("mapwhitelist");
@@ -184,7 +184,7 @@ module.exports.run = (client, message, args, maindb) => {
                     pptotal += weight*pplist[i][2];
                     weight *= 0.95;
                 }
-                message.channel.send('<@' + message.author.id + '> ' + pptotal + ' pp');
+                message.channel.send('<@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp');
                 var updateVal = { $set: {
                         pptotal: pptotal,
                         pp: pplist,
