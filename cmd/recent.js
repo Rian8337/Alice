@@ -1,8 +1,8 @@
 var http = require('http');
 var droid = require("./ojsamadroid");
 var osu = require("ojsama");
-var https = require("https");
 var request = require("request");
+var https = require("https");
 require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
@@ -108,7 +108,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 			var nparser = new droid.parser();
 			var pcparser = new osu.parser();
 			console.log(acc_percent);
-			//var url = "https://osu.ppy.sh/osu/1031991";
 			var url = 'https://osu.ppy.sh/osu/' + mapid;
 			request(url, function (err, response, data) {
 					nparser.feed(data);
@@ -119,9 +118,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var cur_od = nmap.od - 5;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
-					// if (mods) {
-					// 	console.log("+" + osu.modbits.string(mods));
-					// }
 					if (pmod.includes("r")) {
 						mods -= 16; 
 						cur_ar = Math.min(cur_ar*1.4, 10);
@@ -140,9 +136,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
-					//console.log(stars.toString());
 
-                    
                     var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
@@ -158,7 +152,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					});
 					
 					nparser.reset();
-
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
@@ -166,7 +159,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
-					var pcppline = pcpp.toString().split("(");;
+					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
@@ -188,7 +182,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Max combo: " + mapinfo.max_combo + "x"
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Max Combo: " + mapinfo.max_combo + "x"
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
@@ -207,65 +201,85 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 	});
 }
 
-module.exports.run = (client, message, args) => {
-	let uid = args[0];
-	var options = {
-    	host: "ops.dgsrz.com",
-    	port: 80,
-    	path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
-	};
+module.exports.run = (client, message, args, maindb) => {
+	let ufind = message.author.id;
+	if (args[0]) {
+		ufind = args[0];
+		ufind = ufind.replace('<@!','');
+		ufind = ufind.replace('<@','');
+		ufind = ufind.replace('>','');
+	}
+	console.log(ufind);
+	let binddb = maindb.collection("userbind");
+	let query = { discordid: ufind };
+	binddb.find(query).toArray(function(err, res) {
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Empty database response. Please try again!")
+		}
+		if (res[0]) {
+			let uid = res[0].uid;
+			var options = {
+				host: "ops.dgsrz.com",
+				port: 80,
+				path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
+			};
 
-	var content = "";   
+			var content = "";   
 
-	var req = http.request(options, function(res) {
-    	res.setEncoding("utf8");
-    	res.on("data", function (chunk) {
-        	content += chunk;
-    	});
+			var req = http.request(options, function(res) {
+			res.setEncoding("utf8");
+			res.on("data", function (chunk) {
+			content += chunk;
+			});
 
-    	res.on("end", function () {
-    		if (!content) return message.channel.send("Error: Empty API response. Please try again!");
-			var resarr = content.split('<br>');
-			var headerres = resarr[0].split(" ");
-			if (headerres[0] == 'FAILED') {
-				message.channel.send("User doesn't exist");
-				return;
-			}
-			let name = resarr[0].split(" ")[2];
-			var obj = JSON.parse(resarr[1]);
-			var play = obj.recent[0];
-			let title = play.filename;
-			let score = play.score.toLocaleString();
-			let combo = play.combo;
-			let rank = rankread(play.mark);
-			let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
-			let acc = play.accuracy.toFixed(2) / 1000;
-			let miss = play.miss;
-			let mod = play.mode;
-			let hash = play.hash;
-			if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-
-			const embed = {
-				  "title": title,
-				  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
-				  "color": 8311585,
-				  "author": {
-						"name": "Recent Play for " + name,
-						"icon_url": rank
-				  },
-				"footer": {
-					"icon_url": footer[index],
-					"text": "Alice Synthesis Thirty"
+			res.on("end", function () {
+				if (!content) return message.channel.send("Error: Empty API response. Please try again!");
+				var resarr = content.split('<br>');
+				var headerres = resarr[0].split(" ");
+				if (headerres[0] == 'FAILED') {
+					message.channel.send("User doesn't exist");
+					return;
 				}
-		};
-		message.channel.send({embed});
-    	});
+				let name = resarr[0].split(" ")[2];
+				var obj = JSON.parse(resarr[1]);
+				var play = obj.recent[0];
+				let title = play.filename;
+				let score = play.score.toLocaleString();
+				let combo = play.combo;
+				let rank = rankread(play.mark);
+				let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
+				let acc = (play.accuracy / 1000).toFixed(2);
+				let miss = play.miss;
+				let mod = play.mode;
+				let hash = play.hash;
+
+				if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
+				let footer = config.avatar_list;
+				const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+				const embed = {
+					"title": title,
+					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
+					"color": 8311585,
+					"author": {
+						"name": "Recent Play for "+ name,
+						"icon_url": rank
+					},
+					"footer": {
+						"icon_url": footer[index],
+						"text": "Alice Synthesis Thirty"
+					}
+				};
+				message.channel.send({ embed });
+				});
+			});
+			req.end();
+		}
+		else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	});
-	req.end();
 };
 
+
 module.exports.help = {
-	name: "recent"
+	name: "recentme"
 };
