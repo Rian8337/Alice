@@ -44,7 +44,7 @@ function mapstatus(status) {
 	}
 }
 
-function getMapPP(target, message, detail) {
+function getMapPP(target, message, ndetail, pcdetail) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + target[0]);
 
@@ -104,17 +104,17 @@ function getMapPP(target, message, detail) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    			}
+                    }
 					
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -166,7 +166,7 @@ function getMapPP(target, message, detail) {
 					nparser.reset();
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -205,7 +205,8 @@ function getMapPP(target, message, detail) {
 							}
 						]
 					};
-					if (detail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
+					if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
+					if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
 					message.channel.send({embed})
 				}
 			)
@@ -219,7 +220,8 @@ module.exports.run = (client, message, args) => {
 	var acc;
 	var missc;
 	var mod;
-	var detail = false;
+	var ndetail = false;
+	var pcdetail = false;
 	if (!args[0]) return message.channel.send("Hey at least give me the map :/");
 	var a = args[0].split("/");
 	beatmapid = a[a.length-1];
@@ -228,11 +230,12 @@ module.exports.run = (client, message, args) => {
 		if (args[i].endsWith("m")) missc = args[i];
 		if (args[i].endsWith("x")) combo = args[i];
 		if (args[i].startsWith("+")) mod = args[i];
-		if (args[i].startsWith("-d")) detail = true;
+		if (args[i].startsWith("-d")) ndetail = true;
+		if (args[i].startsWith("-p")) pcdetail = true
 	}
 	console.log(acc);
 	var target = [beatmapid, combo, acc, missc, mod];
-	getMapPP(target, message, detail);
+	getMapPP(target, message, ndetail, pcdetail);
 };
 
 module.exports.help = {
