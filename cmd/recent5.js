@@ -2,6 +2,7 @@ var Discord = require('discord.js');
 var http = require('http');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
+var cd = new Set();
 let config = require('../config.json');
 
 function modread(input) {
@@ -33,6 +34,7 @@ function rankEmote(input) {
 }
 
 module.exports.run = (client, message, args) => {
+	if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) {message.channel.send("Invalid uid"); return;}
 	let page = 1;
@@ -61,7 +63,7 @@ module.exports.run = (client, message, args) => {
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			let embed = new Discord.RichEmbed()
 				.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-				.setColor(message.member.highestRole.hexColor)
+				.setColor(8102199)
 				.setFooter("Alice Synthesis Thirty", footer[index]);
 
 			for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -76,7 +78,7 @@ module.exports.run = (client, message, args) => {
 			
 			message.channel.send({embed}).then (msg => {
 				msg.react("⬅️").then(() => {
-					msg.react("➡️");
+					msg.react("➡️").catch(e => console.log(e));
 				});
 				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
 				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
@@ -97,8 +99,8 @@ module.exports.run = (client, message, args) => {
 						var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 						embed.addField(play, score)
 					}
-					msg.edit(embed);
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+					msg.edit(embed).catch(e => console.log(e));
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
 
 				next.on('collect', () => {
@@ -117,13 +119,17 @@ module.exports.run = (client, message, args) => {
 						var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 						embed.addField(play, score)
 					}
-					msg.edit(embed);
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id))
+					msg.edit(embed).catch(e => console.log(e));
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				})
 			});
 		})
 	});
 	req.end();
+	cd.add(message.author.id);
+	setTimeout(() => {
+		cd.delete(message.author.id)
+	}, 10000)
 };
 
 module.exports.help = {
