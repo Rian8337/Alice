@@ -61,7 +61,7 @@ module.exports.run = (client, message, args) => {
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			let embed = new Discord.RichEmbed()
 				.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-				.setColor(8102199)
+				.setColor(message.member.highestRole.hexColor)
 				.setFooter("Alice Synthesis Thirty", footer[index]);
 
 			for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -86,7 +86,7 @@ module.exports.run = (client, message, args) => {
 					else page--;
 					embed = new Discord.RichEmbed()
 						.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-						.setColor(8102199)
+						.setColor(message.member.highestRole.hexColor)
 						.setFooter("Alice Synthesis Thirty", footer[index]);
 
 					for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -106,7 +106,7 @@ module.exports.run = (client, message, args) => {
 					else page++;
 					embed = new Discord.RichEmbed()
 						.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-						.setColor(8102199)
+						.setColor(message.member.highestRole.hexColor)
 						.setFooter("Alice Synthesis Thirty", footer[index]);
 
 					for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
