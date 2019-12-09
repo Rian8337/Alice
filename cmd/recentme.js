@@ -160,6 +160,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
@@ -248,7 +249,7 @@ module.exports.run = (client, message, args, maindb) => {
 				let combo = play.combo;
 				let rank = rankread(play.mark);
 				let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
-				let acc = play.accuracy.toFixed(2) / 1000;
+				let acc = (play.accuracy / 1000).toFixed(2);
 				let miss = play.miss;
 				let mod = play.mode;
 				let hash = play.hash;
