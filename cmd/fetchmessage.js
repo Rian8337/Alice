@@ -11,18 +11,18 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
-        let link = `https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`;
+        let link = `https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id}`;
         embed.addField(`${count}. ${msg.author.tag} (User ID: ${msg.author.id})`, `${msg.content}\n[Go to Message](${link})`);
         i++;
+        count++;
+        if (i >= 20) {
+            message.channel.send(embed);
+            i = 1;
+            embed = new Discord.RichEmbed()
+                .setTitle("Users who sent `" + filter + "`:")
+                .setColor(message.member.highestRole.hexColor);
+        }
     });
-    if (i >= 20) {
-        message.channel.send(embed);
-        i = 1;
-        embed = new Discord.RichEmbed()
-            .setTitle("Users who sent `" + filter + "`:")
-            .setColor(message.member.highestRole.hexColor);
-    }
-    else count++;
     return filterMessage(message, channel, filter, i, count, embed, lastid)
 }
 
