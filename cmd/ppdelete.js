@@ -2,7 +2,8 @@ var Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('638671295470370827');
 	if (!logchannel) return message.channel.send("Please create #pp-log first!");
@@ -82,7 +83,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
 	})
 };
 
