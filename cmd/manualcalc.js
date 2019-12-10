@@ -66,7 +66,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 				return;
 			}
 			//console.log(obj.beatmaps[0])
-			if (target[4]) var mods = modenum(target[4]);
+			if (target[4]) var mods = modenum(target[4].toUpperCase());
 			else {var mods = 4; target[4] = "";}
 			if (target[2]) var acc_percent = parseFloat(target[2]);
 			else var acc_percent = 100;
