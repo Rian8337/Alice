@@ -18,7 +18,7 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
         embed.addField(`${count}. ${msg.author.tag} (Created at ${msg.createdAt})`, `${msg.author} | [Go to Message](${link})\n${msg.content}`);
         i++;
         count++;
-        if (i >= 20) {
+        if (i > 20) {
             message.channel.send(embed);
             i = 1;
             embed = new Discord.RichEmbed()
