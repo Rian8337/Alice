@@ -250,11 +250,11 @@ module.exports.run = (client, message, args, maindb) => {
 							} else message.channel.send("Error: Unable to retrieve map pp data")
 						})
 					})
-				});
+				})
 			});
 			req.end();
-		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
-	});
+		} else message.channel.send("The account is not binded, you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+	})
 };
 
 module.exports.help = {
