@@ -21,40 +21,22 @@ function isImmuned(member) {
 }
 
 module.exports.run = async (client, message, args) => {
-
     var timeLimit = isEligible(message.member);
-    if (timeLimit == 0) {
-        message.channel.send("You don't have permission to use this");
-        return;
-    }
+    if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
+
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!tomute) return;
-    if (isImmuned(tomute)) {
-        message.channel.send("You can't mute this user");
-        return;
-    }
+    if (isImmuned(tomute)) return message.channel.send("You can't mute this user");
+
     let reason = args.slice(2).join(" ");
+
     let mutetime = args[1];
-    if (!mutetime) {
-        message.channel.send("Mute time is not defined");
-        return;
-    }
-    if (isNaN(mutetime)) {
-        message.channel.send("Invalid time limit, only send number of seconds");
-        return;
-    }
-    if (mutetime < 1) {
-        message.channel.send("Invalid time limit, minimum mute time is 1 second");
-        return;
-    }
-    if (timeLimit != -1 && timeLimit < mutetime) {
-        message.channel.send("You don't have enough permission to mute an user for longer than " + timeLimit + "s");
-        return;
-    }
-    if (!reason) {
-        message.channel.send("Please add a reason.");
-        return;
-    }
+    if (!mutetime) return message.channel.send("Mute time is not defined");
+    if (isNaN(mutetime)) return message.channel.send("Invalid time limit, only send number of seconds");
+    if (mutetime < 1) return message.channel.send("Invalid time limit, minimum mute time is 1 second");
+    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("You don't have enough permission to mute an user for longer than " + timeLimit + "s");
+
+    if (!reason) return message.channel.send("Please add a reason.");
 
     let muterole = message.guild.roles.find(`name`, "elaina-muted");
     //start of create role
@@ -82,7 +64,7 @@ module.exports.run = async (client, message, args) => {
     try{
         await tomute.send(`Hi! You've been muted for ${mutetime} seconds. Sorry!`)
     } catch (e) {
-        message.channel.send(`A user has been muted... but their DMs are locked. They will be muted for ${mutetime} seconds`)
+        message.channel.send(`A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} seconds`)
     }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
@@ -98,18 +80,25 @@ module.exports.run = async (client, message, args) => {
         .addField("Reason: ", reason);
 
     let channel = message.guild.channels.find(c => c.name === config.management_channel);
-    if(!channel) return message.reply("Please create a mute log channel first!");
+    if (!channel) return message.reply("Please create a mute log channel first!");
     channel.send(muteembed);
 
     tomute.addRole(muterole.id)
         .catch(console.error);
 
-    setTimeout(function(){
+    setTimeout(() => {
         tomute.removeRole(muterole.id);
-    }, mutetime * 1000);
-
-
-//end of module
+        muteembed = new Discord.RichEmbed()
+            .setAuthor(message.author.tag, message.author.avatarURL)
+            .setTitle("User unmuted")
+            .setColor("#000000")
+            .setTimestamp(new Date())
+            .setFooter("User ID: " + tomute.id, footer[index])
+            .addField("Unmuted user: " + tomute.user.username, "Muted in: " + message.channel)
+            .addField("Mute length: " + mutetime + "s", "=========================")
+            .addField("Mute reason: ", reason);
+        channel.send(muteembed)
+    }, mutetime * 1000)
 };
 
 module.exports.help = {
