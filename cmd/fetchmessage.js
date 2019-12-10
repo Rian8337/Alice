@@ -42,7 +42,7 @@ module.exports.run = async (client, message, args) => {
     let i = 1;
     let count = 1;
 
-    await filterMessage(message, channel, i, count, embed, startid);
+    await filterMessage(message, channel, filter, i, count, embed, startid);
 };
 
 module.exports.help = {
