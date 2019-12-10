@@ -1,5 +1,22 @@
 let Discord = require('discord.js');
 
+async function filterMessage(message, channel, i, embed, limit, startid) {
+    console.log("Start ID: " + startid);
+    let final = await channel.fetchMessages({limit: limit, after: startid});
+
+    let lastid = final.first().id;
+    console.log("Last ID: " + lastid + "\n");
+    if (lastid == startid) return message.channel.send(embed);
+
+    final = final.filter(m => m.content == filter && !m.author.bot);
+    final.forEach(msg => {
+        embed.addField(`${i}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
+        i++
+    });
+    startid = lastid;
+    setTimeout(filterMessage, 15000)
+}
+
 module.exports.run = async (client, message, args) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
     let guild = client.guilds.get("316545691545501706");
@@ -21,17 +38,7 @@ module.exports.run = async (client, message, args) => {
         .setColor(message.member.highestRole.hexColor);
     let i = 1;
 
-    let final = await channel.fetchMessages({limit: limit, after: startid});
-
-    let lastid = final.first().id;
-    embed.setFooter(`Last message ID: ${lastid}`);
-
-    final = final.filter(m => m.content == filter && !m.author.bot);
-    final.forEach(msg => {
-        embed.addField(`${i}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
-        i++
-    });
-    await message.channel.send({embed})
+    await filterMessage(message, channel, i, embed, limit, startid);
 };
 
 module.exports.help = {
