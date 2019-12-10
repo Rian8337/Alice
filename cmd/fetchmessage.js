@@ -8,6 +8,7 @@ module.exports.run = async (client, message, args) => {
 
     let limit = args[1];
     if (isNaN(limit)) return message.channel.send("Please enter valid limit!");
+    if (limit < 0 || limit > 100) return message.channel.send("Limit must be in range of 1-100");
 
     let filter = args.slice(2).join(" ");
     if (!filter) return message.channel.send("Please insert filter!");
