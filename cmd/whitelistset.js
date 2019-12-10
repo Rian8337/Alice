@@ -18,7 +18,8 @@ function mapstatusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return;
+    if (!message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("You don't have permission to do this");
+
     var whitelist = maindb.collection("mapwhitelist");
     var link_in = args[0];
     whitelistInfo(link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
@@ -135,7 +136,7 @@ function whitelistInfo(link_in, message, callback) {
             console.log(mapstring);
             console.log(diffstring);
             callback(1, mapid, hashid, mapstring, diffstring);
-        });
+        })
     })
 }
 
