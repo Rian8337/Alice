@@ -14,7 +14,7 @@ async function filterMessage(message, channel, i, embed, limit, startid) {
         i++
     });
     startid = lastid;
-    setTimeout(filterMessage, 15000)
+    setTimeout(filterMessage, 10000)
 }
 
 module.exports.run = async (client, message, args) => {
