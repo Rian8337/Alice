@@ -2,11 +2,12 @@ let Discord = require('discord.js');
 
 async function filterMessage(message, filter, i, count, embed, startid) {
     let final = await message.channel.fetchMessages({limit: 100, after: startid});
-    if (!final) {
+    let lastid = final.first();
+    if (!lastid) {
         console.log("Complete!");
         return message.channel.send(embed)
     }
-    let lastid = final.first().id;
+    lastid = lastid.id;
     console.log("Start ID: " + startid);
     console.log("Last ID: " + lastid + "\n");
 
@@ -32,7 +33,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
