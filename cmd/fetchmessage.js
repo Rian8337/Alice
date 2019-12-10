@@ -3,16 +3,16 @@ let Discord = require('discord.js');
 async function filterMessage(message, channel, filter, i, count, embed, startid) {
     let final = await channel.fetchMessages({limit: 100, after: startid});
 
-    let lastid = final.first().id;
+    let lastid = final.first();
     if (!lastid) return message.channel.send(embed);
+    lastid = lastid.id;
     console.log("Start ID: " + startid);
     console.log("Last ID: " + lastid);
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
-        embed.addField(`${count}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
+        embed.addField(`${count}. ${msg.author.tag} (User ID: ${msg.author.id})`, msg.content);
         i++;
-        count++
     });
     if (i >= 20) {
         message.channel.send(embed);
@@ -21,6 +21,7 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
             .setTitle("Users who sent `" + filter + "`:")
             .setColor(message.member.highestRole.hexColor);
     }
+    else count++;
     return filterMessage(message, channel, filter, i, count, embed, lastid)
 }
 
