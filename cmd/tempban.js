@@ -3,7 +3,7 @@ let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
         message.author.lastMessage.delete();
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        const embed = new Discord.RichEmbed()
+        let embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
@@ -51,9 +51,20 @@ module.exports.run = async (client, message, args) => {
         logchannel.send({embed});
 
         setTimeout(() => {
-            message.guild.unban(toban, "Ban time is over").catch();
+            message.guild.unban(toban, "Ban time is over").then (() => {
+                embed = new Discord.RichEmbed()
+                    .setAuthor(message.author.tag, message.author.avatarURL)
+                    .setFooter("Alice Synthesis Thirty", footer[index])
+                    .setTimestamp(new Date())
+                    .setColor(message.member.highestRole.hexColor)
+                    .setTitle("User unbanned")
+                    .addField("Unanned user: " + toban.username + "\nUser ID: " + userid, "Ban length: " + (bantime * 24) + " hour(s)")
+                    .addField("=========================", "Ban reason:\n" + reason);
+
+                logchannel.send({embed});
+            }).catch(e => console.log(e));
         }, bantime * 24 * 3600 * 1000)
-    })
+    }).catch(e => console.log(e))
 };
 
 module.exports.help = {
