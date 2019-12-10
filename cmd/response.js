@@ -49,7 +49,7 @@ module.exports.run = (client, message, args) => {
     if (factor === 4) answer = "Uh, I don't think I want to answer that.";
 
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1)
+    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
     const embed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setColor(message.member.highestRole.hexColor)
