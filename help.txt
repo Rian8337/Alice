@@ -24,7 +24,7 @@ Prefix: "a!"
 - profileme [discord user] (only binded user)
 - recentme [discord user] (only binded user)
 - recent5me [page/discord user] [page] (only binded user)
-- manualcalc <map link / map id> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
+- manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
