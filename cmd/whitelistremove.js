@@ -18,7 +18,7 @@ function mapstatusread(status) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
 
     var whitelist = maindb.collection("mapwhitelist");
     var link_in = args[0];
