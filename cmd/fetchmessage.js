@@ -15,10 +15,11 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
         let link = `https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id}`;
-        embed.addField(`${count}. ${msg.author.tag} (Created at ${msg.createdAt})`, `${msg.author} | [Go to Message](${link})\n${msg.content}`);
+        let date = new Date(msg.createdTimestamp * 1000).toISOString().replace("T", " ").slice(0, -5);
+        embed.addField(`${count}. ${msg.author.tag} (Created at ${date})`, `${msg.author} | [Go to Message](${link})\n${msg.content}`);
         i++;
         count++;
-        if (i > 20) {
+        if (i >= 20) {
             message.channel.send(embed);
             i = 1;
             embed = new Discord.RichEmbed()
