@@ -1,7 +1,7 @@
 let Discord = require('discord.js');
 let config = require('../config.json');
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
     
