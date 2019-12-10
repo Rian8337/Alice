@@ -48,10 +48,12 @@ module.exports.run = (client, message, args) => {
     if (factor === 3) answer = "Um... Uh...";
     if (factor === 4) answer = "Uh, I don't think I want to answer that.";
 
+    let footer = config.avatar_list;
+    const index = Math.floor(Math.random() * (footer.length - 1) + 1)
     const embed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setColor(message.member.highestRole.hexColor)
-        .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
+        .setFooter("Alice Synthesis Thirty", footer[index])
         .addField(`**Q**: ${msg}`, `**A**: ${answer}`);
 
     message.channel.send({embed})
