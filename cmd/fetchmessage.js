@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args) => {
         .setColor(message.member.highestRole.hexColor);
     let i = 1;
 
-    let final = await message.channel.fetchMessages({limit: limit, after: startid});
+    let final = await channel.fetchMessages({limit: limit, after: startid});
 
     let lastid = final.first().id;
     embed.setFooter(`Last message ID: ${lastid}`);
