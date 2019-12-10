@@ -2,35 +2,22 @@ let Discord = require('discord.js');
 let config = require("../config.json");
 
 module.exports.run = (client, message, args) => {
-    if (message.author.id != '386742340968120321') return;
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
-    if (!logchannel) {
-        message.channel.send(`Please create ${config.management_channel} first!`);
-        return
-    }
+    if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
+
     let maxage = args[0];
-    if (!maxage) {
-        message.channel.send("Please enter time (seconds) until invite link expires!");
-        return
-    }
-    if (isNaN(maxage) || maxage < 0 || (maxage > 0 && maxage < 1)) {
-        message.channel.send("Invalid time");
-        return
-    }
+    if (!maxage) return message.channel.send("Please enter time (seconds) until invite link expires!");
+    if (isNaN(maxage) || maxage < 0 || (maxage > 0 && maxage < 1)) return message.channel.send("Invalid time");
+
     let maxuses = args[1];
-    if (!maxuses) {
-        message.channel.send("Please enter maximum invite link usage!");
-        return
-    }
-    if (isNaN(maxuses) || maxuses < 0) {
-        message.channel.send("Invalid maximum usage");
-        return
-    }
+    if (!maxuses) return message.channel.send("Please enter maximum invite link usage!");
+    if (isNaN(maxuses) || maxuses < 0) return message.channel.send("Invalid maximum usage");
+
     let reason = args.slice(2).join(" ");
-    if (!reason) {
-        message.channel.send("Please enter your reason.");
-        return
-    }
+    if (!reason) return message.channel.send("Please enter your reason.");
 
     message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
         let hours = Math.floor(maxage / 3600);
