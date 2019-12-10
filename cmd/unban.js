@@ -1,28 +1,21 @@
 let Discord = require('discord.js');
 let config = require('../config.json');
 
-module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel || message.author.id != '386742340968120321') return;
+module.exports.run = (client, message, args) => {
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+    
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
-    if (!logchannel) {
-        message.channel.send(`Please create ${config.management_channel} first!`);
-        return;
-    }
-    let userid = await client.fetchUser(args[0]);
-    if (!userid) {
-        message.channel.send("Please specify the correct user ID to unban!");
-        return;
-    }
-    if (userid.id == message.author.id) {
-        message.channel.send("You cannot unban yourself!");
-        return;
-    }
+    if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
+    
+    let user = await client.fetchUser(args[0]);
+    if (!user) return message.channel.send("Please specify the correct user ID to unban!");
+    if (user.id == message.author.id) return message.channel.send("You cannot unban yourself!");
+
     let reason = args.slice(1).join(" ");
-    if (!reason) {
-        message.channel.send("Please enter your reason.");
-        return;
-    }
-    message.guild.unban(userid, reason).then (() => {
+    if (!reason) return message.channel.send("Please enter your reason.");
+
+    message.guild.unban(user, reason).then (() => {
         message.author.lastMessage.delete().catch();
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
@@ -33,7 +26,7 @@ module.exports.run = async (client, message, args) => {
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
             .setTitle("Unban executed")
-            .addField("Unbanned user: " + userid.username, "User ID: " + userid.id)
+            .addField("Unbanned user: " + user.username, "User ID: " + user.id)
             .addField("=================", "Reason:\n" + reason);
 
         logchannel.send({embed})
