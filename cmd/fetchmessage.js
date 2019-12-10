@@ -1,6 +1,6 @@
 let Discord = require('discord.js');
 
-async function filterMessage(message, channel, filter, i, embed, limit, startid) {
+async function filterMessage(message, channel, filter, i, count, embed, limit, startid) {
     console.log("Start ID: " + startid);
     let final = await channel.fetchMessages({limit: limit, after: startid});
 
@@ -10,11 +10,18 @@ async function filterMessage(message, channel, filter, i, embed, limit, startid)
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
-        embed.addField(`${i}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
-        i++
+        embed.addField(`${count}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
+        i++;
+        count++
     });
-    startid = lastid;
-    await filterMessage(message, channel, filter, i, embed, limit, lastid)
+    if (i > 25) {
+        message.channel.send(embed);
+        i = 0;
+        embed = new Discord.RichEmbed()
+            .setTitle("Users who sent `" + filter + "`:")
+            .setColor(message.member.highestRole.hexColor);
+    }
+    return filterMessage(message, channel, filter, i, count, embed, limit, lastid)
 }
 
 module.exports.run = async (client, message, args) => {
@@ -37,8 +44,9 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Users who sent `" + filter + "`:")
         .setColor(message.member.highestRole.hexColor);
     let i = 1;
+    let count = 1;
 
-    await filterMessage(message, channel, filter, i, embed, limit, startid);
+    await filterMessage(message, channel, i, count, embed, limit, startid);
 };
 
 module.exports.help = {
