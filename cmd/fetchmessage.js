@@ -7,7 +7,7 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
     if (!lastid) return message.channel.send(embed);
     lastid = lastid.id;
     console.log("Start ID: " + startid);
-    console.log("Last ID: " + lastid);
+    console.log("Last ID: " + lastid + "\n");
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
