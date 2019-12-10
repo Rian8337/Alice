@@ -1,12 +1,14 @@
 Alice Synthesis Thirty's Guide
 Moderation Commands
 
+Complete command list can be found at https://github.com/Rian8337/Alice
+
 <...>: required syntax
 [...]: optional syntax
 
 Prefix: "a!"
 
-(Moderator can use Helper commands)
+(Moderator can use Helper commands unless specified otherwise, Owner can use all commands)
 
 1. Helper
 
