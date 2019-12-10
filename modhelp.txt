@@ -1,4 +1,4 @@
-﻿Alice Synthesis Thirty's Guide
+Alice Synthesis Thirty's Guide
 Moderation Commands
 
 <...>: required syntax
@@ -6,7 +6,7 @@ Moderation Commands
 
 Prefix: "a!"
 
-(Moderator can use Helper commands unless specified otherwise, Owner can use all commands)
+(Moderator can use Helper commands)
 
 1. Helper
 
@@ -35,3 +35,11 @@ Prefix: "a!"
 - recalc <uid>
 - tempban <user> <duration in seconds> <reason>
 - unban <user>
+- whitelistremove <map link / map ID>
+- whitelistremoveset <set ID>
+
+4. Bot Owner
+
+- changeavatar <number>
+- togglestatus <number>
+- togglestatus c <activity type> <activity>
