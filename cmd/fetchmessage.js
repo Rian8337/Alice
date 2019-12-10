@@ -16,7 +16,7 @@ async function filterMessage(message, channel, filter, i, count, embed, limit, s
     });
     if (i > 25) {
         message.channel.send(embed);
-        i = 0;
+        i = 1;
         embed = new Discord.RichEmbed()
             .setTitle("Users who sent `" + filter + "`:")
             .setColor(message.member.highestRole.hexColor);
