@@ -13,15 +13,19 @@ module.exports.run = async (client, message, args) => {
     let filter = args.slice(2).join(" ");
     if (!filter) return message.channel.send("Please insert filter!");
 
-    let final = await message.channel.fetchMessages({limit: limit, after: startid});
-    final = final.filter(m => m.content == filter && !m.author.bot);
     let embed = new Discord.RichEmbed()
         .setTitle("Users who sent `" + filter + "`:")
         .setColor(message.member.highestRole.hexColor);
-
     let i = 1;
+
+    let final = await message.channel.fetchMessages({limit: limit, after: startid});
+
+    let lastid = final.first().id;
+    embed.setFooter(`Last message ID: ${lastid}`);
+
+    final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
-        embed.addField(`${i}. ${msg.author.tag}`, msg.content);
+        embed.addField(`${i}. ${msg.author.tag} (Message ID: ${msg.id})`, msg.content);
         i++
     });
     await message.channel.send({embed})
