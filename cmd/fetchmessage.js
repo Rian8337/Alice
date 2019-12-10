@@ -16,7 +16,7 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
     final.forEach(msg => {
         let link = `https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id}`;
         let d = new Date(msg.createdAt);
-        d = [d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        d = [d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes().toString().padStart(2, "0"), d.getSeconds().toString().padStart(2, "0")].join(':');
 
         embed.addField(`${count}. ${msg.author.tag} (Created at ${d})`, `${msg.author} | [Go to Message](${link})\n${msg.content}`);
         i++;
