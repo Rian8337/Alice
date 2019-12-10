@@ -2,6 +2,9 @@ let Discord = require('discord.js');
 
 module.exports.run = async (client, message, args) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    let guild = client.guilds.get("316545691545501706");
+    let channel = guild.channels.find(c => c.name === 'voting');
+    if (!channel) return message.channel.send("Channel is not available");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
