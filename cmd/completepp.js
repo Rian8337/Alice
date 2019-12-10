@@ -138,7 +138,7 @@ function calculatePP(ppentries, entry, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this. Please ask <@386742340968120321>!");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
     var ppentries = [];
     var page = 0;
     var ufind = args[0];
@@ -214,7 +214,7 @@ module.exports.run = (client, message, args, maindb) => {
                     console.table(ppentries);
                     test(uid, page, testcb)
                 }
-            });
+            })
         })
     })
 };
