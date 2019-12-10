@@ -1,12 +1,12 @@
 let Discord = require('discord.js');
 
 async function filterMessage(message, channel, filter, i, count, embed, startid) {
-    console.log("Start ID: " + startid);
     let final = await channel.fetchMessages({limit: 100, after: startid});
 
     let lastid = final.first().id;
-    console.log("Last ID: " + lastid + "\n");
-    if (lastid == startid) return message.channel.send(embed);
+    if (!lastid) return message.channel.send(embed);
+    console.log("Start ID: " + startid);
+    console.log("Last ID: " + lastid);
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
