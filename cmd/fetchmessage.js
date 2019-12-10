@@ -1,6 +1,6 @@
 let Discord = require('discord.js');
 
-async function filterMessage(message, channel, i, embed, limit, startid) {
+async function filterMessage(message, channel, filter, i, embed, limit, startid) {
     console.log("Start ID: " + startid);
     let final = await channel.fetchMessages({limit: limit, after: startid});
 
@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args) => {
         .setColor(message.member.highestRole.hexColor);
     let i = 1;
 
-    await filterMessage(message, channel, i, embed, limit, startid);
+    await filterMessage(message, channel, filter, i, embed, limit, startid);
 };
 
 module.exports.help = {
