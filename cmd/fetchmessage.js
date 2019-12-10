@@ -17,7 +17,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
         let d = new Date(msg.createdAt);
         d = [d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes().toString().padStart(2, "0"), d.getSeconds().toString().padStart(2, "0")].join(':');
 
-        embed.addField(`${count}. ${msg.author.tag} (created at ${d})`, `${msg.author} | [Go to Message](${link})`);
+        embed.addField(`${count}. ${msg.author.tag} (created at ${d})`, `${msg.author} | [Go to Message](${link})\nUser ID: ${msg.author.id}`);
         i++;
         count++;
 
