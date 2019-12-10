@@ -34,7 +34,7 @@ Prefix: "a!"
 - ppwipe <user>
 - recalc <uid>
 - tempban <user> <duration in seconds> <reason>
-- unban <user>
+- unban <user> <reason>
 - whitelistremove <map link / map ID>
 - whitelistremoveset <set ID>
 
