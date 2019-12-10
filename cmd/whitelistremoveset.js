@@ -18,7 +18,9 @@ function mapstatusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
+
     var whitelist = maindb.collection("mapwhitelist");
     var link_in = args[0];
     whitelistInfo(link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
@@ -123,7 +125,7 @@ function whitelistInfo(link_in, message, callback) {
             console.log(mapstring);
             console.log(diffstring);
             callback(1, mapid, hashid, mapstring, diffstring);
-        });
+        })
     })
 }
 
