@@ -33,7 +33,7 @@ function responsefactor(msg) {
 module.exports.run = (client, message, args) => {
     if (!args[0]) return;
     let factor = 0;
-    const index = Math.floor(Math.random() * (response.length - 1) + 1);
+    let index = Math.floor(Math.random() * (response.length - 1) + 1);
     let answer = response[index];
     let msg = args.join(" ");
     if (message.author.id == '386742340968120321') {
@@ -49,7 +49,7 @@ module.exports.run = (client, message, args) => {
     if (factor === 4) answer = "Uh, I don't think I want to answer that.";
 
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    index = Math.floor(Math.random() * (footer.length - 1) + 1);
     const embed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setColor(message.member.highestRole.hexColor)
