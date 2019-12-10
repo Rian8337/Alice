@@ -10,12 +10,12 @@ async function filterMessage(message, channel, filter, i, count, embed, startid)
     }
     lastid = lastid.id;
     console.log("Start ID: " + startid);
-    console.log("Last ID: " + lastid);
+    console.log("Last ID: " + lastid + "\n");
 
     final = final.filter(m => m.content == filter && !m.author.bot);
     final.forEach(msg => {
         let link = `https://discordapp.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id}`;
-        embed.addField(`${count}. ${msg.author.tag} (User ID: ${msg.author.id})`, `${msg.content}\n[Go to Message](${link})`);
+        embed.addField(`${count}. ${msg.author.tag} (User ID: ${msg.author.id})`, `[Go to Message](${link})\n${msg.content}`);
         i++;
         count++;
         if (i >= 20) {
