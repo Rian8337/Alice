@@ -1,8 +1,8 @@
 let Discord = require('discord.js');
 
-async function filterMessage(message, channel, filter, i, count, embed, limit, startid) {
+async function filterMessage(message, channel, filter, i, count, embed, startid) {
     console.log("Start ID: " + startid);
-    let final = await channel.fetchMessages({limit: limit, after: startid});
+    let final = await channel.fetchMessages({limit: 100, after: startid});
 
     let lastid = final.first().id;
     console.log("Last ID: " + lastid + "\n");
@@ -21,7 +21,7 @@ async function filterMessage(message, channel, filter, i, count, embed, limit, s
             .setTitle("Users who sent `" + filter + "`:")
             .setColor(message.member.highestRole.hexColor);
     }
-    return filterMessage(message, channel, filter, i, count, embed, limit, lastid)
+    return filterMessage(message, channel, filter, i, count, embed, lastid)
 }
 
 module.exports.run = async (client, message, args) => {
@@ -33,11 +33,7 @@ module.exports.run = async (client, message, args) => {
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
 
-    let limit = args[1];
-    if (isNaN(limit)) return message.channel.send("Please enter valid limit!");
-    if (limit < 0 || limit > 100) return message.channel.send("Limit must be in range of 1-100");
-
-    let filter = args.slice(2).join(" ");
+    let filter = args.slice(1).join(" ");
     if (!filter) return message.channel.send("Please insert filter!");
 
     let embed = new Discord.RichEmbed()
@@ -46,7 +42,7 @@ module.exports.run = async (client, message, args) => {
     let i = 1;
     let count = 1;
 
-    await filterMessage(message, channel, i, count, embed, limit, startid);
+    await filterMessage(message, channel, i, count, embed, startid);
 };
 
 module.exports.help = {
