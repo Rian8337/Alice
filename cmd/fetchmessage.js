@@ -1,7 +1,7 @@
 let Discord = require('discord.js');
 
 module.exports.run = async (client, message, args) => {
-    if (message.author.id !== '386742340968120321') return message.channel.send("You don't have permission to do this");
+    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
