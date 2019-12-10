@@ -126,7 +126,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+
 	if (!args[0]) return message.channel.send("Please mention a user");
 	var ufind = args[0];
 	ufind = ufind.replace('<@!','');
@@ -245,9 +246,9 @@ module.exports.run = (client, message, args, maindb) => {
 							} else message.channel.send("Error: Unable to retrieve map pp data")
 						})
 					})
-				})
+				});
 			});
-			req.end()
+			req.end();
 		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	})
 };
