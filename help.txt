@@ -1,11 +1,10 @@
 Alice Synthesis Thirty's Guide
+User Commands
+
 <...>: required syntax
 [...]: optional syntax
 
 Prefix: "a!"
-
-Complete command list can be found at https://github.com/Rian8337/Alice/tree/master/cmd
-All commands that are not listed here are restricted to certain roles/bot owner only
 
 1. General
 
@@ -37,7 +36,7 @@ ex: &pp 4 23 submit your 23th 24th 25th 26th most recent play
 - ppcheck [page/discord user] [page]
 - lb [page]
 
-3. Malody
+4. Malody
 
 - malodyprofile <player> <mode:all|key|step|dj|catch|pad|taiko|ring>
 - malodyrecent <player> <mode> <recent limit:1-10>
