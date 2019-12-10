@@ -143,14 +143,16 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 						recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 					}
 				)
-			});
-		});
+			})
+		})
 	})
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
+	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
     var uid = args[0];
+    //discordid = discordid.replace("<@", "");
+    //discordid = discordid.replace(">", "");
     var newppentry = [];
 	var binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
@@ -158,6 +160,7 @@ module.exports.run = (client, message, args, maindb) => {
         if (err) throw err;
         if (!res) {console.log("user not found "); return;}
         var ppentry = res.pp;
+        //var uid = res.uid;
         console.log(ppentry[0]);
         recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist);
 	})
