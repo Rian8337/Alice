@@ -1,8 +1,6 @@
 Alice Synthesis Thirty's Guide
 Moderation Commands
 
-Complete command list can be found at https://github.com/Rian8337/Alice
-
 <...>: required syntax
 [...]: optional syntax
 
