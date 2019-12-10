@@ -11,6 +11,11 @@ module.exports.run = (client, message, args) => {
 
     let tokick = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!tokick) return message.channel.send("Please specify the correct user to kick!");
+    
+    let immune = config.mute_immune;
+    immune.forEach(id => {
+       if (tokick.roles.get(id)) return message.channel.send("You cannot kick this user!") 
+    });
 
     let reason = args.slice(1).join(" ");
     if (!reason) reason = 'Not specified.';
