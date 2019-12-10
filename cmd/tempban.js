@@ -62,7 +62,7 @@ module.exports.run = async (client, message, args) => {
                     .addField("=========================", "Ban reason:\n" + reason);
 
                 logchannel.send({embed});
-            }).catch(e => console.log(e));
+            }).catch(e => console.log(e))
         }, bantime * 24 * 3600 * 1000)
     }).catch(e => console.log(e))
 };
