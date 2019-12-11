@@ -1,5 +1,4 @@
 var http = require('http');
-var mongodb = require('mongodb');
 require("dotenv").config();
 var droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
@@ -44,7 +43,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Empty database response. Please try again!")
+		}
 		if (res[0]) {
 			let uid = res[0].uid;
 			var options = {
@@ -60,7 +62,10 @@ module.exports.run = (client, message, args, maindb) => {
 				res.on("data", function (chunk) {
 					content += chunk;
 				});
-
+				res.on("error", err1 => {
+					console.log(err1);
+					return message.channel.send("Error: Unable to retrieve user data. Please try again!")
+				});
 				res.on("end", function () {
 					const a = content;
 					let b = a.split('\n');
@@ -78,13 +83,13 @@ module.exports.run = (client, message, args, maindb) => {
 						}
 					}
 					apiFetch(uid, avalink, location, message, client)
-				});
+				})
 			});
 			req.end();
 		}
-		else { message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`") };
-	});
-}
+		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+	})
+};
 
 function apiFetch(uid, avalink, location, message, client) {
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -95,7 +100,9 @@ function apiFetch(uid, avalink, location, message, client) {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			return console.log(err)
+		});
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
@@ -147,9 +154,10 @@ function apiFetch(uid, avalink, location, message, client) {
 
 			message.channel.send({ embed });
 		})
-	})
+	});
+	req.end()
 }
 
 module.exports.help = {
 	name: "profileme"
-}
+};
