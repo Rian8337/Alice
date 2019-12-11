@@ -1,3 +1,4 @@
+let Discord = require('discord.js');
 var https = require("https");
 require("mongodb");
 var apikey = process.env.OSU_API_KEY;
@@ -17,6 +18,7 @@ function mapstatusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("You don't have permission to do this");
 
     var whitelist = maindb.collection("mapwhitelist");
