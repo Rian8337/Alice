@@ -22,8 +22,8 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 			pp: newtarget
 		}};
         binddb.updateOne({uid: uid}, updatedata, (err, res) => {
+        	if (err) return console.log(err);
 			console.log("User pp is updated. Total pp:" + totalpp);
-			return;
 		});
 		return;
     }
@@ -54,7 +54,10 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 			res.on("data", function (chunk) {
 				content += chunk;
 			});
-
+			res.on("error", err1 => {
+				console.log(err1);
+				return recalc(target, tlength, i, newtarget, binddb, uid, whitelist)
+			});
 			res.on("end", function () {
 				var obj = JSON.parse(content);
 				if (!obj[0]) {console.log("Map not found"); return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)}
@@ -144,7 +147,8 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 					}
 				)
 			})
-		})
+		});
+		req.end()
 	})
 }
 
