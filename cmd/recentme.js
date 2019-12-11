@@ -19,9 +19,9 @@ function rankread(imgsrc) {
 		case 'SH':rank="http://ops.dgsrz.com/assets/images/ranking-SH-small.png";break;
 		case 'X':rank="http://ops.dgsrz.com/assets/images/ranking-X-small.png";break;
 		case 'XH':rank="http://ops.dgsrz.com/assets/images/ranking-XH-small.png";break;
-		default: rank="unknown";
+		default: rank="unknown"
 	}
-	return rank;
+	return rank
 }
 
 function mapstatusread(status) {
@@ -33,7 +33,7 @@ function mapstatusread(status) {
 		case 2: return 16741376;
 		case 3: return 5301186;
 		case 4: return 16711796;
-		default: return 0;
+		default: return 0
 	}
 }
 
@@ -46,20 +46,20 @@ function modenum(mod) {
 	if (mod.includes("n")) res += 1;
 	if (mod.includes("e")) res += 2;
 	if (mod.includes("t")) res += 256;
-	return res;
+	return res
 }
 
 function modname(mod) {
 	var res = '';
 	var count = 0;
 	if (mod.includes("-")) {res += 'None '; count++}
+	if (mod.includes("n")) {res += 'NoFail '; count++}
+	if (mod.includes("e")) {res += 'Easy '; count++}
+	if (mod.includes("t")) {res += 'HalfTime '; count++}
 	if (mod.includes("r")) {res += 'HardRock '; count++}
 	if (mod.includes("h")) {res += 'Hidden '; count++}
 	if (mod.includes("d")) {res += 'DoubleTime '; count++}
 	if (mod.includes("c")) {res += 'NightCore '; count++}
-	if (mod.includes("n")) {res += 'NoFail '; count++}
-	if (mod.includes("e")) {res += 'Easy '; count++}
-	if (mod.includes("t")) {res += 'HalfTime '; count++}
 	if (count > 1) return res.trimRight().split(" ").join(", ");
 	else return res.trimRight()
 }
@@ -88,9 +88,11 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return console.log("Empty API response")
+		});
 		res.on("end", function () {
-			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
@@ -129,15 +131,15 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    			}
+                    }
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -155,11 +157,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
@@ -196,8 +199,9 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					message.channel.send({embed})
 				}
 			)
-		});
+		})
 	});
+	req.end()
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -231,9 +235,11 @@ module.exports.run = (client, message, args, maindb) => {
 			res.on("data", function (chunk) {
 			content += chunk;
 			});
-
+			res.on("error", err1 => {
+				console.log(err1);
+				return message.channel.send("Error: Empty API response. Please try again!")
+			});
 			res.on("end", function () {
-				if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 				var resarr = content.split('<br>');
 				var headerres = resarr[0].split(" ");
 				if (headerres[0] == 'FAILED') {
@@ -270,14 +276,13 @@ module.exports.run = (client, message, args, maindb) => {
 					}
 				};
 				message.channel.send({ embed });
-				});
+				})
 			});
 			req.end();
 		}
-		else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
-	});
+		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+	})
 };
-
 
 module.exports.help = {
 	name: "recentme"
