@@ -41,7 +41,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	var whitelistQuery = {hashid: target[i][0]};
 
 	whitelist.findOne(whitelistQuery, (err, wlres) => {
-		if (err) throw err;
+		if (err) return recalc(target, tlength, i, newtarget, binddb, uid, whitelist);
 		if (wlres) isWhitelist = true; 
 
 		if (isWhitelist) var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + wlres.mapid); 
