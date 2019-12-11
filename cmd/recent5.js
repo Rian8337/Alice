@@ -15,7 +15,7 @@ function modread(input) {
 	if (input.includes('c')) res += 'NC';
 	if (input.includes('d')) res += 'DT';
 	if (res) res = '+' + res;
-	return res;
+	return res
 }
 
 function rankEmote(input) {
@@ -29,11 +29,13 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return;
+		default : return
 	}
 }
 
-function editpp(client, message, rplay, name, page, footer, index) {
+function editpp(client, message, rplay, name, page) {
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
 		.setColor(message.member.highestRole.hexColor)
@@ -65,7 +67,10 @@ module.exports.run = (client, message, args) => {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Empty API response. Please try again!")
+		});
 		res.on("end", function () {
 			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var resarr = content.split('<br>');
@@ -76,11 +81,9 @@ module.exports.run = (client, message, args) => {
 			var obj = JSON.parse(content);
 			var name = headerres[2];
 			var rplay = obj.recent;
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let embed = editpp(client, message, rplay, name, page, footer, index);
+			let embed = editpp(client, message, rplay, name, page);
 
-			if (!rplay[0]) {message.channel.send("This player haven't submitted any play"); return;}
+			if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
 			
 			message.channel.send({embed}).then (msg => {
 				msg.react("⏮️").then(() => {
@@ -98,7 +101,7 @@ module.exports.run = (client, message, args) => {
 
 				backward.on('collect', () => {
 					page = 1;
-					embed = editpp(client, message, rplay, name, page, footer, index);
+					embed = editpp(client, message, rplay, name, page);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -106,7 +109,7 @@ module.exports.run = (client, message, args) => {
 				back.on('collect', () => {
 					if (page === 1) page = 10;
 					else page--;
-					embed = editpp(client, message, rplay, name, page, footer, index);
+					embed = editpp(client, message, rplay, name, page);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -114,18 +117,18 @@ module.exports.run = (client, message, args) => {
 				next.on('collect', () => {
 					if (page === 10) page = 1;
 					else page++;
-					embed = editpp(client, message, rplay, name, page, footer, index);
+					embed = editpp(client, message, rplay, name, page);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
 
 				forward.on('collect', () => {
 					page = 10;
-					embed = editpp(client, message, rplay, name, page, footer, index);
+					embed = editpp(client, message, rplay, name, page);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				})
-			});
+			})
 		})
 	});
 	req.end();
