@@ -72,7 +72,6 @@ module.exports.run = (client, message, args) => {
 			return message.channel.send("Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') return message.channel.send("User doesn't exist");
