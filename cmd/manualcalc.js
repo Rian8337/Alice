@@ -15,7 +15,7 @@ function modenum(mod) {
 	if (mod.includes("NF")) res += 1;
 	if (mod.includes("EZ")) res += 2;
 	if (mod.includes("HT")) res += 256;
-	return res;
+	return res
 }
 
 function mapstatusread(status) {
@@ -27,7 +27,7 @@ function mapstatusread(status) {
 		case 2: return 16741376;
 		case 3: return 5301186;
 		case 4: return 16711796;
-		default: return 0;
+		default: return 0
 	}
 }
 
@@ -55,9 +55,11 @@ function getMapPP(target, message, ndetail, pcdetail) {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Error: Empty API response. Please try again!")
+		});
 		res.on("end", function () {
-			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {message.channel.send("Map not found"); return;}
 			var mapinfo = obj[0];
@@ -210,8 +212,9 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					message.channel.send({embed})
 				}
 			)
-		});
+		})
 	});
+	req.end()
 }
 
 module.exports.run = (client, message, args) => {
