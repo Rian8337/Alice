@@ -43,9 +43,11 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 			res.on("data", function (chunk) {
 				content += chunk;
 			});
-
+			res.on("error", err1 => {
+				console.log(err1);
+				return message.channel.send("Error: Empty API response. Please try again!")
+			});
 			res.on("end", function () {
-				if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 				var obj = JSON.parse(content);
 				if (!obj[0]) {
 					console.log("Map not found"); 
@@ -55,7 +57,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 				}
 				var mapinfo = obj[0];
 				var mapid = mapinfo.beatmap_id;
-				if (mapinfo.mode !=0) return;
+				if (mapinfo.mode != 0) return;
 				if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !isWhitelist) {
 					message.channel.send('Error: PP system only accept ranked, approved, whitelisted, or loved mapset right now');
 					objcount.x++;
@@ -128,7 +130,14 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') return message.channel.send("This command is only allowed in #bot-ground and #elaina-pp-project!");
+	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') {
+		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
+		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
+		if (channel && channel2) return message.channel.send(`This command is only allowed in ${channel} and ${channel2}!`);
+		if (channel) return message.channel.send(`This command is only allowed in ${channel}!`);
+		if (channel2) return message.channel.send(`This command is only allowed in ${channel2}!`);
+	}
+	
 	let ufind = message.author.id;
 	let objcount = {x: 0};
 	var offset = 1;
@@ -152,7 +161,7 @@ module.exports.run = (client, message, args, maindb) => {
 	binddb.find(query).toArray(function (err, userres) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve user data from database! Please try again");
+			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		if (userres[0]) {
 			console.log(offset);
@@ -179,7 +188,10 @@ module.exports.run = (client, message, args, maindb) => {
 				res.on("data", function (chunk) {
 					content += chunk;
 				});
-
+				res.on("error", err1 => {
+					console.log(err1);
+					return message.channel.send("Error: Empty API response. Please try again!")
+				});
 				res.on("end", function () {
 					curpos = 0;
 					var playentry = [];
@@ -252,8 +264,8 @@ module.exports.run = (client, message, args, maindb) => {
 					})
 				})
 			});
-			req.end();
-		} else message.channel.send("The account is not binded, you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+			req.end()
+		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	})
 };
 
