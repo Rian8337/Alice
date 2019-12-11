@@ -12,7 +12,7 @@ function mapstatusread(status) {
 		case 2: return 16741376;
 		case 3: return 5301186;
 		case 4: return 16711796;
-		default: return 0;
+		default: return 0
 	}
 }
 
@@ -27,7 +27,10 @@ module.exports.run = (client, message, args, maindb) => {
             var dupQuery = {mapid: parseInt(mapid)};
             whitelist.findOne(dupQuery, (err, wlres) => {
                 console.log(wlres);
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("Error: Empty database response. Please try again!")
+                }
                 if (!wlres) {
                     var insertData = {
                         mapid: parseInt(mapid),
@@ -77,6 +80,10 @@ function whitelistInfo(link_in, hash_in, message, callback) {
 		res.on("data", function (chunk) {
 			content += chunk;
         });
+		res.on("error", err => {
+		    console.log(err);
+		    return message.channel.send("Error: Empty API response. Please try again!")
+        });
         res.on("end", function () {
 			var obj = JSON.parse(content);
             if (!obj[0]) {console.log("Map not found"); callback(0);}
@@ -116,9 +123,10 @@ function whitelistInfo(link_in, hash_in, message, callback) {
                 ]
             };
             message.channel.send({embed});
-            callback(1, beatmapid, hashid, mapstring);
+            callback(1, beatmapid, hashid, mapstring)
         })
-    })
+    });
+    req.end()
 }
 
 module.exports.help = {
