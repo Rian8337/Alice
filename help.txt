@@ -1,6 +1,8 @@
 Alice Synthesis Thirty's Guide
 User Commands
 
+For moderation commands, type "a!modhelp".
+
 <...>: required syntax
 [...]: optional syntax
 
