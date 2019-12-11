@@ -16,7 +16,10 @@ module.exports.run = (client, message, args, maindb) => {
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
-		if (err) throw err;
+		if (err) {
+			console.log(err);
+			return message.channel.send("Error: Empty database response. Please try again!")
+		}
 		if (res[0]) {
 			let uid = res[0].uid;
 			var options = {
@@ -50,12 +53,12 @@ module.exports.run = (client, message, args, maindb) => {
 						}
 					}
 					apiFetch(uid, avalink, location, message)
-				});
+				})
 			});
-			req.end();
+			req.end()
 		}
-		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`");
-	});
+		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+	})
 };
 
 function apiFetch(uid, avalink, location, message) {
@@ -67,7 +70,10 @@ function apiFetch(uid, avalink, location, message) {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Error: Empty API response. Please try again!")
+		});
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
@@ -106,7 +112,8 @@ function apiFetch(uid, avalink, location, message) {
 			};
 			message.channel.send({ embed });
 		})
-	})
+	});
+	req.end()
 }
 
 module.exports.help = {
