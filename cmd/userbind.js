@@ -20,7 +20,10 @@ module.exports.run = (client, message, args, maindb) => {
 			res.on("data", function (chunk) {
 				content += chunk;
 			});
-
+			res.on("error", err => {
+				console.log(err);
+				return message.channel.send("Error: Unable to retrieve user data. Please try again!")
+			});
 			res.on("end", function () {
 				const a = content;
 				let b = a.split('\n'), c = [];
@@ -49,23 +52,32 @@ module.exports.run = (client, message, args, maindb) => {
 					}
 				};
 				binddb.find(query).toArray(function(err, res) {
-					if (err) throw err;
+					if (err) {
+						console.log(err);
+						return message.channel.send("Error: Empty database response. Please try again!")
+					}
 					if (!res[0]) {
 						binddb.insertOne(bind, function(err, res) {
-							if (err) throw err;
+							if (err) {
+								console.log(err);
+								return message.channel.send("Error: Empty database response. Please try again!")
+							}
 							console.log("bind added");
 							message.channel.send("Haii <3, binded <@"+message.author.id+"> to uid "+uid);
-						});
+						})
 					}
 					else {
 						binddb.updateOne(query, updatebind, function(err, res) {
-							if (err) throw err;
+							if (err) {
+								console.log(err);
+								return message.channel.send("Error: Empty database response. Please try again!")
+							}
 							console.log("bind updated");
 							message.channel.send("Haii <3, binded <@"+message.author.id+"> to uid "+uid);
-						});
+						})
 					}
-				});
-			});
+				})
+			})
 		});
 		req.end();
 	}
