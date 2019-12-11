@@ -15,7 +15,7 @@ function modread(input) {
 	if (input.includes('c')) res += 'NC';
 	if (input.includes('d')) res += 'DT';
 	if (res) res = '+' + res;
-	return res;
+	return res
 }
 
 function rankEmote(input) {
@@ -29,7 +29,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return;
+		default : return
 	}
 }
 
@@ -85,7 +85,10 @@ module.exports.run = (client, message, args, maindb) => {
 				res.on("data", function (chunk) {
 					content += chunk;
 				});
-
+				res.on("error", err1 => {
+					console.log(err1);
+					return message.channel.send("Error: Empty API response. Please try again!")
+				});
 				res.on("end", function () {
 					if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 					var resarr = content.split('<br>');
@@ -152,9 +155,7 @@ module.exports.run = (client, message, args, maindb) => {
 			setTimeout(() => {
 				cd.delete(message.author.id)
 			}, 10000)
-		} else {
-			message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
-		}
+		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
 	})
 };
 
