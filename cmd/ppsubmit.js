@@ -15,7 +15,7 @@ function modenum(mod) {
 	if (mod.includes("n")) res += 1;
 	if (mod.includes("e")) res += 2;
 	if (mod.includes("t")) res += 256;
-	return res;
+	return res
 }
 
 function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whitelist, cb) {
@@ -121,7 +121,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					cb(ppline[0], playinfo, input, pcombo, pacc, pmissc);
 				})
 			})
-		})
+		});
+		req.end()
 	})
 }
 
@@ -176,7 +177,10 @@ module.exports.run = (client, message, args, maindb) => {
 				res.on("data", function (chunk) {
 					content += chunk;
 				});
-
+				res.on("error", err1 => {
+					console.log(err1);
+					return message.channel.send("Error: Empty API response. Please try again!")
+				});
 				res.on("end", function () {
 					curpos = 0;
 					var playentry = [];
@@ -248,8 +252,8 @@ module.exports.run = (client, message, args, maindb) => {
 					})
 				})
 			});
-			req.end();
-		} else message.channel.send("The account is not binded, you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
+			req.end()
+		} else message.channel.send("The account is not binded, you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
 	})
 };
 
