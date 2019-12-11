@@ -16,7 +16,7 @@ function modenum(mod) {
 	if (mod.includes("n")) res += 1;
 	if (mod.includes("e")) res += 2;
 	if (mod.includes("t")) res += 256;
-	return res;
+	return res
 }
 
 function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whitelist, cb) {
@@ -136,6 +136,7 @@ module.exports.run = (client, message, args, maindb) => {
 		if (channel && channel2) return message.channel.send(`This command is only allowed in ${channel} and ${channel2}!`);
 		if (channel) return message.channel.send(`This command is only allowed in ${channel}!`);
 		if (channel2) return message.channel.send(`This command is only allowed in ${channel2}!`);
+		else return message.channel.send("Please create #bot-ground or #elaina-pp-project first!")
 	}
 	
 	let ufind = message.author.id;
