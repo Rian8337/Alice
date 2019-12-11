@@ -79,11 +79,14 @@ module.exports.run = (client, message, args, maindb) => {
 				}
 			};
 			binddb.updateOne(query, updateVal, function (err) {
-				if (err) throw err;
+				if (err) {
+					console.log(err);
+					return message.channel.send("Error: Empty database response. Please try again!")
+				}
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else {message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")};
+		} else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
 	})
 };
 
