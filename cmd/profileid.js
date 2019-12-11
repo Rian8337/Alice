@@ -63,12 +63,12 @@ module.exports.run = (client, message, args) => {
 					avalink = b[x-3];
 					b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
 					b[x+1]=b[x+1].replace("<\/small>","");
-					b[x+1]=b[x+1].trim()
+					b[x+1]=b[x+1].trim();
 					location=b[x+1]
 				}
 			}
 			apiFetch(uid, avalink, location, message, client)
-		});
+		})
 	});
 	req.end()
 };
@@ -82,13 +82,16 @@ function apiFetch(uid, avalink, location, message, client) {
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Error: Empty API response. Please try again!")
+		});
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') {message.channel.send("User not exist"); return;}
+			if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
 			resarr.shift();
-			content = resarr.join("")
+			content = resarr.join("");
 			var obj = JSON.parse(content);
 			var name = headerres[2];
 			var tscore = headerres[3];
