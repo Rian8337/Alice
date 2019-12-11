@@ -13,7 +13,7 @@ function modread(input) {
 	if (input.includes('c')) res += 'NC';
 	if (input.includes('d')) res += 'DT';
 	if (res) res = '+' + res;
-	return res;
+	return res
 }
 
 function rankEmote(input) {
@@ -27,7 +27,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return;
+		default : return
 	}
 }
 
@@ -47,7 +47,10 @@ module.exports.run = (client, message, args) => {
     	res.on("data", function (chunk) {
         	content += chunk;
     	});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Error: Unable to retrieve user data. Please try again!")
+		});
     	res.on("end", function () {
 			const a = content;
 			let b = a.split('\n');
@@ -67,7 +70,7 @@ module.exports.run = (client, message, args) => {
 			apiFetch(uid, avalink, location, message, client)
 		});
 	});
-	req.end();
+	req.end()
 };
 
 function apiFetch(uid, avalink, location, message, client) {
@@ -130,10 +133,10 @@ function apiFetch(uid, avalink, location, message, client) {
 					}
 				]
 			};
-			
-			message.channel.send({ embed });
+			message.channel.send({ embed })
 		})
-	})
+	});
+	req.end()
 }
 
 module.exports.help = {
