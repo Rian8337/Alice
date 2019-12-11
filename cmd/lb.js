@@ -56,7 +56,7 @@ module.exports.run = (client, message, args, maindb) => {
             });
 
             back.on('collect', () => {
-                if (page === 0) page = (Math.floor(res.length / 20));
+                if (page === 0) page = Math.floor(res.length / 20);
                 else page--;
                 output = editpp(res, page);
                 msg.edit('```' + output + '```').catch(e => console.log(e));
