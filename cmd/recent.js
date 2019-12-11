@@ -81,16 +81,18 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + input);
 
-	var content = "";   
+	var content = "";
 
 	var req = https.get(options, function(res) {
 		res.setEncoding("utf8");
 		res.on("data", function (chunk) {
 			content += chunk;
 		});
-
+		res.on("error", err => {
+			console.log(err);
+			return console.log("Empty API response")
+		});
 		res.on("end", function () {
-			if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
@@ -133,17 +135,17 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    			}
+                    }
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
                     
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -162,11 +164,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					message.channel.send(`Raw droid pp: ${npp.toString()}`);
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
@@ -203,8 +206,9 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					message.channel.send({embed})
 				}
 			)
-		});
+		})
 	});
+	req.end()
 }
 
 module.exports.run = (client, message, args) => {
@@ -222,9 +226,11 @@ module.exports.run = (client, message, args) => {
     	res.on("data", function (chunk) {
         	content += chunk;
     	});
-
+		res.on("error", err => {
+			console.log(err);
+			return message.channel.send("Empty API response. Please try again!")
+		});
     	res.on("end", function () {
-    		if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(" ");
 			if (headerres[0] == 'FAILED') {
@@ -261,9 +267,9 @@ module.exports.run = (client, message, args) => {
 				}
 		};
 		message.channel.send({embed});
-    	});
+    	})
 	});
-	req.end();
+	req.end()
 };
 
 module.exports.help = {
