@@ -7,14 +7,8 @@ let config = require('../config.json');
 module.exports.run = (client, message, args) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
 	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
-	let ufind = message.author.id;
-	if (args[0]) {
-		ufind = args[0];
-		ufind = ufind.replace('<@!', '');
-		ufind = ufind.replace('<@', '');
-		ufind = ufind.replace('>', '');
-	}
-	console.log(ufind);
+	let uid = args[0];
+	if (isNaN(uid)) return message.channel.send("Invalid uid");
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
 	var content = "";
 
@@ -31,7 +25,6 @@ module.exports.run = (client, message, args) => {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
-			var uid = headerres[1];
 			var name = headerres[2];
 			var email = headerres[6];
 			let footer = config.avatar_list;
