@@ -90,7 +90,6 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					if (!content) return message.channel.send("Error: Empty API response. Please try again!");
 					var resarr = content.split('<br>');
 					var headerres = resarr[0].split(' ');
 					if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
@@ -155,7 +154,7 @@ module.exports.run = (client, message, args, maindb) => {
 			setTimeout(() => {
 				cd.delete(message.author.id)
 			}, 10000)
-		} else message.channel.send("The account is not binded, he/she/you need to use `&userbind <uid>` first. To get uid, use `&profilesearch <username>`")
+		} else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
 	})
 };
 
