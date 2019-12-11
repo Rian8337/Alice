@@ -30,6 +30,8 @@ Prefix: "a!"
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
+NOTE: This system does not automatically submit your plays, therefore you must submit them manually. If you want to request a full calculation (submit all your plays into the system), contact a helper or moderator.
+
 - pp [a] [b]
 a: number of play you want to submit (limit at 5 - default at 1)
 b: the position in your recent play list that you want to start submitting (a + b - 1 < 50 limit)
