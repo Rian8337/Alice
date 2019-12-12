@@ -2,6 +2,11 @@ var Discord = require('discord.js');
 var config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
+    try {
+		let rolecheck = message.member.roles;
+	} catch (e) {
+		return
+	}
     let user = message.author;
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
