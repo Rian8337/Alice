@@ -69,6 +69,7 @@ client.on("message", message => {
 	}*/
 
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
+		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
 		return cmd.run(client, message, args)
