@@ -1,6 +1,11 @@
 var mongodb = require('mongodb');
 
 module.exports.run = (client, message, args, maindb) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (message.member.roles.find("name", "Owner")) {
 		let uid = args[0];
 		if (isNaN(parseInt(uid))) {message.channel.send("uid please!")}
