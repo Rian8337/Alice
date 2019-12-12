@@ -6,7 +6,8 @@ module.exports.run = (client, message, args, maindb) => {
 	if (!uid) {message.channel.send("Your uid please!"); return;}
 	if (isNaN(uid)) {message.channel.send("Invalid uid")}
 	else {
-		let name = "";
+		let binddb = maindb.collection("userbind");
+		let query = {discordid: message.author.id};
 		var options = {
 			host: "ops.dgsrz.com",
 			port: 80,
@@ -27,48 +28,46 @@ module.exports.run = (client, message, args, maindb) => {
 			res.on("end", function () {
 				var headerres = content.split('<br>')[0].split(" ");
 				if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
-				name = headerres[2]
-			});
-			let binddb = maindb.collection("userbind");
-			let query = {discordid: message.author.id};
-			var bind = {
-				discordid: message.author.id,
-				uid: uid,
-				username: name,
-				pptotal: 0,
-				pp: []
-			};
-			var updatebind = {
-				$set: {
+				let name = headerres[2];
+				var bind = {
 					discordid: message.author.id,
 					uid: uid,
-					username: name
-				}
-			};
-			binddb.find(query).toArray(function (err, res) {
-				if (err) {
-					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!")
-				}
-				if (!res[0]) {
-					binddb.insertOne(bind, function (err, res) {
-						if (err) {
-							console.log(err);
-							return message.channel.send("Error: Empty database response. Please try again!")
-						}
-						console.log("bind added");
-						message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
-					})
-				} else {
-					binddb.updateOne(query, updatebind, function (err, res) {
-						if (err) {
-							console.log(err);
-							return message.channel.send("Error: Empty database response. Please try again!")
-						}
-						console.log("bind updated");
-						message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
-					})
-				}
+					username: name,
+					pptotal: 0,
+					pp: []
+				};
+				var updatebind = {
+					$set: {
+						discordid: message.author.id,
+						uid: uid,
+						username: name
+					}
+				};
+				binddb.find(query).toArray(function (err, res) {
+					if (err) {
+						console.log(err);
+						return message.channel.send("Error: Empty database response. Please try again!")
+					}
+					if (!res[0]) {
+						binddb.insertOne(bind, function (err, res) {
+							if (err) {
+								console.log(err);
+								return message.channel.send("Error: Empty database response. Please try again!")
+							}
+							console.log("bind added");
+							message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
+						})
+					} else {
+						binddb.updateOne(query, updatebind, function (err, res) {
+							if (err) {
+								console.log(err);
+								return message.channel.send("Error: Empty database response. Please try again!")
+							}
+							console.log("bind updated");
+							message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
+						})
+					}
+				})
 			})
 		});
 		req.end()
