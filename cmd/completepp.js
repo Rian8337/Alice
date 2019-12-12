@@ -1,4 +1,4 @@
-require('mongodb');
+var Discord = require('discord.js');
 var request = require('request');
 var droid = require("./ojsamadroid");
 require("dotenv").config();
@@ -138,6 +138,7 @@ function calculatePP(ppentries, entry, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
     var ppentries = [];
     var page = 0;
