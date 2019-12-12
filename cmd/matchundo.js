@@ -11,6 +11,11 @@ function statusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (!message.member.roles.find("name", "Referee")) {
 		message.channel.send("You don't have enough permission to use this :3");
 		return;
