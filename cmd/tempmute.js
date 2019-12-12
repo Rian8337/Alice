@@ -22,7 +22,7 @@ function isImmuned(member) {
 
 module.exports.run = async (client, message, args) => {
     try {
-        let rolecheck = message.member.roles
+        let rolecheck = message.member.roles;
     } catch (e) {
         return
     }
@@ -86,24 +86,16 @@ module.exports.run = async (client, message, args) => {
 
     let channel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!channel) return message.reply("Please create a mute log channel first!");
-    channel.send(muteembed);
+    channel.send(muteembed).then(msg => {
+        tomute.addRole(muterole.id)
+            .catch(console.error);
 
-    tomute.addRole(muterole.id)
-        .catch(console.error);
-
-    setTimeout(() => {
-        tomute.removeRole(muterole.id);
-        muteembed = new Discord.RichEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL)
-            .setTitle("User unmuted")
-            .setColor("#000000")
-            .setTimestamp(new Date())
-            .setFooter("User ID: " + tomute.id, footer[index])
-            .addField("Unmuted user: " + tomute.user.username, "Muted in: " + message.channel)
-            .addField("Mute length: " + mutetime + "s", "=========================")
-            .addField("Mute reason: ", reason);
-        channel.send(muteembed)
-    }, mutetime * 1000)
+        setTimeout(() => {
+            tomute.removeRole(muterole.id);
+            muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
+            msg.edit(muteembed)
+        }, mutetime * 1000)
+    });
 };
 
 module.exports.help = {
