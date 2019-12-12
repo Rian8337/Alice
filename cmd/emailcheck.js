@@ -5,7 +5,11 @@ var droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
+    try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("Invalid uid");
