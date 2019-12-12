@@ -154,10 +154,10 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 
 module.exports.run = (client, message, args, maindb) => {
 	try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
+		let rolecheck = message.member.roles
+	} catch (e) {
+		return
+	}
 	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this. Please ask an Owner!");
     var uid = args[0];
     //discordid = discordid.replace("<@", "");
@@ -166,7 +166,10 @@ module.exports.run = (client, message, args, maindb) => {
 	var binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
     binddb.findOne({uid: uid}, function(err, res) {
-        if (err) throw err;
+        if (err) {
+        	console.log(err);
+        	return message.channel.send("Error: Empty database response. Please try again!")
+		}
         if (!res) {console.log("user not found "); return;}
         var ppentry = res.pp;
         //var uid = res.uid;
