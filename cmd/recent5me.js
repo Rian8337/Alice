@@ -51,6 +51,11 @@ function editpp(client, message, rplay, name, page, footer, index) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
