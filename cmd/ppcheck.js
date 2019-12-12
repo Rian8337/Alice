@@ -2,7 +2,11 @@ var Discord = require('discord.js');
 var cd = new Set();
 let config = require('../config.json');
 
-function editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror) {
+function editpp(message, page, pp, ppentry, discordid, username) {
+	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
+	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
 		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 		.setColor(message.member.highestRole.hexColor)
@@ -34,6 +38,7 @@ function editpp(message, page, footer, index, pp, ppentry, discordid, username, 
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
@@ -65,11 +70,7 @@ module.exports.run = (client, message, args, maindb) => {
 			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 			if (res[0].pp) ppentry = res[0].pp;
 
-			let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
-			let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let embed = editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror);
+			let embed = editpp(message, page, pp, ppentry, discordid, username);
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⏮️").then(() => {
@@ -87,7 +88,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 				backward.on('collect', () => {
 					page = 1;
-					embed = editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror);
+					embed = editpp(message, page, pp, ppentry, discordid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -95,7 +96,7 @@ module.exports.run = (client, message, args, maindb) => {
 				back.on('collect', () => {
 					if (page === 1) page = 15;
 					else page--;
-					embed = editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror);
+					embed = editpp(message, page, pp, ppentry, discordid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -103,14 +104,14 @@ module.exports.run = (client, message, args, maindb) => {
 				next.on('collect', () => {
 					if (page === 15) page = 1;
 					else page++;
-					embed = editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror);
+					embed = editpp(message, page, pp, ppentry, discordid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
 
 				forward.on('collect', () => {
 					page = 15;
-					embed = editpp(message, page, footer, index, pp, ppentry, discordid, username, site, mirror);
+					embed = editpp(message, page, pp, ppentry, discordid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				})
@@ -121,7 +122,7 @@ module.exports.run = (client, message, args, maindb) => {
 			}, 10000)
 		}
 		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
-	});
+	})
 };
 
 module.exports.help = {
