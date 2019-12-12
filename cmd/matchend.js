@@ -11,6 +11,11 @@ function statusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (message.member.roles.find("name", "Referee")) {
 		let id = args[0];
 		if (id) {
