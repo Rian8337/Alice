@@ -80,6 +80,7 @@ client.on("message", message => {
 	}
 	
 	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
+		if (message.channel instanceof Discord.DMChannel) return message.channel.send("You cannot use commands in DMs");
 		let cmd = '';
 		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
 		else cmd = client.commands.get(command.slice(1));
