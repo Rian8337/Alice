@@ -53,6 +53,11 @@ function editpp(client, message, rplay, name, page) {
 }
 
 module.exports.run = (client, message, args) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) {message.channel.send("Invalid uid"); return;}
