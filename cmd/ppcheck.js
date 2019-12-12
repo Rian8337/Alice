@@ -38,7 +38,6 @@ function editpp(message, page, pp, ppentry, discordid, username) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
@@ -62,7 +61,6 @@ module.exports.run = (client, message, args, maindb) => {
 			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (res[0]) {
-			var uid = res[0].uid;
 			var username = res[0].username;
 			var discordid = res[0].discordid;
 			var pp = 0;
