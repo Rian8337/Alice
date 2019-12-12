@@ -1,3 +1,4 @@
+var Discord = require('discord.js');
 var http = require('http');
 var droid = require("./ojsamadroid");
 var https = require("https");
@@ -130,6 +131,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') {
 		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
 		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
