@@ -1,15 +1,4 @@
-var mongodb = require('mongodb');
-
-function modValid(input, required) {
-	input = input.trim();
-	if (required == "nm") return input == "None";
-	if (required == "hr") return input == "HardRock";
-	if (required == "hd") return input == "Hidden";
-	if (required == "ez") return input == "Easy";
-	if (required == "dt") return (input == "DoubleTime" || input == "Hidden, DoubleTime");
-	if (required == "fm") return ((input.includes("HardRock") || input.includes("Hidden") || input.includes("Easy"))&&(!(input.includes("DoubleTime") || input.includes("HalfTime"))))
-	else return true;
-}
+var Discord = require('discord.js');
 
 function scoreCalc(score, maxscore, accuracy, misscount) {
 	let newscore = score/maxscore*600000 + (Math.pow((accuracy/100), 4)*400000);
@@ -18,6 +7,7 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	if (!message.member.roles.find("name", "Referee")) {
 		message.channel.send("You don't have enough permission to use this :3");
 		return;
