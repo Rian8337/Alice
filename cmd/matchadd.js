@@ -1,6 +1,11 @@
 var mongodb = require('mongodb');
 
 module.exports.run = (client, message, args, maindb) => {
+	try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
 	if (message.member.roles.find("name", "Referee")) {
 		if (args.length > 4) {
 			let id = args[0]; var i = 1; let name  = ""; let inName = false;
@@ -35,7 +40,7 @@ module.exports.run = (client, message, args, maindb) => {
 					player: player,
 					status: status,
 					result: result
-				}
+				};
 				matchdb.find(query).toArray(function(err, res) {
 					if (err) throw err;
 					if (!res[0]) {
@@ -43,20 +48,20 @@ module.exports.run = (client, message, args, maindb) => {
 							if (err) throw err;
 							console.log("match added");
 							message.channel.send("Match added");
-						});
+						})
 					}
 					else {
 						message.channel.send("A match with the same id has already existed");
 					}
-				});
+				})
 			}
 			else message.channel.send("Not enough input");
 		}
 		else message.channel.send("Not enough input");
 	}
 	else message.channel.send("You don't have enough permission to use this :3");
-}
+};
 
 module.exports.help = {
 	name: "matchadd"
-}
+};
