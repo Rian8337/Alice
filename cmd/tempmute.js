@@ -21,6 +21,11 @@ function isImmuned(member) {
 }
 
 module.exports.run = async (client, message, args) => {
+    try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
     var timeLimit = isEligible(message.member);
     if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
 
