@@ -199,6 +199,8 @@ module.exports.run = (client, message, args, maindb) => {
 					curpos = 0;
 					var playentry = [];
 					var resarr = content.split('<br>');
+					var headerres = resarr[0].split(" ");
+					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
 					var obj = JSON.parse(resarr[1]);
 					var rplay = obj.recent;
 					for (var i = start - 1; i < start + offset - 1; i++) {
