@@ -2,7 +2,7 @@ var Discord = require('discord.js');
 var cd = new Set();
 let config = require('../config.json');
 
-function editpp(message, page, pp, ppentry, discordid, username) {
+function editpp(message, page, pp, ppentry, discordid, uid, username) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let footer = config.avatar_list;
@@ -38,6 +38,7 @@ function editpp(message, page, pp, ppentry, discordid, username) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
 	let page = 1;
@@ -61,6 +62,7 @@ module.exports.run = (client, message, args, maindb) => {
 			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (res[0]) {
+			var uid = res[0].uid;
 			var username = res[0].username;
 			var discordid = res[0].discordid;
 			var pp = 0;
@@ -68,7 +70,7 @@ module.exports.run = (client, message, args, maindb) => {
 			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 			if (res[0].pp) ppentry = res[0].pp;
 
-			let embed = editpp(message, page, pp, ppentry, discordid, username);
+			let embed = editpp(message, page, pp, ppentry, discordid, uid, username);
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⏮️").then(() => {
@@ -86,7 +88,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 				backward.on('collect', () => {
 					page = 1;
-					embed = editpp(message, page, pp, ppentry, discordid, username);
+					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -94,7 +96,7 @@ module.exports.run = (client, message, args, maindb) => {
 				back.on('collect', () => {
 					if (page === 1) page = 15;
 					else page--;
-					embed = editpp(message, page, pp, ppentry, discordid, username);
+					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
@@ -102,14 +104,14 @@ module.exports.run = (client, message, args, maindb) => {
 				next.on('collect', () => {
 					if (page === 15) page = 1;
 					else page++;
-					embed = editpp(message, page, pp, ppentry, discordid, username);
+					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				});
 
 				forward.on('collect', () => {
 					page = 15;
-					embed = editpp(message, page, pp, ppentry, discordid, username);
+					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
 					msg.edit(embed).catch(e => console.log(e));
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 				})
