@@ -33,6 +33,11 @@ async function filterMessage(message, filter, i, count, embed, startid) {
 }
 
 module.exports.run = async (client, message, args) => {
+    try {
+        let rolecheck = message.member.roles
+    } catch (e) {
+        return
+    }
     if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
 
     let startid = args[0];
