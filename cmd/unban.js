@@ -16,20 +16,29 @@ module.exports.run = async (client, message, args) => {
     if (!reason) return message.channel.send("Please enter your reason.");
 
     message.guild.unban(user, reason).then (() => {
-        message.author.lastMessage.delete().catch();
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
-        const embed = new Discord.RichEmbed()
+        let embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
+            .setThumbnail(user.avatarURL)
             .setTitle("Unban executed")
             .addField("Unbanned user: " + user.username, "User ID: " + user.id)
             .addField("=================", "Reason:\n" + reason);
 
-        logchannel.send({embed})
+        if (message.attachments.size > 0) {
+            let attachments = [];
+            message.attachments.forEach(attachment => {
+                attachments.push(attachment.proxyURL)
+            });
+            logchannel.send({embed: embed, files: attachments})
+        }
+        else logchannel.send({embed: embed});
+
+        message.author.lastMessage.delete();
     }).catch(() => {
         message.channel.send("User is not banned!")
     })
