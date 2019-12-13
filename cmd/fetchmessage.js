@@ -12,7 +12,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
     console.log("Start ID: " + startid);
     console.log("Last ID: " + lastid + "\n");
 
-    final = final.filter(m => m.content == filter && !m.author.bot);
+    final = final.filter(m => m.content.toLowerCase() == filter && !m.author.bot);
     final.forEach(msg => {
         let d = new Date(msg.createdAt);
         d = [d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes().toString().padStart(2, "0"), d.getSeconds().toString().padStart(2, "0")].join(':');
