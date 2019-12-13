@@ -17,10 +17,6 @@ module.exports.run = async (client, message, args) => {
     if (isNaN(userid)) return message.channel.send("Please specify the correct user to ban!");
     if (userid == message.author.id) return message.channel.send("You cannot ban yourself!");
 
-    let banlist = await message.guild.fetchBans();
-    let banned = banlist.get(userid);
-    if (banned) return message.channel.send("This user is already banned!");
-
     let toban = await client.fetchUser(userid);
     if (!toban) return message.channel.send("User not found!");
     let reason = args.slice(1).join(" ");
@@ -50,7 +46,7 @@ module.exports.run = async (client, message, args) => {
         else logchannel.send({embed: embed});
         
         message.author.lastMessage.delete();
-    }).catch(e => console.log(e))
+    }).catch(() => message.channel.send("User is already banned or cannot be banned!"))
 };
 
 module.exports.help = {
