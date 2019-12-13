@@ -5,7 +5,8 @@ async function filterMessage(message, filter, i, count, embed, startid) {
     let lastid = final.first();
     if (!lastid) {
         console.log("Complete!");
-        return message.channel.send(embed)
+        if (count % 25 !== 0) return message.channel.send(embed);
+        else return
     }
     lastid = lastid.id;
     console.log("Start ID: " + startid);
