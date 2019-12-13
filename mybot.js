@@ -96,14 +96,13 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 	if (oldMessage.content == newMessage.content) return;
 	let logchannel = oldMessage.guild.channels.find(c => c.name === config.log_channel);
 	if (!logchannel) return;
-	let link = `https://discordapp.com/channels/${oldMessage.guild.id}/${oldMessage.channel.id}/${oldMessage.id}`;
 	const embed = new Discord.RichEmbed()
 		.setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
 		.setFooter(`Author ID: ${oldMessage.author.id} | Message ID: ${oldMessage.id}`)
 		.setTimestamp(new Date())
 		.setColor("#00cb16")
 		.setTitle("Message edited")
-		.addField("Channel", `${oldMessage.channel} | [Go to message](${link})`)
+		.addField("Channel", `${oldMessage.channel} | [Go to message](${oldMessage.url})`)
 		.addField("Old Message", oldMessage.content.substring(0, 1024))
 		.addField("New Message", newMessage.content.substring(0, 1024));
 	logchannel.send(embed)
