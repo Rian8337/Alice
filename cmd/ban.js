@@ -2,11 +2,6 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
-    try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
 
@@ -32,21 +27,29 @@ module.exports.run = async (client, message, args) => {
     if (!reason) return message.channel.send("Please enter your reason.");
 
     message.guild.ban(toban, {reason: reason}).then (() => {
-        message.author.lastMessage.delete();
-
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
-        const embed = new Discord.RichEmbed()
+        let embed = new Discord.RichEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL)
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.highestRole.hexColor)
+            .setThumbnail(toban.avatarURL)
             .setTitle("Ban executed")
             .addField("Banned user: " + toban.username, "User ID: " + userid)
             .addField("=========================", "Reason:\n" + reason);
 
-        logchannel.send({embed})
+        if (message.attachments.size > 0) {
+            let attachments = [];
+            message.attachments.forEach(attachment => {
+                attachments.push(attachment.proxyURL)
+            });
+            logchannel.send({embed: embed, files: attachments})
+        }
+        else logchannel.send({embed: embed});
+        
+        message.author.lastMessage.delete();
     }).catch(e => console.log(e))
 };
 
