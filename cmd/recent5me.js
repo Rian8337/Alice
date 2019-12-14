@@ -154,7 +154,7 @@ module.exports.run = (client, message, args, maindb) => {
 			setTimeout(() => {
 				cd.delete(message.author.id)
 			}, 10000)
-		} else message.channel.send("❎  **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		} else message.channel.send("❎  **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
