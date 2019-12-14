@@ -51,13 +51,8 @@ function editpp(client, message, rplay, name, page, footer, index) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
+	if (cd.has(ufind)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -97,7 +92,7 @@ module.exports.run = (client, message, args, maindb) => {
 				res.on("end", function () {
 					var resarr = content.split('<br>');
 					var headerres = resarr[0].split(' ');
-					if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
+					if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, it looks like the user doesn't exist!**");
 					resarr.shift();
 					content = resarr.join("");
 					var obj = JSON.parse(content);
@@ -106,7 +101,7 @@ module.exports.run = (client, message, args, maindb) => {
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					let embed = editpp(client, message, rplay, name, page, footer, index);
-					if (!rplay[0]) {message.channel.send("This player haven't submitted any play"); return;}
+					if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
 
 					message.channel.send({embed}).then (msg => {
 						msg.react("⏮️").then(() => {
@@ -159,7 +154,7 @@ module.exports.run = (client, message, args, maindb) => {
 			setTimeout(() => {
 				cd.delete(message.author.id)
 			}, 10000)
-		} else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		} else message.channel.send("❎  **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
