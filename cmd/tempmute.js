@@ -22,26 +22,26 @@ function isImmuned(member) {
 
 module.exports.run = async (client, message, args) => {
     try {
-        let rolecheck = message.member.roles;
+        let rolecheck = message.member.roles
     } catch (e) {
         return
     }
     var timeLimit = isEligible(message.member);
-    if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
+    if (timeLimit == 0) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!tomute) return;
-    if (isImmuned(tomute)) return message.channel.send("You can't mute this user");
+    if (isImmuned(tomute)) return message.channel.send("❎  **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
 
     let mutetime = args[1];
-    if (!mutetime) return message.channel.send("Mute time is not defined");
-    if (isNaN(mutetime)) return message.channel.send("Invalid time limit, only send number of seconds");
-    if (mutetime < 1) return message.channel.send("Invalid time limit, minimum mute time is 1 second");
-    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("You don't have enough permission to mute an user for longer than " + timeLimit + "s");
+    if (!mutetime) return message.channel.send("❎  **| Hey, at least tell me how long do I need to mute this user!**");
+    if (isNaN(mutetime)) return message.channel.send("❎  **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
+    if (mutetime < 1) return message.channel.send("❎  **| I'm sorry, you can only mute for at least 1 second.**");
+    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎  **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
 
-    if (!reason) return message.channel.send("Please add a reason.");
+    if (!reason) return message.channel.send("❎  **| Hey, can you give me your reason for muting?**");
 
     let muterole = message.guild.roles.find(`name`, "elaina-muted");
     //start of create role
