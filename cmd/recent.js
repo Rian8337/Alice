@@ -93,6 +93,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 			return console.log("Empty API response")
 		});
 		res.on("end", function () {
+                        if (!content) return message.channel.send("Error: Empty API response");
 			var obj = JSON.parse(content);
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
