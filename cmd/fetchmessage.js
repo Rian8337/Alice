@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args) => {
     } catch (e) {
         return
     }
-    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
