@@ -16,11 +16,11 @@ module.exports.run = async (client, message, args, maindb) => {
             let name = await client.fetchUser(user);
             name = name.username;
             let skinlink = res[0].skin;
-            message.channel.send(`✅  **| ${name}'s skin: ${skinlink}.**`)
+            message.channel.send(`✅  **| ${name}'s skin: ${skinlink}.**\nFor a collection of skins, visit https://tsukushi.site/`)
         }
         else {
-            if (args[0]) message.channel.send("❎  **| The user hasn't set their skin yet! He/she must use `a!setskin <skin link>` first.**");
-            else message.channel.send("❎  **| You haven't set your skin yet! You must use `a!setskin <skin link>` first.**")
+            if (args[0]) message.channel.send("❎  **| The user hasn't set their skin yet! He/she must use `a!setskin <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/");
+            else message.channel.send("❎  **| You haven't set your skin yet! You must use `a!setskin <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/")
         }
     })
 };
