@@ -4,7 +4,7 @@ module.exports.run = (client, message, args, maindb) => {
 	} catch (e) {
 		return
 	}
-	if (message.member.roles.get("325613708673810433")) {
+	if (message.member.roles.find(r => r.name === 'Owner')) {
 		let uid = args[0];
 		if (isNaN(parseInt(uid))) {message.channel.send("Your uid please!")}
 		else {
@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 		}
 	}
-	else message.channel.send("You don't have enough permission to use this :3");
+	else message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**")
 };
 
 module.exports.help = {
