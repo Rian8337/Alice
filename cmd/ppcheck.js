@@ -38,9 +38,8 @@ function editpp(message, page, pp, ppentry, discordid, uid, username) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("Please wait for a bit before using this command again!");
+	if (cd.has(ufind)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 15) ufind = args[0];
@@ -121,7 +120,7 @@ module.exports.run = (client, message, args, maindb) => {
 				cd.delete(message.author.id)
 			}, 10000)
 		}
-		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		else message.channel.send("❎  **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
