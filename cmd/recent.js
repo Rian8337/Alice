@@ -77,7 +77,7 @@ function mapstatus(status) {
 	}
 }
 
-function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
+function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + input);
 
@@ -169,8 +169,6 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
-					let footer = config.avatar_list;
-					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + osu.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": "")),
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")",
@@ -202,7 +200,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message) {
 							}
 						]
 					};
-					message.channel.send({embed})
+					message.channel.send({embed: embed})
 				}
 			)
 		})
@@ -232,10 +230,7 @@ module.exports.run = (client, message, args) => {
     	res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(" ");
-			if (headerres[0] == 'FAILED') {
-				message.channel.send("User doesn't exist");
-				return;
-			}
+			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, that user doesn't exist!**");
 			let name = resarr[0].split(" ")[2];
 			var obj = JSON.parse(resarr[1]);
 			var play = obj.recent[0];
@@ -248,9 +243,9 @@ module.exports.run = (client, message, args) => {
 			let miss = play.miss;
 			let mod = play.mode;
 			let hash = play.hash;
-			if (title) {getMapPP(hash, combo, acc, miss, mod, message);}
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			if (title) getMapPP(hash, combo, acc, miss, mod, message, footer, index);
 
 			const embed = {
 				  "title": title,
