@@ -3,7 +3,7 @@ module.exports.run = (client, message, args, maindb) => {
     let skindb = maindb.collection("skin");
     let query = {discordid: user};
     if (args[0] == 'set') {
-        let skinlink = args.join(" ");
+        let skinlink = args.slice(1).join(" ");
         if (!skinlink) return message.channel.send("❎  **| Please enter skin link!**");
         skindb.find(query).toArray((err, res) => {
             if (err) {
