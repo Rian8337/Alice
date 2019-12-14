@@ -15,7 +15,7 @@ function deprecatedSearch(username, message, cb) {
 				c.push([b[x],b[x-1]]);
 			}
 		}
-		if (c.length!=0) foundPrint(message, c[0])
+		if (c.length!=0) foundPrint(message, c[0]);
 		else {
 			notFound++;
 			if (notFound==4) {
@@ -34,7 +34,7 @@ function deprecatedSearch(username, message, cb) {
 				d.push([b[x],b[x-1]]);
 			}
 		}
-		if (d.length!=0) foundPrint(message, d[0])
+		if (d.length!=0) foundPrint(message, d[0]);
 		else {
 			notFound++;
 			if (notFound==4) {
@@ -53,7 +53,7 @@ function deprecatedSearch(username, message, cb) {
 				e.push([b[x],b[x-1]]);
 			}
 		}
-		if (e.length!=0) foundPrint(message, e[0])
+		if (e.length!=0) foundPrint(message, e[0]);
 		else {
 			notFound++;
 			if (notFound==4) {
@@ -72,7 +72,7 @@ function deprecatedSearch(username, message, cb) {
 				f.push([b[x],b[x-1]]);
 			}
 		}
-		if (f.length!=0) foundPrint(message, f[0])
+		if (f.length!=0) foundPrint(message, f[0]);
 		else {
 			notFound++;
 			if (notFound==4) {
@@ -80,7 +80,7 @@ function deprecatedSearch(username, message, cb) {
 				cb();
 			}
 		}
-	});
+	})
 }
 
 function apiSearch(username, message) {
@@ -96,7 +96,7 @@ function apiSearch(username, message) {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') {message.channel.send("User not found, please input correct name (include upper and lower case)"); return;}
+			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, I cannot find the user. Please make sure that the name is correct (including upper and lower case).**");
 			var uid = headerres[1];
 			foundPrint(message, [], username, uid)
 		})
@@ -105,30 +105,27 @@ function apiSearch(username, message) {
 
 function foundPrint(message, outString, username = "", uid = -1) {
 	if (outString[0]) {
-		console.log(outString)
-		uid = outString[1].split("?uid=")[1]
+		console.log(outString);
+		uid = outString[1].split("?uid=")[1];
 		username = outString[0].split(" / ")[0]
 	}
 	var embed = {
 		"title": username + "'s uid is " + uid,
 		"color": 1900288,
 		"url": "http://ops.dgsrz.com/profile.php?uid=" + uid
-	}
+	};
 	message.channel.send({embed})
 }
 
 module.exports.run = (client, message, args) => {
-	var username = args[0]
-	if (!args[0]) {
-		message.channel.send("Invalid usage. Please enter a username")
-	}
-	else {
+	var username = args[0];
+	if (!args[0]) return message.channel.send("❎  **| Hey, can you at least tell me what username I need to search for?**");
 	deprecatedSearch(username, message, () => {
-		console.log("local mode not found")
+		console.log("local mode not found");
 		apiSearch(username, message)
-	})}
-}
+	})
+};
 
 module.exports.help = {
 	name: "profilesearch"
-}
+};
