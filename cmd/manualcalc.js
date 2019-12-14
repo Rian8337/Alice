@@ -168,7 +168,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					nparser.reset();
                     
 					console.log(nstars.toString());
-                    console.log(npp.toString());
+                    			console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -225,7 +225,7 @@ module.exports.run = (client, message, args) => {
 	var mod;
 	var ndetail = false;
 	var pcdetail = false;
-	if (!args[0]) return message.channel.send("Hey at least give me the map :/");
+	if (!args[0]) return message.channel.send("❎  **| Hey, how am I supposed to calculate when I don't know what to calculate?**");
 	var a = args[0].split("/");
 	beatmapid = a[a.length-1];
 	for (var i = 1; i < args.length; i++) {
