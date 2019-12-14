@@ -22,15 +22,15 @@ Prefix: "a!"
 - profileid <uid>
 - recent <uid>
 - recent5 <uid> [page]
-- userbind <uid> (use to bind user to specific uid)
+- setskin <skin link>
+- skin [discord user]
+- userbind <uid> (use to bind to specific uid)
 - profileme [discord user] (only binded user)
 - recentme [discord user] (only binded user)
 - recent5me [page/discord user] [page] (only binded user)
 - manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
-
-NOTE: This system does not automatically submit your plays, therefore you must submit them manually. If you want to request a full calculation (submit all your plays into the system), contact a helper or moderator.
 
 - pp [a] [b]
 a: number of play you want to submit (limit at 5 - default at 1)
