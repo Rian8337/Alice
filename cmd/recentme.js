@@ -240,7 +240,7 @@ module.exports.run = (client, message, args, maindb) => {
 			res.on("end", function () {
 				var resarr = content.split('<br>');
 				var headerres = resarr[0].split(" ");
-				if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, it looks like the user doesn't exist!**");
+				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = resarr[0].split(" ")[2];
 				var obj = JSON.parse(resarr[1]);
 				var play = obj.recent[0];
