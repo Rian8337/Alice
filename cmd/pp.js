@@ -147,8 +147,8 @@ module.exports.run = (client, message, args, maindb) => {
 	var start = 1;
 	if (args[0]) offset = parseInt(args[0]);
 	if (args[1]) start = parseInt(args[1]);
-	if (isNaN(offset)) return message.channel.send("❎ **| How many of your plays do I need to submit?**");
-	if (isNaN(start)) return message.channel.send("❎ **| I can't start submitting from there!");
+	if (isNaN(offset)) offset = 1;
+	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) offset = 1;
 	if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
 	/*if (args[0]) {
