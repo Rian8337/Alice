@@ -53,7 +53,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 				var obj = JSON.parse(content);
 				if (!obj[0]) {
 					console.log("Map not found"); 
-					message.channel.send("❎  **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
+					message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 					objcount.x++;
 					return;
 				}
@@ -61,7 +61,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 				var mapid = mapinfo.beatmap_id;
 				if (mapinfo.mode != 0) return;
 				if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !isWhitelist) {
-					message.channel.send("❎  **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+					message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 					objcount.x++;
 					return;
 				}
@@ -136,10 +136,10 @@ module.exports.run = (client, message, args, maindb) => {
 	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') {
 		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
 		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
-		if (channel && channel2) return message.channel.send(`❎  **| I'm sorry, this command is only allowed in ${channel} and ${channel2}!**`);
-		if (channel) return message.channel.send(`❎  **| I'm sorry, this command is only allowed in ${channel}!**`);
-		if (channel2) return message.channel.send(`❎  **| I'm sorry, this command is only allowed in ${channel2}!**`);
-		else return message.channel.send("❎  **| Hey, please create #bot-ground or #elaina-pp-project first!**")
+		if (channel && channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel} and ${channel2}!**`);
+		if (channel) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel}!**`);
+		if (channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel2}!**`);
+		else return message.channel.send("❎ **| Hey, please create #bot-ground or #elaina-pp-project first!**")
 	}
 	let ufind = message.author.id;
 	let objcount = {x: 0};
@@ -147,10 +147,10 @@ module.exports.run = (client, message, args, maindb) => {
 	var start = 1;
 	if (args[0]) offset = parseInt(args[0]);
 	if (args[1]) start = parseInt(args[1]);
-	if (isNaN(offset)) return message.channel.send("❎  **| How many of your plays do I need to submit?**");
-	if (isNaN(start)) return message.channel.send("❎  **| I can't start submitting from there!");
+	if (isNaN(offset)) return message.channel.send("❎ **| How many of your plays do I need to submit?**");
+	if (isNaN(start)) return message.channel.send("❎ **| I can't start submitting from there!");
 	if (offset > 5 || offset < 1) offset = 1;
-	if (start + offset - 1 > 50) return message.channel.send('❎  **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
+	if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
 	/*if (args[0]) {
 		ufind = args[0];
 		ufind = ufind.replace('<@!','');
@@ -249,8 +249,8 @@ module.exports.run = (client, message, args, maindb) => {
 										weight *= 0.95;
 									}
 									var diff = pptotal - pre_pptotal;
-									if (submitted === 1) message.channel.send('✅  **| <@' + discordid + '> Submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp.**');
-									else message.channel.send('✅  **| <@' + discordid + '> Submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp.**');
+									if (submitted === 1) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
+									else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
@@ -264,7 +264,7 @@ module.exports.run = (client, message, args, maindb) => {
 										addcount = 0;
 									})
 								}
-							} else message.channel.send("❎  **| Sorry, I'm having trouble on retrieving the map's pp data!**")
+							} else message.channel.send("❎ **| Sorry, I'm having trouble on retrieving the map's pp data!**")
 						})
 					})
 				})
