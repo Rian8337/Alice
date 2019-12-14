@@ -45,7 +45,7 @@ module.exports.run = async (client, message, args) => {
         else logchannel.send({embed: embed});
 
         message.author.lastMessage.delete();
-    }).catch(() => message.channel.send("User is already banned or cannot be banned!"))
+    }).catch(() => message.channel.send("❎  **| I'm sorry, that user is already banned or cannot be banned!**"))
 };
 
 module.exports.help = {
