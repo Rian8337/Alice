@@ -53,14 +53,9 @@ function editpp(client, message, rplay, name, page) {
 }
 
 module.exports.run = (client, message, args) => {
-	try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-	if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
+	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let uid = parseInt(args[0]);
-	if (isNaN(uid)) {message.channel.send("Invalid uid"); return;}
+	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
 	let page = 1;
 	if (args[1]) page = parseInt(args[1]);
 	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
@@ -79,7 +74,7 @@ module.exports.run = (client, message, args) => {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') return message.channel.send("User doesn't exist");
+			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, that user doesn't exist!**");
 			resarr.shift();
 			content = resarr.join("");
 			var obj = JSON.parse(content);
@@ -87,7 +82,7 @@ module.exports.run = (client, message, args) => {
 			var rplay = obj.recent;
 			let embed = editpp(client, message, rplay, name, page);
 
-			if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
+			if (!rplay[0]) return message.channel.send("❎  **| I'm sorry, it looks like this player hasn't submitted any play. Perhaps later?**");
 			
 			message.channel.send({embed}).then (msg => {
 				msg.react("⏮️").then(() => {
