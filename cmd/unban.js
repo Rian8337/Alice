@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
         else logchannel.send({embed: embed});
 
         message.author.lastMessage.delete();
-    }).catch(() => message.channel.send("❎  **| I'm sorry, that user is not banned!"))
+    }).catch(() => message.channel.send("❎  **| I'm sorry, that user is not banned!**"))
 };
 
 module.exports.help = {
