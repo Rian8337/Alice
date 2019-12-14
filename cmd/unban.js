@@ -3,7 +3,7 @@ let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("You don't have permission to do this");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
     
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
@@ -39,9 +39,7 @@ module.exports.run = async (client, message, args) => {
         else logchannel.send({embed: embed});
 
         message.author.lastMessage.delete();
-    }).catch(() => {
-        message.channel.send("User is not banned!")
-    })
+    }).catch(() => message.channel.send("❎  **| I'm sorry, that user is not banned!"))
 };
 
 module.exports.help = {
