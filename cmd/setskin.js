@@ -1,6 +1,6 @@
 module.exports.run = (client, message, args, maindb) => {
     let skinlink = args.join(" ");
-    if (!skinlink) return message.channel.send("Please enter skin link!");
+    if (!skinlink) return message.channel.send("❎  **| Please enter skin link!**");
 
     let skindb = maindb.collection("skin");
     let query = {discordid: message.author.id};
