@@ -19,6 +19,7 @@ Prefix: "a!"
 
 - bulkdelete <amount of messages to delete (2-100)> (only if you have permission in the channel)
 - kick <user> [reason]
+- mute <user> <reason>
 - tempmute <user> <duration in seconds> <reason>
 
 3. Owner
