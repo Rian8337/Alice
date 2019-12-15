@@ -93,9 +93,13 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 			return console.log("Empty API response")
 		});
 		res.on("end", function () {
-                        if (!content) return message.channel.send("Error: Empty API response");
-			var obj = JSON.parse(content);
-			if (!obj[0]) {console.log("Map not found"); return;}
+			var obj;
+			try {
+				obj = JSON.parse(content);
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+			}
+			if (!obj[0]) return console.log("Map not found");
 			var mapinfo = obj[0];
 			var mapid = mapinfo.beatmap_id;
 			if (mapinfo.mode !=0) return;
@@ -126,7 +130,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
 					if (pmod.includes("r")) {
-						mods -= 16; 
+						mods -= 16;
 						cur_ar = Math.min(cur_ar*1.4, 10);
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
@@ -135,18 +139,18 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					if (pmod.includes("PR")) { cur_od += 4; }
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
-                    
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log(target[0] + ' - Error: no object found'); 
+
+					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+						console.log(target[0] + ' - Error: no object found');
 						return;
-                    }
-                    
+					}
+
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
-                    
-                    var npp = droid.ppv2({
+
+					var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -159,13 +163,13 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						nmiss: nmiss,
 						acc_percent: acc_percent,
 					});
-					
+
 					nparser.reset();
 
 					if (pmod.includes("r")) { mods += 16 }
-                    
+
 					console.log(nstars.toString());
-                    console.log(npp.toString());
+					console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -212,24 +216,29 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 module.exports.run = (client, message, args) => {
 	let uid = args[0];
 	var options = {
-    	host: "ops.dgsrz.com",
-    	port: 80,
-    	path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
+		host: "ops.dgsrz.com",
+		port: 80,
+		path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
 	};
 
-	var content = "";   
+	var content = "";
 
 	var req = http.request(options, function(res) {
-    	res.setEncoding("utf8");
-    	res.on("data", function (chunk) {
-        	content += chunk;
-    	});
+		res.setEncoding("utf8");
+		res.on("data", function (chunk) {
+			content += chunk;
+		});
 		res.on("error", err => {
 			console.log(err);
 			return message.channel.send("Empty API response. Please try again!")
 		});
-    	res.on("end", function () {
-			var resarr = content.split('<br>');
+		res.on("end", function () {
+			var resarr;
+			try {
+				resarr = content.split('<br>');
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var headerres = resarr[0].split(" ");
 			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, that user doesn't exist!**");
 			let name = resarr[0].split(" ")[2];
@@ -249,20 +258,20 @@ module.exports.run = (client, message, args) => {
 			if (title) getMapPP(hash, combo, acc, miss, mod, message, footer, index);
 
 			const embed = {
-				  "title": title,
-				  "description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "`\nTime: `" + ptime + "`",
-				  "color": 8311585,
-				  "author": {
-						"name": "Recent Play for " + name,
-						"icon_url": rank
-				  },
+				"title": title,
+				"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "`\nTime: `" + ptime + "`",
+				"color": 8311585,
+				"author": {
+					"name": "Recent Play for " + name,
+					"icon_url": rank
+				},
 				"footer": {
 					"icon_url": footer[index],
 					"text": "Alice Synthesis Thirty"
 				}
-		};
-		message.channel.send({embed});
-    	})
+			};
+			message.channel.send({embed});
+		})
 	});
 	req.end()
 };
