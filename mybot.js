@@ -161,4 +161,102 @@ client.on("messageDeleteBulk", messages => {
 	logchannel.send(embed)
 });
 
+// role logging to keep watch on moderators in the server
+// role create
+client.on("roleCreate", role => {
+	if (role.guild.id != '316545691545501706') return;
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('655829748957577266');
+	if (!logchannel) return;
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+	let embed = new Discord.RichEmbed()
+		.setTitle("Role created")
+		.setFooter("Alice Synthesis Thirty", footer[index])
+		.setTimestamp(new Date())
+		.setColor(role.hexColor)
+		.addField("Name: " + role.name, "Hoisted: " + role.hoist, true)
+		.addField("Mentionable: " + role.mentionable, "Position: " + role.calculatedPosition, true)
+		.addField("=================", "Permission bitwise: " + role.permissions);
+	logchannel.send({embed: embed})
+});
+
+client.on("roleUpdate", (oldRole, newRole) => {
+	if (role.guild.id != '316545691545501706') return;
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('655829748957577266');
+	if (!logchannel) return;
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+	let embed = new Discord.RichEmbed()
+		.setTitle("Role updated")
+		.setFooter("Alice Synthesis Thirty", footer[index])
+		.setTimestamp(new Date())
+		.setColor(newRole.hexColor)
+		.addField("Old name: " + oldRole.name, "New name: " + newRole.name, true)
+		.addField("Old hoisted: " + oldRole.hoist, "New hoisted: " + newRole.hoist,true)
+		.addField("Old mentionable: " + oldRole.mentionable, "New mentionable: " + newRole.hoist, true)
+		.addField("Old position: " + oldRole.calculatedPosition, "New position: " + newRole.calculatedPosition)
+		.addField("Old permission bitwise: " + oldRole.permissions, "New permission bitwise: " + newRole.permissions);
+	logchannel.send({embed: embed})
+});
+
+// role delete
+client.on("roleDelete", role => {
+	if (role.guild.id != '316545691545501706') return;
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('655829748957577266');
+	if (!logchannel) return;
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+	let embed = new Discord.RichEmbed()
+		.setTitle("Role deleted")
+		.setFooter("Alice Synthesis Thirty", footer[index])
+		.setTimestamp(new Date())
+		.setColor(role.hexColor)
+		.addField("Name: " + role.name, "Hoisted: " + role.hoist, true)
+		.addField("Mentionable: " + role.mentionable, "Position: " + role.calculatedPosition, true)
+		.addField("=================", "Permission bitwise: " + role.permissions);
+	logchannel.send({embed: embed})
+});
+
+// member role applied
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+	if (oldMember.guild.id != '316545691545501706') return;
+	if (oldMember.roles.size == newMember.roles.size) return;
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('655829748957577266');
+	let embed = new Discord.RichEmbed()
+		.setTitle("Member role updated")
+		.setColor("#4c8fcb")
+		.setDescription(newMember.user.username);
+	let rolelist = '';
+	let count = 0;
+
+	if (oldMember.roles.size > newMember.roles.size) {
+		oldMember.roles.forEach(role => {
+			if (!newMember.roles.get(role.id)) {
+				rolelist += role.name + " ";
+				count++
+			}
+		});
+		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
+		else rolelist = rolelist.trimRight();
+		embed.addField("Role removed", rolelist);
+		logchannel.send({embed: embed})
+	}
+	else {
+		newMember.roles.forEach(role => {
+			if (!oldMember.roles.get(role.id)) {
+				rolelist += role.name + " ";
+				count++
+			}
+		});
+		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
+		else rolelist = rolelist.trimRight();
+		embed.addField("Role added", rolelist);
+		logchannel.send({embed: embed})
+	}
+});
+
 client.login(process.env.BOT_TOKEN);
