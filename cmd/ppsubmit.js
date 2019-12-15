@@ -6,6 +6,7 @@ var request = require("request");
 require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
+var config = require('../config.json');
 
 function modenum(mod) {
 	var res = 4;
@@ -129,7 +130,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
 	if (!args[0]) return message.channel.send("Please mention a user");
 	var ufind = args[0];
@@ -184,11 +185,22 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					curpos = 0;
-					var playentry = [];
 					var resarr = content.split('<br>');
-					var obj = JSON.parse(resarr[1]);
+					var curpos = 0;
+					var playentry = [];
+					var obj;
+					try {
+						obj = JSON.parse(resarr[1])
+					} catch (e) {
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+					}
 					var rplay = obj.recent;
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+					let embed = new Discord.RichEmbed()
+						.setTitle("PP submission info")
+						.setFooter("Alice Synthesis Thirty", footer[index])
+						.setColor(message.member.highestRole.hexColor);
 					for (var i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
 						var play = {
@@ -228,6 +240,7 @@ module.exports.run = (client, message, args, maindb) => {
 								});
 								while (pplist.length > 75) pplist.pop();
 								submitted++;
+								embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
 								if (objcount.x == playentry.length) {
 									var weight = 1;
 									for (i in pplist) {
@@ -235,7 +248,8 @@ module.exports.run = (client, message, args, maindb) => {
 										weight *= 0.95;
 									}
 									var diff = pptotal - pre_pptotal;
-									message.channel.send('<@' + message.author.id + '> submitted ' + submitted + ' play(s) for <@' + discordid + '>: + ' + diff.toFixed(2) + ' pp');
+									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
+									message.channel.send('✅ **| <@' + message.author.id + '> successfully submitted play(s) for <@' + discordid + '>. More info in embed.**', {embed: embed});
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
