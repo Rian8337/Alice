@@ -42,7 +42,7 @@ function editpp(client, message, rplay, name, page, footer, index) {
 	for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
 		var date = new Date(rplay[i].date*1000);
-		date.setUTCHours(date.getUTCHours() + 7);
+		date.setUTCHours(date.getUTCHours() + 8);
 		var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
 		var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
@@ -90,17 +90,17 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					var resarr;
-					try {
-						resarr = content.split('<br>');
-					} catch (e) {
-						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
-					}
+					var resarr = content.split('<br>');
 					var headerres = resarr[0].split(' ');
 					if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 					resarr.shift();
 					content = resarr.join("");
-					var obj = JSON.parse(content);
+					var obj;
+					try {
+						obj = JSON.parse(content)
+					} catch (e) {
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+					}
 					var name = headerres[2];
 					var rplay = obj.recent;
 					let footer = config.avatar_list;
@@ -123,33 +123,35 @@ module.exports.run = (client, message, args, maindb) => {
 						let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
 
 						backward.on('collect', () => {
-							page = 1;
+							if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+							else page = 1;
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							embed = editpp(client, message, rplay, name, page, footer, index);
-							msg.edit(embed).catch(e => console.log(e));
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+							msg.edit(embed).catch(e => console.log(e))
 						});
 
 						back.on('collect', () => {
 							if (page === 1) page = 10;
 							else page--;
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							embed = editpp(client, message, rplay, name, page, footer, index);
-							msg.edit(embed).catch(e => console.log(e));
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+							msg.edit(embed).catch(e => console.log(e))
 						});
 
 						next.on('collect', () => {
 							if (page === 10) page = 1;
 							else page++;
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							embed = editpp(client, message, rplay, name, page, footer, index);
 							msg.edit(embed).catch(e => console.log(e));
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
 						});
 
 						forward.on('collect', () => {
-							page = 10;
+							if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+							else page = 10;
+							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							embed = editpp(client, message, rplay, name, page, footer, index);
-							msg.edit(embed).catch(e => console.log(e));
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+							msg.edit(embed).catch(e => console.log(e))
 						})
 					});
 				})
