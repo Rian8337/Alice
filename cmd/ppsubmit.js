@@ -298,5 +298,5 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.help = {
-	name: "pp"
+	name: "ppsubmit"
 };
