@@ -158,7 +158,7 @@ module.exports.run = (client, message, args, maindb) => {
 	} catch (e) {
 		return
 	}
-	    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     var uid = args[0];
     //discordid = discordid.replace("<@", "");
     //discordid = discordid.replace(">", "");
