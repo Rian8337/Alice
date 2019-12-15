@@ -57,7 +57,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 			req.end()
 		}
-		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
@@ -75,7 +75,12 @@ function apiFetch(uid, avalink, location, message) {
 			return message.channel.send("Error: Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-			var resarr = content.split('<br>');
+			var resarr;
+			try {
+				resarr = content.split('<br>');
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') {message.channel.send("User not exist"); return;}
 			resarr.shift();
