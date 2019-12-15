@@ -149,7 +149,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (args[1]) start = parseInt(args[1]);
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
-	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I'm sorry, I can only submit up to 5 plays at once!");
+	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
 	if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
 	/*if (args[0]) {
 		ufind = args[0];
@@ -249,8 +249,14 @@ module.exports.run = (client, message, args, maindb) => {
 										weight *= 0.95;
 									}
 									var diff = pptotal - pre_pptotal;
-									if (submitted === 1) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
-									else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
+									if (submitted === 1) {
+										if (diff >= 0) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
+										else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: - ' + Math.abs(diff).toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**')
+									}
+									else {
+										if (diff >= 0) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
+										else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: - ' + Math.abs(diff).toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
+									}
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
