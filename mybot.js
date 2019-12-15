@@ -226,35 +226,23 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.roles.size == newMember.roles.size) return;
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('655829748957577266');
-	let embed = new Discord.RichEmbed()
-		.setTitle("Member role updated")
-		.setColor("#4c8fcb")
-		.setDescription(newMember.user.username);
-	let rolelist = '';
-	let count = 0;
-
+	let embed = new Discord.RichEmbed();
 	if (oldMember.roles.size > newMember.roles.size) {
 		oldMember.roles.forEach(role => {
 			if (!newMember.roles.get(role.id)) {
-				rolelist += role.name + " ";
-				count++
+                                embed.setDescription("`" + role.name + "` was removed from " + newMember.user.username);
+                                embed.setColor(role.hexColor)
 			}
 		});
-		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
-		else rolelist = rolelist.trimRight();
-		embed.addField("Role removed", rolelist);
 		logchannel.send({embed: embed})
 	}
 	else {
 		newMember.roles.forEach(role => {
 			if (!oldMember.roles.get(role.id)) {
-				rolelist += role.name + " ";
-				count++
+				embed.setDescription("`" + role.name + "` was added to " + newMember.user.username);
+                                embed.setColor(role.hexColor)
 			}
 		});
-		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
-		else rolelist = rolelist.trimRight();
-		embed.addField("Role added", rolelist);
 		logchannel.send({embed: embed})
 	}
 });
