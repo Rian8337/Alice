@@ -74,12 +74,10 @@ client.on("message", message => {
 		let cmd = client.commands.get("response");
 		return cmd.run(client, message, args)
 	}
-
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
-	
 	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
 		let cmd = '';
 		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
@@ -88,6 +86,10 @@ client.on("message", message => {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
 			cmd.run(client, message, args, maindb);
 		}
+	}
+	if (message.content.startsWith("&whitelist" || "&whitelistset" || "a!whitelist" || "a!whitelistset")) {
+		let cmd = client.commands.get("whitelistlog");
+		cmd.run(client, message, args)
 	}
 });
 
