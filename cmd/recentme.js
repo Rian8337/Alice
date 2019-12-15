@@ -93,8 +93,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 			return console.log("Empty API response")
 		});
 		res.on("end", function () {
-                        if (!content) return message.channel.send("Error: Empty API response");
-			var obj = JSON.parse(content);
+			var obj;
+			try {
+				obj = JSON.parse(content);
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+			}
 			if (!obj[0]) {console.log("Map not found"); return;}
 			var mapinfo = obj[0];
 			var mapid = mapinfo.beatmap_id;
@@ -238,7 +242,12 @@ module.exports.run = (client, message, args, maindb) => {
 				return message.channel.send("Error: Empty API response. Please try again!")
 			});
 			res.on("end", function () {
-				var resarr = content.split('<br>');
+				var resarr;
+				try {
+					resarr = content.split('<br>');
+				} catch (e) {
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+				}
 				var headerres = resarr[0].split(" ");
 				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = resarr[0].split(" ")[2];
@@ -248,7 +257,7 @@ module.exports.run = (client, message, args, maindb) => {
 				let score = play.score.toLocaleString();
 				let combo = play.combo;
 				let rank = rankread(play.mark);
-				let ptime = new Date(play.date * 1000).toUTCString();
+				let ptime = new Date(play.date * 1000).toISOString().replace("T", " ").slice(0, -5);
 				let acc = (play.accuracy / 1000).toFixed(2);
 				let miss = play.miss;
 				let mod = play.mode;
@@ -258,7 +267,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (title) getMapPP(hash, combo, acc, miss, mod, message, footer, index);
 				const embed = {
 					"title": title,
-					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%`\n(`" + miss + "` x )\nMod: `" + modname(mod) + "`\nTime: `" + ptime + "`",
+					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "` Time: `" + ptime + "`",
 					"color": 8311585,
 					"author": {
 						"name": "Recent Play for "+ name,
