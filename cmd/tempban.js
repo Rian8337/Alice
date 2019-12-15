@@ -3,7 +3,7 @@ let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
