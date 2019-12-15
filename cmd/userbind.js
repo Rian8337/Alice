@@ -3,8 +3,8 @@ const droidapikey = process.env.DROID_API_KEY;
 
 module.exports.run = (client, message, args, maindb) => {
 	let uid = args[0];
-	if (!uid) {message.channel.send("Your uid please!"); return;}
-	if (isNaN(uid)) {message.channel.send("Invalid uid")}
+	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
+	if (isNaN(uid)) {message.channel.send("❎ **| Invalid uid.**")}
 	else {
 		let binddb = maindb.collection("userbind");
 		let query = {discordid: message.author.id};
@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 			res.on("end", function () {
 				var headerres = content.split('<br>')[0].split(" ");
-				if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
+				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = headerres[2];
 				var bind = {
 					discordid: message.author.id,
@@ -55,7 +55,7 @@ module.exports.run = (client, message, args, maindb) => {
 								return message.channel.send("Error: Empty database response. Please try again!")
 							}
 							console.log("bind added");
-							message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
+							message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
 						})
 					} else {
 						binddb.updateOne(query, updatebind, function (err, res) {
@@ -64,7 +64,7 @@ module.exports.run = (client, message, args, maindb) => {
 								return message.channel.send("Error: Empty database response. Please try again!")
 							}
 							console.log("bind updated");
-							message.channel.send("Haii <3, binded <@" + message.author.id + "> to uid " + uid);
+							message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
 						})
 					}
 				})
