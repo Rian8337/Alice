@@ -41,7 +41,7 @@ module.exports.run = (client, message, args) => {
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setColor("#00cb16")
                 .setTimestamp(new Date())
-                .setThumbnail(`https://b.ppy.sh/thumb/ + ${mapinfo.beatmapset_id} + .jpg`)
+                .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                 .setDescription(`[Map Link](https://osu.ppy.sh/beatmapsets/${mapinfo.beatmapset_id}) | [Go to Message](${message.url})`)
                 .addField(`CS: ${mapinfo.diff_size} - AR: ${mapinfo.diff_approach} - OD: ${mapinfo.diff_overall} - HP: ${mapinfo.diff_drain}`, `BPM: ${mapinfo.bpm} - Length: ${mapinfo.hit_length}/${mapinfo.total_length} s`)
                 .addField(`Last Update: ${mapinfo.last_update}`, `Star Rating: ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`);
