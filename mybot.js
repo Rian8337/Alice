@@ -175,7 +175,7 @@ client.on("roleCreate", role => {
 		.setFooter("Alice Synthesis Thirty", footer[index])
 		.setTimestamp(new Date())
 		.setColor(role.hexColor)
-		.setDescription("`" + role.name "` was created");
+		.setDescription("`" + role.name + "` was created");
 	logchannel.send({embed: embed})
 });
 
