@@ -226,8 +226,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.roles.size == newMember.roles.size) return;
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('655829748957577266');
+        let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
+                .setFooter("Alice Synthesis Thirty", footer[index])
                 .setTimestamp(new Date());
+
 	if (oldMember.roles.size > newMember.roles.size) {
 		oldMember.roles.forEach(role => {
 			if (!newMember.roles.get(role.id)) {
