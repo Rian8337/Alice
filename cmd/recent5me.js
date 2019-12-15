@@ -52,7 +52,7 @@ function editpp(client, message, rplay, name, page, footer, index) {
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
+	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -90,9 +90,14 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					var resarr = content.split('<br>');
+					var resarr;
+					try {
+						resarr = content.split('<br>');
+					} catch (e) {
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+					}
 					var headerres = resarr[0].split(' ');
-					if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, it looks like the user doesn't exist!**");
+					if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 					resarr.shift();
 					content = resarr.join("");
 					var obj = JSON.parse(content);
@@ -154,7 +159,7 @@ module.exports.run = (client, message, args, maindb) => {
 			setTimeout(() => {
 				cd.delete(message.author.id)
 			}, 10000)
-		} else message.channel.send("❎  **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		} else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
