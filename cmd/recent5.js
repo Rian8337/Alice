@@ -44,7 +44,7 @@ function editpp(client, message, rplay, name, page) {
 	for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
 		var date = new Date(rplay[i].date*1000);
-		date.setUTCHours(date.getUTCHours() + 8);
+		date.setUTCHours(date.getUTCHours() + 7);
 		var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
 		var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
