@@ -78,16 +78,17 @@ client.on("message", message => {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
-	if (message.content.startsWith(config.prefix || "$")) {
+	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
 		let cmd = '';
 		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
 		else cmd = client.commands.get(command.slice(1));
 		if (cmd) {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
-			cmd.run(client, message, args, maindb);
+			cmd.run(client, message, args, maindb)
 		}
 	}
-	if (message.content.startsWith("&whitelist" || "&whitelistset" || "a!whitelist" || "a!whitelistset")) {
+	// whitelist logging
+	if (message.content.startsWith("&whitelist") || message.content.startsWith("&whitelistset") || message.content.startsWith("a!whitelist") || message.content.startsWith("a!whitelistset")) {
 		let cmd = client.commands.get("whitelistlog");
 		cmd.run(client, message, args)
 	}
