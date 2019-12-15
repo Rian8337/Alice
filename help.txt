@@ -32,6 +32,8 @@ Prefix: "a!"
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
+NOTE: This system does not automatically submit your plays. You have to do it manually using the command provided below. Moreover, you can only submit up to 50 of your recent plays. If you want to submit all your previous plays, contact a helper or moderator.
+
 - pp [a] [b]
 a: number of play you want to submit (limit at 5 - default at 1)
 b: the position in your recent play list that you want to start submitting (a + b - 1 < 50 limit)
