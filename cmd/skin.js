@@ -42,7 +42,7 @@ module.exports.run = (client, message, args, maindb) => {
         })
     }
     else {
-        user = args[0];
+        if (args[0]) user = args[0];
         user = user.replace("<@", "");
         user = user.replace(">", "");
         query = {discordid: user};
