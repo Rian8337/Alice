@@ -72,17 +72,17 @@ module.exports.run = (client, message, args) => {
 			return message.channel.send("Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-			var resarr;
-			try {
-				resarr = content.split('<br>');
-			} catch (e) {
-				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
-			}
+			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, that user doesn't exist!**");
 			resarr.shift();
 			content = resarr.join("");
-			var obj = JSON.parse(content);
+			var obj;
+			try {
+				obj = JSON.parse(content)
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var name = headerres[2];
 			var rplay = obj.recent;
 			let embed = editpp(client, message, rplay, name, page);
@@ -98,39 +98,41 @@ module.exports.run = (client, message, args) => {
 					})
 				});
 
-				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
-				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
-				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
-				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
+				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
 				backward.on('collect', () => {
-					page = 1;
+					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 1;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(client, message, rplay, name, page);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				back.on('collect', () => {
 					if (page === 1) page = 10;
 					else page--;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(client, message, rplay, name, page);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				next.on('collect', () => {
 					if (page === 10) page = 1;
 					else page++;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(client, message, rplay, name, page);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				forward.on('collect', () => {
-					page = 10;
+					if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 10;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(client, message, rplay, name, page);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				})
 			})
 		})
