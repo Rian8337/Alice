@@ -78,7 +78,12 @@ function whitelistInfo(link_in, hash_in, message, callback) {
 		    return message.channel.send("Error: Empty API response. Please try again!")
         });
         res.on("end", function () {
-			var obj = JSON.parse(content);
+            var obj;
+            try {
+                obj = JSON.parse(content);
+            } catch (e) {
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+            }
             if (!obj[0]) {console.log("Map not found"); callback(0);}
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) callback(0);
