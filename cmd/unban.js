@@ -3,17 +3,17 @@ let config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
     
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
     
     let user = await client.fetchUser(args[0]);
-    if (!user) return message.channel.send("Please specify the correct user ID to unban!");
-    if (user.id == message.author.id) return message.channel.send("You cannot unban yourself!");
+    if (!user) return message.channel.send("❎ **| Please specify the correct user ID to unban!**");
+    if (user.id == message.author.id) return message.channel.send("❎ **| You cannot unban yourself!**");
 
     let reason = args.slice(1).join(" ");
-    if (!reason) return message.channel.send("Please enter your reason.");
+    if (!reason) return message.channel.send("❎ **| Please enter your reason.**");
 
     message.guild.unban(user, reason).then (() => {
         let footer = config.avatar_list;
@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
         else logchannel.send({embed: embed});
 
         message.author.lastMessage.delete();
-    }).catch(() => message.channel.send("❎  **| I'm sorry, that user is not banned!**"))
+    }).catch(() => message.channel.send("❎ **| I'm sorry, that user is not banned!**"))
 };
 
 module.exports.help = {
