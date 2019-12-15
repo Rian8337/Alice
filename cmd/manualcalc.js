@@ -60,14 +60,15 @@ function getMapPP(target, message, ndetail, pcdetail) {
 			return message.channel.send("Error: Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-                        if (!content) return message.channel.send("Error: Empty API response");
-			var obj = JSON.parse(content);
+			var obj;
+			try {
+				obj = JSON.parse(content);
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+			}
 			if (!obj[0]) {message.channel.send("Map not found"); return;}
 			var mapinfo = obj[0];
-			if (mapinfo.mode !=0) {
-				message.channel.send("The beatmap is not an osu!standard beatmap");
-				return;
-			}
+			if (mapinfo.mode !=0) return message.channel.send("❎ **| I'm sorry, the beatmap is not an osu!standard beatmap!**");
 			//console.log(obj.beatmaps[0])
 			if (target[4]) var mods = modenum(target[4].toUpperCase());
 			else {var mods = 4; target[4] = "";}
@@ -169,7 +170,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					nparser.reset();
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -226,7 +227,7 @@ module.exports.run = (client, message, args) => {
 	var mod;
 	var ndetail = false;
 	var pcdetail = false;
-	if (!args[0]) return message.channel.send("❎  **| Hey, how am I supposed to calculate when I don't know what to calculate?**");
+	if (!args[0]) return message.channel.send("❎ **| Hey, how am I supposed to calculate when I don't know what to calculate?**");
 	var a = args[0].split("/");
 	beatmapid = a[a.length-1];
 	for (var i = 1; i < args.length; i++) {
