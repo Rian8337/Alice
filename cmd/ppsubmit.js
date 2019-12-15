@@ -4,6 +4,7 @@ var droid = require("./ojsamadroid");
 var https = require("https");
 var request = require("request");
 require("dotenv").config();
+require('mongodb');
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 var config = require('../config.json');
@@ -29,35 +30,43 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 	whitelist.findOne(whitelistQuery, (err, wlres) => {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve map data from database! Please try again")
+			return message.channel.send("Error: Empty database response. Please try again!");
 		}
-		if (wlres) isWhitelist = true; 
+		if (wlres) isWhitelist = true;
 		console.log(input);
 
-		if (isWhitelist) var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + wlres.mapid); 
+		if (isWhitelist) var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + wlres.mapid);
 		else var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + input);
 
-		var content = "";   
+		var content = "";
 
 		var req = https.get(options, function(res) {
 			res.setEncoding("utf8");
 			res.on("data", function (chunk) {
 				content += chunk;
 			});
-
+			res.on("error", err1 => {
+				console.log(err1);
+				return message.channel.send("Error: Empty API response. Please try again!")
+			});
 			res.on("end", function () {
-				var obj = JSON.parse(content);
+				var obj;
+				try {
+					obj = JSON.parse(content);
+				} catch (e) {
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+				}
 				if (!obj[0]) {
-					console.log("Map not found"); 
-					message.channel.send("Error: The map you've played can't be found on osu! beatmap listing, please make sure the map is submitted, and up-to-date");
+					console.log("Map not found");
+					message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 					objcount.x++;
 					return;
 				}
 				var mapinfo = obj[0];
 				var mapid = mapinfo.beatmap_id;
-				if (mapinfo.mode !=0) return;
+				if (mapinfo.mode != 0) return;
 				if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !isWhitelist) {
-					message.channel.send('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
+					message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 					objcount.x++;
 					return;
 				}
@@ -84,7 +93,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
 					if (pmod.includes("r")) {
-						mods -= 16; 
+						mods -= 16;
 						cur_ar = Math.min(cur_ar*1.4, 10);
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
@@ -93,59 +102,70 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					if (pmod.includes("PR")) { cur_od += 4; }
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
-					
+
 					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log('Error: no object found'); 
+						console.log('Error: no object found');
 						objcount.x++;
 						return;
 					}
-					
+
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					//console.log(stars.toString());
 
-					
+
 					var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
 						acc_percent: acc_percent,
 					});
-					
+
 					parser.reset();
 
 					if (pmod.includes("r")) { mods += 16; }
-					
+
 					console.log(nstars.toString());
 					console.log(npp.toString());
 					var ppline = npp.toString().split("(");
-					var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + droid.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": ""))
+					var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + droid.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": ""));
 					objcount.x++;
 					cb(ppline[0], playinfo, input, pcombo, pacc, pmissc);
 				})
 			})
-		});
-		req.end()
+		})
 	})
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-
-	if (!args[0]) return message.channel.send("Please mention a user");
-	var ufind = args[0];
-	ufind = ufind.replace('<@!','');
-	ufind = ufind.replace('<@','');
-	ufind = ufind.replace('>','');
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') {
+		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
+		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
+		if (channel && channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel} and ${channel2}!**`);
+		if (channel) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel}!**`);
+		if (channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel2}!**`);
+		else return message.channel.send("❎ **| Hey, please create #bot-ground or #elaina-pp-project first!**")
+	}
+	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+	let ufind = args[0];
+	if (!ufind) return message.channel.send("❎ **| Hey, who do you want me to submit plays for?**");
+	ufind = ufind.replace("<@", "");
+	ufind = ufind.replace(">", "");
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
-	if (args[1]) offset = parseInt(args[1]);
-	if (args[2]) start = parseInt(args[2]);
+	if (args[1]) offset = parseInt(args[0]);
+	if (args[2]) start = parseInt(args[1]);
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
-	if (offset > 5 || offset < 1) offset = 1;
-	if (start + offset - 1 > 50) return message.channel.send('Out of limit');
+	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
+	if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
+	/*if (args[0]) {
+		ufind = args[0];
+		ufind = ufind.replace('<@!','');
+		ufind = ufind.replace('<@','');
+		ufind = ufind.replace('>','');
+	}*/
 	console.log(ufind);
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
@@ -153,7 +173,7 @@ module.exports.run = (client, message, args, maindb) => {
 	binddb.find(query).toArray(function (err, userres) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Unable to retrieve user data from database! Please try again")
+			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		if (userres[0]) {
 			console.log(offset);
@@ -186,8 +206,8 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 				res.on("end", function () {
 					var resarr = content.split('<br>');
-					var curpos = 0;
-					var playentry = [];
+					var headerres = resarr[0].split(" ");
+					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
 					var obj;
 					try {
 						obj = JSON.parse(resarr[1])
@@ -195,12 +215,15 @@ module.exports.run = (client, message, args, maindb) => {
 						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
 					}
 					var rplay = obj.recent;
+					var curpos = 0;
+					var playentry = [];
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					let embed = new Discord.RichEmbed()
 						.setTitle("PP submission info")
 						.setFooter("Alice Synthesis Thirty", footer[index])
 						.setColor(message.member.highestRole.hexColor);
+
 					for (var i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
 						var play = {
@@ -240,6 +263,7 @@ module.exports.run = (client, message, args, maindb) => {
 								});
 								while (pplist.length > 75) pplist.pop();
 								submitted++;
+								// bug: combo and acc is flipped, not gonna bother fixing because that will require rework in database (also interferes with ppcheck)
 								embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
 								if (objcount.x == playentry.length) {
 									var weight = 1;
@@ -249,7 +273,7 @@ module.exports.run = (client, message, args, maindb) => {
 									}
 									var diff = pptotal - pre_pptotal;
 									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
-									message.channel.send('✅ **| <@' + message.author.id + '> successfully submitted play(s) for <@' + discordid + '>. More info in embed.**', {embed: embed});
+									message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
@@ -263,16 +287,16 @@ module.exports.run = (client, message, args, maindb) => {
 										addcount = 0;
 									})
 								}
-							} else message.channel.send("Error: Unable to retrieve map pp data")
+							} else message.channel.send("❎ **| Sorry, I'm having trouble on retrieving the map's pp data!**")
 						})
 					})
 				})
 			});
 			req.end()
-		} else message.channel.send("The account is not binded, you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		} else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
 module.exports.help = {
-	name: "ppsubmit"
+	name: "pp"
 };
