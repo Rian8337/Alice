@@ -4,17 +4,17 @@ let config = require('../config.json');
 module.exports.run = (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not avaiable in DMs");
 
-    if (!message.member.roles.find(r => r.name === 'Moderator')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.member.roles.find(r => r.name === 'Moderator')) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create #${config.management_channel} first!`);
 
     let tokick = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!tokick) return message.channel.send("❎  **| I can't find the user. Can you make sure you have entered a correct one?**");
+    if (!tokick) return message.channel.send("❎ **| I can't find the user. Can you make sure you have entered a correct one?**");
 
     let immune = config.mute_immune;
     immune.forEach(id => {
-       if (tokick.roles.get(id)) return message.channel.send("❎  **| I'm sorry, this user cannot be kicked!")
+       if (tokick.roles.get(id)) return message.channel.send("❎ **| I'm sorry, this user cannot be kicked!**")
     });
 
     let reason = args.slice(1).join(" ");
