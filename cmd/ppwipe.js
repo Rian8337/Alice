@@ -17,7 +17,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 	console.log(ufind);
 	let binddb = maindb.collection("userbind");
-	let query = {uid: ufind};
+	let query = {discordid: ufind};
 	binddb.find(query).toArray(function (err, userres) {
 		if (err) {
 			console.log(err);
