@@ -5,7 +5,7 @@ let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) return message.channel.send("Invalid uid");
+    if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
     var options = {
     	host: "ops.dgsrz.com",
     	port: 80,
@@ -35,7 +35,7 @@ module.exports.run = (client, message, args) => {
 					avalink = b[x-3];
 					b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
 					b[x+1]=b[x+1].replace("<\/small>","");
-					b[x+1]=b[x+1].trim()
+					b[x+1]=b[x+1].trim();
 					location=b[x+1]
 				}
 			}
@@ -59,7 +59,12 @@ function apiFetch(uid, avalink, location, message) {
 			return message.channel.send("Error: Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-			var resarr = content.split('<br>');
+			var resarr;
+			try {
+				resarr = content.split('<br>');
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
 			resarr.shift();
