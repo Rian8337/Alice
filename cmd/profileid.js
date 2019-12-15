@@ -92,7 +92,12 @@ function apiFetch(uid, avalink, location, message, client) {
 			if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
 			resarr.shift();
 			content = resarr.join("");
-			var obj = JSON.parse(content);
+			var obj;
+			try {
+				obj = JSON.parse(content);
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var name = headerres[2];
 			var tscore = headerres[3];
 			var pcount = headerres[4];
