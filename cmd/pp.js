@@ -7,6 +7,7 @@ require("dotenv").config();
 require('mongodb');
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
+var config = require('../config.json');
 
 function modenum(mod) {
 	var res = 4;
@@ -200,18 +201,25 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					var resarr;
+					var resarr = content.split('<br>');
+					var headerres = resarr[0].split(" ");
+					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
+					var obj;
 					try {
-						resarr = content.split('<br>');
+						obj = JSON.parse(resarr[1])
 					} catch (e) {
 						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
 					}
-					var headerres = resarr[0].split(" ");
-					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
-					var obj = JSON.parse(resarr[1]);
 					var rplay = obj.recent;
 					var curpos = 0;
 					var playentry = [];
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+					let embed = new Discord.RichEmbed()
+						.setTitle("PP submission info")
+						.setFooter("Alice Synthesis Thirty", footer[index])
+						.setColor(message.member.highestRole.hexColor);
+
 					for (var i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
 						var play = {
@@ -251,6 +259,8 @@ module.exports.run = (client, message, args, maindb) => {
 								});
 								while (pplist.length > 75) pplist.pop();
 								submitted++;
+								// bug: combo and acc is flipped, not gonna bother fixing because that will require rework in database (also interferes with ppcheck)
+								embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
 								if (objcount.x == playentry.length) {
 									var weight = 1;
 									for (i in pplist) {
@@ -258,14 +268,8 @@ module.exports.run = (client, message, args, maindb) => {
 										weight *= 0.95;
 									}
 									var diff = pptotal - pre_pptotal;
-									if (submitted === 1) {
-										if (diff >= 0) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
-										else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' play: - ' + Math.abs(diff).toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**')
-									}
-									else {
-										if (diff >= 0) message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: + ' + diff.toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
-										else message.channel.send('✅ **| <@' + discordid + '> submitted ' + submitted + ' plays: - ' + Math.abs(diff).toFixed(2) + ' pp. Your current total pp is ' + pptotal.toFixed(2) + ' pp.**');
-									}
+									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
+									message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
