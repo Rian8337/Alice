@@ -49,8 +49,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 				return message.channel.send("Error: Empty API response. Please try again!")
 			});
 			res.on("end", function () {
-                                if (!content) return message.channel.send("Error: Empty API response");
-				var obj = JSON.parse(content);
+				var obj;
+				try {
+					obj = JSON.parse(content);
+				} catch (e) {
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+				}
 				if (!obj[0]) {
 					console.log("Map not found"); 
 					message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
@@ -122,7 +126,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					console.log(nstars.toString());
 					console.log(npp.toString());
 					var ppline = npp.toString().split("(");
-					var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + droid.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": ""))
+					var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + droid.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": ""));
 					objcount.x++;
 					cb(ppline[0], playinfo, input, pcombo, pacc, pmissc);
 				})
@@ -276,7 +280,7 @@ module.exports.run = (client, message, args, maindb) => {
 				})
 			});
 			req.end()
-		} else message.channel.send("❎  **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		} else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
