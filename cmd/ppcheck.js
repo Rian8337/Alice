@@ -39,7 +39,7 @@ function editpp(message, page, pp, ppentry, discordid, uid, username) {
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
+	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 15) ufind = args[0];
@@ -80,39 +80,41 @@ module.exports.run = (client, message, args, maindb) => {
 					})
 				});
 
-				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
-				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
-				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
-				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
+				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
 				backward.on('collect', () => {
-					page = 1;
+					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 1;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				back.on('collect', () => {
 					if (page === 1) page = 15;
 					else page--;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				next.on('collect', () => {
 					if (page === 15) page = 1;
 					else page++;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
-					msg.edit(embed).catch(e => console.log(e));
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				forward.on('collect', () => {
-					page = 15;
-					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
-					msg.edit(embed).catch(e => console.log(e));
+					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 15;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+					embed = editpp(message, page, pp, ppentry, discordid, uid, username);
+					msg.edit(embed).catch(e => console.log(e))
 				})
 			});
 			cd.add(message.author.id);
@@ -120,7 +122,7 @@ module.exports.run = (client, message, args, maindb) => {
 				cd.delete(message.author.id)
 			}, 10000)
 		}
-		else message.channel.send("❎  **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
