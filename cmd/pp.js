@@ -260,7 +260,8 @@ module.exports.run = (client, message, args, maindb) => {
 								while (pplist.length > 75) pplist.pop();
 								submitted++;
 								// bug: combo and acc is flipped, not gonna bother fixing because that will require rework in database (also interferes with ppcheck)
-								embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
+								if (dup) embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp} | **Duplicated**`);
+								else embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
 								if (objcount.x == playentry.length) {
 									var weight = 1;
 									for (i in pplist) {
