@@ -41,10 +41,10 @@ module.exports.run = async (client, message, args) => {
     if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     let startid = args[0];
-    if (isNaN(startid)) return message.channel.send("Please enter valid message ID!");
+    if (isNaN(startid)) return message.channel.send("❎ **| Please enter valid message ID!**");
 
     let filter = args.slice(1).join(" ");
-    if (!filter) return message.channel.send("Please insert filter!");
+    if (!filter) return message.channel.send("❎ **| Please insert filter!**");
 
     let embed = new Discord.RichEmbed()
         .setTitle("Users who sent `" + filter + "`:")
