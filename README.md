@@ -7,4 +7,4 @@ Based on [Elaina](https://github.com/NeroYuki/Elaina) by NeroYuki with a few add
 
 osu!droid: http://ops.dgsrz.com/
 
-Note: Even though this code is open-source, you still need more things to run the bot, therefore it is not available publicly.
+Note: Even though this code is open-source, some codes are personalized (made for a specific server only) and you still need more things to run the bot, therefore it is not available publicly.
