@@ -200,13 +200,18 @@ module.exports.run = (client, message, args, maindb) => {
 					return message.channel.send("Error: Empty API response. Please try again!")
 				});
 				res.on("end", function () {
-					curpos = 0;
-					var playentry = [];
-					var resarr = content.split('<br>');
+					var resarr;
+					try {
+						resarr = content.split('<br>');
+					} catch (e) {
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+					}
 					var headerres = resarr[0].split(" ");
 					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
 					var obj = JSON.parse(resarr[1]);
 					var rplay = obj.recent;
+					var curpos = 0;
+					var playentry = [];
 					for (var i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
 						var play = {
