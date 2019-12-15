@@ -264,7 +264,7 @@ module.exports.run = (client, message, args, maindb) => {
 								else {
 									for (var x = 0; x < pplist.length; x++) {
 										if (pplist[x][1].includes(playinfo)) {
-											embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp} |`);
+											embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}`);
 											break
 										}
 									}
