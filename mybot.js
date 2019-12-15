@@ -78,7 +78,7 @@ client.on("message", message => {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
-	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
+	if (message.content.startsWith(config.prefix || "$")) {
 		let cmd = '';
 		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
 		else cmd = client.commands.get(command.slice(1));
