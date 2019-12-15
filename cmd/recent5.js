@@ -72,7 +72,12 @@ module.exports.run = (client, message, args) => {
 			return message.channel.send("Empty API response. Please try again!")
 		});
 		res.on("end", function () {
-			var resarr = content.split('<br>');
+			var resarr;
+			try {
+				resarr = content.split('<br>');
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			}
 			var headerres = resarr[0].split(' ');
 			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, that user doesn't exist!**");
 			resarr.shift();
