@@ -47,7 +47,7 @@ client.on("message", message => {
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
 
-	if (message.author.id == '386742340968120321') {
+	/*if (message.author.id == '386742340968120321') {
 		let cmd = client.commands.get("sayit");
 		let args = msgArray.slice(0);
 		cmd.run(client, message, args);
@@ -68,7 +68,7 @@ client.on("message", message => {
 
 		owner.send(embed).catch(e => console.log(e));
 		return
-	}
+	}*/
 	
 	// #trash-talk spam reminder
 	if (message.content.startsWith(".")) {
