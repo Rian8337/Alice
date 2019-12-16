@@ -25,6 +25,7 @@ Prefix: "a!"
 - skin [discord user]
 - skin set <skin link> (required if not set)
 - userbind <uid> (use to bind to specific uid)
+- usersearch <uid> (use to check if specific uid is binded)
 - profileme [discord user] (only binded user)
 - recentme [discord user] (only binded user)
 - recent5me [page/discord user] [page] (only binded user)
