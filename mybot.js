@@ -54,7 +54,9 @@ client.on("message", message => {
 		return;
 	}
 
-	if (message.isMemberMentioned(client.user) && message.author.id != owner.id) {
+	if (message.isMemberMentioned(client.user) && message.author.id != '386742340968120321') {
+		let owner = message.guild.members.get("386742340968120321");
+		if (!owner) return;
 		const embed = new Discord.RichEmbed()
 			.setAuthor(message.author.tag, message.author.avatarURL)
 			.setTitle("You were mentioned!")
