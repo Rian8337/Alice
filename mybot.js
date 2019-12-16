@@ -86,7 +86,9 @@ client.on("message", message => {
 	}
 	
 	// woi
-	if (message.content.toLowerCase().startsWith("woi")) return message.channel.send("woi");
+	if (message.content.toLowerCase().startsWith("woi")) {
+		/*if (message.author.id != '386742340968120321')*/ return message.channel.send("woi");
+	}
 	
 	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
