@@ -67,6 +67,8 @@ client.on("message", message => {
 		owner.send(embed).catch(e => console.log(e));
 		return
 	}*/
+	
+	// #trash-talk spam reminder
 	if (message.content.startsWith(".")) {
 		if (message.guild.id != '316545691545501706') return;
 		if (message.channel.name != 'trash-talk') return;
@@ -74,12 +76,19 @@ client.on("message", message => {
 		if (!args) return;
 		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
+	
+	// 8ball
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
 		return cmd.run(client, message, args)
 	}
+	
+	// woi
+	if (message.content.toLowerCase().startsWith("woi")) return message.channel.send("woi");
+	
+	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
@@ -93,6 +102,7 @@ client.on("message", message => {
 			cmd.run(client, message, args, maindb)
 		}
 	}
+	
 	// whitelist logging
 	if (message.content.startsWith("&whitelist") || message.content.startsWith("&whitelistset") || message.content.startsWith("a!whitelist") || message.content.startsWith("a!whitelistset")) {
 		let cmd = client.commands.get("whitelistlog");
@@ -100,6 +110,7 @@ client.on("message", message => {
 	}
 });
 
+// message logging
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	if (oldMessage.author.bot) return;
 	if (oldMessage.content == newMessage.content) return;
