@@ -70,7 +70,7 @@ client.on("message", message => {
 	if (message.content.startsWith(".")) {
 		if (message.guild.id != '316545691545501706') return;
 		if (message.channel.name != 'trash-talk') return;
-		message.channel.send("Hey, is that NSB command I'm seeing?")
+		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
