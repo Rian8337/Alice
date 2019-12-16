@@ -67,7 +67,11 @@ client.on("message", message => {
 		owner.send(embed).catch(e => console.log(e));
 		return
 	}*/
-
+	if (message.content.startsWith(".")) {
+		if (message.guild.id != '316545691545501706') return;
+		if (message.channel.name != 'trash-talk') return;
+		message.channel.send("Hey, is that NSB command I'm seeing?")
+	}
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
