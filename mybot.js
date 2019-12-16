@@ -70,6 +70,8 @@ client.on("message", message => {
 	if (message.content.startsWith(".")) {
 		if (message.guild.id != '316545691545501706') return;
 		if (message.channel.name != 'trash-talk') return;
+		args = command.slice(1);
+		if (!args) return;
 		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
 	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
