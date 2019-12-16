@@ -6,11 +6,8 @@ module.exports.run = (client, message, args, maindb) => {
     if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
     let binddb = maindb.collection("userbind");
     let query = {uid: uid};
-    let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
     let embed = new Discord.RichEmbed()
-        .setColor(message.member.highestRole.hexColor)
-        .setFooter("Alice Synthesis Thirty", footer[index]);
+        .setColor(message.member.highestRole.hexColor);
 
     binddb.find(query).toArray((err, res) => {
         if (err) {
@@ -19,11 +16,11 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (res[0]) {
             let discordid = res[0].discordid;
-            embed.setDescription(`${uid} is binded to <@${discordid}>`);
+            embed.setDescription(`**Uid ${uid} is binded to <@${discordid}>**`);
             message.channel.send({embed: embed})
         }
         else {
-            embed.setDescription(`${uid} is not binded`);
+            embed.setDescription(`**Uid ${uid} is not binded**`);
             message.channel.send({embed: embed})
         }
     })
