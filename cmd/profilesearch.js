@@ -96,7 +96,7 @@ function apiSearch(username, message) {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, I cannot find the user. Please make sure that the name is correct (including upper and lower case).**");
+			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, I cannot find the user. Please make sure that the name is correct (including upper and lower case).**");
 			var uid = headerres[1];
 			foundPrint(message, [], username, uid)
 		})
@@ -119,7 +119,7 @@ function foundPrint(message, outString, username = "", uid = -1) {
 
 module.exports.run = (client, message, args) => {
 	var username = args[0];
-	if (!args[0]) return message.channel.send("❎  **| Hey, can you at least tell me what username I need to search for?**");
+	if (!args[0]) return message.channel.send("❎ **| Hey, can you at least tell me what username I need to search for?**");
 	deprecatedSearch(username, message, () => {
 		console.log("local mode not found");
 		apiSearch(username, message)
