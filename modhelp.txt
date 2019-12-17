@@ -44,5 +44,6 @@ Prefix: "a!"
 4. Bot Owner
 
 - changeavatar <number>
+- recalcall
 - togglestatus <number>
 - togglestatus c <activity type> <activity>
