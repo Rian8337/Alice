@@ -4,7 +4,6 @@ let apikey = process.env.OSU_API_KEY;
 let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
-    if (message.author.id !== '386742340968120321') return;
     if (!args[0]) return;
     let guild = client.guilds.get('528941000555757598');
     let logchannel = guild.channels.get('638671295470370827');
