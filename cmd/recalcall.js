@@ -168,7 +168,7 @@ module.exports.run = (client, message, args, maindb) => {
         	return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		res.forEach(player => {
-			var ppentry = res.pp;
+			var ppentry = player.pp;
 			if (ppentry) {
 				var newppentry = [];
 				var name = player.username;
