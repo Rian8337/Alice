@@ -162,7 +162,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	var binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
-    binddb.find({}.toArray((err, res) => {
+    binddb.find({}).toArray((err, res) => {
         if (err) {
         	console.log(err);
         	return message.channel.send("Error: Empty database response. Please try again!")
@@ -178,7 +178,7 @@ module.exports.run = (client, message, args, maindb) => {
 			}
 			else console.log("Player pp not found");
 		})
-	}))
+	})
 };
 
 module.exports.help = {
