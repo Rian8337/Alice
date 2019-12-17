@@ -159,7 +159,7 @@ module.exports.run = (client, message, args, maindb) => {
 	} catch (e) {
 		return
 	}
-	if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	var binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
     binddb.find({}.toArray((err, res) => {
