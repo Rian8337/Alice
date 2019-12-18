@@ -137,7 +137,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					}
                                         var hitlength = mapinfo.hit_length;
                                         var maplength = mapinfo.total_length;
-                                        if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
+                                        if (target[4].includes("d") || target[4].includes("c")) {
                                                 hitlength = hitlength / 1.5;
                                                 maplength = maplength / 1.5;
                                         }
