@@ -7,7 +7,7 @@ var apikey = process.env.OSU_API_KEY;
 let config = require('../config.json');
 
 function time(second) {
-	return [Math.floor(second / 60), (second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+	return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
 
 function modenum(mod) {
