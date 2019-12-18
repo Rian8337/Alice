@@ -139,6 +139,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
 					}
+                                        var hitlength = mapinfo.hit_length;
+                                        var maplength = mapinfo.total_length;
+                                        if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
+                                                hitlength = hitlength / 1.5;
+                                                maplength = maplength / 1.5;
+                                        }
 
 					if (pmod.includes("PR")) { cur_od += 4; }
 
@@ -197,7 +203,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(mapinfo.hit_length) + "/" + time(mapinfo.total_length) + " - Max combo: " + mapinfo.max_combo + "x"
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Max combo: " + mapinfo.max_combo + "x"
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
