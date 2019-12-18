@@ -302,7 +302,7 @@ module.exports.run = (client, message, args, maindb) => {
 				})
 			});
 			req.end()
-		} else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		} else message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
