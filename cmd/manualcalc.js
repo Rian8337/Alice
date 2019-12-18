@@ -6,6 +6,10 @@ require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
 let config = require('../config.json');
 
+function time(second) {
+	return [Math.floor(second / 60), (second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+}
+
 function modenum(mod) {
 	var res = 4;
 	if (mod.includes("HR")) res += 16;
@@ -197,7 +201,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Object count: " + objc
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(mapinfo.hit_length) + "/" + time(mapinfo.total_length) + " - Object count: " + objc
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
@@ -240,7 +244,7 @@ module.exports.run = (client, message, args) => {
 	}
 	console.log(acc);
 	var target = [beatmapid, combo, acc, missc, mod];
-	getMapPP(target, message, ndetail, pcdetail);
+	getMapPP(target, message, ndetail, pcdetail)
 };
 
 module.exports.help = {
