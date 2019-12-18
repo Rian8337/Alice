@@ -80,7 +80,7 @@ client.on("message", message => {
 	}
 	
 	// 8ball
-	if (message.content.startsWith("Alice, ") && message.content.endsWith("?")) {
+	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
