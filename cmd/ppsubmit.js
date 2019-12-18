@@ -282,7 +282,7 @@ module.exports.run = (client, message, args, maindb) => {
 									}
 									var diff = pptotal - pre_pptotal;
 									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
-									message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
+									message.channel.send('✅ **| <@' + message.author.id + '> successfully submitted play(s) for <@' + discordid + '>. More info in embed.**', {embed: embed});
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
