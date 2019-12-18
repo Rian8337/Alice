@@ -10,7 +10,7 @@ module.exports.run = (client, message, args) => {
 	} catch (e) {
 		return
 	}
-	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid.**");
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
@@ -28,7 +28,7 @@ module.exports.run = (client, message, args) => {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') return message.channel.send("❎  **| I'm sorry, it looks like the user doesn't exist.**");
+			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist.**");
 			var name = headerres[2];
 			var email = headerres[6];
 			let footer = config.avatar_list;
@@ -44,9 +44,9 @@ module.exports.run = (client, message, args) => {
 			try {
 				message.author.send(embed)
 			} catch (e) {
-				return message.channel.send(`❎  **| ${message.author}, your DM is locked!**`);
+				return message.channel.send(`❎ **| ${message.author}, your DM is locked!**`);
 			}
-			message.channel.send(`✅  **| ${message.author}, the user info has been sent to you!**`);
+			message.channel.send(`✅ **| ${message.author}, the user info has been sent to you!**`);
 		})
 	});
 	req.end()
