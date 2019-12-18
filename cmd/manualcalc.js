@@ -100,15 +100,22 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					// if (mods) {
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
-					if (target[4].includes("HR")) {
+					if (target[4].toUpperCase().includes("HR")) {
 						mods -= 16; 
 						cur_ar = Math.min(cur_ar*1.4, 10);
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
 					}
 
-					if (target[4].includes("PR")) cur_od += 4;
-					if (target[4].includes("TD")) pcmods += 4;
+                                        var hitlength = mapinfo.hit_length;
+                                        var maplength = mapinfo.total_length;
+                                        if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
+                                                hitlength = hitlength / 1.5;
+                                                maplength = maplength / 1.5;
+                                        }
+
+					if (target[4].toUpperCase().includes("PR")) cur_od += 4;
+					if (target[4].toUpperCase().includes("TD")) pcmods += 4;
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
@@ -201,7 +208,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(mapinfo.hit_length) + "/" + time(mapinfo.total_length) + " - Object count: " + objc
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Object count: " + objc
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
