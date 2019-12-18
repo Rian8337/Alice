@@ -8,6 +8,10 @@ var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
 
+function time(second) {
+	return [Math.floor(second / 60), (second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+}
+
 function rankread(imgsrc) {
 	let rank="";
 	switch(imgsrc) {
@@ -186,7 +190,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						"fields": [
 							{
 								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + mapinfo.hit_length + "/" + mapinfo.total_length + " s - Max Combo: " + mapinfo.max_combo + "x"
+								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(mapinfo.hit_length) + "/" + time(mapinfo.total_length) + " - Max Combo: " + mapinfo.max_combo + "x"
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
@@ -279,10 +283,10 @@ module.exports.run = (client, message, args, maindb) => {
 						"text": "Alice Synthesis Thirty"
 					}
 				};
-				message.channel.send({embed});
+				message.channel.send({embed})
 				})
 			});
-			req.end();
+			req.end()
 		}
 		else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
