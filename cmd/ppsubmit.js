@@ -154,8 +154,8 @@ module.exports.run = (client, message, args, maindb) => {
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
-	if (args[1]) offset = parseInt(args[0]);
-	if (args[2]) start = parseInt(args[1]);
+	if (args[1]) offset = parseInt(args[1]);
+	if (args[2]) start = parseInt(args[2]);
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
