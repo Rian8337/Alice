@@ -70,12 +70,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             console.log(username);
 
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
-            var content;
+            var content = '';
 
             var req = https.get(options, res => {
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
-                    content = chunk
+                    content += chunk
                 });
                 res.on("error", err => {
                     console.log(err);
