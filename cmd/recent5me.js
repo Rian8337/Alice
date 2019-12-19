@@ -105,10 +105,11 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+                                        var rolecheck;
                                         try {
-                                                let rolecheck = message.member.highestRole.hexColor
+                                                rolecheck = message.member.highestRole.hexColor
                                         } catch (e) {
-                                                let rolecheck = "#000000"
+                                                rolecheck = "#000000"
                                         }
 					let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 					if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
