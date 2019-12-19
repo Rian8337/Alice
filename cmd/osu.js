@@ -56,7 +56,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         else {
-            if (!res[0]) return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**"");
+            if (!res[0]) return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
             username = res[0].username;
             var mode = args[0];
             if (mode === 'std') mode = 0;
