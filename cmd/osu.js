@@ -64,7 +64,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             else mode = 0;
 
             if (!username && res[0]) username = res[0].username;
-            else return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
+            if (!username) return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
 
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
             var content;
