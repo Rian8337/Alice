@@ -2,7 +2,7 @@ var Discord = require('discord.js');
 var cd = new Set();
 let config = require('../config.json');
 
-function editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck) {
+function editpp(page, pp, ppentry, discordid, uid, username, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let footer = config.avatar_list;
@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
 			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 			if (res[0].pp) ppentry = res[0].pp;
 
-			let embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
+			let embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⏮️").then(() => {
@@ -94,7 +94,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					else page = 1;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
@@ -102,7 +102,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 1) page = 15;
 					else page--;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
@@ -110,7 +110,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 15) page = 1;
 					else page++;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
@@ -118,7 +118,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					else page = 15;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
-					embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				})
 			});
