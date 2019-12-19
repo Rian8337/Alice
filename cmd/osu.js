@@ -57,14 +57,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         else {
-            if (!res[0]) return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
-            username = res[0].username;
             var mode = args[0];
             if (mode === 'std') mode = 0;
             else if (mode === 'taiko') mode = 1;
             else if (mode === 'ctb') mode = 2;
             else if (mode === 'mania') mode = 3;
             else mode = 0;
+
+            username = args.slice(1).join(" ");
+            if (!username && res[0]) username = res[0].username;
+            else return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
 
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
             var content;
