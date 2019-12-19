@@ -67,6 +67,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (res[0]) username = res[0].username;
                 else return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
             }
+            console.log(username);
 
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
             var content;
@@ -78,14 +79,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 });
                 res.on("error", err => {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again! [0]**")
                 });
                 res.on("end", () => {
                     var obj;
                     try {
                         obj = JSON.parse(content)
                     } catch (e) {
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again! [1]**")
                     }
                     if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
                     var playerinfo = obj[0];
