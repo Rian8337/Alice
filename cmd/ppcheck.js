@@ -38,6 +38,7 @@ function editpp(page, pp, ppentry, discordid, uid, username, rolecheck) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+        if (message.channel instanceof Discord.DMChannel) return;
         var rolecheck;
         try {
                 rolecheck = message.member.highestRole.hexColor
