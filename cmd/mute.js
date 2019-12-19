@@ -27,15 +27,15 @@ module.exports.run = async (client, message, args) => {
         return
     }
     var timeLimit = isEligible(message.member);
-    if (timeLimit != -1) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+    if (timeLimit != -1) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!tomute) return;
-    if (isImmuned(tomute)) return message.channel.send("❎  **| I'm sorry, this user cannot be muted.**");
+    if (!tomute) return message.channel.send("❎ **| Hey, give me someone to mute! Or do you want me to mute you?**")
+    if (isImmuned(tomute)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(1).join(" ");
 
-    if (!reason) return message.channel.send("❎  **| Hey, can you give me your reason for muting?**");
+    if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
     let muterole = message.guild.roles.find(`name`, "elaina-muted");
     //start of create role
