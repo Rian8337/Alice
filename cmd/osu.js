@@ -4,7 +4,8 @@ var apikey = process.env.OSU_API_KEY;
 var config = require('../config.json');
 
 function progress (level) {
-    return ((parseFloat(level) - Math.floor(parseFloat(level))) * 100).toFixed(2)
+    var final = (parseFloat(level) - Math.floor(parseFloat(level))) * 100;
+    return final.toFixed(2)
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
