@@ -22,9 +22,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        var username;
+        var username = args.slice(1).join(" ");
         if (args[0] === 'set') {
-            username = args.slice(1).join(" ");
             if (!username) return message.channel.send("❎ **| Hey, I don't know what account to bind!**");
             if (!res[0]) {
                 var insertVal = {
@@ -64,14 +63,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             else if (mode === 'mania') mode = 3;
             else mode = 0;
 
-            username = args.slice(1).join(" ");
             if (!username && res[0]) username = res[0].username;
             else return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**");
 
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
             var content;
 
-            https.get(options, res => {
+            var req = https.get(options, res => {
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
                     content = chunk
@@ -113,7 +111,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     message.channel.send({embed: embed})
                 })
-            })
+            });
+            req.end()
         }
     })
 };
