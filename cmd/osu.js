@@ -56,7 +56,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         else {
-            if (!res[0] return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**"");
+            if (!res[0]) return message.channel.send("❎ **| I'm sorry, you haven't set your osu! username yet. To do so, use `a!osu set <username>`.**"");
             username = res[0].username;
             var mode = args[0];
             if (mode === 'std') mode = 0;
@@ -93,16 +93,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setColor(message.member.highestRole.hexColor)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Rank", "#" + playerinfo.pp_rank, true)
-                        .addBlankField(true)
                         .addField("Country rank", playerinfo.country + " #" + playerinfo.pp_country_rank, true)
                         .addField("Accuracy", parseFloat(playerinfo.accuracy).toFixed(2) + "%", true)
-                        .addBlankField(true)
                         .addField("Play count", playerinfo.playcount, true)
                         .addField("Ranked score", parseInt(playerinfo.ranked_score).toLocaleString("en-US"), true)
-                        .addBlankField(true)
                         .addField("Total score", parseInt(playerinfo.total_score).toLocaleString("en-US"), true)
                         .addField("PP", playerinfo.pp_raw, true)
-                        .addBlankField(true)
                         .addField("Level", Math.floor(parseFloat(playerinfo.level)) + " (" + progress(playerinfo.level) + "%)", true)
                         .addField("Join date", playerinfo.join_date + " UTC", true)
                         .addField("User ID", playerinfo.user_id, true);
