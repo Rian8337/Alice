@@ -213,6 +213,11 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					var curpos = 0;
 					var playentry = [];
+                                        try {
+                                                let rolecheck = message.member.roles
+                                        } catch (e) {
+                                                let rolecheck = "#000000"
+                                        }
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					let embed = new Discord.RichEmbed()
