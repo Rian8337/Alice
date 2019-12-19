@@ -53,6 +53,7 @@ function editpp(client, rplay, name, page, rolecheck) {
 }
 
 module.exports.run = (client, message, args) => {
+        if (message.channel instanceof Discord.DMChannel) return;
 	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
