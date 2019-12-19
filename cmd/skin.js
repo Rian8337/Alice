@@ -1,4 +1,4 @@
-module.exports.run = (client, message, args, alicedb) => {
+module.exports.run = (client, message, args, maindb, alicedb) => {
     let user = message.author.id;
     let skindb = alicedb.collection("playerskins");
     let query = {discordid: user};
