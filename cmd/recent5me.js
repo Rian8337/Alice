@@ -33,10 +33,10 @@ function rankEmote(input) {
 	}
 }
 
-function editpp(client, message, rplay, name, page, footer, index) {
+function editpp(client, rplay, name, page, footer, index, rolecheck) {
 	let embed = new Discord.RichEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-		.setColor(message.member.highestRole.hexColor)
+		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
 	for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -105,7 +105,12 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-					let embed = editpp(client, message, rplay, name, page, footer, index);
+                                        try {
+                                                let rolecheck = message.member.highestRole.hexColor
+                                        } catch (e) {
+                                                let rolecheck = "#000000"
+                                        }
+					let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 					if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
 
 					message.channel.send({embed}).then (msg => {
@@ -134,7 +139,7 @@ module.exports.run = (client, message, args, maindb) => {
 							if (page === 1) page = 10;
 							else page--;
 							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, message, rplay, name, page, footer, index);
+							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 							msg.edit(embed).catch(e => console.log(e))
 						});
 
@@ -142,7 +147,7 @@ module.exports.run = (client, message, args, maindb) => {
 							if (page === 10) page = 1;
 							else page++;
 							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, message, rplay, name, page, footer, index);
+							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 							msg.edit(embed).catch(e => console.log(e));
 						});
 
@@ -150,7 +155,7 @@ module.exports.run = (client, message, args, maindb) => {
 							if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							else page = 10;
 							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, message, rplay, name, page, footer, index);
+							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 							msg.edit(embed).catch(e => console.log(e))
 						})
 					});
