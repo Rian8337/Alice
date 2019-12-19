@@ -138,8 +138,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
                                         var hitlength = mapinfo.hit_length;
                                         var maplength = mapinfo.total_length;
                                         if (pmod.includes("d") || pmod.includes("c")) {
-                                                hitlength = hitlength / 1.5;
-                                                maplength = maplength / 1.5;
+                                                hitlength = Math.floor(hitlength / 1.5);
+                                                maplength = Math.floor(maplength / 1.5);
                                         }
 
 					if (pmod.includes("PR")) { cur_od += 4; }
