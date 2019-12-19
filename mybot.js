@@ -6,8 +6,10 @@ require("https");
 require("util");
 var mongodb = require('mongodb');
 require("dotenv").config();
-var dbkey = process.env.DB_KEY;
+var elainadbkey = process.env.ELAINA_DB_KEY;
+var alicedbkey = process.env.ALICE_DB_KEY;
 
+// Command loading
 client.commands = new Discord.Collection();
 fs.readdir("./cmd/" , (err, files) => {
 	if (err) throw err;
@@ -25,17 +27,30 @@ fs.readdir("./cmd/" , (err, files) => {
 	});
 });
 
-let uri = 'mongodb://' + dbkey + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true';
+// Elaina DB
+let elainauri = 'mongodb://' + elainadbkey + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true';
 let maindb = '';
-let clientdb = new mongodb.MongoClient(uri, {useNewUrlParser: true});
+let elainadb = new mongodb.MongoClient(elainauri, {useNewUrlParser: true});
 
-    clientdb.connect( function(err, db) {
-        if (err) throw err;
-        //if (db)
-        maindb = db.db('ElainaDB');
-        console.log("DB connection established");
-    });
+elainadb.connect( function(err, db) {
+	if (err) throw err;
+	//if (db)
+	maindb = db.db('ElainaDB');
+	console.log("Elaina DB connection established");
+});
 
+// Alice DB
+let aliceuri = 'mongodb+srv://' + alicedbkey + '@alicedb-hoexz.gcp.mongodb.net/test';
+let alicedb = '';
+let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true});
+
+alcdb.connect((err, db) => {
+	if (err) throw err;
+	alicedb = db.db("AliceDB");
+	console.log("Alice DB connection established")
+});
+
+// Main client events
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(e => console.log(e));
@@ -103,7 +118,7 @@ client.on("message", message => {
 		else cmd = client.commands.get(command.slice(1));
 		if (cmd) {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
-			cmd.run(client, message, args, maindb)
+			cmd.run(client, message, args, maindb, alicedb)
 		}
 	}
 	
