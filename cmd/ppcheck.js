@@ -38,6 +38,11 @@ function editpp(message, page, pp, ppentry, discordid, uid, username) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+        try {
+                let rolecheck = message.member.roles
+        } catch (e) {
+                return
+        }
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
