@@ -2,14 +2,14 @@ var Discord = require('discord.js');
 var cd = new Set();
 let config = require('../config.json');
 
-function editpp(message, page, pp, ppentry, discordid, uid, username) {
+function editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
 		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
-		.setColor(message.member.highestRole.hexColor)
+		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
 	for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
@@ -39,9 +39,9 @@ function editpp(message, page, pp, ppentry, discordid, uid, username) {
 
 module.exports.run = (client, message, args, maindb) => {
         try {
-                let rolecheck = message.member.roles
+                let rolecheck = message.member.highestRole.hexColor
         } catch (e) {
-                return
+                let rolecheck = "#000000"
         }
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
 			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 			if (res[0].pp) ppentry = res[0].pp;
 
-			let embed = editpp(message, page, pp, ppentry, discordid, uid, username);
+			let embed = editpp(message, page, pp, ppentry, discordid, uid, username, rolecheck);
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⏮️").then(() => {
