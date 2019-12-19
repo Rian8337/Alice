@@ -38,10 +38,11 @@ function editpp(page, pp, ppentry, discordid, uid, username, rolecheck) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+        var rolecheck;
         try {
-                let rolecheck = message.member.highestRole.hexColor
+                rolecheck = message.member.highestRole.hexColor
         } catch (e) {
-                let rolecheck = "#000000"
+                rolecheck = "#000000"
         }
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
