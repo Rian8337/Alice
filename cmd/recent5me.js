@@ -51,6 +51,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+        if (message.channel instanceof Discord.DMChannel) return;
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
