@@ -9,10 +9,11 @@ function progress (level) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
+    var rolecheck;
     try {
-        let rolecheck = message.member.roles
+        rolecheck = message.member.highestRole.hexColor
     } catch (e) {
-        return
+        rolecheck = "#000000"
     }
     var playerdb = alicedb.collection("osubind");
     var query = {discordid: message.author.id};
