@@ -214,7 +214,7 @@ module.exports.run = (client, message, args, maindb) => {
 					var curpos = 0;
 					var playentry = [];
                                         try {
-                                                let rolecheck = message.member.roles
+                                                let rolecheck = message.member.highestRole.hexColor
                                         } catch (e) {
                                                 let rolecheck = "#000000"
                                         }
@@ -223,7 +223,7 @@ module.exports.run = (client, message, args, maindb) => {
 					let embed = new Discord.RichEmbed()
 						.setTitle("PP submission info")
 						.setFooter("Alice Synthesis Thirty", footer[index])
-						.setColor(message.member.highestRole.hexColor);
+						.setColor(rolecheck);
 
 					for (var i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
