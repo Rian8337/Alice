@@ -33,12 +33,12 @@ function rankEmote(input) {
 	}
 }
 
-function editpp(client, message, rplay, name, page) {
+function editpp(client, message, rplay, name, page, rolecheck) {
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-		.setColor(message.member.highestRole.hexColor)
+		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
 	for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -85,7 +85,12 @@ module.exports.run = (client, message, args) => {
 			}
 			var name = headerres[2];
 			var rplay = obj.recent;
-			let embed = editpp(client, message, rplay, name, page);
+                        try {
+                                let rolecheck = message.member.highestRole.hexColor
+                        } catch (e) {
+                                let rolecheck = "#000000"
+                        }
+			let embed = editpp(client, message, rplay, name, page, rolecheck);
 
 			if (!rplay[0]) return message.channel.send("❎  **| I'm sorry, it looks like this player hasn't submitted any play. Perhaps later?**");
 			
