@@ -1,10 +1,10 @@
-module.exports.run = (client, message, args, maindb) => {
+module.exports.run = (client, message, args, alicedb) => {
     let user = message.author.id;
-    let skindb = maindb.collection("skin");
+    let skindb = alicedb.collection("playerskins");
     let query = {discordid: user};
     if (args[0] == 'set') {
         let skinlink = args.slice(1).join(" ");
-        if (!skinlink) return message.channel.send("❎  **| Please enter skin link!**");
+        if (!skinlink) return message.channel.send("❎ **| Please enter skin link!**");
         skindb.find(query).toArray((err, res) => {
             if (err) {
                 console.log(err);
@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb) => {
                         return message.channel.send("Error: Empty database response. Please try again!")
                     }
                     console.log("Skin added for " + user);
-                    message.channel.send(`✅  **| ${message.author.username}'s skin has been set to ${skinlink}.**`)
+                    message.channel.send(`✅ **| ${message.author.username}'s skin has been set to ${skinlink}.**`)
                 })
             } else {
                 var updateval = {
@@ -36,7 +36,7 @@ module.exports.run = (client, message, args, maindb) => {
                         return message.channel.send("Error: Empty database response. Please try again!")
                     }
                     console.log("Skin updated for " + user);
-                    message.channel.send(`✅  **| ${message.author.username}'s skin has been set to ${skinlink}.**`)
+                    message.channel.send(`✅ **| ${message.author.username}'s skin has been set to ${skinlink}.**`)
                 })
             }
         })
@@ -55,11 +55,11 @@ module.exports.run = (client, message, args, maindb) => {
                 let name = await client.fetchUser(user);
                 name = name.username;
                 let skinlink = res[0].skin;
-                message.channel.send(`✅  **| ${name}'s skin: ${skinlink}.**\nFor a collection of skins, visit https://tsukushi.site/`)
+                message.channel.send(`✅ **| ${name}'s skin: ${skinlink}.**\nFor a collection of skins, visit https://tsukushi.site/`)
             }
             else {
-                if (args[0]) message.channel.send("❎  **| The user hasn't set their skin yet! He/she must use `a!skin set <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/");
-                else message.channel.send("❎  **| You haven't set your skin yet! You must use `a!skin set <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/")
+                if (args[0]) message.channel.send("❎ **| The user hasn't set their skin yet! He/she must use `a!skin set <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/");
+                else message.channel.send("❎ **| You haven't set your skin yet! You must use `a!skin set <skin link>` first.**\nFor a collection of skins, visit https://tsukushi.site/")
             }
         })
     }
