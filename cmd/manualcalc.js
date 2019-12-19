@@ -111,7 +111,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
                                         var maplength = mapinfo.total_length;
                                         if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
                                                 hitlength = Math.floor(hitlength / 1.5);
-                                                maplength = Math floor(maplength / 1.5);
+                                                maplength = Math.floor(maplength / 1.5);
                                         }
 
 					if (target[4].toUpperCase().includes("PR")) cur_od += 4;
