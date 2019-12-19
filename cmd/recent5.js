@@ -85,10 +85,11 @@ module.exports.run = (client, message, args) => {
 			}
 			var name = headerres[2];
 			var rplay = obj.recent;
+                        var rolecheck;
                         try {
-                                let rolecheck = message.member.highestRole.hexColor
+                                rolecheck = message.member.highestRole.hexColor
                         } catch (e) {
-                                let rolecheck = "#000000"
+                                rolecheck = "#000000"
                         }
 			let embed = editpp(client, rplay, name, page, rolecheck);
 
