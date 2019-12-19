@@ -16,20 +16,27 @@ Prefix: "a!"
 - say <...>
 - report <discord user> <reason>
 
-2. osu!droid
+2. osu! and osu!droid
 
-- profilesearch <player's name - CaSe Sensitive>
-- profileid <uid>
-- recent <uid>
-- recent5 <uid> [page]
+★ osu! and osu!droid
 - skin [discord user]
 - skin set <skin link> (required if not set)
+
+★ osu!
+- osu [mode] [username]
+- osu set <username>
+
+★ osu!droid
+- manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
+- profileid <uid>
+- profileme [discord user] (only binded user)
+- profilesearch <player's name - CaSe Sensitive>
+- recent <uid>
+- recentme [discord user] (only binded user)
+- recent5 <uid> [page]
+- recent5me [page/discord user] [page] (only binded user)
 - userbind <uid> (use to bind to specific uid)
 - usersearch <uid> (use to check if specific uid is binded)
-- profileme [discord user] (only binded user)
-- recentme [discord user] (only binded user)
-- recent5me [page/discord user] [page] (only binded user)
-- manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
 
 3. osu!droid Elaina PP project (have no direct affiliation to osu!droid)
 
