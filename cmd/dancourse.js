@@ -114,7 +114,7 @@ module.exports.run = (client, message, args, maindb) => {
             let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
             if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
             togive.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
-                message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
+                message.channel.send(`✅ **| <@${togive.id}>, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
             }).catch(e => console.log(e))
         }
     }
