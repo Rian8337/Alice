@@ -20,6 +20,14 @@ function isImmuned(member) {
     return res;
 }
 
+function timeconvert (num) {
+    let sec = parseInt(num);
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+}
+
 module.exports.run = async (client, message, args) => {
     try {
         let rolecheck = message.member.roles
@@ -39,7 +47,7 @@ module.exports.run = async (client, message, args) => {
     if (!mutetime) return message.channel.send("❎  **| Hey, at least tell me how long do I need to mute this user!**");
     if (isNaN(mutetime)) return message.channel.send("❎  **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
     if (mutetime < 1) return message.channel.send("❎  **| I'm sorry, you can only mute for at least 1 second.**");
-    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎  **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + " seconds.**");
+    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎  **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
 
     if (!reason) return message.channel.send("❎  **| Hey, can you give me your reason for muting?**");
 
@@ -81,7 +89,7 @@ module.exports.run = async (client, message, args) => {
         .setTimestamp(new Date())
         .setFooter("User ID: " + tomute.id, footer[index])
         .addField("Muted User: " + tomute.user.username, "Muted in: " + message.channel)
-        .addField("Length: " + mutetime + "s", "=========================")
+        .addField("Length: " + timeconvert(mutetime), "=========================")
         .addField("Reason: ", reason);
 
     let channel = message.guild.channels.find(c => c.name === config.management_channel);
