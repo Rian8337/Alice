@@ -1,8 +1,6 @@
 Alice Synthesis Thirty's Guide
 Moderation Commands
 
-For user commands, type "a!help".
-
 <...>: required syntax
 [...]: optional syntax
 
@@ -12,6 +10,8 @@ Prefix: "a!"
 
 1. Helper
 
+- dancourse <user> <role>
+  Accepted roles: 1st Dan, 2nd Dan, 3rd Dan, 4th Dan, 5th Dan, 6th Dan, 7th Dan, 8th Dan, 9th Dan, Chuuden, Kaiden, Aleph-0 Dan
 - tempmute <user> <duration in seconds, max 1800> <reason>
 - verify <user>
 
@@ -19,7 +19,6 @@ Prefix: "a!"
 
 - bulkdelete <amount of messages to delete (2-100)> (only if you have permission in the channel)
 - kick <user> [reason]
-- mute <user> <reason>
 - tempmute <user> <duration in seconds> <reason>
 
 3. Owner
@@ -37,13 +36,12 @@ Prefix: "a!"
 - ppwipe <user>
 - recalc <uid>
 - tempban <user> <duration in seconds> <reason>
-- unban <user> <reason>
+- unban <user>
 - whitelistremove <map link / map ID>
 - whitelistremoveset <set ID>
 
 4. Bot Owner
 
 - changeavatar <number>
-- recalcall
 - togglestatus <number>
 - togglestatus c <activity type> <activity>
