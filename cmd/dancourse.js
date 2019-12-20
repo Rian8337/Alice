@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb) => {
         let perm = isEligible(message.member);
         if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper!**");
 
-        let togive = message.guild.member(message.mentions.users.first() || message.guild.members.find(args[0]));
+        let togive = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
         if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
 
         let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
