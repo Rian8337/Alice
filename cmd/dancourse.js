@@ -156,7 +156,7 @@ module.exports.run = (client, message, args, maindb) => {
 
                     var role = message.guild.roles.find(r => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
-                    if (message.member.has(role.id)) return message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`);
+                    if (message.member.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`);
                     message.member.addRole(role.id, "Successfully completed dan course").then(() => {
                         message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
                     }).catch(e => console.log(e));
