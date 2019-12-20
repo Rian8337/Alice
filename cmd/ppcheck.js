@@ -2,11 +2,9 @@ var Discord = require('discord.js');
 var cd = new Set();
 let config = require('../config.json');
 
-function editpp(page, pp, ppentry, discordid, uid, username, rolecheck) {
+function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
-	let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
 		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 		.setColor(rolecheck)
@@ -38,13 +36,6 @@ function editpp(page, pp, ppentry, discordid, uid, username, rolecheck) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-        if (message.channel instanceof Discord.DMChannel) return;
-        var rolecheck;
-        try {
-                rolecheck = message.member.highestRole.hexColor
-        } catch (e) {
-                rolecheck = "#000000"
-        }
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
@@ -75,8 +66,15 @@ module.exports.run = (client, message, args, maindb) => {
 			var ppentry = [];
 			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 			if (res[0].pp) ppentry = res[0].pp;
-
-			let embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
+			var rolecheck;
+			try {
+				rolecheck = message.member.highestRole.hexColor
+			} catch (e) {
+				rolecheck = "#000000"
+			}
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 
 			message.channel.send(embed).then(msg => {
 				msg.react("⏮️").then(() => {
@@ -96,7 +94,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					else page = 1;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
@@ -104,7 +102,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 1) page = 15;
 					else page--;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
@@ -112,15 +110,15 @@ module.exports.run = (client, message, args, maindb) => {
 					if (page === 15) page = 1;
 					else page++;
 					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
+					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				});
 
 				forward.on('collect', () => {
 					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 					else page = 15;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
-					embed = editpp(page, pp, ppentry, discordid, uid, username, rolecheck);
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 					msg.edit(embed).catch(e => console.log(e))
 				})
 			});
