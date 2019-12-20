@@ -1,5 +1,15 @@
 var http = require('http');
 var droidapikey = process.env.DROID_API_KEY;
+var config  = require('../config.json');
+
+function isEligible(member) {
+    var res = 0;
+    var eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
+    eligibleRoleList.forEach((id) => {
+        if(member.roles.has(id[0])) res = id[1]
+    });
+    return res
+}
 
 function danid (hash) {
     switch (hash) {
@@ -67,78 +77,105 @@ function validation (dan, mod, acc, rank) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
-    let binddb = maindb.collection("userbind");
-    let query = {discordid: message.author.id};
-    binddb.find(query).toArray((err, res) => {
-        if (err) {
-            console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+    if (args[0]) {
+        let perm = isEligible(message.member);
+        if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper!**");
+
+        let togive = message.guild.member(message.mentions.users.first() || message.guild.members.find(args[0]));
+        if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
+
+        let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
+        let rolename = args.slice(1).join(" ");
+        if (!danlist.includes(rolename)) {
+            var rolelist = '';
+            danlist.forEach(role => {
+                rolelist += '`' + role + '`, ';
+            });
+            rolelist = rolelist.trimRight().trimRight();
+            return message.channel.send(`❎ **| I'm sorry, I cannot find the role! Accepted arguments are ${rolelist}.**`)
         }
-        if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        var uid = res[0].uid;
-        var options = {
-            host: "ops.dgsrz.com",
-            port: 80,
-            path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
-        };
-        var content = '';
-        var req = http.request(options, res1 => {
-            res1.setEncoding("utf8");
-            res1.on("data", chunk => {
-                content += chunk
-            });
-            res1.on("error", err1 => {
-                console.log(err1);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
-            });
-            res1.on("end", () => {
-                var resarr = content.split("<br>");
-                var headerres = resarr[0].split(" ");
-                if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, I cannot find your username!**");
-                var obj;
-                try {
-                    obj = JSON.parse(resarr[1])
-                } catch (e) {
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
-                }
-                if (!obj.recent[0]) return message.channel.send("❎ **| You haven't set any plays!**");
-                var play = obj.recent[0];
-                var mods = play.mode;
-                var acc = (parseInt(play.accuracy) / 1000).toFixed(2);
-                var rank = play.mark;
-                var hash = play.hash;
 
-                var dan = danid(hash);
-                if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't played any dan course recently!**");
+        let role = message.guild.roles.find(r => r.name === rolename);
+        if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${rolename} role!**`);
 
-                var valid = validation(dan, mods, acc, rank);
-                if (valid === 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!**");
-
-                var danrole = dancheck(dan);
-                if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
-
-                var role = message.guild.roles.find(r => r.name === danrole);
-                message.member.addRole(role.id, "Successfully completed dan course").then(() => {
-                    message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
-                }).catch(() => message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`));
-
-                // Dan Course Master
-                var danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden"];
-                var count = 1;
-                danlist.forEach(role => {
-                    if (message.member.roles.find(r => r.name === role)) count++
+        togive.addRole(role.id, "Successfully completed dan course").then (() => {
+            message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!`)
+        }).catch(() => message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!`))
+    }
+    else {
+        let binddb = maindb.collection("userbind");
+        let query = {discordid: message.author.id};
+        binddb.find(query).toArray((err, res) => {
+            if (err) {
+                console.log(err);
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            }
+            if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+            var uid = res[0].uid;
+            var options = {
+                host: "ops.dgsrz.com",
+                port: 80,
+                path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
+            };
+            var content = '';
+            var req = http.request(options, res1 => {
+                res1.setEncoding("utf8");
+                res1.on("data", chunk => {
+                    content += chunk
                 });
-                if (count == danlist.length) {
-                    var dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
-                    if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
-                    message.member.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
-                        message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
-                    }).catch(e => console.log(e))
-                }
-            })
-        });
-        req.end()
-    })
+                res1.on("error", err1 => {
+                    console.log(err1);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
+                });
+                res1.on("end", () => {
+                    var resarr = content.split("<br>");
+                    var headerres = resarr[0].split(" ");
+                    if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, I cannot find your username!**");
+                    var obj;
+                    try {
+                        obj = JSON.parse(resarr[1])
+                    } catch (e) {
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
+                    }
+                    if (!obj.recent[0]) return message.channel.send("❎ **| You haven't set any plays!**");
+                    var play = obj.recent[0];
+                    var mods = play.mode;
+                    var acc = (parseInt(play.accuracy) / 1000).toFixed(2);
+                    var rank = play.mark;
+                    var hash = play.hash;
+
+                    var dan = danid(hash);
+                    if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't played any dan course recently!**");
+
+                    var valid = validation(dan, mods, acc, rank);
+                    if (valid === 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!**");
+
+                    var danrole = dancheck(dan);
+                    if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
+
+                    var role = message.guild.roles.find(r => r.name === danrole);
+                    message.member.addRole(role.id, "Successfully completed dan course").then(() => {
+                        message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
+                    }).catch(() => message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`));
+
+                    // Dan Course Master
+                    var danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden"];
+                    var count = 1;
+                    danlist.forEach(role => {
+                        if (message.member.roles.find(r => r.name === role)) count++
+                    });
+                    if (count == danlist.length) {
+                        var dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
+                        if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
+                        message.member.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                            message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
+                        }).catch(e => console.log(e))
+                    }
+                })
+            });
+            req.end()
+        })
+    }
 };
 
 module.exports.help = {
