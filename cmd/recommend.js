@@ -77,15 +77,15 @@ module.exports.run = (client, message, args) => {
                 var parser = new droid.parser();
                 var lastdate = map.last_update;
                 var url = "https://osu.ppy.sh/osu/" + mapid;
-                request(url, (err, response, data) => {
+                request(url, async (err, response, data) => {
                     parser.feed(data);
                     var mods = 4;
                     var nmap = parser.map;
                     nmap.cs = cs; nmap.ar = ar; nmap.od = od;
 
-                    var nstars = new droid.diff().calc({map: nmap, mods: mods});
+                    var nstars = await new droid.diff().calc({map: nmap, mods: mods});
 
-                    var npp = new droid.ppv2({
+                    var npp = await new droid.ppv2({
                         stars: nstars,
                         combo: combo,
                         nmiss: 0,
