@@ -86,7 +86,7 @@ module.exports.run = (client, message, args, maindb) => {
         if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
         
         let rolename = args.slice(1).join(" ");
-        if (!rolename) return message.channel.send("❎ **| Hey, I don't know what dan role to give!");
+        if (!rolename) return message.channel.send("❎ **| Hey, I don't know what dan role to give!**");
         if (!danlist.includes(rolename)) {
             let rolelist = '';
             danlist.forEach(role => {
