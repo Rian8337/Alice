@@ -85,7 +85,7 @@ module.exports.run = (client, message, args) => {
 			var rplay = obj.recent;
 			var rolecheck;
 			try {
-				rolecheck = message.member.roles
+				rolecheck = message.member.highestRole.hexColor
 			} catch (e) {
 				rolecheck = "#000000"
 			}
