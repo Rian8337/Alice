@@ -97,10 +97,11 @@ module.exports.run = (client, message, args, maindb) => {
 
         let role = message.guild.roles.find(r => r.name === rolename);
         if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${rolename} role!**`);
+        if (togive.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!`);
 
         togive.addRole(role.id, "Successfully completed dan course").then (() => {
             message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!`)
-        }).catch(() => message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!`))
+        }).catch(e => console.log(e))
     }
     else {
         let binddb = maindb.collection("userbind");
@@ -154,9 +155,11 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
 
                     var role = message.guild.roles.find(r => r.name === danrole);
+                    if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
+                    if (message.member.has(role.id)) return message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`);
                     message.member.addRole(role.id, "Successfully completed dan course").then(() => {
                         message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
-                    }).catch(() => message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`));
+                    }).catch(e => console.log(e));
 
                     // Dan Course Master
                     var danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden"];
