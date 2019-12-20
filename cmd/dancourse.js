@@ -90,9 +90,9 @@ module.exports.run = (client, message, args, maindb) => {
         if (!danlist.includes(rolename)) {
             let rolelist = '';
             danlist.forEach(role => {
-                rolelist += '`' + role + '` ';
+                rolelist += '`' + role + '`, ';
             });
-            rolelist = rolelist.trimRight().split(" ").join(", ");
+            rolelist = rolelist.trimRight().trimRight();
             return message.channel.send(`❎ **| I'm sorry, I cannot find the role! Accepted arguments are ${rolelist}.**`)
         }
 
