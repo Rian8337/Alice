@@ -92,7 +92,7 @@ module.exports.run = (client, message, args, maindb) => {
             danlist.forEach(role => {
                 rolelist += '`' + role + '`, ';
             });
-            rolelist = rolelist.trimRight().trimRight();
+            rolelist = rolelist.trimRight().trimRight().trimRight();
             return message.channel.send(`❎ **| I'm sorry, I cannot find the role! Accepted arguments are ${rolelist}.**`)
         }
 
