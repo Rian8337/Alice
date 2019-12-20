@@ -128,6 +128,7 @@ module.exports.run = (client, message, args, maindb) => {
                 danlist.forEach(role => {
                     if (message.member.roles.find(r => r.name === role)) count++
                 });
+                console.log(`${count}/${danlist.length}`);
                 if (count == danlist.length) {
                     var dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
                     if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
