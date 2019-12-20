@@ -51,7 +51,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-        if (message.channel instanceof Discord.DMChannel) return;
+	if (message.channel instanceof Discord.DMChannel) return;
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
@@ -106,12 +106,12 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                                        var rolecheck;
-                                        try {
-                                                rolecheck = message.member.highestRole.hexColor
-                                        } catch (e) {
-                                                rolecheck = "#000000"
-                                        }
+					var rolecheck;
+					try {
+						rolecheck = message.member.highestRole.hexColor
+					} catch (e) {
+						rolecheck = "#000000"
+					}
 					let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 					if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
 
@@ -133,7 +133,7 @@ module.exports.run = (client, message, args, maindb) => {
 							if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							else page = 1;
 							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, message, rplay, name, page, footer, index);
+							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 							msg.edit(embed).catch(e => console.log(e))
 						});
 
