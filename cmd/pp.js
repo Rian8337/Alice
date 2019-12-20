@@ -213,10 +213,11 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					var curpos = 0;
 					var playentry = [];
+					var rolecheck;
                                         try {
-                                                let rolecheck = message.member.highestRole.hexColor
+                                                rolecheck = message.member.highestRole.hexColor
                                         } catch (e) {
-                                                let rolecheck = "#000000"
+                                                rolecheck = "#000000"
                                         }
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
