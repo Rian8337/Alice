@@ -308,7 +308,6 @@ function time(second) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
-    console.log(cd)
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     if (message.channel.name != 'bot-ground' && message.channel.id != '635535610739687435') {
         let channel = message.guild.channels.find(c => c.name === 'bot-ground');
@@ -316,7 +315,7 @@ module.exports.run = (client, message, args, maindb) => {
         else return message.channel.send("❎ **| Hey, please create #bot-ground first!**")
     }
     var limit = parseInt(args[0]);
-    if (isNaN(limit)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    if (!limit) limit = 10;
     if ((limit < 1 || limit > 100) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-100 beatmaps!**");
     if (limit == 0) limit = 10;
     console.log(limit);
