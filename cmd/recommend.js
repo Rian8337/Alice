@@ -335,7 +335,7 @@ module.exports.run = (client, message, args, maindb) => {
         var minpp;
         var acc;
         for (var i = 1; i < args.length; i++) {
-            if (args[i].startsWith("+")) mod = args[i];
+            if (args[i].startsWith("+")) mod = args[i].toUpperCase();
             if (args[i].endsWith("maxdpp")) maxpp = parseFloat(args[i]);
             if (args[i].endsWith("mindpp")) minpp = parseFloat(args[i]);
             if (args[i].endsWith("%")) acc = parseFloat(args[i])
