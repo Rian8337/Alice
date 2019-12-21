@@ -236,12 +236,12 @@ function playInfo(message, obj, i, target) {
             if (droidpp < maxpp + 150 && droidpp > Math.max(0, minpp - 75)) {
                 var dup = false;
                 for (var j = 0; j < beatmapentry.length; j++) {
-                    if (beatmapentry[j].beatmapid == beatmap.beatmapid) {
+                    if (beatmapentry[j].beatmapid == mapid) {
                         console.log("Duplicate in map list");
                         dup = true;
                         break
                     }
-                    if (beatmapentry[j].setid == beatmap.setid && beatmapentry[j].dpp < beatmap.dpp) {
+                    if (beatmapentry[j].setid == mapsetid && beatmapentry[j].dpp < droidpp) {
                         beatmapentry[j] = beatmap;
                         dup = true;
                         console.log(`Entry updated (${beatmapentry.length})`);
