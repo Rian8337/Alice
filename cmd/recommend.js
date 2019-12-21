@@ -308,6 +308,7 @@ function time(second) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    console.log(cd)
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     if (message.channel.name != 'bot-ground' && message.channel.id != '635535610739687435') {
         let channel = message.guild.channels.find(c => c.name === 'bot-ground');
