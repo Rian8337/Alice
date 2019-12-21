@@ -7,6 +7,7 @@ module.exports.run = (client, message, args) => {
     } catch (e) {
         return
     }
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("You don't have permission to do this");
 
     let todelete = parseInt(args[0]);
@@ -14,7 +15,8 @@ module.exports.run = (client, message, args) => {
     if (isNaN(todelete)) return message.channel.send("Invalid number of messages to delete");
     if (todelete < 2 || todelete > 100) return message.channel.send("Invalid number of messages to delete, must be in range of 2-100");
 
-    message.channel.bulkDelete(todelete + 1).then (() => {
+    message.author.lastMessage.delete();
+    message.channel.bulkDelete(todelete).then (() => {
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
