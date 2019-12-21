@@ -15,23 +15,24 @@ module.exports.run = (client, message, args) => {
     if (isNaN(todelete)) return message.channel.send("Invalid number of messages to delete");
     if (todelete < 2 || todelete > 100) return message.channel.send("Invalid number of messages to delete, must be in range of 2-100");
 
-    message.author.lastMessage.delete();
-    message.channel.bulkDelete(todelete).then (() => {
-        let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    message.author.lastMessage.delete().then (() => {
+        message.channel.bulkDelete(todelete).then(() => {
+            let footer = config.avatar_list;
+            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
-        const embed = new Discord.RichEmbed()
-          .setAuthor(message.author.tag, message.author.avatarURL)
-          .setDescription("**Bulk delete executed**")
-          .setColor(message.member.highestRole.hexColor)
-          .setTimestamp(new Date())
-          .setFooter("Alice Synthesis Thirty", footer[index])
-          .addField("Amount of messages", todelete);
+            const embed = new Discord.RichEmbed()
+                .setAuthor(message.author.tag, message.author.avatarURL)
+                .setDescription("**Bulk delete executed**")
+                .setColor(message.member.highestRole.hexColor)
+                .setTimestamp(new Date())
+                .setFooter("Alice Synthesis Thirty", footer[index])
+                .addField("Amount of messages", todelete);
 
-      message.channel.send({embed}).then(msg => {
-          msg.delete(10000)
-      }).catch(e => console.log(e))
-  })
+            message.channel.send({embed}).then(msg => {
+                msg.delete(10000)
+            }).catch(e => console.log(e))
+        })
+    })
 };
 
 module.exports.help = {
