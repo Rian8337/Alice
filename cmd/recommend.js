@@ -55,7 +55,7 @@ function playInfo(message, obj, i, target) {
             return beatmapFetch(message, target)
         }
         console.log("Done!");
-        beatmapentry.sort(function (a, b) {
+        beatmapentry.sort((a, b) => {
             return b.dpp - a.dpp
         });
         var rolecheck;
