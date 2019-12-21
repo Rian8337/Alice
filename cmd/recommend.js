@@ -316,6 +316,7 @@ module.exports.run = (client, message, args, maindb) => {
     }
     var limit = parseInt(args[0]);
     if (!limit) limit = 10;
+    if (isNaN(limit)) return message.channel.send("❎ **| Hey, that's not a valid limit!**");
     if ((limit < 1 || limit > 100) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-100 beatmaps!**");
     if (limit == 0) limit = 10;
     console.log(limit);
