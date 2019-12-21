@@ -233,7 +233,7 @@ function playInfo(message, obj, i, target) {
                 dpp: droidpp,
                 pp: pcpp
             };
-            if (droidpp < maxpp + 150 && droidpp > Math.max(0, minpp - 75)) {
+            if (droidpp < maxpp + 150 && droidpp > Math.max(0, minpp - 50)) {
                 var dup = false;
                 for (var j = 0; j < beatmapentry.length; j++) {
                     if (beatmapentry[j].beatmapid == mapid) {
