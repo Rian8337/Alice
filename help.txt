@@ -27,6 +27,7 @@ Prefix: "a!"
 - osu set <username>
 
 ★ osu!droid
+- dancourse
 - manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]
 - profileid <uid>
 - profileme [discord user] (only binded user)
