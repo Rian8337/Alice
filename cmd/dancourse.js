@@ -54,7 +54,7 @@ function dancheck (dan) {
         case 10: return "Chuuden";
         case 11: return "Kaiden";
         case 12: return "Aleph-0 Dan";
-        default: return false
+        default: return undefined
     }
 }
 
@@ -155,18 +155,18 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!obj.recent[0]) return message.channel.send("❎ **| You haven't set any plays!**");
                     let play = obj.recent[0];
                     let mods = play.mode;
-                    let acc = (parseInt(play.accuracy) / 1000).toFixed(2);
+                    let acc = (parseFloat(play.accuracy) / 1000).toFixed(2);
                     let rank = play.mark;
                     let hash = play.hash;
 
                     let dan = danid(hash);
                     if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't played any dan course recently!**");
 
-                    let valid = validation(dan, mods, acc, rank);
-                    if (valid !== 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\nReason: " + rejectionMessage(valid) + "**");
-
                     let danrole = dancheck(dan);
                     if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
+
+                    let valid = validation(dan, mods, acc, rank);
+                    if (valid !== 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + danrole + " (" + rank + ", " + acc + "%)\nReason: " + rejectionMessage(valid) + "**");
 
                     let role = message.guild.roles.find(r => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
