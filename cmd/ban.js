@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args) => {
     if (!toban) return message.channel.send("❎ **| I'm sorry, I cannot find the user!**");
     let reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Please enter your reason.**");
-    reason = reason + " (banned by " + message.author.username + ")";
+    reason += " (banned by " + message.author.username + ")";
 
     message.guild.ban(toban, {reason: reason}).then (() => {
         let footer = config.avatar_list;
