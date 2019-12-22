@@ -64,6 +64,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             else if (mode === 'mania') mode = 3;
             else mode = 0;
 
+            if (args[1]) username = args.slice(1).join(" ");
+
             var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
             var content;
 
@@ -107,9 +109,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField("User ID", playerinfo.user_id, true);
 
                     if (mode === 0) embed.setAuthor("osu!standard Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 1) embed.setAuthor("Taiko Profile for " + username, "https://a.ppy.sh/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 2) embed.setAuthor("Catch the Beat Profile for " + username, "https://a.ppy.sh/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 3) embed.setAuthor("osu!mania Profile for " + username, "https://a.ppy.sh/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 1) embed.setAuthor("Taiko Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 2) embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 3) embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
 
                     message.channel.send({embed: embed})
                 })
