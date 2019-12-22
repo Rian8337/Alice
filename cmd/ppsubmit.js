@@ -154,8 +154,8 @@ module.exports.run = (client, message, args, maindb) => {
 	let objcount = {x: 0};
 	var offset = 1;
 	var start = 1;
-	if (args[1]) offset = parseInt(args[1]);
-	if (args[2]) start = parseInt(args[2]);
+	if (args[1]) offset = parseInt(args[0]);
+	if (args[2]) start = parseInt(args[1]);
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
@@ -282,7 +282,7 @@ module.exports.run = (client, message, args, maindb) => {
 									}
 									var diff = pptotal - pre_pptotal;
 									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
-									message.channel.send('✅ **| <@' + message.author.id + '> successfully submitted play(s) for <@' + discordid + '>. More info in embed.**', {embed: embed});
+									message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
 									var updateVal = {
 										$set: {
 											pptotal: pptotal,
@@ -302,7 +302,7 @@ module.exports.run = (client, message, args, maindb) => {
 				})
 			});
 			req.end()
-		} else message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		} else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
