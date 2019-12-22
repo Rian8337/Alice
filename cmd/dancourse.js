@@ -99,8 +99,10 @@ module.exports.run = (client, message, args, maindb) => {
         if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${rolename} role!**`);
         if (togive.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!**`);
 
+        let channel = message.guild.channels.get("316545691545501706");
         togive.addRole(role.id, "Successfully completed dan course").then (() => {
-            message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!**`)
+            message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!**`);
+            if (danlist.slice(7, danlist.length).includes(rolename)) channel.send(`**<@${togive.id}> has just completed ${rolename}. Congratulations to <@${togive.id}>!**`)
         }).catch(e => console.log(e));
 
         // Dan Course Master
@@ -113,7 +115,8 @@ module.exports.run = (client, message, args, maindb) => {
             let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
             if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
             togive.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
-                message.channel.send(`✅ **| <@${togive.id}>, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
+                message.channel.send(`✅ **| <@${togive.id}>, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
+                channel.send(`**<@${togive.id}> has just achieved Dan Course Master. Congratulations to <@${togive.id}>!**`)
             }).catch(e => console.log(e))
         }
     }
@@ -171,8 +174,10 @@ module.exports.run = (client, message, args, maindb) => {
                     let role = message.guild.roles.find(r => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
                     if (message.member.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, you already have ${danrole} role!**`);
+                    let channel = message.guild.channels.get("316545691545501706");
                     message.member.addRole(role.id, "Successfully completed dan course").then(() => {
-                        message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
+                        message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
+                        if (dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
                     }).catch(e => console.log(e));
 
                     // Dan Course Master
@@ -185,7 +190,8 @@ module.exports.run = (client, message, args, maindb) => {
                         let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
                         if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
                         message.member.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
-                            message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`)
+                            message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
+                            channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
                         }).catch(e => console.log(e))
                     }
                 })
