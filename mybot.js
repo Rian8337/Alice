@@ -6,6 +6,7 @@ require("https");
 require("util");
 var mongodb = require('mongodb');
 require("dotenv").config();
+const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 var elainadbkey = process.env.ELAINA_DB_KEY;
 var alicedbkey = process.env.ALICE_DB_KEY;
 
@@ -149,38 +150,33 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 
 client.on("messageDelete", message => {
 	if (message.author.bot) return;
-	let logchannel;
 	if (message.guild.id == '316545691545501706') {
 		if (message.attachments.size == 0) return;
-		logchannel = message.guild.channels.find(c => c.name === 'dyno-log');
-		if (!logchannel) return;
 		let attachments = [];
 		message.attachments.forEach((attachment) => {
 			attachments.push(attachment.proxyURL)
 		});
-		logchannel.send("Image attached", {files: attachments})
+		return messageLog.send("Image attached", {files: attachments})
 	}
-	else {
-		logchannel = message.guild.channels.find(c => c.name === config.log_channel);
-		if (!logchannel) return;
-		const embed = new Discord.RichEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL)
-			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-			.setTimestamp(new Date())
-			.setColor("#cb8900")
-			.setTitle("Message deleted")
-			.addField("Channel", message.channel);
+	let logchannel = message.guild.channels.find(c => c.name === config.log_channel);
+	if (!logchannel) return;
+	const embed = new Discord.RichEmbed()
+		.setAuthor(message.author.tag, message.author.avatarURL)
+		.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+		.setTimestamp(new Date())
+		.setColor("#cb8900")
+		.setTitle("Message deleted")
+		.addField("Channel", message.channel);
 
-		if (message.content) embed.addField("Content", message.content.substring(0, 1024));
-		logchannel.send(embed);
+	if (message.content) embed.addField("Content", message.content.substring(0, 1024));
+	logchannel.send(embed);
 
-		if (message.attachments.size > 0) {
-			let attachments = [];
-			message.attachments.forEach(attachment => {
-				attachments.push(attachment.proxyURL)
-			});
-			logchannel.send({files: attachments})
-		}
+	if (message.attachments.size > 0) {
+		let attachments = [];
+		message.attachments.forEach(attachment => {
+			attachments.push(attachment.proxyURL)
+		});
+		logchannel.send({files: attachments})
 	}
 });
 
