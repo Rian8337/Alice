@@ -11,6 +11,17 @@ function isEligible(member) {
     return res
 }
 
+function rejectionMessage (id) {
+    switch (id) {
+        case 1: return "NF/EZ/HT mod used";
+        case 2: return "Rank achieved is not S or accuracy achieved is less than 97% with A rank";
+        case 3: return "Accuracy achieved is less than 93%";
+        case 4: return "Accuracy achieved is less than 90%";
+        case 5: return "Rank achieved is not S or A";
+        default: return "Unknown"
+    }
+}
+
 function danid (hash) {
     switch (hash) {
         case "53d46ac17cc3cf56f35c923f72343fa5": return 1; // 1st Dan
@@ -48,30 +59,18 @@ function dancheck (dan) {
 }
 
 function validation (dan, mod, acc, rank) {
-    var res;
+    var res = 0;
     if (mod.includes("n") || mod.includes("e") || mod.includes("t")) {
-        res = 0;
+        res = 1;
         return res
     }
     if (dan >= 1 && dan <= 9) { // 1st-9th Dan
-        if (acc >= 97) res = 1;
-        else {
-            if (rank.includes("S")) res = 1;
-            else res = 0;
-        }
+        if (acc >= 97) res = 0;
+        else if (!rank.includes("S")) res = 2;
     }
-    if (dan === 10) { // Chuuden
-        if (acc >= 93) res = 1;
-        else res = 0
-    }
-    if (dan === 11) { // Kaiden
-        if (acc >= 90) res = 1;
-        else res = 0
-    }
-    if (dan === 12) { // Aleph-0 Dan
-        if (rank.includes("A")) res = 1;
-        else res = 0
-    }
+    if (dan === 10 && acc < 93) res = 3; // Chuuden
+    if (dan === 11 && acc < 90) res = 4;// Kaiden
+    if (dan === 12 && (!rank.includes("A") && !rank.includes("S"))) res = 5; // Aleph-0 Dan
     return res
 }
 
@@ -161,10 +160,10 @@ module.exports.run = (client, message, args, maindb) => {
                     let hash = play.hash;
 
                     let dan = danid(hash);
-                    if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted a dan course score recently!**");
+                    if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't played any dan course recently!**");
 
                     let valid = validation(dan, mods, acc, rank);
-                    if (valid === 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!**");
+                    if (valid !== 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\nReason: " + rejectionMessage(valid) + "**");
 
                     let danrole = dancheck(dan);
                     if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
@@ -175,7 +174,7 @@ module.exports.run = (client, message, args, maindb) => {
                     message.member.addRole(role.id, "Successfully completed dan course").then(() => {
                         message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`)
                     }).catch(e => console.log(e));
-                    
+
                     // Dan Course Master
                     danlist.pop();
                     let count = 1;
