@@ -34,6 +34,7 @@ module.exports.run = async (client, message, args) => {
 
     let reason = args.slice(2).join(" ");
     if (!reason) return message.channel.send("Please enter your reason.");
+    reason += " (banned by " + message.author.username + ")";
 
     message.guild.ban(toban, {reason: reason}).then (() => {
         message.author.lastMessage.delete();
