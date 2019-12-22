@@ -166,7 +166,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!danrole) return message.channel.send("❎ **| I'm sorry, I cannot find the dan role!**");
 
                     let valid = validation(dan, mods, acc, rank);
-                    if (valid !== 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + danrole + " (" + rank + ", " + acc + "%)\nReason: " + rejectionMessage(valid) + "**");
+                    if (valid !== 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + danrole + "\nReason: " + rejectionMessage(valid) + "**");
 
                     let role = message.guild.roles.find(r => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
