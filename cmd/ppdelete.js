@@ -3,23 +3,23 @@ let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('638671295470370827');
-	if (!logchannel) return message.channel.send("Please create #pp-log first!");
+	if (!logchannel) return message.channel.send("❎ **| Please create #pp-log first!**");
 
 	let ufind = args[0];
-	if (!args[0]) return message.channel.send("Please mention a user");
+	if (!args[0]) return message.channel.send("❎ **| Hey, can you mention a user? Unless you want me to delete your own plays, if that's your thing.**");
 	ufind = ufind.replace('<@!','');
 	ufind = ufind.replace('<@','');
 	ufind = ufind.replace('>','');
-	if (isNaN(Number(ufind))) return message.channel.send("Please make sure you have specified the correct user!");
+	if (isNaN(Number(ufind))) return message.channel.send("❎ **| I don't think that user is correct... Please make sure you have entered a correct user!**");
 
 	let todelete = args[1];
-	if (!todelete) return message.channel.send("Please specify play number to delete");
-	if (todelete <= 0) return message.channel.send("Invalid play number, minimum is 1");
-	if (isNaN(todelete)) return message.channel.send("Invalid play number to delete");
+	if (!todelete) return message.channel.send("❎ **| Hey, I don't know which play to delete!**");
+	if (todelete <= 0) return message.channel.send("❎ **| Invalid play number, minimum is 1.**");
+	if (isNaN(todelete)) return message.channel.send("❎ **| Invalid play number to delete.**");
 
 	console.log(ufind);
 	let binddb = maindb.collection("userbind");
@@ -39,7 +39,7 @@ module.exports.run = (client, message, args, maindb) => {
 			else var pre_pptotal = 0;
 			if (userres[0].playc) var playc = userres[0].playc;
 			else var playc = 0;
-			if (todelete > pplist.length) {console.log("Data not found"); message.channel.send("User pp data does not exist"); return;}
+			if (todelete > pplist.length) {console.log("Data not found"); message.channel.send("❎ **| This user doesn't seem to have a pp data.**"); return;}
 			var pptotal = 0;
 
 			pplist.sort(function (a, b) {
@@ -71,7 +71,7 @@ module.exports.run = (client, message, args, maindb) => {
 			logchannel.send({embed});
 
 			playc--;
-			message.channel.send("Play pp data has been deleted");
+			message.channel.send("✅ **| Successfully deleted play data!**");
 			var updateVal = {
 				$set: {
 					pptotal: pptotal,
@@ -87,7 +87,7 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log('pp updated');
 				addcount = 0;
 			})
-		} else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
+		} else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 	})
 };
 
