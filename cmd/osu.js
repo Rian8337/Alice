@@ -94,24 +94,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setColor(message.member.highestRole.hexColor)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Rank", "#" + playerinfo.pp_rank, true)
-                        .addBlankField(true)
                         .addField("Country rank", playerinfo.country + " #" + playerinfo.pp_country_rank, true)
                         .addField("Accuracy", parseFloat(playerinfo.accuracy).toFixed(2) + "%", true)
-                        .addBlankField(true)
                         .addField("Play count", playerinfo.playcount, true)
                         .addField("Ranked score", parseInt(playerinfo.ranked_score).toLocaleString("en-US"), true)
-                        .addBlankField(true)
                         .addField("Total score", parseInt(playerinfo.total_score).toLocaleString("en-US"), true)
                         .addField("PP", playerinfo.pp_raw, true)
-                        .addBlankField(true)
                         .addField("Level", Math.floor(parseFloat(playerinfo.level)) + " (" + progress(playerinfo.level) + "%)", true)
                         .addField("Join date", playerinfo.join_date + " UTC", true)
                         .addField("User ID", playerinfo.user_id, true);
 
                     if (mode === 0) embed.setAuthor("osu!standard Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 1) embed.setAuthor("Taiko Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 2) embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    if (mode === 3) embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country, "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 1) embed.setAuthor("Taiko Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 2) embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
+                    if (mode === 3) embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
 
                     message.channel.send({embed: embed})
                 })
