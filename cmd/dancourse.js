@@ -161,7 +161,7 @@ module.exports.run = (client, message, args, maindb) => {
                     let hash = play.hash;
 
                     let dan = danid(hash);
-                    if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't played any dan course recently!**");
+                    if (dan === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted a dan course score recently!**");
 
                     let valid = validation(dan, mods, acc, rank);
                     if (valid === 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!**");
