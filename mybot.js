@@ -131,6 +131,13 @@ client.on("message", message => {
 	}
 });
 
+// welcome message
+client.on("guildMemberAdd", member => {
+        let channel = message.guild.channels.get("360716684174032896");
+        if (!channel) return;
+        let joinMessage = `Welcome to ${message.guild.name}'s ${channel}, <${member}>`;
+});
+
 // message logging
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	if (oldMessage.author.bot) return;
