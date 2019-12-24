@@ -1,7 +1,6 @@
 var http = require('http');
 var droidapikey = process.env.DROID_API_KEY;
 var config  = require('../config.json');
-var cd = new Set();
 
 function isEligible(member) {
     var res = 0;
@@ -56,7 +55,6 @@ function validation(dan, mod, acc, rank) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
     let channel = message.guild.channels.get("316545691545501706");
 
@@ -100,10 +98,6 @@ module.exports.run = (client, message, args, maindb) => {
                 channel.send(`**<@${togive.id}> has just achieved Dan Course Master. Congratulations to <@${togive.id}>!**`)
             }).catch(e => console.log(e));
         }
-        cd.add(message.author.id);
-        setTimeout(() => {
-            cd.delete(message.author.id)
-        }, 5000);
     }
     else {
         let binddb = maindb.collection("userbind");
@@ -145,7 +139,10 @@ module.exports.run = (client, message, args, maindb) => {
                     let mods = play.mode;
                     let acc = (parseInt(play.accuracy) / 1000).toFixed(2);
                     let rank = play.mark;
+
                     let dan = dancheck(play.hash);
+                    if (dan[0] == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!!**");
+
                     let valid = validation(dan[0], mods, acc, rank);
                     if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\nReason: " + rejectionMessage(valid) + "**");
 
@@ -174,11 +171,7 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                 })
             });
-            req.end();
-            cd.add(message.author.id);
-            setTimeout(() => {
-                cd.delete(message.author.id)
-            }, 5000)
+            req.end()
         })
     }
 };
