@@ -60,7 +60,7 @@ module.exports.run = (client, message, args, maindb) => {
 
     if (args[0]) {
         let perm = isEligible(message.member);
-        if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper!**");
+        if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
 
         let togive = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
         if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
