@@ -36,7 +36,7 @@ function dancheck(hash) {
         case "40261e470a4649e3f77b65d64964529e": return [10, "Chuuden"];
         case "c12aa4ce57bf072ffa47b223b81534dd": return [11, "Kaiden"];
         case "b07292999f84789970bf8fbad72d5680": return [12, "Aleph-0 Dan"];
-        default: return false
+        default: return undefined
     }
 }
 
