@@ -137,7 +137,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!obj.recent[0]) return message.channel.send("❎ **| You haven't set any plays!**");
                     let play = obj.recent[0];
                     let mods = play.mode;
-                    let acc = (parseInt(play.accuracy) / 1000).toFixed(2);
+                    let acc = (parseFloat(play.accuracy) / 1000).toFixed(2);
                     let rank = play.mark;
 
                     let dan = dancheck(play.hash);
