@@ -36,7 +36,7 @@ function dancheck(hash) {
         case "40261e470a4649e3f77b65d64964529e": return [10, "Chuuden"];
         case "c12aa4ce57bf072ffa47b223b81534dd": return [11, "Kaiden"];
         case "b07292999f84789970bf8fbad72d5680": return [12, "Aleph-0 Dan"];
-        default: return 0
+        default: return false
     }
 }
 
@@ -141,7 +141,7 @@ module.exports.run = (client, message, args, maindb) => {
                     let rank = play.mark;
 
                     let dan = dancheck(play.hash);
-                    if (dan[0] == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!!**");
+                    if (!dan) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!!**");
 
                     let valid = validation(dan[0], mods, acc, rank);
                     if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\nReason: " + rejectionMessage(valid) + "**");
