@@ -137,7 +137,10 @@ client.on("guildMemberAdd", member => {
         if (!channel) return;
         console.log("Member joined");
         let joinMessage = `Welcome to ${member.guild.name}'s ${channel}, <@${member.id}>. To verify yourself as someone who plays osu!droid or interested in the game and open the rest of the server, you can follow any of the following methods:\n\n- post your osu!droid screenshot (main menu if you are an online player or recent result (score) if you are an offline player)\n\n- post your osu! profile (screenshot or link) and reason why you join this server (don't worry, we don't judge you)\n\nafter that, you can ping Moderator or Helper role and wait for one to come to verify you (you can also ping both roles if you need help), waiting can last from 5 seconds to 1 hour (I know, sorry xd)`;
-        channel.send(joinMessage)
+        channel.send(joinMessage);
+	let general = member.guild.channels.get("316545691545501706");
+	let welcomeMessage = `Welcome to ${member.guild.name}, <@${member.id}>!`;
+	general.send(welcomeMessage);
 });
 
 // message logging
