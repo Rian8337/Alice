@@ -145,11 +145,11 @@ module.exports.run = (client, message, args, maindb) => {
                     var beatmapentry = [];
                     for (var i = 0; i < play.length; i++) {
                         if (!play[i]) break;
-                        let dan = dancheck(play.hash);
+                        let dan = dancheck(play[i].hash);
                         if (dan[0] !== 0) {
-                            let mods = play.mode;
-                            let acc = (parseInt(play.accuracy) / 1000).toFixed(2);
-                            let rank = play.mark;
+                            let mods = play[i].mode;
+                            let acc = (parseInt(play[i].accuracy) / 1000).toFixed(2);
+                            let rank = play[i].mark;
                             let beatmap = [dan, mods, acc, rank];
                             if (!message.member.roles.find(r => r.name === dan[1])) beatmapentry.push(beatmap)
                         }
