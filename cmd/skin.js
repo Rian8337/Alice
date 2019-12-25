@@ -65,6 +65,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     }
 };
 
+module.exports.config = {
+    description: "Sets a skin or retrieves a user's skin.",
+    usage: "skin [user]\nskin set <skin link>",
+    detail: "`user`: The user to retrieve [UserResolvable (mention or user ID)]",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "skin"
 };
