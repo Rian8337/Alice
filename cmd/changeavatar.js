@@ -18,6 +18,13 @@ module.exports.run = (client, message, args) => {
     }).catch(() => message.channel.send("You are changing avatar too fast!"));
 };
 
+module.exports.config = {
+    description: "Changes the bot's avatar.",
+    usage: "changeavatar <number>",
+    detail: "`number`: Order in config file [Integer]",
+    permission: "Bot Owner"
+};
+
 module.exports.help = {
     name: "changeavatar"
 };
