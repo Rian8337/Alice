@@ -143,7 +143,7 @@ function whitelistInfo(link_in, hash_in, message, callback) {
 module.exports.config = {
     description: "Whitelists a beatmap.",
     usage: "whitelist <map link/map ID>",
-    detail: "`map link/map ID`: The beatmap to whitelist [String]",
+    detail: "`map link/map ID`: The beatmap link or ID to whitelist [String]",
     permission: "pp-project Map Validator"
 };
 
