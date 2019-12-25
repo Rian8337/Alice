@@ -50,6 +50,13 @@ module.exports.run = async (client, message, args) => {
     }).catch(() => message.channel.send("❎ **| I'm sorry, looks like the user is already banned or cannot be banned!**"))
 };
 
+module.exports.config = {
+    description: "Bans a user.",
+    usage: "ban <user> <reason>",
+    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason for banning [String]",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "ban"
 };
