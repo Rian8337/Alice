@@ -150,6 +150,13 @@ module.exports.run = (client, message, args) => {
 	}, 10000)
 };
 
+module.exports.config = {
+	description: "Retrieves an osu!droid account's recent plays based on uid.",
+	usage: "recent5 <uid> [page]",
+	detail: "`uid`: The uid to retrieve [Integer]\n`page`: The page to view from 1 to 10 [Integer]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "recent5"
 };
