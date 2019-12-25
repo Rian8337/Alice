@@ -1,0 +1,34 @@
+{
+  "general": [
+    "avatar",
+    "help",
+    "ping",
+    "report"
+  ],
+  "droid": [
+    "dancourse",
+    "manualcalc",
+    "osu",
+    "pfid",
+    "pfme",
+    "profileid",
+    "profileme",
+    "profilesearch",
+    "recent",
+    "recentme",
+    "recent5",
+    "recent5me",
+    "skin",
+    "userbind",
+    "usersearch"
+  ],
+  "dpp": [
+    "lb",
+    "pp",
+    "ppcheck"
+  ],
+  "malody": [
+    "malodyprofile",
+    "malodyrecent"
+  ]
+}
