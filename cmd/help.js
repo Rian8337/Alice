@@ -6,10 +6,17 @@ module.exports.run = (client, message, args) => {
 	if (args[0]) {
 		let cmd = client.commands.get(args[0]);
 		if (cmd) {
+			var rolecheck;
+			try {
+				rolecheck = message.member.highestRole.hexColor
+			} catch (e) {
+				rolecheck = "#000000"
+			}
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let help = `**${config.prefix}${args[0]}**\n${cmd.config.description || "No Description"}\n\n**Permission:** ${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage || "No Usage"}\`\n**Details:**\n${cmd.config.detail}`;
+			let help = `**${config.prefix}${args[0]}**\n${cmd.config.description || "No Description"}\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage || "No Usage"}\`\n**Details:**\n${cmd.config.detail}`;
 			let embed = new Discord.RichEmbed()
+				.setColor(rolecheck)
 				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setThumbnail(client.user.avatarURL)
 				.setDescription(help);
@@ -29,7 +36,7 @@ module.exports.run = (client, message, args) => {
 module.exports.config = {
 	description: "General help command.",
 	usage: "help [cmd]",
-	detail: "`cmd`: Command name [String]",
+	detail: "`cmd`: Command name",
 	permission: "None"
 };
 
