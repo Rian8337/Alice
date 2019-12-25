@@ -35,6 +35,13 @@ module.exports.run = (client, message, args) => {
     })
 };
 
+module.exports.config = {
+    description: "Deletes a specified amount of messages.",
+    usage: "bulkdelete <amount of messages to delete>",
+    detail: "Amount of messages must be an integer between 2 and 100.",
+    permission: "Manage Messages"
+};
+
 module.exports.help = {
     name: "bulkdelete"
 };
