@@ -87,6 +87,13 @@ module.exports.run = async (client, message, args) => {
             .catch(console.error);
 };
 
+module.exports.config = {
+    description: "Permanently mutes a user.",
+    usage: "mute <user> <reason>",
+    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason for banning [String]",
+    permission: "Moderator"
+};
+
 module.exports.help = {
     name: "mute"
 };
