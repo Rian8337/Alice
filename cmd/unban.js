@@ -42,6 +42,13 @@ module.exports.run = async (client, message, args) => {
     }).catch(() => message.channel.send("❎ **| I'm sorry, that user is not banned!**"))
 };
 
+module.exports.config = {
+    description: "Unbans a user.",
+    usage: "unban <user> <reason>",
+    detail: "`user`: The user to unban [User ID]\n`reason`: Reason for unbanning [String]",
+    permission: "Owner"
+};
+
 module.exports.help = {
     name: "unban"
 };
