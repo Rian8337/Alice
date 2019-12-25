@@ -29,7 +29,7 @@ module.exports.run = (client, message, args) => {
 module.exports.config = {
 	description: "General help command.",
 	usage: "help [cmd]",
-	detail: "`cmd`: Command name",
+	detail: "`cmd`: Command name [String]",
 	permission: "None"
 };
 
