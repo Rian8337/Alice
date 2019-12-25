@@ -176,10 +176,16 @@ var Replay = function() {
 };
 
 module.exports.run = (client, message, args) => {
-	var R = new Replay;
-	
-}
+	var R = new Replay;	
+};
+
+module.exports.config = {
+	description: "Replay parser.",
+	usage: "None",
+	detail: "None",
+	permission: "None"
+};
 
 module.exports.help = {
 	name: "parse"
-}
+};
