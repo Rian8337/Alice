@@ -25,6 +25,13 @@ module.exports.run = (client, message, args) => {
 	}
 };
 
+module.exports.config = {
+	description: "Says a message with the bot.",
+	usage: "None",
+	detail: "None",
+	permission: "Bot Owner"
+};
+
 module.exports.help = {
 	name: "sayit"
 };
