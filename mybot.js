@@ -169,7 +169,7 @@ client.on("messageDelete", message => {
 		message.attachments.forEach((attachment) => {
 			attachments.push(attachment.proxyURL)
 		});
-		return messageLog.send("Image attached", {files: attachments})
+		return messageLog.send("Image attached", {files: attachments}).catch(console.error)
 	}
 	let logchannel = message.guild.channels.find(c => c.name === config.log_channel);
 	if (!logchannel) return;
