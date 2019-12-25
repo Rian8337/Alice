@@ -220,6 +220,13 @@ module.exports.run = (client, message, args, maindb) => {
     })
 };
 
+module.exports.config = {
+    description: "Recalculates all plays of an account.",
+    usage: "completepp <user>",
+    detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
+    permission: "Owner"
+};
+
 module.exports.help = {
 	name: "completepp"
 };
