@@ -155,6 +155,13 @@ function whitelistInfo(link_in, message, callback) {
 	req.end()
 }
 
+module.exports.config = {
+    description: "Whitelists a beatmap set.",
+    usage: "whitelistset <map set link/map set ID>",
+    detail: "`map set link/map set ID`: The beatmap set link or ID to whitelist [String]",
+    permission: "pp-project Map Validator"
+};
+
 module.exports.help = {
 	name: "whitelistset"
 };
