@@ -54,7 +54,7 @@ module.exports.run = (client, message, args) => {
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 		let embed = new Discord.RichEmbed()
-			.setTitle("Alice Synthesis Thirty Help")
+			.setTitle("Alice Synthesis Thirty Help\nUser Commands")
 			.setDescription(`**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [commamd name]\`.\nFor moderation commands, type \`${config.prefix}modhelp\`.`)
 			.setThumbnail(client.user.avatarURL)
 			.setColor(rolecheck)
