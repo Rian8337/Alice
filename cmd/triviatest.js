@@ -206,8 +206,15 @@ module.exports.run = (client, message, args) => {
             }
         }
     })
-}
+};
+
+module.exports.config = {
+    description: "A quiz command.",
+    usage: "triviatest [type]",
+    detail: "`type`: Quiz type [Integer]. See pinned message in bot channel for more details",
+    permission: "None"
+};
 
 module.exports.help = {
 	name: "triviatest"
-}
+};
