@@ -29,8 +29,15 @@ module.exports.run = (client, message, args, maindb) => {
 		}
 	}
 	else message.channel.send("You don't have enough permission to use this :3");
-}
+};
+
+module.exports.config = {
+	description: "Deletes a uid from tracking list.",
+	usage: "deletetrack <uid>",
+	detail: "`uid`: Uid to delete [Integer]",
+	permission: "Owner"
+};
 
 module.exports.help = {
 	name: "deletetrack"
-}
+};
