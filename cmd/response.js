@@ -22,7 +22,7 @@ function responseFactor(msg) {
 
 function responsefactor(msg) {
     let res = 0;
-    if (msg.toLowerCase().includes("rian")) res = 4;
+    if (msg.toLowerCase().includes("rian") || msg.toLowerCase().includes("you")) res = 4;
     let badword = config.responses.badword;
     badword.forEach((word) => {
         if (msg.toLowerCase().includes(word)) res = 4
@@ -30,10 +30,10 @@ function responsefactor(msg) {
     return res
 }
 
-module.exports.run = (client, message, args) => {
+module.exports.run = (client, message, args, maindb, alicedb) => {
     if (!args[0]) return;
     let factor = 0;
-    let index = Math.floor(Math.random() * (response.length - 1) + 1);
+    const index = Math.floor(Math.random() * (response.length - 1) + 1);
     let answer = response[index];
     let msg = args.join(" ");
     if (message.author.id == '386742340968120321') {
@@ -42,21 +42,49 @@ module.exports.run = (client, message, args) => {
         })
     }
     else factor = responsefactor(msg);
+    console.log(factor);
 
     if (factor === 1) answer = "Yes, absolutely.";
     if (factor === 2) answer = "N... No! I would never think of that...";
     if (factor === 3) answer = "Um... Uh...";
     if (factor === 4) answer = "Uh, I don't think I want to answer that.";
 
-    let footer = config.avatar_list;
-    index = Math.floor(Math.random() * (footer.length - 1) + 1);
     const embed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
         .setColor(message.member.highestRole.hexColor)
-        .setFooter("Alice Synthesis Thirty", footer[index])
+        .setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
         .addField(`**Q**: ${msg}`, `**A**: ${answer}`);
 
-    message.channel.send({embed})
+    message.channel.send({embed: embed});
+    
+    let askdb = alicedb.collection("askcount");
+    let query = {discordid: message.author.id};
+    askdb.find(query).toArray((err, res) => {
+        if (err) return console.log(err);
+        if (res[0]) {
+            var count = parseInt(res[0].count) + 1;
+            var updateVal = {
+                $set: {
+                    discordid: message.author.id,
+                    count: count
+                }
+            };
+            askdb.updateOne(query, updateVal, err => {
+                if (err) return console.log(err);
+                console.log("Ask data updated")
+            })
+        }
+        else {
+            var insertVal = {
+                discordid: message.author.id,
+                count: 1
+            };
+            askdb.insertOne(insertVal, err => {
+                if (err) return console.log(err);
+                console.log("Ask data updated")
+            })
+        }
+    })
 };
 
 module.exports.config = {
