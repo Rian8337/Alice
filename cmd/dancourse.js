@@ -51,7 +51,7 @@ function modname(mod) {
     if (mod.includes("h")) {res += 'HD '; count++}
     if (mod.includes("d")) {res += 'DT '; count++}
     if (mod.includes("c")) {res += 'NC '; count++}
-    if (count > 1) return res.trimRight().split(" ").join();
+    if (count > 1) return res.trimRight().split(" ").join("");
     else return res.trimRight()
 }
 
