@@ -67,8 +67,15 @@ module.exports.run = (client, message, args, maindb) => {
 		else message.channel.send("Please specify match id");
 		}
 	else message.channel.send("You don't have enough permission to use this :3");
-}
+};
+
+module.exports.config = {
+	description: "Ends a match.",
+	usage: "matchend <match ID>",
+	detail: "`match ID`: The match's ID [String]",
+	permission: "Referee"
+};
 
 module.exports.help = {
 	name: "matchend"
-}
+};
