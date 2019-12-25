@@ -112,8 +112,15 @@ module.exports.run = (client, message, args) => {
 		});
 		req.end();
 		}
-}
+};
+
+module.exports.config = {
+	description: "Retrieves Malody profile of a user.",
+	usage: "malodyprofile <user> <mode>",
+	detail: "`user`: The user to retrieve profile from [String]\n`mode`: Gamemode. Accepted arguments are `all`, `key`, `step`, `dj`, `catch` , `pad`, `taiko`, `ring`",
+	permission: "None"
+};
 
 module.exports.help = {
 	name: "malodyprofile"
-}
+};
