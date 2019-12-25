@@ -62,6 +62,13 @@ module.exports.run = (client, message, args, maindb) => {
 	else message.channel.send("You don't have enough permission to use this :3");
 };
 
+module.exports.config = {
+	description: "Adds a match.",
+	usage: "matchadd <match ID> <player/team> <uid> <...>",
+	detail: "`match ID`: The match's ID [String]\n`player/team`: Player or team name [String]\n`uid`: The uid of player [Integer]",
+	permission: "Referee"
+};
+
 module.exports.help = {
 	name: "matchadd"
 };
