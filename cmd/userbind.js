@@ -74,6 +74,13 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 };
 
+module.exports.config = {
+	description: "Binds a user to a specific uid.",
+	usage: "userbind <uid>",
+	detail: "`uid`: The uid to bind [Integer]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "userbind"
 };
