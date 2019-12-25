@@ -306,6 +306,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Submits a play for a user.",
+	usage: "ppsubmit <user> <offset> <start>",
+	detail: "`user`: The user to submit [UserResolvable (mention or user ID)]\n`offset`: The amount of play to submit from 1 to 5 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50 [Integer]",
+	permission: "Owner"
+};
+
 module.exports.help = {
 	name: "ppsubmit"
 };
