@@ -65,6 +65,13 @@ module.exports.run = async (client, message, args) => {
     }
 };
 
+module.exports.config = {
+    description: "Reports a user for breaking rules.",
+    usage: "report <user> <reason>",
+    detail: "`user`: The user to report [UserResolvable (mention or user ID)]\n`reason`: Reason for reporting [String]",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "report"
 };
