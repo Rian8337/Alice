@@ -59,8 +59,15 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 	else message.channel.send("Please specify match id");
 	
-}
+};
+
+module.exports.config = {
+	description: "Undo recent result in a match.",
+	usage: "matchundo <match ID>",
+	detail: "`match ID`: The match's ID [String]",
+	permission: "Referee"
+};
 
 module.exports.help = {
 	name: "matchundo"
-}
+};
