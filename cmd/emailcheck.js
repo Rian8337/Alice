@@ -55,7 +55,7 @@ module.exports.run = (client, message, args) => {
 module.exports.config = {
 	description: "Retrieves the registered email of an osu!droid account.",
 	usage: "emailcheck <uid>",
-	detail: "`uid`: Uid to retrieve email from [Integer]`",
+	detail: "`uid`: Uid to retrieve email from [Integer]",
 	permission: "Owner"
 };
 
