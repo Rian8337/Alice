@@ -147,6 +147,13 @@ function apiFetch(uid, avalink, location, message, client) {
 	req.end()
 }
 
+module.exports.config = {
+	description: "Retrieves an osu!droid profile based on uid (detailed).",
+	usage: "profileid <uid>",
+	detail: "`uid`: Uid to retrieve profile from [Integer]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "profileid"
 };
