@@ -277,8 +277,15 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 	else message.channel.send("Please specify match id");
 	
-}
+};
+
+module.exports.config = {
+	description: "Submits recent play for each player in a match.",
+	usage: "matchsubmit <match ID>",
+	detail: "`match ID`: The match's ID [String]",
+	permission: "Referee"
+};
 
 module.exports.help = {
 	name: "matchsubmit"
-}
+};
