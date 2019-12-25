@@ -1,5 +1,4 @@
 let Discord = require('discord.js');
-let config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
     let uid = args[0];
@@ -24,6 +23,13 @@ module.exports.run = (client, message, args, maindb) => {
             message.channel.send({embed: embed})
         }
     })
+};
+
+module.exports.config = {
+    description: "Checks if specific uid is binded.",
+    usage: "usersearch <uid>",
+    detail: "`uid`: The uid to check [Integer]",
+    permission: "None"
 };
 
 module.exports.help = {
