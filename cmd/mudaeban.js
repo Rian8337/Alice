@@ -113,6 +113,13 @@ module.exports.run = async (client, message, args) => {
 //end of module
 };
 
+module.exports.config = {
+    description: "Temporarily bans a user from Mudae (only applies in droid cafe).",
+    usage: "mudaeban <user> <duration> <reason>",
+    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`duration`: Ban duration in seconds [Float]\n`reason`: Reason for banning [String]",
+    permission: "Manager"
+};
+
 module.exports.help = {
     name: "mudaeban"
 };
