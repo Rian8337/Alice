@@ -25,6 +25,12 @@ module.exports.run = (client, message) => {
     }
 };
 
+module.exports.config = {
+    description: "Mudae-role toggle (only applies in droid cafe).",
+    usage: "agree",
+    permission: "Owner"
+};
+
 module.exports.help = {
     name: "agree"
 };
