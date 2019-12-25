@@ -176,6 +176,13 @@ module.exports.run = (client, message, args, maindb) => {
     }
 };
 
+module.exports.config = {
+    description: "Dan course command for international server.",
+    usage: "dancourse\ndancourse [user] [role] (Helper+)",
+    detail: "`user`: The user to give the role to [UserResolvable (mention or user ID)]\n`role`: Dan role to give. Accepted arguments are `1st Dan`, `2nd Dan`, `3rd Dan`, `4th Dan`, `5th Dan`, `6th Dan`, `7th Dan`, `8th Dan`, `9th Dan`, `Chuuden`, `Kaiden`, `Aleph-0 Dan`",
+    permission: "None | Helper"
+};
+
 module.exports.help = {
     name: "dancourse"
 };
