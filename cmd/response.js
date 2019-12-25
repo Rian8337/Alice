@@ -59,6 +59,13 @@ module.exports.run = (client, message, args) => {
     message.channel.send({embed})
 };
 
+module.exports.config = {
+    description: "List of 8ball responses.",
+    usage: "None",
+    detail: "None",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "response"
 };
