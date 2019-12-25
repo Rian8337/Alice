@@ -1,6 +1,6 @@
 let Discord = require('discord.js');
 let config = require("../config.json");
-
+let cd = new Set();
 let like = config.responses.like;
 let hate = config.responses.hate;
 let response = config.responses.response;
@@ -31,6 +31,7 @@ function responsefactor(msg) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     if (!args[0]) return;
     let factor = 0;
     const index = Math.floor(Math.random() * (response.length - 1) + 1);
@@ -56,7 +57,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         .addField(`**Q**: ${msg}`, `**A**: ${answer}`);
 
     message.channel.send({embed: embed});
-    
+
     let askdb = alicedb.collection("askcount");
     let query = {discordid: message.author.id};
     askdb.find(query).toArray((err, res) => {
@@ -84,7 +85,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log("Ask data updated")
             })
         }
-    })
+    });
+    cd.add(message.author.id);
+    setTimeout(() => {
+        cd.delete(message.author.id)
+    }, 2000)
 };
 
 module.exports.config = {
