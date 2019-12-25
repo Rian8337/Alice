@@ -14,6 +14,13 @@ module.exports.run = (client, message) => {
 	message.channel.send(embed);
 };
 
+module.exports.config = {
+	description: "Pong!",
+	usage: "ping",
+	detail: "None",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "ping"
 };
