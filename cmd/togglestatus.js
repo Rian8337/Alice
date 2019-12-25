@@ -35,6 +35,13 @@ module.exports.run = (client, message, args) => {
     }
 };
 
+module.exports.config = {
+    description: "Toggles bot status.",
+    usage: "togglestatus <list>\ntogglestatus c <type> <activity>",
+    detail: "`list`: Activity order in config file [Integer]\n`type`: Activity type [String]. Accepted arguments are `playing`, `streaming`, `watching`, `listening`\n`activity`: Activity [String]",
+    permission: "Bot Owner"
+};
+
 module.exports.help = {
     name: "togglestatus"
 };
