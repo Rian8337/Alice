@@ -8,6 +8,13 @@ module.exports.run = (client, message, args) => {
 	message.channel.send("**S**: " + sayMessage);
 };
 
+module.exports.config = {
+	description: "Says a message with the bot.",
+	usage: "say <...>",
+	detail: "`...`: Message to say [String]",
+	permission: "Bot Owner"
+};
+
 module.exports.help = {
 	name: "say"
 };
