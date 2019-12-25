@@ -56,6 +56,13 @@ module.exports.run = async (client, message, args) => {
     await filterMessage(message, filter, i, count, embed, startid);
 };
 
+module.exports.config = {
+    description: "Fetches messages after a specified message with specific filter.",
+    usage: "fetchmessage <id> <filter>",
+    detail: "`id`: The message's ID [Snowflake (String)]\n`filter`: The filter to only search messages containing the filter [String]",
+    permission: "Owner"
+};
+
 module.exports.help = {
     name: "fetchmessage"
 };
