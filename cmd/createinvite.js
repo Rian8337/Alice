@@ -45,6 +45,13 @@ module.exports.run = (client, message, args) => {
     })
 };
 
+module.exports.config = {
+    description: "Creates an invite link to the server's system channel.",
+    usage: "createinvite <duration> <usage>",
+    detail: "`duration`: Invite link expiration in seconds, set to 0 for never expire [Integer]\n`usage`: Maximum usage of invite link, set to 0 for infinite [Integer]",
+    permission: "Owner"
+};
+
 module.exports.help = {
     name: "createinvite"
 };
