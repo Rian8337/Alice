@@ -18,7 +18,7 @@ module.exports.run = (client, message, args) => {
 			let embed = new Discord.RichEmbed()
 				.setColor(rolecheck)
 				.setFooter("Alice Synthesis Thirty", footer[index])
-				.setThumbnail(client.user.avatarURL)
+				.setThumbnail(footer[index])
 				.setDescription(help);
 			message.channel.send({embed: embed})
 		}
