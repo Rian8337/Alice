@@ -77,6 +77,13 @@ module.exports.run = (client, message, args) => {
     }, timer * 1000)
 };
 
+module.exports.config = {
+    description: "Reminds a user about an activity.",
+    usage: "remind [hours]h[minutes]m<seconds>s <reminder>",
+    detail: "`hours`: Time to remind in hours [Integer]\n`minutes`: Time to remind in minutes [Integer]\n`seconds`: Time to remind in seconds [Integer]",
+    permission: "Bot Owner"
+};
+
 module.exports.help = {
     name: "remind"
 };
