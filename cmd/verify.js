@@ -26,6 +26,13 @@ module.exports.run = async (client, message, args) => {
     else message.channel.send("❎ **| User is already verified!**")
 };
 
+module.exports.config = {
+    description: "Verifies a user.",
+    usage: "verify <user>",
+    detail: "`user`: The user to verify [UserResolvable (mention or user ID)]",
+    permission: "Helper"
+};
+
 module.exports.help = {
     name: "verify"
 };
