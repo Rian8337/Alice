@@ -1,13 +1,12 @@
-let Discord = require('discord.js');
 let https = require('https');
 let apikey = process.env.OSU_API_KEY;
 let droid = require('./ojsamadroid');
 let osu = require('ojsama');
 let request = require('request');
-let config = require('../config.json');
 let cd = new Set();
 
-function beatmapFetch(message, target) {
+function beatmapFetch(message, target, i) {
+    if (i > 10) return message.channel.send(`❎ **| ${message.author}, I cannot find any beatmap recommendations for you! Perhaps lower your filter, or use it if you're not already?**`);
     var datelimit = Math.floor(Math.random() * Date.now() / 1000);
     while (datelimit < 1388534400) datelimit = Math.floor(Math.random() * Date.now() / 1000);
     var d = new Date(datelimit * 1000).toISOString().slice(0, 19).replace('T', ' ');
@@ -23,7 +22,7 @@ function beatmapFetch(message, target) {
         res.on("error", err => {
             console.log(err);
             console.log("Retrying...");
-            return beatmapFetch(message, target);
+            return beatmapFetch(message, target)
         });
         res.on("end", () => {
             var obj;
@@ -32,15 +31,15 @@ function beatmapFetch(message, target) {
             } catch (e) {}
             if (!obj[0]) {
                 console.log("Empty response");
-                return beatmapFetch(message, target);
+                return beatmapFetch(message, target)
             }
-            playInfo(message, obj, 0, target)
+            playInfo(message, obj, 0, target, i)
         })
     });
     req.end()
 }
 
-function playInfo(message, obj, i, target) {
+function playInfo(message, obj, i, target, count) {
     var limit = target[0];
     var mod = target[1];
     var maxpp = target[2];
@@ -51,84 +50,22 @@ function playInfo(message, obj, i, target) {
 
     if (i >= obj.length || beatmapentry.length == limit) {
         if (beatmapentry.length < limit) {
-            console.log("Beatmap amount not reached. Making a new request...");
-            return beatmapFetch(message, target)
+            console.log(`Beatmap amount not reached. Making a new request... (attempt ${count+1})`);
+            return beatmapFetch(message, target, count+1)
         }
         console.log("Done!");
         beatmapentry.sort((a, b) => {
             return b.dpp - a.dpp
         });
-        var rolecheck;
-        try {
-            rolecheck = message.member.highestRole.hexColor
-        } catch (e) {
-            rolecheck = "#000000"
-        }
-        let page = 1;
-        let pagelimit = Math.ceil(beatmapentry.length / 5);
-        let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        let embed = editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck);
-
-        message.channel.send(`✅ **| ${message.author}, your request is complete! Here are your beatmap recommendation(s):**`, {embed: embed}).then(msg => {
-            msg.react("⏮️").then(() => {
-                msg.react("⬅️").then(() => {
-                    msg.react("➡️").then(() => {
-                        msg.react("⏭️").catch(e => console.log(e))
-                    })
-                })
-            });
-
-            var timelimit = 60000 * Math.ceil(pagelimit / 2.5);
-
-            let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: timelimit});
-            let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: timelimit});
-            let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: timelimit});
-            let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: timelimit});
-
-            backward.on('collect', () => {
-                if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                else page = 1;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                embed = editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck);
-                msg.edit(`✅ **| ${message.author}, your request is complete! Here are your beatmap recommendation(s):**`, {embed: embed}).catch(e => console.log(e))
-            });
-
-            back.on('collect', () => {
-                if (page === 1) page = pagelimit;
-                else page--;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                embed = editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck);
-                msg.edit(`✅ **| ${message.author}, your request is complete! Here are your beatmap recommendation(s):**`, {embed: embed}).catch(e => console.log(e))
-            });
-
-            next.on('collect', () => {
-                if (page === pagelimit) page = 1;
-                else page++;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                embed = editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck);
-                msg.edit(`✅ **| ${message.author}, your request is complete! Here are your beatmap recommendation(s):**`, {embed: embed}).catch(e => console.log(e))
-            });
-
-            forward.on('collect', () => {
-                if (page === pagelimit) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                else page = pagelimit;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-                embed = editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck);
-                msg.edit(`✅ **| ${message.author}, your request is complete! Here are your beatmap recommendation(s):**`, {embed: embed}).catch(e => console.log(e))
-            })
-        });
-        setTimeout(() => {
-            cd.delete(message.author.id)
-        }, limit * 3000);
-        return
+        message.author.send(`✅ **| Your request is done! Here are your beatmap recommendation(s):**`);
+        return sendMessage(message, beatmapentry, 0)
     }
     console.log(i);
     var maphash = obj[i].file_md5;
     for (var j in pplist) {
         if (maphash == pplist[j][0]) {
             console.log("Duplicate in pp list");
-            return playInfo(message, obj, i+1, target)
+            return playInfo(message, obj, i+1, target, count)
         }
     }
     var mapid = obj[i].beatmap_id;
@@ -157,16 +94,25 @@ function playInfo(message, obj, i, target) {
         pcparser = new osu.parser()
     } catch (e) {
         console.log("Error when attempting to make new parser");
-        return playInfo(message, obj, i, target)
+        return setTimeout(() => {
+            playInfo(message, obj, i, target, count)
+        }, 3000)
     }
     var url = "https://osu.ppy.sh/osu/" + mapid;
     request(url, (err, response, data) => {
         if (err) {
             console.log("Empty response");
-            return playInfo(message, obj, i, target)
+            return playInfo(message, obj, i, target, count)
         }
-        nparser.feed(data);
-        pcparser.feed(data);
+        try {
+            nparser.feed(data);
+            pcparser.feed(data);
+        } catch (e) {
+            console.log("Error when attempting to feed data to parser");
+            return setTimeout(() => {
+                playInfo(message, obj, i, target, count)
+            }, 3000)
+        }
         var nmap = nparser.map;
         var pcmap = pcparser.map;
 
@@ -185,7 +131,9 @@ function playInfo(message, obj, i, target) {
 
             if (mod.includes("PR")) cur_od += 4;
 
-            nmap.cs = cur_cs; nmap.ar = cur_ar; nmap.od = cur_od;
+            nmap.cs = cur_cs;
+            nmap.ar = cur_ar;
+            nmap.od = cur_od;
 
             var nstars = new droid.diff().calc({map: nmap, mods: mods});
             var stars = new osu.diff().calc({map: pcmap, mods: pcmods});
@@ -233,7 +181,10 @@ function playInfo(message, obj, i, target) {
                 dpp: droidpp,
                 pp: pcpp
             };
-            if (droidpp < maxpp + 150 && droidpp > Math.max(0, minpp - 50)) {
+            var maxthreshold = ppThreshold(0, mod, maxpp, minpp);
+            var minthreshold = ppThreshold(1, mod, maxpp, minpp);
+
+            if (droidpp < maxthreshold && droidpp > minthreshold) {
                 var dup = false;
                 for (var j = 0; j < beatmapentry.length; j++) {
                     if (beatmapentry[j].beatmapid == mapid) {
@@ -253,40 +204,47 @@ function playInfo(message, obj, i, target) {
                     console.log(`Entry added (${beatmapentry.length})`)
                 }
             }
-            /*if (mod.includes("DT") || mod.includes("NC")) {
-                if (droidpp < maxpp + 200 && droidpp > minpp) {
-                    beatmapentry.push(beatmap);
-                    console.log(`Entry added (${beatmapentry.length})`)
-                }
-            }
-            else if (mod.includes("HD") || mod.includes("HR")) {
-                if (droidpp < maxpp + 175 && droidpp > Math.max(0, minpp - 50)) {
-                    beatmapentry.push(beatmap);
-                    console.log(`Entry added (${beatmapentry.length})`)
-                }
-            }
-            else if (droidpp < maxpp + 150 && droidpp > Math.max(0, minpp - 75)) {
-                beatmapentry.push(beatmap);
-                console.log(`Entry added (${beatmapentry.length})`)
-            }*/
-        }
-        else console.log("Error: No object found");
-        playInfo(message, obj, i+1, target)
+        } else console.log("Error: No object found");
+        playInfo(message, obj, i+1, target, count)
     })
 }
 
-function editEmbed(beatmapentry, page, pagelimit, footer, index, rolecheck) {
-    let embed = new Discord.RichEmbed()
-        .setDescription("**Beatmap recommendation (Page " + page + "/" + pagelimit + ")**")
-        .setFooter("Alice Synthesis Thirty", footer[index])
-        .setColor(rolecheck);
-
-    for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
-        if (!beatmapentry[i]) break;
-        let mapinfo = `CS: ${beatmapentry[i].cs} - AR: ${beatmapentry[i].ar} - OD: ${beatmapentry[i].od} - HP: ${beatmapentry[i].hp}\nBPM: ${beatmapentry[i].bpm} - Length: ${beatmapentry[i].maplength}/${beatmapentry[i].totallength} - Max Combo: ${beatmapentry[i].combo}x\nLast Update: ${beatmapentry[i].lastupdate} | ${beatmapentry[i].status}\nDroid pp: **${beatmapentry[i].dpp} dpp**\nPC pp: ${beatmapentry[i].pp} pp\n[Beatmap Link](https://osu.ppy.sh/b/${beatmapentry[i].beatmapid}) - Beatmap ID: ${beatmapentry[i].beatmapid}\nDownload: [osu!](https://osu.ppy.sh/beatmapsets/${beatmapentry[i].setid}/download) ([no video](https://osu.ppy.sh/beatmapsets/${beatmapentry[i].setid}/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${beatmapentry[i].setid}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${beatmapentry[i].setid})`;
-        embed.addField((i+1) + ". " + beatmapentry[i].title, mapinfo)
+function ppThreshold(type, mod, maxpp, minpp) {
+    var res = 0;
+    if (mod.includes("NF")) {
+        maxpp *= 0.9;
+        minpp *= 0.9
     }
-    return embed
+    if (type == 0) {
+        if (mod.includes("DT")) res += 80;
+        if (mod.includes("HR")) res += 60;
+        if (mod.includes("HD")) res += 40;
+        if (mod == '') res += 30;
+        return maxpp + res
+    }
+    else {
+        if (mod.includes("DT")) res -= 5;
+        if (mod.includes("HR")) res -= 10;
+        if (mod.includes("HD")) res -= 20;
+        if (mod == '') res -= 40;
+        return Math.max(0, minpp + res)
+    }
+}
+
+function sendMessage(message, beatmapentry, count) {
+    var content = '';
+    for (var i = count; i < 5 + count; i++) {
+        if (!beatmapentry[i]) break;
+        let mapinfo = `CS: ${beatmapentry[i].cs} - AR: ${beatmapentry[i].ar} - OD: ${beatmapentry[i].od} - HP: ${beatmapentry[i].hp}\nBPM: ${beatmapentry[i].bpm} - Length: ${beatmapentry[i].maplength}/${beatmapentry[i].totallength} - Max Combo: ${beatmapentry[i].combo}x\nLast Update: ${beatmapentry[i].lastupdate} | ${beatmapentry[i].status}\nDroid pp: **${beatmapentry[i].dpp} dpp**\nPC pp: ${beatmapentry[i].pp} pp\nBeatmap ID: ${beatmapentry[i].beatmapid}`;
+        content += `**${i+1}. ${beatmapentry[i].title}**\n${mapinfo}\n\n`
+    }
+    message.author.send(content);
+    if (i % 5 == 0 && i != beatmapentry.length) sendMessage(message, beatmapentry, count+5);
+    else {
+        setTimeout(() => {
+            cd.delete(message.author.id)
+        }, 30000)
+    }
 }
 
 function mapstatus(status) {
@@ -315,10 +273,9 @@ module.exports.run = (client, message, args, maindb) => {
         else return message.channel.send("❎ **| Hey, please create #bot-ground first!**")
     }
     var limit = parseInt(args[0]);
-    if (!limit) limit = 10;
-    if (isNaN(limit)) return message.channel.send("❎ **| Hey, that's not a valid limit!**");
-    if ((limit < 1 || limit > 100) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-100 beatmaps!**");
-    if (limit == 0) limit = 10;
+    if (isNaN(limit)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    if ((limit < 1 || limit > 20) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-20 beatmaps!**");
+    if (limit == 0) limit = 5;
     console.log(limit);
     
     let binddb = maindb.collection("userbind");
@@ -334,10 +291,17 @@ module.exports.run = (client, message, args, maindb) => {
         var maxpp;
         var minpp;
         var acc;
+        var manual = false;
         for (var i = 1; i < args.length; i++) {
-            if (args[i].startsWith("+")) mod = args[i].toUpperCase();
-            if (args[i].endsWith("maxdpp")) maxpp = parseFloat(args[i]);
-            if (args[i].endsWith("mindpp")) minpp = parseFloat(args[i]);
+            if (args[i].startsWith("+")) mod = args[i];
+            if (args[i].endsWith("maxdpp")) {
+                maxpp = parseFloat(args[i]);
+                manual = true
+            }
+            if (args[i].endsWith("mindpp")) {
+                minpp = parseFloat(args[i]);
+                manual = true
+            }
             if (args[i].endsWith("%")) acc = parseFloat(args[i])
         }
         if (res[0].pp) pplist = res[0].pp;
@@ -351,17 +315,27 @@ module.exports.run = (client, message, args, maindb) => {
             else minpp = 0
         }
         if (minpp > maxpp) return message.channel.send("❎ **| No, why is the minimum threshold more than maximum threshold?**");
-        cd.add(message.author.id);
+        if (manual && maxpp - minpp < 50) return message.channel.send("❎ **| I'm sorry, max dpp and min dpp difference must be at least 50!**");
         if (!acc) acc = 100;
         acc = Math.min(100, acc);
         var modstring;
         if (!mod) modstring = "No Mod";
         else modstring = mod.replace("+", "");
-        var beatmapentry = [];
-        var target = [limit, mod, maxpp, minpp, acc, beatmapentry, pplist];
-        message.channel.send(`✅ **| ${message.author}, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp} dpp\nMinimum dpp threshold: ${minpp} dpp\n\nNote that results may be out of dpp threshold depending on applied mods, and the process will take longer on high requests.**`);
-        beatmapFetch(message, target)
+        var dmable = true;
+        message.author.send(`✅ **| Hey, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp} dpp\nMinimum dpp threshold: ${minpp} dpp\n\nNote that results may be out of dpp threshold depending on applied mods, and the process will take longer on high requests.**`)
+            .catch(() => dmable = false);
+        if (!dmable) return message.channel.send(`❎ **| ${message.author}, your DM is locked!`);
+        var target = [limit, mod, maxpp, minpp, acc, [], pplist];
+        cd.add(message.author.id);
+        beatmapFetch(message, target, 1)
     })
+};
+
+module.exports.config = {
+    description: "Recommend beatmaps based on droid pp threshold.",
+    usage: "recommend [limit] [<minimum dpp>mindpp <maximum dpp>maxdpp +<mod>]",
+    detail: "`limit`: The amount of beatmaps to search, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
+    permission: "None"
 };
 
 module.exports.help = {
