@@ -40,6 +40,21 @@ function dancheck(hash) {
     }
 }
 
+function modname(mod) {
+    var res = '';
+    var count = 0;
+    if (mod.includes("-")) {res += 'No Mod '; count++}
+    if (mod.includes("n")) {res += 'NF '; count++}
+    if (mod.includes("e")) {res += 'EZ '; count++}
+    if (mod.includes("t")) {res += 'HT '; count++}
+    if (mod.includes("r")) {res += 'HR '; count++}
+    if (mod.includes("h")) {res += 'HD '; count++}
+    if (mod.includes("d")) {res += 'DT '; count++}
+    if (mod.includes("c")) {res += 'NC '; count++}
+    if (count > 1) return res.trimRight().split(" ").join();
+    else return res.trimRight()
+}
+
 function validation(dan, mod, acc, rank) {
     var res = 0;
     if (mod.includes("n") || mod.includes("e") || mod.includes("t")) {
@@ -144,7 +159,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!dan) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
 
                     let valid = validation(dan[0], mods, acc, rank);
-                    if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + dan[1] + " (" + rank + ", " + acc + "%)\nReason: " + rejectionMessage(valid) + "**");
+                    if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + dan[1] + " (" + rank + ", " + modname(mods) + ", " + acc + "%)\nReason: " + rejectionMessage(valid) + "**");
 
                     let danrole = dan[1];
                     let role = message.guild.roles.find(r => r.name === danrole);
