@@ -50,8 +50,15 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 	else message.channel.send("Please specify match id");
 	
-}
+};
+
+module.exports.config = {
+	description: "Checks a match's status.",
+	usage: "matchcheck <match ID>",
+	detail: "`match ID`: The match's ID [String]",
+	permission: "None"
+};
 
 module.exports.help = {
 	name: "matchcheck"
-}
+};
