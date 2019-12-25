@@ -40,7 +40,8 @@ module.exports.run = (client, message, args) => {
 module.exports.config = {
     description: "Retrieves a user's avatar.",
     usage: "avatar [user]",
-    permission: "Owner"
+    detail: "`user`: UserResolvable (mention or user ID)",
+    permission: "None"
 };
 
 module.exports.help = {
