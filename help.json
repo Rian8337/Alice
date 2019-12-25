@@ -9,6 +9,12 @@
   "droid": [
     "dancourse",
     "manualcalc",
+    "manualsubmit",
+    "matchadd",
+    "matchcheck",
+    "matchend",
+    "matchsubmit",
+    "matchundo",
     "osu",
     "pfid",
     "pfme",
