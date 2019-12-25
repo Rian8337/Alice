@@ -91,6 +91,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Deletes a play from a user's droid pp profile.",
+	usage: "ppdelete <user> <play>",
+	detail: "`user`: The user to delete the play data from [UserResolvable (mention or user ID)]\n`play`: The play to delete in numerical order of the user's droid pp profile [Integer]",
+	permission: "Owner"
+};
+
 module.exports.help = {
 	name: "ppdelete"
 };
