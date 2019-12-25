@@ -31,7 +31,7 @@ function responsefactor(msg) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the question! I need to rest too, you know.**");
     if (!args[0]) return;
     let factor = 0;
     const index = Math.floor(Math.random() * (response.length - 1) + 1);
