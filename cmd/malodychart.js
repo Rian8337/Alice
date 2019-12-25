@@ -134,8 +134,15 @@ module.exports.run = (client, message, args) => {
         });
     });
     req.end();
-}
+};
+
+module.exports.config = {
+    description: "Retrieves Malody chart.",
+    usage: "malodychart",
+    detail: "None",
+    permission: "None"
+};
 
 module.exports.help = {
 	name: "malodychart"
-}
+};
