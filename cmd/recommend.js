@@ -334,7 +334,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
     description: "Recommend beatmaps based on droid pp threshold.",
     usage: "recommend [limit] [<minimum dpp>mindpp <maximum dpp>maxdpp +<mod>]",
-    detail: "`limit`: The amount of beatmaps to search, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
+    detail: "`limit`: The amount of beatmaps to search from 1 to 20, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
     permission: "None"
 };
 
