@@ -33,6 +33,13 @@ module.exports.run = (client, message, args) => {
     })
 };
 
+module.exports.config = {
+    description: "Kicks a user.",
+    usage: "kick <user> [reason]",
+    detail: "`user`: The user to kick [UserResolvable (mention or user ID)]\n`reason`: Reason for kicking [String]",
+    permission: "Moderator"
+};
+
 module.exports.help = {
     name: "kick"
 };
