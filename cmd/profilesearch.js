@@ -126,6 +126,13 @@ module.exports.run = (client, message, args) => {
 	})
 };
 
+module.exports.config = {
+	description: "Searches for a user and retrieves the user's uid.",
+	usage: "profilesearch <user>",
+	detail: "`user`: The user to search, case sensitive [String]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "profilesearch"
 };
