@@ -2,6 +2,7 @@ Alice Synthesis Thirty's Guide
 User Commands
 
 For moderation commands, type "a!modhelp".
+For detailed information about a command, type "a!help [command name]".
 
 <...>: required syntax
 [...]: optional syntax
@@ -13,7 +14,6 @@ Prefix: "a!"
 - avatar [user]
 - help
 - ping
-- say <...>
 - report <discord user> <reason>
 
 2. osu! and osu!droid
