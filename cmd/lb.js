@@ -85,6 +85,13 @@ module.exports.run = (client, message, args, maindb) => {
     })
 };
 
+module.exports.config = {
+    description: "Views droid pp leaderboard.",
+    usage: "lb [page]",
+    detail: "`page`: Page of leaderboard [Integer]",
+    permission: "None"
+};
+
 module.exports.help = {
 	name: "lb"
 };
