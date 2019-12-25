@@ -25,6 +25,13 @@ module.exports.run = (client, message) => {
     }
 };
 
+module.exports.config = {
+    description: "Mudae-role related command (only applies in droid cafe).",
+    usage: "disagree",
+    detail: "None",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "disagree"
 };
