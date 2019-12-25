@@ -178,6 +178,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Recalculates a user's droid pp profile.",
+	usage: "recalc <uid>",
+	detail: "`uid`: The uid to recalculate [Integer]",
+	permission: "Owner"
+};
+
 module.exports.help = {
 	name: "recalc"
 };
