@@ -287,6 +287,13 @@ module.exports.run = (client, message, args) => {
 	req.end()
 };
 
+module.exports.config = {
+	description: "Retrieves an osu!droid account's recent play based on uid.",
+	usage: "recent <uid>",
+	detail: "`uid`: The uid to retrieve [Integer]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "recent"
 };
