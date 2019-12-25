@@ -103,7 +103,14 @@ module.exports.run = async (client, message, args) => {
             muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
             msg.edit(muteembed)
         }, mutetime * 1000)
-    });
+    })
+};
+
+module.exports.config = {
+    description: "Temporarily mutes a user.",
+    usage: "tempmute <user> <duration> <reason>",
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting [String]",
+    permission: "Helper"
 };
 
 module.exports.help = {
