@@ -308,6 +308,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Submits plays from user's profile into the user's droid pp profile.",
+	usage: "pp [offset] [start]",
+	detail: "`offset`: The amount of play to submit from 1 to 5 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50 [Integer]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "pp"
 };
