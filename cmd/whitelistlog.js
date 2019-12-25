@@ -54,6 +54,13 @@ module.exports.run = (client, message, args) => {
     req.end()
 };
 
+module.exports.config = {
+    description: "Logging whitelists.",
+    usage: "None",
+    detail: "None",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "whitelistlog"
 };
