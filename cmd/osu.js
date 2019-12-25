@@ -116,6 +116,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     })
 };
 
+module.exports.config = {
+    description: "Retrieves an osu! account profile.",
+    usage: "osu [mode] [user]\nosu set <username>",
+    detail: "`mode`: Gamemode. Accepted arguments are `std`, `taiko`, `ctb`, `mania`\n`user`: The user to retrieve information from [UserResolvable (mention or user ID) or String]",
+    permission: "None"
+};
+
 module.exports.help = {
     name: "osu"
 };
