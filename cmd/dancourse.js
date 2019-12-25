@@ -144,7 +144,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!dan) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
 
                     let valid = validation(dan[0], mods, acc, rank);
-                    if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + dan[1] + "\nReason: " + rejectionMessage(valid) + "**");
+                    if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + dan[1] + " (" + rank + ", " + acc + "%)\nReason: " + rejectionMessage(valid) + "**");
 
                     let danrole = dan[1];
                     let role = message.guild.roles.find(r => r.name === danrole);
