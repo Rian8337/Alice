@@ -133,8 +133,15 @@ module.exports.run = (client, message, args, maindb) => {
 		});
 	}
 	else message.channel.send("Please specify match id");
-}
+};
+
+module.exports.config = {
+	description: "Manually submits a match.",
+	usage: "manualsubmit <match id> <map sort> <score 1> <acc 1> <miss 1> <score 2> <acc 2> <miss 2> <...>",
+	detail: "`match id`: The ID of the match [String]\n`map sort` The order of the map in pool [Integer]\n`score n`: Score achieved by player n\n`acc n`: Accuracy achieved by player n\n`miss n`: Amount of misses from player n",
+	permission: "Referee"
+};
 
 module.exports.help = {
 	name: "manualsubmit"
-}
+};
