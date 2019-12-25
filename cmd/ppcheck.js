@@ -131,6 +131,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Checks a user's droid pp profile.",
+	usage: "ppcheck [user]",
+	detail: "`user`: The user to check [UserResolvable (mention or user ID)]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "ppcheck"
 };
