@@ -298,6 +298,13 @@ module.exports.run = (client, message, args, maindb) => {
 	})
 };
 
+module.exports.config = {
+	description: "Retrieves a user's most recent play.",
+	usage: "recent5me [user]",
+	detail: "`user`: The user to retrieve [UserResolvable (mention or user ID)]",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "recentme"
 };
