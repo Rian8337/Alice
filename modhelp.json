@@ -1,0 +1,34 @@
+{
+  "helper": [
+    "dancourse",
+    "tempmute",
+    "verify"
+  ],
+  "moderator": [
+    "bulkdelete",
+    "kick",
+    "mute",
+    "tempmute"
+  ],
+  "owner": [
+    "addtrack",
+    "ban",
+    "completepp",
+    "createinvite",
+    "deletetrack",
+    "fetchmessage",
+    "ppdelete",
+    "ppsubmit",
+    "ppwipe",
+    "recalc",
+    "tempban",
+    "unban",
+    "whitelistremove",
+    "whitelistremoveset"
+  ],
+  "bot_owner": [
+    "changeavatar",
+    "remind",
+    "togglestatus"
+  ]
+}
