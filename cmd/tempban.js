@@ -68,6 +68,13 @@ module.exports.run = async (client, message, args) => {
     }).catch(e => console.log(e))
 };
 
+module.exports.config = {
+    description: "Temporarily bans a user.",
+    usage: "tempban <user> <[hours]h / [days]d> <reason>",
+    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`hours`: Time to ban in hours [Float]\n`days`: Time to ban in days [Float]\n`reason`: Reason for banning [String]",
+    permission: "Owner"
+};
+
 module.exports.help = {
     name: "tempban"
 };
