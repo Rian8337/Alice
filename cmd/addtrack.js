@@ -30,6 +30,12 @@ module.exports.run = (client, message, args, maindb) => {
 	else message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**")
 };
 
+module.exports.config = {
+	description: "Adds a uid into tracking list.",
+	usage: "addtrack <uid>",
+	permission: "Owner"
+};
+
 module.exports.help = {
 	name: "addtrack"
 };
