@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
 	description: "Adds a uid into tracking list.",
 	usage: "addtrack <uid>",
-	detail: "`uid`: Number (integer)",
+	detail: "`uid`: Uid to add [Integer]",
 	permission: "Owner"
 };
 
