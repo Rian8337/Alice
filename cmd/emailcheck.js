@@ -52,6 +52,13 @@ module.exports.run = (client, message, args) => {
 	req.end()
 };
 
+module.exports.config = {
+	description: "Retrieves the registered email of an osu!droid account.",
+	usage: "emailcheck <uid>",
+	detail: "`uid`: Uid to retrieve email from [Integer]`",
+	permission: "Owner"
+};
+
 module.exports.help = {
 	name: "emailcheck"
 };
