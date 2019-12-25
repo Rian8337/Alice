@@ -46,7 +46,7 @@ function validation(dan, mod, acc, rank) {
         res = 1;
         return res
     }
-    if (dan >= 1 && dan <= 9 && (acc < 97 || !rank.includes("S"))) res = 2; // 1st-9th Dan
+    if (dan >= 1 && dan <= 9 && (acc < 97 && !rank.includes("S"))) res = 2; // 1st-9th Dan
     if (dan === 10 && acc < 93) res = 3; // Chuuden
     if (dan === 11 && acc < 90) res = 4;// Kaiden
     if (dan === 12 && (!rank.includes("A") && !rank.includes("S"))) res = 5; // Aleph-0 Dan
