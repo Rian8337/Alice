@@ -254,6 +254,13 @@ module.exports.run = (client, message, args) => {
 	getMapPP(target, message, ndetail, pcdetail)
 };
 
+module.exports.config = {
+	description: "Calculates pp for an osu!standard map.",
+	usage: "manualcalc <map link / map ID> [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]",
+	detail: "`map link/map ID`: The link or beatmap ID of the map [String/Integer]\n`mod`: Applied game modifications (HD, HR, etc) [String]\n`combo`: Max combo reached [Integer]\n`acc`: Accuracy gained [Float]\n`miss` Amount of misses [Integer]\n`-d`: Gives detailed response of droid pp\n`-p`: Gives detailed response of pp",
+	permission: "None"
+};
+
 module.exports.help = {
 	name: "manualcalc"
 };
