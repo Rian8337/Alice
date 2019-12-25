@@ -306,16 +306,14 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (res[0].pp) pplist = res[0].pp;
         else pplist = [];
-        if (!maxpp) {
+        if (!manual) {
             if (pplist[0]) maxpp = parseFloat(pplist[0][2]);
-            else maxpp = 0
-        }
-        if (!minpp) {
+            else maxpp = 0;
             if (pplist[pplist.length - 1]) minpp = parseFloat(pplist[pplist.length - 1][2]);
             else minpp = 0
         }
+        else if (maxpp - minpp < 50) return message.channel.send("❎ **| I'm sorry, max dpp and min dpp difference must be at least 50!**");
         if (minpp > maxpp) return message.channel.send("❎ **| No, why is the minimum threshold more than maximum threshold?**");
-        if (manual && maxpp - minpp < 50) return message.channel.send("❎ **| I'm sorry, max dpp and min dpp difference must be at least 50!**");
         if (!acc) acc = 100;
         acc = Math.min(100, acc);
         var modstring;
@@ -334,7 +332,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
     description: "Recommend beatmaps based on droid pp threshold.",
     usage: "recommend [limit] [<minimum dpp>mindpp <maximum dpp>maxdpp +<mod>]",
-    detail: "`limit`: The amount of beatmaps to search from 1 to 20, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
+    detail: "`limit`: The amount of beatmaps to search, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
     permission: "None"
 };
 
