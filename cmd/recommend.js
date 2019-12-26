@@ -181,10 +181,8 @@ function playInfo(message, obj, i, target, count) {
                 dpp: droidpp,
                 pp: pcpp
             };
-            var maxthreshold = ppThreshold(0, mod, maxpp, minpp);
-            var minthreshold = ppThreshold(1, mod, maxpp, minpp);
 
-            if (droidpp < maxthreshold && droidpp > minthreshold) {
+            if (droidpp < maxpp && droidpp > minpp) {
                 var dup = false;
                 for (var j = 0; j < beatmapentry.length; j++) {
                     if (beatmapentry[j].beatmapid == mapid) {
@@ -207,28 +205,6 @@ function playInfo(message, obj, i, target, count) {
         } else console.log("Error: No object found");
         playInfo(message, obj, i+1, target, count)
     })
-}
-
-function ppThreshold(type, mod, maxpp, minpp) {
-    var res = 0;
-    if (mod.includes("NF")) {
-        maxpp *= 0.9;
-        minpp *= 0.9
-    }
-    if (type == 0) {
-        if (mod.includes("DT")) res += 80;
-        if (mod.includes("HR")) res += 60;
-        if (mod.includes("HD")) res += 40;
-        if (mod == '') res += 30;
-        return maxpp + res
-    }
-    else {
-        if (mod.includes("DT")) res -= 5;
-        if (mod.includes("HR")) res -= 10;
-        if (mod.includes("HD")) res -= 20;
-        if (mod == '') res -= 40;
-        return Math.max(0, minpp + res)
-    }
 }
 
 function sendMessage(message, beatmapentry, count) {
@@ -323,6 +299,10 @@ module.exports.run = (client, message, args, maindb) => {
         message.author.send(`✅ **| Hey, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp} dpp\nMinimum dpp threshold: ${minpp} dpp\n\nNote that results may be out of dpp threshold depending on applied mods, and the process will take longer on high requests.**`)
             .catch(() => dmable = false);
         if (!dmable) return message.channel.send(`❎ **| ${message.author}, your DM is locked!`);
+
+        maxpp += 20 + Math.pow(1.0055, maxpp);
+        minpp -= 10 + Math.pow(0.995, minpp);
+        
         var target = [limit, mod, maxpp, minpp, acc, [], pplist];
         cd.add(message.author.id);
         beatmapFetch(message, target, 1)
