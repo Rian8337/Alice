@@ -290,7 +290,6 @@ module.exports.run = (client, message, args, maindb) => {
         }
         else if (maxpp - minpp < 50) return message.channel.send("❎ **| I'm sorry, max dpp and min dpp difference must be at least 50!**");
         if (minpp > maxpp) return message.channel.send("❎ **| No, why is the minimum threshold more than maximum threshold?**");
-        if (maxpp < 0 || minpp < 0) return message.channel.send("❎ **| I'm sorry, maximum dpp and minimum dpp threshold cannot be negative!**");
         if (!acc) acc = 100;
         acc = Math.min(100, acc);
         if (acc < 0) return message.channel.send("❎ **| I'm sorry, accuracy cannot be negative!**");
@@ -299,7 +298,7 @@ module.exports.run = (client, message, args, maindb) => {
         if (!mod) modstring = "No Mod";
         else modstring = mod.replace("+", "");
 
-        maxpp += Math.pow(1.01, maxpp);
+        maxpp = Math.max(0, Math.pow(1.01, maxpp));
         if (maxpp < 500) maxpp += 10;
         minpp = Math.max(0, minpp - Math.pow(0.99, minpp) - 5);
 
