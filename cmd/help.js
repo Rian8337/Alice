@@ -14,11 +14,11 @@ module.exports.run = (client, message, args) => {
 		if (cmd) {
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let help = `**${config.prefix}${args[0]}**\n${cmd.config.description || "No Description"}\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage || "No Usage"}\`\n**Details:**\n${cmd.config.detail}`;
+			let help = `${cmd.config.description || "No Description"}\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage || "No Usage"}\`\n**Details:**\n${cmd.config.detail}`;
 			let embed = new Discord.RichEmbed()
+				.setTitle(config.prefix + args[0])
 				.setColor(rolecheck)
 				.setFooter("Alice Synthesis Thirty", footer[index])
-				.setThumbnail(footer[index])
 				.setDescription(help);
 			message.channel.send({embed: embed})
 		} else message.channel.send("❎ **| I'm sorry, I cannot find the command you are looking for!**")
@@ -55,7 +55,7 @@ module.exports.run = (client, message, args) => {
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 		let embed = new Discord.RichEmbed()
 			.setTitle("Alice Synthesis Thirty Help\nUser Commands")
-			.setDescription(`**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [commamd name]\`.\nFor moderation commands, type \`${config.prefix}modhelp\`.`)
+			.setDescription(`**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.\nFor moderation commands, type \`${config.prefix}modhelp\`.`)
 			.setThumbnail(client.user.avatarURL)
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index])
