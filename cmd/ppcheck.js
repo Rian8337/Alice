@@ -36,6 +36,7 @@ function editpp(page, pp, ppentry, discordid, uid, username, footer, index, role
 }
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
