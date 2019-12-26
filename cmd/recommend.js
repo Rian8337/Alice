@@ -243,15 +243,15 @@ function time(second) {
 module.exports.run = (client, message, args, maindb) => {
     if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    if (message.channel.name != 'bot-ground' && message.channel.id != '635535610739687435') {
+    /*if (message.channel.name != 'bot-ground' && message.channel.id != '635535610739687435') {
         let channel = message.guild.channels.find(c => c.name === 'bot-ground');
         if (channel) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel}!**`);
         else return message.channel.send("❎ **| Hey, please create #bot-ground first!**")
-    }
+    }*/
     var limit = parseInt(args[0]);
-    if (isNaN(limit)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    if (isNaN(limit)) limit = 10;
     if ((limit < 1 || limit > 20) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-20 beatmaps!**");
-    if (limit == 0) limit = 5;
+    if (limit == 0) limit = 10;
     console.log(limit);
     
     let binddb = maindb.collection("userbind");
@@ -290,19 +290,24 @@ module.exports.run = (client, message, args, maindb) => {
         }
         else if (maxpp - minpp < 50) return message.channel.send("❎ **| I'm sorry, max dpp and min dpp difference must be at least 50!**");
         if (minpp > maxpp) return message.channel.send("❎ **| No, why is the minimum threshold more than maximum threshold?**");
+        if (maxpp < 0 || minpp < 0) return message.channel.send("❎ **| I'm sorry, maximum dpp and minimum dpp threshold cannot be negative!**");
         if (!acc) acc = 100;
         acc = Math.min(100, acc);
+        if (acc < 0) return message.channel.send("❎ **| I'm sorry, accuracy cannot be negative!**");
+
         var modstring;
         if (!mod) modstring = "No Mod";
         else modstring = mod.replace("+", "");
+
+        maxpp += Math.pow(1.01, maxpp);
+        if (maxpp < 500) maxpp += 10;
+        minpp = Math.max(0, minpp - Math.pow(0.99, minpp) - 5);
+
         var dmable = true;
-        message.author.send(`✅ **| Hey, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp} dpp\nMinimum dpp threshold: ${minpp} dpp\n\nNote that results may be out of dpp threshold depending on applied mods, and the process will take longer on high requests.**`)
+        message.author.send(`✅ **| Hey, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp.toFixed(2)} dpp\nMinimum dpp threshold: ${minpp.toFixed(2)} dpp**`)
             .catch(() => dmable = false);
         if (!dmable) return message.channel.send(`❎ **| ${message.author}, your DM is locked!`);
 
-        maxpp += 20 + Math.pow(1.0055, maxpp);
-        minpp -= 10 + Math.pow(0.995, minpp);
-        
         var target = [limit, mod, maxpp, minpp, acc, [], pplist];
         cd.add(message.author.id);
         beatmapFetch(message, target, 1)
