@@ -35,21 +35,22 @@ module.exports.run = async (client, message, args) => {
         return
     }
     var timeLimit = isEligible(message.member);
-    if (timeLimit == 0) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+    if (timeLimit == 0) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!tomute) return;
-    if (isImmuned(tomute)) return message.channel.send("❎  **| I'm sorry, this user cannot be muted.**");
+    if (isImmuned(tomute)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
 
     let mutetime = args[1];
-    if (!mutetime) return message.channel.send("❎  **| Hey, at least tell me how long do I need to mute this user!**");
-    if (isNaN(mutetime)) return message.channel.send("❎  **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
-    if (mutetime < 1) return message.channel.send("❎  **| I'm sorry, you can only mute for at least 1 second.**");
-    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎  **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
+    if (!mutetime) return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
+    if (isNaN(mutetime)) return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
+    if (mutetime < 1) return message.channel.send("❎ **| I'm sorry, you can only mute for at least 1 second.**");
+    if (mutetime == Infinity) return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
+    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
 
-    if (!reason) return message.channel.send("❎  **| Hey, can you give me your reason for muting?**");
+    if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
     let muterole = message.guild.roles.find(`name`, "elaina-muted");
     //start of create role
