@@ -252,16 +252,16 @@ module.exports.run = (client, message, args, maindb) => {
 				return message.channel.send("Error: Empty API response. Please try again!")
 			});
 			res.on("end", function () {
-				var resarr;
-				try {
-					resarr = content.split('<br>');
-				} catch (e) {
-					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
-				}
+				var resarr = content.split('<br>');
 				var headerres = resarr[0].split(" ");
 				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = resarr[0].split(" ")[2];
-				var obj = JSON.parse(resarr[1]);
+				var obj;
+                                try {
+                                        obj = JSON.parse(resarr[1])
+                                } catch (e) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
+                                }
 				var play = obj.recent[0];
 				let title = play.filename;
 				let score = play.score.toLocaleString();
