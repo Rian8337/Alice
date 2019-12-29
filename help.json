@@ -13,6 +13,7 @@
     "matchadd",
     "matchcheck",
     "matchend",
+    "matchstart",
     "matchsubmit",
     "matchundo",
     "osu",
@@ -26,6 +27,7 @@
     "recent5",
     "recent5me",
     "skin",
+    "timer",
     "userbind",
     "usersearch"
   ],
