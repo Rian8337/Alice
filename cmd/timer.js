@@ -12,8 +12,8 @@ module.exports.run = (client, message, args) => {
     if (isNaN(timelimit)) return message.channel.send("❎ **| Hey, can you enter a valid time limit?**");
     if (timelimit < 1 || timelimit > 1800 || timelimit == Infinity) return message.channel.send("❎ **| Hey, my timer has a limit of 30 minutes!**");
 
-    if (timelimit == 1) message.channel.send(`✅ **| Got it! I will remind you in ${timelimit} second!**`);
-    else message.channel.send(`✅ **| Got it! I will remind you in ${timelimit} seconds!**`);
+    if (timelimit == 1) message.channel.send(`✅ **| Got it! Your timer has been set to ${timelimit} second!**`);
+    else message.channel.send(`✅ **| Got it! Your timer has been set to  ${timelimit} seconds!**`);
     cd.add(message.author.id);
     setTimeout(() => {
         cd.delete(message.author.id);
