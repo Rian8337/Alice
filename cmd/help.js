@@ -14,7 +14,7 @@ module.exports.run = (client, message, args) => {
 		if (cmd) {
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let help = `${cmd.config.description || "No Description"}\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage || "No Usage"}\`\n**Details:**\n${cmd.config.detail}`;
+			let help = `${cmd.config.description}\n\n\`<...>\`: required arguments\n\`[...]\`: optional arguments\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage}\`\n**Details:**\n${cmd.config.detail}`;
 			let embed = new Discord.RichEmbed()
 				.setTitle(config.prefix + args[0])
 				.setColor(rolecheck)
