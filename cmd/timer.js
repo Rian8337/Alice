@@ -21,7 +21,7 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
-    description: "Set a timer (some sort of reminder).\nIntended for tournament use.",
+    description: "Set a timer.\nIntended for tournament use.",
     usage: "timer <timelimit>",
     detail: "`timelimit`: The time limit in seconds from 1 to 1800 [Integer]",
     permission: "Referee"
