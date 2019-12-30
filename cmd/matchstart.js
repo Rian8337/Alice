@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             }
             if (!mapfound) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-            if (map.toUpperCase().includes("DT")) timelimit = Math.ceil(timelimit / 1.5);
+            if (map.toUpperCase().includes("DT") && poolid != "t8q") timelimit = Math.ceil(timelimit / 1.5);
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
             let embed = new Discord.RichEmbed()
