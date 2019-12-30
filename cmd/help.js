@@ -55,7 +55,7 @@ module.exports.run = (client, message, args) => {
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 		let embed = new Discord.RichEmbed()
 			.setTitle("Alice Synthesis Thirty Help\nUser Commands")
-			.setDescription(`**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.\nFor moderation commands, type \`${config.prefix}modhelp\`.`)
+			.setDescription(`Made by <@132783516176875520> and <@386742340968120321>.\nComplete command list can be found [here](https://github.com/Rian8337/Alice).\n**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.\nFor moderation commands, type \`${config.prefix}modhelp\`.`)
 			.setThumbnail(client.user.avatarURL)
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index])
