@@ -134,8 +134,8 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
 	description: "Checks a user's droid pp profile.",
-	usage: "ppcheck [user]",
-	detail: "`user`: The user to check [UserResolvable (mention or user ID)]",
+	usage: "ppcheck [page/user] [page]",
+	detail: "`user`: The user to check [UserResolvable (mention or user ID)]\n`page`: Page to check from 1 to 15. If specified, the first argument will be treated as `user` [Integer]",
 	permission: "None"
 };
 
