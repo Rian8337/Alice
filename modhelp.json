@@ -23,8 +23,8 @@
     "recalc",
     "tempban",
     "unban",
-    "whitelistremove",
-    "whitelistremoveset"
+    "unwhitelist",
+    "unwhitelistset"
   ],
   "bot_owner": [
     "changeavatar",
