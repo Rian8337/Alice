@@ -145,11 +145,11 @@ function whitelistInfo(link_in, message, callback) {
 
 module.exports.config = {
     description: "Unwhitelists a beatmap set.",
-    usage: "whitelistremoveset <map set link/map set ID>",
+    usage: "unwhitelistset <map set link/map set ID>",
     detail: "`map set link/map set ID`: The beatmap set link or ID to unwhitelist [String]",
     permission: "Owner"
 };
 
 module.exports.help = {
-	name: "whitelistremoveset"
+	name: "unwhitelistset"
 };
