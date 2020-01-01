@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const me = new Discord.Client();
 const config = require("./config.json");
 const fs = require("fs");
 require("https");
@@ -276,6 +275,8 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.login(process.env.BOT_TOKEN);
 
+// personal stuff
+const me = new Discord.Client();
 me.on("ready", () => {
 	console.log("Login initiated");
 	me.user.setActivity("Sword Art Online: Alicization Rising Steel", {type: "PLAYING"}).catch(console.error)
