@@ -5,12 +5,7 @@ var droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
-	try {
-		let rolecheck = message.member.roles
-	} catch (e) {
-		return
-	}
-	if (!message.member.roles.find(r => r.name === 'Owner')) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid.**");
 	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
