@@ -38,7 +38,7 @@ module.exports.run = (client, message, args) => {
 		droidhelp = droidhelp.slice(0, -1);
 
 		let pp = help.dpp;
-		let pphelp = 'NOTE: This system does not automatically submit your plays. You have to do it manually using the command provided below. Moreover, you can only submit up to 50 of your recent plays. If you want to submit all your previous plays, contact a helper or moderator.\n\n';
+		let pphelp = 'NOTE: This system does not automatically submit your plays. You have to do it manually using the command provided below. Moreover, you can only submit up to 50 of your recent plays. If you want to submit all your previous plays, contact a helper or moderator.\n';
 		for (i = 0; i < pp.length; i++) {
 			pphelp += "`" + pp[i] + "` ";
 		}
