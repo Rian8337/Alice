@@ -51,7 +51,7 @@ module.exports.config = {
 	description: "Retrieves the registered email of an osu!droid account.",
 	usage: "emailcheck <uid>",
 	detail: "`uid`: Uid to retrieve email from [Integer]",
-	permission: "Owner"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
