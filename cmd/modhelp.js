@@ -47,7 +47,7 @@ module.exports.run = (client, message, args) => {
 		let specific = modhelp.specific;
 		let specifichelp = 'These commands are exclusive to <@132783516176875520> and <@386742340968120321>.\n';
 		for (i = 0; i < specific.length; i++) {
-			specifichelp += "`" + specific[i] + "`"
+			specifichelp += "`" + specific[i] + "` "
 		}
 		specifichelp = specifichelp.slice(0, -1);
 
