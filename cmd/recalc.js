@@ -153,12 +153,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	try {
-		let rolecheck = message.member.roles
-	} catch (e) {
-		return
-	}
-    if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     var uid = args[0];
     //discordid = discordid.replace("<@", "");
     //discordid = discordid.replace(">", "");
@@ -182,7 +177,7 @@ module.exports.config = {
 	description: "Recalculates a user's droid pp profile.",
 	usage: "recalc <uid>",
 	detail: "`uid`: The uid to recalculate [Integer]",
-	permission: "Owner"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
