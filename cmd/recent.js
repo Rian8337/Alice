@@ -224,7 +224,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 }
 
 module.exports.run = (client, message, args) => {
-	let uid = args[0];
+	let uid = parseInt(args[0]);
         if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
 	var options = {
 		host: "ops.dgsrz.com",
