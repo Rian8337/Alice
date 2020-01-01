@@ -146,7 +146,7 @@ module.exports.run = (client, message, args, maindb) => {
 		if (channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel2}!**`);
 		else return message.channel.send("❎ **| Hey, please create #bot-ground or #elaina-pp-project first!**")
 	}
-	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	let ufind = args[0];
 	if (!ufind) return message.channel.send("❎ **| Hey, who do you want me to submit plays for?**");
 	ufind = ufind.replace("<@", "");
@@ -310,7 +310,7 @@ module.exports.config = {
 	description: "Submits a play for a user.",
 	usage: "ppsubmit <user> <offset> <start>",
 	detail: "`user`: The user to submit [UserResolvable (mention or user ID)]\n`offset`: The amount of play to submit from 1 to 5, defaults to 1 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50, defaults to 1 [Integer]",
-	permission: "Owner"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
