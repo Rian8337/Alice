@@ -71,7 +71,7 @@ module.exports.config = {
 	description: "Wipes a user's droid pp data.",
 	usage: "ppwipe <user>",
 	detail: "`user`: The user to wipe [UserResolvable (mention or user ID)]",
-	permission: "Owner"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
