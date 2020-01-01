@@ -11,20 +11,23 @@
     "tempmute"
   ],
   "owner": [
-    "addtrack",
     "ban",
-    "completepp",
-    "completescore",
     "createinvite",
     "deletetrack",
-    "emailcheck",
     "fetchmessage",
+    "tempban",
+    "unban"
+  ],
+  "specific": [
+    "addtrack",
+    "completepp",
+    "completescore",
+    "deletetrack",
+    "emailcheck",
     "ppdelete",
     "ppsubmit",
     "ppwipe",
     "recalc",
-    "tempban",
-    "unban",
     "unwhitelist",
     "unwhitelistset"
   ],
