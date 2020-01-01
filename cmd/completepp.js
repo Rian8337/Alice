@@ -139,7 +139,7 @@ function calculatePP(ppentries, entry, cb) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (message.member.highestRole.name !== 'Owner') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (!message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     var ppentries = [];
     var page = 0;
     var ufind = args[0];
