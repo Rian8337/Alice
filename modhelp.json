@@ -17,6 +17,7 @@
     "completescore",
     "createinvite",
     "deletetrack",
+    "emailcheck",
     "fetchmessage",
     "ppdelete",
     "ppsubmit",
