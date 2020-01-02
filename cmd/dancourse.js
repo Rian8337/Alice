@@ -71,7 +71,7 @@ function validation(dan, mod, acc, rank) {
 
 module.exports.run = (client, message, args, maindb) => {
     let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
-    let channel = message.guild.channels.get("316545691545501706");
+    let channel = message.guild.channels.get("361785436982476800");
 
     if (args[0] == 'about') {
         if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
