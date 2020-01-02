@@ -3,10 +3,12 @@
     "ask",
     "avatar",
     "help",
+    "modhelp",
     "ping",
     "report"
   ],
   "droid": [
+    "bindsearch",
     "dancourse",
     "manualcalc",
     "manualsubmit",
@@ -30,8 +32,7 @@
     "scorelb",
     "skin",
     "timer",
-    "userbind",
-    "usersearch"
+    "userbind"
   ],
   "dpp": [
     "lb",
