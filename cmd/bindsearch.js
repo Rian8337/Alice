@@ -27,11 +27,11 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
     description: "Checks if specific uid is binded to a Discord account.",
-    usage: "usersearch <uid>",
+    usage: "bindsearch <uid>",
     detail: "`uid`: The uid to check [Integer]",
     permission: "None"
 };
 
 module.exports.help = {
-    name: "usersearch"
+    name: "bindsearch"
 };
