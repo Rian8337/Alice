@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
     let channel = message.guild.channels.get("316545691545501706");
 
     if (args[0] == 'about') {
-        //if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
+        if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
         let footer = config.avatar_list;
         let helper = message.guild.roles.get("369108742077284353");
         let mod = message.guild.roles.get("595667274707370024");
