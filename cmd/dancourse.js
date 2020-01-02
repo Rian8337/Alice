@@ -87,6 +87,7 @@ module.exports.run = (client, message, args, maindb) => {
         }
         let embed = new Discord.RichEmbed()
             .setTitle("osu!droid Daninintei Courses")
+            .setThumbnail("https://cdn.discordapp.com/attachments/430939277720027136/623153414414532609/BG.png")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(rolecheck)
             .setDescription("__osu!droid Daninintei Courses__ is a course system to measure your skill level. Receive roles and gain scores (yes) as you progress through each course!\n\nThere are **" + danlist.length + "** available courses: **" + danlist.join(", ") + "**.")
