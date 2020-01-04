@@ -22,7 +22,7 @@ function responseFactor(msg) {
 
 function responsefactor(msg) {
     let res = 0;
-    if (msg.toLowerCase().includes("rian") || msg.toLowerCase().includes("you")) res = 4;
+    if (msg.toLowerCase().includes("rian")) res = 4;
     let badword = config.responses.badword;
     badword.forEach((word) => {
         if (msg.toLowerCase().includes(word)) res = 4
