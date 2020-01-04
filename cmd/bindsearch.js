@@ -15,7 +15,7 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (res[0]) {
             let discordid = res[0].discordid;
-            embed.setDescription(`**Uid ${uid} is binded to <@${discordid}>**`);
+            embed.setDescription(`**Uid ${uid} is binded to <@${discordid}>.\nUser ID: ${discordid}**`);
             message.channel.send({embed: embed})
         }
         else {
