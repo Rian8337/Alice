@@ -279,11 +279,10 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 client.login(process.env.BOT_TOKEN);
 
 // personal stuff
-/*
 const me = new Discord.Client();
 me.on("ready", () => {
 	console.log("Login initiated");
-	me.user.setActivity("Sword Art Online: Alicization Rising Steel", {type: "PLAYING"}).catch(console.error)
+	me.user.setActivity("Sword Art Online: Alicization Rising Steel", {type: "STREAMING", url: "https://github.com/Rian8337/Alice"}).catch(console.error)
 });
 
-me.login(process.env.MY_TOKEN).catch(console.error)*/
+me.login(process.env.MY_TOKEN).catch(console.error)
