@@ -11,10 +11,7 @@ function scoreCalc(mode, score, maxscore, accuracy, misscount) {
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (!message.member.roles.find(r => r.name === 'Referee')) {
-		message.channel.send("You don't have enough permission to use this :3");
-		return;
-	}
+	if (!message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("You don't have enough permission to use this :3");
 	let id = args[0];
 	if (id) {
 		let matchdb = maindb.collection("matchinfo");
