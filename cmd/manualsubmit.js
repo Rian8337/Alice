@@ -1,14 +1,17 @@
 var Discord = require('discord.js');
 
-function scoreCalc(score, maxscore, accuracy, misscount) {
-	let newscore = score/maxscore*600000 + (Math.pow((accuracy/100), 4)*400000);
-	newscore = newscore - (misscount*0.003*newscore);
-	return newscore;
+function scoreCalc(mode, score, maxscore, accuracy, misscount) {
+	let hddt;
+	if (mode == 'dt' && score.includes("h")) hddt = true;
+	let newscore = parseInt(score)/maxscore*600000 + (Math.pow((accuracy/100), 4)*400000);
+	newscore -= misscount * 0.003 * newscore;
+	if (!hddt) return newscore;
+	else return Math.round(newscore/1.036)
 }
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (!message.member.roles.find("name", "Referee")) {
+	if (!message.member.roles.find(r => r.name === 'Referee')) {
 		message.channel.send("You don't have enough permission to use this :3");
 		return;
 	}
@@ -48,17 +51,17 @@ module.exports.run = (client, message, args, maindb) => {
 					return;
 				}
 				for (var i = 0; i < res[0].player.length; i++) {
-					pscore.push(scoreCalc(parseInt(args[2+i*3]),parseInt(poolres[0].map[mapid-1][2]),parseFloat(args[2+i*3+1]),parseInt(args[2+i*3+2])))
+					pscore.push(scoreCalc(poolres[0].map[mapid-1][0], args[2+i*3], parseInt(poolres[0].map[mapid-1][2]), parseFloat(args[2+i*3+1]), parseInt(args[2+i*3+2])))
 				}
 				for (k in pscore) {
 					if (k % 2 == 0) {
-						t1score += pscore[k]
-						if (pscore[k] == 0) displayRes1 += res[0].player[k][0] + " (N/A):\t0 - Failed\n"
+						t1score += pscore[k];
+						if (pscore[k] == 0) displayRes1 += res[0].player[k][0] + " (N/A):\t0 - Failed\n";
 						else displayRes1 += res[0].player[k][0] + " (N/A):\t" + Math.round(pscore[k]) + " - " + args[2+k*3+1] + " - " + args[2+k*3+2] + " miss\n"
 					}
 					else {
-						t2score += pscore[k]
-						if (pscore[k] == 0) displayRes2 += res[0].player[k][0] + " (N/A):\t0 - Failed\n"
+						t2score += pscore[k];
+						if (pscore[k] == 0) displayRes2 += res[0].player[k][0] + " (N/A):\t0 - Failed\n";
 						else displayRes2 += res[0].player[k][0] + " (N/A):\t" + Math.round(pscore[k]) + " - " + args[2+k*3+1] + " - " + args[2+k*3+2] + " miss\n"
 					}
 				}
@@ -117,28 +120,28 @@ module.exports.run = (client, message, args, maindb) => {
 					]
 				};
 				message.channel.send({ embed });
-				for (p in pscore) result[p].push(pscore[p])
+				for (p in pscore) result[p].push(pscore[p]);
 				let update = {
 					$set: {
 						status: "on-going",
 						team: res[0].team,
 						result: result
 					}
-				}
+				};
 				matchdb.updateOne(query, update, function(err, res) {
 					if (err) throw err;
 					console.log("match info updated");
-				});
-			});
-		});
+				})
+			})
+		})
 	}
 	else message.channel.send("Please specify match id");
 };
 
 module.exports.config = {
 	description: "Manually submits a match.",
-	usage: "manualsubmit <match id> <map sort> <score 1> <acc 1> <miss 1> <score 2> <acc 2> <miss 2> <...>",
-	detail: "`match id`: The ID of the match [String]\n`map sort` The order of the map in pool [Integer]\n`score n`: Score achieved by player n\n`acc n`: Accuracy achieved by player n\n`miss n`: Amount of misses from player n",
+	usage: "manualsubmit <match id> <map sort> <score 1>[h] <acc 1> <miss 1> <score 2>[h] <acc 2> <miss 2> <...>",
+	detail: "`match id`: The ID of the match [String]\n`map sort` The order of the map in pool [Integer]\n`score n`: Score achieved by player n [Integer]\n`h`: Means the player played HDDT (applies score penalty, only works if pick is a DT pick) [String]\n`acc n`: Accuracy achieved by player n [Float]\n`miss n`: Amount of misses from player n [Integer]",
 	permission: "Referee"
 };
 
