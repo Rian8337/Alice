@@ -74,10 +74,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            if (res[0]) {
+            if (askres[0]) {
                 var updateVal = {
                     $set: {
-                        count: parseInt(res[0].count) + 1
+                        count: parseInt(askres[0].count) + 1
                     }
                 };
                 askdb.updateOne({discordid: message.author.id}, updateVal, err => {
