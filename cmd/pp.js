@@ -138,14 +138,12 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project' && message.channel.id != '635535610739687435') {
-		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
-		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
-		if (channel && channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel} and ${channel2}!**`);
-		if (channel) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel}!**`);
-		if (channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel2}!**`);
-		else return message.channel.send("❎ **| Hey, please create #bot-ground or #elaina-pp-project first!**")
+	var channels = config.pp_channel;
+	var found;
+	for (var i = 0; i < channels.length; i++) {
+		if (message.guild.channels.get(channels[i])) found = true
 	}
+	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = message.author.id;
 	let objcount = {x: 0};
 	var offset = 1;
@@ -213,20 +211,14 @@ module.exports.run = (client, message, args, maindb) => {
 					var rplay = obj.recent;
 					var curpos = 0;
 					var playentry = [];
-					var rolecheck;
-                                        try {
-                                                rolecheck = message.member.highestRole.hexColor
-                                        } catch (e) {
-                                                rolecheck = "#000000"
-                                        }
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					let embed = new Discord.RichEmbed()
 						.setTitle("PP submission info")
 						.setFooter("Alice Synthesis Thirty", footer[index])
-						.setColor(rolecheck);
+						.setColor(message.member.highestRole.hexColor);
 
-					for (var i = start - 1; i < start + offset - 1; i++) {
+					for (i = start - 1; i < start + offset - 1; i++) {
 						if (!rplay[i]) break;
 						var play = {
 							title: "", acc: "", miss: "", combo: "", mod: "", hash: ""
