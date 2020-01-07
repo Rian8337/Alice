@@ -14,7 +14,7 @@ function modread(input) {
 	if (input.includes('t')) res += 256;
 	if (input.includes('c')) res += 576;
 	if (input.includes('d')) res += 64;
-	return res;
+	return res
 }
 
 function test(uid, page, cb) {
@@ -185,7 +185,7 @@ module.exports.run = (client, message, args, maindb) => {
                     pptotal += weight*pplist[i][2];
                     weight *= 0.95;
                 }
-                message.channel.send('<@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp');
+                message.channel.send('✅ **| <@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp.**');
                 var updateVal = { $set: {
                         pptotal: pptotal,
                         pp: pplist,
