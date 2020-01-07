@@ -1,0 +1,15 @@
+__**Introduction**__
+Hi, and welcome to the osu!droid International Discord server! Before diving further into the server, *you must read and agree to the rules written in **#welcome***. You can also find more osu!droid related server too!
+
+After you've read and agreed to server rules, you can proceed to **#newbie-guide** where all guides and links relevant to the game have been compiled, therefore you don't need to search everywhere to find one. Do note that some guides are not be available or outdated in the channel. In that case, you can ask in **#general** or **#tech-stuffs** (intended for advanced stuff).
+
+__**Server Channels**__
+Each channels have their own purpose which you can read further into detail in their respective topic. Make sure to *always read channel topic* as some channels have their own rules. When they do, it is stated in their respective channel topic. All channels are bound to server rules unless stated otherwise in **#welcome**.
+
+__**Bots**__
+We have two osu!droid Discord bots in the server. They are <@391268244796997643> (prefix is `&`) and <@627321230902689813> (prefix is `a!`). These bots provide a user-friendly environment and more utility for osu!droid players and offer extra features related to the game. Unfortunately, they are private, therefore their invite link is nowhere to be found. You can check their functionality and commands by hitting `&help` or `a!help`. Some commands are similar, but each of them has its own exclusive commands.
+All other bots along with their respective information can be found in the internet and you can invite them to your own server if you wish to do so.
+
+In the end, we hope this short guide helps you to know a little bit more about the server, and that you can enjoy your stay as long as possible. Cheers!
+
+- <@132783516176875520> and <@386742340968120321>
