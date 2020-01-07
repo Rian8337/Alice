@@ -137,16 +137,14 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (message.channel.name != 'bot-ground' && message.channel.name != 'elaina-pp-project') {
-		let channel = message.guild.channels.find(c => c.name === 'bot-ground');
-		let channel2 = message.guild.channels.find(c => c.name === 'elaina-pp-project');
-		if (channel && channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel} and ${channel2}!**`);
-		if (channel) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel}!**`);
-		if (channel2) return message.channel.send(`❎ **| I'm sorry, this command is only allowed in ${channel2}!**`);
-		else return message.channel.send("❎ **| Hey, please create #bot-ground or #elaina-pp-project first!**")
-	}
 	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+	var channels = config.pp_channel;
+	var found;
+	for (var i = 0; i < channels.length; i++) {
+		if (message.guild.channels.get(channels[i])) found = true
+	}
+	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = args[0];
 	if (!ufind) return message.channel.send("❎ **| Hey, who do you want me to submit plays for?**");
 	ufind = ufind.replace("<@", "");
@@ -307,7 +305,7 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.config = {
-	description: "Submits a play for a user.",
+	description: "Submits a play for a user. Only allowed in bot channel and pp project channel in osu!droid International Discord server.",
 	usage: "ppsubmit <user> <offset> <start>",
 	detail: "`user`: The user to submit [UserResolvable (mention or user ID)]\n`offset`: The amount of play to submit from 1 to 5, defaults to 1 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50, defaults to 1 [Integer]",
 	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
