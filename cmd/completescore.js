@@ -4,6 +4,45 @@ require('dotenv').config();
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 
+function scoreRequirement(lvl) {
+    var xp;
+    if (lvl <= 100) xp = 5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60);
+    else xp = 26931190827 + 99999999999 * (lvl - 100);
+    return Math.round(xp)
+}
+
+function levelUp(level, score, cb) {
+    var nextlevel = scoreRequirement(level + 1);
+    if (score < nextlevel) cb(level, true);
+    else {
+        level++;
+        cb(level, false)
+    }
+}
+
+function calculateLevel(lvl, score, cb) {
+    var xpreq = scoreRequirement(lvl + 1);
+    var nextlevel = 0;
+    var prevlevel = 0;
+    if (score >= xpreq) levelUp(lvl, score, function testcb(newlevel, stopSign) {
+        if (stopSign) {
+            nextlevel = scoreRequirement(newlevel + 1);
+            prevlevel = scoreRequirement(newlevel);
+            newlevel += (score - prevlevel) / (nextlevel - prevlevel);
+            console.log(newlevel);
+            cb(newlevel)
+        }
+        else levelUp(newlevel, score, testcb)
+    });
+    else {
+        nextlevel = xpreq;
+        prevlevel = scoreRequirement(lvl);
+        var newlevel = lvl + ((score - prevlevel) / (nextlevel - prevlevel));
+        console.log(newlevel);
+        cb(newlevel)
+    }
+}
+
 function retrievePlay(uid, page, cb) {
     console.log("Current page: " + page);
     var url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
@@ -102,45 +141,50 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             retrievePlay(uid, page, function testcb(entries, stopSign) {
                 if (stopSign) {
                     console.log("COMPLETED!");
-                    scoreentries.sort((a, b) => {return b[0] - a[0]});
+                    scoreentries.sort((a, b) => {
+                        return b[0] - a[0]
+                    });
                     var score = 0;
                     for (i = 0; i < scoreentries.length; i++) {
                         score += scoreentries[i][0]
                     }
-                    console.log(score.toLocaleString());
-                    message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()}.**`);
-                    if (res[0]) {
-                        var updateVal = {
-                            $set: {
+                    calculateLevel(0, score, level => {
+                        console.log(score.toLocaleString());
+                        message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()} (level ${Math.floor(level)}).**`);
+                        if (res[0]) {
+                            var updateVal = {
+                                $set: {
+                                    level: level,
+                                    score: score,
+                                    playc: playc,
+                                    scorelist: scoreentries
+                                }
+                            };
+                            scoredb.updateOne(query, updateVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Score updated")
+                            })
+                        } else {
+                            var insertVal = {
+                                uid: uid,
+                                username: username,
+                                level: level,
                                 score: score,
                                 playc: playc,
                                 scorelist: scoreentries
-                            }
-                        };
-                        scoredb.updateOne(query, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                            console.log("Score updated")
-                        })
-                    }
-                    else {
-                        var insertVal = {
-                            uid: uid,
-                            username: username,
-                            score: score,
-                            playc: playc,
-                            scorelist: scoreentries
-                        };
-                        scoredb.insertOne(insertVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                            console.log("Score added")
-                        })
-                    }
+                            };
+                            scoredb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Score added")
+                            })
+                        }
+                    });
                     return
                 }
                 console.table(entries);
