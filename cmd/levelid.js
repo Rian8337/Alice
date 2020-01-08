@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Level", `${Math.floor(level)} (${levelremain.toFixed(2)}%)`, true)
-                        .addField("Play count", playc, true)
+                        .addField("Play Count", playc, true)
                         .addField("Total Ranked Score", score.toLocaleString(), true);
 
                     message.channel.send({embed: embed})
