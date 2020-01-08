@@ -7,7 +7,7 @@ var droidapikey = process.env.DROID_API_KEY;
 function scoreRequirement(lvl) {
     var xp;
     if (lvl <= 100) xp = 5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60);
-    else xp = 26931190827 + 99999999999 * (lvl - 100);
+    else xp = 26931190827 + 15000000000 * (lvl - 100);
     return Math.round(xp)
 }
 
