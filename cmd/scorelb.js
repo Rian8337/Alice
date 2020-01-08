@@ -5,7 +5,7 @@ function spaceFill (s, l) {
     for (var i = 1; i < l-a; i++) {
         s += ' ';
     }
-    return s;
+    return s
 }
 
 function editscore(res, page) {
