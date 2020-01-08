@@ -9,13 +9,13 @@ function spaceFill (s, l) {
 }
 
 function editscore(res, page) {
-    var output = '#  | Username         | UID    | Play   | Score \n';
+    var output = '#   | Username         | UID    | Play   | Lv  | Score \n';
     for (var i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].score && res[i].playc) {output += spaceFill((parseInt(i)+1).toString(),3) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 7) + ' | ' + parseInt(res[i].score).toLocaleString() + '\n';}
-            else {output += spaceFill((parseInt(i)+1).toString(), 3) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 7) + ' | ' + "0.00" + '\n';}
+            if (res[i].score && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 7) + ' | ' + spaceFill(Math.floor(res[i].level).toString(), 4) + ' | ' + parseInt(res[i].score).toLocaleString() + '\n';}
+            else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 7) + ' | ' + spaceFill("0", 4) + ' | ' + '0\n';}
         }
-        else {output += spaceFill("-", 3) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 7) + ' | ' + "-" + '\n';}
+        else {output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 4) + ' | ' + '-\n';}
     }
     output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
     return output
@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
     var scoredb = alicedb.collection("playerscore");
     var scoresort = {score: -1};
-    scoredb.find({}, {projection: {_id: 0, uid: 1, score: 1, playc: 1, username: 1}}).sort(scoresort).toArray((err, res) => {
+    scoredb.find({}, {projection: {_id: 0, uid: 1, score: 1, playc: 1, username: 1, level: 1}}).sort(scoresort).toArray((err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
