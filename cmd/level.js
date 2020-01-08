@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            if (!res[0]) return message.channel.send("❎ **| You haven't submitted any plays! Please use `a!score` to submit your plays. For more information, type `a!help score`.zzz**");
+            if (!res[0]) return message.channel.send("❎ **| You haven't submitted any plays! Please use `a!score` to submit your plays. For more information, type `a!help score`.**");
             let score = res[0].score;
             let level = res[0].level;
             let levelremain = (level - Math.floor(level)) * 100;
