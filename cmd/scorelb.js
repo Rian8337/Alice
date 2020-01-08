@@ -9,13 +9,13 @@ function spaceFill (s, l) {
 }
 
 function editscore(res, page) {
-    var output = '#   | Username         | UID    | Play   | Lv  | Score \n';
+    var output = '#   | Username         | UID    | Play   | Score (Lv)\n';
     for (var i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].score && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 7) + ' | ' + spaceFill(Math.floor(res[i].level).toString(), 4) + ' | ' + parseInt(res[i].score).toLocaleString() + '\n';}
-            else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 7) + ' | ' + spaceFill("0", 4) + ' | ' + '0\n';}
+            if (res[i].score && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 7) + ' | ' + parseInt(res[i].score).toLocaleString() + ' (' + res[i].level.toString() + ')\n';}
+            else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 7) + ' | ' + '0 (0)\n';}
         }
-        else {output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 4) + ' | ' + '-\n';}
+        else {output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 7) + ' | -\n';}
     }
     output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
     return output
