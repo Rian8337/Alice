@@ -10,7 +10,8 @@
   "droid": [
     "bindsearch",
     "dancourse",
-    "level",
+    "levelid",
+    "levelme",
     "manualcalc",
     "manualsubmit",
     "matchadd",
