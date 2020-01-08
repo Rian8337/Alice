@@ -56,7 +56,7 @@ function calculateLevel(lvl, score, cb) {
     }
 }
 
-function scoreApproval(hash, mod, message, objcount, cb) {
+function scoreApproval(score, hash, mod, acc, combo, miss, message, objcount, cb) {
     var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + hash);
     var content = '';
 
@@ -94,7 +94,7 @@ function scoreApproval(hash, mod, message, objcount, cb) {
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
             objcount.x++;
-            cb(playinfo, hash)
+            cb(playinfo, score, mod, acc, combo, miss, hash)
         })
     });
     req.end()
@@ -207,10 +207,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     var score = 0;
                     var submitted = 0;
-                    playentry.forEach(x => {
-                        if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (playinfo, hash) => {
+                    for (var i = 0; i < playentry.length; i++) {
+                        if (playentry[i].title) scoreApproval(playentry[i].score, playentry[i].hash, playentry[i].mod, playentry[i].acc, playentry[i].combo, playentry[i].miss, message, objcount, (playinfo, pscore, pmod, pacc, pcombo, pmiss, hash) => {
                             console.log(objcount);
-                            var scoreentry = [x.score, hash];
+                            var scoreentry = [pscore, hash];
                             var diff = 0;
                             var dup = false;
                             for (i in scorelist) {
@@ -231,7 +231,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 return b[0] - a[0]
                             });
                             submitted++;
-                            embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`);
+                            embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${pcombo}x | ${pacc}% | ${pmiss} ❌`);
                             if (objcount.x == playentry.length) {
                                 for (i in scorelist) {
                                     score += scorelist[i][0]
@@ -277,7 +277,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 })
                             }
                         })
-                    })
+                    }
                 })
             })
         });
