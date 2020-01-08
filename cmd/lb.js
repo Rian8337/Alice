@@ -9,11 +9,11 @@ function spaceFill (s, l) {
 }
 
 function editpp (res, page) {
-    var output = '#  | Username         | UID    | Play | PP \n';
+    var output = '#   | Username         | UID    | Play | PP \n';
     for (var i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].pptotal && res[i].playc) {output += spaceFill((parseInt(i)+1).toString(),3) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 5) + ' | ' + res[i].pptotal.toFixed(2) + '\n';}
-            else {output += spaceFill((parseInt(i)+1).toString(), 3) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 5) + ' | ' + "0.00" + '\n';}
+            if (res[i].pptotal && res[i].playc) {output += spaceFill((parseInt(i)+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 5) + ' | ' + res[i].pptotal.toFixed(2) + '\n';}
+            else {output += spaceFill((parseInt(i)+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 5) + ' | ' + "0.00" + '\n';}
         }
         else {output += spaceFill("-", 3) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 5) + ' | ' + "-" + '\n';}
     }
@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb) => {
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id)
-        }, 10000)
+        }, 5000)
     })
 };
 
