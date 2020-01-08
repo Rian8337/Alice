@@ -141,6 +141,7 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("guildMemberUpdate", oldMember => {
+	if (oldMember.user.bot) return;
 	let general = oldMember.guild.channels.get("316545691545501706");
 	if (!general || oldMember.roles.find(r => r.name === "Member")) return;
 	fs.readFile("welcome.txt", 'utf8', (err, data) => {
@@ -151,6 +152,37 @@ client.on("guildMemberUpdate", oldMember => {
 			general.send(welcomeMessage)
 		}, 100)
 	})
+});
+
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+	if (oldMember.guild.id != '316545691545501706') return;
+	if (oldMember.roles.size == newMember.roles.size) return;
+	let guild = client.guilds.get('528941000555757598');
+	let logchannel = guild.channels.get('655829748957577266');
+        let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+	let embed = new Discord.RichEmbed()
+                .setFooter("Alice Synthesis Thirty", footer[index])
+                .setTimestamp(new Date());
+
+	if (oldMember.roles.size > newMember.roles.size) {
+		oldMember.roles.forEach(role => {
+			if (!newMember.roles.get(role.id)) {
+                                embed.setDescription("`" + role.name + "` was removed from " + newMember.user.username);
+                                embed.setColor(role.hexColor)
+			}
+		});
+		logchannel.send({embed: embed})
+	}
+	else {
+		newMember.roles.forEach(role => {
+			if (!oldMember.roles.get(role.id)) {
+				embed.setDescription("`" + role.name + "` was added to " + newMember.user.username);
+                                embed.setColor(role.hexColor)
+			}
+		});
+		logchannel.send({embed: embed})
+	}
 });
 
 // message logging
@@ -252,38 +284,6 @@ client.on("roleDelete", role => {
 		.setColor(role.hexColor)
 		.setDescription("`" + role.name + "` was deleted");
 	logchannel.send({embed: embed})
-});
-
-// member role applied
-client.on("guildMemberUpdate", (oldMember, newMember) => {
-	if (oldMember.guild.id != '316545691545501706') return;
-	if (oldMember.roles.size == newMember.roles.size) return;
-	let guild = client.guilds.get('528941000555757598');
-	let logchannel = guild.channels.get('655829748957577266');
-        let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-	let embed = new Discord.RichEmbed()
-                .setFooter("Alice Synthesis Thirty", footer[index])
-                .setTimestamp(new Date());
-
-	if (oldMember.roles.size > newMember.roles.size) {
-		oldMember.roles.forEach(role => {
-			if (!newMember.roles.get(role.id)) {
-                                embed.setDescription("`" + role.name + "` was removed from " + newMember.user.username);
-                                embed.setColor(role.hexColor)
-			}
-		});
-		logchannel.send({embed: embed})
-	}
-	else {
-		newMember.roles.forEach(role => {
-			if (!oldMember.roles.get(role.id)) {
-				embed.setDescription("`" + role.name + "` was added to " + newMember.user.username);
-                                embed.setColor(role.hexColor)
-			}
-		});
-		logchannel.send({embed: embed})
-	}
 });
 
 client.login(process.env.BOT_TOKEN);
