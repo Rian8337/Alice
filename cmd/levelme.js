@@ -93,11 +93,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     description: "Views a user's ranked score profile.",
-    usage: "level [user]",
+    usage: "levelme [user]",
     detail: "`user`: The user to view [UserResolvable (mention or user ID)]",
     permission: "None"
 };
 
 module.exports.help = {
-    name: "level"
+    name: "levelme"
 };
