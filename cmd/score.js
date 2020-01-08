@@ -37,21 +37,18 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 obj = JSON.parse(content)
             } catch (e) {
                 message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                objcount.x++;
-                return
+                return objcount.x++
             }
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-                objcount.x++;
-                return
+                return objcount.x++
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) return;
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
-                objcount.x++;
-                return
+                return objcount.x++
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
             objcount.x++;
@@ -134,7 +131,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     };
                     play.title = rplay[i].filename;
                     play.mod = modread(rplay[i].mode);
-                    play.score = rplay[i].score;
+                    play.score = parseInt(rplay[i].score);
                     play.combo = rplay[i].combo;
                     play.acc = rplay[i].accuracy.toPrecision(4) / 1000;
                     play.miss = rplay[i].miss;
@@ -200,8 +197,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (res[0]) {
                                     var updateVal = {
                                         $set: {
-                                            score: score.toString(),
-                                            playc: playc.toString(),
+                                            score: score,
+                                            playc: playc,
                                             scorelist: scorelist
                                         }
                                     };
@@ -215,10 +212,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 else {
                                     var insertVal = {
-                                        uid: uid.toString(),
+                                        uid: uid,
                                         username: username,
-                                        score: score.toString(),
-                                        playc: playc.toString(),
+                                        score: score,
+                                        playc: playc,
                                         scorelist: scorelist
                                     };
                                     scoredb.insertOne(insertVal, err => {
