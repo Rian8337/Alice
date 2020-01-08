@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            if (!res[0]) return message.channel.send("❎ **| You haven't submitted any plays! Please use `a!score` to submit your plays. For more information, type `a!help score`.**");
+            if (!res[0]) return message.channel.send("❎ **| You haven't submitted any plays! Please use `a!score` to submit your plays. For more information, type `a!help score`.zzz**");
             let score = res[0].score;
             let level = res[0].level;
             let levelremain = (level - Math.floor(level)) * 100;
@@ -52,13 +52,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 res.on("end", () => {
                     const a = content;
                     let b = a.split('\n');
-                    let avalink = '';
+                    let avalink = "";
+                    let location = "";
                     for (x = 0; x < b.length; x++) {
                         if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                            b[x-3]=b[x-3].replace('<img src="',"");
-                            b[x-3]=b[x-3].replace('" class="img-circle">',"");
-                            b[x-3]=b[x-3].trim();
-                            avalink = b[x-3]
+                            b[x-3] = b[x-3].replace('<img src="',"");
+                            b[x-3] = b[x-3].replace('" class="img-circle">',"");
+                            b[x-3] = b[x-3].trim();
+                            avalink = b[x-3];
+                            b[x+1] = b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+                            b[x+1] = b[x+1].replace("<\/small>","");
+                            b[x+1] = b[x+1].trim();
+                            location = b[x+1]
                         }
                     }
                     var rolecheck;
@@ -72,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let embed = new Discord.RichEmbed()
                         .setColor(rolecheck)
                         .setThumbnail(avalink)
-                        .setDescription(`**Level profile for ${username}**`)
+                        .setAuthor(`**Level profile for ${username}**`, `https://osu.ppy.sh/images/flags/${location}.png`, `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Level", `${Math.floor(level)} (${levelremain.toFixed(2)}%)`, true)
                         .addField("Play count", playc, true)
