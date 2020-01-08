@@ -34,6 +34,7 @@
   "bot_owner": [
     "changeavatar",
     "remind",
+    "sayd",
     "togglestatus"
   ]
 }
