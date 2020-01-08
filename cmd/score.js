@@ -4,6 +4,7 @@ var https = require('https');
 var droidapikey = process.env.DROID_API_KEY;
 var apikey = process.env.OSU_API_KEY;
 var config = require('../config.json');
+var cd = new Set();
 
 function modread(input) {
     var res = '';
@@ -101,6 +102,7 @@ function scoreApproval(hash, mod, message, objcount, cb) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
     var ufind = message.author.id;
     var offset = 1;
     var start = 1;
@@ -281,7 +283,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 })
             })
         });
-        req.end()
+        req.end();
+        cd.add(message.author.id);
+        setTimeout(() => {
+            cd.delete(message.author.id)
+        }, 5000)
     })
 };
 
