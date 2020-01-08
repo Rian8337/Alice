@@ -4,18 +4,6 @@ require('dotenv').config();
 var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 
-function modread(input) {
-    var res = '';
-    if (input.includes('n')) res += 'NF';
-    if (input.includes('h')) res += 'HD';
-    if (input.includes('r')) res += 'HR';
-    if (input.includes('e')) res += 'EZ';
-    if (input.includes('t')) res += 'HT';
-    if (input.includes('c')) res += 'NC';
-    if (input.includes('d')) res += 'DT';
-    return res
-}
-
 function retrievePlay(uid, page, cb) {
     console.log("Current page: " + page);
     var url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
@@ -124,8 +112,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (res[0]) {
                         var updateVal = {
                             $set: {
-                                score: score.toString(),
-                                playc: playc.toString(),
+                                score: score,
+                                playc: playc,
                                 scorelist: scoreentries
                             }
                         };
@@ -139,10 +127,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     else {
                         var insertVal = {
-                            uid: uid.toString(),
+                            uid: uid,
                             username: username,
-                            score: score.toString(),
-                            playc: playc.toString(),
+                            score: score,
+                            playc: playc,
                             scorelist: scoreentries
                         };
                         scoredb.insertOne(insertVal, err => {
@@ -178,7 +166,7 @@ module.exports.config = {
     description: "Recalculates all plays of an account.",
     usage: "completescore <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Owner"
 };
 
 module.exports.help = {
