@@ -205,7 +205,7 @@ module.exports.run = (client, message, args, maindb) => {
                             console.log(objcount);
                             let valid = validation(x.dan, x.mod, x.acc, x.rank);
                             if (valid != 0) return message.channel.send("❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: " + x.play + " (" + x.rank + ", " + modname(x.mod) + ", " + x.acc + "%)\nReason: " + rejectionMessage(valid) + "**");
-                            let danrole = x.dan;
+                            let danrole = x.play;
                             let role = message.guild.roles.find(r => r.name === danrole);
                             if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
                             if (!message.member.roles.has(role.id)) message.member.addRole(role.id, "Successfully completed dan course").then(() => {
