@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let embed = new Discord.RichEmbed()
                         .setColor(rolecheck)
                         .setThumbnail(avalink)
-                        .setAuthor(`**Level profile for ${username}**`, `https://osu.ppy.sh/images/flags/${location}.png`, `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
+                        .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Level", `${Math.floor(level)} (${levelremain.toFixed(2)}%)`, true)
                         .addField("Play count", playc, true)
