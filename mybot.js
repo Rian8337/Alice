@@ -65,7 +65,7 @@ client.on("message", message => {
 	let args = msgArray.slice(1);
 
 	/*if (message.author.id == '386742340968120321') {
-		let cmd = client.commands.get("sayit");
+		let cmd = client.commands.get("sayd");
 		let args = msgArray.slice(0);
 		cmd.run(client, message, args);
 		return;
