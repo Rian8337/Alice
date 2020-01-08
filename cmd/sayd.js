@@ -1,7 +1,7 @@
 let config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
-	if (message.author.id != '386742340968120321' && !args[0]) return;
+	if (message.author.id != '386742340968120321' || !args[0]) return;
         message.author.lastMessage.delete(250).then(() => {
 	let attachments = [];
 	if (message.attachments.size > 0) {
