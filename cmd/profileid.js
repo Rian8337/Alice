@@ -33,7 +33,7 @@ function rankEmote(input) {
 
 module.exports.run = (client, message, args) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) return message.channel.send("Invalid uid");
+    if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
     var options = {
     	host: "ops.dgsrz.com",
     	port: 80,
