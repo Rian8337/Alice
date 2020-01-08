@@ -76,18 +76,21 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 obj = JSON.parse(content)
             } catch (e) {
                 message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                return objcount.x++
+                objcount.x++;
+                return
             }
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-                return objcount.x++
+                objcount.x++;
+                return
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) return;
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
-                return objcount.x++
+                objcount.x++;
+                return
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
             objcount.x++;
