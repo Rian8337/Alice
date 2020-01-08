@@ -210,7 +210,7 @@ module.exports.config = {
     description: "Recalculates all plays of an account.",
     usage: "completescore <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
-    permission: "Owner"
+    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
