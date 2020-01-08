@@ -17,6 +17,45 @@ function modread(input) {
     return res
 }
 
+function scoreRequirement(lvl) {
+    var xp;
+    if (lvl <= 100) xp = 5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60);
+    else xp = 26931190827 + 99999999999 * (lvl - 100);
+    return Math.round(xp)
+}
+
+function levelUp(level, score, cb) {
+    var nextlevel = scoreRequirement(level + 1);
+    if (score < nextlevel) cb(level, true);
+    else {
+        level++;
+        cb(level, false)
+    }
+}
+
+function calculateLevel(lvl, score, cb) {
+    var xpreq = scoreRequirement(lvl + 1);
+    var nextlevel = 0;
+    var prevlevel = 0;
+    if (score >= xpreq) levelUp(lvl, score, function testcb(newlevel, stopSign) {
+        if (stopSign) {
+            nextlevel = scoreRequirement(newlevel + 1);
+            prevlevel = scoreRequirement(newlevel);
+            newlevel += (score - prevlevel) / (nextlevel - prevlevel);
+            console.log(newlevel);
+            cb(newlevel)
+        }
+        else levelUp(newlevel, score, testcb)
+    });
+    else {
+        nextlevel = xpreq;
+        prevlevel = scoreRequirement(lvl);
+        var newlevel = lvl + ((score - prevlevel) / (nextlevel - prevlevel));
+        console.log(newlevel);
+        cb(newlevel)
+    }
+}
+
 function scoreApproval(hash, mod, message, objcount, cb) {
     var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + hash);
     var content = '';
@@ -150,12 +189,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     var prescore;
                     var scorelist;
                     var playc;
+                    var currentlevel;
                     if (res[0]) {
-                        prescore = parseInt(res[0].score);
+                        currentlevel = res[0].level;
+                        prescore = res[0].score;
                         scorelist = res[0].scorelist;
-                        playc = parseInt(res[0].playc)
+                        playc = res[0].playc
                     }
                     else {
+                        currentlevel = 1;
                         prescore = 0;
                         scorelist = [];
                         playc = 0
@@ -192,40 +234,44 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     score += scorelist[i][0]
                                 }
                                 var scorediff = score - prescore;
-                                embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**`);
-                                message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
-                                if (res[0]) {
-                                    var updateVal = {
-                                        $set: {
+                                calculateLevel(Math.floor(currentlevel) - 1, score, level => {
+                                    var levelremain = (level - Math.floor(level)) * 100;
+                                    embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**\n Current level: **${Math.floor(level)} (${levelremain.toFixed(2)}%**)`);
+                                    message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
+                                    if (res[0]) {
+                                        var updateVal = {
+                                            $set: {
+                                                level: level,
+                                                score: score,
+                                                playc: playc,
+                                                scorelist: scorelist
+                                            }
+                                        };
+                                        scoredb.updateOne(query, updateVal, err => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("Error: Empty database response. Please try again!")
+                                            }
+                                            console.log("Score updated")
+                                        })
+                                    } else {
+                                        var insertVal = {
+                                            uid: uid,
+                                            username: username,
+                                            level: level,
                                             score: score,
                                             playc: playc,
                                             scorelist: scorelist
-                                        }
-                                    };
-                                    scoredb.updateOne(query, updateVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("Error: Empty database response. Please try again!")
-                                        }
-                                        console.log("Score updated")
-                                    })
-                                }
-                                else {
-                                    var insertVal = {
-                                        uid: uid,
-                                        username: username,
-                                        score: score,
-                                        playc: playc,
-                                        scorelist: scorelist
-                                    };
-                                    scoredb.insertOne(insertVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("Error: Empty database response. Please try again!")
-                                        }
-                                        console.log("Score updated")
-                                    })
-                                }
+                                        };
+                                        scoredb.insertOne(insertVal, err => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("Error: Empty database response. Please try again!")
+                                            }
+                                            console.log("Score updated")
+                                        })
+                                    }
+                                })
                             }
                         })
                     })
