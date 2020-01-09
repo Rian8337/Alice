@@ -55,7 +55,14 @@ alcdb.connect((err, db) => {
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
-    console.log("Webhook initiated")
+    console.log("Webhook initiated");
+	
+	function trackFunc() {
+    	let cmd = client.commands.get("trackfunc");
+    	cmd.run(client, message = "", args = {}, maindb)
+	}
+
+	setInterval(trackFunc, 600000)
 });
 
 client.on("message", message => {
