@@ -241,7 +241,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 var scorediff = score - prescore;
                                 calculateLevel(Math.floor(currentlevel) - 1, score, level => {
                                     var levelremain = (level - Math.floor(level)) * 100;
-                                    embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**\nCurrent level: **${Math.floor(level)} (${levelremain.toFixed(2)}%) ${Math.floor(level) > Math.floor(currentlevel)?"\nLevel up!":""}**`);
+                                    embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**\nCurrent level: **${Math.floor(level)} (${levelremain.toFixed(2)}%)${Math.floor(level) > Math.floor(currentlevel)?"\nLevel up!":""}**`);
                                     message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
                                     if (res[0]) {
                                         var updateVal = {
