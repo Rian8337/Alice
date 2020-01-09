@@ -286,13 +286,13 @@ client.on("roleDelete", role => {
 	logchannel.send({embed: embed})
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN).catch(console.error);
 
 // personal stuff
-const me = new Discord.Client();
+/*const me = new Discord.Client();
 me.on("ready", () => {
 	console.log("Login initiated");
 	me.user.setActivity("Sword Art Online: Alicization Rising Steel", {type: "STREAMING", url: "https://github.com/Rian8337/Alice"}).catch(console.error)
 });
 
-me.login(process.env.MY_TOKEN).catch(console.error)
+me.login(process.env.MY_TOKEN).catch(console.error)*/
