@@ -217,10 +217,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             var dup = false;
                             for (i in scorelist) {
                                 if (hash == scorelist[i][1]) {
+                                    diff = scoreentry[0] - scorelist[i][0];
                                     scorelist[i] = scoreentry;
                                     dup = true;
                                     playc++;
-                                    diff = scoreentry[0] - scorelist[i][0];
                                     break
                                 }
                             }
