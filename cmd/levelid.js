@@ -3,10 +3,9 @@ var config = require('../config.json');
 var http = require('http');
 
 function levelBar(levelprogress) {
-    let string = "/".repeat(20);
-    let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / 5);
-    if (progress == 0) return string;
-    else return "**" + string.slice(0, progress) + "**" + string.slice(progress)
+    let barcount = 20;
+    let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / (100 / barcount));
+    return "🔵".repeat(progress) + "⚪".repeat(barcount - progress)
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -81,7 +80,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setThumbnail(avalink)
                         .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setFooter("Alice Synthesis Thirty", footer[index])
-                        .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\nLv${Math.floor(level)} ${levelBar(levelremain)} Lv${Math.floor(level) + 1}`);
+                        .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
 
                     message.channel.send({embed: embed})
                 })
