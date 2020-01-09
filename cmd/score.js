@@ -287,7 +287,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id)
-        }, 5000)
+        }, 2000)
     })
 };
 
