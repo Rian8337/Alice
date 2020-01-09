@@ -3,8 +3,8 @@ var config = require('../config.json');
 var http = require('http');
 
 function levelBar(levelprogress) {
-    let string = "/".repeat(25);
-    let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / 4);
+    let string = "/".repeat(20);
+    let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / 5);
     return "**" + string.slice(0, progress) + "**" + string.slice(progress)
 }
 
