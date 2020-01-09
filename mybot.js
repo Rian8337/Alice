@@ -58,6 +58,7 @@ client.on("ready", () => {
     console.log("Webhook initiated");
 	
 	function trackFunc() {
+		console.log("Retrieving plays")
     	let cmd = client.commands.get("trackfunc");
     	cmd.run(client, message = "", args = {}, maindb)
 	}
