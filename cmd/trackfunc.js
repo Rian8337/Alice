@@ -54,12 +54,13 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                     var resarr = content.split("<br>");
                     var headerres = resarr[0].split(" ");
                     var name = headerres[2];
-                    var play;
+                    var obj;
                     try {
-                        play = JSON.parse(resarr[1])
+                        obj = JSON.parse(resarr[1])
                     } catch (e) {
                         return
                     }
+                    var play = obj.recent;
                     for (var i = 0; i < play.length; i++) {
                         let timeDiff = Date.now() - play[i].date * 1000;
                         if (timeDiff > 600000) break;
