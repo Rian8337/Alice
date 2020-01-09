@@ -34,6 +34,7 @@ function rankread(imgsrc) {
 }
 
 module.exports.run = (client, message = "", args = {}, maindb) => {
+    let curtime = Math.floor(Date.now() / 1000);
     let trackdb = maindb.collection("tracking");
     trackdb.find({}).toArray(function(err, res) {
         if (err) throw err;
@@ -62,7 +63,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                     }
                     var play = obj.recent;
                     for (var i = 0; i < play.length; i++) {
-                        let timeDiff = Math.floor(Date.now() / 1000) - play[i].date;
+                        let timeDiff = curtime - play[i].date;
                         if (timeDiff > 600) break;
                         let title = play[i].filename;
                         let score = play[i].score.toLocaleString();
