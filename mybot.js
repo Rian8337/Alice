@@ -109,11 +109,19 @@ client.on("message", message => {
 		if (message.author.id == '386742340968120321') return message.channel.send("woi");
 	}
 	
+	if (message.content.startsWith("&")) {
+		let mainbot = message.guild.members.get("391268244796997643");
+		if (!mainbot) return;
+		let cmd = client.commands.get(command.slice(1));
+		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now!")
+	}
+	
 	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
 	}
+	
 	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
 		let cmd = '';
 		if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
