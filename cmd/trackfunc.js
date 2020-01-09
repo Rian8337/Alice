@@ -62,16 +62,16 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                     }
                     var play = obj.recent;
                     for (var i = 0; i < play.length; i++) {
-                        let timeDiff = Date.now() - play[i].date * 1000;
-                        if (timeDiff > 600000) break;
-                        let title = play[i].title;
+                        let timeDiff = Math.floor(Date.now() / 1000) - play[i].date;
+                        if (timeDiff > 600) break;
+                        let title = play[i].filename;
                         let score = play[i].score.toLocaleString();
                         let ptime = new Date(play[i].date * 1000);
                         ptime.setUTCHours(ptime.getUTCHours() + 7);
                         let acc = (play[i].accuracy / 1000).toFixed(2);
                         let mod = modname(play[i].mode);
                         let miss = play[i].miss;
-                        let rank = rankread(play[i].rank);
+                        let rank = rankread(play[i].mark);
                         let combo = play[i].combo;
 
                         let embed = new Discord.RichEmbed()
