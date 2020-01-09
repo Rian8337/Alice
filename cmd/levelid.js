@@ -2,6 +2,12 @@ var Discord = require('discord.js');
 var config = require('../config.json');
 var http = require('http');
 
+function levelBar(levelprogress) {
+    let string = "/".repeat(25);
+    let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / 4);
+    return "**" + string.slice(0, progress) + "**" + string.slice(progress)
+}
+
 module.exports.run = (client, message, args, maindb, alicedb) => {
     var uid = args[0];
     if (!uid) return message.channel.send("❎ **| Hey, I don't know what uid to view!**");
@@ -74,9 +80,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setThumbnail(avalink)
                         .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setFooter("Alice Synthesis Thirty", footer[index])
-                        .addField("Level", `${Math.floor(level)} (${levelremain.toFixed(2)}%)`, true)
-                        .addField("Play Count", playc, true)
-                        .addField("Total Ranked Score", score.toLocaleString(), true);
+                        .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\nLv${Math.floor(level)} ${levelBar(levelremain)} Lv${Math.floor(level) + 1}`);
 
                     message.channel.send({embed: embed})
                 })
