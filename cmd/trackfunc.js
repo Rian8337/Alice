@@ -63,7 +63,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                     }
                     var play = obj.recent;
                     for (var i = 0; i < play.length; i++) {
-                        let timeDiff = curtime - play[i].date;
+                        let timeDiff = curtime - (play[i].date + 3600 * 7); //server time is UTC-7, while curtime is in UTC
                         if (timeDiff > 600) break;
                         let title = play[i].filename;
                         let score = play[i].score.toLocaleString();
