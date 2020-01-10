@@ -121,8 +121,7 @@ client.on("message", message => {
 		let mainbot = message.guild.members.get("391268244796997643");
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
-		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now!")
-	}
+		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now! Please use `a!" + cmd.help.name + "`!")
 	
 	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
