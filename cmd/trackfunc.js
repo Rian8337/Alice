@@ -170,7 +170,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                         let rank = rankread(play[i].mark);
                         let combo = play[i].combo;
                         let hash = play[i].hash;
-                        if (title) getMapPP(hash, combo, acc, miss, mod, (available, dpp, pp) => {
+                        getMapPP(hash, combo, acc, miss, mod, (available, dpp, pp) => {
                             let embed = new Discord.RichEmbed()
                                 .setAuthor(`Recent play for ${name}`, rank)
                                 .setTitle(title)
