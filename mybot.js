@@ -147,6 +147,13 @@ client.on("message", message => {
 	}
 });
 
+client.on("presenceUpdate", (oldMember, newMember) => {
+	if (newMember.id != '386742340968120321') return;
+	if (newMember.user.presence.game.name == 'WebStorm') client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error);
+	else client.user.setActivity(config.activity_list[2][0], {type: config.activity_list[2][1]}).catch(console.error)
+	
+});
+
 // welcome message for international server
 client.on("guildMemberAdd", member => {
 	let channel = member.guild.channels.get("360716684174032896");
