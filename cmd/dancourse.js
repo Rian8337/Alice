@@ -210,7 +210,7 @@ module.exports.run = (client, message, args, maindb) => {
                             if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
                             if (!message.member.roles.has(role.id)) message.member.addRole(role.id, "Successfully completed dan course").then(() => {
                                 message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
-                                if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
+                                if (x.dan >= 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
                             }).catch(console.error);
 
                             // Dan Course Master
