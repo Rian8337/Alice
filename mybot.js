@@ -122,7 +122,7 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now! Please use `a!" + cmd.help.name + "`!")
-	
+	}
 	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
