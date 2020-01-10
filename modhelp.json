@@ -13,8 +13,8 @@
   "owner": [
     "ban",
     "createinvite",
-    "deletetrack",
     "fetchmessage",
+    "purge",
     "tempban",
     "unban"
   ],
