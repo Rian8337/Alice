@@ -1,4 +1,5 @@
 module.exports.run = (client, message) => {
+    if (message.member.highestRole.name !== "Owner") return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let time = Math.floor(Date.now() / 1000);
     let members = message.guild.members.filter(m => m.roles.size == 0);
     console.log(members.size)
@@ -22,5 +23,5 @@ module.exports.config = {
 };
 
 module.exports.help = {
-    name: "test"
+    name: "purge"
 };
