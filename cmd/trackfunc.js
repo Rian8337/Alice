@@ -81,7 +81,8 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                             .setColor(8311585)
                             .setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod}\`\nTime: \`${ptime.toUTCString()}\``);
 
-                        client.channels.get("664880705372684318").send({embed: embed})
+                        client.channels.get("664880705372684318").send({embed: embed});
+                        client.channels.get("665106609382359041").send({embed: embed})
                     }
                 })
             });
