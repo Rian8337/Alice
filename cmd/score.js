@@ -85,7 +85,10 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 return
             }
             var mapinfo = obj[0];
-            if (mapinfo.mode != 0) return;
+            if (mapinfo.mode != 0) {
+                objcount.x++;
+                return
+            }
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
                 objcount.x++;
