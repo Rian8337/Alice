@@ -58,6 +58,7 @@ function calculateLevel(lvl, score, cb) {
 }
 
 function scoreApproval(hash, mod, message, objcount, cb) {
+    objcount.x++;
     var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + hash);
     var content = '';
 
@@ -69,7 +70,6 @@ function scoreApproval(hash, mod, message, objcount, cb) {
         res.on("error", err => {
             console.log(err);
             message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**");
-            objcount.x++;
         });
         res.on("end", () => {
             var obj;
@@ -77,24 +77,20 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 obj = JSON.parse(content)
             } catch (e) {
                 message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                objcount.x++;
                 return
             }
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-                objcount.x++;
                 return
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) return;
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
-                objcount.x++;
                 return
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
-            objcount.x++;
             cb(playinfo, hash)
         })
     });
