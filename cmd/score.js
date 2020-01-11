@@ -58,8 +58,6 @@ function calculateLevel(lvl, score, cb) {
 }
 
 function scoreApproval(hash, mod, message, objcount, cb) {
-    objcount.x++;
-    console.log(objcount);
     var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + hash);
     var content = '';
 
@@ -83,15 +81,18 @@ function scoreApproval(hash, mod, message, objcount, cb) {
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
+                objcount.x++;
                 return
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) return;
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
+                objcount.x++;
                 return
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
+            objcount.x++;
             cb(playinfo, hash)
         })
     });
@@ -117,11 +118,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setDescription("This is a ranked score project made by <@386742340968120321> in attempt to bringing a more fair scoring system. Furthermore, this system includes levels similarly to osu! levels.")
             .addField("What kind of scores are accepted?", "Unlike the global scoring system in-game, this system *only accepts ranked, approved, and loved beatmaps*. This is why the system is more fair compared to the global one as you cannot exploit the system.")
-            .addField("How does it work?", "Because I don't want to make the bot do heavy work on automatically detecting new plays for each user, you have to submit your scores manually.\nTo submit your scores, simply use the command `a!score`. You can only submit up to 5 scores at once and you can only submit up to 50 of your most recent scores. For more information about the command, you can use `a!help score`.")
+            .addField("How do I submit plays?", "Because I don't want to make the bot do heavy work on automatically detecting new plays for each user, you have to submit your scores manually.\nTo submit your scores, simply use the command `a!score`. You can only submit up to 5 scores at once and you can only submit up to 50 of your most recent scores. For more information about the command, you can use `a!help score`.")
             .addField("Why aren't all players available?", "My intention is to make this system restricted to users in the international Discord server.")
             .addField("Are multiaccounts supported?", "Since I built this system based on uid, no, multiaccounts are not supported.")
-            .addField("My old scores aren't in the system! How can I add them?", "Fortunately, a complete score calculation exists. Simply DM <@386742340968120321> to request one.");
-        
+            .addField("My old scores aren't in the system! How can I add them?", "Fortunately, a complete score calculation exists. Simply DM <@386742340968120321> to request one.")
+            .addField("Why is it so hard to level up?", "The scoring system uses a specific formula to calculate score requirements for each level.\n```score(n) = 5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)   if n <= 100\nscore(n) = 26931190827 + 20000000000 * (n - 100)   if n > 100```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
+
         return message.channel.send({embed: embed})
     }
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
@@ -225,6 +227,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     var submitted = 0;
                     playentry.forEach(x => {
                         if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (playinfo, hash) => {
+                            console.log(objcount);
                             var scoreentry = [x.score, hash];
                             var diff = 0;
                             var dup = false;
