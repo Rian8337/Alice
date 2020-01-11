@@ -59,6 +59,7 @@ function calculateLevel(lvl, score, cb) {
 
 function scoreApproval(hash, mod, message, objcount, cb) {
     objcount.x++;
+    console.log(objcount);
     var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + hash);
     var content = '';
 
@@ -207,7 +208,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     var submitted = 0;
                     playentry.forEach(x => {
                         if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (playinfo, hash) => {
-                            console.log(objcount);
                             var scoreentry = [x.score, hash];
                             var diff = 0;
                             var dup = false;
