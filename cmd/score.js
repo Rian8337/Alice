@@ -122,7 +122,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .addField("Why aren't all players available?", "My intention is to make this system restricted to users in the international Discord server.")
             .addField("Are multiaccounts supported?", "Since I built this system based on uid, no, multiaccounts are not supported.")
             .addField("My old scores aren't in the system! How can I add them?", "Fortunately, a complete score calculation exists. Simply DM <@386742340968120321> to request one.")
-            .addField("Why is it so hard to level up?", "The scoring system uses a specific formula to calculate score requirements for each level.\n```score(n) = 5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)   if n <= 100\nscore(n) = 26931190827 + 20000000000 * (n - 100)   if n > 100```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
+            .addField("How does score requirement for each level calculated?", "The scoring system uses a specific formula to calculate score requirements for each level.```if n <= 100:\nscore(n) = 5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)\n\nif n > 100:\nscore(n) = 26931190827 + 20000000000 * (n - 100)```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
 
         return message.channel.send({embed: embed})
     }
