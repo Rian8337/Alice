@@ -64,6 +64,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .addField("Map Length", time(timelimit), true);
 
             message.channel.send("✅ **| Round initiated!**", {embed: embed});
+            cd.add(message.author.id);
             setTimeout(() => {
                 message.channel.send("✅ **| Round ended!**");
                 cd.delete(message.author.id);
