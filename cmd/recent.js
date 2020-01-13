@@ -143,7 +143,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
                                         var maplength = mapinfo.total_length;
                                         if (pmod.includes("d") || pmod.includes("c")) {
                                                 hitlength = Math.floor(hitlength / 1.5);
-                                                maplength = Math.floor(maplength / 1.5);
+                                                maplength = Math.floor(maplength / 1.5)
                                         }
 					if (pmod.includes("t")) {
 						hitlength = Math.ceil(hitlength / 0.75);
