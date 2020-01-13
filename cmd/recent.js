@@ -145,6 +145,10 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
                                                 hitlength = Math.floor(hitlength / 1.5);
                                                 maplength = Math.floor(maplength / 1.5);
                                         }
+					if (pmod.includes("t")) {
+						hitlength = Math.ceil(hitlength / 0.75);
+						maplength = Math.ceil(maplength / 0.75)
+					}
 
 					if (pmod.includes("PR")) { cur_od += 4; }
 
