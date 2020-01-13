@@ -139,22 +139,26 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
                                         var maplength = mapinfo.total_length;
                                         if (pmod.includes("d") || pmod.includes("c")) {
                                                 hitlength = Math.floor(hitlength / 1.5);
-                                                maplength = Math.floor(maplength / 1.5);
+                                                maplength = Math.floor(maplength / 1.5)
                                         }
+					if (pmod.includes("t")) {
+						hitlength = Math.ceil(hitlength / 0.75);
+						maplength = Math.ceil(maplength / 0.75)
+					}
 
 					if (pmod.includes("PR")) { cur_od += 4; }
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log(target[0] + ' - Error: no object found'); 
 						return;
-                    }
+                    			}
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
-                    var npp = droid.ppv2({
+                    			var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -172,7 +176,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    console.log(npp.toString());
+                    			console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
