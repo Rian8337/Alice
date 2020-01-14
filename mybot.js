@@ -15,15 +15,15 @@ fs.readdir("./cmd/" , (err, files) => {
 	let cmdfile = files.filter (f => f.split(".").pop() === "js");
 	if (cmdfile.length <= 0) {
 		console.log("No command found uwu");
-		return;
+		return
 	}
 
 	console.log(`Loading ${cmdfile.length} command(s), please wait...`);
 	cmdfile.forEach((f, i) => {
 		let props = require(`./cmd/${f}`);
 		console.log(`${i+1} : ${f} loaded`);
-		if(f !== 'ojsamadroid.js') client.commands.set(props.help.name, props);
-	});
+		if(f !== 'ojsamadroid.js') client.commands.set(props.help.name, props)
+	})
 });
 
 // Elaina DB
