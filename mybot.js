@@ -104,6 +104,8 @@ client.on("message", message => {
 		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
 	
+	if (message.channel.id == '316545691545501706' && message.content.startsWith("$")) message.delete().catch(console.error);
+	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
