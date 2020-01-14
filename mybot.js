@@ -146,9 +146,11 @@ client.on("message", message => {
 		cmd.run(client, message, args)
 	}
 });
+
 client.on("presenceUpdate", (oldMember, newMember) => {
-	if (newMember.id != '386742340968120321' || newMember.user.presence.game == null) return;
-	if (newMember.user.presence.game.name == 'WebStorm') client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error)
+	if (newMember.id != '386742340968120321') return;
+	if (newMember.user.presence.game == null) return client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error);
+	if (newMember.user.presence.game.name == 'WebStorm') client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error);
 	else client.user.setActivity(config.activity_list[2][0], {type: config.activity_list[2][1]}).catch(console.error)
 });
 
