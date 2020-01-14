@@ -16,6 +16,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         ufind = ufind.replace(">", "")
     }
     let binddb = maindb.collection("userbind");
+    let scoredb = alicedb.collection("playerscore");
     let query = {discordid: ufind};
     binddb.find(query).toArray((err, userres) => {
         if (err) {
@@ -26,18 +27,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let uid = userres[0].uid;
         let username = userres[0].username;
 
-        let scoredb = alicedb.collection("playerscore");
         query = {uid: uid};
         scoredb.find(query).toArray((err, res) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            if (!res[0]) return message.channel.send("❎ **| You haven't submitted any plays! Please use `a!score` to submit your plays. For more information, type `a!help score`.**");
-            let score = res[0].score;
-            let level = res[0].level;
+            let score = 0;
+            let level = 1;
+            let playc = 0;
+            if (res[0]) {
+                score = res[0].score;
+                level = res[0].level;
+                playc = res[0].playc
+            }
             let levelremain = (level - Math.floor(level)) * 100;
-            let playc = res[0].playc;
 
             var options = {
                 host: "ops.dgsrz.com",
@@ -87,7 +91,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
 
-                    message.channel.send({embed: embed})
+                    message.channel.send({embed: embed}).catch(console.error)
                 })
             });
             req.end()
