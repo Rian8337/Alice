@@ -250,13 +250,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     playc++;
                                     diff = scoreentry[0]
                                 }
-                                scorelist.sort((a, b) => {
-                                    return b[0] - a[0]
-                                });
                                 submitted++;
                                 embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`)
                             }
                             if (objcount.x == playentry.length) {
+                                scorelist.sort((a, b) => {
+                                    return b[0] - a[0]
+                                });
                                 for (i in scorelist) {
                                     score += scorelist[i][0]
                                 }
