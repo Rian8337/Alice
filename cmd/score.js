@@ -77,23 +77,23 @@ function scoreApproval(hash, mod, message, objcount, cb) {
             } catch (e) {
                 message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**");
                 objcount.x++;
-                return cb(false)
+                return cb()
             }
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
                 objcount.x++;
-                return cb(false)
+                return cb()
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) {
                 objcount.x++;
-                return cb(false)
+                return cb()
             }
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
                 objcount.x++;
-                return cb(false)
+                return cb()
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
             objcount.x++;
@@ -230,7 +230,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     var score = 0;
                     var submitted = 0;
                     playentry.forEach(x => {
-                        if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (valid, playinfo, hash) => {
+                        if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (valid = false, playinfo, hash) => {
                             console.log(objcount);
                             if (valid) {
                                 var scoreentry = [x.score, hash];
