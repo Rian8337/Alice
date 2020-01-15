@@ -76,27 +76,28 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 obj = JSON.parse(content)
             } catch (e) {
                 message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**");
-                return
+                objcount.x++;
+                return cb(false)
             }
             if (!obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
                 objcount.x++;
-                return
+                return cb(false)
             }
             var mapinfo = obj[0];
             if (mapinfo.mode != 0) {
                 objcount.x++;
-                return
+                return cb(false)
             }
             if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
                 message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved maps!**");
                 objcount.x++;
-                return
+                return cb(false)
             }
             var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mod == '')?"": "+") + mod;
             objcount.x++;
-            cb(playinfo, hash)
+            cb(true, playinfo, hash)
         })
     });
     req.end()
@@ -230,30 +231,32 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     var score = 0;
                     var submitted = 0;
                     playentry.forEach(x => {
-                        if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (playinfo, hash) => {
+                        if (x.title) scoreApproval(x.hash, x.mod, message, objcount, (valid, playinfo, hash) => {
                             console.log(objcount);
-                            var scoreentry = [x.score, hash];
-                            var diff = 0;
-                            var dup = false;
-                            for (i in scorelist) {
-                                if (hash == scorelist[i][1]) {
-                                    diff = scoreentry[0] - scorelist[i][0];
-                                    scorelist[i] = scoreentry;
-                                    dup = true;
-                                    playc++;
-                                    break
+                            if (valid) {
+                                var scoreentry = [x.score, hash];
+                                var diff = 0;
+                                var dup = false;
+                                for (i in scorelist) {
+                                    if (hash == scorelist[i][1]) {
+                                        diff = scoreentry[0] - scorelist[i][0];
+                                        scorelist[i] = scoreentry;
+                                        dup = true;
+                                        playc++;
+                                        break
+                                    }
                                 }
+                                if (!dup) {
+                                    scorelist.push(scoreentry);
+                                    playc++;
+                                    diff = scoreentry[0]
+                                }
+                                scorelist.sort((a, b) => {
+                                    return b[0] - a[0]
+                                });
+                                submitted++;
+                                embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`)
                             }
-                            if (!dup) {
-                                scorelist.push(scoreentry);
-                                playc++;
-                                diff = scoreentry[0]
-                            }
-                            scorelist.sort((a, b) => {
-                                return b[0] - a[0]
-                            });
-                            submitted++;
-                            embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`);
                             if (objcount.x == playentry.length) {
                                 for (i in scorelist) {
                                     score += scorelist[i][0]
@@ -307,7 +310,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id)
-        }, 2000)
+        }, 1000)
     })
 };
 
