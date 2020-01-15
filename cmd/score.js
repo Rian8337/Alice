@@ -51,7 +51,7 @@ function calculateLevel(lvl, score, cb) {
     else {
         nextlevel = xpreq;
         prevlevel = scoreRequirement(lvl);
-        var newlevel = lvl + ((score - prevlevel) / (nextlevel - prevlevel));
+        var newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
         console.log(newlevel);
         cb(newlevel)
     }
