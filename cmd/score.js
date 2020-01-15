@@ -254,7 +254,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 submitted++;
                                 embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`)
                             }
-                            if (objcount.x == playentry.length) {
+                            if (objcount.x == playentry.length && submitted != 0) {
                                 scorelist.sort((a, b) => {
                                     return b[0] - a[0]
                                 });
