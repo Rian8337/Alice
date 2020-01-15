@@ -212,21 +212,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("Error: Empty database response. Please try again!")
                     }
-                    var prescore;
-                    var scorelist;
-                    var playc;
-                    var currentlevel;
+                    var prescore = 0;
+                    var scorelist = [];
+                    var playc = 0;
+                    var currentlevel = 1;
                     if (res[0]) {
                         currentlevel = res[0].level;
                         prescore = res[0].score;
                         scorelist = res[0].scorelist;
                         playc = res[0].playc
-                    }
-                    else {
-                        currentlevel = 1;
-                        prescore = 0;
-                        scorelist = [];
-                        playc = 0
                     }
                     var score = 0;
                     var submitted = 0;
