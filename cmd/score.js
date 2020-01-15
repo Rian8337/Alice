@@ -104,17 +104,6 @@ function scoreApproval(hash, mod, message, objcount, cb) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    // embed stuff
-    var rolecheck;
-    try {
-        rolecheck = message.member.highestRole.hexColor
-    } catch (e) {
-        rolecheck = "#000000"
-    }
-    let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-
-    // actual command
     if (args[0] == 'about') {
         let embed = new Discord.RichEmbed()
             .setTitle("Ranked Score Project")
@@ -184,6 +173,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 var rplay = obj.recent;
                 var playentry = [];
+
+                // embed stuff
+                var rolecheck;
+                try {
+                    rolecheck = message.member.highestRole.hexColor
+                } catch (e) {
+                    rolecheck = "#000000"
+                }
+                let footer = config.avatar_list;
+                const index = Math.floor(Math.random() * (footer.length - 1) + 1);
                 let embed = new Discord.RichEmbed()
                     .setTitle("Score submission info")
                     .setFooter("Alice Synthesis Thirty", footer[index])
