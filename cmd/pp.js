@@ -139,7 +139,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	var channels = config.pp_channel;
-	var found;
+	var found = false;
 	for (var i = 0; i < channels.length; i++) {
 		if (message.guild.channels.get(channels[i])) {
 			found = true;
