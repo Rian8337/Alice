@@ -69,6 +69,7 @@ client.on("message", message => {
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
+	if (message.author.id == '386742340968120321' && message.content == 'brb shower') message.channel.send({files: ["https://cdn.discordapp.com/attachments/316545691545501706/667287014152077322/unknown.gif"]});
 
 	/*if (message.author.id == '386742340968120321') {
 		let cmd = client.commands.get("sayd");
