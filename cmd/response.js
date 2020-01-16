@@ -4,8 +4,6 @@ let config = require('../config.json');
 
 function responseFactor(message, msg, like, hate, badword) {
     let res = 0;
-    if (msg.toLowerCase().includes(badword[0])) res = 4;
-    badword.shift();
     if (message.author.id == '386742340968120321') {
         like.forEach(word => {
             if (msg.includes(word)) res = 1
@@ -17,12 +15,9 @@ function responseFactor(message, msg, like, hate, badword) {
             if (msg.toLowerCase().includes(word)) res = 3
         })
     }
-    else {
-        if (res !== 0) return res;
-        badword.forEach(word => {
+    else badword.forEach(word => {
             if (msg.toLowerCase().includes(word)) res = 4
-        })
-    }
+    });
     return res
 }
 
