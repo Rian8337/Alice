@@ -83,7 +83,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         var line = data.split("<br>").shift();
                         var first = parseInt(line[0].split(" ")[7]) + 3600 * 7;
                         for (var i = 1; i < line.length; i++) {
-                            let date = parseInt(line[i].split(" ")[7]) + 3600 * 7;
+                            let entry = line[i].split(" ");
+                            let date = parseInt(entry[7]) + 3600 * 7;
+                            if (entry[1] == '0') date = parseInt(entry[5]) + 3600 * 7;
                             if (date < first) first = date
                         }
                         var curyear = new Date().getUTCFullYear();
