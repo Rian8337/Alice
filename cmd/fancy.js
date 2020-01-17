@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     break
                 }
                 case "veteran": {
-                    //if (time < 86400 * 90) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
+                    if (time < 86400 * 90) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                     let uid = userres[0].uid;
                     let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=0";
                     request(url, (err, response, data) => {
