@@ -6,6 +6,7 @@
   ],
   "moderator": [
     "bulkdelete",
+    "fancy",
     "kick",
     "mute",
     "tempmute"
@@ -23,7 +24,6 @@
     "completescore",
     "deletetrack",
     "emailcheck",
-    "fancy",
     "fancyban",
     "fancyunban",
     "ppdelete",
