@@ -81,10 +81,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     request(url, (err, response, data) => {
                         if (!data) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
                         var line = data.split("<br>").shift();
-                        var first = 0;
-                        for (var i = 0; i < line.length; i++) {
+                        var first = parseInt(line[0].split(" ")[7]) + 3600 * 7;
+                        for (var i = 1; i < line.length; i++) {
                             let date = parseInt(line[i].split(" ")[7]) + 3600 * 7;
-                            if (date > first) first = date
+                            if (date < first) first = date
                         }
                         var curyear = new Date().getUTCFullYear();
                         var firstyear = new Date(first * 1000).getUTCFullYear();
