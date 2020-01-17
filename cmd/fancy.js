@@ -75,19 +75,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     break
                 }
                 case "veteran": {
-                    if (time < 86400 * 90) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
+                    //if (time < 86400 * 90) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                     let uid = userres[0].uid;
                     let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=0";
                     request(url, (err, response, data) => {
                         if (!data) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                        var entries = [];
                         var line = data.split("<br>");
+                        var first = 0;
                         for (var i = 0; i < line.length; i++) {
-                            entries.push(parseInt(line[i].split(" ")[7]) + 3600 * 7)
+                            let date = parseInt(line[i].split(" ")[7]) + 3600 * 7;
+                            if (date > first) first = date
                         }
-                        var firstdate = new Date(Math.min(...entries));
-                        var curdate = new Date();
-                        if (curdate.getUTCFullYear() - firstdate.getUTCFullYear() < 2) return message.channel.send("❎ **| I'm sorry, the user hasn't been registered for 2 years!**");
+                        var curyear = new Date().getUTCFullYear();
+                        var firstyear = new Date(first * 1000).getUTCFullYear();
+                        if (curyear - firstyear < 2) return message.channel.send("❎ **| I'm sorry, the user hasn't been registered for 2 years!**");
                         var options = {
                             host: "ops.dgsrz.com",
                             port: 80,
