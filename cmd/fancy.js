@@ -80,7 +80,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=0";
                     request(url, (err, response, data) => {
                         if (!data) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                        var line = data.split("<br>");
+                        var line = data.split("<br>").shift();
                         var first = 0;
                         for (var i = 0; i < line.length; i++) {
                             let date = parseInt(line[i].split(" ")[7]) + 3600 * 7;
