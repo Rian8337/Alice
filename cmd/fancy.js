@@ -4,7 +4,7 @@ let droidapikey = process.env.DROID_API_KEY;
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
-    if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    if (!message.member.roles.find(r => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
 
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
@@ -134,7 +134,7 @@ module.exports.config = {
     description: "Gives a user access to lounge channel.",
     usage: "fancy <user> <role>",
     detail: "`user`: The user to give [UserResolvable (mention or user ID)]\n`role`: Role to give. Accepted arguments are `skilled`, `dedicated`, and `veteran`.",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Moderator"
 };
 
 module.exports.help = {
