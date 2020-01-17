@@ -13,15 +13,26 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(err);
             return message.channel.send("❎ **| I'm not receiving any response from database. Perhaps try again?**")
         }
-        if (res[0]) {
-            let discordid = res[0].discordid;
-            embed.setDescription(`**Uid ${uid} is binded to <@${discordid}>.\nUser ID: ${discordid}**`);
-            message.channel.send({embed: embed})
-        }
-        else {
+        if (!res[0]) {
             embed.setDescription(`**Uid ${uid} is not binded**`);
-            message.channel.send({embed: embed})
+            return message.channel.send({embed: embed})
         }
+        let bind = "Uid " + uid + " is binded to ";
+        let accounts = '';
+        let userid = '';
+        let acc = 0;
+        res.forEach(x => {
+            accounts += "<@"+ x.discordid + "> ";
+            userid += "`" + x.discordid  + "` ";
+            acc++;
+            if (acc == res.length) {
+                accounts = accounts.trimRight().split(" ").join(", ");
+                userid = "\nUser ID: " + userid.trimRight().split(" ").join(", ");
+                bind += accounts + userid;
+                embed.setDescription("**" + bind + ".**");
+                message.channel.send({embed: embed}).catch(console.error)
+            }
+        })
     })
 };
 
