@@ -1,6 +1,5 @@
 var Discord = require('discord.js');
 var config = require('../config.json');
-var cd = new Set();
 
 function time(second) {
     return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
@@ -8,7 +7,6 @@ function time(second) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, you still have a timer active! Wait until that one is finished, please!**");
     var rolecheck;
     try {
         rolecheck = message.member.highestRole.hexColor
@@ -64,10 +62,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .addField("Map Length", time(timelimit), true);
 
             message.channel.send("✅ **| Round initiated!**", {embed: embed});
-            cd.add(message.author.id);
             setTimeout(() => {
                 message.channel.send("✅ **| Round ended!**");
-                cd.delete(message.author.id);
                 let cmd = client.commands.get("matchsubmit");
                 cmd.run(client, message, [matchid], maindb)
             }, (timelimit + 30) * 1000)
