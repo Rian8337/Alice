@@ -1,4 +1,3 @@
-var mongodb = require('mongodb');
 var http = require ("http");
 
 function statusread(status) {
@@ -109,21 +108,19 @@ function modValid(input, required) {
 	if (required == "hd") return input == "Hidden";
 	if (required == "ez") return input == "Easy";
 	if (required == "dt") return (input == "DoubleTime" || input == "Hidden, DoubleTime");
-	if (required == "fm") return ((input.includes("HardRock") || input.includes("Hidden") || input.includes("Easy"))&&(!(input.includes("DoubleTime") || input.includes("HalfTime"))))
-	else return true;
+	if (required == "fm") return ((input.includes("HardRock") || input.includes("Hidden") || input.includes("Easy"))&&(!(input.includes("DoubleTime") || input.includes("HalfTime"))));
+	else return true
 }
 
 module.exports.run = (client, message, args, maindb) => {
 	try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-	if (!message.member.roles.find("name", "Referee")) {
-		message.channel.send("You don't have enough permission to use this :3");
-		return;
+		let rolecheck = message.member.roles
+	} catch (e) {
+		return
 	}
+	if (!message.member.roles.find(r => r.name === 'Referee') && !message.author.bot) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
 	let id = args[0];
+	console.log(id);
 	if (id) {
 		let matchdb = maindb.collection("matchinfo");
 		let mapdb = maindb.collection("mapinfo");
@@ -136,9 +133,9 @@ module.exports.run = (client, message, args, maindb) => {
 			}
 			else {
 				let reqFetch = res[0].player.length; let curFetch = 0; let i = -1; let minTimeDiff = -1; let minTimeDiffPos = -1;
-				var allScoreFetch = []
+				var allScoreFetch = [];
 				res[0].player.forEach(function(x) {
-					i++
+					i++;
 					getRecentPlay(i, x[1], function(playInfo) {
 						//[1] is player name
 						//[2] is map's title + difficulty
@@ -148,7 +145,7 @@ module.exports.run = (client, message, args, maindb) => {
 						//[6] is miss count
 						//[9] is mod combination
 						if (minTimeDiff == -1 || playInfo[4] < minTimeDiff) {minTimeDiff = playInfo[4]; minTimeDiffPos = playInfo[0];}
-						allScoreFetch.push(playInfo)
+						allScoreFetch.push(playInfo);
 						curFetch++;
 						if (curFetch == reqFetch) {
 							let mappick = "";
@@ -157,14 +154,14 @@ module.exports.run = (client, message, args, maindb) => {
 							console.log(allScoreFetch);
 							console.log(minTimeDiff + " " + minTimeDiffPos);
 							let poolid = id.split(".")[0];
-							let poolquery = { poolid: poolid }
+							let poolquery = { poolid: poolid };
 							mapdb.find(poolquery).toArray(function(err, poolres) {
 								if (err) throw err;
 								if (!poolres[0]) {
 									message.channel.send("Can't found the pool");
 								}
 								else {
-									let mapfound = false
+									let mapfound = false;
 									for (k in poolres[0].map)
 										if (allScoreFetch[minTimeDiffPos][2] == poolres[0].map[k][1]) {mapplay = poolres[0].map[k]; mapfound = true; break;}
 									if (mapfound) {
