@@ -5,8 +5,14 @@ module.exports.run = (client, message, args, maindb) => {
     if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
     let binddb = maindb.collection("userbind");
     let query = {uid: uid};
+    var rolecheck;
+    try {
+        rolecheck = message.member.highestRole.hexColor
+    } catch (e) {
+        rolecheck = "#000000"
+    }
     let embed = new Discord.RichEmbed()
-        .setColor(message.member.highestRole.hexColor);
+        .setColor(rolecheck);
 
     binddb.find(query).toArray((err, res) => {
         if (err) {
