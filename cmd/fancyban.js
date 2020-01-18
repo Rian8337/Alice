@@ -19,11 +19,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
         if (userres[0]) return message.channel.send("❎ **| I'm sorry, this user has already been banned from the channel!**");
-        let roles = ["Skilled Member", "Dedicated Member", "Veteran Member"];
-        roles.forEach(role => {
-            let rolefind = message.member.roles.find(r => r.name === role);
-            if (rolefind) user.removeRole(rolefind, "Banned from channel").catch(console.error)
-        });
+        let role = message.member.roles.find(r => r.name === 'Lounge Pass');
+        if (role) user.removeRole(role, "Banned from lounge").catch(console.error);
         message.channel.send("✅ **| User has been banned.**");
 
         var rolecheck;
