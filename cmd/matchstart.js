@@ -63,6 +63,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
             message.channel.send("✅ **| Round initiated!**", {embed: embed});
             setTimeout(() => {
+                message.channel.send("✅ **| Map time is over. Beginning 30 seconds countdown.**")
+            }, timelimit * 1000);
+            setTimeout(() => {
                 message.channel.send("✅ **| Round ended!**");
                 let cmd = client.commands.get("matchsubmit");
                 cmd.run(client, message, [matchid], maindb)
