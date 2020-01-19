@@ -50,6 +50,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
+            var count = 0;
+            if (askres[0]) count = askres[0].count;
             let footer = config.avatar_list;
             const footerindex = Math.floor(Math.random() * (footer.length - 1) + 1);
             var rolecheck;
@@ -63,13 +65,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .setAuthor(message.author.tag, message.author.avatarURL)
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
-                .addField(`Question #${askres[0].count}`, `**Q**: ${msg}\n**A**: ${answer}`);
+                .addField(`Question #${count + 1}`, `**Q**: ${msg}\n**A**: ${answer}`);
 
             message.channel.send({embed: embed}).catch(console.error);
             if (askres[0]) {
                 var updateVal = {
                     $set: {
-                        count: parseInt(askres[0].count) + 1
+                        count: count + 1
                     }
                 };
                 askdb.updateOne({discordid: message.author.id}, updateVal, err => {
