@@ -30,7 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
         let embed = new Discord.RichEmbed()
-            .setTitle("Channel unban executed")
+            .setTitle("Lounge unban executed")
             .setColor(rolecheck)
             .setAuthor(message.author.tag, message.author.avatarURL)
             .setFooter("User ID: " + user.id, footer[index])
