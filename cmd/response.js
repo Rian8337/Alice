@@ -25,6 +25,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the question! I need to rest too, you know.**");
     if (!args[0]) return;
     let filterdb = alicedb.collection("responsefilter");
+    let askdb = alicedb.collection("askcount");
     filterdb.find({name: "response"}).toArray((err, res) => {
         if (err) {
             console.log(err);
@@ -40,35 +41,31 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (message.author.id == '386742340968120321') message.author.lastMessage.delete().catch(console.error);
         let factor = responseFactor(message, msg, like, hate, badword);
         console.log(factor);
-
         if (factor === 1) answer = "Yes, absolutely.";
         if (factor === 2) answer = "N... No! I would never think of that...";
         if (factor === 3) answer = "Um... Uh...";
         if (factor === 4) answer = "Uh, I don't think I want to answer that.";
-
-        let footer = config.avatar_list;
-        const footerindex = Math.floor(Math.random() * (footer.length - 1) + 1);
-        var rolecheck;
-        try {
-            rolecheck = message.member.highestRole.hexColor
-        } catch (e) {
-            rolecheck = "#000000"
-        }
-
-        let embed = new Discord.RichEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL)
-            .setColor(rolecheck)
-            .setFooter("Alice Synthesis Thirty", footer[footerindex])
-            .addField(`**Q**: ${msg}`, `**A**: ${answer}`);
-
-        message.channel.send({embed: embed}).catch(console.error);
-
-        let askdb = alicedb.collection("askcount");
         askdb.find({discordid: message.author.id}).toArray((err, askres) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
+            let footer = config.avatar_list;
+            const footerindex = Math.floor(Math.random() * (footer.length - 1) + 1);
+            var rolecheck;
+            try {
+                rolecheck = message.member.highestRole.hexColor
+            } catch (e) {
+                rolecheck = "#000000"
+            }
+
+            let embed = new Discord.RichEmbed()
+                .setAuthor(message.author.tag, message.author.avatarURL)
+                .setColor(rolecheck)
+                .setFooter("Alice Synthesis Thirty", footer[footerindex])
+                .addField(`Question #${askres[0].count}`, `**Q**: ${msg}\n**A**: ${answer}`);
+
+            message.channel.send({embed: embed}).catch(console.error);
             if (askres[0]) {
                 var updateVal = {
                     $set: {
