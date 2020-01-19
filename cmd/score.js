@@ -20,8 +20,8 @@ function modread(input) {
 
 function scoreRequirement(lvl) {
     var xp;
-    if (lvl <= 100) xp = 5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60);
-    else xp = 26931190827 + 15000000000 * (lvl - 100);
+    if (lvl <= 100) xp = (5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60)) / 1.128;
+    else xp = 23875169174 + 15000000000 * (lvl - 100);
     return Math.round(xp)
 }
 
@@ -113,7 +113,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-    
+
     // actual command
     if (args[0] == 'about') {
         let embed = new Discord.RichEmbed()
@@ -127,7 +127,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .addField("How do I view my current ranked score stats?", "You can use `a!levelme` or `a!levelid` to view ranked score stats. As usual, for more information, you can use `a!help levelme` or `a!help levelid`.")
             .addField("Are multiaccounts supported?", "Since I built this system based on uid, no, multiaccounts are not supported.")
             .addField("My old scores aren't in the system! How can I add them?", "Fortunately, a complete score calculation exists. Simply DM <@386742340968120321> to request one.")
-            .addField("How does score requirement for each level calculated?", "The scoring system uses a specific formula to calculate score requirements for each level.```if n <= 100:\nscore(n) = 5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)\n\nif n > 100:\nscore(n) = 26931190827 + 15000000000 * (n - 100)```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
+            .addField("How does score requirement for each level calculated?", "The scoring system uses a specific formula to calculate score requirements for each level.```if n <= 100:\nscore(n) = (5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)) / 1.128\n\nif n > 100:\nscore(n) = 26931190827 + 15000000000 * (n - 100)```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
 
         return message.channel.send({embed: embed})
     }
@@ -236,15 +236,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         diff = scoreentry[0] - scorelist[i][0];
                                         scorelist[i] = scoreentry;
                                         dup = true;
-                                        playc++;
                                         break
                                     }
                                 }
                                 if (!dup) {
                                     scorelist.push(scoreentry);
-                                    playc++;
                                     diff = scoreentry[0]
                                 }
+                                playc++;
                                 submitted++;
                                 embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${x.combo}x | ${x.acc}% | ${x.miss} ❌`)
                             }
