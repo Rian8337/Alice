@@ -15,7 +15,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
         if (!matchres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the match!**");
-        let name = matchres[0].name.replace("(", "").replace(")", "");
+        let name = matchres[0].name.replace("(", "").replace(") ", "");
         query = {channelid: message.channel.id};
         channeldb.find(query).toArray((err, channelres) => {
             if (err) {
