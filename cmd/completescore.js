@@ -196,7 +196,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (i < entries.length && !stopFlag) scoreCheck(scoreentries, entries[i], cb);
                     else {
                         console.log("Done");
-                        scoreentries.sort((a, b) => {return b[0] - a[0]});
                         page++;
                         retrievePlay(uid, page, testcb)
                     }
