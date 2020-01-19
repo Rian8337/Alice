@@ -5,12 +5,12 @@ let droidapikey = process.env.DROID_API_KEY;
 function memberValidation(message, role, time, userres, cb) {
     switch (role.toLowerCase()) {
         case "skilled": {
-            if (time < 86400 * 90) {
+            if (time < 86400 * 120) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                 return cb()
             }
             let pp = userres[0].pptotal;
-            if (pp < 4000) {
+            if (pp < 4500) {
                 message.channel.send("❎ **| I'm sorry, this user doesn't have 4000 dpp yet!**");
                 return cb()
             }
