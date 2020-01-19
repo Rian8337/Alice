@@ -186,6 +186,26 @@ client.on("guildMemberUpdate", oldMember => {
 	})
 });
 
+// lounge ban detection
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+	if (newMember.user.bot || newMember.roles == null || newMember.guild.id != '316545691545501706') return;
+	let bandb = alicedb.collection("loungeban");
+	bandb.find({discordid: newMember.id}).toArray((err, res) => {
+		if (err) {
+			console.log(err);
+			console.log("Error retrieving info")
+		}
+		if (!res[0]) return;
+		let role = newMember.roles.find(r => r.name === 'Lounge Pass');
+		newMember.removeRole(role, "Banned in lounge").then(() => console.log("Banned user found")).catch(console.error);
+		let embed = new Discord.RichEmbed()
+			.setDescription(`${newMember} is banned from <#667400988801368094>!`);
+		
+		newMember.guild.channels.find(c => c.name === config.management_channel).send({embed: embed})
+	})
+});
+
+// role logging
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.guild.id != '316545691545501706') return;
 	if (oldMember.roles.size == newMember.roles.size) return;
