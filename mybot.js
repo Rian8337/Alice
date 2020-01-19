@@ -191,15 +191,15 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
 	let role = newMember.roles.find(r => r.name === 'Lounge Pass');
 	if (!role) return;
-	alicedb.collection("loungeban").find({discordid: newMember.id}).toArray((err, res) => {
+	alicedb.collection("loungelock").find({discordid: newMember.id}).toArray((err, res) => {
 		if (err) {
 			console.log(err);
 			console.log("Unable to retrieve ban data")
 		}
 		if (!res[0]) return;
-		newMember.removeRole(role, "Banned from lounge channel").catch(console.error);
+		newMember.removeRole(role, "Locked from lounge channel").catch(console.error);
 		let embed = new Discord.RichEmbed()
-			.setDescription(`${newMember} is banned from lounge channel!`)
+			.setDescription(`${newMember} is locked from lounge channel!`)
 			.setColor("#b58d3c");
 		newMember.guild.channels.find(c => c.name === config.management_channel).send({embed: embed})
 	})
