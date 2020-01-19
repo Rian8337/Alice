@@ -9,19 +9,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
     let reason = args.slice(1).join(" ");
-    if (!reason) return message.channel.send("❎ **| Please enter ban reason!**");
+    if (!reason) return message.channel.send("❎ **| Please enter lock reason!**");
 
-    let loungedb = alicedb.collection("loungeban");
+    let loungedb = alicedb.collection("loungelock");
     let query = {discordid: user.id};
     loungedb.find(query).toArray((err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (userres[0]) return message.channel.send("❎ **| I'm sorry, this user has already been banned from the channel!**");
+        if (userres[0]) return message.channel.send("❎ **| I'm sorry, this user has already been locked from <#667400988801368094>!**");
         let role = message.member.roles.find(r => r.name === 'Lounge Pass');
-        if (role) user.removeRole(role, "Banned from lounge").catch(console.error);
-        message.channel.send("✅ **| User has been banned.**");
+        if (role) user.removeRole(role, "Locked from lounge").catch(console.error);
+        message.channel.send("✅ **| User has been locked from <#667400988801368094>.**");
 
         var rolecheck;
         try {
@@ -32,12 +32,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
         let embed = new Discord.RichEmbed()
-            .setTitle("Lounge ban executed")
-            .setColor(rolecheck)
             .setAuthor(message.author.tag, message.author.avatarURL)
-            .setFooter("User ID: " + user.id, footer[index])
-            .setTimestamp(new Date())
-            .addField("Banned User: " + user.user.username, "Reason: " + reason);
+            .setFooter(`User ID: ${user.id}`, footer[index])
+            .setColor(rolecheck)
+            .setDescription(`${user} has been locked from <#667400988801368094>.\nReason: ${reason}`)
 
         let channel = message.guild.channels.find(c => c.name === config.management_channel);
         channel.send({embed: embed});
@@ -53,12 +51,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
-    description: "Bans a user from lounge channel.",
-    usage: "fancyban <user> <reason>",
-    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason to ban",
+    description: "Locks a user from lounge channel.",
+    usage: "fancylock <user> <reason>",
+    detail: "`user`: The user to lock [UserResolvable (mention or user ID)]\n`reason`: Reason to lock",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
-    name: "fancyban"
+    name: "fancylock"
 };
