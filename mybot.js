@@ -197,7 +197,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 			console.log("Unable to retrieve ban data")
 		}
 		if (!res[0]) return;
-		newMember.removeRole(role).catch(console.error);
+		newMember.removeRole(role, "Banned from lounge channel").catch(console.error);
 		let embed = new Discord.RichEmbed()
 			.setDescription(`${newMember} is banned from lounge channel!`)
 			.setColor("#b58d3c");
