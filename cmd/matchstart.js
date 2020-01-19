@@ -1,6 +1,10 @@
 let Discord = require('discord.js');
 let config = require('../config.json');
 
+function time(second) {
+    return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+}
+
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
