@@ -9,17 +9,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
     let reason = args.slice(1).join(" ");
-    if (!reason) return message.channel.send("❎ **| Please enter unban reason!**");
+    if (!reason) return message.channel.send("❎ **| Please enter unlock reason!**");
 
-    let loungedb = alicedb.collection("loungeban");
+    let loungedb = alicedb.collection("loungelock");
     let query = {discordid: user.id};
     loungedb.find(query).toArray((err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, this user is not banned from the channel!**");
-        message.channel.send("✅ **| User has been unbanned.**");
+        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, this user is not locked from the channel!**");
+        message.channel.send("✅ **| User has been unlocked from <#667400988801368094>.**");
 
         var rolecheck;
         try {
@@ -30,12 +30,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
         let embed = new Discord.RichEmbed()
-            .setTitle("Lounge unban executed")
-            .setColor(rolecheck)
             .setAuthor(message.author.tag, message.author.avatarURL)
-            .setFooter("User ID: " + user.id, footer[index])
-            .setTimestamp(new Date())
-            .addField("Unbanned User: " + user.user.username, "Reason: " + reason);
+            .setFooter(`User ID: ${user.id}`, footer[index])
+            .setColor(rolecheck)
+            .setDescription(`${user} has been unlocked from <#667400988801368094>.\nReason: ${reason}`)
 
         let channel = message.guild.channels.find(c => c.name === config.management_channel);
         channel.send({embed: embed});
@@ -51,12 +49,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
-    description: "Unbans a user from lounge channel.",
-    usage: "fancyunban <user> <reason>",
-    detail: "`user`: The user to unban [UserResolvable (mention or user ID)]\n`reason`: Reason to unban",
+    description: "Unlocks a user from lounge channel.",
+    usage: "fancyunlock <user> <reason>",
+    detail: "`user`: The user to unlock [UserResolvable (mention or user ID)]\n`reason`: Reason to unlock",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
-    name: "fancyunban"
+    name: "fancyunlock"
 };
