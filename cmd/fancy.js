@@ -1,8 +1,9 @@
 let http = require('http');
 let request = require('request');
+let tatsukey = process.env.TATSU_API_KEY;
 let droidapikey = process.env.DROID_API_KEY;
 
-function memberValidation(message, role, time, userres, cb) {
+function memberValidation(message, user, role, time, userres, cb) {
     switch (role.toLowerCase()) {
         case "skilled": {
             if (time < 86400 * 120) {
@@ -53,7 +54,20 @@ function memberValidation(message, role, time, userres, cb) {
                         message.channel.send("❎ **| I'm sorry, this user's rank is above 5000!**");
                         return cb()
                     }
-                    cb(true)
+                    var url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${user.id}/stats`;
+                    request(url, {headers: {"Authorization": tatsukey}}, (err, response, data) => {
+                        if (err) {
+                            message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from Tatsumaki's API. Please try again!**");
+                            return cb()
+                        }
+                        var userstats = JSON.parse(data);
+                        var userscore = parseInt(userstats.score);
+                        if (userscore < 125000) {
+                            message.channel.send("❎ **| I'm sorry, you don't have 125,000 Tatsumaki XP yet!**");
+                            return cb()
+                        }
+                        cb(true)
+                    })
                 })
             });
             req.end();
@@ -159,7 +173,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
             if (!userres[0]) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.");
-            memberValidation(message, role, time, userres, (valid = false) => {
+            memberValidation(message, user, role, time, userres, (valid = false) => {
                 if (valid) {
                     let pass = message.guild.roles.find(r => r.name === 'Lounge Pass');
                     user.addRole(pass, "Fulfilled requirement for role").then(() => {
@@ -175,7 +189,7 @@ module.exports.config = {
     description: "Gives a user access to lounge channel.",
     usage: "fancy <user> <role>",
     detail: "`user`: The user to give [UserResolvable (mention or user ID)]\n`role`: Role to give. Accepted arguments are `skilled`, `dedicated`, and `veteran`.",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Moderator"
 };
 
 module.exports.help = {
