@@ -85,7 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     for (let i = 0; i < rplay.length; i++) {
                         if (rplay[i].hash == hash) {
                             score = rplay[i].score;
-                            acc = (rplay[i].accuracy / 1000).toFixed(2);
+                            acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
                             mod = rplay[i].mode;
                             miss = rplay[i].miss;
                             found = true;
