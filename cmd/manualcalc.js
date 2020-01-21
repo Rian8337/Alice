@@ -114,8 +114,8 @@ function getMapPP(target, message, ndetail, pcdetail) {
                                                 maplength = Math.ceil(maplength / 1.5);
                                         }
                                         if (target[4].toUpperCase().includes("HT")) {
-                                                hitlength = Math.ceil(hitlength / 0.75);
-                                                maplength = Math.ceil(hitlength / 0.75);
+                                                hitlength = Math.ceil(hitlength * 4/3);
+                                                maplength = Math.ceil(hitlength * 4/3);
                                         }
 
 					if (target[4].toUpperCase().includes("PR")) cur_od += 4;
