@@ -52,6 +52,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
         let pass = dailyres[0].pass;
+        let bonus = dailyres[0].bonus;
         let constrain = dailyres[0].constrain.toUpperCase();
         let beatmapid = dailyres[0].beatmapid;
         let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
@@ -75,6 +76,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let maplength = mapinfo.total_length;
                 let timelimit = dailyres[0].timelimit - Math.floor(Date.now() / 1000);
                 let pass_string;
+                let bonus_string;
                 switch (pass[0]) {
                     case "score": {
                         pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
@@ -95,6 +97,29 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     default:
                         pass_string = 'No pass condition'
                 }
+                switch (bonus[0]) {
+                    case "score": {
+                        bonus_string = `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ point(s))`;
+                        break
+                    }
+                    case "acc": {
+                        bonus_string = `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ point(s))`;
+                        break
+                    }
+                    case "scorev2": {
+                        bonus_string = `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ point(s))`;
+                        break
+                    }
+                    case "miss": {
+                        bonus_string = `Miss count below **${bonus[1]}** (__${bonus[2]}__ point(s))`;
+                        break
+                    }
+                    case "mod": {
+                        bonus_string = `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ point(s))`;
+                        break
+                    }
+                    default: bonus_string = "No bonuses available"
+                }
                 let constrain_string = constrain == '' ? "Any mod is allowed" : `**${constrain}** only`;
                 let footer = config.avatar_list;
                 const index = Math.floor(Math.random() * (footer.length - 1) + 1);
@@ -105,7 +130,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                     .setDescription(`**[${title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                     .addField(`Map Info`, `CS: ${mapinfo.diff_size} - AR: ${mapinfo.diff_approach} - OD: ${mapinfo.diff_overall} - HP: ${mapinfo.diff_drain}\nBPM: ${mapinfo.bpm} - Length: ${time(hitlength)}/${time(maplength)} - Max Combo: ${mapinfo.max_combo}x\nLast Update: ${mapinfo.last_update} | ${mapstatus(parseInt(mapinfo.approved))}\n❤️ ${mapinfo.favourite_count} - ▶️ ${mapinfo.playcount}`)
-                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s): ${dailyres[0].points} point(s)**\nPass Condition: ${pass_string}\nConstrain: ${constrain_string}\n\nChallenge ID: \`${dailyres[0].challengeid}\``);
+                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s): ${dailyres[0].points} point(s)**\nPass Condition: ${pass_string}\nConstrain: ${constrain_string}\nBonus: ${bonus_string}\n\nChallenge ID: \`${dailyres[0].challengeid}\``);
 
                 message.channel.send({embed: embed}).catch(console.error)
             })
