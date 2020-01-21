@@ -131,7 +131,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "mod": {
-                            if (modname(mod).includes(bonus[1].toUpperCase())) points += bonus[2];
+                            let modlist = modname(mod);
+                            let modreq = bonus[1].toUpperCase().match(/.{1,2}/g);
+                            let i = 0;
+                            for (i; i < modreq.length; i++) {
+                                if (!modlist.includes(modreq[i])) break
+                            }
+                            if (i != modreq.length) pass = true;
                             break
                         }
                         case "acc": {
