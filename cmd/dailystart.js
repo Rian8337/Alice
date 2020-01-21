@@ -141,6 +141,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s): ${dailyres[0].points} point(s)**\nPass Condition: ${pass_string}\nConstrain: ${constrain_string}\nBonus: ${bonus_string}\n\nChallenge ID: \`${challengeid}\``);
 
                 message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
+		client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
 
                 let updateVal = {
                     $set: {
