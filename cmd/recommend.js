@@ -250,7 +250,7 @@ module.exports.run = (client, message, args, maindb) => {
     }*/
     var limit = parseInt(args[0]);
     if (isNaN(limit)) limit = 10;
-    if ((limit < 1 || limit > 20) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-20 beatmaps!**");
+    if ((limit < 1 || limit > 20) && limit != 0) return message.channel.send("❎ **| Hey, I only allow a range of 1-15 beatmaps!**");
     if (limit == 0) limit = 10;
     console.log(limit);
     
@@ -298,9 +298,11 @@ module.exports.run = (client, message, args, maindb) => {
         if (!mod) modstring = "No Mod";
         else modstring = mod.replace("+", "");
 
-        maxpp = Math.max(0, Math.pow(1.01, maxpp));
+        maxpp = Math.max(0, Math.pow(1.0154, maxpp));
         if (maxpp < 500) maxpp += 10;
-        minpp = Math.max(0, minpp - Math.pow(0.99, minpp) - 5);
+        minpp = Math.max(0, minpp - Math.pow(0.995, minpp) - 5);
+        console.log(maxpp);
+        console.log(minpp);
 
         var dmable = true;
         message.author.send(`✅ **| Hey, I'm fetching beatmap recommendations for you! Please wait as this process takes a while!\n\nYour request statistics:\nBeatmap amount: ${limit}\nMod(s): ${modstring}\nMaximum dpp threshold: ${maxpp.toFixed(2)} dpp\nMinimum dpp threshold: ${minpp.toFixed(2)} dpp**`)
@@ -316,7 +318,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
     description: "Recommend beatmaps based on droid pp threshold.",
     usage: "recommend [limit] [<minimum dpp>mindpp <maximum dpp>maxdpp +<mod>]",
-    detail: "`limit`: The amount of beatmaps to search, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
+    detail: "`limit`: The amount of beatmaps to search from 1 to 20, default is 10 [Integer]\n`minimum dpp`: Minimum droid pp threshold, must be at least 50 less than maximum droid pp threshold. If not specified, uses your bottom play in droid pp data\n`maximum dpp`: Maximum droid pp threshold. If not specified, uses your top play in droid pp data\n`mod`: Applied mods (HD, HR, etc)",
     permission: "None"
 };
 
