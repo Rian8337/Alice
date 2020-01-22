@@ -205,7 +205,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challengelist.push(bonuslist)
                             }
                             let totalpoint = playerres[0].points + points;
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You have ${totalpoint} ${totalpoint == 1?"point":"points"}.**`);
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"}.**`);
                             let updateVal = {
                                 $set: {
                                     username: username,
@@ -237,7 +237,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             points += dailyres[0].points;
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You have ${points} ${points == 1?"point":"points"}.**`);
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You now have \`${points}\` ${points == 1?"point":"points"}.**`);
                             let insertVal = {
                                 username: username,
                                 uid: uid,
