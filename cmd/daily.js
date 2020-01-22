@@ -133,7 +133,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             bonus = dailyres[0].bonus[2];
                             break
                         }
-                        default: bonus = dailyres[0].bonus[0]
+                        default: return message.channel.send("❎ **| I'm sorry, that bonus type is invalid! Accepted arguments are `easy`, `normal`, and `hard`.**")
                     }
                     switch (bonus[0]) {
                         case "score": {
@@ -168,6 +168,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
                         let bonuslist = [dailyres[0].challengeid, false, false, false];
+                        let coin = client.emojis.get("669532330980802561");
                         if (playerres[0]) {
                             let challengelist = playerres[0].challenges;
                             found = false;
@@ -205,13 +206,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challengelist.push(bonuslist)
                             }
                             let totalpoint = playerres[0].points + points;
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"}.**`);
+                            let alicecoins = playerres[0].alicecoins + points * 10;
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and \`${mode}\` bonus`:""}, earning you \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                             let updateVal = {
                                 $set: {
                                     username: username,
                                     uid: uid,
                                     challenges: challengelist,
-                                    points: totalpoint
+                                    points: totalpoint,
+                                    alicecoins: alicecoins
                                 }
                             };
                             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
@@ -237,13 +240,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             points += dailyres[0].points;
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points! You now have \`${points}\` ${points == 1?"point":"points"}.**`);
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning you \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
                             let insertVal = {
                                 username: username,
                                 uid: uid,
                                 discordid: message.author.id,
                                 challenges: [bonuslist],
-                                points: points
+                                points: points,
+                                alicecoins: points * 10
                             };
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
