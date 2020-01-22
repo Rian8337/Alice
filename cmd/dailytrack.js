@@ -95,27 +95,27 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     bonus_string += `${difflist[i]}: `;
                     switch (bonus[i][0]) {
                         case "score": {
-                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         case "acc": {
-                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         case "miss": {
-                            bonus_string += `${bonus[i][1] == 0?"No misses":`Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `${bonus[i][1] == 0?"No misses":`Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         case "mod": {
-                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         case "combo": {
-                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ point(s))`;
+                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         default: bonus_string += "No bonuses available"
@@ -133,7 +133,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                     .setDescription(`**[${title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                     .addField(`Map Info`, `CS: ${mapinfo.diff_size} - AR: ${mapinfo.diff_approach} - OD: ${mapinfo.diff_overall} - HP: ${mapinfo.diff_drain}\nBPM: ${mapinfo.bpm} - Length: ${time(hitlength)}/${time(maplength)} - Max Combo: ${mapinfo.max_combo}x\nLast Update: ${mapinfo.last_update} | ${mapstatus(parseInt(mapinfo.approved))}\n❤️ ${mapinfo.favourite_count} - ▶️ ${mapinfo.playcount}`)
-                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s)**: ${dailyres[0].points} point(s)\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                 client.channels.get("546135349533868072").send("✅ **| Daily challenge ended!**", {embed: embed});
 
