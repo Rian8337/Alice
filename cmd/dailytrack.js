@@ -38,7 +38,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let query = {status: "ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to set a challenge now!")).catch(console.error)
+        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to set a challenge now!")).catch(console.error);
         let timelimit = dailyres[0].timelimit;
         if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
         let pass = dailyres[0].pass;
@@ -65,15 +65,15 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 let hitlength = mapinfo.hit_length;
                 let maplength = mapinfo.total_length;
 
-                let pass_string;
-                let bonus_string;
+                let pass_string = '';
+                let bonus_string = '';
                 switch (pass[0]) {
                     case "score": {
                         pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
                         break
                     }
                     case "acc": {
-                        pass_string = `Accuracy above **${parseFloat(pass[1]).toFixed(2)}%**`;
+                        pass_string = `Accuracy above **${parseFloat(pass[1])}%**`;
                         break
                     }
                     case "scorev2": {
@@ -81,33 +81,46 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                         break
                     }
                     case "miss": {
-                        pass_string = `Miss count below **${pass[1]}**`;
+                        pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
+                        break
+                    }
+                    case "combo": {
+                        pass_string = `Combo above **${pass[1]}**`;
                         break
                     }
                     default: pass_string = 'No pass condition'
                 }
-                switch (bonus[0]) {
-                    case "score": {
-                        bonus_string = `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ point(s))`;
-                        break
+                let difflist = ["Easy", "Normal", "Hard"];
+                for (let i = 0; i < bonus.length; i++) {
+                    bonus_string += `${difflist[i]}: `;
+                    switch (bonus[i][0]) {
+                        case "score": {
+                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        case "acc": {
+                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        case "scorev2": {
+                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        case "miss": {
+                            bonus_string += `${bonus[i][1] == 0?"No misses":`Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        case "mod": {
+                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        case "combo": {
+                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ point(s))`;
+                            break
+                        }
+                        default: bonus_string += "No bonuses available"
                     }
-                    case "acc": {
-                        bonus_string = `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ point(s))`;
-                        break
-                    }
-                    case "scorev2": {
-                        bonus_string = `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ point(s))`;
-                        break
-                    }
-                    case "miss": {
-                        bonus_string = `Miss count below **${bonus[1]}** (__${bonus[2]}__ point(s))`;
-                        break
-                    }
-                    case "mod": {
-                        bonus_string = `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ point(s))`;
-                        break
-                    }
-                    default: bonus_string = "No bonuses available"
+                    bonus_string += '\n'
                 }
                 let constrain_string = constrain == ''?"Any mod is allowed":`**${constrain}** only`;
 
@@ -116,13 +129,13 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 let embed = new Discord.RichEmbed()
                     .setAuthor("osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapstatusread(parseInt(mapinfo.approved)))
-                    .setFooter("Alice Synthesis Thirty", footer[index])
+                    .setFooter(`Alice Synthesis Thirty | Challenge ID: ${dailyres[0].challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-                    .setDescription(`**[${title}](https://osu.ppy.sh/b/${beatmapid})**`)
+                    .setDescription(`**[${title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                     .addField(`Map Info`, `CS: ${mapinfo.diff_size} - AR: ${mapinfo.diff_approach} - OD: ${mapinfo.diff_overall} - HP: ${mapinfo.diff_drain}\nBPM: ${mapinfo.bpm} - Length: ${time(hitlength)}/${time(maplength)} - Max Combo: ${mapinfo.max_combo}x\nLast Update: ${mapinfo.last_update} | ${mapstatus(parseInt(mapinfo.approved))}\n❤️ ${mapinfo.favourite_count} - ▶️ ${mapinfo.playcount}`)
-                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s): ${dailyres[0].points} point(s)**\nPass Condition: ${pass_string}\nConstrain: ${constrain_string}\nBonus: ${bonus_string}\n\nChallenge ID: \`${dailyres[0].challengeid}\``);
+                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**Point(s)**: ${dailyres[0].points} point(s)\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                client.channels.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
+                client.channels.get("546135349533868072").send("✅ **| Daily challenge ended!**", {embed: embed});
 
                 let updateVal = {
                     $set: {
