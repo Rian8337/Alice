@@ -211,7 +211,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     username: username,
                                     uid: uid,
                                     challenges: challengelist,
-                                    points: playerres[0].points + points
+                                    points: totalpoint
                                 }
                             };
                             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
