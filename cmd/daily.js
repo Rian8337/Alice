@@ -21,18 +21,6 @@ function modenum(mod) {
     return res
 }
 
-function modname(mod) {
-    let res = '';
-    if (mod.includes("n")) res += 'NF';
-    if (mod.includes("e")) res += 'EZ';
-    if (mod.includes("t")) res += 'HT';
-    if (mod.includes("h")) res += 'HD';
-    if (mod.includes("d")) res += 'DT';
-    if (mod.includes("c")) res += 'NC';
-    if (mod.includes("r")) res += 'HR';
-    return res
-}
-
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     let binddb = maindb.collection("userbind");
@@ -62,6 +50,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let resarr = content.split("<br>");
                 let headerres = resarr[0].split(" ");
                 if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, I cannot find your user profile!**");
+                let uid = userres[0].uid;
+                let username = userres[0].username;
                 let obj;
                 try {
                     obj = JSON.parse(resarr[1])
@@ -82,12 +72,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let acc;
                     let mod;
                     let miss;
+                    let combo;
                     for (let i = 0; i < rplay.length; i++) {
                         if (rplay[i].hash == hash) {
                             score = rplay[i].score;
                             acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
                             mod = rplay[i].mode;
                             miss = rplay[i].miss;
+                            combo = rplay[i].combo;
                             found = true;
                             break
                         }
@@ -108,6 +100,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (miss < passreq[1] || miss == 0) pass = true;
                             break
                         }
+                        case "combo": {
+                            if (combo > passreq[1]) pass = true;
+                            break
+                        }
                         case "scorev2": {
                             if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
                             break
@@ -120,7 +116,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
 
                     let points = 0;
-                    let bonus = dailyres[0].bonus;
+                    let bonus;
+                    let mode = args[0];
+                    if (!mode) mode = "easy";
+                    else mode = mode.toLowerCase();
+                    switch (mode) {
+                        case "easy": {
+                            bonus = dailyres[0].bonus[0];
+                            break
+                        }
+                        case "normal": {
+                            bonus = dailyres[0].bonus[1];
+                            break
+                        }
+                        case "hard": {
+                            bonus = dailyres[0].bonus[2];
+                            break
+                        }
+                        default: bonus = dailyres[0].bonus[0]
+                    }
                     switch (bonus[0]) {
                         case "score": {
                             if (score > bonus[1]) points += bonus[2];
@@ -131,24 +145,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "mod": {
-                            let modlist = modname(mod);
-                            let modreq = bonus[1].toUpperCase().match(/.{1,2}/g);
-                            let i = 0;
-                            for (i; i < modreq.length; i++) {
-                                if (!modlist.includes(modreq[i])) break
-                            }
-                            if (i != modreq.length) pass = true;
+                            if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
                             break
                         }
                         case "acc": {
                             if (acc > parseFloat(bonus[1])) points += bonus[2];
                             break
                         }
-                        case "miss": {
-                            if (miss < bonus[1]) points += bonus[2];
+                        case "combo": {
+                            if (combo > bonus[1]) points += bonus[2];
                             break
                         }
-                        default: break
+                        case "miss": {
+                            if (miss < bonus[1] || miss == 0) points += bonus[2];
+                            break
+                        }
                     }
                     let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
                     pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
@@ -156,26 +167,48 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
+                        let bonuslist = [dailyres[0].challengeid, false, false, false];
                         if (playerres[0]) {
                             let challengelist = playerres[0].challenges;
                             found = false;
-                            let bonusstatus = false;
+                            let bonuscheck = false;
+                            let index = 0;
                             for (let i = 0; i < challengelist.length; i++) {
                                 if (challengelist[i][0] == dailyres[0].challengeid) {
-                                    bonusstatus = challengelist[i][1];
-                                    challengelist[i][1] = bonuscomplete;
+                                    switch (mode) {
+                                        case "easy": {
+                                            bonuscheck = challengelist[i][1];
+                                            index = 1;
+                                            if (bonuscomplete) challengelist[i][1] = true;
+                                            break
+                                        }
+                                        case "normal": {
+                                            bonuscheck = challengelist[i][2];
+                                            index = 2;
+                                            if (bonuscomplete) challengelist[i][2] = true;
+                                            break
+                                        }
+                                        case "hard": {
+                                            bonuscheck = challengelist[i][3];
+                                            if (bonuscomplete) challengelist[i][3] = true;
+                                            index = 3
+                                        }
+                                    }
                                     found = true;
                                     break
                                 }
                             }
-                            if (found && bonusstatus) return message.channel.send("❎ **| I'm sorry, you have completed this challenge! Please wait for the next one to start!**");
+                            if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
                             if (!found) {
-                                challengelist.push([dailyres[0].challengeid, bonuscomplete]);
-                                points += dailyres[0].points
+                                points += dailyres[0].points;
+                                bonuslist[index] = bonuscomplete;
+                                challengelist.push(bonuslist)
                             }
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`, earning you \`${points}\` points!**`);
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points!**`);
                             let updateVal = {
                                 $set: {
+                                    username: username,
+                                    uid: uid,
                                     challenges: challengelist,
                                     points: playerres[0].points + points
                                 }
@@ -188,11 +221,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 console.log("Player points updated")
                             })
                         } else {
+                            if (bonuscomplete) {
+                                switch (mode) {
+                                    case "easy": {
+                                        bonuslist[1] = true;
+                                        break
+                                    }
+                                    case "normal": {
+                                        bonuslist[2] = true;
+                                        break
+                                    }
+                                    case "hard":
+                                        bonuslist[3] = true;
+                                }
+                            }
                             points += dailyres[0].points;
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`, earning you \`${points}\` points!**`);
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${dailyres[0].challengeid}\`${bonuscomplete?` and the \`${mode}\` bonus`:""}, earning you \`${points}\` points!**`);
                             let insertVal = {
+                                username: username,
+                                uid: uid,
                                 discordid: message.author.id,
-                                challenges: [[dailyres[0].challengeid, bonuscomplete]],
+                                challenges: [bonuslist],
                                 points: points
                             };
                             pointdb.insertOne(insertVal, err => {
