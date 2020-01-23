@@ -10,6 +10,7 @@ function timeconvert (num) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
+    if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     let binddb = maindb.collection("userbind");
     let pointdb = alicedb.collection("playerpoints");
     let query = {discordid: message.author.id};
