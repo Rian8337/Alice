@@ -450,7 +450,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ongoing weekly bounty, otherwise submits
             // the message author's play for validation
             if (args[1] == "check") {
-                let query = {status: "d-ongoing"};
+                let query = {status: "w-ongoing"};
                 dailydb.find(query).toArray((err, dailyres) => {
                     if (err) {
                         console.log(err);
@@ -592,7 +592,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
                         }
                         let rplay = obj.recent;
-                        query = {status: "d-ongoing"};
+                        query = {status: "w-ongoing"};
                         dailydb.find(query).toArray((err, dailyres) => {
                             if (err) {
                                 console.log(err);
@@ -922,7 +922,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let updateVal;
                         if (challengeid.includes("w")) updateVal = {
                             $set: {
-                                status: "d-ongoing",
+                                status: "w-ongoing",
                                 timelimit: timelimit
                             }
                         };
