@@ -38,7 +38,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let query = {status: "ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to set a challenge now!")).catch(console.error);
+        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
         let timelimit = dailyres[0].timelimit;
         if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
         let pass = dailyres[0].pass;
@@ -73,7 +73,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                         break
                     }
                     case "acc": {
-                        pass_string = `Accuracy above **${parseFloat(pass[1])}%**`;
+                        pass_string = `Accuracy above **${pass[1]}%**`;
                         break
                     }
                     case "scorev2": {
@@ -86,6 +86,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     }
                     case "combo": {
                         pass_string = `Combo above **${pass[1]}**`;
+                        break
+                    }
+                    case "rank": {
+                        pass_string = `**${pass[1]}** rank or above`;
                         break
                     }
                     default: pass_string = 'No pass condition'
@@ -103,7 +107,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1?"point":"points"})`;
                             break
                         }
                         case "miss": {
@@ -116,6 +120,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                         }
                         case "combo": {
                             bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            break
+                        }
+                        case "rank": {
+                            bonus_string += `**${bonus[i][1].toUpperCase()} or above (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                             break
                         }
                         default: bonus_string += "No bonuses available"
@@ -135,7 +143,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     .addField(`Map Info`, `CS: ${mapinfo.diff_size} - AR: ${mapinfo.diff_approach} - OD: ${mapinfo.diff_overall} - HP: ${mapinfo.diff_drain}\nBPM: ${mapinfo.bpm} - Length: ${time(hitlength)}/${time(maplength)} - Max Combo: ${mapinfo.max_combo}x\nLast Update: ${mapinfo.last_update} | ${mapstatus(parseInt(mapinfo.approved))}\n❤️ ${mapinfo.favourite_count} - ▶️ ${mapinfo.playcount}`)
                     .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                client.channels.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
+                client.channels.get("546135349533868072").send("✅ **| Daily challenge ended!**", {embed: embed});
 
                 let updateVal = {
                     $set: {
@@ -155,7 +163,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
 };
 
 module.exports.config = {
-	description: "Used to track daily challenge time limit.",
+	description: "Used to track daily and weekly challenge time limit.",
 	usage: "None",
 	detail: "None",
 	permission: "None"
