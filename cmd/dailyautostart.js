@@ -59,7 +59,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let pass = dailyres[0].pass;
         let bonus = dailyres[0].bonus;
         let constrain = dailyres[0].constrain.toUpperCase();
-        let timelimit = Math.floor(Date.now() / 1000) + 86400;
+        let timelimit = Math.floor(Date.now() / 1000) + dailyres[0].challengeid.includes("ds")?86400 * 7:86400;
         let beatmapid = dailyres[0].beatmapid;
         let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
         let content = '';
