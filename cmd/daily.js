@@ -777,6 +777,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge!**");
+                if (dailyres[0].status != 'scheduled') return message.channel.send("❎ **| I'm sorry, this challenge is ongoing or has been finished!**");
                 let pass = dailyres[0].pass;
                 let bonus = dailyres[0].bonus;
                 let constrain = dailyres[0].constrain.toUpperCase();
