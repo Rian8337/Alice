@@ -104,6 +104,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         pass_string = `Combo above **${pass[1]}**`;
                         break
                     }
+                    case "rank": {
+                        pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                        break
+                    }
                     default: pass_string = 'No pass condition'
                 }
                 if (challengeid.includes("ds")) {
@@ -117,7 +121,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
                             break
                         }
                         case "miss": {
@@ -125,11 +129,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "mod": {
-                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "combo": {
-                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            break
+                        }
+                        case "rank": {
+                            bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         default: bonus_string += "No bonuses available"
@@ -149,7 +157,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 break
                             }
                             case "scorev2": {
-                                bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
                                 break
                             }
                             case "miss": {
@@ -162,6 +170,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             case "combo": {
                                 bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "rank": {
+                                bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                 break
                             }
                             default:
