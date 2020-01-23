@@ -35,7 +35,7 @@ function time(second) {
 
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let dailydb = alicedb.collection("dailychallenge");
-    let query = {status: "d-ongoing"};
+    let query = {status: "w-ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
         if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
@@ -149,7 +149,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     if (err) return console.log("Cannot update challenge status");
                     console.log("Challenge status updated")
                 });
-                let nextchallenge = "ds" + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) + 1);
+                let nextchallenge = "w" + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) + 1);
                 client.commands.get("dailyautostart").run(client, message, [nextchallenge], maindb, alicedb);
             })
         });
