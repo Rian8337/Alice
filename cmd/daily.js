@@ -634,10 +634,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 if (playerres[0]) {
                                     let challengelist = playerres[0].challenges;
+                                    console.log(challengelist);
                                     found = false;
                                     let bonuscheck = false;
                                     for (let i = 0; i < challengelist.length; i++) {
                                         if (challengelist[i][0] == challengeid) {
+                                            console.log(challengelist[i]);
                                             bonuscheck = challengelist[i][1];
                                             challengelist[i][1] = bonuscomplete;
                                             found = true;
@@ -1050,7 +1052,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 }
                                                 case "hard": {
                                                     bonuscheck = challengelist[i][3];
-                                                    if (bonuscomplete) challengelist[i][3] = true
+                                                    if (bonuscomplete) challengelist[i][3] = true;
                                                 }
                                             }
                                             found = true;
@@ -1061,6 +1063,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     if (!found) {
                                         points += dailyres[0].points;
                                         bonuslist[index] = bonuscomplete;
+                                        console.log(bonuslist);
                                         challengelist.push(bonuslist)
                                     }
                                     let totalpoint = playerres[0].points + points;
