@@ -842,7 +842,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                         message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
-                        //client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
+                        client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
 
                         let updateVal;
                         if (challengeid.includes("ds")) updateVal = {
