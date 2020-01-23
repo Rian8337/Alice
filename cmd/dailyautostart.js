@@ -89,7 +89,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         break
                     }
                     case "acc": {
-                        pass_string = `Accuracy above **${parseFloat(pass[1])}%**`;
+                        pass_string = `Accuracy above **${pass[1]}%**`;
                         break
                     }
                     case "scorev2": {
@@ -106,37 +106,69 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     default: pass_string = 'No pass condition'
                 }
-                let difflist = ["Easy", "Normal", "Hard"];
-                for (let i = 0; i < bonus.length; i++) {
-                    bonus_string += `${difflist[i]}: `;
-                    switch (bonus[i][0]) {
+                if (challengeid.includes("ds")) {
+                    switch (bonus[0]) {
                         case "score": {
-                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "acc": {
-                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "miss": {
-                            bonus_string += `${bonus[i][1] == 0?"No misses":`Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "mod": {
-                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         case "combo": {
-                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                             break
                         }
                         default: bonus_string += "No bonuses available"
                     }
-                    bonus_string += '\n'
+                }
+                else {
+                    let difflist = ["Easy", "Normal", "Hard"];
+                    for (let i = 0; i < bonus.length; i++) {
+                        bonus_string += `${difflist[i]}: `;
+                        switch (bonus[i][0]) {
+                            case "score": {
+                                bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "acc": {
+                                bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "scorev2": {
+                                bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "miss": {
+                                bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "mod": {
+                                bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "combo": {
+                                bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            default:
+                                bonus_string += "No bonuses available"
+                        }
+                        bonus_string += '\n'
+                    }
                 }
                 let constrain_string = constrain == ''?"Any mod is allowed":`**${constrain}** only`;
 
