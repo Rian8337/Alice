@@ -56,7 +56,8 @@ client.on("ready", () => {
     console.log("Webhook initiated");
 	setInterval(() => {
 		client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
-		client.commands.get("trackfunc").run(client, message = "", args = {}, maindb)
+		client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
+		client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000)
 });
 
