@@ -125,7 +125,7 @@ function editpoint(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    if (message.author.id != '386742340968120321' || message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     // declaration of variables used in switch cases
     let binddb = maindb.collection("userbind");
     let dailydb = alicedb.collection("dailychallenge");
