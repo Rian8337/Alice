@@ -362,7 +362,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1?"point":"points"})`;
                                     break
                                 }
                                 case "miss": {
@@ -474,7 +474,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                                    bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
                                     break
                                 }
                                 case "miss": {
@@ -619,7 +619,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    if (scoreCalc(score, bonus[1], acc, miss) > bonus[1]) points += bonus[2];
+                                    if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
                                     break
                                 }
                                 case "mod": {
@@ -778,7 +778,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                                    bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
                                     break
                                 }
                                 case "miss": {
@@ -790,7 +790,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "combo": {
-                                    bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                    bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -991,7 +991,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    if (scoreCalc(score, passreq[2], acc, miss) > bonus[1]) points += bonus[2];
+                                    if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
                                     break
                                 }
                                 case "mod": {
