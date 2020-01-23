@@ -54,8 +54,6 @@ client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
     console.log("Webhook initiated");
-	client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
-	client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
 	setInterval(() => {
 		client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
 		client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
