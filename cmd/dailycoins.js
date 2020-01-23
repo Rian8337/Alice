@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            let daily = 200;
+            let daily = 100;
             let coin = client.emojis.get("669532330980802561");
             if (dailyres[0]) {
                 let timelimit = dailyres[0].dailycooldown - Math.floor(Date.now() / 1000);
