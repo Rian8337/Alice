@@ -175,7 +175,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let footer = config.avatar_list;
                 const index = Math.floor(Math.random() * (footer.length - 1) + 1);
                 let embed = new Discord.RichEmbed()
-                    .setAuthor("osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                    .setAuthor(challengeid.includes("ds")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapstatusread(parseInt(mapinfo.approved)))
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
