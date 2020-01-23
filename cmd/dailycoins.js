@@ -1,10 +1,11 @@
 let Discord = require('discord.js');
 
-function timeconvert (num) {
+function timeconvert(num) {
     let sec = parseInt(num);
-    let hours = Math.ceil(sec / 3600);
-    let minutes = Math.ceil((sec - hours * 3600) / 60);
-    return [hours, minutes]
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -29,10 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let coin = client.emojis.get("669532330980802561");
             if (dailyres[0]) {
                 let timelimit = dailyres[0].dailycooldown - Math.floor(Date.now() / 1000);
-                if (timelimit > 0) {
-                    let time = timeconvert(timelimit);
-                    return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0?"":`${time[0]} hours`}${time[1] == 0?"":", minutes"}.**`)
-                }
+                if (timelimit > 0) return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${timeconvert(timelimit)}.**`);
                 let totalcoins = dailyres[0].alicecoins + daily;
                 message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! You now have ${coin}\`${totalcoins}\` Alice coins.**`);
                 let updateVal = {
