@@ -63,6 +63,45 @@ function modenum(mod) {
     return res
 }
 
+function rankConvert(rank) {
+    let res = 0;
+    switch (rank.toUpperCase()) {
+        case "D": {
+            res = 1;
+            break
+        }
+        case "C": {
+            res = 2;
+            break
+        }
+        case "B": {
+            res = 3;
+            break
+        }
+        case "A": {
+            res = 4;
+            break
+        }
+        case "S": {
+            res = 5;
+            break
+        }
+        case "X": {
+            res = 6;
+            break
+        }
+        case "SH": {
+            res = 7;
+            break
+        }
+        case "XH": {
+            res = 8;
+            break
+        }
+    }
+    return res
+}
+
 function spaceFill(s, l) {
     var a = s.length;
     for (var i = 1; i < l-a; i++) {
@@ -168,10 +207,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         res.on("data", chunk => {
                             content += chunk
                         });
-                        res.on("error", err => {
-                            console.log(err);
-                            avalink = "https://cdn.discordapp.com/embed/avatars/0.png"
-                        });
                         res.on("end", () => {
                             let b = content.split('\n');
                             let avalink = "";
@@ -200,7 +235,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             } catch (e) {
                                 rolecheck = "#000000"
                             }
-                            let coin = client.emojis.get("669532330980802561");
                             let footer = config.avatar_list;
                             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
                             embed.setAuthor(`Daily Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
@@ -347,6 +381,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 pass_string = `Combo above **${pass[1]}**`;
                                 break
                             }
+                            case "rank": {
+                                pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                                break
+                            }
                             default: pass_string = 'No pass condition'
                         }
                         let difflist = ["Easy", "Normal", "Hard"];
@@ -375,6 +413,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 case "combo": {
                                     bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                                    break
+                                }
+                                case "rank": {
+                                    bonus_string += `**${bonus[i][1]}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -462,6 +504,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     pass_string = `Combo above **${pass[1]}**`;
                                     break
                                 }
+                                case "rank": {
+                                    pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                                    break
+                                }
                                 default: pass_string = 'No pass condition'
                             }
                             switch (bonus[0]) {
@@ -487,6 +533,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 case "combo": {
                                     bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                                    break
+                                }
+                                case "rank": {
+                                    bonus_string += `**${bonus[1]}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -557,6 +607,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let mod;
                             let miss;
                             let combo;
+                            let rank;
                             for (let i = 0; i < rplay.length; i++) {
                                 if (rplay[i].hash == hash) {
                                     score = rplay[i].score;
@@ -564,6 +615,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     mod = rplay[i].mode;
                                     miss = rplay[i].miss;
                                     combo = rplay[i].combo;
+                                    rank = rplay[i].mark;
                                     found = true;
                                     break
                                 }
@@ -590,6 +642,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 case "scorev2": {
                                     if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
+                                    break
+                                }
+                                case "rank": {
+                                    if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
                                     break
                                 }
                                 default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
@@ -623,7 +679,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "mod": {
-                                    if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2]
+                                    if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
+                                    break
+                                }
+                                case "rank": {
+                                    if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2]
                                 }
                             }
                             let bonuscomplete = points != 0 || bonus.toLowerCase() == 'none';
@@ -765,6 +825,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 pass_string = `Combo above **${pass[1]}**`;
                                 break
                             }
+                            case "rank": {
+                                pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                                break
+                            }
                             default: pass_string = 'No pass condition'
                         }
                         if (challengeid.includes("ds")) {
@@ -791,6 +855,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 case "combo": {
                                     bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                    break
+                                }
+                                case "rank": {
+                                    bonus_string += `**${bonus[1]} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -823,6 +891,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     case "combo": {
                                         bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                        break
+                                    }
+                                    case "rank": {
+                                        bonus_string += `**${bonus[i][1]}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                         break
                                     }
                                     default:
