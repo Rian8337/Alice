@@ -1208,8 +1208,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     description: "Main command for daily challenges.",
-    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily profile [user]",
-    detail: "`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard`. [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate.[String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view [UserResolvable (mention or user ID)]",
+    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily profile [user]\ndaily start <challenge ID> (specific person only)",
+    detail: "`challenge ID`: The ID of the challenge [String]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard`. [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate.[String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view [UserResolvable (mention or user ID)]",
     permission: "None / Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
