@@ -781,7 +781,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let pass = dailyres[0].pass;
                 let bonus = dailyres[0].bonus;
                 let constrain = dailyres[0].constrain.toUpperCase();
-                let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("ds")?86400 * 7:86400);
+                let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w")?86400 * 7:86400);
                 let beatmapid = dailyres[0].beatmapid;
                 let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
                 let content = '';
@@ -832,7 +832,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             default: pass_string = 'No pass condition'
                         }
-                        if (challengeid.includes("ds")) {
+                        if (challengeid.includes("w")) {
                             switch (bonus[0]) {
                                 case "score": {
                                     bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
@@ -908,7 +908,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                         let footer = config.avatar_list;
                         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                        embed.setAuthor(challengeid.includes("ds")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                        embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                             .setColor(mapstatusread(parseInt(mapinfo.approved)))
                             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
@@ -920,7 +920,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
 
                         let updateVal;
-                        if (challengeid.includes("ds")) updateVal = {
+                        if (challengeid.includes("w")) updateVal = {
                             $set: {
                                 status: "d-ongoing",
                                 timelimit: timelimit
