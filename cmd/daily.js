@@ -1021,25 +1021,36 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     found = false;
                                     let bonuscheck = false;
                                     let index = 0;
+                                    switch (mode) {
+                                        case "easy": {
+                                            index = 1;
+                                            break
+                                        }
+                                        case "normal": {
+                                            index = 2;
+                                            break
+                                        }
+                                        case "hard": {
+                                            index = 3;
+                                            break
+                                        }
+                                    }
                                     for (let i = 0; i < challengelist.length; i++) {
                                         if (challengelist[i][0] == challengeid) {
                                             switch (mode) {
                                                 case "easy": {
                                                     bonuscheck = challengelist[i][1];
-                                                    index = 1;
                                                     if (bonuscomplete) challengelist[i][1] = true;
                                                     break
                                                 }
                                                 case "normal": {
                                                     bonuscheck = challengelist[i][2];
-                                                    index = 2;
                                                     if (bonuscomplete) challengelist[i][2] = true;
                                                     break
                                                 }
                                                 case "hard": {
                                                     bonuscheck = challengelist[i][3];
-                                                    if (bonuscomplete) challengelist[i][3] = true;
-                                                    index = 3
+                                                    if (bonuscomplete) challengelist[i][3] = true
                                                 }
                                             }
                                             found = true;
