@@ -22,6 +22,7 @@
     "addtrack",
     "completepp",
     "completescore",
+    "dailystart",
     "deletetrack",
     "emailcheck",
     "fancylock",
