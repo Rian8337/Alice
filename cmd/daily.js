@@ -7,6 +7,15 @@ let droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
 let cd = new Set();
 
+function isEligible(member) {
+    var res = 0;
+    var eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
+    eligibleRoleList.forEach((id) => {
+        if (member.roles.has(id[0])) res = id[1]
+    });
+    return res
+}
+
 function mapstatus(status) {
     switch (status) {
         case -2: return "Graveyard";
@@ -125,7 +134,8 @@ function editpoint(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    //if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server!**");
     // declaration of variables used in switch cases
     let binddb = maindb.collection("userbind");
     let dailydb = alicedb.collection("dailychallenge");
@@ -416,7 +426,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "rank": {
-                                    bonus_string += `**${bonus[i][1]}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                    bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -536,7 +546,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "rank": {
-                                    bonus_string += `**${bonus[1]}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                    bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -699,7 +709,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let bonuscheck = false;
                                     for (let i = 0; i < challengelist.length; i++) {
                                         if (challengelist[i][0] == challengeid) {
-                                            console.log(challengelist[i]);
                                             bonuscheck = challengelist[i][1];
                                             challengelist[i][1] = bonuscomplete;
                                             found = true;
@@ -859,7 +868,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "rank": {
-                                    bonus_string += `**${bonus[1]} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                    bonus_string += `**${bonus[1].toUpperCase()} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default: bonus_string += "No bonuses available"
@@ -895,7 +904,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         break
                                     }
                                     case "rank": {
-                                        bonus_string += `**${bonus[i][1]}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                        bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                         break
                                     }
                                     default:
@@ -942,6 +951,150 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     })
                 });
                 req.end()
+            });
+            break
+        }
+        case "manual": {
+            // manual submission in case submission
+            // fails, possibly due to scores not
+            // submitting for not surpassing highest score
+            // requires helper or above
+            let perm = isEligible(message.member);
+            if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this. Please ask a Helper!**");
+
+            let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
+            if (!user) return message.channel.send("❎ **| Hey, please enter a valid user!**");
+            let challengeid = args[2];
+            if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
+            let bonustype = args[3];
+            if (!bonustype) return message.channel.send("❎ **| Hey, please enter a bonus type!**");
+
+            let query = {discordid: message.author.id};
+            binddb.find(query).toArray((err, userres) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                let uid = userres[0].uid;
+                let username = userres[0].username;
+                query = {challengeid: challengeid};
+                dailydb.find(query).toArray((err, dailyres) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, that challenge doesn't exist!**");
+                    if (dailyres[0].status.includes("ongoing")) return message.channel.send("❎ **| I'm sorry, that challenge is not ongoing now!**");
+                    let challengeid = dailyres[0].challengeid;
+                    let bonus = false;
+                    let index = 0;
+                    switch (args[3]) {
+                        case "easy": {
+                            bonus = dailyres[0].bonus[0];
+                            index = 1;
+                            break
+                        }
+                        case "normal": {
+                            bonus = dailyres[0].bonus[1];
+                            index = 2;
+                            break
+                        }
+                        case "hard": {
+                            bonus = dailyres[0].bonus[2];
+                            index = 3;
+                            break
+                        }
+                        case "insane": {
+                            bonus = dailyres[0].bonus;
+                            index = 1;
+                            break
+                        }
+                    }
+                    let points = 0;
+                    if (!bonus) points = 0;
+                    else if (bonus[0] == 'scorev2') points += bonus[3];
+                    else points += bonus[2];
+                    let bonuscomplete = points != 0;
+                    pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        let bonuslist;
+                        if (playerres[0]) {
+                            let challengelist = playerres[0].challenges;
+                            let found = false;
+                            let bonuscheck = false;
+                            for (let i = 0; i < challengelist.length; i++) {
+                                if (challengelist[i][0] == challengeid) {
+                                    bonuscheck = challengelist[i][index];
+                                    challengelist[i][index] = bonuscomplete;
+                                    found = true;
+                                    break
+                                }
+                            }
+                            if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, that user has completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
+                            if (!found) {
+                                points += dailyres[0].points;
+                                if (!challengeid.includes("w")) {
+                                    bonuslist = [challengeid, false, false, false];
+                                    bonuslist[index] = bonuscomplete
+                                }
+                                else bonuslist = [challengeid, bonuscomplete];
+                                challengelist.push(bonuslist)
+                            }
+                            let totalpoint = playerres[0].points + points;
+                            let alicecoins = playerres[0].alicecoins + points * 10;
+                            message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1 ? "point" : "points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                            let updateVal = {
+                                $set: {
+                                    username: username,
+                                    uid: uid,
+                                    challenges: challengelist,
+                                    points: totalpoint,
+                                    alicecoins: alicecoins
+                                }
+                            };
+                            pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Player points updated")
+                            })
+                        }
+                        else {
+                            points += dailyres[0].points;
+                            if (!challengeid.includes("w")) {
+                                bonuslist = [challengeid, false, false, false];
+                                bonuslist[index] = bonuscomplete
+                            }
+                            else bonuslist = [challengeid, bonuscomplete];
+                            message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
+                            let insertVal = {
+                                username: username,
+                                uid: uid,
+                                discordid: message.author.id,
+                                challenges: [bonuslist],
+                                points: points,
+                                dailycooldown: 0,
+                                alicecoins: points * 10
+                            };
+                            pointdb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Player points added")
+                            })
+                        }
+                    })
+                });
+                cd.add(message.author.id);
+                setTimeout(() => {
+                    cd.delete(message.author.id)
+                }, 2500)
             });
             break
         }
@@ -1039,6 +1192,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
 
                             let points = 0;
+                            let index = 0;
                             let bonus;
                             let mode = args[0];
                             if (!mode) mode = "easy";
@@ -1046,14 +1200,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             switch (mode) {
                                 case "easy": {
                                     bonus = dailyres[0].bonus[0];
+                                    index = 1;
                                     break
                                 }
                                 case "normal": {
                                     bonus = dailyres[0].bonus[1];
+                                    index = 2;
                                     break
                                 }
                                 case "hard": {
                                     bonus = dailyres[0].bonus[2];
+                                    index = 3;
                                     break
                                 }
                                 default: return message.channel.send("❎ **| I'm sorry, that bonus type is invalid! Accepted arguments are `easy`, `normal`, and `hard`.**")
@@ -1091,43 +1248,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
                                 let bonuslist = [challengeid, false, false, false];
+                                bonuslist[index] = bonuscomplete;
                                 if (playerres[0]) {
                                     let challengelist = playerres[0].challenges;
                                     found = false;
                                     let bonuscheck = false;
-                                    let index = 0;
-                                    switch (mode) {
-                                        case "easy": {
-                                            index = 1;
-                                            break
-                                        }
-                                        case "normal": {
-                                            index = 2;
-                                            break
-                                        }
-                                        case "hard": {
-                                            index = 3;
-                                            break
-                                        }
-                                    }
                                     for (let i = 0; i < challengelist.length; i++) {
                                         if (challengelist[i][0] == challengeid) {
-                                            switch (mode) {
-                                                case "easy": {
-                                                    bonuscheck = challengelist[i][1];
-                                                    if (bonuscomplete) challengelist[i][1] = true;
-                                                    break
-                                                }
-                                                case "normal": {
-                                                    bonuscheck = challengelist[i][2];
-                                                    if (bonuscomplete) challengelist[i][2] = true;
-                                                    break
-                                                }
-                                                case "hard": {
-                                                    bonuscheck = challengelist[i][3];
-                                                    if (bonuscomplete) challengelist[i][3] = true;
-                                                }
-                                            }
+                                            bonuscheck = challengelist[i][index];
+                                            challengelist[i][index] = bonuscomplete;
                                             found = true;
                                             break
                                         }
@@ -1135,8 +1264,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
                                     if (!found) {
                                         points += dailyres[0].points;
-                                        bonuslist[index] = bonuscomplete;
-                                        console.log(bonuslist);
                                         challengelist.push(bonuslist)
                                     }
                                     let totalpoint = playerres[0].points + points;
@@ -1159,20 +1286,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         console.log("Player points updated")
                                     })
                                 } else {
-                                    if (bonuscomplete) {
-                                        switch (mode) {
-                                            case "easy": {
-                                                bonuslist[1] = true;
-                                                break
-                                            }
-                                            case "normal": {
-                                                bonuslist[2] = true;
-                                                break
-                                            }
-                                            case "hard":
-                                                bonuslist[3] = true;
-                                        }
-                                    }
                                     points += dailyres[0].points;
                                     message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
                                     let insertVal = {
@@ -1208,9 +1321,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     description: "Main command for daily challenges.",
-    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily profile [user]\ndaily start <challenge ID> (specific person only)",
-    detail: "`challenge ID`: The ID of the challenge [String]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard`. [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate.[String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view [UserResolvable (mention or user ID)]",
-    permission: "None / Specific person (<@132783516176875520> and <@386742340968120321>)"
+    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
+    detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane`. [String]\n`[String]\n`challenge ID`: The ID of the challenge [Strong]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard`. [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate.[String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
+    permission: "None / Helper / Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
 module.exports.help = {
