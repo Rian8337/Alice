@@ -220,7 +220,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         res.on("end", () => {
                             let b = content.split('\n');
                             let avalink = "";
-                            for (x = 0; x < b.length; x++) {
+                            for (let x = 0; x < b.length; x++) {
                                 if (b[x].includes('h3 m-t-xs m-b-xs')) {
                                     b[x - 3] = b[x - 3].replace('<img src="', "");
                                     b[x - 3] = b[x - 3].replace('" class="img-circle">', "");
@@ -966,8 +966,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!user) return message.channel.send("❎ **| Hey, please enter a valid user!**");
             let challengeid = args[2];
             if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
-            let bonustype = args[3];
-            if (!bonustype) return message.channel.send("❎ **| Hey, please enter a bonus type!**");
 
             let query = {discordid: message.author.id};
             binddb.find(query).toArray((err, userres) => {
