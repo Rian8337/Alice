@@ -247,7 +247,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             let footer = config.avatar_list;
                             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                            embed.setAuthor(`Daily Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
+                            embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
                                 .setColor(rolecheck)
                                 .setFooter("Alice Synthesis Thirty", footer[index])
                                 .setThumbnail(avalink)
