@@ -983,7 +983,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, that challenge doesn't exist!**");
-                    if (dailyres[0].status.includes("ongoing")) return message.channel.send("❎ **| I'm sorry, that challenge is not ongoing now!**");
+                    if (!dailyres[0].status.includes("ongoing")) return message.channel.send("❎ **| I'm sorry, that challenge is not ongoing now!**");
                     let challengeid = dailyres[0].challengeid;
                     let bonus = false;
                     let index = 0;
