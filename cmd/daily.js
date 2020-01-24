@@ -987,7 +987,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let challengeid = dailyres[0].challengeid;
                     let bonus = false;
                     let index = 0;
-                    switch (args[3]) {
+                    let mode = args[3];
+                    if (!mode) mode = 'easy';
+                    else mode = mode.toLowerCase();
+                    switch (mode) {
                         case "easy": {
                             bonus = dailyres[0].bonus[0];
                             index = 1;
