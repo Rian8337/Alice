@@ -34,7 +34,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!res[page*20]) return message.channel.send("Nah we don't have that much player :p");
         let output = editscore(res, page);
-        message.channel.send('```' + output + '```').then (msg => {
+        message.channel.send('```c\n' + output + '```').then (msg => {
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             backward.on('collect', () => {
                 page = 0;
                 output = editscore(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             });
 
@@ -59,7 +59,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (page === 0) page = Math.floor(res.length / 20);
                 else page--;
                 output = editscore(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
             });
 
@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             forward.on('collect', () => {
                 page = Math.floor(res.length / 20);
                 output = editscore(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
             })
         });
