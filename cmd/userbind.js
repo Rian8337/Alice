@@ -26,6 +26,7 @@ module.exports.run = (client, message, args, maindb) => {
 				return message.channel.send("Error: Unable to retrieve user data. Please try again!")
 			});
 			res.on("end", function () {
+				if (content.includes("<html>")) return message.channel.send("❎ **| Invalid uid.**");
 				var headerres = content.split('<br>')[0].split(" ");
 				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = headerres[2];
