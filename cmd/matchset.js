@@ -28,7 +28,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         matchid: matchid
                     }
                 };
-                channeldb.updateOne(updateVal, query, err => {
+                channeldb.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
