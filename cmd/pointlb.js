@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!res[page*20]) return message.channel.send("Nah we don't have that much player :p");
         let output = editpoint(res, page);
-        message.channel.send('```' + output + '```').then (msg => {
+        message.channel.send('```c\n' + output + '```').then (msg => {
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
@@ -50,7 +50,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             backward.on('collect', () => {
                 page = 0;
                 output = editpoint(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             });
 
@@ -58,7 +58,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (page === 0) page = Math.floor(res.length / 20);
                 else page--;
                 output = editpoint(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
             });
 
@@ -66,14 +66,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if ((page + 1) * 20 >= res.length) page = 0;
                 else page++;
                 output = editpoint(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             });
 
             forward.on('collect', () => {
                 page = Math.floor(res.length / 20);
                 output = editpoint(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
             })
         });
