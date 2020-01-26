@@ -178,7 +178,7 @@ client.on("guildMemberUpdate", oldMember => {
 		let welcomeMessage = `Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`;
 		setTimeout(() => {
 			oldMember.user.send(data).catch(console.error);
-			general.send(welcomeMessage)
+			general.send(welcomeMessage, {files: ["https://i.imgur.com/LLzteLz.jpg"]})
 		}, 100)
 	})
 });
