@@ -315,6 +315,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             confirm.on("collect", () => {
                                 confirmation = true;
                                 msg.delete();
+                                let role = message.guild.roles.find(r => r.name === 'Clans');
+                                let clanrole = message.guild.roles.find(r => r.name === userres[0].clan);
+                                if (clanrole) toaccept.addRoles([role, clanrole], "Accepted into clan").catch(console.error);
                                 memberlist.push([toaccept.id, uid]);
                                 let updateVal = {
                                     $set: {
@@ -397,8 +400,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
+                            let role = message.guild.roles.find(r => r.name === 'Clans');
                             let clanrole = message.guild.roles.find(r => r.name === clan);
-                            if (clanrole) tokick.removeRole(clanrole, "Kicked from clan").catch(console.error);
+                            if (clanrole) tokick.removeRoles([role, clanrole], "Kicked from clan").catch(console.error);
                             let updateVal = {
                                 $set: {
                                     member_list: memberlist.filter(id => id[0] != tokick.id)
@@ -463,6 +467,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
+                            let role = message.guild.roles.find(r => r.name === 'Clans');
+                            let clanrole = message.guild.roles.find(r => r.name === clan);
+                            if (clanrole) message.member.removeRoles([role, clanrole], "Left the clan").catch(console.error);
                             let memberlist = clanres[0].member_list;
                             let updateVal = {
                                 $set: {
@@ -631,7 +638,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             confirmation = true;
                             msg.delete();
                             let clanrole = message.guild.roles.find(r => r.name === clanname);
-                            if (clanrole) clanrole.delete("Clan disbanded").catch(console.error);
+                            if (clanrole) {
+                                clanrole.delete("Clan disbanded").catch(console.error);
+                                let role = message.guild.roles.find(r => r.name === 'Clans');
+                                clanres[0].member_list.forEach(member => {
+                                    message.guild.members.get(member[0]).removeRole(role, "Clan disbanded").catch(console.error)
+                                })
+                            }
                             let updateVal = {
                                 $set: {
                                     clan: ""
@@ -1074,14 +1087,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
+                                        let clanrole = message.guild.roles.find(r => r.name === 'Clans');
                                         message.guild.createRole({
                                             name: clan,
                                             color: "DEFAULT",
                                             permissions: [],
-                                            position: 63
+                                            position: clanrole.calculatedPosition + 1
                                         }).then(role => {
                                             memberlist.forEach(id => {
-                                                message.guild.members.get(id[0]).addRole(role, "Clan leader bought clan role").catch(console.error)
+                                                message.guild.members.get(id[0]).addRoles([clanrole, role], "Clan leader bought clan role").catch(console.error)
                                             })
                                         }).catch(console.error);
                                         let updateVal = {
