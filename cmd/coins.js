@@ -40,7 +40,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let timelimit = dailyres[0].dailycooldown - curtime;
                         if (timelimit > 0) {
                             let time = timeconvert(timelimit);
-                            return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                            return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} hour` : `${time[0]} hours`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} minute` : `${time[1]} minutes`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} second` : `${time[2]} seconds`}`}.**`)
                         }
                         let totalcoins = dailyres[0].alicecoins + daily;
                         message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! You now have ${coin}\`${totalcoins}\` Alice coins.**`);
