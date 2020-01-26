@@ -9,8 +9,9 @@
   ],
   "droid": [
     "bindsearch",
+    "coins",
+    "clan",
     "daily",
-    "dailycoins",
     "dancourse",
     "levelid",
     "levelme",
