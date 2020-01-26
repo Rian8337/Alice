@@ -1684,7 +1684,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     description: "Main command for clans.",
-    usage: "clan accept <user>\nclan create <name>\nclan disband [name]\nclan lb [page]\nclan icon <remove/set>\nclan info [name]\nclan kick <user>\nclan leave\nclan match <add/remove>\nclan members [name]\nclan power <give/take/transfer>\nclan powerup <activate/active/view>\nclan shop <color/leader/name/powerup/role>",
+    usage: "clan accept <user>\nclan create <name>\nclan disband [name]\nclan lb [page]\nclan icon <remove/set>\nclan info [name]\nclan kick <user>\nclan leave\nclan match <add/remove>\nclan members [name]\nclan power <give/take/transfer>\nclan powerup <activate/active/view>\nclan shop <color/leader/powerup/rename/role>",
     detail: "`accept`: Accepts a user into your clan\n`create`: Creates a clan with given name\n`disband`: Disbands your clan. Name is required if mod wants to disband another clan (leader/mod only)\n`lb`: Views leaderboard for clans based on power points\n`icon`: Sets/removes an icon for your clan from a given image URL. Clan name must be specified if mod wants to clear a clan's icon (leader/mod only)\n`info`: Views info about a clan\n`kick`: Kicks a user out from your clan. If mod and clan name is specified, will kick the user out from the given clan (leader/mod only)\n`leave`: Leaves your current clan\n`match`: Adds/removes a clan to match mode. Prevents the clan from activating powerups mid-match (referee/mod only)\n`members`: Views members of a clan\n`power`: Main hub for power points (referee/mod only)\n`powerup`: Main hub for clan powerups\n`shop`: Main hub for clan shop",
     permission: "None / Clan Leader / Referee / Moderator"
 };
