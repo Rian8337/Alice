@@ -166,7 +166,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
-        default: {
+        case "view": {
             query = {discordid: message.author.id};
             pointdb.find(query).toArray((err, res) => {
                 if (err) {
@@ -175,15 +175,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 if (res[0]) message.channel.send(`✅ **| ${message.author}, you have ${coin}\`${res[0].alicecoins}\` Alice coins.**`);
                 else message.channel.send(`✅ **| ${message.author}, you have ${coin}\`0\` Alice coins.**`)
-            })
+            });
+            break
         }
+        default: return message.channel.send("❎ **| I'm sorry, it looks like your argument is invalid! Accepted arguments are `claim`, `transfer`, and `view`.**")
     }
 };
 
 module.exports.config = {
     description: "Main command for Alice coins.",
-    usage: "coins",
-    detail: "None",
+    usage: "coins claim\ncoins transfer <user>\ncoins view",
+    detail: "`user`: User to transfer [UserResolvable (mention or user ID)]",
     permission: "None"
 };
 
