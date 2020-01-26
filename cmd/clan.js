@@ -311,7 +311,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         message.channel.send(`❗**| Are you sure you want to accept ${toaccept} to your clan?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
-                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                             confirm.on("collect", () => {
                                 confirmation = true;
                                 msg.delete();
@@ -396,7 +396,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send(`❗**| Are you sure you want to kick the user out from ${perm?`\`${clan}\``:""} clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -463,7 +463,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send(`❗**| Are you sure you want to leave your current clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -542,7 +542,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         message.channel.send(`❗**| Are you sure you want to create a clan named \`${clanname}\` for ${coin}\`7500\` Alice coins?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
-                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                             confirm.on("collect", () => {
                                 confirmation = true;
                                 msg.delete();
@@ -633,7 +633,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send(`❗**| Are you sure you want to disband ${perm && args[1]?`\`${clanname}\` clan`:"your clan"}?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -712,7 +712,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             message.channel.send(`❗**| Are you sure you want to change your clan icon? You wouldn't be able to change it for 5 minutes!**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -769,7 +769,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             message.channel.send(`❗**| Are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s icon?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -856,30 +856,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             let activepowerups = clanres[0].active_powerups;
-                            let count = 0;
                             if (activepowerups.length == 0) return message.channel.send(`❎ **| I'm sorry, ${clan} clan does not have any powerups active!**`);
                             embed.setTitle(`Current active powerups for ${clan} Clan`);
+                            let description_string = '';
                             for (let i = 0; i < activepowerups.length; i++) {
-                                let time = activepowerups[i][1] - curtime;
-                                if (time < 0) activepowerups[i] = false;
-                                else {
-                                    let curtime = timeconvert(time);
-                                    curtime[3] = curtime[3].toString().padStart(2, "0");
-                                    embed.addField(capitalizeString(activepowerups[i][0]), curtime.slice(2).join(":"), true);
-                                    if (count % 2 != 0) embed.addBlankField(true);
-                                    count++
-                                }
+                                description_string += `${activepowerups[i]}\n`
                             }
-                            activepowerups = activepowerups.filter(powerup => powerup);
-                            let updateVal = {
-                                $set: {
-                                    active_powerups: activepowerups
-                                }
-                            };
-                            clandb.updateOne(query, updateVal, err => {
-                                if (err) console.log(err)
-                            });
-                            if (activepowerups.length == 0) return message.channel.send(`❎ **| I'm sorry, ${clan} clan does not have any powerups active!**`);
+                            embed.setDescription(description_string);
                             message.channel.send({embed: embed}).catch(console.error)
                         })
                     });
@@ -923,19 +906,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             if (!found) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup type you are looking for!**");
-                            let dup = false;
-                            for (let i = 0; i < activepowerups.length; i++) {
-                                let time = activepowerups[i][1] - curtime;
-                                if (time < 0) activepowerups[i] = false;
-                                else if (activepowerups[i][0] == powertype) {
-                                    if (time > 0) return message.channel.send(`❎ **| I'm sorry, you currently have an active \`${powertype}\` powerup! To view its expiry time, use \`a!clan powerup active\`.**`);
-                                    activepowerups[i] = [powertype, curtime + 1800];
-                                    dup = true;
-                                    break
-                                }
-                            }
-                            if (!dup) activepowerups.push([powertype, curtime + 1800]);
-                            activepowerups = activepowerups.filter(powerup => powerup);
+                            if (activepowerups.includes(powertype)) return message.channel.send(`❎ **| I'm sorry, your clan currently has an active \`${powertype}\` powerup!**`);
+                            activepowerups.push(powertype);
                             let updateVal = {
                                 $set: {
                                     powerups: powerups,
@@ -944,7 +916,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             };
                             clandb.updateOne(query, updateVal, err => {
                                 if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                message.channel.send(`✅ **| ${message.author}, successfully activated \`${powertype}\` powerup for your clan for 30 minutes. Your clan now has \`${powercount}\` remaining ${powertype} powerups.**`)
+                                message.channel.send(`✅ **| ${message.author}, successfully activated \`${powertype}\` powerup for your clan. Your clan now has \`${powercount}\` remaining ${powertype} powerups.**`)
                             })
                         })
                     });
@@ -1006,7 +978,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`❗**| Are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1083,7 +1055,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`❗**| Are you sure you want to buy a custom clan role for ${coin}\`1000\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1158,7 +1130,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`❗**| Are you sure you want to buy a clan role color change for ${coin}\`500\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1218,7 +1190,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`❗**| Are you sure you want to buy a powerup for ${coin}\`25\`Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1340,7 +1312,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`❗**| Are you sure you want to transfer clan leadership to ${totransfer} for ${coin}\`500\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1510,16 +1482,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let t_activepowerups = tclanres[0].active_powerups;
                                 let givemultiplier = 0.1;
                                 for (let i = 0; i < t_activepowerups.length; i++) {
-                                    let time = t_activepowerups[i][1] - curtime;
-                                    if (time < 0) t_activepowerups[i] = false;
-                                    else switch (t_activepowerups[i][0]) {
+                                    switch (t_activepowerups[i]) {
                                         case "superdebuff": {
                                             message.channel.send(`⬇️⬇️ **| \`${takeclan}\` has \`superdebuff\` powerup active!**`);
                                             givemultiplier /= 1.5;
                                             break
                                         }
                                         case "superbomb": {
-                                            message.channel.send(`⬇️ **| \`${takeclan}\` has \`superbomb\` powerup active${!challengepass?"":", but unfortunately your opponent accomplished the task provided"}!**`);
+                                            message.channel.send(`⬇️ **| \`${takeclan}\` has \`superbomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
                                             if (!challengepass) givemultiplier /= 1.3;
                                             break
                                         }
@@ -1533,7 +1503,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         }
                                     }
                                 }
-                                t_activepowerups = t_activepowerups.filter(powerup => powerup);
                                 query = {name: giveclan};
                                 clandb.find(query).toArray((err, gclanres) => {
                                     if (err) {
@@ -1544,9 +1513,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let g_power = gclanres[0].power;
                                     let g_activepowerups = gclanres[0].active_powerups;
                                     for (let i = 0; i < g_activepowerups.length; i++) {
-                                        let time = g_activepowerups[i][1] - curtime;
-                                        if (time < 0) t_activepowerups[i] = false;
-                                        else switch (g_activepowerups[i][0]) {
+                                        switch (g_activepowerups[i]) {
                                             case "superbuff": {
                                                 message.channel.send(`⬆️⬆️ **| \`${giveclan}\` has \`superbuff\` powerup active!**`);
                                                 givemultiplier *= 1.7;
@@ -1567,19 +1534,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             }
                                         }
                                     }
-                                    g_activepowerups = g_activepowerups.filter(powerup => powerup);
                                     let totalpower = Math.min(t_power, Math.floor(t_power * givemultiplier));
                                     message.channel.send(`❗**| Are you sure you want to transfer \`${totalpower}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan?**`).then(msg => {
                                         msg.react("✅").catch(console.error);
                                         let confirmation = false;
-                                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                         confirm.on("collect", () => {
                                             confirmation = true;
                                             msg.delete();
                                             let updateVal = {
                                                 $set: {
                                                     power: t_power - totalpower,
-                                                    active_powerups: t_activepowerups
+                                                    active_powerups: []
                                                 }
                                             };
                                             clandb.updateOne({name: takeclan}, updateVal, err => {
@@ -1588,7 +1554,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             updateVal = {
                                                 $set: {
                                                     power: g_power + totalpower,
-                                                    active_powerups: g_activepowerups
+                                                    active_powerups: []
                                                 }
                                             };
                                             clandb.updateOne({name: giveclan}, updateVal, err => {
