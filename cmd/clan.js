@@ -63,7 +63,7 @@ function editlb(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
+    //if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
     if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let binddb = maindb.collection("userbind");
@@ -978,7 +978,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
-                default: return message.channel.send("❎ **| I'm sorry, looks like your argument is invalid! Accepted arguments are `active`, `activate`, and `view`.**")
+                default: return message.channel.send("❎ **| I'm sorry, looks like your argument is invalid! Accepted arguments are `activelist`, `activate`, and `list`.**")
             }
             cd.add(message.author.id);
             setTimeout(() => {
@@ -1120,7 +1120,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             name: clan,
                                             color: "DEFAULT",
                                             permissions: [],
-                                            position: clanrole.calculatedPosition + 1
+                                            position: clanrole.calculatedPosition - 1
                                         }).then(role => {
                                             memberlist.forEach(id => {
                                                 message.guild.members.get(id[0]).addRoles([clanrole, role], "Clan leader bought clan role").catch(console.error)
@@ -1243,7 +1243,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                                 let powerups = clanres[0].powerups;
                                 let powercount = 0;
-                                message.channel.send(`❗**| ${message.author}, are you sure you want to buy a powerup for ${coin}\`100\`Alice coins?**`).then(msg => {
+                                message.channel.send(`❗**| ${message.author}, are you sure you want to buy a powerup for ${coin}\`100\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
                                     let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
