@@ -67,7 +67,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if ((page + 1) * 20 >= res.length) page = 0;
                 else page++;
                 output = editscore(res, page);
-                msg.edit('```' + output + '```').catch(e => console.log(e));
+                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
             });
 
