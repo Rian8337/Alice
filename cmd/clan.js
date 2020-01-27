@@ -1670,7 +1670,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         };
                         clandb.updateOne({name: clan}, updateVal, err => {
-                            if (err) return console.log(err);
+                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             message.channel.send(`✅ **| ${message.author}, successfully set \`${clan}\` clan in match mode.**`)
                         })
                     });
@@ -1695,7 +1695,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         };
                         clandb.updateOne({name: clan}, updateVal, err => {
-                            if (err) return console.log(err);
+                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             message.channel.send(`✅ **| ${message.author}, successfully removed \`${clan}\` clan from match mode.**`)
                         })
                     });
