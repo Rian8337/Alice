@@ -57,7 +57,8 @@ client.on("ready", () => {
 	setInterval(() => {
 		client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
 		/*client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
-		client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb)*/
+		client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
+		client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)*/
 	}, 600000)
 });
 
