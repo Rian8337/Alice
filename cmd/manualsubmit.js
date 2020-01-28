@@ -1,12 +1,12 @@
 var Discord = require('discord.js');
 
 function scoreCalc(mode, score, maxscore, accuracy, misscount) {
-	let hddt;
+	let hddt = false;
 	if (mode == 'dt' && score.includes("h")) hddt = true;
 	let newscore = parseInt(score)/maxscore*600000 + (Math.pow((accuracy/100), 4)*400000);
 	newscore -= misscount * 0.003 * newscore;
 	if (!hddt) return newscore;
-	else return Math.round(newscore/1.036)
+	else return Math.round(newscore/1.0625)
 }
 
 module.exports.run = (client, message, args, maindb) => {
