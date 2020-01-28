@@ -1710,6 +1710,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!clanres[0].clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        if (clanres[0].power == 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
                         let clan = clanres[0].clan;
                         let updateVal = {
                             $set: {
