@@ -140,6 +140,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let dailydb = alicedb.collection("dailychallenge");
     let pointdb = alicedb.collection("playerpoints");
+    let clandb = maindb.collection("clandb");
     let coin = client.emojis.get("669532330980802561");
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
@@ -580,6 +581,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres[0].uid;
                 let username = userres[0].username;
+                let clan = userres[0].clan;
                 let options = {
                     host: "ops.dgsrz.com",
                     port: 80,
@@ -738,7 +740,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         console.log("Player points updated")
-                                    })
+                                    });
+                                    if (clan) {
+                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            updateVal = {
+                                                $set: {
+                                                    power: clanres[0].power + points
+                                                }
+                                            };
+                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                console.log("Clan power points updated")
+                                            })
+                                        })
+                                    }
                                 } else {
                                     points += dailyres[0].points;
                                     message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
@@ -757,7 +779,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         console.log("Player points added")
-                                    })
+                                    });
+                                    if (clan) {
+                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            let updateVal = {
+                                                $set: {
+                                                    power: clanres[0].power + points
+                                                }
+                                            };
+                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                console.log("Clan power points updated")
+                                            })
+                                        })
+                                    }
                                 }
                             })
                         })
@@ -974,6 +1016,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres[0].uid;
                 let username = userres[0].username;
+                let clan = userres[0].clan;
                 query = {challengeid: challengeid};
                 dailydb.find(query).toArray((err, dailyres) => {
                     if (err) {
@@ -1061,7 +1104,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
                                 console.log("Player points updated")
-                            })
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    updateVal = {
+                                        $set: {
+                                            power: clanres[0].power + points
+                                        }
+                                    };
+                                    clandb.updateOne({name: clan}, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        }
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
                         }
                         else {
                             points += dailyres[0].points;
@@ -1086,7 +1149,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
                                 console.log("Player points added")
-                            })
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    let updateVal = {
+                                        $set: {
+                                            power: clanres[0].power + points
+                                        }
+                                    };
+                                    clandb.updateOne({name: clan}, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        }
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
                         }
                     })
                 });
@@ -1110,7 +1193,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres[0].uid;
                 let username = userres[0].username;
-
+                let clan = userres[0].clan;
                 let options = {
                     host: "ops.dgsrz.com",
                     port: 80,
@@ -1283,7 +1366,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         console.log("Player points updated")
-                                    })
+                                    });
+                                    if (clan) {
+                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            updateVal = {
+                                                $set: {
+                                                    power: clanres[0].power + points
+                                                }
+                                            };
+                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                console.log("Clan power points updated")
+                                            })
+                                        })
+                                    }
                                 } else {
                                     points += dailyres[0].points;
                                     message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
@@ -1302,7 +1405,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         console.log("Player points added")
-                                    })
+                                    });
+                                    if (clan) {
+                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            let updateVal = {
+                                                $set: {
+                                                    power: clanres[0].power + points
+                                                }
+                                            };
+                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                console.log("Clan power points updated")
+                                            })
+                                        })
+                                    }
                                 }
                             })
                         })
