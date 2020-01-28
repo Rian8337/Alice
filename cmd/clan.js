@@ -1115,7 +1115,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                                 if (message.author.id != clanres[0].leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-                                if (clanres[0].power < 1000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 1000!**");
+                                if (clanres[0].power < 2000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 2000!**");
                                 let memberlist = clanres[0].member_list;
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a custom clan role for ${coin}\`1000\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
@@ -1271,20 +1271,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 powerup = "buff"; // 7.5% chance
                                                 break
                                             }
-                                            case (gachanum <= 92.5): {
-                                                powerup = "superbomb"; // 2.5% chance
+                                            case (gachanum <= 94): {
+                                                powerup = "superbomb"; // 4% chance
                                                 break
                                             }
-                                            case (gachanum <= 95): {
-                                                powerup = "superchallenge"; // 2.5% chance
+                                            case (gachanum <= 98): {
+                                                powerup = "superchallenge"; // 4% chance
                                                 break
                                             }
-                                            case (gachanum <= 97.5): {
-                                                powerup = "superdebuff"; // 2.5% chance
+                                            case (gachanum <= 99): {
+                                                powerup = "superdebuff"; // 1% chance
                                                 break
                                             }
                                             case (gachanum <= 100): {
-                                                powerup = "buff"; // 2.5% chance
+                                                powerup = "buff"; // 1% chance
                                             }
                                         }
                                         // reserved for special events
@@ -1305,20 +1305,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 powerup = "buff"; // 7.5% chance
                                                 break
                                             }
-                                            case (gachanum <= 92.5): {
-                                                powerup = "superbomb"; // 2.5% chance
+                                            case (gachanum <= 94): {
+                                                powerup = "superbomb"; // 4% chance
                                                 break
                                             }
-                                            case (gachanum <= 95): {
-                                                powerup = "superchallenge"; // 2.5% chance
+                                            case (gachanum <= 98): {
+                                                powerup = "superchallenge"; // 4% chance
                                                 break
                                             }
-                                            case (gachanum <= 97.5): {
-                                                powerup = "superdebuff"; // 2.5% chance
+                                            case (gachanum <= 99): {
+                                                powerup = "superdebuff"; // 1% chance
                                                 break
                                             }
                                             case (gachanum <= 100): {
-                                                powerup = "buff"; // 2.5% chance
+                                                powerup = "buff"; // 1% chance
                                             }
                                         }*/
                                         if (!powerup) {
@@ -1710,16 +1710,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!clanres[0].clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        if (clanres[0].power == 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
                         let clan = clanres[0].clan;
-                        let updateVal = {
-                            $set: {
-                                isMatch: true
+                        query = {name: clan};
+                        clandb.find(query).toArray((err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                        };
-                        clandb.updateOne({name: clan}, updateVal, err => {
-                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                            message.channel.send(`✅ **| ${message.author}, successfully set \`${clan}\` clan in match mode.**`)
+                            if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (clanres[0].power == 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
+                            let updateVal = {
+                                $set: {
+                                    isMatch: true
+                                }
+                            };
+                            clandb.updateOne(query, updateVal, err => {
+                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                message.channel.send(`✅ **| ${message.author}, successfully set \`${clan}\` clan in match mode.**`)
+                            })
                         })
                     });
                     break
