@@ -959,9 +959,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // fails, possibly due to scores not
             // submitting for not surpassing highest score
             // requires helper or above
-            let perm = isEligible(message.member);
-            if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this. Please ask a Helper!**");
-
+            if (isEligible(message.member) == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this. Please ask a Helper!**");
             let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
             if (!user) return message.channel.send("❎ **| Hey, please enter a valid user!**");
             let challengeid = args[2];
@@ -988,8 +986,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let bonus = false;
                     let index = 0;
                     let mode = args[3];
-                    if (!mode) mode = 'easy';
-                    else mode = mode.toLowerCase();
+                    if (mode) mode.toLowerCase();
                     switch (mode) {
                         case "easy": {
                             bonus = dailyres[0].bonus[0];
