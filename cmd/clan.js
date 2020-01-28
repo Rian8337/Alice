@@ -329,6 +329,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let time = timeconvert(cooldown);
                         return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                     }
+                    let oldcooldown = userres[0].oldjoincooldown - curtime;
+                    if (oldcooldown > 0 && userres[0].oldclan == joinres[0].clan) {
+                        let time = timeconvert(oldcooldown);
+                        return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                    }
                     let uid = joinres[0].uid;
                     query = {name: userres[0].clan};
                     clandb.find(query).toArray((err, clanres) => {
@@ -455,7 +460,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             updateVal = {
                                 $set: {
                                     clan: "",
-                                    joincooldown: curtime + 86400 * 3
+                                    joincooldown: curtime + 86400 * 3,
+                                    oldclan: clan,
+                                    oldjoincooldown: curtime + 86400 * 14
                                 }
                             };
                             binddb.updateOne({discordid: tokick.id}, updateVal, err => {
@@ -523,7 +530,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             updateVal = {
                                 $set: {
                                     clan: "",
-                                    joincooldown: curtime + 86400 * 3
+                                    joincooldown: curtime + 86400 * 3,
+                                    oldclan: clan,
+                                    oldjoincooldown: curtime + 86400 * 14
                                 }
                             };
                             binddb.updateOne({discordid: message.author.id}, updateVal, err => {
@@ -1154,16 +1163,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // does not affect embed message colors, only
                     // affects clan role color and only supports
                     // integer color format
-                    let red = args[2];
-                    if (!red) return message.channel.send("❎ **| Hey, I don't know what red color to set!**");
-                    if (isNaN(red) || red < 0 || red > 255) return message.channel.send("❎ **| I'm sorry, that red color format is invalid. I only accept RGB color format!**");
-                    let green = args[3];
-                    if (!green) return message.channel.send("❎ **| Hey, I don't know what green color to set!**");
-                    if (isNaN(green) || green < 0 || green > 255) return message.channel.send("❎ **| I'm sorry, that green color format is invalid. I only accept RGB color format!**");
-                    let blue = args[4];
-                    if (!blue) return message.channel.send("❎ **| Hey, I don't know what blue color to set!**");
-                    if (isNaN(red) || red < 0 || red > 255) return message.channel.send("❎ **| I'm sorry, that blue color format is invalid. I only accept RGB color format!**");
-                    let color = args.slice(2, 5);
+                    let color = args[2];
+                    if (!/^#[0-9A-F]{6}$/i.test(color)) return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
                     query = {discordid: message.author.id};
                     binddb.find(query).toArray((err, userres) => {
                         if (err) {
@@ -1252,10 +1253,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         msg.delete();
                                         const gachanum = Math.random() * 100;
                                         console.log(gachanum);
-                                        let powerup = '';
+                                        let powerup = false;
                                         switch (true) {
-                                            case (gachanum <= 50): {
-                                                powerup = "bomb"; // 50% chance
+                                            case (gachanum > 20 && gachanum <= 50): { // 20% chance of not getting anything
+                                                powerup = "bomb"; // 30% chance
                                                 break
                                             }
                                             case (gachanum <= 75): {
@@ -1285,6 +1286,52 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             case (gachanum <= 100): {
                                                 powerup = "buff"; // 2.5% chance
                                             }
+                                        }
+                                        // reserved for special events
+                                        /*switch (true) {
+                                            case (gachanum > 20 && gachanum <= 50): { // 20% chance of not getting anything
+                                                powerup = "bomb"; // 30% chance
+                                                break
+                                            }
+                                            case (gachanum <= 75): {
+                                                powerup = "challenge"; // 25% chance
+                                                break
+                                            }
+                                            case (gachanum <= 82.5): {
+                                                powerup = "debuff"; // 7.5% chance
+                                                break
+                                            }
+                                            case (gachanum <= 90): {
+                                                powerup = "buff"; // 7.5% chance
+                                                break
+                                            }
+                                            case (gachanum <= 92.5): {
+                                                powerup = "superbomb"; // 2.5% chance
+                                                break
+                                            }
+                                            case (gachanum <= 95): {
+                                                powerup = "superchallenge"; // 2.5% chance
+                                                break
+                                            }
+                                            case (gachanum <= 97.5): {
+                                                powerup = "superdebuff"; // 2.5% chance
+                                                break
+                                            }
+                                            case (gachanum <= 100): {
+                                                powerup = "buff"; // 2.5% chance
+                                            }
+                                        }*/
+                                        if (!powerup) {
+                                            message.channel.send(`✅ **| ${message.author}, unfortunately you didn't get anything! You now have ${coin}\`${alicecoins - 100}\` Alice coins.**`);
+                                            let updateVal = {
+                                                $set: {
+                                                    alicecoins: alicecoins - 100
+                                                }
+                                            };
+                                            pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
+                                            });
+                                            return
                                         }
                                         for (let i = 0; i < powerups.length; i++) {
                                             if (powerups[i][0] == powerup) {
@@ -1403,7 +1450,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
-                default: return message.channel.send("❎ **| I'm sorry, looks like your argument is invalid! Accepted arguments are `color`, `leader`, `powerup`, `rename`, and `role`.**")
+                default: return message.channel.send("❎ **| I'm sorry, looks like your argument is invalid! Accepted arguments are `color`, `leader`, `powerup`, `rename`, `role`, and `special`.**")
             }
             cd.add(message.author.id);
             setTimeout(() => {
