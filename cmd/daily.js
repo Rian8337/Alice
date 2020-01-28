@@ -721,7 +721,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         challengelist.push([challengeid, bonuscomplete])
                                     }
                                     let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 10;
+                                    let alicecoins = playerres[0].alicecoins + points * 2;
                                     message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete?` and its bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                                     let updateVal = {
                                         $set: {
@@ -741,7 +741,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     })
                                 } else {
                                     points += dailyres[0].points;
-                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
+                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
                                     let insertVal = {
                                         username: username,
                                         uid: uid,
@@ -749,7 +749,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         challenges: [[challengeid, bonuscomplete]],
                                         points: points,
                                         dailycooldown: 0,
-                                        alicecoins: points * 10
+                                        alicecoins: points * 2
                                     };
                                     pointdb.insertOne(insertVal, err => {
                                         if (err) {
@@ -926,7 +926,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                         message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
-                        client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
+                        //client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed});
 
                         let updateVal;
                         if (challengeid.includes("w")) updateVal = {
@@ -1047,7 +1047,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challengelist.push(bonuslist)
                             }
                             let totalpoint = playerres[0].points + points;
-                            let alicecoins = playerres[0].alicecoins + points * 10;
+                            let alicecoins = playerres[0].alicecoins + points * 2;
                             message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1 ? "point" : "points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                             let updateVal = {
                                 $set: {
@@ -1073,7 +1073,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 bonuslist[index] = bonuscomplete
                             }
                             else bonuslist = [challengeid, bonuscomplete];
-                            message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
+                            message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 10}\` Alice coins.**`);
                             let insertVal = {
                                 username: username,
                                 uid: uid,
@@ -1081,7 +1081,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challenges: [bonuslist],
                                 points: points,
                                 dailycooldown: 0,
-                                alicecoins: points * 10
+                                alicecoins: points * 2
                             };
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
@@ -1269,7 +1269,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         challengelist.push(bonuslist)
                                     }
                                     let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 10;
+                                    let alicecoins = playerres[0].alicecoins + points * 2;
                                     message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete?` and \`${mode}\` bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 10}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                                     let updateVal = {
                                         $set: {
@@ -1297,7 +1297,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         challenges: [bonuslist],
                                         points: points,
                                         dailycooldown: 0,
-                                        alicecoins: points * 10
+                                        alicecoins: points * 2
                                     };
                                     pointdb.insertOne(insertVal, err => {
                                         if (err) {
@@ -1324,7 +1324,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     description: "Main command for daily challenges.",
     usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
-    detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane`. [String]\n`[String]\n`challenge ID`: The ID of the challenge [Strong]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard`. [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate.[String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
+    detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane` [String]\n`challenge ID`: The ID of the challenge [String]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard` [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate [String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
     permission: "None / Helper / Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
