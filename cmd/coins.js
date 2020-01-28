@@ -35,19 +35,26 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
+                    let streak = dailyres[0].streak + 1;
                     let daily = 50;
                     if (dailyres[0]) {
                         let timelimit = dailyres[0].dailycooldown - curtime;
                         if (timelimit > 0) {
                             let time = timeconvert(timelimit);
-                            return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} hour` : `${time[0]} hours`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} minute` : `${time[1]} minutes`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} second` : `${time[2]} seconds`}`}.**`)
+                            return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} hour` : `${time[0]} hours`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} minute` : `${time[1]} minutes`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} second` : `${time[2]} seconds`}`}.**`)
+                        }
+                        if (timelimit <= -86400) streak = 0;
+                        if (streak == 5) {
+                            daily += 100;
+                            streak = 1
                         }
                         let totalcoins = dailyres[0].alicecoins + daily;
-                        message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! You now have ${coin}\`${totalcoins}\` Alice coins.**`);
+                        message.channel.send(`✅ **| ${message.author}, you have ${streak == 5?"completed a streak and ":""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
                         let updateVal = {
                             $set: {
                                 dailycooldown: curtime + 86400,
-                                alicecoins: totalcoins
+                                alicecoins: totalcoins,
+                                streak: streak
                             }
                         };
                         pointdb.updateOne(query, updateVal, err => {
@@ -58,7 +65,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             console.log("Alice coins updated")
                         })
                     } else {
-                        message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! You now have ${coin}\`${daily}\` Alice coins.**`);
+                        message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`1\`. You now have ${coin}\`${daily}\` Alice coins.**`);
                         let insertVal = {
                             username: username,
                             uid: uid,
@@ -66,7 +73,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             challenges: [],
                             points: 0,
                             dailycooldown: curtime + 86400,
-                            alicecoins: daily
+                            alicecoins: daily,
+                            streak: 0
                         };
                         pointdb.insertOne(insertVal, err => {
                             if (err) {
