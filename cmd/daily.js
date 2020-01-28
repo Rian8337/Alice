@@ -135,7 +135,7 @@ function editpoint(res, page) {
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
-    //if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server!**");
+    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server!**");
     // declaration of variables used in switch cases
     let binddb = maindb.collection("userbind");
     let dailydb = alicedb.collection("dailychallenge");
