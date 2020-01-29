@@ -6,6 +6,87 @@ require("dotenv").config();
 var apikey = process.env.OSU_API_KEY;
 let config = require('../config.json');
 
+class MapStats {
+	constructor() {
+		this.cs = 0;
+		this.ar = 0;
+		this.od = 0;
+		this.hp = 0
+	}
+	calc(params) {
+		let cs = parseFloat(params.cs);
+		let ar = parseFloat(params.ar);
+		let od = parseFloat(params.od);
+		let hp = parseFloat(params.hp);
+		let mods = params.mods.toUpperCase();
+		let speed_mul = 1;
+		if (mods.includes("DT")) speed_mul = 1.5;
+		if (mods.includes("NC")) speed_mul = 1.39;
+		if (mods.includes("HT")) speed_mul *= 0.75;
+
+		let od_ar_hp_multiplier = 1;
+		if (mods.includes("HR")) od_ar_hp_multiplier = 1.4;
+		if (mods.includes("EZ")) od_ar_hp_multiplier *= 0.5;
+		if (cs) {
+			if (mods.includes("HR")) cs *= 1.3;
+			if (mods.includes("EZ")) cs *= 0.5;
+			cs = Math.min(10, cs)
+		}
+		if (hp) {
+			hp *= od_ar_hp_multiplier;
+			if (od_ar_hp_multiplier != 1) hp = parseFloat(hp.toFixed(2));
+			hp = Math.min(10, hp)
+		}
+		if (ar) {
+			ar = this.modify_ar(ar, speed_mul, od_ar_hp_multiplier);
+			if (speed_mul != 1) ar = parseFloat(ar.toFixed(2));
+		}
+		if (od) {
+			od = this.modify_od(od, speed_mul, od_ar_hp_multiplier);
+			if (speed_mul != 1) od = parseFloat(od.toFixed(2));
+		}
+
+		this.cs = cs;
+		this.ar = ar;
+		this.od = od;
+		this.hp = hp;
+		return this
+	}
+	modify_ar(base_ar, speed_mul, multiplier) {
+		let AR0_MS = 1800.0;
+		let AR5_MS = 1200.0;
+		let AR10_MS = 450.0;
+		let AR_MS_STEP1 = (AR0_MS - AR5_MS) / 5.0;
+		let AR_MS_STEP2 = (AR5_MS - AR10_MS) / 5.0;
+		let ar = base_ar * multiplier;
+		var arms = (
+			ar < 5.0 ?
+				AR0_MS-AR_MS_STEP1 * ar
+				: AR5_MS - AR_MS_STEP2 * (ar - 5)
+		);
+		arms = Math.min(AR0_MS, Math.max(AR10_MS, arms));
+		arms /= speed_mul;
+
+		ar = (
+			arms > AR5_MS ?
+				(AR0_MS - arms) / AR_MS_STEP1
+				: 5 + (AR5_MS - arms) / AR_MS_STEP2
+		);
+		return ar
+	}
+	modify_od(base_od, speed_mul, multiplier) {
+		let OD0_MS = 80;
+		let OD10_MS = 20;
+		let OD_MS_STEP = (OD0_MS - OD10_MS) / 10.0;
+		let od = base_od * multiplier;
+		let odms = OD0_MS - Math.ceil(OD_MS_STEP * od);
+		odms = Math.min(OD0_MS, Math.max(OD10_MS, odms));
+		odms /= speed_mul;
+		od = (OD0_MS - odms) / OD_MS_STEP;
+		return od
+	}
+}
+
 function time(second) {
 	return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
@@ -52,7 +133,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 
 	var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + target[0]);
 
-	var content = "";   
+	var content = "";
 
 	var req = https.get(options, function(res) {
 		res.setEncoding("utf8");
@@ -66,7 +147,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 		res.on("end", function () {
 			var obj;
 			try {
-				obj = JSON.parse(content);
+				obj = JSON.parse(content)
 			} catch (e) {
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
 			}
@@ -100,39 +181,39 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					// if (mods) {
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
-					if (target[4].toUpperCase().includes("HR")) {
-						mods -= 16; 
+					if (target[4].includes("HR")) {
+						mods -= 16;
 						cur_ar = Math.min(cur_ar*1.4, 10);
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
 					}
 
-                                        var hitlength = mapinfo.hit_length;
-                                        var maplength = mapinfo.total_length;
-                                        if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
-                                                hitlength = Math.ceil(hitlength / 1.5);
-                                                maplength = Math.ceil(maplength / 1.5);
-                                        }
-                                        if (target[4].toUpperCase().includes("HT")) {
-                                                hitlength = Math.ceil(hitlength * 4/3);
-                                                maplength = Math.ceil(hitlength * 4/3);
-                                        }
+					var hitlength = mapinfo.hit_length;
+					var maplength = mapinfo.total_length;
+					if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
+						hitlength = Math.ceil(hitlength / 1.5);
+						maplength = Math.ceil(maplength / 1.5);
+					}
+					if (target[4].toUpperCase().includes("HT")) {
+						hitlength = Math.ceil(hitlength * 4/3);
+						maplength = Math.ceil(hitlength * 4/3);
+					}
 
-					if (target[4].toUpperCase().includes("PR")) cur_od += 4;
-					if (target[4].toUpperCase().includes("TD")) pcmods += 4;
+					if (target[4].includes("PR")) cur_od += 4;
+					if (target[4].includes("TD")) pcmods += 4;
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
-                    
+
                     if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log(target[0] + ' - Error: no object found'); 
+						console.log(target[0] + ' - Error: no object found');
 						return;
                     }
-					
+
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 					//console.log(stars.toString());
 
-                    
+
                     var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
@@ -146,7 +227,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						nmiss: nmiss,
 						acc_percent: acc_percent,
 					});
-					
+
 					/*var object_list = nstars.objects;
 					var diff_elem_array = [];
 					var strain_array = [];
@@ -181,9 +262,9 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					message.channel.send(output_test) ;
 
 					console.log(object_list);*/
-					
+
 					nparser.reset();
-                    
+
 					console.log(nstars.toString());
                     console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
@@ -191,6 +272,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
 					var objc = parseInt(mapinfo.count_normal) + parseInt(mapinfo.count_slider) + parseInt(mapinfo.count_spinner);
+					let mapstat = new MapStats().calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: target[4]});
 					let footer = config.avatar_list;
 					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 					const embed = {
@@ -211,7 +293,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						},
 						"fields": [
 							{
-								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
+								"name": "CS: " + mapstat.cs + " - AR: " + mapstat.ar + " - OD: " + mapstat.od + " - HP: " + mapstat.hp,
 								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Object count: " + objc
 							},
 							{
