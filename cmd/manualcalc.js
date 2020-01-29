@@ -34,22 +34,15 @@ class MapStats {
 		}
 		if (hp) {
 			hp *= od_ar_hp_multiplier;
-			if (od_ar_hp_multiplier != 1) hp = parseFloat(hp.toFixed(2));
 			hp = Math.min(10, hp)
 		}
-		if (ar) {
-			ar = this.modify_ar(ar, speed_mul, od_ar_hp_multiplier);
-			if (speed_mul != 1) ar = parseFloat(ar.toFixed(2));
-		}
-		if (od) {
-			od = this.modify_od(od, speed_mul, od_ar_hp_multiplier);
-			if (speed_mul != 1) od = parseFloat(od.toFixed(2));
-		}
+		if (ar) ar = this.modify_ar(ar, speed_mul, od_ar_hp_multiplier);
+		if (od) od = this.modify_od(od, speed_mul, od_ar_hp_multiplier);
 
-		this.cs = cs;
-		this.ar = ar;
-		this.od = od;
-		this.hp = hp;
+		this.cs = parseFloat(cs.toFixed(2));
+		this.ar = parseFloat(ar.toFixed(2));
+		this.od = parseFloat(od.toFixed(2));
+		this.hp = parseFloat(hp.toFixed(2));
 		return this
 	}
 	modify_ar(base_ar, speed_mul, multiplier) {
