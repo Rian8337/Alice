@@ -8,6 +8,80 @@ var apikey = process.env.OSU_API_KEY;
 var droidapikey = process.env.DROID_API_KEY;
 let config = require('../config.json');
 
+class MapStats {
+	constructor() {
+		this.cs = 0;
+		this.ar = 0;
+		this.od = 0;
+		this.hp = 0
+	}
+	calc(params) {
+		let cs = parseFloat(params.cs);
+		let ar = parseFloat(params.ar);
+		let od = parseFloat(params.od);
+		let hp = parseFloat(params.hp);
+		let mods = params.mods;
+		let speed_mul = 1;
+		if (mods.includes("d")) speed_mul = 1.5;
+		if (mods.includes("c")) speed_mul = 1.39;
+		if (mods.includes("t")) speed_mul *= 0.75;
+
+		let od_ar_hp_multiplier = 1;
+		if (mods.includes("r")) od_ar_hp_multiplier = 1.4;
+		if (mods.includes("e")) od_ar_hp_multiplier *= 0.5;
+		if (cs) {
+			if (mods.includes("r")) cs *= 1.3;
+			if (mods.includes("e")) cs *= 0.5;
+			cs = Math.min(10, cs)
+		}
+		if (hp) {
+			hp *= od_ar_hp_multiplier;
+			hp = Math.min(10, hp)
+		}
+		if (ar) ar = this.modify_ar(ar, speed_mul, od_ar_hp_multiplier);
+		if (od) od = this.modify_od(od, speed_mul, od_ar_hp_multiplier);
+
+		this.cs = parseFloat(cs.toFixed(2));
+		this.ar = parseFloat(ar.toFixed(2));
+		this.od = parseFloat(od.toFixed(2));
+		this.hp = parseFloat(hp.toFixed(2));
+		return this
+	}
+	modify_ar(base_ar, speed_mul, multiplier) {
+		let AR0_MS = 1800.0;
+		let AR5_MS = 1200.0;
+		let AR10_MS = 450.0;
+		let AR_MS_STEP1 = (AR0_MS - AR5_MS) / 5.0;
+		let AR_MS_STEP2 = (AR5_MS - AR10_MS) / 5.0;
+		let ar = base_ar * multiplier;
+		var arms = (
+			ar < 5.0 ?
+				AR0_MS-AR_MS_STEP1 * ar
+				: AR5_MS - AR_MS_STEP2 * (ar - 5)
+		);
+		arms = Math.min(AR0_MS, Math.max(AR10_MS, arms));
+		arms /= speed_mul;
+
+		ar = (
+			arms > AR5_MS ?
+				(AR0_MS - arms) / AR_MS_STEP1
+				: 5 + (AR5_MS - arms) / AR_MS_STEP2
+		);
+		return ar
+	}
+	modify_od(base_od, speed_mul, multiplier) {
+		let OD0_MS = 80;
+		let OD10_MS = 20;
+		let OD_MS_STEP = (OD0_MS - OD10_MS) / 10.0;
+		let od = base_od * multiplier;
+		let odms = OD0_MS - Math.ceil(OD_MS_STEP * od);
+		odms = Math.min(OD0_MS, Math.max(OD10_MS, odms));
+		odms /= speed_mul;
+		od = (OD0_MS - odms) / OD_MS_STEP;
+		return od
+	}
+}
+
 function time(second) {
 	return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
@@ -188,6 +262,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
 					var pcppline = pcpp.toString().split("(");
+					let mapstat = new MapStats().calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: pmod});
 					const embed = {
 						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + osu.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": "")),
 						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")",
@@ -206,7 +281,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						},
 						"fields": [
 							{
-								"name": "CS: " + mapinfo.diff_size + " - AR: " + mapinfo.diff_approach + " - OD: " + mapinfo.diff_overall + " - HP: " + mapinfo.diff_drain ,
+								"name": "CS: " + mapstat.cs + " - AR: " + mapstat.ar + " - OD: " + mapstat.od + " - HP: " + mapstat.hp,
 								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Max combo: " + mapinfo.max_combo + "x"
 							},
 							{
