@@ -177,7 +177,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (valid) {
                     let pass = message.guild.roles.find(r => r.name === 'Lounge Pass');
                     user.addRole(pass, "Fulfilled requirement for role").then(() => {
-                        message.channel.send("✅ **| Successfully given `" + pass.name + " for " + user)
+                        message.channel.send("✅ **| Successfully given `" + pass.name + "` for " + user + ".**")
                     }).catch(() => message.channel.send("❎ **| I'm sorry, this user already has a pass!**"))
                 }
             })
