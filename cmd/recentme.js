@@ -211,10 +211,14 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					}
                                         var hitlength = mapinfo.hit_length;
                                         var maplength = mapinfo.total_length;
-                                        if (pmod.includes("d") || pmod.includes("c")) {
-                                                hitlength = Math.floor(hitlength / 1.5);
-                                                maplength = Math.floor(maplength / 1.5)
-                                        }
+                                        if (pmod.includes("d")) {
+						hitlength = Math.ceil(hitlength / 1.5);
+						maplength = Math.ceil(maplength / 1.5)
+					}
+					if (pmod.includes("c")) {
+						hitlength = Math.ceil(hitlength / 1.39);
+						maplength = Math.ceil(maplength / 1.39)
+					}
 					if (pmod.includes("t")) {
 						hitlength = Math.ceil(hitlength * 4/3);
 						maplength = Math.ceil(maplength * 4/3)
