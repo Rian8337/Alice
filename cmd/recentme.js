@@ -203,40 +203,44 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					var cur_od = nmap.od - 5;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
+					var bpm = mapinfo.bpm;
 					if (pmod.includes("r")) {
 						mods -= 16; 
 						cur_ar = Math.min(cur_ar*1.4, 10);
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
 					}
-                                        var hitlength = mapinfo.hit_length;
-                                        var maplength = mapinfo.total_length;
-                                        if (pmod.includes("d")) {
+					var hitlength = mapinfo.hit_length;
+					var maplength = mapinfo.total_length;
+					if (pmod.includes("d")) {
 						hitlength = Math.ceil(hitlength / 1.5);
-						maplength = Math.ceil(maplength / 1.5)
+						maplength = Math.ceil(maplength / 1.5);
+						bpm *= 1.5
 					}
 					if (pmod.includes("c")) {
 						hitlength = Math.ceil(hitlength / 1.39);
-						maplength = Math.ceil(maplength / 1.39)
+						maplength = Math.ceil(maplength / 1.39);
+						bpm *= 1.39
 					}
 					if (pmod.includes("t")) {
 						hitlength = Math.ceil(hitlength * 4/3);
-						maplength = Math.ceil(maplength * 4/3)
+						maplength = Math.ceil(maplength * 4/3);
+						bpm *= 0.75
 					}
 
 					if (pmod.includes("PR")) { cur_od += 4; }
 
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
                     
-                    			if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log(target[0] + ' - Error: no object found'); 
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+						console.log('Error: no object found');
 						return;
-                    			}
+                    }
                     
 					var nstars = new droid.diff().calc({map: nmap, mods: mods});
 					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
-                    			var npp = droid.ppv2({
+                    var npp = droid.ppv2({
 						stars: nstars,
 						combo: combo,
 						nmiss: nmiss,
@@ -254,7 +258,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					if (pmod.includes("r")) { mods += 16 }
                     
 					console.log(nstars.toString());
-                    			console.log(npp.toString());
+                    console.log(npp.toString());
 					var starsline = nstars.toString().split("(");
 					var ppline = npp.toString().split("(");
 					var pcstarsline = pcstars.toString().split("(");
@@ -279,7 +283,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						"fields": [
 							{
 								"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Max Combo: " + mapinfo.max_combo + "x"
+								"value": `BPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x`
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
@@ -328,23 +332,23 @@ module.exports.run = (client, message, args, maindb) => {
 			var req = http.request(options, function(res) {
 			res.setEncoding("utf8");
 			res.on("data", function (chunk) {
-			content += chunk;
+				content += chunk;
 			});
 			res.on("error", err1 => {
 				console.log(err1);
 				return message.channel.send("Error: Empty API response. Please try again!")
 			});
 			res.on("end", function () {
-				var resarr = content.split('<br>');
+				var resarr;
+				try {
+					resarr = content.split('<br>');
+				} catch (e) {
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+				}
 				var headerres = resarr[0].split(" ");
 				if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
 				let name = resarr[0].split(" ")[2];
-				var obj;
-                                try {
-                                        obj = JSON.parse(resarr[1])
-                                } catch (e) {
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
-                                }
+				var obj = JSON.parse(resarr[1]);
 				var play = obj.recent[0];
 				let title = play.filename;
 				let score = play.score.toLocaleString();
