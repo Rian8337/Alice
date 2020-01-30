@@ -47,6 +47,7 @@ class MapStats {
 		this.hp = parseFloat(hp.toFixed(2));
 		return this
 	}
+
 	modify_ar(base_ar, speed_mul, multiplier) {
 		let AR0_MS = 1800.0;
 		let AR5_MS = 1200.0;
@@ -69,6 +70,7 @@ class MapStats {
 		);
 		return ar
 	}
+
 	modify_od(base_od, speed_mul, multiplier) {
 		let OD0_MS = 80;
 		let OD10_MS = 20;
@@ -204,6 +206,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					var cur_od = nmap.od - 5;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
+					let bpm = parseFloat(mapinfo.bpm);
 					// if (mods) {
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
@@ -213,19 +216,22 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						cur_od = Math.min(cur_od*1.4, 5);
 						cur_cs += 1;
 					}
-                                        var hitlength = mapinfo.hit_length;
-                                        var maplength = mapinfo.total_length;
-                                        if (pmod.includes("d")) {
+					var hitlength = mapinfo.hit_length;
+					var maplength = mapinfo.total_length;
+					if (pmod.includes("d")) {
 						hitlength = Math.ceil(hitlength / 1.5);
-						maplength = Math.ceil(maplength / 1.5)
+						maplength = Math.ceil(maplength / 1.5);
+						bpm *= 1.5
 					}
 					if (pmod.includes("c")) {
 						hitlength = Math.ceil(hitlength / 1.39);
-						maplength = Math.ceil(maplength / 1.39)
+						maplength = Math.ceil(maplength / 1.39);
+						bpm *= 1.39
 					}
 					if (pmod.includes("t")) {
 						hitlength = Math.ceil(hitlength * 4/3);
-						maplength = Math.ceil(maplength * 4/3)
+						maplength = Math.ceil(maplength * 4/3);
+						bpm *= 0.75
 					}
 
 					if (pmod.includes("PR")) { cur_od += 4; }
@@ -233,7 +239,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
 
 					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log(target[0] + ' - Error: no object found');
+						console.log('Error: no object found');
 						return;
 					}
 
@@ -286,7 +292,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 						"fields": [
 							{
 								"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Max combo: " + mapinfo.max_combo + "x"
+								"value": `BPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x`
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
@@ -308,7 +314,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, footer, index
 
 module.exports.run = (client, message, args) => {
 	let uid = parseInt(args[0]);
-        if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
+	if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
 	var options = {
 		host: "ops.dgsrz.com",
 		port: 80,
@@ -332,11 +338,11 @@ module.exports.run = (client, message, args) => {
 			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, that user doesn't exist!**");
 			let name = resarr[0].split(" ")[2];
 			var obj;
-                        try {
-                                obj = JSON.parse(resarr[1]);
-                        } catch (e) {
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
-                        }
+			try {
+				obj = JSON.parse(resarr[1]);
+			} catch (e) {
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**")
+			}
 			var play = obj.recent[0];
 			let title = play.filename;
 			let score = play.score.toLocaleString();
