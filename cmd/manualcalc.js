@@ -171,6 +171,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					var cur_od = nmap.od - 5;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
+					var bpm = parseFloat(mapinfo.bpm);
 					// if (mods) {
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
@@ -185,15 +186,18 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					var maplength = mapinfo.total_length;
 					if (target[4].toUpperCase().includes("DT")) {
 						hitlength = Math.ceil(hitlength / 1.5);
-						maplength = Math.ceil(maplength / 1.5)
+						maplength = Math.ceil(maplength / 1.5);
+						bpm *= 1.5
 					}
 					if (target[4].toUpperCase().includes("NC")) {
 						hitlength = Math.ceil(hitlength / 1.39);
-						maplength = Math.ceil(maplength / 1.39)
+						maplength = Math.ceil(maplength / 1.39);
+						bpm *= 1.39
 					}
 					if (target[4].toUpperCase().includes("HT")) {
 						hitlength = Math.ceil(hitlength * 4/3);
 						maplength = Math.ceil(hitlength * 4/3);
+						bpm *= 0.75
 					}
 
 					if (target[4].includes("PR")) cur_od += 4;
@@ -291,7 +295,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						"fields": [
 							{
 								"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
-								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Object count: " + objc
+								"value": `BPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x - Object count: ${objc}`
 							},
 							{
 								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
