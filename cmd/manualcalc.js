@@ -286,7 +286,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 						},
 						"fields": [
 							{
-								"name": "CS: " + mapstat.cs + " - AR: " + mapstat.ar + " - OD: " + mapstat.od + " - HP: " + mapstat.hp,
+								"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
 								"value": "BPM: " + mapinfo.bpm + " - Length: " + time(hitlength) + "/" + time(maplength) + " - Object count: " + objc
 							},
 							{
