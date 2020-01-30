@@ -183,9 +183,13 @@ function getMapPP(target, message, ndetail, pcdetail) {
 
 					var hitlength = mapinfo.hit_length;
 					var maplength = mapinfo.total_length;
-					if (target[4].toUpperCase().includes("DT") || target[4].toUpperCase().includes("NC")) {
+					if (target[4].toUpperCase().includes("DT")) {
 						hitlength = Math.ceil(hitlength / 1.5);
-						maplength = Math.ceil(maplength / 1.5);
+						maplength = Math.ceil(maplength / 1.5)
+					}
+					if (target[4].toUpperCase().includes("NC")) {
+						hitlength = Math.ceil(hitlength / 1.39);
+						maplength = Math.ceil(maplength / 1.39)
 					}
 					if (target[4].toUpperCase().includes("HT")) {
 						hitlength = Math.ceil(hitlength * 4/3);
