@@ -84,11 +84,12 @@ module.exports.run = async (client, message, args) => {
     } catch (e) {
         message.channel.send(`A user has been Mudae-banned... but their DMs are locked. They will be banned for ${bantime} seconds`)
     }
-
+    let footer = config.avatar_list;
+    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
     let banembed = new Discord.RichEmbed()
         .setDescription(`Mudae ban executed by ${message.author}`)
         .setColor("#ffa826")
-        .setFooter("Alice Synthesis Thirty", "https://i.pinimg.com/236x/df/87/86/df878699ce4204f4c9d5bdc7b877d9ac.jpg")
+        .setFooter("Alice Synthesis Thirty", footer[index])
         .addField("Banned User: " + toban.user.username, "Banned in: " + message.channel)
         .addField("Length: " + bantime + "s", "=========================")
         .addField("Reason: ", reason);
