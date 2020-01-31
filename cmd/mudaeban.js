@@ -20,9 +20,17 @@ function isImmuned(member) {
     return res;
 }
 
+function timeconvert (num) {
+    let sec = parseInt(num);
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+}
+
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
-
+    if (message.guild.id != "635532651029332000") return;
     var timeLimit = isEligible(message.member);
     if (timeLimit == 0) {
         message.channel.send("You don't have permission to use this");
@@ -92,7 +100,7 @@ module.exports.run = async (client, message, args) => {
         .setColor("#ffa826")
         .setFooter("Alice Synthesis Thirty", footer[index])
         .addField("Banned User: " + toban.user.username, "Banned in: " + message.channel)
-        .addField("Length: " + bantime + "s", "=========================")
+        .addField("Length: " + timeconvert(bantime), "=========================")
         .addField("Reason: ", reason);
 
     let channel = message.guild.channels.find(c => c.name === config.management_channel);
