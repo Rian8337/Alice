@@ -31,6 +31,7 @@
     "ppsubmit",
     "ppwipe",
     "recalc",
+    "recalcall",
     "unwhitelist",
     "unwhitelistset"
   ],
