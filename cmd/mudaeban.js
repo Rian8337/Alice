@@ -21,7 +21,7 @@ function isImmuned(member) {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel) return;
+    if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
 
     var timeLimit = isEligible(message.member);
     if (timeLimit == 0) {
