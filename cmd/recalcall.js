@@ -84,7 +84,7 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
                     });
                     parser.reset();
                     let newpp = parseFloat(pp.toString().split("(")[0]);
-                    let real_pp = guessing_mode ? parseFloat(target[i][2].toFixed(2)) : newpp;
+                    let real_pp = guessing_mode ? parseFloat(parseFloat(target[i][2]).toFixed(2)) : newpp;
                     console.log(target[i][2] + " -> " + real_pp);
                     guessing_mode ? newtarget.push([target[i][0], target[i][1], real_pp]) : newtarget.push([target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
                     cb()
