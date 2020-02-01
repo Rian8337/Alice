@@ -71,7 +71,7 @@ client.on("ready", () => {
 			message.reactions.find(r => r.emoji.id === '639481086425956382').fetchUsers(10).then(collection => {
 				let user = guild.member(collection.find(u => u.id !== client.user.id).id);
 				let role = guild.roles.get("640434406200180736");
-				if (!user.roles.get(role.id)) user.addRole(role, "Agree to Mudae rules").catch(console.error);
+				if (!user.roles.get(role.id)) user.addRole(role, "Agreed to Mudae rules").catch(console.error);
 				else user.removeRole(role, "Disagreed to Mudae rules").catch(console.error);
 				message.reactions.forEach(reaction => reaction.remove(user.id).catch(console.error))
 			})
