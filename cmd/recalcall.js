@@ -139,6 +139,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 console.log(totalpp);
                                 console.log("Done");
                                 i++;
+                                console.log(`${i}/${res.length} players recalculated`);
                                 retrieveList(res, i, testList)
                             })
                         }
