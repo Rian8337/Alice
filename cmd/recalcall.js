@@ -111,7 +111,7 @@ module.exports.run = (client, message, args, maindb) => {
                 if (err) throw err;
                 let i = 0;
                 retrieveList(res, i, function testList(list, stopSign = false) {
-                    if (stopSign) return console.log(`✅ **| ${message.author}, recalculation process complete!**`);
+                    if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
                     let uid = list[0];
                     let ppentry = list[1];
                     let newppentry = [];
