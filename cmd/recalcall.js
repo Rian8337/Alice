@@ -98,44 +98,59 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
     if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-    let binddb = maindb.collection("userbind");
-    let whitelist = maindb.collection("mapwhitelist");
-    binddb.find({}, {projection: {_id: 0, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
-        if (err) throw err;
-        let i = 0;
-        retrieveList(res, i, function testList(list, stopSign = false) {
-            if (stopSign) return console.log("Recalc complete");
-            let uid = list[0];
-            let ppentry = list[1];
-            let newppentry = [];
-            let count = 0;
-            console.log("Uid:", uid);
-            recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
-                if (!error) count++;
-                if (count < ppentry.length && !stopFlag) recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
-                else {
-                    newppentry.sort((a, b) => {return b[2] - a[2]});
-                    let totalpp = 0;
-                    let weight = 1;
-                    for (let x in newppentry) {
-                        totalpp += newppentry[x][2] * weight;
-                        weight *= 0.95
-                    }
-                    let updatedata = {
-                        $set: {
-                            pptotal: totalpp,
-                            pp: newppentry
+    message.channel.send(`❗**| ${message.author}, are you sure you want to recalculate all players' dpp entry?**`).then(msg => {
+        msg.react("✅").catch(console.error);
+        let confirmation = false;
+        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+        confirm.on("collect", () => {
+            confirmation = true;
+            msg.delete();
+            let binddb = maindb.collection("userbind");
+            let whitelist = maindb.collection("mapwhitelist");
+            binddb.find({}, {projection: {_id: 0, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
+                if (err) throw err;
+                let i = 0;
+                retrieveList(res, i, function testList(list, stopSign = false) {
+                    if (stopSign) return console.log(`✅ **| ${message.author}, recalculation process complete!**`);
+                    let uid = list[0];
+                    let ppentry = list[1];
+                    let newppentry = [];
+                    let count = 0;
+                    console.log("Uid:", uid);
+                    recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
+                        if (!error) count++;
+                        if (count < ppentry.length && !stopFlag) recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
+                        else {
+                            newppentry.sort((a, b) => {return b[2] - a[2]});
+                            let totalpp = 0;
+                            let weight = 1;
+                            for (let x in newppentry) {
+                                totalpp += newppentry[x][2] * weight;
+                                weight *= 0.95
+                            }
+                            let updatedata = {
+                                $set: {
+                                    pptotal: totalpp,
+                                    pp: newppentry
+                                }
+                            };
+                            binddb.updateOne({uid: uid}, updatedata, err => {
+                                if (err) return console.log(err);
+                                console.log(totalpp);
+                                console.log("Done");
+                                i++;
+                                retrieveList(res, i, testList)
+                            })
                         }
-                    };
-                    binddb.updateOne({uid: uid}, updatedata, err => {
-                        if (err) return console.log(err);
-                        console.log(totalpp);
-                        console.log("Done");
-                        i++;
-                        retrieveList(res, i, testList)
                     })
-                }
+                })
             })
+        });
+        confirm.on("end", () => {
+            if (!confirmation) {
+                msg.delete();
+                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+            }
         })
     })
 };
