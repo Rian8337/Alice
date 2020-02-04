@@ -4,7 +4,7 @@ let config = require('../config.json');
 
 function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
-	let mirror = "[Mirror](https://droidppboard.herokuapp.com/profile?uid=" + uid + ")";
+	let mirror = "[Mirror](https://droidpp.glitch.me/profile?uid=" + uid + ")";
 	let embed = new Discord.RichEmbed()
 		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 		.setColor(rolecheck)
