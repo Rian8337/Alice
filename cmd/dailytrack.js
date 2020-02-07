@@ -33,6 +33,14 @@ function time(second) {
 	return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
 
+function timeconvert(num) {
+    let sec = parseInt(num);
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+}
+
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let dailydb = alicedb.collection("dailychallenge");
     let query = {status: "ongoing"};
