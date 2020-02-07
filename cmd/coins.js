@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             points: 0,
                             dailycooldown: curtime + 86400,
                             alicecoins: daily,
-                            streak: streak
+                            streak: 1
                         };
                         pointdb.insertOne(insertVal, err => {
                             if (err) {
