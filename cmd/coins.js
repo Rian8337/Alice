@@ -35,7 +35,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    let streak = 0;
+                    let streak = 1;
                     let daily = 50;
                     if (dailyres[0]) {
                         streak += dailyres[0].streak;
