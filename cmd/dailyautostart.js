@@ -1,17 +1,32 @@
 let Discord = require('discord.js');
 let https = require('https');
-require('dotenv').config();
+let droid = require('./ojsamadroid');
+let osu = require('ojsama');
+let request = require('request');
 let apikey = process.env.OSU_API_KEY;
 let config = require('../config.json');
 
 class MapStats {
     constructor() {
+        this.title = '';
+        this.approved = 0;
+        this.beatmap_id = 0;
+        this.beatmapset_id = 0;
+        this.plays = 0;
+        this.favorites = 0;
+        this.last_update = 0;
+        this.hit_length = 0;
+        this.map_length = 0;
+        this.bpm = 0;
+        this.max_combo = 0;
         this.cs = 0;
         this.ar = 0;
         this.od = 0;
-        this.hp = 0
+        this.hp = 0;
+        this.droid_stars = 0;
+        this.pc_stars = 0
     }
-    calc(params) {
+    stat_calc(params) {
         let cs = parseFloat(params.cs);
         let ar = parseFloat(params.ar);
         let od = parseFloat(params.od);
@@ -50,7 +65,7 @@ class MapStats {
         let AR_MS_STEP1 = (AR0_MS - AR5_MS) / 5.0;
         let AR_MS_STEP2 = (AR5_MS - AR10_MS) / 5.0;
         let ar = base_ar * multiplier;
-        var arms = (
+        let arms = (
             ar < 5.0 ?
                 AR0_MS-AR_MS_STEP1 * ar
                 : AR5_MS - AR_MS_STEP2 * (ar - 5)
@@ -76,13 +91,134 @@ class MapStats {
         od = (OD0_MS - odms) / OD_MS_STEP;
         return od
     }
+    retrieve(params, cb) {
+        let message = params.message;
+        let beatmapid = params.beatmap_id;
+        let mod = params.mod;
+        let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
+        let content = '';
+        let req = https.get(options, res => {
+            res.setEncoding("utf8");
+            res.on("data", chunk => {
+                content += chunk
+            });
+            res.on("end", () => {
+                let obj;
+                try {
+                    obj = JSON.parse(content)
+                } catch (e) {
+                    return message.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+                }
+                let mapinfo = obj[0];
+                if (mapinfo.mode != 0) return;
+                let mods = modenum(mod);
+                let bpm = parseFloat(mapinfo.bpm);
+                let title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
+                let nparser = new droid.parser();
+                let pcparser = new osu.parser();
+                let url = `https://osu.ppy.sh/osu/${beatmapid}`;
+                request(url, (err, response, data) => {
+                    if (err) return message.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**");
+                    nparser.feed(data);
+                    pcparser.feed(data);
+                    let pcmods = mods - 4;
+                    let nmap = nparser.map;
+                    let pcmap = pcparser.map;
+
+                    if (nmap.ncircles == 0 && nmap.nsliders == 0) return message.send("❎ **| I'm sorry, the map doesn't have any objects!**");
+
+                    let cur_cs = nmap.cs - 4;
+                    let cur_ar = nmap.ar;
+                    let cur_od = nmap.od - 5;
+
+                    if (mod.includes("HR")) {
+                        mods -= 16;
+                        cur_ar = Math.min(10, cur_ar * 1.4);
+                        cur_od = Math.min(5, cur_od * 1.4);
+                        cur_cs++
+                    }
+                    if (mod.includes("PR")) cur_od += 4;
+                    nmap.cs = cur_cs;
+                    nmap.ar = cur_ar;
+                    nmap.od = cur_od;
+
+                    let hitlength = mapinfo.hit_length;
+                    let maplength = mapinfo.total_length;
+                    if (mod.toUpperCase().includes("DT")) {
+                        hitlength = Math.ceil(hitlength / 1.5);
+                        maplength = Math.ceil(maplength / 1.5);
+                        bpm *= 1.5
+                    }
+                    if (mod.toUpperCase().includes("NC")) {
+                        hitlength = Math.ceil(hitlength / 1.39);
+                        maplength = Math.ceil(maplength / 1.39);
+                        bpm *= 1.39
+                    }
+                    if (mod.toUpperCase().includes("HT")) {
+                        hitlength = Math.ceil(hitlength * 4/3);
+                        maplength = Math.ceil(hitlength * 4/3);
+                        bpm *= 0.75
+                    }
+
+                    let nstars = new droid.diff().calc({map: nmap, mods: mods});
+                    let pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
+
+                    let starsline = parseFloat(nstars.toString().split(" ")[0]);
+                    let pcstarsline = parseFloat(pcstars.toString().split(" ")[0]);
+                    let mapstat = this.stat_calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: mod});
+
+                    mapstat.cs = mapinfo.diff_size == mapstat.cs ? mapstat.cs : `${mapinfo.diff_size} (${mapstat.cs})`;
+                    mapstat.ar = mapinfo.diff_approach == mapstat.ar ? mapstat.ar : `${mapinfo.diff_approach} (${mapstat.ar})`;
+                    mapstat.od = mapinfo.diff_overall == mapstat.od ? mapstat.od : `${mapinfo.diff_overall} (${mapstat.od})`;
+                    mapstat.hp = mapinfo.diff_drain == mapstat.hp ? mapstat.hp : `${mapinfo.diff_drain} (${mapstat.hp})`;
+
+                    bpm = mapinfo.bpm == bpm? bpm : `${mapinfo.bpm} (${bpm.toFixed(2)})`;
+                    hitlength = mapinfo.hit_length == hitlength ? time(hitlength) : `${time(mapinfo.hit_length)} (${time(hitlength)})`;
+                    maplength = mapinfo.total_length == maplength ? time(maplength) : `${time(mapinfo.total_length)} (${time(maplength)})`;
+
+                    // callback
+                    this.title = title;
+                    this.approved = parseInt(mapinfo.approved);
+                    this.beatmap_id = beatmapid;
+                    this.beatmapset_id = parseInt(mapinfo.beatmapset_id);
+                    this.plays = parseInt(mapinfo.playcount);
+                    this.favorites = parseInt(mapinfo.favourite_count);
+                    this.last_update = mapinfo.last_update;
+                    this.hit_length = hitlength;
+                    this.map_length = maplength;
+                    this.bpm = bpm;
+                    this.max_combo = parseInt(mapinfo.max_combo);
+                    this.cs = mapstat.cs;
+                    this.ar = mapstat.ar;
+                    this.od = mapstat.od;
+                    this.hp = mapstat.hp;
+                    this.droid_stars = starsline;
+                    this.pc_stars = pcstarsline;
+                    cb(this)
+                })
+            })
+        });
+        req.end()
+    }
+}
+
+function modenum(mod) {
+    var res = 4;
+    if (mod.includes("n") || mod.includes("NF")) res += 1;
+    if (mod.includes("e") || mod.includes("EZ")) res += 2;
+    if (mod.includes("t") || mod.includes("HT")) res += 256;
+    if (mod.includes("h") || mod.includes("HD")) res += 8;
+    if (mod.includes("d") || mod.includes("DT")) res += 64;
+    if (mod.includes("c") || mod.includes("NC")) res += 576;
+    if (mod.includes("r") || mod.includes("HR")) res += 16;
+    return res
 }
 
 function time(second) {
     return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
 
-function timeconvert (num) {
+function timeconvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
@@ -133,184 +269,147 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let pass = dailyres[0].pass;
         let bonus = dailyres[0].bonus;
         let constrain = dailyres[0].constrain.toUpperCase();
-        let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w")?86400 * 7:86400);
         let beatmapid = dailyres[0].beatmapid;
-        let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
-        let content = '';
-        let req = https.get(options, res => {
-            res.setEncoding("utf8");
-            res.on("data", chunk => {
-                content += chunk
-            });
-            res.on("end", () => {
-                let obj;
-                try {
-                    obj = JSON.parse(content)
-                } catch (e) {
-                    return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+        new MapStats().retrieve({message: client.channels.get("669221772083724318"), beatmap_id: beatmapid, mod: constrain}, mapstat => {
+            let pass_string = '';
+            let bonus_string = '';
+            switch (pass[0]) {
+                case "score": {
+                    pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
+                    break
                 }
-                if (!obj[0]) return channel.send("❎ **| I'm sorry, I cannot find the map!");
-                let mapinfo = obj[0];
-                let title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
-                let hitlength = mapinfo.hit_length;
-                let maplength = mapinfo.total_length;
-                let bpm = mapinfo.bpm;
-
-                let pass_string = '';
-                let bonus_string = '';
-                switch (pass[0]) {
+                case "acc": {
+                    pass_string = `Accuracy above **${pass[1]}%**`;
+                    break
+                }
+                case "scorev2": {
+                    pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
+                    break
+                }
+                case "miss": {
+                    pass_string = pass[1] == 0 ? "No misses" : `Miss count below **${pass[1]}**`;
+                    break
+                }
+                case "combo": {
+                    pass_string = `Combo above **${pass[1]}**`;
+                    break
+                }
+                case "rank": {
+                    pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                    break
+                }
+                default:
+                    pass_string = 'No pass condition'
+            }
+            if (challengeid.includes("w")) {
+                switch (bonus[0]) {
                     case "score": {
-                        pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
+                        bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "acc": {
-                        pass_string = `Accuracy above **${pass[1]}%**`;
+                        bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "scorev2": {
-                        pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
+                        bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "miss": {
-                        pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
+                        bonus_string += `${bonus[1] == 0 ? "No misses" : `Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                        break
+                    }
+                    case "mod": {
+                        bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "combo": {
-                        pass_string = `Combo above **${pass[1]}**`;
+                        bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "rank": {
-                        pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                        bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
-                    default: pass_string = 'No pass condition'
+                    default:
+                        bonus_string += "No bonuses available"
                 }
-                if (challengeid.includes("w")) {
-                    switch (bonus[0]) {
+            } else {
+                let difflist = ["Easy", "Normal", "Hard"];
+                for (let i = 0; i < bonus.length; i++) {
+                    bonus_string += `${difflist[i]}: `;
+                    switch (bonus[i][0]) {
                         case "score": {
-                            bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "acc": {
-                            bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
+                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "miss": {
-                            bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "mod": {
-                            bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "combo": {
-                            bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "rank": {
-                            bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                            bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
-                        default: bonus_string += "No bonuses available"
+                        default:
+                            bonus_string += "No bonuses available"
                     }
+                    bonus_string += '\n'
                 }
-                else {
-                    let difflist = ["Easy", "Normal", "Hard"];
-                    for (let i = 0; i < bonus.length; i++) {
-                        bonus_string += `${difflist[i]}: `;
-                        switch (bonus[i][0]) {
-                            case "score": {
-                                bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "acc": {
-                                bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "scorev2": {
-                                bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "miss": {
-                                bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "mod": {
-                                bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "combo": {
-                                bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "rank": {
-                                bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            default:
-                                bonus_string += "No bonuses available"
-                        }
-                        bonus_string += '\n'
-                    }
-                }
-                let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
-                let mapstat = new MapStats().calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: constrain});
-                if (constrain.includes("DT")) {
-                    hitlength = Math.ceil(hitlength / 1.5);
-                    maplength = Math.ceil(maplength / 1.5);
-                    bpm *= 1.5
-                }
-                if (constrain.includes("NC")) {
-                    hitlength = Math.ceil(hitlength / 1.39);
-                    maplength = Math.ceil(maplength / 1.39);
-                    bpm *= 1.39
-                }
-                if (constrain.includes("HT")) {
-                    hitlength = Math.ceil(hitlength * 4/3);
-                    maplength = Math.ceil(hitlength * 4/3);
-                    bpm *= 0.75
-                }
+            }
+            let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** only`;
+            let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w") ? 86400 * 7 : 86400);
 
-                let footer = config.avatar_list;
-                const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                let embed = new Discord.RichEmbed()
-                    .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
-                    .setColor(mapstatusread(parseInt(mapinfo.approved)))
-                    .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
-                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-                    .setDescription(`**[${title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
-                    .addField(`Map Info`, `CS: ${mapinfo.diff_size}${mapstat.cs == mapinfo.diff_size?"":` (${mapstat.cs})`} - AR: ${mapinfo.diff_approach}${mapstat.ar == mapinfo.diff_approach?"":` (${mapstat.ar})`} - OD: ${mapinfo.diff_overall}${mapstat.od == mapinfo.diff_overall?"":` (${mapstat.od})`} - HP: ${mapinfo.diff_drain}${mapstat.hp == mapinfo.diff_drain?"":` (${mapstat.hp})`}\nBPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x\nLast Update: ${mapinfo.last_update} | ${mapstatus(parseInt(mapinfo.approved))}\n❤️ ${mapinfo.favourite_count} - ▶️ ${mapinfo.playcount}`)
-                    .addField(`Star Rating: ${"★".repeat(Math.min(10, parseInt(mapinfo.difficultyrating)))} ${parseFloat(mapinfo.difficultyrating).toFixed(2)}`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+            let footer = config.avatar_list;
+            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+            let embed = new Discord.RichEmbed()
+                .setAuthor(challengeid.includes("w") ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                .setColor(mapstatusread(mapstat.approved))
+                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
+                .setThumbnail(`https://b.ppy.sh/thumb/${mapstat.beatmapset_id}.jpg`)
+                .setDescription(`**[${mapstat.title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
+                .addField("Map Info", `CS: ${mapstat.cs} - AR: ${mapstat.ar} - OD: ${mapstat.od} - HP: ${mapstat.hp}\nBPM: ${mapstat.bpm} - Length: ${mapstat.hit_length}/${mapstat.map_length} - Max Combo: ${mapstat.max_combo}x\nLast Update: ${mapstat.last_update} | ${mapstatus(mapstat.approved)}\n❤️ ${mapstat.favorites} - ▶️ ${mapstat.plays}`)
+                .addField(`Star Rating:\n${"★".repeat(Math.min(10, parseInt(mapstat.droid_stars)))} ${parseFloat(mapstat.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(mapstat.pc_stars)))} ${parseFloat(mapstat.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1 ? "Point" : "Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1 ? "point" : "points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                client.channels.get("546135349533868072").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
+            client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
-                let updateVal;
-                if (challengeid.includes("w")) updateVal = {
-                    $set: {
-                        status: "w-ongoing",
-                        timelimit: timelimit
-                    }
-                };
-                else updateVal = {
-                    $set: {
-                        status: "ongoing",
-                        timelimit: timelimit
-                    }
-                };
-                dailydb.updateOne(query, updateVal, err => {
-                    if (err) {
-                        console.log(err);
-                        return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                    }
-                    console.log("Challenge started")
-                })
+            let updateVal;
+            if (challengeid.includes("w")) updateVal = {
+                $set: {
+                    status: "w-ongoing",
+                    timelimit: timelimit
+                }
+            };
+            else updateVal = {
+                $set: {
+                    status: "ongoing",
+                    timelimit: timelimit
+                }
+            };
+            dailydb.updateOne(query, updateVal, err => {
+                if (err) {
+                    console.log(err);
+                    return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                console.log("Challenge started")
             })
-        });
-        req.end()
+        })
     })
 };
 
