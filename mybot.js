@@ -79,15 +79,15 @@ client.on("ready", () => {
 	}).catch(console.error);
 	
 	// Challenge role assignment (reaction-based)
-	guild = client.guilds.get("316545691545501706");
-	channel = guild.channels.get("669221772083724318");
-	channel.fetchMessage("674626850164703232").then(message => {
+	let interserver = client.guilds.get("316545691545501706");
+	let interchannel = interserver.channels.get("669221772083724318");
+	interchannel.fetchMessage("674626850164703232").then(message => {
 		message.react("✅").catch(console.error);
 		let collector = message.createReactionCollector((reaction, user) => reaction.emoji.name === "✅" && user.id !== client.user.id);
 		collector.on("collect", () => {
 			message.reactions.find(r => r.emoji.name === "✅").fetchUsers(10).then(collection => {
-				let user = guild.member(collection.find(u => u.id !== client.user.id).id);
-				let role = guild.roles.get("674918022116278282");
+				let user = interserver.member(collection.find(u => u.id !== client.user.id).id);
+				let role = interserver.roles.get("674918022116278282");
 				if (!user.roles.has(role.id)) user.addRole(role, "Automatic role assignment").catch(console.error);
 				else user.removeRole(role, "Automatic role assignment").catch(console.error);
 				message.reactions.forEach(reaction => reaction.remove(user.id).catch(console.error))
