@@ -365,7 +365,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (title) getMapPP(hash, combo, acc, miss, mod, message, footer, index);
 				const embed = {
 					"title": title,
-					"description": "**Score**: `" + score + " ` - Combo: `" + combo + "x ` - Accuracy: `" + acc + "%` \n(`" + miss + "` x )\nMod: `" + modname(mod) + "`\nTime: `" + ptime.toUTCString() + "`",
+					"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%` \n(`" + miss + "` x)\nMod: `" + modname(mod) + "`\nTime: `" + ptime.toUTCString() + "`",
 					"color": 8311585,
 					"author": {
 						"name": "Recent Play for "+ name,
