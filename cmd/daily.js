@@ -1142,7 +1142,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let challengeid = args[2];
             if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
 
-            query = {discordid: message.author.id};
+            query = {discordid: user.id};
             binddb.find(query).toArray((err, userres) => {
                 if (err) {
                     console.log(err);
@@ -1193,7 +1193,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     else if (bonus[0] == 'scorev2') points += bonus[3];
                     else points += bonus[2];
                     let bonuscomplete = points != 0;
-                    pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                    pointdb.find({discordid: user.id}).toArray((err, playerres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
