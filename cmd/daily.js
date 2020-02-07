@@ -1233,7 +1233,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     alicecoins: alicecoins
                                 }
                             };
-                            pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                            pointdb.updateOne({discordid: user.id}, updateVal, err => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
