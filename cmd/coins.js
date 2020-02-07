@@ -17,6 +17,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let pointdb = alicedb.collection("playerpoints");
     let coin = client.emojis.get("669532330980802561");
     let curtime = Math.floor(Date.now() / 1000);
+    if (curtime - (message.member.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, you haven't been in the server for a week!**");
     let query = {};
     switch (args[0]) {
         case "claim": {
@@ -34,9 +35,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    let streak = dailyres[0].streak + 1;
+                    let streak = 0;
                     let daily = 50;
                     if (dailyres[0]) {
+                        streak += dailyres[0].streak;
                         let timelimit = dailyres[0].dailycooldown - curtime;
                         if (timelimit > 0) {
                             let time = timeconvert(timelimit);
@@ -73,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             points: 0,
                             dailycooldown: curtime + 86400,
                             alicecoins: daily,
-                            streak: 0
+                            streak: streak
                         };
                         pointdb.insertOne(insertVal, err => {
                             if (err) {
@@ -88,7 +90,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         case "transfer": {
-            if (curtime - (message.member.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, you haven't been in the server for a week!**");
             let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
             if (!totransfer) return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
             let amount = parseInt(args[2]);
