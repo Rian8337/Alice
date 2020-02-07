@@ -175,7 +175,7 @@ class MapStats {
                     mapstat.ar = mapinfo.diff_approach == mapstat.ar ? mapstat.ar : `${mapinfo.diff_approach} (${mapstat.ar})`;
                     mapstat.od = mapinfo.diff_overall == mapstat.od ? mapstat.od : `${mapinfo.diff_overall} (${mapstat.od})`;
                     mapstat.hp = mapinfo.diff_drain == mapstat.hp ? mapstat.hp : `${mapinfo.diff_drain} (${mapstat.hp})`;
-                    
+
                     bpm = mapinfo.bpm == bpm? bpm : `${mapinfo.bpm} (${bpm.toFixed(2)})`;
                     hitlength = mapinfo.hit_length == hitlength ? time(hitlength) : `${time(mapinfo.hit_length)} (${time(hitlength)})`;
                     maplength = mapinfo.total_length == maplength ? time(maplength) : `${time(mapinfo.total_length)} (${time(maplength)})`;
@@ -333,7 +333,6 @@ function editpoint(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server!**");
     // declaration of variables used in switch cases
     let binddb = maindb.collection("userbind");
@@ -345,6 +344,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
     let embed = new Discord.RichEmbed();
     let obj;
+    let query = {};
     let pass_string = '';
     let bonus_string = '';
 
@@ -385,7 +385,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]?args[1]:message.author.id));
             if (!user) return message.channel.send("❎ **| Hey, can you give me a valid user?**");
 
-            let query = {discordid: user.id};
+            query = {discordid: user.id};
             binddb.find(query).toArray((err, userres) => {
                 if (err) {
                     console.log(err);
@@ -536,9 +536,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         case "check": {
             // checks current ongoing daily challenge
             // ======================================
-            // does not need any extra args as there
-            // is only one challenge running per day
-            let query = {status: "ongoing"};
+            // server owners can specify challenge ID
+            // to see upcoming/past challenges
+            if (args[1] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) query = {challengeid: args[1]};
+            else query = {status: "ongoing"};
             dailydb.find(query).toArray((err, dailyres) => {
                 if (err) {
                     console.log(err);
@@ -548,10 +549,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let pass = dailyres[0].pass;
                 let bonus = dailyres[0].bonus;
                 let challengeid = dailyres[0].challengeid;
-                let timelimit = dailyres[0].timelimit - Math.floor(Date.now() / 1000);
                 let constrain = dailyres[0].constrain.toUpperCase();
                 let beatmapid = dailyres[0].beatmapid;
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
+                    let timelimit = (args[1] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) ? 0 : dailyres[0].timelimit - Math.floor(Date.now() / 1000);
                     switch (pass[0]) {
                         case "score": {
                             pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
@@ -640,7 +641,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ongoing weekly bounty, otherwise submits
             // the message author's play for validation
             if (args[1] == "check") {
-                let query = {status: "w-ongoing"};
+                if (args[2] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) query = {challengeid: args[2]};
+                else query = {status: "w-ongoing"};
                 dailydb.find(query).toArray((err, dailyres) => {
                     if (err) {
                         console.log(err);
@@ -653,7 +655,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let constrain = dailyres[0].constrain.toUpperCase();
                     let beatmapid = dailyres[0].beatmapid;
                     new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
-                        let timelimit = dailyres[0].timelimit - Math.floor(Date.now() / 1000);
+                        let timelimit = (args[2] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) ? 0 : dailyres[0].timelimit - Math.floor(Date.now() / 1000);
                         switch (pass[0]) {
                             case "score": {
                                 pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
@@ -731,7 +733,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 });
                 return
             }
-            let query = {discordid: message.author.id};
+            query = {discordid: message.author.id};
             binddb.find(query).toArray((err, userres) => {
                 if (err) {
                     console.log(err);
@@ -756,7 +758,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let resarr = content.split("<br>");
                         let headerres = resarr[0].split(" ");
                         if (headerres[0] == "FAILED") message.channel.send("❎ **| I'm sorry, I cannot find your user profile!**");
-
                         try {
                             obj = JSON.parse(resarr[1])
                         } catch (e) {
@@ -980,7 +981,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let challengeid = args[1];
             if (!challengeid) return message.channel.send("❎ **| Hey, I don't know which challenge to start!**");
 
-            let query = {challengeid: challengeid};
+            query = {challengeid: challengeid};
             dailydb.find(query).toArray((err, dailyres) => {
                 if (err) {
                     console.log(err);
@@ -1141,7 +1142,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let challengeid = args[2];
             if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
 
-            let query = {discordid: message.author.id};
+            query = {discordid: message.author.id};
             binddb.find(query).toArray((err, userres) => {
                 if (err) {
                     console.log(err);
@@ -1318,7 +1319,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // if args[0] is not defined, will
             // submit the message author's play
             // and defaults to "easy" bonus type
-            let query = {discordid: message.author.id};
+            query = {discordid: message.author.id};
             binddb.find(query).toArray((err, userres) => {
                 if (err) {
                     console.log(err);
@@ -1576,7 +1577,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     description: "Main command for daily challenges.",
-    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check]\ndaily check\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
+    usage: "daily\ndaily [mode]\ndaily about\ndaily bounty [check [challenge ID]]\ndaily check [challenge ID]\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
     detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane` [String]\n`challenge ID`: The ID of the challenge [String]\n`mode`: Bonus mode to submit. If not defined, defaults to `easy`. Accepted arguments are `easy`, `normal`, and `hard` [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate [String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
     permission: "None / Helper / Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
