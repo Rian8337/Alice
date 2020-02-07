@@ -858,7 +858,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2]
                                 }
                             }
-                            let bonuscomplete = points != 0 || bonus.toLowerCase() == 'none';
+                            let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
                             pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
                                 if (err) {
                                     console.log(err);
