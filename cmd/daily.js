@@ -1,7 +1,6 @@
 let Discord = require('discord.js');
 let http = require('http');
 let https = require('https');
-require('dotenv').config();
 let apikey = process.env.OSU_API_KEY;
 let droidapikey = process.env.DROID_API_KEY;
 let request = require('request');
@@ -28,7 +27,9 @@ class MapStats {
         this.od = 0;
         this.hp = 0;
         this.droid_stars = 0;
-        this.pc_stars = 0
+        this.pc_stars = 0;
+        this.droid_pp = 0;
+        this.pc_pp = 0
     }
     stat_calc(params) {
         let cs = parseFloat(params.cs);
@@ -99,6 +100,8 @@ class MapStats {
         let message = params.message;
         let beatmapid = params.beatmap_id;
         let mod = params.mod;
+        let acc_percent = params.acc_percent ? parseFloat(params.acc_percent) : 100;
+        let miss = params.miss ? parseInt(params.miss) : 0;
         let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
         let content = '';
         let req = https.get(options, res => {
@@ -117,6 +120,7 @@ class MapStats {
                 if (mapinfo.mode != 0) return;
                 let mods = modenum(mod);
                 let bpm = parseFloat(mapinfo.bpm);
+                let combo = parseInt(params.combo ? params.combo : mapinfo.max_combo);
                 let title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
                 let nparser = new droid.parser();
                 let pcparser = new osu.parser();
@@ -167,8 +171,23 @@ class MapStats {
                     let nstars = new droid.diff().calc({map: nmap, mods: mods});
                     let pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
 
+                    let npp = droid.ppv2({
+                        stars: nstars,
+                        combo: combo,
+                        nmiss: miss,
+                        acc_percent: acc_percent
+                    });
+                    let pcpp = osu.ppv2({
+                        stars: pcstars,
+                        combo: combo,
+                        nmiss: miss,
+                        acc_percent: acc_percent
+                    });
+
                     let starsline = parseFloat(nstars.toString().split(" ")[0]);
                     let pcstarsline = parseFloat(pcstars.toString().split(" ")[0]);
+                    let dpp = parseFloat(npp.toString().split(" ")[0]);
+                    let pp = parseFloat(pcpp.toString().split(" ")[0]);
                     let mapstat = this.stat_calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: mod});
 
                     mapstat.cs = mapinfo.diff_size == mapstat.cs ? mapstat.cs : `${mapinfo.diff_size} (${mapstat.cs})`;
@@ -198,6 +217,8 @@ class MapStats {
                     this.hp = mapstat.hp;
                     this.droid_stars = starsline;
                     this.pc_stars = pcstarsline;
+                    this.droid_pp = dpp;
+                    this.pc_pp = pp;
                     cb(this)
                 })
             })
@@ -333,7 +354,8 @@ function editpoint(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server!**");
+    if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     // declaration of variables used in switch cases
     let binddb = maindb.collection("userbind");
     let dailydb = alicedb.collection("dailychallenge");
@@ -552,7 +574,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let constrain = dailyres[0].constrain.toUpperCase();
                 let beatmapid = dailyres[0].beatmapid;
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
-                    let timelimit = (args[1] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) ? 0 : dailyres[0].timelimit - Math.floor(Date.now() / 1000);
+                    let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                    if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
                     switch (pass[0]) {
                         case "score": {
                             pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
@@ -576,6 +599,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         case "rank": {
                             pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                            break
+                        }
+                        case "dpp": {
+                            pass_string = `**${pass[1]}** dpp or more`;
+                            break
+                        }
+                        case "pp": {
+                            pass_string = `**${pass[1]}** pp or more`;
                             break
                         }
                         default: pass_string = 'No pass condition'
@@ -610,6 +641,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             case "rank": {
                                 bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "dpp": {
+                                bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "pp": {
+                                bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                 break
                             }
                             default: bonus_string += "No bonuses available"
@@ -655,7 +694,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let constrain = dailyres[0].constrain.toUpperCase();
                     let beatmapid = dailyres[0].beatmapid;
                     new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
-                        let timelimit = (args[2] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) ? 0 : dailyres[0].timelimit - Math.floor(Date.now() / 1000);
+                        let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                        if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
                         switch (pass[0]) {
                             case "score": {
                                 pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
@@ -679,6 +719,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             case "rank": {
                                 pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                                break
+                            }
+                            case "dpp": {
+                                pass_string = `**${pass[1]}** dpp or more`;
+                                break
+                            }
+                            case "pp": {
+                                pass_string = `**${pass[1]}** pp or more`;
                                 break
                             }
                             default: pass_string = 'No pass condition'
@@ -710,6 +758,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             case "rank": {
                                 bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "dpp": {
+                                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "pp": {
+                                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                 break
                             }
                             default: bonus_string += "No bonuses available"
@@ -772,6 +828,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
                             let challengeid = dailyres[0].challengeid;
+                            let beatmapid = dailyres[0].beatmapid;
+                            let constrain = dailyres[0].constrain.toUpperCase();
                             let hash = dailyres[0].hash;
                             let found = false;
                             let score;
@@ -793,174 +851,190 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                            let passreq = dailyres[0].pass;
-                            let pass = false;
-                            switch (passreq[0]) {
-                                case "score": {
-                                    if (score > passreq[1]) pass = true;
-                                    break
+                            new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain, acc_percent: acc, combo: combo, miss: miss}, mapstat => {
+                                let passreq = dailyres[0].pass;
+                                let pass = false;
+                                switch (passreq[0]) {
+                                    case "score": {
+                                        if (score > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "acc": {
+                                        if (acc > parseFloat(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    case "miss": {
+                                        if (miss < passreq[1] || miss == 0) pass = true;
+                                        break
+                                    }
+                                    case "combo": {
+                                        if (combo > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "scorev2": {
+                                        if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "rank": {
+                                        if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    case "dpp": {
+                                        if (mapstat.droid_pp >= parseFloat(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    case "pp": {
+                                        if (mapstat.pc_pp >= parseFloat(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
-                                case "acc": {
-                                    if (acc > parseFloat(passreq[1])) pass = true;
-                                    break
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                                if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                                let points = 0;
+                                let bonus = dailyres[0].bonus;
+                                switch (bonus[0]) {
+                                    case "score": {
+                                        if (score > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "acc": {
+                                        if (acc > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "miss": {
+                                        if (miss < bonus[1] || miss == 0) points += bonus[2];
+                                        break
+                                    }
+                                    case "combo": {
+                                        if (combo > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "scorev2": {
+                                        if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
+                                        break
+                                    }
+                                    case "mod": {
+                                        if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
+                                        break
+                                    }
+                                    case "rank": {
+                                        if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
+                                        break
+                                    }
+                                    case "dpp": {
+                                        if (mapstat.droid_pp >= bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "pp": {
+                                        if (mapstat.pc_pp >= bonus[1]) points += bonus[2];
+                                    }
                                 }
-                                case "miss": {
-                                    if (miss < passreq[1] || miss == 0) pass = true;
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                                    break
-                                }
-                                default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
-                            }
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                            let constrain = dailyres[0].constrain.toUpperCase();
-                            if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
-
-                            let points = 0;
-                            let bonus = dailyres[0].bonus;
-                            switch (bonus[0]) {
-                                case "score": {
-                                    if (score > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "acc": {
-                                    if (acc > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < bonus[1] || miss == 0) points += bonus[2];
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
-                                    break
-                                }
-                                case "mod": {
-                                    if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
-                                    break
-                                }
-                                case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2]
-                                }
-                            }
-                            let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
-                            pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                }
-                                if (playerres[0]) {
-                                    let challengelist = playerres[0].challenges;
-                                    console.log(challengelist);
-                                    found = false;
-                                    let bonuscheck = false;
-                                    for (let i = 0; i < challengelist.length; i++) {
-                                        if (challengelist[i][0] == challengeid) {
-                                            bonuscheck = challengelist[i][1];
-                                            challengelist[i][1] = bonuscomplete;
-                                            found = true;
-                                            break
+                                let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
+                                pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    if (playerres[0]) {
+                                        let challengelist = playerres[0].challenges;
+                                        console.log(challengelist);
+                                        found = false;
+                                        let bonuscheck = false;
+                                        for (let i = 0; i < challengelist.length; i++) {
+                                            if (challengelist[i][0] == challengeid) {
+                                                bonuscheck = challengelist[i][1];
+                                                challengelist[i][1] = bonuscomplete;
+                                                found = true;
+                                                break
+                                            }
                                         }
-                                    }
-                                    if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
-                                    if (!found) {
+                                        if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
+                                        if (!found) {
+                                            points += dailyres[0].points;
+                                            challengelist.push([challengeid, bonuscomplete])
+                                        }
+                                        let totalpoint = playerres[0].points + points;
+                                        let alicecoins = playerres[0].alicecoins + points * 2;
+                                        message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete?` and its bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                                        let updateVal = {
+                                            $set: {
+                                                username: username,
+                                                uid: uid,
+                                                challenges: challengelist,
+                                                points: totalpoint,
+                                                alicecoins: alicecoins
+                                            }
+                                        };
+                                        pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            console.log("Player points updated")
+                                        });
+                                        if (clan) {
+                                            clandb.find({name: clan}).toArray((err, clanres) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                updateVal = {
+                                                    $set: {
+                                                        power: clanres[0].power + points
+                                                    }
+                                                };
+                                                clandb.updateOne({name: clan}, updateVal, err => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                    }
+                                                    console.log("Clan power points updated")
+                                                })
+                                            })
+                                        }
+                                    } else {
                                         points += dailyres[0].points;
-                                        challengelist.push([challengeid, bonuscomplete])
-                                    }
-                                    let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 2;
-                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete?` and its bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
-                                    let updateVal = {
-                                        $set: {
+                                        message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
+                                        let insertVal = {
                                             username: username,
                                             uid: uid,
-                                            challenges: challengelist,
-                                            points: totalpoint,
-                                            alicecoins: alicecoins
-                                        }
-                                    };
-                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                        }
-                                        console.log("Player points updated")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            discordid: message.author.id,
+                                            challenges: [[challengeid, bonuscomplete]],
+                                            points: points,
+                                            dailycooldown: 0,
+                                            alicecoins: points * 2
+                                        };
+                                        pointdb.insertOne(insertVal, err => {
                                             if (err) {
                                                 console.log(err);
                                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                             }
-                                            updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                            console.log("Player points added")
+                                        });
+                                        if (clan) {
+                                            clandb.find({name: clan}).toArray((err, clanres) => {
                                                 if (err) {
                                                     console.log(err);
                                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                                 }
-                                                console.log("Clan power points updated")
+                                                let updateVal = {
+                                                    $set: {
+                                                        power: clanres[0].power + points
+                                                    }
+                                                };
+                                                clandb.updateOne({name: clan}, updateVal, err => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                    }
+                                                    console.log("Clan power points updated")
+                                                })
                                             })
-                                        })
-                                    }
-                                } else {
-                                    points += dailyres[0].points;
-                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
-                                    let insertVal = {
-                                        username: username,
-                                        uid: uid,
-                                        discordid: message.author.id,
-                                        challenges: [[challengeid, bonuscomplete]],
-                                        points: points,
-                                        dailycooldown: 0,
-                                        alicecoins: points * 2
-                                    };
-                                    pointdb.insertOne(insertVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        console.log("Player points added")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            let updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
                                     }
-                                }
+                                })
                             })
                         })
                     })
@@ -992,7 +1066,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let pass = dailyres[0].pass;
                 let bonus = dailyres[0].bonus;
                 let constrain = dailyres[0].constrain.toUpperCase();
-                let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w")?86400 * 7:86400);
+                let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w") ? 86400 * 7 : 86400);
                 let beatmapid = dailyres[0].beatmapid;
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
                     switch (pass[0]) {
@@ -1018,6 +1092,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         case "rank": {
                             pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                            break
+                        }
+                        case "dpp": {
+                            pass_string = `**${pass[1]}** dpp or more`;
+                            break
+                        }
+                        case "pp": {
+                            pass_string = `*${pass[1]}** pp or more`;
                             break
                         }
                         default: pass_string = 'No pass condition'
@@ -1050,6 +1132,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             case "rank": {
                                 bonus_string += `**${bonus[1].toUpperCase()} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "dpp": {
+                                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                                break
+                            }
+                            case "pp": {
+                                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                                 break
                             }
                             default: bonus_string += "No bonuses available"
@@ -1086,6 +1176,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 case "rank": {
                                     bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                    break
+                                }
+                                case "dpp": {
+                                    bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                                    break
+                                }
+                                case "pp": {
+                                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                                     break
                                 }
                                 default:
@@ -1358,6 +1456,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
                             let challengeid = dailyres[0].challengeid;
+                            let beatmapid = dailyres[0].beatmapid;
+                            let constrain = dailyres[0].constrain.toUpperCase();
                             let hash = dailyres[0].hash;
                             let found = false;
                             let score;
@@ -1377,190 +1477,206 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                            let passreq = dailyres[0].pass;
-                            let pass = false;
-                            switch (passreq[0]) {
-                                case "score": {
-                                    if (score > passreq[1]) pass = true;
-                                    break
+                            new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain, combo: combo, acc_percent: acc, miss: miss}, mapstat => {
+                                let passreq = dailyres[0].pass;
+                                let pass = false;
+                                switch (passreq[0]) {
+                                    case "score": {
+                                        if (score > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "acc": {
+                                        if (acc > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "miss": {
+                                        if (miss < passreq[1] || miss == 0) pass = true;
+                                        break
+                                    }
+                                    case "combo": {
+                                        if (combo > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "scorev2": {
+                                        if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "dpp": {
+                                        if (mapstat.droid_pp >= parseFloat(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    case "pp": {
+                                        if (mapstat.pc_pp >= parseFloat(passreq[1])) pass = true;
+                                        break
+                                    }
+                                    default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
-                                case "acc": {
-                                    if (acc > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < passreq[1] || miss == 0) pass = true;
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
-                                    break
-                                }
-                                default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
-                            }
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                            let constrain = dailyres[0].constrain.toUpperCase();
-                            if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                                if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
 
-                            let points = 0;
-                            let index = 0;
-                            let bonus;
-                            let mode = args[0];
-                            if (!mode) mode = "easy";
-                            else mode = mode.toLowerCase();
-                            switch (mode) {
-                                case "easy": {
-                                    bonus = dailyres[0].bonus[0];
-                                    index = 1;
-                                    break
+                                let points = 0;
+                                let index = 0;
+                                let bonus;
+                                let mode = args[0];
+                                if (!mode) mode = "easy";
+                                else mode = mode.toLowerCase();
+                                switch (mode) {
+                                    case "easy": {
+                                        bonus = dailyres[0].bonus[0];
+                                        index = 1;
+                                        break
+                                    }
+                                    case "normal": {
+                                        bonus = dailyres[0].bonus[1];
+                                        index = 2;
+                                        break
+                                    }
+                                    case "hard": {
+                                        bonus = dailyres[0].bonus[2];
+                                        index = 3;
+                                        break
+                                    }
+                                    default: return message.channel.send("❎ **| I'm sorry, that bonus type is invalid! Accepted arguments are `easy`, `normal`, and `hard`.**")
                                 }
-                                case "normal": {
-                                    bonus = dailyres[0].bonus[1];
-                                    index = 2;
-                                    break
+                                switch (bonus[0]) {
+                                    case "score": {
+                                        if (score > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "scorev2": {
+                                        if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
+                                        break
+                                    }
+                                    case "mod": {
+                                        if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
+                                        break
+                                    }
+                                    case "acc": {
+                                        if (acc > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "combo": {
+                                        if (combo > bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "miss": {
+                                        if (miss < bonus[1] || miss == 0) points += bonus[2];
+                                        break
+                                    }
+                                    case "dpp": {
+                                        if (mapstat.droid_pp >= bonus[1]) points += bonus[2];
+                                        break
+                                    }
+                                    case "pp": {
+                                        if (mapstat.pc_pp >= bonus[1]) points += bonus[2]
+                                    }
                                 }
-                                case "hard": {
-                                    bonus = dailyres[0].bonus[2];
-                                    index = 3;
-                                    break
-                                }
-                                default: return message.channel.send("❎ **| I'm sorry, that bonus type is invalid! Accepted arguments are `easy`, `normal`, and `hard`.**")
-                            }
-                            switch (bonus[0]) {
-                                case "score": {
-                                    if (score > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, bonus[2], acc, miss) > bonus[1]) points += bonus[3];
-                                    break
-                                }
-                                case "mod": {
-                                    if (modenum(mod) == modenum(bonus[1].toUpperCase())) points += bonus[2];
-                                    break
-                                }
-                                case "acc": {
-                                    if (acc > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo > bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < bonus[1] || miss == 0) points += bonus[2];
-                                    break
-                                }
-                            }
-                            let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
-                            pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                }
-                                let bonuslist = [challengeid, false, false, false];
-                                bonuslist[index] = bonuscomplete;
-                                if (playerres[0]) {
-                                    let challengelist = playerres[0].challenges;
-                                    found = false;
-                                    let bonuscheck = false;
-                                    for (let i = 0; i < challengelist.length; i++) {
-                                        if (challengelist[i][0] == challengeid) {
-                                            bonuscheck = challengelist[i][index];
-                                            challengelist[i][index] = bonuscomplete;
-                                            found = true;
-                                            break
+                                let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
+                                pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    let bonuslist = [challengeid, false, false, false];
+                                    bonuslist[index] = bonuscomplete;
+                                    if (playerres[0]) {
+                                        let challengelist = playerres[0].challenges;
+                                        found = false;
+                                        let bonuscheck = false;
+                                        for (let i = 0; i < challengelist.length; i++) {
+                                            if (challengelist[i][0] == challengeid) {
+                                                bonuscheck = challengelist[i][index];
+                                                challengelist[i][index] = bonuscomplete;
+                                                found = true;
+                                                break
+                                            }
                                         }
-                                    }
-                                    if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
-                                    if (!found) {
+                                        if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
+                                        if (!found) {
+                                            points += dailyres[0].points;
+                                            challengelist.push(bonuslist)
+                                        }
+                                        let totalpoint = playerres[0].points + points;
+                                        let alicecoins = playerres[0].alicecoins + points * 2;
+                                        message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete?` and \`${mode}\` bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                                        let updateVal = {
+                                            $set: {
+                                                username: username,
+                                                uid: uid,
+                                                challenges: challengelist,
+                                                points: totalpoint,
+                                                alicecoins: alicecoins
+                                            }
+                                        };
+                                        pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            console.log("Player points updated")
+                                        });
+                                        if (clan) {
+                                            clandb.find({name: clan}).toArray((err, clanres) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                updateVal = {
+                                                    $set: {
+                                                        power: clanres[0].power + points
+                                                    }
+                                                };
+                                                clandb.updateOne({name: clan}, updateVal, err => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                    }
+                                                    console.log("Clan power points updated")
+                                                })
+                                            })
+                                        }
+                                    } else {
                                         points += dailyres[0].points;
-                                        challengelist.push(bonuslist)
-                                    }
-                                    let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 2;
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete?` and \`${mode}\` bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
-                                    let updateVal = {
-                                        $set: {
+                                        message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
+                                        let insertVal = {
                                             username: username,
                                             uid: uid,
-                                            challenges: challengelist,
-                                            points: totalpoint,
-                                            alicecoins: alicecoins
-                                        }
-                                    };
-                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                        }
-                                        console.log("Player points updated")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
+                                            discordid: message.author.id,
+                                            challenges: [bonuslist],
+                                            points: points,
+                                            dailycooldown: 0,
+                                            alicecoins: points * 2
+                                        };
+                                        pointdb.insertOne(insertVal, err => {
                                             if (err) {
                                                 console.log(err);
                                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                             }
-                                            updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
+                                            console.log("Player points added")
+                                        });
+                                        if (clan) {
+                                            clandb.find({name: clan}).toArray((err, clanres) => {
                                                 if (err) {
                                                     console.log(err);
                                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                                 }
-                                                console.log("Clan power points updated")
+                                                let updateVal = {
+                                                    $set: {
+                                                        power: clanres[0].power + points
+                                                    }
+                                                };
+                                                clandb.updateOne({name: clan}, updateVal, err => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                    }
+                                                    console.log("Clan power points updated")
+                                                })
                                             })
-                                        })
-                                    }
-                                } else {
-                                    points += dailyres[0].points;
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
-                                    let insertVal = {
-                                        username: username,
-                                        uid: uid,
-                                        discordid: message.author.id,
-                                        challenges: [bonuslist],
-                                        points: points,
-                                        dailycooldown: 0,
-                                        alicecoins: points * 2
-                                    };
-                                    pointdb.insertOne(insertVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        console.log("Player points added")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            let updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
                                     }
-                                }
+                                })
                             })
                         })
                     })
