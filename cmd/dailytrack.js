@@ -339,7 +339,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 bonus_string += '\n'
             }
-            let constrain_string = constrain == ''?"Any mod is allowed":`**${constrain}** only`;
+            let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
