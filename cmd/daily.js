@@ -704,7 +704,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmapid = dailyres[0].beatmapid;
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
                     let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
-                    if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
@@ -748,7 +747,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres[0].beatmapid;
                     new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
                         let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
-                        if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
                         let requirements = challengeRequirements(challengeid, pass, bonus);
                         let pass_string = requirements[0];
                         let bonus_string = requirements[1];
