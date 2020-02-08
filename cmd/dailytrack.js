@@ -316,7 +316,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                         break
                     }
                     case "mod": {
-                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
                         break
                     }
                     case "combo": {
