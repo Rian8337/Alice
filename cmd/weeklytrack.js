@@ -257,7 +257,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let query = {status: "w-ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a weekly challenge now!")).catch(console.error);
+        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
         let timelimit = dailyres[0].timelimit;
         if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
         let pass = dailyres[0].pass;
@@ -293,6 +293,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     pass_string = `**${pass[1].toUpperCase()}** rank or above`;
                     break
                 }
+                case "dpp": {
+                    pass_string = `**${pass[1]}** dpp or more`;
+                    break
+                }
+                case "pp": {
+                    pass_string = `**${pass[1]}** pp or more`;
+                    break
+                }
                 default: pass_string = 'No pass condition'
             }
             switch (bonus[0]) {
@@ -322,6 +330,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 case "rank": {
                     bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                    break
+                }
+                case "dpp": {
+                    bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "pp": {
+                    bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                     break
                 }
                 default: bonus_string += "No bonuses available"
