@@ -405,7 +405,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let embed = new Discord.RichEmbed()
                 .setAuthor(challengeid.includes("w") ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setColor(mapstatusread(mapstat.approved))
-                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
+                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                 .setThumbnail(`https://b.ppy.sh/thumb/${mapstat.beatmapset_id}.jpg`)
                 .setDescription(`**[${mapstat.title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                 .addField("Map Info", `CS: ${mapstat.cs} - AR: ${mapstat.ar} - OD: ${mapstat.od} - HP: ${mapstat.hp}\nBPM: ${mapstat.bpm} - Length: ${mapstat.hit_length}/${mapstat.map_length} - Max Combo: ${mapstat.max_combo}x\nLast Update: ${mapstat.last_update} | ${mapstatus(mapstat.approved)}\n❤️ ${mapstat.favorites} - ▶️ ${mapstat.plays}`)
