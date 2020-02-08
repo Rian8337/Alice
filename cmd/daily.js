@@ -352,6 +352,135 @@ function editpoint(res, page) {
     return output
 }
 
+function challengeRequirements(challengeid, pass, bonus) {
+    let pass_string = '';
+    let bonus_string = '';
+    switch (pass[0]) {
+        case "score": {
+            pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
+            break
+        }
+        case "acc": {
+            pass_string = `Accuracy above **${pass[1]}%**`;
+            break
+        }
+        case "scorev2": {
+            pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
+            break
+        }
+        case "miss": {
+            pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
+            break
+        }
+        case "combo": {
+            pass_string = `Combo above **${pass[1]}**`;
+            break
+        }
+        case "rank": {
+            pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+            break
+        }
+        case "dpp": {
+            pass_string = `**${pass[1]}** dpp or more`;
+            break
+        }
+        case "pp": {
+            pass_string = `*${pass[1]}** pp or more`;
+            break
+        }
+        default: pass_string = 'No pass condition'
+    }
+    if (challengeid.includes("w")) {
+        switch (bonus[0]) {
+            case "score": {
+                bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                break
+            }
+            case "acc": {
+                bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                break
+            }
+            case "scorev2": {
+                bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
+                break
+            }
+            case "miss": {
+                bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                break
+            }
+            case "mod": {
+                bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+                break
+            }
+            case "combo": {
+                bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                break
+            }
+            case "rank": {
+                bonus_string += `**${bonus[1].toUpperCase()} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                break
+            }
+            case "dpp": {
+                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                break
+            }
+            case "pp": {
+                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                break
+            }
+            default: bonus_string += "No bonuses available"
+        }
+    }
+    else {
+        let difflist = ["Easy", "Normal", "Hard"];
+        for (let i = 0; i < bonus.length; i++) {
+            bonus_string += `${difflist[i]}: `;
+            switch (bonus[i][0]) {
+                case "score": {
+                    bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "acc": {
+                    bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "scorev2": {
+                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "miss": {
+                    bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "mod": {
+                    bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "combo": {
+                    bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "rank": {
+                    bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "dpp": {
+                    bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                case "pp": {
+                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    break
+                }
+                default:
+                    bonus_string += "No bonuses available"
+            }
+            bonus_string += '\n'
+        }
+    }
+    return [pass_string, bonus_string]
+}
+
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");
@@ -576,85 +705,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
                     let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
                     if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
-                    switch (pass[0]) {
-                        case "score": {
-                            pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
-                            break
-                        }
-                        case "acc": {
-                            pass_string = `Accuracy above **${parseFloat(pass[1])}%**`;
-                            break
-                        }
-                        case "scorev2": {
-                            pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
-                            break
-                        }
-                        case "miss": {
-                            pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
-                            break
-                        }
-                        case "combo": {
-                            pass_string = `Combo above **${pass[1]}**`;
-                            break
-                        }
-                        case "rank": {
-                            pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                            break
-                        }
-                        case "dpp": {
-                            pass_string = `**${pass[1]}** dpp or more`;
-                            break
-                        }
-                        case "pp": {
-                            pass_string = `**${pass[1]}** pp or more`;
-                            break
-                        }
-                        default: pass_string = 'No pass condition'
-                    }
-                    let difflist = ["Easy", "Normal", "Hard"];
-                    for (let i = 0; i < bonus.length; i++) {
-                        bonus_string += `${difflist[i]}: `;
-                        switch (bonus[i][0]) {
-                            case "score": {
-                                bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "acc": {
-                                bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "scorev2": {
-                                bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "miss": {
-                                bonus_string += `${bonus[i][1] == 0?"No misses":`Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "mod": {
-                                bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "combo": {
-                                bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "rank": {
-                                bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "dpp": {
-                                bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "pp": {
-                                bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            default: bonus_string += "No bonuses available"
-                        }
-                        bonus_string += '\n'
-                    }
+                    let requirements = challengeRequirements(challengeid, pass, bonus);
+                    let pass_string = requirements[0];
+                    let bonus_string = requirements[1];
                     let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** mod only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapstatusread(mapstat.approved))
@@ -696,80 +749,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
                         let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
                         if (timelimit == 0) return message.channel.send("❎ **| I'm sorry, this challenge is already over! Please wait until a new challenge starts!**");
-                        switch (pass[0]) {
-                            case "score": {
-                                pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
-                                break
-                            }
-                            case "acc": {
-                                pass_string = `Accuracy above **${parseFloat(pass[1])}%**`;
-                                break
-                            }
-                            case "scorev2": {
-                                pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
-                                break
-                            }
-                            case "miss": {
-                                pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
-                                break
-                            }
-                            case "combo": {
-                                pass_string = `Combo above **${pass[1]}**`;
-                                break
-                            }
-                            case "rank": {
-                                pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                                break
-                            }
-                            case "dpp": {
-                                pass_string = `**${pass[1]}** dpp or more`;
-                                break
-                            }
-                            case "pp": {
-                                pass_string = `**${pass[1]}** pp or more`;
-                                break
-                            }
-                            default: pass_string = 'No pass condition'
-                        }
-                        switch (bonus[0]) {
-                            case "score": {
-                                bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "acc": {
-                                bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "scorev2": {
-                                bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "miss": {
-                                bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "mod": {
-                                bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "combo": {
-                                bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "rank": {
-                                bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "dpp": {
-                                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "pp": {
-                                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            default: bonus_string += "No bonuses available"
-                        }
+                        let requirements = challengeRequirements(challengeid, pass, bonus);
+                        let pass_string = requirements[0];
+                        let bonus_string = requirements[1];
                         let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** only`;
 
                         embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
@@ -1069,129 +1051,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w") ? 86400 * 7 : 86400);
                 let beatmapid = dailyres[0].beatmapid;
                 new MapStats().retrieve({message: message, beatmap_id: beatmapid, mod: constrain}, mapstat => {
-                    switch (pass[0]) {
-                        case "score": {
-                            pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
-                            break
-                        }
-                        case "acc": {
-                            pass_string = `Accuracy above **${pass[1]}%**`;
-                            break
-                        }
-                        case "scorev2": {
-                            pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
-                            break
-                        }
-                        case "miss": {
-                            pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
-                            break
-                        }
-                        case "combo": {
-                            pass_string = `Combo above **${pass[1]}**`;
-                            break
-                        }
-                        case "rank": {
-                            pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                            break
-                        }
-                        case "dpp": {
-                            pass_string = `**${pass[1]}** dpp or more`;
-                            break
-                        }
-                        case "pp": {
-                            pass_string = `*${pass[1]}** pp or more`;
-                            break
-                        }
-                        default: pass_string = 'No pass condition'
-                    }
-                    if (challengeid.includes("w")) {
-                        switch (bonus[0]) {
-                            case "score": {
-                                bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "acc": {
-                                bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "scorev2": {
-                                bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "miss": {
-                                bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "mod": {
-                                bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                                break
-                            }
-                            case "combo": {
-                                bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "rank": {
-                                bonus_string += `**${bonus[1].toUpperCase()} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "dpp": {
-                                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            case "pp": {
-                                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                                break
-                            }
-                            default: bonus_string += "No bonuses available"
-                        }
-                    }
-                    else {
-                        let difflist = ["Easy", "Normal", "Hard"];
-                        for (let i = 0; i < bonus.length; i++) {
-                            bonus_string += `${difflist[i]}: `;
-                            switch (bonus[i][0]) {
-                                case "score": {
-                                    bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "acc": {
-                                    bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "scorev2": {
-                                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "miss": {
-                                    bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "mod": {
-                                    bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "combo": {
-                                    bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "rank": {
-                                    bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "dpp": {
-                                    bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                case "pp": {
-                                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                                    break
-                                }
-                                default:
-                                    bonus_string += "No bonuses available"
-                            }
-                            bonus_string += '\n'
-                        }
-                    }
+                    let requirements = challengeRequirements(challengeid, pass, bonus);
+                    let pass_string = requirements[0];
+                    let bonus_string = requirements[1];
                     let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
 
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
