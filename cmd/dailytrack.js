@@ -293,6 +293,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     pass_string = `**${pass[1]}** rank or above`;
                     break
                 }
+                case "dpp": {
+                    pass_string = `**${pass[1]}** dpp or more`;
+                    break
+                }
+                case "pp": {
+                    pass_string = `**${pass[1]}** pp or more`;
+                    break
+                }
                 default: pass_string = 'No pass condition'
             }
             let difflist = ["Easy", "Normal", "Hard"];
@@ -325,6 +333,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     }
                     case "rank": {
                         bonus_string += `**${bonus[i][1].toUpperCase()} or above (__${bonus[i][2]}__ ${bonus[i][2] == 1?"point":"points"})`;
+                        break
+                    }
+                    case "dpp": {
+                        bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        break
+                    }
+                    case "pp": {
+                        bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                         break
                     }
                     default: bonus_string += "No bonuses available"
