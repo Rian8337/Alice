@@ -244,14 +244,6 @@ function time(second) {
 	return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
 }
 
-function timeconvert(num) {
-    let sec = parseInt(num);
-    let hours = Math.floor(sec / 3600);
-    let minutes = Math.floor((sec - hours * 3600) / 60);
-    let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
-}
-
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let dailydb = alicedb.collection("dailychallenge");
     let query = {status: "w-ongoing"};
@@ -342,14 +334,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 default: bonus_string += "No bonuses available"
             }
-            let constrain_string = constrain == ''?"Any mod is allowed":`**${constrain}** only`;
+            let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
             let embed = new Discord.RichEmbed()
                 .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setColor(mapstatusread(mapstat.approved))
-                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
+                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
                 .setThumbnail(`https://b.ppy.sh/thumb/${mapstat.beatmapset_id}.jpg`)
                 .setDescription(`**[${mapstat.title}](https://osu.ppy.sh/b/${beatmapid})**\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                 .addField("Map Info", `CS: ${mapstat.cs} - AR: ${mapstat.ar} - OD: ${mapstat.od} - HP: ${mapstat.hp}\nBPM: ${mapstat.bpm} - Length: ${mapstat.hit_length}/${mapstat.map_length} - Max Combo: ${mapstat.max_combo}x\nLast Update: ${mapstat.last_update} | ${mapstatus(mapstat.approved)}\n❤️ ${mapstat.favorites} - ▶️ ${mapstat.plays}`)
