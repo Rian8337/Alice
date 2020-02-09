@@ -88,15 +88,22 @@ function getMapPP(hash, mod, combo, acc, miss, cb) {
 
                 if (mod.includes("r")) {
                     mods -= 16;
-                    cur_ar = Math.min(10, cur_ar * 1.4);
-                    cur_od = Math.min(10, cur_od * 1.4);
+                    cur_ar = Math.min(cur_ar * 1.4, 10);
+                    cur_od = Math.min(cur_od * 1.4, 10);
                     cur_cs++
                 }
-                if (mod.includes("PR")) cur_od += 4;
-                cur_od -= 5;
-                nmap.cs = cur_cs;
-                nmap.ar = cur_ar;
+                if (mod.includes("e")) {
+                    mods -= 2;
+                    cur_ar /= 2;
+                    cur_od /= 2;
+                    cur_cs--
+                }
+                let droidtoMS = 75 + 5 * (5 - cur_od);
+                if (mod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+                cur_od = 5 - (droidtoMS - 50) / 6;
                 nmap.od = cur_od;
+                nmap.ar = cur_ar;
+                nmap.cs = cur_cs;
 
                 let nstars = new droid.diff().calc({map: nmap, mods: mods});
                 let pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
