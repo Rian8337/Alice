@@ -163,156 +163,160 @@ function getMapPP(target, message, ndetail, pcdetail) {
 			//var url = "https://osu.ppy.sh/osu/1031991";
 			var url = 'https://osu.ppy.sh/osu/' + target[0];
 			request(url, function (err, response, data) {
-					nparser.feed(data);
-					pcparser.feed(data);
-					var pcmods = mods - 4;
-					var nmap = nparser.map;
-					var pcmap = pcparser.map;
-					var cur_od = nmap.od;
-					var cur_ar = nmap.ar;
-					var cur_cs = nmap.cs - 4;
-					var bpm = parseFloat(mapinfo.bpm);
-					// if (mods) {
-					// 	console.log("+" + osu.modbits.string(mods));
-					// }
-					if (target[4].includes("HR")) {
-						mods -= 16;
-						cur_ar = Math.min(cur_ar*1.4, 10);
-						cur_od = Math.min(cur_od*1.4, 10);
-						cur_cs++
-					}
+				nparser.feed(data);
+				pcparser.feed(data);
+				var pcmods = mods - 4;
+				var nmap = nparser.map;
+				var pcmap = pcparser.map;
+				var cur_od = nmap.od;
+				var cur_ar = nmap.ar;
+				var cur_cs = nmap.cs - 4;
+				var bpm = parseFloat(mapinfo.bpm);
 
-					var hitlength = mapinfo.hit_length;
-					var maplength = mapinfo.total_length;
-					if (target[4].toUpperCase().includes("DT")) {
-						hitlength = Math.ceil(hitlength / 1.5);
-						maplength = Math.ceil(maplength / 1.5);
-						bpm *= 1.5
-					}
-					if (target[4].toUpperCase().includes("NC")) {
-						hitlength = Math.ceil(hitlength / 1.39);
-						maplength = Math.ceil(maplength / 1.39);
-						bpm *= 1.39
-					}
-					if (target[4].toUpperCase().includes("HT")) {
-						hitlength = Math.ceil(hitlength * 4/3);
-						maplength = Math.ceil(hitlength * 4/3);
-						bpm *= 0.75
-					}
-
-					if (target[4].includes("PR")) cur_od += 4;
-					if (target[4].includes("TD")) pcmods += 4;
-
-					cur_od -= 5;
-					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
-
-                    if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log(target[0] + ' - Error: no object found');
-						return;
-                    }
-
-					var nstars = new droid.diff().calc({map: nmap, mods: mods});
-					var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
-					//console.log(stars.toString());
-
-
-                    var npp = droid.ppv2({
-						stars: nstars,
-						combo: combo,
-						nmiss: nmiss,
-						acc_percent: acc_percent,
-					});
-
-					var pcpp = osu.ppv2({
-						stars: pcstars,
-						combo: combo,
-						nmiss: nmiss,
-						acc_percent: acc_percent,
-					});
-
-					/*var object_list = nstars.objects;
-					var diff_elem_array = [];
-					var strain_array = [];
-					object_list.forEach((x) => {
-						var diff_elem = {
-							strain: parseFloat(x.strains[0].toFixed(4)),
-					 		angle: (x.angle)? parseFloat((x.angle/(2*Math.PI)*360).toFixed(3)) : 0,
-					 		spacing: x.delta_time/x.d_distance? parseFloat((x.d_distance/x.delta_time).toFixed(4)) : 0
-					 	};
-					 	diff_elem_array.push(diff_elem);
-					 	strain_array.push(parseFloat(x.strains[0].toFixed(4)))
-					});
-					
-					console.table(diff_elem_array);
-					message.channel.send("Diff spike test");
-					var strain_max = Math.max(...strain_array);
-
-					var max_30p = 0;
-					var max_50p = 0;
-					var max_70p = 0;
-					var max_90p = 0;
-
-					strain_array.forEach((x) => {
-					 	if (x/strain_max >= 0.3) max_30p++;
-					 	if (x/strain_max >= 0.5) max_50p++;
-					 	if (x/strain_max >= 0.7) max_70p++;
-					 	if (x/strain_max >= 0.9) max_90p++;
-					});
-					
-					var nx = strain_array.length;
-					var output_test = "```30% strain: " + max_30p/nx + "\n50% strain: " + max_50p/nx + "\n70% strain: " + max_70p/nx + "\n90% strain: " + max_90p/nx + "```";
-					message.channel.send(output_test) ;
-
-					console.log(object_list);*/
-
-					nparser.reset();
-
-					console.log(nstars.toString());
-                    console.log(npp.toString());
-					var starsline = nstars.toString().split("(");
-					var ppline = npp.toString().split("(");
-					var pcstarsline = pcstars.toString().split("(");
-					var pcppline = pcpp.toString().split("(");
-					var objc = parseInt(mapinfo.count_normal) + parseInt(mapinfo.count_slider) + parseInt(mapinfo.count_spinner);
-					let mapstat = new MapStats().calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: target[4]});
-					let footer = config.avatar_list;
-					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-					const embed = {
-						"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + target[4],
-						"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")" ,
-						"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id,
-						"color": mapstatusread(parseInt(mapinfo.approved)),
-						"footer": {
-							"icon_url": footer[index],
-							"text": "Alice Synthesis Thirty"
-						},
-						"author": {
-							"name": "Map Found",
-							"icon_url": "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg"
-						},
-						"thumbnail": {
-							"url": "https://b.ppy.sh/thumb/" + mapinfo.beatmapset_id + ".jpg"
-						},
-						"fields": [
-							{
-								"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
-								"value": `BPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x - Object count: ${objc}`
-							},
-							{
-								"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
-								"value": "Result: " + combo + "/" + mapinfo.max_combo + "x / " + acc_percent + "% / " + nmiss + " miss(es)"
-							},
-							{
-								"name": "Droid pp (Experimental): __" + ppline[0] + "__ - " + starsline[0] ,
-								"value": "PC pp: " + pcppline[0] + " - " + pcstarsline[0]
-							}
-						]
-					};
-					if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
-					if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
-					message.channel.send({embed})
+				// if (mods) {
+				// 	console.log("+" + osu.modbits.string(mods));
+				// }
+				if (target[4].includes("HR")) {
+					mods -= 16;
+					cur_ar = Math.min(cur_ar * 1.4, 10);
+					cur_od = Math.min(cur_od * 1.4, 10);
+					cur_cs++
 				}
-			)
+				if (target[4].includes("EZ")) {
+					mods -= 2;
+					cur_ar /= 2;
+					cur_od /= 2;
+					cur_cs--
+				}
+				let droidtoMS = 75 + 5 * (5 - cur_od);
+				if (target[4].includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+				cur_od = 5 - (droidtoMS - 50) / 6;
+				nmap.od = cur_od;
+				nmap.ar = cur_ar;
+				nmap.cs = cur_cs;
+
+				var hitlength = mapinfo.hit_length;
+				var maplength = mapinfo.total_length;
+				if (target[4].includes("DT")) {
+					hitlength = Math.ceil(hitlength / 1.5);
+					maplength = Math.ceil(maplength / 1.5);
+					bpm *= 1.5
+				}
+				if (target[4].includes("NC")) {
+					hitlength = Math.ceil(hitlength / 1.39);
+					maplength = Math.ceil(maplength / 1.39);
+					bpm *= 1.39
+				}
+				if (target[4].includes("HT")) {
+					hitlength = Math.ceil(hitlength * 4/3);
+					maplength = Math.ceil(hitlength * 4/3);
+					bpm *= 0.75
+				}
+
+				if (nmap.ncircles == 0 && nmap.nsliders == 0) {
+					console.log(target[0] + ' - Error: no object found');
+					return;
+				}
+
+				var nstars = new droid.diff().calc({map: nmap, mods: mods});
+				var pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
+				//console.log(stars.toString());
+				var npp = droid.ppv2({
+					stars: nstars,
+					combo: combo,
+					nmiss: nmiss,
+					acc_percent: acc_percent
+				});
+
+				var pcpp = osu.ppv2({
+					stars: pcstars,
+					combo: combo,
+					nmiss: nmiss,
+					acc_percent: acc_percent
+				});
+
+				/*var object_list = nstars.objects;
+				var diff_elem_array = [];
+				var strain_array = [];
+				object_list.forEach((x) => {
+					var diff_elem = {
+						strain: parseFloat(x.strains[0].toFixed(4)),
+						angle: (x.angle)? parseFloat((x.angle/(2*Math.PI)*360).toFixed(3)) : 0,
+						spacing: x.delta_time/x.d_distance? parseFloat((x.d_distance/x.delta_time).toFixed(4)) : 0
+					};
+					diff_elem_array.push(diff_elem);
+					strain_array.push(parseFloat(x.strains[0].toFixed(4)))
+				});
+
+				console.table(diff_elem_array);
+				message.channel.send("Diff spike test");
+				var strain_max = Math.max(...strain_array);
+
+				var max_30p = 0;
+				var max_50p = 0;
+				var max_70p = 0;
+				var max_90p = 0;
+
+				strain_array.forEach((x) => {
+					if (x/strain_max >= 0.3) max_30p++;
+					if (x/strain_max >= 0.5) max_50p++;
+					if (x/strain_max >= 0.7) max_70p++;
+					if (x/strain_max >= 0.9) max_90p++;
+				});
+
+				var nx = strain_array.length;
+				var output_test = "```30% strain: " + max_30p/nx + "\n50% strain: " + max_50p/nx + "\n70% strain: " + max_70p/nx + "\n90% strain: " + max_90p/nx + "```";
+				message.channel.send(output_test) ;
+
+				console.log(object_list);*/
+
+				nparser.reset();
+
+				console.log(nstars.toString());
+				console.log(npp.toString());
+				var starsline = nstars.toString().split("(");
+				var ppline = npp.toString().split("(");
+				var pcstarsline = pcstars.toString().split("(");
+				var pcppline = pcpp.toString().split("(");
+				var objc = parseInt(mapinfo.count_normal) + parseInt(mapinfo.count_slider) + parseInt(mapinfo.count_spinner);
+				let mapstat = new MapStats().calc({cs: mapinfo.diff_size, ar: mapinfo.diff_approach, od: mapinfo.diff_overall, hp: mapinfo.diff_drain, mods: target[4]});
+				let footer = config.avatar_list;
+				const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+				const embed = {
+					"title": mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + target[4],
+					"description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + mapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/" + mapinfo.beatmapset_id + ".osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=" + mapinfo.beatmapset_id + ")" ,
+					"url": "https://osu.ppy.sh/b/" + mapinfo.beatmap_id,
+					"color": mapstatusread(parseInt(mapinfo.approved)),
+					"footer": {
+						"icon_url": footer[index],
+						"text": "Alice Synthesis Thirty"
+					},
+					"author": {
+						"name": "Map Found",
+						"icon_url": "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg"
+					},
+					"thumbnail": {
+						"url": "https://b.ppy.sh/thumb/" + mapinfo.beatmapset_id + ".jpg"
+					},
+					"fields": [
+						{
+							"name": `CS: ${pcmap.cs}${mapstat.cs == pcmap.cs?"":` (${mapstat.cs})`} - AR: ${pcmap.ar}${mapstat.ar == pcmap.ar?"":` (${mapstat.ar})`} - OD: ${pcmap.od}${mapstat.od == pcmap.od?"":` (${mapstat.od})`} - HP: ${pcmap.hp}${mapstat.hp == pcmap.hp?"":` (${mapstat.hp})`}`,
+							"value": `BPM: ${mapinfo.bpm}${mapinfo.bpm == bpm?"":` (${bpm.toFixed(2)})`} - Length: ${time(mapinfo.hit_length)}${hitlength == mapinfo.hit_length?"":` (${time(hitlength)})`}/${time(mapinfo.total_length)}${maplength == mapinfo.total_length?"":` (${time(maplength)})`} - Max Combo: ${mapinfo.max_combo}x - Object count: ${objc}`
+						},
+						{
+							"name": "Last Update: " + mapinfo.last_update + " | " + mapstatus(parseInt(mapinfo.approved)),
+							"value": "Result: " + combo + "/" + mapinfo.max_combo + "x / " + acc_percent + "% / " + nmiss + " miss(es)"
+						},
+						{
+							"name": "Droid pp (Experimental): __" + ppline[0] + "__ - " + starsline[0] ,
+							"value": "PC pp: " + pcppline[0] + " - " + pcstarsline[0]
+						}
+					]
+				};
+				if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
+				if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
+				message.channel.send({embed})
+			})
 		})
 	});
 	req.end()
