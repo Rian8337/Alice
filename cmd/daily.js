@@ -453,7 +453,7 @@ function challengeRequirements(challengeid, pass, bonus) {
                     break
                 }
                 case "scorev2": {
-                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
                     break
                 }
                 case "miss": {
