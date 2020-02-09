@@ -134,7 +134,7 @@ function getMapPP(hash, mod, combo, acc, miss, cb) {
 
 module.exports.run = (client, message, args, maindb) => {
     let ufind = message.author.id;
-    if (args[0]) ufind = args[0].replace("<@", "").replace("<@!", "").replace(">", "");
+    if (args[0]) ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
     console.log(ufind);
     let binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
