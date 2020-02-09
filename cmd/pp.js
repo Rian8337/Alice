@@ -93,16 +93,23 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					// 	console.log("+" + osu.modbits.string(mods));
 					// }
 					if (pmod.includes("r")) {
-						mods -= 16; 
-						cur_ar = Math.min(cur_ar*1.4, 10);
-						cur_od = Math.min(cur_od*1.4, 10);
+						mods -= 16;
+						cur_ar = Math.min(cur_ar * 1.4, 10);
+						cur_od = Math.min(cur_od * 1.4, 10);
 						cur_cs++
 					}
-
-					if (pmod.includes("PR")) { cur_od += 4; }
-
-					cur_od -= 5;
-					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
+					if (pmod.includes("e")) {
+						mods -= 2;
+						cur_ar /= 2;
+						cur_od /= 2;
+						cur_cs--
+					}
+					let droidtoMS = 75 + 5 * (5 - cur_od);
+					if (pmod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+					cur_od = 5 - (droidtoMS - 50) / 6;
+					nmap.od = cur_od;
+					nmap.ar = cur_ar;
+					nmap.cs = cur_cs;
 					
 					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
 						console.log('Error: no object found'); 
@@ -133,7 +140,8 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					cb(ppline[0], playinfo, input, pcombo, pacc, pmissc);
 				})
 			})
-		})
+		});
+		req.end()
 	})
 }
 
