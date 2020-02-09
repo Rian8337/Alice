@@ -86,7 +86,7 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 				request(url, function (err, response, data) {
 					parser.feed(data);
 					var nmap = parser.map;
-					var cur_od = nmap.od - 5;
+					var cur_od = nmap.od;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
 					// if (mods) {
@@ -95,12 +95,13 @@ function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whi
 					if (pmod.includes("r")) {
 						mods -= 16;
 						cur_ar = Math.min(cur_ar*1.4, 10);
-						cur_od = Math.min(cur_od*1.4, 5);
-						cur_cs += 1;
+						cur_od = Math.min(cur_od*1.4, 10);
+						cur_cs++
 					}
 
 					if (pmod.includes("PR")) { cur_od += 4; }
 
+					cur_od -= 5;
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
 
 					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
