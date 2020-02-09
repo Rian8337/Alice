@@ -7,6 +7,7 @@ require("dotenv").config();
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 var elainadbkey = process.env.ELAINA_DB_KEY;
 var alicedbkey = process.env.ALICE_DB_KEY;
+var cd = new Set();
 
 // Command loading
 client.commands = new Discord.Collection();
@@ -177,7 +178,12 @@ client.on("message", message => {
 		//else cmd = client.commands.get(command.slice(1));
 		if (cmd) {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
-			cmd.run(client, message, args, maindb, alicedb)
+			if (cd.has(message.author.id) && message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+			cmd.run(client, message, args, maindb, alicedb);
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 5000)
 		}
 	}
 	
