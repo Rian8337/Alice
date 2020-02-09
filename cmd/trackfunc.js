@@ -93,11 +93,19 @@ function getMapPP(phash, pcombo, pacc, pmissc, pmod = "", cb) {
                 var cur_cs = nmap.cs - 4;
                 if (pmod.includes("r")) {
                     mods -= 16;
-                    cur_ar = Math.min(cur_ar*1.4, 10);
-                    cur_od = Math.min(cur_od*1.4, 10);
+                    cur_ar = Math.min(cur_ar * 1.4, 10);
+                    cur_od = Math.min(cur_od * 1.4, 10);
                     cur_cs++
                 }
-                cur_od -= 5;
+                if (pmod.includes("e")) {
+                    mods -= 2;
+                    cur_ar /= 2;
+                    cur_od /= 2;
+                    cur_cs--
+                }
+                let droidtoMS = 75 + 5 * (5 - cur_od);
+                if (pmod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+                cur_od = 5 - (droidtoMS - 50) / 6;
                 nmap.od = cur_od;
                 nmap.ar = cur_ar;
                 nmap.cs = cur_cs;
@@ -171,17 +179,17 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                         let rank = rankread(play[i].mark);
                         let combo = play[i].combo;
                         let hash = play[i].hash;
-                        getMapPP(hash, combo, acc, miss, mod, (available, dpp, pp) => {
-                            let embed = new Discord.RichEmbed()
-                                .setAuthor(`Recent play for ${name}`, rank)
-                                .setTitle(title)
-                                .setColor(8311585);
 
+                        let embed = new Discord.RichEmbed()
+                            .setAuthor(`Recent play for ${name}`, rank)
+                            .setTitle(title)
+                            .setColor(8311585);
+
+                        getMapPP(hash, combo, acc, miss, mod, (available, dpp, pp) => {
                             if (available) embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\`\n\`${dpp} dpp - ${pp} PC pp\``);
                             else embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
 
-                            client.channels.get("664880705372684318").send({embed: embed}); //debug
-                            client.channels.get("665106609382359041").send({embed: embed}) //original
+                            client.channels.get("664880705372684318").send({embed: embed})
                         })
                     }
                 })
