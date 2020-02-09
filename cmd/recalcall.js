@@ -61,15 +61,22 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
                     let cur_od = map.od;
                     if (modstring.includes("HR")) {
                         mods -= 16;
-                        cur_ar = Math.min(10, cur_ar * 1.4);
-                        cur_od = Math.min(10, cur_od * 1.4);
+                        cur_ar = Math.min(cur_ar * 1.4, 10);
+                        cur_od = Math.min(cur_od * 1.4, 10);
                         cur_cs++
                     }
-                    if (modstring.includes("PR")) cur_od += 4;
-                    cur_od -= 5;
-                    map.cs = cur_cs;
-                    map.ar = cur_ar;
+                    if (modstring.includes("EZ")) {
+                        mods -= 2;
+                        cur_ar /= 2;
+                        cur_od /= 2;
+                        cur_cs--
+                    }
+                    let droidtoMS = 75 + 5 * (5 - cur_od);
+                    if (modstring.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+                    cur_od = 5 - (droidtoMS - 50) / 6;
                     map.od = cur_od;
+                    map.ar = cur_ar;
+                    map.cs = cur_cs;
                     if (map.ncircles == 0 && map.nsliders == 0) {
                         console.log(target[i][0] + ' - Error: no object found');
                         console.log(target[i][2] + " -> " + target[i][2]);
@@ -106,13 +113,14 @@ module.exports.run = (client, message, args, maindb) => {
         confirm.on("collect", () => {
             confirmation = true;
             msg.delete();
+            message.channel.send("✅ **| Recalculating all players...**");
             let binddb = maindb.collection("userbind");
             let whitelist = maindb.collection("mapwhitelist");
             binddb.find({}, {projection: {_id: 0, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
                 if (err) throw err;
                 let i = 0;
                 retrieveList(res, i, function testList(list, stopSign = false) {
-                    if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
+                    if (stopSign) return console.log(`✅ **| ${message.author}, recalculation process complete!**`);
                     let uid = list[0];
                     let ppentry = list[1];
                     let newppentry = [];
