@@ -84,15 +84,16 @@ function getMapPP(hash, mod, combo, acc, miss, cb) {
 
                 let cur_cs = nmap.cs - 4;
                 let cur_ar = nmap.ar;
-                let cur_od = nmap.od - 5;
+                let cur_od = nmap.od;
 
                 if (mod.includes("r")) {
                     mods -= 16;
                     cur_ar = Math.min(10, cur_ar * 1.4);
-                    cur_od = Math.min(5, cur_od * 1.4);
+                    cur_od = Math.min(10, cur_od * 1.4);
                     cur_cs++
                 }
                 if (mod.includes("PR")) cur_od += 4;
+                cur_od -= 5;
                 nmap.cs = cur_cs;
                 nmap.ar = cur_ar;
                 nmap.od = cur_od;
