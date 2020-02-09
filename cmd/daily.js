@@ -141,15 +141,22 @@ class MapStats {
 
                     if (mod.includes("HR")) {
                         mods -= 16;
-                        cur_ar = Math.min(10, cur_ar * 1.4);
-                        cur_od = Math.min(10, cur_od * 1.4);
+                        cur_ar = Math.min(cur_ar * 1.4, 10);
+                        cur_od = Math.min(cur_od * 1.4, 10);
                         cur_cs++
                     }
-                    if (mod.includes("PR")) cur_od += 4;
-                    cur_od -= 5;
-                    nmap.cs = cur_cs;
-                    nmap.ar = cur_ar;
+                    if (mod.includes("EZ")) {
+                        mods -= 2;
+                        cur_ar /= 2;
+                        cur_od /= 2;
+                        cur_cs--
+                    }
+                    let droidtoMS = 75 + 5 * (5 - cur_od);
+                    if (mod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+                    cur_od = 5 - (droidtoMS - 50) / 6;
                     nmap.od = cur_od;
+                    nmap.ar = cur_ar;
+                    nmap.cs = cur_cs;
 
                     let hitlength = mapinfo.hit_length;
                     let maplength = mapinfo.total_length;
@@ -340,7 +347,7 @@ function spaceFill(s, l) {
     return s
 }
 
-function editpoint(res, page) {
+function editPoint(res, page) {
     var output = '#   | Username         | UID    | Challenges | Points\n';
     for (var i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
@@ -633,7 +640,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("Error: Empty database response. Please try again!")
                 }
                 if (!res[page*20]) return message.channel.send("Nah we don't have that much player :p");
-                let output = editpoint(res, page);
+                let output = editPoint(res, page);
                 message.channel.send('```c\n' + output + '```').then (msg => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
@@ -650,7 +657,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     backward.on('collect', () => {
                         page = 0;
-                        output = editpoint(res, page);
+                        output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
                     });
@@ -658,7 +665,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     back.on('collect', () => {
                         if (page === 0) page = Math.floor(res.length / 20);
                         else page--;
-                        output = editpoint(res, page);
+                        output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
                     });
@@ -666,14 +673,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     next.on('collect', () => {
                         if ((page + 1) * 20 >= res.length) page = 0;
                         else page++;
-                        output = editpoint(res, page);
+                        output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
                     });
 
                     forward.on('collect', () => {
                         page = Math.floor(res.length / 20);
-                        output = editpoint(res, page);
+                        output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
                     })
