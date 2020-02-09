@@ -82,7 +82,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 						nparser.feed(data);
 						var map = parser.map;
 						var nmap = nparser.map;
-						var cur_od = map.od - 5;
+						var cur_od = map.od;
 						var cur_ar = map.ar;
 						var cur_cs = map.cs - 4;
 						// if (mods) {
@@ -91,12 +91,13 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 						if (modstring.includes("HR")) {
 							mods -= 16; 
 							cur_ar = Math.min(cur_ar*1.4, 10);
-							cur_od = Math.min(cur_od*1.4, 5);
+							cur_od = Math.min(cur_od*1.4, 10);
 							cur_cs += 1;
 						}
 
 						if (modstring.includes("PR")) { cur_od += 4; }
 
+						cur_od -= 5;
 						map.od = cur_od; map.ar = cur_ar; map.cs = cur_cs;
 						nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
 						
