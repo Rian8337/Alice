@@ -14,7 +14,7 @@ function modread(input) {
 	if (input.includes('t')) res += 256;
 	if (input.includes('c')) res += 576;
 	if (input.includes('d')) res += 64;
-	return res
+	return res;
 }
 
 function test(uid, page, cb) {
@@ -98,14 +98,23 @@ function calculatePP(ppentries, entry, cb) {
                 // 	console.log("+" + osu.modbits.string(mods));
                 // }
                 if (entry[4].includes("r")) {
-                    mods -= 16; 
-                    cur_ar = Math.min(cur_ar*1.4, 10);
-                    cur_od = Math.min(cur_od*1.4, 10);
+                    mods -= 16;
+                    cur_ar = Math.min(cur_ar * 1.4, 10);
+                    cur_od = Math.min(cur_od * 1.4, 10);
                     cur_cs++
                 }
-
-		cur_od -= 5;
-                nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
+                if (entry[4].includes("e")) {
+                    mods -= 2;
+                    cur_ar /= 2;
+                    cur_od /= 2;
+                    cur_cs--
+                }
+                let droidtoMS = 75 + 5 * (5 - cur_od);
+                if (entry[4].includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
+                cur_od = 5 - (droidtoMS - 50) / 6;
+                nmap.od = cur_od;
+                nmap.ar = cur_ar;
+                nmap.cs = cur_cs;
 
                 if (nmap.ncircles == 0 && nmap.nsliders == 0) {
                     console.log('Error: no object found'); 
@@ -139,8 +148,13 @@ function calculatePP(ppentries, entry, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+    try {
+        let rolecheck = message.member.roles;
+    } catch (e) {
+        return
+    }
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     var ppentries = [];
     var page = 0;
     var ufind = args[0];
@@ -153,10 +167,9 @@ module.exports.run = (client, message, args, maindb) => {
     } else return message.channel.send("Please mention a user or user ID");
 
     let binddb = maindb.collection("userbind");
-    let whitelist = maindb.collection("mapwhitelist");
     var query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, userres) {
-        if (!userres[0]) {console.log('user not found'); return;}
+        if (!userres[0]) return console.log('user not found');
         var uid = userres[0].uid;
         if (userres[0].pp) var pplist = userres[0].pp;
         else var pplist = [];
@@ -186,7 +199,7 @@ module.exports.run = (client, message, args, maindb) => {
                     pptotal += weight*pplist[i][2];
                     weight *= 0.95;
                 }
-                message.channel.send('✅ **| <@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp.**');
+                message.channel.send('<@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp');
                 var updateVal = { $set: {
                         pptotal: pptotal,
                         pp: pplist,
