@@ -168,7 +168,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					var pcmods = mods - 4;
 					var nmap = nparser.map;
 					var pcmap = pcparser.map;
-					var cur_od = nmap.od - 5;
+					var cur_od = nmap.od;
 					var cur_ar = nmap.ar;
 					var cur_cs = nmap.cs - 4;
 					var bpm = parseFloat(mapinfo.bpm);
@@ -178,8 +178,8 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					if (target[4].includes("HR")) {
 						mods -= 16;
 						cur_ar = Math.min(cur_ar*1.4, 10);
-						cur_od = Math.min(cur_od*1.4, 5);
-						cur_cs += 1;
+						cur_od = Math.min(cur_od*1.4, 10);
+						cur_cs++
 					}
 
 					var hitlength = mapinfo.hit_length;
@@ -203,6 +203,7 @@ function getMapPP(target, message, ndetail, pcdetail) {
 					if (target[4].includes("PR")) cur_od += 4;
 					if (target[4].includes("TD")) pcmods += 4;
 
+					cur_od -= 5;
 					nmap.od = cur_od; nmap.ar = cur_ar; nmap.cs = cur_cs;
 
                     if (nmap.ncircles == 0 && nmap.nsliders == 0) {
