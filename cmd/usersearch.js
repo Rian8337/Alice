@@ -44,7 +44,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
     description: "Checks if specific username is binded.",
-    usage: "usersearch <uid>",
+    usage: "usersearch <username>",
     detail: "`username`: The username to check [String]",
     permission: "None"
 };
