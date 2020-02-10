@@ -87,7 +87,7 @@ module.exports.run = (client, message, args, maindb) => {
 			});
 			req.end();
 		}
-		else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+		else message.channel.send("The account is not binded, he/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`")
 	})
 };
 
@@ -106,7 +106,7 @@ function apiFetch(uid, avalink, location, message, client) {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') {message.channel.send("User not exist"); return;}
+			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, the user doesn't exist!**");
 			resarr.shift();
 			content = resarr.join("");
 			var obj;
@@ -121,9 +121,9 @@ function apiFetch(uid, avalink, location, message, client) {
 			var oacc = parseFloat(headerres[5])*100;
 			var rank = obj.rank;
 			var rplay = obj.recent[0];
-			var date = new Date(rplay.date*1000);
+			if (!rplay) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+			var date = new Date(rplay.date * 1000);
 			date.setUTCHours(date.getUTCHours() + 8);
-			if (!rplay) {message.channel.send("This player haven't submitted any play"); return;}
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
