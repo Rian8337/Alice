@@ -183,7 +183,7 @@ client.on("message", message => {
 			cd.add(message.author.id);
 			setTimeout(() => {
 				cd.delete(message.author.id)
-			}, 5000)
+			}, 7500)
 		}
 	}
 	
