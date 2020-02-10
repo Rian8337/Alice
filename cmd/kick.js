@@ -26,7 +26,7 @@ module.exports.run = (client, message, args) => {
             .setColor(message.member.highestRole.hexColor)
             .setTimestamp(new Date())
             .setTitle("Kick executed")
-            .addField("Kicked user: " + tokick.username, "User ID: " + tokick.id)
+            .addField("Kicked user: " + tokick.user.username, "User ID: " + tokick.id)
             .addField("=========================", "Reason:\n" + reason);
 
         logchannel.send(embed)
