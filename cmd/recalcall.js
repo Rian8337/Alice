@@ -118,52 +118,55 @@ module.exports.run = (client, message, args, maindb) => {
         let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
         confirm.on("collect", () => {
             confirmation = true;
-            msg.edit("✅ **| Recalculating all players...**").catch(console.error);
+            msg.delete();
+            message.channel.send("✅ **| Recalculating all players...**");
             let binddb = maindb.collection("userbind");
             let whitelist = maindb.collection("mapwhitelist");
             binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
                 if (err) throw err;
                 let i = 0;
-                retrieveList(res, i, function testList(list, stopSign = false) {
-                    if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
-                    let uid = list[0];
-                    let ppentry = list[1];
-                    let discordid = list[2];
-                    let newppentry = [];
-                    let count = 0;
-                    console.log("Uid:", uid);
-                    recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
-                        if (!error) count++;
-                        if (count < ppentry.length && !stopFlag) recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
-                        else {
-                            newppentry.sort((a, b) => {return b[2] - a[2]});
-                            let totalpp = 0;
-                            let weight = 1;
-                            for (let x in newppentry) {
-                                totalpp += newppentry[x][2] * weight;
-                                weight *= 0.95
+                message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).then(m => {
+                    retrieveList(res, i, function testList(list, stopSign = false) {
+                        if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
+                        let uid = list[0];
+                        let ppentry = list[1];
+                        let discordid = list[2];
+                        let newppentry = [];
+                        let count = 0;
+                        console.log("Uid:", uid);
+                        recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
+                            if (!error) count++;
+                            if (count < ppentry.length && !stopFlag) recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
+                            else {
+                                newppentry.sort((a, b) => {return b[2] - a[2]});
+                                let totalpp = 0;
+                                let weight = 1;
+                                for (let x in newppentry) {
+                                    totalpp += newppentry[x][2] * weight;
+                                    weight *= 0.95
+                                }
+                                let updatedata = {
+                                    $set: {
+                                        pptotal: totalpp,
+                                        pp: newppentry
+                                    }
+                                };
+                                binddb.updateOne({discordid: discordid}, updatedata, err => {
+                                    if (err) {
+                                        console.log("Error inserting data to database");
+                                        console.log(err);
+                                        if (!error) count--;
+                                        return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
+                                    }
+                                    console.log(totalpp);
+                                    console.log("Done");
+                                    i++;
+                                    console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
+                                    m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
+                                    retrieveList(res, i, testList)
+                                })
                             }
-                            let updatedata = {
-                                $set: {
-                                    pptotal: totalpp,
-                                    pp: newppentry
-                                }
-                            };
-                            binddb.updateOne({discordid: discordid}, updatedata, err => {
-                                if (err) {
-                                    console.log("Error inserting data to database");
-                                    console.log(err);
-                                    if (!error) count--;
-                                    return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
-                                }
-                                console.log(totalpp);
-                                console.log("Done");
-                                i++;
-                                console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
-                                msg.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error)
-                                retrieveList(res, i, testList)
-                            })
-                        }
+                        })
                     })
                 })
             })
