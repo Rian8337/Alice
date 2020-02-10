@@ -54,6 +54,10 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
                 let parser = new droid.parser();
                 let url = `https://osu.ppy.sh/osu/${mapinfo.beatmap_id}`;
                 request(url, function(err, response, data) {
+                    if (err) {
+                        console.log("Error downloading .osu file");
+                        return cb(true)
+                    }
                     parser.feed(data);
                     let map = parser.map;
                     let cur_cs = map.cs - 4;
