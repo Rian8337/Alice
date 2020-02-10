@@ -9,6 +9,7 @@ function retrieveList(res, i, cb) {
     let list = [];
     list.push(res[i].uid);
     list.push(res[i].pp);
+    list.push(res[i].discordid);
     cb(list)
 }
 
@@ -56,6 +57,7 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
                 request(url, function(err, response, data) {
                     if (err) {
                         console.log("Error downloading .osu file");
+                        console.log(err);
                         return cb(true)
                     }
                     parser.feed(data);
@@ -120,13 +122,21 @@ module.exports.run = (client, message, args, maindb) => {
             message.channel.send("✅ **| Recalculating all players...**");
             let binddb = maindb.collection("userbind");
             let whitelist = maindb.collection("mapwhitelist");
-            binddb.find({}, {projection: {_id: 0, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
+            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
                 if (err) throw err;
                 let i = 0;
+                let notification = setInterval(() => {
+                    console.log("Report complete");
+                    message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`)
+                }, 600000);
                 retrieveList(res, i, function testList(list, stopSign = false) {
-                    if (stopSign) return console.log(`✅ **| ${message.author}, recalculation process complete!**`);
+                    if (stopSign) {
+                        clearInterval(notification);
+                        return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
+                    }
                     let uid = list[0];
                     let ppentry = list[1];
+                    let discordid = list[2];
                     let newppentry = [];
                     let count = 0;
                     console.log("Uid:", uid);
@@ -147,8 +157,13 @@ module.exports.run = (client, message, args, maindb) => {
                                     pp: newppentry
                                 }
                             };
-                            binddb.updateOne({uid: uid}, updatedata, err => {
-                                if (err) return console.log(err);
+                            binddb.updateOne({discordid: discordid}, updatedata, err => {
+                                if (err) {
+                                    console.log("Error inserting data to database");
+                                    console.log(err);
+                                    if (!error) count--;
+                                    return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
+                                }
                                 console.log(totalpp);
                                 console.log("Done");
                                 i++;
