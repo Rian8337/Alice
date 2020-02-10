@@ -20,10 +20,10 @@ module.exports.run = (client, message, args) => {
     if (!memberrole) return message.channel.send("Role not found");
     
     if (!verifying.roles.has(memberrole.id)) {
-        message.channel.send("✅  **| User has been verified.**");
+        message.channel.send("✅ **| User has been verified.**");
         verifying.addRole(memberrole).catch(console.error)
     }
-    else message.channel.send("❎  **| User is already verified!**")
+    else message.channel.send("❎ **| User is already verified!**")
 };
 
 module.exports.config = {
