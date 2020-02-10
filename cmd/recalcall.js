@@ -128,7 +128,7 @@ module.exports.run = (client, message, args, maindb) => {
                 let notification = setInterval(() => {
                     console.log("Report complete");
                     message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`)
-                }, 600000);
+                }, 1200000);
                 retrieveList(res, i, function testList(list, stopSign = false) {
                     if (stopSign) {
                         clearInterval(notification);
