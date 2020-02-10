@@ -118,22 +118,14 @@ module.exports.run = (client, message, args, maindb) => {
         let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
         confirm.on("collect", () => {
             confirmation = true;
-            msg.delete();
-            message.channel.send("✅ **| Recalculating all players...**");
+            msg.edit("✅ **| Recalculating all players...**").catch(console.error);
             let binddb = maindb.collection("userbind");
             let whitelist = maindb.collection("mapwhitelist");
             binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
                 if (err) throw err;
                 let i = 0;
-                let notification = setInterval(() => {
-                    console.log("Report complete");
-                    message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`)
-                }, 1200000);
                 retrieveList(res, i, function testList(list, stopSign = false) {
-                    if (stopSign) {
-                        clearInterval(notification);
-                        return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
-                    }
+                    if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
                     let uid = list[0];
                     let ppentry = list[1];
                     let discordid = list[2];
@@ -168,6 +160,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 console.log("Done");
                                 i++;
                                 console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
+                                msg.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error)
                                 retrieveList(res, i, testList)
                             })
                         }
