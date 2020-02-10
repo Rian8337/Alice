@@ -32,6 +32,13 @@ class MapStats {
         let od = parseFloat(params.od);
         let hp = parseFloat(params.hp);
         let mods = params.mods.toUpperCase();
+        if (!mods) {
+			this.cs = cs;
+			this.ar = ar;
+			this.od = od;
+			this.hp = hp;
+			return this
+		}
         let speed_mul = 1;
         if (mods.includes("DT")) speed_mul = 1.5;
         if (mods.includes("NC")) speed_mul = 1.39;
