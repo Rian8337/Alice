@@ -51,22 +51,22 @@ module.exports.run = (client, message, args) => {
 			console.log(err);
 			return message.channel.send("Error: Unable to retrieve user data. Please try again!")
 		});
-    	res.on("end", function () {
-			const a = content;
-			let b = a.split('\n');
-			let avalink=""; let location="";
-			for (x = 0; x < b.length; x++) {
-				if (b[x].includes('h3 m-t-xs m-b-xs')) {
-					b[x-3]=b[x-3].replace('<img src="',"");
-					b[x-3]=b[x-3].replace('" class="img-circle">',"");
-					b[x-3]=b[x-3].trim();
-					avalink = b[x-3];
-					b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-					b[x+1]=b[x+1].replace("<\/small>","");
-					b[x+1]=b[x+1].trim();
-					location=b[x+1]
+			res.on("end", function () {
+				const a = content;
+				let b = a.split('\n');
+				let avalink=""; let location="";
+				for (x = 0; x < b.length; x++) {
+					if (b[x].includes('h3 m-t-xs m-b-xs')) {
+						b[x-3]=b[x-3].replace('<img src="',"");
+						b[x-3]=b[x-3].replace('" class="img-circle">',"");
+						b[x-3]=b[x-3].trim();
+						avalink = b[x-3];
+						b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+						b[x+1]=b[x+1].replace("<\/small>","");
+						b[x+1]=b[x+1].trim();
+						location=b[x+1]
+					}
 				}
-			}
 			apiFetch(uid, avalink, location, message, client)
 		})
 	});
@@ -89,12 +89,10 @@ function apiFetch(uid, avalink, location, message, client) {
 		res.on("end", function () {
 			var resarr = content.split('<br>');
 			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') return message.channel.send("User not exist");
-			resarr.shift();
-			content = resarr.join("");
+			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, that user doesn't exist!**");
 			var obj;
 			try {
-				obj = JSON.parse(content);
+				obj = JSON.parse(resarr[1]);
 			} catch (e) {
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
 			}
@@ -102,13 +100,12 @@ function apiFetch(uid, avalink, location, message, client) {
 			var tscore = headerres[3];
 			var pcount = headerres[4];
 			var oacc = parseFloat(headerres[5])*100;
+			console.log(obj);
 			var rank = obj.rank;
 			var rplay = obj.recent[0];
-			console.log(rplay.date);
+			if (!rplay) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 			var date = new Date(rplay.date * 1000);
-			[shortcut] = "https://ppboard.herokuapp.com/profile?uid="+uid;
 			date.setUTCHours(date.getUTCHours() + 8);
-			if (!rplay) {message.channel.send("This player haven't submitted any play"); return;}
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			const embed = {
