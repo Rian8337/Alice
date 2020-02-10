@@ -504,8 +504,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let embed = new Discord.RichEmbed();
     let obj;
     let query = {};
-    let pass_string = '';
-    let bonus_string = '';
 
     switch (args[0]) {
         case "about": {
@@ -1333,6 +1331,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let mod;
                             let miss;
                             let combo;
+                            let rank;
                             for (let i = 0; i < rplay.length; i++) {
                                 if (rplay[i].hash == hash) {
                                     score = rplay[i].score;
@@ -1340,6 +1339,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     mod = rplay[i].mode;
                                     miss = rplay[i].miss;
                                     combo = rplay[i].combo;
+                                    rank = rplay[i].mark;
                                     found = true;
                                     break
                                 }
@@ -1367,6 +1367,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     case "scorev2": {
                                         if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "rank": {
+                                        if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
                                         break
                                     }
                                     case "dpp": {
@@ -1430,6 +1434,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     case "miss": {
                                         if (miss < bonus[1] || miss == 0) points += bonus[2];
+                                        break
+                                    }
+                                    case "rank": {
+                                        if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
                                         break
                                     }
                                     case "dpp": {
