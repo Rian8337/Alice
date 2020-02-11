@@ -189,7 +189,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
                             if (available) embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\`\n\`${dpp} dpp - ${pp} PC pp\``);
                             else embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
 
-                            client.channels.get("664880705372684318").send({embed: embed})
+                            client.channels.get("665106609382359041").send({embed: embed})
                         })
                     }
                 })
