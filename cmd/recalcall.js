@@ -134,7 +134,7 @@ module.exports.run = (client, message, args, maindb) => {
                         let newppentry = [];
                         let count = 0;
                         console.log("Uid:", uid);
-                        if (ppentry.length == 0) {
+                        if (!ppentry) {
                             i++;
                             m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
                             return retrieveList(res, i, testList)
