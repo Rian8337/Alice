@@ -76,6 +76,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 output = editscore(res, page);
                 msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+            });
+            
+            backward.on("end", () => {
+                msg.reactions.deleteAll()
             })
         });
         cd.add(message.author.id);
