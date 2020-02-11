@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb) => {
 				let uid = headerres[1];
 				binddb.find({uid: uid}).toArray(function (err, res) {
 					if (err) throw err;
-					if (res[0]) return message.channel.send("❎ **| I'm sorry, this uid is already binded!**");
+					if (res[0] && message.author.id != res[0].discordid) return message.channel.send("❎ **| I'm sorry, this uid is already binded!**");
 					var bind = {
 						discordid: message.author.id,
 						uid: uid,
