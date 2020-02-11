@@ -200,6 +200,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
                             embed = editmember(clanres, page, rolecheck, footer, index);
                             msg.edit(embed).catch(e => console.log(e))
+                        });
+                        
+                        backward.on("end", () => {
+                            msg.reactions.deleteAll()
                         })
                     })
                 })
