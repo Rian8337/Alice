@@ -159,8 +159,12 @@ module.exports.run = (client, message, args, maindb) => {
 							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
 							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 							msg.edit(embed).catch(e => console.log(e))
+						});
+						
+						backward.on("end", () => {
+							msg.reactions.deleteAll()
 						})
-					});
+					})
 				})
 			});
 			req.end();
