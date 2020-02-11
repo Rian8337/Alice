@@ -134,38 +134,41 @@ module.exports.run = (client, message, args, maindb) => {
                         let newppentry = [];
                         let count = 0;
                         console.log("Uid:", uid);
+                        if (ppentry.length == 0) {
+                            i++;
+                            m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
+                            return retrieveList(res, i, testList)
+                        }
                         recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
                             if (!error) count++;
-                            if (count < ppentry.length && !stopFlag) recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
-                            else {
-                                newppentry.sort((a, b) => {return b[2] - a[2]});
-                                let totalpp = 0;
-                                let weight = 1;
-                                for (let x in newppentry) {
-                                    totalpp += newppentry[x][2] * weight;
-                                    weight *= 0.95
-                                }
-                                let updatedata = {
-                                    $set: {
-                                        pptotal: totalpp,
-                                        pp: newppentry
-                                    }
-                                };
-                                binddb.updateOne({discordid: discordid}, updatedata, err => {
-                                    if (err) {
-                                        console.log("Error inserting data to database");
-                                        console.log(err);
-                                        if (!error) count--;
-                                        return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
-                                    }
-                                    console.log(totalpp);
-                                    console.log("Done");
-                                    i++;
-                                    console.log(`${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)`);
-                                    m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
-                                    retrieveList(res, i, testList)
-                                })
+                            if (count < ppentry.length && !stopFlag) return recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
+                            newppentry.sort((a, b) => {return b[2] - a[2]});
+                            let totalpp = 0;
+                            let weight = 1;
+                            for (let x in newppentry) {
+                                totalpp += newppentry[x][2] * weight;
+                                weight *= 0.95
                             }
+                            let updatedata = {
+                                $set: {
+                                    pptotal: totalpp,
+                                    pp: newppentry
+                                }
+                            };
+                            binddb.updateOne({discordid: discordid}, updatedata, err => {
+                                if (err) {
+                                    console.log("Error inserting data to database");
+                                    console.log(err);
+                                    if (!error) count--;
+                                    return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
+                                }
+                                console.log(totalpp);
+                                console.log("Done");
+                                i++;
+                                console.log(`${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)`);
+                                m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
+                                retrieveList(res, i, testList)
+                            })
                         })
                     })
                 })
