@@ -5,7 +5,7 @@ let request = require('request');
 let apikey = process.env.OSU_API_KEY;
 
 function retrieveList(res, i, cb) {
-    if (i == 210) return cb([], true);
+    if (!res[i]) return cb([], true);
     let list = [];
     list.push(res[i].uid);
     list.push(res[i].pp);
@@ -122,12 +122,15 @@ module.exports.run = (client, message, args, maindb) => {
             message.channel.send("✅ **| Recalculating all players...**");
             let binddb = maindb.collection("userbind");
             let whitelist = maindb.collection("mapwhitelist");
-            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: 1}).toArray((err, res) => {
+            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
                 if (err) throw err;
                 let i = 0;
-                message.channel.send(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).then(m => {
+                message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).then(m => {
                     retrieveList(res, i, function testList(list, stopSign = false) {
-                        if (stopSign) return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
+                        if (stopSign) {
+                            m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
+                            return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
+                        }
                         let uid = list[0];
                         let ppentry = list[1];
                         let discordid = list[2];
@@ -136,7 +139,6 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Uid:", uid);
                         if (!ppentry) {
                             i++;
-                            m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
                             return retrieveList(res, i, testList)
                         }
                         recalcPlay(ppentry, count, newppentry, whitelist, function testPlay(error = false, stopFlag = false) {
@@ -165,8 +167,8 @@ module.exports.run = (client, message, args, maindb) => {
                                 console.log(totalpp);
                                 console.log("Done");
                                 i++;
-                                console.log(`${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)`);
-                                m.edit(`❗**| Current progress: ${i}/210 players recalculated (${(i * 100 / 210).toFixed(2)}%)**`).catch(console.error);
+                                console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
+                                m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
                                 retrieveList(res, i, testList)
                             })
                         })
