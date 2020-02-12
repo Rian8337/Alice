@@ -111,13 +111,9 @@ MapInfo.prototype.get = function(params, callback) {
             try {
                 obj = JSON.parse(content)
             } catch (e) {
-                this.title = null;
                 return this
             }
-            if (!obj[0]) {
-                this.title = null;
-                return this
-            }
+            if (!obj[0]) return this;
             let mapinfo = obj[0];
             this.title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.approved = parseInt(mapinfo.approved);
