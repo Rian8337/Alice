@@ -381,7 +381,7 @@ MapStars.prototype.calculate = function(params, callback) {
     request(url, (err, response, data) => {
         if (err) {
             console.log("Error downloading osu file");
-            callback(this)
+            return callback(this)
         }
         nparser.feed(data);
         pcparser.feed(data);
@@ -389,7 +389,7 @@ MapStars.prototype.calculate = function(params, callback) {
         let pcmap = pcparser.map;
         if (nmap.ncircles == 0 && nmap.nsliders == 0) {
             console.log('Error: no object found');
-            return this
+            return callback(this)
         }
         let cur_cs = nmap.cs - 4;
         let cur_ar = nmap.ar;
