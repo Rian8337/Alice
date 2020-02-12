@@ -1,12 +1,10 @@
-var Discord = require('discord.js');
-var http = require('http');
-require("dotenv").config();
-var droidapikey = process.env.DROID_API_KEY;
-var cd = new Set();
+let Discord = require('discord.js');
+let cd = new Set();
 let config = require('../config.json');
+let osudroid = require('../modules/osu!droid');
 
 function modread(input) {
-	var res = '';
+	let res = '';
 	if (input.includes('n')) res += 'NF';
 	if (input.includes('h')) res += 'HD';
 	if (input.includes('r')) res += 'HR';
@@ -39,12 +37,12 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
-	for (var i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
+	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
-		var date = new Date(rplay[i].date*1000);
+		let date = new Date(rplay[i].date*1000);
 		date.setUTCHours(date.getUTCHours() + 8);
-		var play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
-		var score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+		let play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
+		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
 	}
 	return embed
@@ -76,104 +74,79 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (res[0]) {
-			let uid = res[0].uid;
-			var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
-			var content = "";
+		if (!res[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		let uid = res[0].uid;
+		new osudroid.PlayerInfo().get({uid: uid}, player => {
+			if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+			if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+			let name = player.name;
+			let rplay = player.recent_plays;
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			let rolecheck;
+			try {
+				rolecheck = message.member.highestRole.hexColor
+			} catch (e) {
+				rolecheck = "#000000"
+			}
+			let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 
-			var req = http.get(options, function (res) {
-				res.setEncoding("utf8");
-				res.on("data", function (chunk) {
-					content += chunk;
-				});
-				res.on("error", err1 => {
-					console.log(err1);
-					return message.channel.send("Error: Empty API response. Please try again!")
-				});
-				res.on("end", function () {
-					var resarr = content.split('<br>');
-					var headerres = resarr[0].split(' ');
-					if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
-					resarr.shift();
-					content = resarr.join("");
-					var obj;
-					try {
-						obj = JSON.parse(content)
-					} catch (e) {
-						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
-					}
-					var name = headerres[2];
-					var rplay = obj.recent;
-					let footer = config.avatar_list;
-					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-					var rolecheck;
-					try {
-						rolecheck = message.member.highestRole.hexColor
-					} catch (e) {
-						rolecheck = "#000000"
-					}
-					let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-					if (!rplay[0]) return message.channel.send("This player haven't submitted any play");
-
-					message.channel.send({embed}).then (msg => {
-						msg.react("⏮️").then(() => {
-							msg.react("⬅️").then(() => {
-								msg.react("➡️").then(() => {
-									msg.react("⏭️").catch(e => console.log(e))
-								})
-							})
-						});
-
-						let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
-						let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
-						let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
-						let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
-
-						backward.on('collect', () => {
-							if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							else page = 1;
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-							msg.edit(embed).catch(e => console.log(e))
-						});
-
-						back.on('collect', () => {
-							if (page === 1) page = 10;
-							else page--;
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-							msg.edit(embed).catch(e => console.log(e))
-						});
-
-						next.on('collect', () => {
-							if (page === 10) page = 1;
-							else page++;
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-							msg.edit(embed).catch(e => console.log(e));
-						});
-
-						forward.on('collect', () => {
-							if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							else page = 10;
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-							embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-							msg.edit(embed).catch(e => console.log(e))
-						});
-						
-						backward.on("end", () => {
-							msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-							msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+			message.channel.send({embed: embed}).then(msg => {
+				msg.react("⏮️").then(() => {
+					msg.react("⬅️").then(() => {
+						msg.react("➡️").then(() => {
+							msg.react("⏭️").catch(e => console.log(e))
 						})
 					})
+				});
+
+				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
+				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
+				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
+
+				backward.on('collect', () => {
+					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 1;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+					msg.edit(embed).catch(e => console.log(e))
+				});
+
+				back.on('collect', () => {
+					if (page === 1) page = 10;
+					else page--;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+					msg.edit(embed).catch(e => console.log(e))
+				});
+
+				next.on('collect', () => {
+					if (page === 10) page = 1;
+					else page++;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+					msg.edit(embed).catch(e => console.log(e));
+				});
+
+				forward.on('collect', () => {
+					if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					else page = 10;
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+					msg.edit(embed).catch(e => console.log(e))
+				});
+
+				backward.on("end", () => {
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					msg.reactions.forEach(reaction => reaction.remove(client.user.id))
 				})
-			});
-			req.end();
-			cd.add(message.author.id);
-			setTimeout(() => {
-				cd.delete(message.author.id)
-			}, 10000)
-		} else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+			})
+		});
+		cd.add(message.author.id);
+		setTimeout(() => {
+			cd.delete(message.author.id)
+		}, 10000)
 	})
 };
 
