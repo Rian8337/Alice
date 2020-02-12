@@ -124,7 +124,8 @@ module.exports.run = (client, message, args, maindb) => {
 				});
 				
 				backward.on("end", () => {
-					msg.reactions.deleteAll()
+					msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+					msg.reactions.forEach(reaction => reaction.remove(client.user.id))
 				})
 			});
 			cd.add(message.author.id);
