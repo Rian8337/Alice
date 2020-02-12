@@ -36,7 +36,7 @@ PlayerInfo.prototype.get = function(params, callback) {
     let options = {
         host: "ops.dgsrz.com",
         port: 80,
-        path: `/api/getuserinfo.php?apiKey=${droidapikey}${uid ? `&uid=${uid}` : `&username=${username}`}`
+        path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${username}`}`
     };
     let content = '';
     let req = http.request(options, res => {
@@ -99,7 +99,7 @@ MapInfo.prototype.get = function(params, callback) {
     let beatmapid = params.beatmap_id;
     let hash = params.hash;
     if (!beatmapid && !hash) throw new TypeError("Beatmap ID or MD5 hash must be defined");
-    let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}${beatmapid ? `&b=${beatmapid}` : `&h=${hash}`}`);
+    let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&${beatmapid ? `b=${beatmapid}` : `h=${hash}`}`);
     let content = '';
     let req = https.get(options, res => {
         res.setEncoding("utf8");
@@ -111,9 +111,9 @@ MapInfo.prototype.get = function(params, callback) {
             try {
                 obj = JSON.parse(content)
             } catch (e) {
-                return this
+                return callback(this)
             }
-            if (!obj[0]) return this;
+            if (!obj[0]) return callback(this);
             let mapinfo = obj[0];
             this.title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.approved = parseInt(mapinfo.approved);
@@ -208,7 +208,7 @@ MapInfo.prototype.showStatistics = function(mods, mode) {
     }
 };
 
-// converts droid mod string to modbits
+// converts droid mod string to PC mod string
 MapInfo.prototype.modConvert = function(mods) {
     let modbits = 0;
     for (let i = 0; i < mods.length; i++) {
@@ -381,7 +381,7 @@ MapStars.prototype.calculate = function(params, callback) {
     request(url, (err, response, data) => {
         if (err) {
             console.log("Error downloading osu file");
-            return this
+            callback(this)
         }
         nparser.feed(data);
         pcparser.feed(data);
@@ -464,7 +464,7 @@ MapPP.prototype.get = function(params) {
 };
 
 // ppv2 calculator
-// =================================
+// ========================================
 // if stars is not defined, beatmap id must
 // be defined to retrieve map
 //
