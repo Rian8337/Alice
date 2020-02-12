@@ -32,7 +32,7 @@ function PlayerInfo() {
 PlayerInfo.prototype.get = function(params, callback) {
     let uid = parseInt(params.uid);
     let username = params.username;
-    if (isNaN(uid) && !params.username) throw new TypeError("Uid must be integer or enter username");
+    if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
     let options = {
         host: "ops.dgsrz.com",
         port: 80,
