@@ -1,11 +1,5 @@
 let Discord = require('discord.js');
-let http = require('http');
-let https = require('https');
-let droid = require('./ojsamadroid');
-let osu = require('ojsama');
-let droidapikey = process.env.DROID_API_KEY;
-let apikey = process.env.OSU_API_KEY;
-let request = require('request');
+let osudroid = require('../modules/osu!droid');
 
 function rankread(imgsrc) {
     let rank="";
@@ -24,8 +18,8 @@ function rankread(imgsrc) {
 }
 
 function modname(mod) {
-    var res = '';
-    var count = 0;
+    let res = '';
+    let count = 0;
     if (mod.includes("-")) {res += 'None '; count++}
     if (mod.includes("n")) {res += 'NoFail '; count++}
     if (mod.includes("e")) {res += 'Easy '; count++}
@@ -36,100 +30,6 @@ function modname(mod) {
     if (mod.includes("c")) {res += 'NightCore '; count++}
     if (count > 1) return res.trimRight().split(" ").join(", ");
     else return res.trimRight()
-}
-
-function modenum(mod) {
-    var res = 4;
-    if (mod.includes("r")) res += 16;
-    if (mod.includes("h")) res += 8;
-    if (mod.includes("d")) res += 64;
-    if (mod.includes("c")) res += 576;
-    if (mod.includes("n")) res += 1;
-    if (mod.includes("e")) res += 2;
-    if (mod.includes("t")) res += 256;
-    return res
-}
-
-function getMapPP(hash, mod, combo, acc, miss, cb) {
-    let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
-    let content = '';
-    let req = https.get(options, res => {
-        res.setEncoding("utf8");
-        res.on("data", chunk => {
-            content += chunk
-        });
-        res.on("end", () => {
-            let obj;
-            try {
-                obj = JSON.parse(content);
-            } catch (e) {
-                return cb()
-            }
-            if (!obj[0]) return cb();
-            let mapinfo = obj[0];
-            if (mapinfo.mode != 0) return cb();
-            let mods = modenum(mod);
-            let acc_percent = parseFloat(acc);
-            let nparser = new droid.parser();
-            let pcparser = new osu.parser();
-            let url = `https://osu.ppy.sh/osu/${mapinfo.beatmap_id}`;
-            request(url, (err, response, data) => {
-                nparser.feed(data);
-                pcparser.feed(data);
-                let pcmods = mods - 4;
-                let nmap = nparser.map;
-                let pcmap = pcparser.map;
-
-                if (nmap.ncircles == 0 && nmap.nsliders == 0) return cb();
-
-                let cur_cs = nmap.cs - 4;
-                let cur_ar = nmap.ar;
-                let cur_od = nmap.od;
-
-                if (mod.includes("r")) {
-                    mods -= 16;
-                    cur_ar = Math.min(cur_ar * 1.4, 10);
-                    cur_od = Math.min(cur_od * 1.4, 10);
-                    cur_cs++
-                }
-                if (mod.includes("e")) {
-                    mods -= 2;
-                    cur_ar /= 2;
-                    cur_od /= 2;
-                    cur_cs--
-                }
-                let droidtoMS = 75 + 5 * (5 - cur_od);
-                if (mod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
-                cur_od = 5 - (droidtoMS - 50) / 6;
-                nmap.od = cur_od;
-                nmap.ar = cur_ar;
-                nmap.cs = cur_cs;
-
-                let nstars = new droid.diff().calc({map: nmap, mods: mods});
-                let pcstars = new osu.diff().calc({map: pcmap, mods: pcmods});
-
-                let npp = droid.ppv2({
-                    stars: nstars,
-                    combo: combo,
-                    nmiss: miss,
-                    acc_percent: acc_percent
-                });
-
-                let pcpp = osu.ppv2({
-                    stars: pcstars,
-                    combo: combo,
-                    nmiss: miss,
-                    acc_percent: acc_percent
-                });
-                let starsline = parseFloat(nstars.toString().split(" ")[0]);
-                let pcstarsline = parseFloat(pcstars.toString().split(" ")[0]);
-                let ppline = parseFloat(npp.toString().split(" ")[0]);
-                let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
-                cb(true, mapinfo.beatmapset_id, starsline, pcstarsline, ppline, pcppline)
-            })
-        })
-    });
-    req.end()
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -145,47 +45,59 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (!res[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = res[0].uid;
-        let options = {
-            host: "ops.dgsrz.com",
-            port: 80,
-            path: `/api/getuserinfo.php?apiKey=${droidapikey}&uid=${uid}`
-        };
-        let content = '';
-        let req = http.request(options, function (res) {
-            res.setEncoding("utf8");
-            res.on("data", function (chunk) {
-                content += chunk
-            });
-            res.on("end", function () {
-                let resarr = content.split("<br>");
-                let headerres = resarr[0].split(" ");
-                if (headerres[0] == "FAILED") return message.channel.send("❎ **| I'm sorry, I cannot find the account!**");
-                let name = headerres[2];
-                let obj = JSON.parse(resarr[1]);
-                let play = obj.recent[0];
-                let title = play.filename;
-                let score = play.score.toLocaleString();
-                let combo = play.combo;
-                let rank = rankread(play.mark);
-                let ptime = new Date(play.date * 1000);
-                ptime.setUTCHours(ptime.getUTCHours() + 7);
-                let acc = (play.accuracy / 1000).toFixed(2);
-                let miss = play.miss;
-                let mod = play.mode;
-                let hash = play.hash;
-                let embed = new Discord.RichEmbed()
-                    .setAuthor(`Recent play for ${name}`, rank)
-                    .setTitle(title)
-                    .setColor(8311585);
+        new osudroid.PlayerInfo().get({uid: uid}, player => {
+            if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+            if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+            let name = player.name;
+            let play = player.recent_plays[0];
+            let title = play.filename;
+            let score = play.score.toLocaleString();
+            let combo = play.combo;
+            let rank = rankread(play.mark);
+            let ptime = new Date(play.date * 1000);
+            ptime.setUTCHours(ptime.getUTCHours() + 7);
+            let acc = (play.accuracy / 1000).toFixed(2);
+            let miss = play.miss;
+            let mod = play.mode;
+            let hash = play.hash;
+            let embed = new Discord.RichEmbed()
+                .setAuthor(`Recent play for ${name}`, rank)
+                .setTitle(title)
+                .setColor(8311585);
 
-                getMapPP(hash, mod, combo, acc, miss, (available = false, mapset_id, droidsr, pcsr, dpp, pp) => {
-                    if (available) embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\`\n\`${droidsr} droid stars - ${pcsr} PC stars\`\n\`${dpp} droid pp - ${pp} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapset_id}.jpg`);
-                    else embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
+            new osudroid.MapInfo().get({hash: hash}, mapinfo => {
+                if (!mapinfo.title) {
+                    embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\`x)\nMod: \`${modname(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
+                    return message.channel.send({embed: embed}).catch(console.error)
+                }
+                let beatmapid = mapinfo.beatmap_id;
+                let mod_string = modname(mod);
+                mod = mapinfo.modConvert(mod);
+                new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
+                    let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
+                    let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+                    let npp = new osudroid.MapPP().calculate({
+                        stars: star.droid_stars,
+                        combo: combo,
+                        miss: miss,
+                        acc_percent: acc,
+                        mode: "droid"
+                    });
+                    let pcpp = new osudroid.MapPP().calculate({
+                        stars: star.pc_stars,
+                        combo: combo,
+                        miss: miss,
+                        acc_percent: acc,
+                        mode: "osu"
+                    });
+                    let ppline = parseFloat(npp.pp.toString().split(" ")[0]);
+                    let pcppline = parseFloat(pcpp.pp.toString().split(" ")[0]);
+
+                    embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`);
                     message.channel.send({embed: embed}).catch(console.error)
                 })
             })
-        });
-        req.end()
+        })
     })
 };
 
