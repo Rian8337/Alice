@@ -80,6 +80,7 @@ module.exports.run = (client, message, args) => {
 		};
 		message.channel.send({embed: embed}).catch(console.error);
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
+                        if (!mapinfo.title) return;
 			let beatmapid = mapinfo.beatmap_id;
 			mod = mapinfo.modConvert(mod);
 			new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
