@@ -47,12 +47,12 @@ PlayerInfo.prototype.get = function(params, callback) {
         res.on("end", () => {
             let resarr = content.split("<br>");
             let headerres = resarr[0].split(" ");
-            if (headerres[0] == 'FAILED') return this;
+            if (headerres[0] == 'FAILED') return callback(this);
             let obj;
             try {
                 obj = JSON.parse(resarr[1])
             } catch (e) {
-                return this
+                return callback(this)
             }
             let name = headerres[2];
             let total_score = parseInt(headerres[3]);
