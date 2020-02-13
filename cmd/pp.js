@@ -33,12 +33,12 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 					stars: star.droid_stars,
 					combo: play.combo,
 					miss: play.miss,
-					acc_percent: play.acc,
+					acc_percent: play.accuracy,
 					mode: "droid"
 				});
 				let pp = parseFloat(npp.pp.toString().split(" ")[0]);
 				let playinfo = mapinfo.showStatistics(mod, 0);
-				let ppentry = [play.hash, playinfo, pp, play.combo, play.acc, play.miss];
+				let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
 				if (isNaN(pp)) {
 					message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
 					return cb()
@@ -73,7 +73,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 						break
 					}
 				}
-				if (!found) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.acc}% | ${play.miss} ❌ | ${pp}pp | **+0.00pp**`);
+				if (!found) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **+0.00pp**`);
 				cb()
 			})
 		})
@@ -140,10 +140,10 @@ module.exports.run = (client, message, args, maindb) => {
 			for (let i = start - 1; i < start + offset - 1; i++) {
 				if (!rplay[i]) break;
 				let play = {
-					title: "", acc: "", miss: "", combo: "", mod: "", hash: ""
+					title: "", accuracy: "", miss: "", combo: "", mod: "", hash: ""
 				};
 				play.title = rplay[i].filename;
-				play.acc = rplay[i].accuracy.toPrecision(4) / 1000;
+				play.accuracy = parseFloat((parseInt(rplay[i].accuracy) / 1000).toFixed(2));
 				play.miss = rplay[i].miss;
 				play.combo = rplay[i].combo;
 				play.mod = rplay[i].mode;
