@@ -17,34 +17,6 @@ function rankread(imgsrc) {
 	return rank;
 }
 
-function mapstatusread(status) {
-	switch (status) {
-		case -2: return 16711711;
-		case -1: return 9442302;
-		case 0: return 16312092;
-		case 1: return 2483712;
-		case 2: return 16741376;
-		case 3: return 5301186;
-		case 4: return 16711796;
-		default: return 0;
-	}
-}
-
-function modname(mod) {
-	var res = '';
-	var count = 0;
-	if (mod.includes("-")) {res += 'None '; count++}
-	if (mod.includes("r")) {res += 'HardRock '; count++}
-	if (mod.includes("h")) {res += 'Hidden '; count++}
-	if (mod.includes("d")) {res += 'DoubleTime '; count++}
-	if (mod.includes("c")) {res += 'NightCore '; count++}
-	if (mod.includes("n")) {res += 'NoFail '; count++}
-	if (mod.includes("e")) {res += 'Easy '; count++}
-	if (mod.includes("t")) {res += 'HalfTime '; count++}
-	if (count > 1) return res.trimRight().split(" ").join(", ");
-	else return res.trimRight()
-}
-
 module.exports.run = (client, message, args) => {
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
@@ -67,7 +39,7 @@ module.exports.run = (client, message, args) => {
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 		let embed = {
 			"title": title,
-			"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + modname(mod) + "`\nTime: `" + ptime.toUTCString() + "`",
+			"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + new osudroid.MapInfo().modConvert(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
 			"color": 8311585,
 			"author": {
 				"name": "Recent Play for " + name,
@@ -80,7 +52,7 @@ module.exports.run = (client, message, args) => {
 		};
 		message.channel.send({embed: embed}).catch(console.error);
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-                        if (!mapinfo.title) return;
+			if (!mapinfo.title) return;
 			let beatmapid = mapinfo.beatmap_id;
 			mod = mapinfo.modConvert(mod);
 			new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
@@ -105,7 +77,7 @@ module.exports.run = (client, message, args) => {
 				embed = new Discord.RichEmbed()
 					.setFooter("Alice Synthesis Thirty", footer[index])
 					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-					.setColor(mapstatusread(mapinfo.approved))
+					.setColor(mapinfo.statusColor(mapinfo.approved))
 					.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 					.setTitle(mapinfo.showStatistics(mod, 0))
 					.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
