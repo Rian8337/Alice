@@ -1,178 +1,101 @@
-var Discord = require('discord.js');
-var http = require('http');
-var droid = require("./ojsamadroid");
-var https = require("https");
-var request = require("request");
-require("dotenv").config();
-require('mongodb');
-var apikey = process.env.OSU_API_KEY;
-var droidapikey = process.env.DROID_API_KEY;
-var config = require('../config.json');
+let Discord = require('discord.js');
+let config = require('../config.json');
+let osudroid = require('../modules/osu!droid');
 
-function modenum(mod) {
-	var res = 4;
-	if (mod.includes("r")) res += 16;
-	if (mod.includes("h")) res += 8;
-	if (mod.includes("d")) res += 64;
-	if (mod.includes("c")) res += 576;
-	if (mod.includes("n")) res += 1;
-	if (mod.includes("e")) res += 2;
-	if (mod.includes("t")) res += 256;
-	return res
-}
-
-function getMapPP(input, pcombo, pacc, pmissc, pmod = "", message, objcount, whitelist, cb) {
-
-	var isWhitelist = false;
-
-	var whitelistQuery = {hashid: input};
-
-	whitelist.findOne(whitelistQuery, (err, wlres) => {
+function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
+	if (!playentry[i]) return cb(false, false, true);
+	let play = playentry[i];
+	whitelist.findOne({hashid: play.hash}, (err, wlres) => {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's whitelist info!**");
+			return cb(true)
 		}
-		if (wlres) isWhitelist = true;
-		console.log(input);
-
-		if (isWhitelist) var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&b=" + wlres.mapid);
-		else var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + input);
-
-		var content = "";
-
-		var req = https.get(options, function(res) {
-			res.setEncoding("utf8");
-			res.on("data", function (chunk) {
-				content += chunk;
-			});
-			res.on("error", err1 => {
-				console.log(err1);
-				return message.channel.send("Error: Empty API response. Please try again!")
-			});
-			res.on("end", function () {
-				var obj;
-				try {
-					obj = JSON.parse(content);
-				} catch (e) {
-					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+		let query = {hash: play.hash};
+		if (wlres) query = {beatmap_id: wlres.mapid};
+		new osudroid.MapInfo().get(query, mapinfo => {
+			if (!mapinfo.title) {
+				message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
+				return cb(false, false)
+			}
+			if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !wlres) {
+				message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+				return cb(false, false)
+			}
+			let beatmapid = mapinfo.beatmap_id;
+			let mod = mapinfo.modConvert(play.mod);
+			new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
+				if (!star.droid_stars) {
+					message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's droid star rating!**");
+					return cb(false, false)
 				}
-				if (!obj[0]) {
-					console.log("Map not found");
-					message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-					objcount.x++;
-					return;
+				let npp = new osudroid.MapPP().calculate({
+					stars: star.droid_stars,
+					combo: play.combo,
+					miss: play.miss,
+					acc_percent: play.accuracy,
+					mode: "droid"
+				});
+				let pp = parseFloat(npp.pp.toString().split(" ")[0]);
+				let playinfo = mapinfo.showStatistics(mod, 0);
+				let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
+				if (isNaN(pp)) {
+					message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
+					return cb()
 				}
-				var mapinfo = obj[0];
-				var mapid = mapinfo.beatmap_id;
-				if (mapinfo.mode != 0) return;
-				if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !isWhitelist) {
-					message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
-					objcount.x++;
-					return;
+				playc++;
+				let dup = false;
+				for (let i in pplist) {
+					if (ppentry[0] == pplist[i][0]) {
+						pplist[i] = ppentry;
+						dup = true;
+						break
+					}
 				}
-				//console.log(obj.beatmaps[0])
-				if (pmod) var mods = modenum(pmod);
-				else var mods = 4;
-				if (pacc) var acc_percent = parseFloat(pacc);
-				else var acc_percent = 100;
-				if (pcombo) var combo = parseInt(pcombo);
-				else var combo;
-				if (pmissc) var nmiss = parseInt(pmissc);
-				else var nmiss = 0;
-				var parser = new droid.parser();
-				console.log(acc_percent);
-				//var url = "https://osu.ppy.sh/osu/1031991";
-				var url = 'https://osu.ppy.sh/osu/' + mapid;
-				request(url, function (err, response, data) {
-					parser.feed(data);
-					var nmap = parser.map;
-					var cur_od = nmap.od - 5;
-					var cur_ar = nmap.ar;
-					var cur_cs = nmap.cs - 4;
-					// if (mods) {
-					// 	console.log("+" + osu.modbits.string(mods));
-					// }
-					if (pmod.includes("r")) {
-						mods -= 16;
-						cur_ar = Math.min(cur_ar * 1.4, 10);
-						cur_od = Math.min(cur_od * 1.4, 10);
-						cur_cs++
+				if (!dup) pplist.push(ppentry);
+				pplist.sort(function (a, b) {
+					return b[2] - a[2]
+				});
+				while (pplist.length > 75) pplist.pop();
+				if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+				else {
+					let x = 0;
+					for (x; x < pplist.length; x++) {
+						if (pplist[x][1].includes(playinfo)) {
+							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+							break
+						}
 					}
-					if (pmod.includes("e")) {
-						mods -= 2;
-						cur_ar /= 2;
-						cur_od /= 2;
-						cur_cs--
-					}
-					let droidtoMS = 75 + 5 * (5 - cur_od);
-					if (pmod.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
-					cur_od = 5 - (droidtoMS - 50) / 6;
-					nmap.od = cur_od;
-					nmap.ar = cur_ar;
-					nmap.cs = cur_cs;
-
-					if (nmap.ncircles == 0 && nmap.nsliders == 0) {
-						console.log('Error: no object found');
-						objcount.x++;
-						return;
-					}
-
-					var nstars = new droid.diff().calc({map: nmap, mods: mods});
-					//console.log(stars.toString());
-
-
-					var npp = droid.ppv2({
-						stars: nstars,
-						combo: combo,
-						nmiss: nmiss,
-						acc_percent: acc_percent,
-					});
-
-					parser.reset();
-
-					if (pmod.includes("r")) { mods += 16; }
-
-					console.log(nstars.toString());
-					console.log(npp.toString());
-					var ppline = npp.toString().split("(");
-					var playinfo = mapinfo.artist + " - " + mapinfo.title + " (" + mapinfo.creator + ") [" + mapinfo.version + "] " + ((mods == 4 && (!pmod.includes("PR")))? " " : "+ ") + droid.modbits.string(mods - 4) + ((pmod.includes("PR")? "PR": ""));
-					objcount.x++;
-					cb(ppline[0], playinfo, input, pcombo, pacc, pmissc);
-				})
+					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+				}
+				cb()
 			})
 		})
 	})
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	var channels = config.pp_channel;
-	var found;
-	for (var i = 0; i < channels.length; i++) {
-		if (message.guild.channels.get(channels[i])) found = true
+	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	let channels = config.pp_channel;
+	let found = false;
+	for (let i = 0; i < channels.length; i++) {
+		if (message.guild.channels.get(channels[i])) {
+			found = true;
+			break
+		}
 	}
 	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = args[0];
-	if (!ufind) return message.channel.send("❎ **| Hey, who do you want me to submit plays for?**");
-	ufind = ufind.replace("<@", "");
-	ufind = ufind.replace(">", "");
-	let objcount = {x: 0};
-	var offset = 1;
-	var start = 1;
+	ufind.replace("<@!", "").replace("<@", "").replace(">", " ");
+	let offset = 1;
+	let start = 1;
 	if (args[1]) offset = parseInt(args[1]);
 	if (args[2]) start = parseInt(args[2]);
 	if (isNaN(offset)) offset = 1;
 	if (isNaN(start)) start = 1;
 	if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
 	if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
-	/*if (args[0]) {
-		ufind = args[0];
-		ufind = ufind.replace('<@!','');
-		ufind = ufind.replace('<@','');
-		ufind = ufind.replace('>','');
-	}*/
-	console.log(ufind);
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
 	let query = {discordid: ufind};
@@ -181,141 +104,83 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (userres[0]) {
-			console.log(offset);
-			let uid = userres[0].uid;
-			let discordid = userres[0].discordid;
-			if (userres[0].pp) var pplist = userres[0].pp;
-			else var pplist = [];
-			if (userres[0].pptotal) var pre_pptotal = userres[0].pptotal;
-			else var pre_pptotal = 0;
-			if (userres[0].playc) var playc = userres[0].playc;
-			else var playc = 0;
-			var pptotal = 0;
-			var submitted = 0;
-			var options = {
-				host: "ops.dgsrz.com",
-				port: 80,
-				path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
-			};
+		if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		let uid = userres[0].uid;
+		let discordid = userres[0].discordid;
+		let pplist = [];
+		let pptotal = 0;
+		let pre_pptotal = 0;
+		let submitted = 1;
+		let playc = 0;
+		if (userres[0].pp) pplist = userres[0].pp;
+		if (userres[0].pptotal) pre_pptotal = userres[0].pptotal;
+		if (userres[0].playc) playc = userres[0].playc;
+		new osudroid.PlayerInfo().get({uid: uid}, player => {
+			if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
+			if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+			let rplay = player.recent_plays;
+			let playentry = [];
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			let rolecheck;
+			try {
+				rolecheck = message.member.highestRole.hexColor
+			} catch (e) {
+				rolecheck = "#000000"
+			}
+			let embed = new Discord.RichEmbed()
+				.setTitle("PP submission info")
+				.setFooter("Alice Synthesis Thirty", footer[index])
+				.setColor(rolecheck);
 
-			var content = "";
-
-			var req = http.request(options, function (res) {
-				res.setEncoding("utf8");
-				res.on("data", function (chunk) {
-					content += chunk;
-				});
-				res.on("error", err1 => {
-					console.log(err1);
-					return message.channel.send("Error: Empty API response. Please try again!")
-				});
-				res.on("end", function () {
-					var resarr = content.split('<br>');
-					var headerres = resarr[0].split(" ");
-					if (headerres[0] == 'FAILED') return message.channel.send("User not found!");
-					var obj;
-					try {
-						obj = JSON.parse(resarr[1])
-					} catch (e) {
-						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API now. Please try again later!**")
+			for (let i = start - 1; i < start + offset - 1; i++) {
+				if (!rplay[i]) break;
+				let play = {
+					title: "", accuracy: "", miss: "", combo: "", mod: "", hash: ""
+				};
+				play.title = rplay[i].filename;
+				play.accuracy = parseFloat((parseInt(rplay[i].accuracy) / 1000).toFixed(2));
+				play.miss = rplay[i].miss;
+				play.combo = rplay[i].combo;
+				play.mod = rplay[i].mode;
+				play.hash = rplay[i].hash;
+				playentry.push(play)
+			}
+			let i = 0;
+			calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, function testResult(error = false, success = true, stopSign = false) {
+				if (stopSign) {
+					let weight = 1;
+					for (let i in pplist) {
+						pptotal += weight * pplist[i][2];
+						weight *= 0.95;
 					}
-					var rplay = obj.recent;
-					var curpos = 0;
-					var playentry = [];
-					let footer = config.avatar_list;
-					const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-					let embed = new Discord.RichEmbed()
-						.setTitle("PP submission info")
-						.setFooter("Alice Synthesis Thirty", footer[index])
-						.setColor(message.member.highestRole.hexColor);
-
-					for (var i = start - 1; i < start + offset - 1; i++) {
-						if (!rplay[i]) break;
-						var play = {
-							title: "", acc: "", miss: "", combo: "", mod: "", hash: ""
-						};
-						play.title = rplay[i].filename;
-						play.acc = rplay[i].accuracy.toPrecision(4) / 1000;
-						play.miss = rplay[i].miss;
-						play.combo = rplay[i].combo;
-						play.mod = rplay[i].mode;
-						play.hash = rplay[i].hash;
-						playentry[curpos] = play;
-						curpos++;
-					}
-
-					console.log(playentry);
-					playentry.forEach(function (x) {
-						if (x.title) getMapPP(x.hash, x.combo, x.acc, x.miss, x.mod, message, objcount, whitelist, (pp, playinfo, hash, acc, combo, miss) => {
-							console.log(objcount);
-							var ppentry = [hash, playinfo, parseFloat(pp), acc, combo, miss];
-							if (!isNaN(ppentry[2])) {
-								var dup = false;
-								for (i in pplist) {
-									if (ppentry[0] == pplist[i][0]) {
-										pplist[i] = ppentry;
-										dup = true;
-										playc++;
-										break;
-									}
-								}
-								if (!dup) {
-									pplist.push(ppentry);
-									playc++;
-								}
-								pplist.sort(function (a, b) {
-									return b[2] - a[2]
-								});
-								while (pplist.length > 75) pplist.pop();
-								submitted++;
-								// bug: combo and acc is flipped, not gonna bother fixing because that will require rework in database (also interferes with ppcheck)
-								if (dup) embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | Raw pp: ${pp} | **Duplicate**`);
-								else {
-									for (var x = 0; x < pplist.length; x++) {
-										if (pplist[x][1].includes(playinfo)) {
-											embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | Raw pp: ${pp}`);
-											break
-										}
-									}
-									if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | Raw pp: ${pp} | **Worth no pp**`);
-								}
-								if (objcount.x == playentry.length) {
-									var weight = 1;
-									for (i in pplist) {
-										pptotal += weight * pplist[i][2];
-										weight *= 0.95;
-									}
-									var diff = pptotal - pre_pptotal;
-									embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
-									message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
-									var updateVal = {
-										$set: {
-											pptotal: pptotal,
-											pp: pplist,
-											playc: playc
-										}
-									};
-									binddb.updateOne(query, updateVal, function (err) {
-										if (err) throw err;
-										console.log('pp updated');
-										addcount = 0;
-									})
-								}
-							} else message.channel.send("❎ **| Sorry, I'm having trouble on retrieving the map's pp data!**")
-						})
-					})
-				})
-			});
-			req.end()
-		} else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+					let diff = pptotal - pre_pptotal;
+					embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
+					message.channel.send(`✅ **| ${message.author}, successfully submitted play(s) of <@${ufind}>. More info in embed.**`, {embed: embed});
+					let updateVal = {
+						$set: {
+							pptotal: pptotal,
+							pp: pplist,
+							playc: playc
+						}
+					};
+					binddb.updateOne(query, updateVal, function (err) {
+						if (err) throw err
+					});
+					return
+				}
+				if (!error) i++;
+				if (success) submitted++;
+				calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
+			})
+		})
 	})
 };
 
 module.exports.config = {
-	description: "Submits a play for a user. Only allowed in bot channel and pp project channel in osu!droid International Discord server.",
-	usage: "ppsubmit <user> <offset> <start>",
-	detail: "`user`: The user to submit [UserResolvable (mention or user ID)]\n`offset`: The amount of play to submit from 1 to 5, defaults to 1 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50, defaults to 1 [Integer]",
+	description: "Submits plays from user's profile into the user's droid pp profile. Only allowed in bot channel and pp project channel in osu!droid International Discord server.",
+	usage: "ppsubmit <user> [offset] [start]",
+	detail: "`offset`: The amount of play to submit from 1 to 5, defaults to 1 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50, defaults to 1 [Integer]\n`user`: The user to submit for [UserResolvable (mention or user ID)]",
 	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
 
