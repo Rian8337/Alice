@@ -54,6 +54,15 @@ client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
     console.log("Webhook initiated");
+	
+	let i = 1;
+    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["me being rewritten!", "STREAMING"]];
+    setInterval(() => {
+    	client.user.setActivity(activity_list[i][0], {type: activity_list[i][1]}).catch(console.error);
+    	if (i == 0) i++;
+    	else i--
+	}, 10000)
+	
 	setInterval(() => {
 		client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
 		client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
@@ -186,13 +195,6 @@ client.on("message", message => {
 		let cmd = client.commands.get("whitelistlog");
 		cmd.run(client, message, args)
 	}
-});
-
-client.on("presenceUpdate", (oldMember, newMember) => {
-	if (newMember.id != '386742340968120321') return;
-	if (newMember.user.presence.game == null) return client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error);
-	if (newMember.user.presence.game.name == 'WebStorm') client.user.setActivity(config.activity_list[3][0], {type: config.activity_list[3][1]}).catch(console.error);
-	else client.user.setActivity(config.activity_list[2][0], {type: config.activity_list[2][1]}).catch(console.error)
 });
 
 // welcome message for international server
