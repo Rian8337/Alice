@@ -45,12 +45,8 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 				}
 				playc++;
 				let dup = false;
-				let weight = 1;
-				let old_net_pp = 0;
 				for (let i in pplist) {
-					weight *= 0.95;
 					if (ppentry[0] == pplist[i][0]) {
-						old_net_pp = parseFloat((weight * pplist[i][2]).toFixed(2));
 						pplist[i] = ppentry;
 						dup = true;
 						break
@@ -61,19 +57,17 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 					return b[2] - a[2]
 				});
 				while (pplist.length > 75) pplist.pop();
-				submitted++;
-				weight = 1;
-				let found = false;
-				for (let x = 0; x < pplist.length; x++) {
-					weight *= 0.95;
-					if (pplist[x][0] == play.hash) {
-						let new_net_pp = (parseFloat((weight * pplist[x][2]).toFixed(2)) - old_net_pp).toFixed(2);
-						embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **${new_net_pp >= 0 ? `+${new_net_pp}` : `-${new_net_pp}`}pp**`);
-						found = true;
-						break
+				if (!dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+				else {
+					let x = 0;
+					for (x; x < pplist.length; x++) {
+						if (pplist[x][0] == play.hash) {
+							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+							break
+						}
 					}
+					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
 				}
-				if (!found) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **+0.00pp**`);
 				cb()
 			})
 		})
@@ -173,7 +167,10 @@ module.exports.run = (client, message, args, maindb) => {
 					});
 					return
 				}
-				if (!error) i++;
+				if (!error) {
+					i++;
+					submitted++
+				}
 				calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
 			})
 		})
