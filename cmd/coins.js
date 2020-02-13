@@ -12,7 +12,7 @@ function timeconvert (num) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
+    if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");
     let binddb = maindb.collection("userbind");
     let pointdb = alicedb.collection("playerpoints");
     let coin = client.emojis.get("669532330980802561");
@@ -37,6 +37,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     let streak = 1;
                     let daily = 50;
+                    let streakcomplete = false;
                     if (dailyres[0]) {
                         streak += dailyres[0].streak;
                         let timelimit = dailyres[0].dailycooldown - curtime;
@@ -44,13 +45,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let time = timeconvert(timelimit);
                             return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} hour` : `${time[0]} hours`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} minute` : `${time[1]} minutes`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} second` : `${time[2]} seconds`}`}.**`)
                         }
-                        if (timelimit <= -86400) streak = 0;
+                        if (timelimit <= -86400) streak = 1;
                         if (streak == 5) {
+                            streakcomplete = true;
                             daily += 100;
                             streak = 1
                         }
                         let totalcoins = dailyres[0].alicecoins + daily;
-                        message.channel.send(`✅ **| ${message.author}, you have ${streak == 5?"completed a streak and ":""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
+                        message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
                         let updateVal = {
                             $set: {
                                 dailycooldown: curtime + 86400,
