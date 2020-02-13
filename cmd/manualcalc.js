@@ -17,7 +17,7 @@ module.exports.run = (client, message, args) => {
 		if (args[i].endsWith("%")) acc = args[i];
 		if (args[i].endsWith("m")) missc = args[i];
 		if (args[i].endsWith("x")) combo = args[i];
-		if (args[i].startsWith("+")) mod = args[i];
+		if (args[i].startsWith("+")) mod = args[i].replace("+", "");
 		if (args[i].startsWith("-d")) ndetail = true;
 		if (args[i].startsWith("-p")) pcdetail = true
 	}
