@@ -2,7 +2,7 @@ let Discord = require('discord.js');
 let config = require('../config.json');
 let osudroid = require('../modules/osu!droid');
 
-function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
+function calculatePP(message, whitelist, embed, i, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, true);
 	let play = playentry[i];
 	whitelist.findOne({hashid: play.hash}, (err, wlres) => {
@@ -57,16 +57,16 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 					return b[2] - a[2]
 				});
 				while (pplist.length > 75) pplist.pop();
-				if (!dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+				if (!dup) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
 				else {
 					let x = 0;
 					for (x; x < pplist.length; x++) {
 						if (pplist[x][0] == play.hash) {
-							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+							embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
 							break
 						}
 					}
-					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+					if (x == pplist.length) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
 				}
 				cb()
 			})
@@ -108,7 +108,6 @@ module.exports.run = (client, message, args, maindb) => {
 		let pplist = [];
 		let pptotal = 0;
 		let pre_pptotal = 0;
-		let submitted = 0;
 		let playc = 0;
 		if (userres[0].pp) pplist = userres[0].pp;
 		if (userres[0].pptotal) pre_pptotal = userres[0].pptotal;
@@ -145,7 +144,7 @@ module.exports.run = (client, message, args, maindb) => {
 				playentry.push(play)
 			}
 			let i = 0;
-			calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, function testResult(error = false, stopSign = false) {
+			calculatePP(message, whitelist, embed, i, pplist, playc, playentry, function testResult(error = false, stopSign = false) {
 				if (stopSign) {
 					let weight = 1;
 					for (let i in pplist) {
@@ -167,11 +166,8 @@ module.exports.run = (client, message, args, maindb) => {
 					});
 					return
 				}
-				if (!error) {
-					i++;
-					submitted++
-				}
-				calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
+				if (!error) i++;
+				calculatePP(message, whitelist, embed, i, pplist, playc, playentry, testResult)
 			})
 		})
 	})
