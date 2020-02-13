@@ -148,6 +148,7 @@ module.exports.run = (client, message, args, maindb) => {
 			let i = 0;
 			calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, function testResult(error = false, success = true, stopSign = false) {
 				if (stopSign) {
+					if (submitted == 1) return;
 					let weight = 1;
 					for (let i in pplist) {
 						pptotal += weight * pplist[i][2];
