@@ -56,7 +56,7 @@ client.on("ready", () => {
     console.log("Webhook initiated");
 	
 	let i = 1;
-    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["me being rewritten!", "STREAMING"]];
+    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["me being rewritten!", "WATCHING"]];
     setInterval(() => {
     	client.user.setActivity(activity_list[i][0], {type: activity_list[i][1]}).catch(console.error);
     	if (i == 0) i++;
