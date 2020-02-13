@@ -122,29 +122,6 @@ client.on("message", message => {
 		message.channel.send({files: [images[index]]});
 	}
 
-	/*if (message.author.id == '386742340968120321') {
-		let cmd = client.commands.get("sayd");
-		let args = msgArray.slice(0);
-		cmd.run(client, message, args);
-		return;
-	}
-
-	if (message.isMemberMentioned(client.user) && message.author.id != '386742340968120321') {
-		let owner = message.guild.members.get("386742340968120321");
-		if (!owner) return;
-		const embed = new Discord.RichEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL)
-			.setTitle("You were mentioned!")
-			.setTimestamp(new Date())
-			.setColor(message.member.highestRole.hexColor)
-			.setFooter("Alice Synthesis Thirty", "https://i.imgur.com/S5yspQs.jpg")
-			.addField("Channel", message.channel)
-			.addField("Content", message.content.replace(client.user.id, owner.id));
-
-		owner.send(embed).catch(e => console.log(e));
-		return
-	}*/
-	
 	// #trash-talk spam reminder
 	if (message.content.startsWith(".")) {
 		if (message.guild.id != '316545691545501706') return;
@@ -179,11 +156,8 @@ client.on("message", message => {
 		cmd.run(client, message, args)
 	}
 	
-	if (message.content.startsWith(config.prefix) || message.content.startsWith("$")) {
+	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
-		//let cmd = '';
-		//if (message.content.startsWith(config.prefix)) cmd = client.commands.get(command.slice(config.prefix.length));
-		//else cmd = client.commands.get(command.slice(1));
 		if (cmd) {
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
 			cmd.run(client, message, args, maindb, alicedb)
