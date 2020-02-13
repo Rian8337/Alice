@@ -19,6 +19,8 @@ if (typeof exports !== 'undefined') osudroid = exports;
 function PlayerInfo() {
     this.uid = 0;
     this.name = null;
+    this.avatarURL = null;
+    this.location = null;
     this.rank = 0;
     this.score = 0;
     this.accuracy = 0;
@@ -54,18 +56,54 @@ PlayerInfo.prototype.get = function(params, callback) {
             } catch (e) {
                 return callback(this)
             }
+            uid = headerres[1];
             let name = headerres[2];
             let total_score = parseInt(headerres[3]);
             let play_count = parseInt(headerres[4]);
             let rank = obj.rank;
+            let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
             let recent_plays = obj.recent ? obj.recent : null;
             this.uid = uid;
             this.name = name;
             this.score = total_score;
             this.play_count = play_count;
+            this.accuracy = acc;
             this.rank = rank;
             this.recent_plays = recent_plays;
-            callback(this)
+
+            let avatar_page = {
+                host: "ops.dgsrz.com",
+                port: 80,
+                path: `/profile.php?uid=${uid}`
+            };
+            let avatar_content = '';
+            let avatar_req = http.request(avatar_page, avatar_res => {
+                avatar_res.setEncoding("utf8");
+                avatar_res.on("data", avatar_chunk => {
+                    avatar_content += avatar_chunk
+                });
+                avatar_res.on("end", () => {
+                    let b = avatar_content.split("\n");
+                    let avalink = '';
+                    let location = '';
+                    for (let x = 0; x < b.length; x++) {
+                        if (b[x].includes('h3 m-t-xs m-b-xs')) {
+                            b[x-3]=b[x-3].replace('<img src="',"");
+                            b[x-3]=b[x-3].replace('" class="img-circle">',"");
+                            b[x-3]=b[x-3].trim();
+                            avalink = b[x-3];
+                            b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+                            b[x+1]=b[x+1].replace("<\/small>","");
+                            b[x+1]=b[x+1].trim();
+                            location=b[x+1]
+                        }
+                    }
+                    this.avatarURL = avalink;
+                    this.location = location;
+                    callback(this)
+                })
+            });
+            avatar_req.end()
         })
     });
     req.end()
@@ -208,8 +246,42 @@ MapInfo.prototype.showStatistics = function(mods, mode) {
     }
 };
 
+// returns a color integer based on ranked status
+// =========================================
+// useful to make embed messages
+MapInfo.prototype.statusColor = function(status) {
+    switch (status) {
+        case -2: return 16711711;
+        case -1: return 9442302;
+        case 0: return 16312092;
+        case 1: return 2483712;
+        case 2: return 16741376;
+        case 3: return 5301186;
+        case 4: return 16711796;
+        default: return 0
+    }
+};
+
 // converts droid mod string to PC mod string
-MapInfo.prototype.modConvert = function(mods) {
+// ============================================
+// you can choose to return a detailed response
+// or short response
+MapInfo.prototype.modConvert = function(mods, detailed = false) {
+    if (!mods || mods == '-') return '';
+    if (detailed) {
+        let res = '';
+        let count = 0;
+        if (mods.includes("-")) {res += 'None '; count++}
+        if (mods.includes("n")) {res += 'NoFail '; count++}
+        if (mods.includes("e")) {res += 'Easy '; count++}
+        if (mods.includes("t")) {res += 'HalfTime '; count++}
+        if (mods.includes("h")) {res += 'Hidden '; count++}
+        if (mods.includes("d")) {res += 'DoubleTime '; count++}
+        if (mods.includes("r")) {res += 'HardRock '; count++}
+        if (mods.includes("c")) {res += 'NightCore '; count++}
+        if (count > 1) return res.trimRight().split(" ").join(", ");
+        else return res.trimRight()
+    }
     let modbits = 0;
     for (let i = 0; i < mods.length; i++) {
         switch(mods[i]) {
@@ -328,7 +400,6 @@ MapStats.prototype.calculate = function(params) {
         }
         case "osu": {
             if (!mods || mods == '-') {
-                cs -= 4;
                 this.cs = cs;
                 this.ar = ar;
                 this.od = od;
@@ -480,13 +551,12 @@ MapPP.prototype.calculate = function(params) {
                 default: throw new TypeError("Mode is not supported")
             }
             if (!params.combo) params.combo = params.stars.map.max_combo();
-            this.pp = new MapPP().get(params)
+            this.pp = new MapPP().get(params);
+            return this
         })
     }
-    else {
-        if (!params.combo) params.combo = params.stars.map.max_combo();
-        this.pp = new MapPP().get(params)
-    }
+    if (!params.combo) params.combo = params.stars.map.max_combo();
+    this.pp = new MapPP().get(params);
     return this
 };
 
