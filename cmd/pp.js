@@ -66,7 +66,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 							break
 						}
 					}
-					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
 				}
 				cb()
 			})
