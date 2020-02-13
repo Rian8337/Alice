@@ -57,16 +57,16 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 					return b[2] - a[2]
 				});
 				while (pplist.length > 75) pplist.pop();
-				if (!dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+				if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
 				else {
 					let x = 0;
 					for (x; x < pplist.length; x++) {
-						if (pplist[x][0] == play.hash) {
-							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+						if (pplist[x][1].includes(playinfo)) {
+							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
 							break
 						}
 					}
-					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${acc}x | ${combo}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
 				}
 				cb()
 			})
