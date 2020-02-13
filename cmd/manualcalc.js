@@ -57,8 +57,8 @@ module.exports.run = (client, message, args) => {
 				.addField(mapinfo.showStatistics(mod, 3), `${mapinfo.showStatistics(mod, 4)}\nResult: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
 				.addField(`Droid pp (Experimental): __${ppline} pp__ - ${starsline} stars`, `PC pp: ${pcppline} pp - ${pcstarsline} stars`);
 
-			if (ndetail) message.channel.send(`Raw droid pp: ${star.droid_stars.toString()}`);
-			if (pcdetail) message.channel.send(`Raw PC pp: ${star.pc_stars.toString()}`);
+			if (ndetail) message.channel.send(`Raw droid pp: ${npp.pp.toString()}`);
+			if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.pp.toString()}`);
 			message.channel.send({embed: embed}).catch(console.error)
 		})
 	})
