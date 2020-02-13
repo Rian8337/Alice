@@ -106,7 +106,6 @@ module.exports.run = (client, message, args, maindb) => {
 		}
 		if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = userres[0].uid;
-		let discordid = userres[0].discordid;
 		let pplist = [];
 		let pptotal = 0;
 		let pre_pptotal = 0;
