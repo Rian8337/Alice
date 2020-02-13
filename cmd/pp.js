@@ -67,8 +67,8 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 				for (let x = 0; x < pplist.length; x++) {
 					weight *= 0.95;
 					if (pplist[x][0] == play.hash) {
-						let new_net_pp = parseFloat((weight * pplist[x][2]).toFixed(2)) - old_net_pp;
-						embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.acc}% | ${play.miss} ❌ | ${pp}pp | *${new_net_pp >= 0 ? `+${new_net_pp}` : `-${new_net_pp}`}pp*`);
+						let new_net_pp = (parseFloat((weight * pplist[x][2]).toFixed(2)) - old_net_pp).toFixed(2);
+						embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **${new_net_pp >= 0 ? `+${new_net_pp}` : `-${new_net_pp}`}pp**`);
 						found = true;
 						break
 					}
