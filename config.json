@@ -44,6 +44,26 @@
     ["a!help | a!modhelp", "PLAYING"],
     ["Rian8337 develop me!", "WATCHING"]
   ],
+  "require_api": [
+    "daily",
+    "dancourse",
+    "levelid",
+    "levelme",
+    "matchsubmit",
+    "pfid",
+    "pfme",
+    "pp",
+    "ppsubmit",
+    "profileid",
+    "profileme",
+    "profilesearch",
+    "recent",
+    "recentme",
+    "recent5",
+    "recent5me",
+    "score",
+    "userbind"
+  ],
   "avatar_list": [
     "https://i.imgur.com/FAWi2Yl.png",
     "https://i.imgur.com/Fspbt08.png",
