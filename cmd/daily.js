@@ -38,12 +38,12 @@ class MapStats {
         let hp = parseFloat(params.hp);
         let mods = params.mods.toUpperCase();
         if (!mods) {
-			this.cs = cs;
-			this.ar = ar;
-			this.od = od;
-			this.hp = hp;
-			return this
-		}
+            this.cs = cs;
+            this.ar = ar;
+            this.od = od;
+            this.hp = hp;
+            return this
+        }
         let speed_mul = 1;
         if (mods.includes("DT")) speed_mul = 1.5;
         if (mods.includes("NC")) speed_mul = 1.39;
@@ -689,8 +689,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
                     });
-			
-					backward.on("end", () => {
+
+                    backward.on("end", () => {
                         msg.reactions.forEach(reaction => reaction.remove(message.author.id));
                         msg.reactions.forEach(reaction => reaction.remove(client.user.id))
                     })
@@ -725,7 +725,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** mod only`;
+                    let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** mod only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapstatusread(mapstat.approved))
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
@@ -768,7 +768,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let requirements = challengeRequirements(challengeid, pass, bonus);
                         let pass_string = requirements[0];
                         let bonus_string = requirements[1];
-                        let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** only`;
+                        let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
 
                         embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                             .setColor(mapstatusread(mapstat.approved))
@@ -888,7 +888,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                                if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
+                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && modenum(mod) != modenum(constrain))) pass = false;
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                                 let points = 0;
                                 let bonus = dailyres[0].bonus;
@@ -1070,7 +1070,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
+                    let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
 
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapstatusread(mapstat.approved))
@@ -1396,7 +1396,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                                if (constrain != '' && modenum(mod) != modenum(constrain)) pass = false;
+                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && modenum(mod) != modenum(constrain))) pass = false;
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
 
                                 let points = 0;
