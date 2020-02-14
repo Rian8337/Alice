@@ -77,7 +77,7 @@ client.on("ready", () => {
 	setInterval(() => {
 		try {
 			http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
-				res.setTimeout(10000);
+				res.setTimeout(5000);
 				res.on("end", () => {
 					apidown = false
 				})
