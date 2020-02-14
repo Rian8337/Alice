@@ -72,6 +72,19 @@ client.on("ready", () => {
 		//client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000);
 	
+	setInterval(() => {
+		try {
+			http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
+				res.setTimeout(10000);
+				res.on("end", () => {
+					apidown = false
+				})
+			})
+		} catch (e) {
+			apidown = true
+		}
+	}, 5000);
+	
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
 	let channel = guild.channels.get("640165306404438026");
@@ -139,11 +152,6 @@ client.on("message", message => {
 		let args = msgArray.slice(0);
 		let cmd = client.commands.get("response");
 		return cmd.run(client, message, args, maindb, alicedb)
-	}
-	// API down mode
-	if (message.author.id == '386742340968120321' && message.content == 'a!apidown') {
-		apidown = !apidown;
-		return message.channel.send(`✅ **| API down mode has been set to \`${apidown}\`.**`).catch(console.error)
 	}
 	
 	// woi
