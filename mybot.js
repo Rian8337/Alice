@@ -76,7 +76,7 @@ client.on("ready", () => {
 	
 	setInterval(() => {
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
-			res.setTimeout(5000);
+			res.setTimeout(10000);
 			let content;
 			res.on("data", chunk => {
 				content = chunk;
@@ -92,7 +92,7 @@ client.on("ready", () => {
 				}
 			})
 		}).end()
-	}, 5000);
+	}, 10000);
 	
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
