@@ -937,7 +937,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     if (playerres[0]) {
                                         let challengelist = playerres[0].challenges;
-                                        console.log(challengelist);
                                         found = false;
                                         let bonuscheck = false;
                                         for (let i = 0; i < challengelist.length; i++) {
