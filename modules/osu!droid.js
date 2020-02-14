@@ -267,7 +267,7 @@ MapInfo.prototype.statusColor = function(status) {
 // you can choose to return a detailed response
 // or short response
 MapInfo.prototype.modConvert = function(mods, detailed = false) {
-    if (!mods || mods == '-') return '';
+    if (!mods) return '';
     if (detailed) {
         let res = '';
         let count = 0;
