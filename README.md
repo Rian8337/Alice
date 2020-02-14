@@ -1,4 +1,7 @@
 # Alice
+
+Bot is currently under heavy rewrite to clean stuff up and make proper error handling.
+
 A multipurpose Discord bot mainly made for osu!droid and Malody.
 
 Optimized for [osu!droid International Discord server](https://discord.gg/nyD92cE) usage.
