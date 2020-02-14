@@ -81,7 +81,7 @@ client.on("ready", () => {
 				res.on("end", () => {
 					apidown = false
 				})
-			})
+			}).end()
 		} catch (e) {
 			console.log("osu!droid API down");
 			apidown = true
