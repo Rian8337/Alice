@@ -75,17 +75,22 @@ client.on("ready", () => {
 	}, 600000);
 	
 	setInterval(() => {
-		try {
-			http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
-				res.setTimeout(5000);
-				res.on("end", () => {
+		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
+			res.setTimeout(5000);
+			let content;
+			res.on("data", chunk => {
+				content = chunk;
+			});
+			res.on("end", () => {
+				try {
+					content.split("<br>");
 					apidown = false
-				})
-			}).end()
-		} catch (e) {
-			if (!apidown) console.log("osu!droid API down");
-			apidown = true
-		}
+				} catch (e) {
+					if (!apidown) console.log("API performance degraded");
+					apidown = true
+				}
+			})
+		}).end()
 	}, 5000);
 	
 	// Mudae role assignment reaction-based on droid cafe
