@@ -341,7 +341,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 default: bonus_string += "No bonuses available"
             }
-            let constrain_string = constrain == ''?"Any rankable mod is allowed":`**${constrain}** only`;
+            let constrain_string = constrain == ''?"Any rankable mod except EZ, NF, and HT is allowed":`**${constrain}** only`;
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 
