@@ -27,22 +27,22 @@ module.exports.run = (client, message, args) => {
 		new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
 			let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
 			let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
-			let npp = osudroid.ppv2({
+			let npp = new osudroid.MapPP().calculate({
 				stars: star.droid_stars,
 				combo: combo,
 				miss: missc,
 				acc_percent: acc,
 				mode: "droid"
 			});
-			let pcpp = osudroid.ppv2({
+			let pcpp = new osudroid.MapPP().calculate({
 				stars: star.pc_stars,
 				combo: combo,
 				miss: missc,
 				acc_percent: acc,
 				mode: "osu"
 			});
-			let ppline = parseFloat(npp.toString().split(" ")[0]);
-			let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+			let ppline = parseFloat(npp.pp.toString().split(" ")[0]);
+			let pcppline = parseFloat(pcpp.pp.toString().split(" ")[0]);
 
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
