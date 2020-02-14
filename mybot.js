@@ -7,6 +7,8 @@ require("dotenv").config();
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 var elainadbkey = process.env.ELAINA_DB_KEY;
 var alicedbkey = process.env.ALICE_DB_KEY;
+let require_api = config.require_api;
+let apidown = false;
 
 // Command loading
 client.commands = new Discord.Collection();
@@ -138,18 +140,25 @@ client.on("message", message => {
 		let cmd = client.commands.get("response");
 		return cmd.run(client, message, args, maindb, alicedb)
 	}
+	// API down mode
+	if (message.author.id == '386742340968120321' && message.content == 'a!apidown') {
+		apidown = !apidown;
+		return message.channel.send(`✅ **| API down mode has been set to \`${apidown}\`.**`).catch(console.error)
+	}
 	
 	// woi
 	if (message.content.toLowerCase().includes("woi")) {
 		if (message.author.id == '386742340968120321') return message.channel.send("woi");
 	}
 	
+	// main bot offline notification
 	if (message.content.startsWith("&")) {
 		let mainbot = message.guild.members.get("391268244796997643");
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now! Please use `a!" + cmd.help.name + "`!")
 	}
+	
 	// commands
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
@@ -159,6 +168,7 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd) {
+			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!");
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
 			cmd.run(client, message, args, maindb, alicedb)
 		}
