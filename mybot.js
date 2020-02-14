@@ -84,6 +84,7 @@ client.on("ready", () => {
 			res.on("end", () => {
 				try {
 					content.split("<br>");
+					if (apidown) console.log("API performance restored");
 					apidown = false
 				} catch (e) {
 					if (!apidown) console.log("API performance degraded");
