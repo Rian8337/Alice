@@ -404,7 +404,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     bonus_string += '\n'
                 }
             }
-            let constrain_string = constrain == '' ? "Any rankable mod is allowed" : `**${constrain}** only`;
+            let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
             let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w") ? 86400 * 7 : 86400);
 
             let footer = config.avatar_list;
