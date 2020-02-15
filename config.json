@@ -45,10 +45,16 @@
     ["Rian8337 develop me!", "WATCHING"]
   ],
   "require_api": [
+    "coins",
+    "completepp",
+    "completescore",
     "daily",
     "dancourse",
+    "emailcheck",
+    "fancy",
     "levelid",
     "levelme",
+    "matchstart",
     "matchsubmit",
     "pfid",
     "pfme",
@@ -61,7 +67,9 @@
     "recentme",
     "recent5",
     "recent5me",
+    "rs",
     "score",
+    "scoresubmit",
     "userbind"
   ],
   "avatar_list": [
