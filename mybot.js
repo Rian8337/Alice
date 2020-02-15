@@ -77,9 +77,13 @@ client.on("ready", () => {
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
 			res.setTimeout(5000);
-			let content;
+			let content = '';
 			res.on("data", chunk => {
-				content = chunk;
+				content += chunk
+			});
+			res.on("error", err => {
+				console.log(err);
+				apidown = true
 			});
 			res.on("end", () => {
 				try {
@@ -87,12 +91,13 @@ client.on("ready", () => {
 					if (apidown) console.log("API performance restored");
 					apidown = false
 				} catch (e) {
+					console.log(e);
 					if (!apidown) console.log("API performance degraded");
 					apidown = true
 				}
 			})
 		}).end()
-	}, 5000);
+	}, 10000);
 	
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
