@@ -73,18 +73,17 @@ client.on("ready", () => {
 		client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
 		//client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000);
-	
 	setInterval(() => {
-		let content;
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
 			res.setTimeout(5000);
+			let content;
 			res.on("data", chunk => {
 				content = chunk;
 			});
 			res.on("end", () => {
 				try {
-					content.split("<br>");
+					JSON.parse(content.split("<br>")[1]);
 					if (apidown) console.log("API performance restored");
 					apidown = false
 				} catch (e) {
@@ -178,6 +177,11 @@ client.on("message", message => {
 	}
 	
 	// commands
+	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
+		apidown = !apidown;
+		return message.channel.send(`✅ **| API down mode has been set to \`${apidown}\`.**`)
+	}
+	
 	if (message.content.includes("m.mugzone.net/chart/")) {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args)
