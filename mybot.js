@@ -82,7 +82,7 @@ client.on("ready", () => {
 				content += chunk
 			});
 			res.on("error", err => {
-				console.log(err);
+				console.log("API performance degraded");
 				apidown = true
 			});
 			res.on("end", () => {
@@ -91,7 +91,6 @@ client.on("ready", () => {
 					if (apidown) console.log("API performance restored");
 					apidown = false
 				} catch (e) {
-					console.log(e);
 					if (!apidown) console.log("API performance degraded");
 					apidown = true
 				}
