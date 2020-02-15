@@ -96,7 +96,7 @@ client.on("ready", () => {
 				}
 			})
 		}).end()
-	}, 30000);
+	}, 20000);
 	
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
