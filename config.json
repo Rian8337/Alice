@@ -45,7 +45,6 @@
     ["Rian8337 develop me!", "WATCHING"]
   ],
   "require_api": [
-    "coins",
     "completepp",
     "completescore",
     "daily",
