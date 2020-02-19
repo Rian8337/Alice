@@ -151,7 +151,7 @@ MapInfo.prototype.get = function(params, callback) {
             } catch (e) {
                 return callback(this)
             }
-            if (!obj[0]) return callback(this);
+            if (!obj || !obj[0]) return callback(this);
             let mapinfo = obj[0];
             this.title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.approved = parseInt(mapinfo.approved);
