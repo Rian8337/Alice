@@ -79,7 +79,7 @@ function scoreApproval(hash, mod, message, objcount, cb) {
                 objcount.x++;
                 return cb()
             }
-            if (!obj[0]) {
+            if (!obj || !obj[0]) {
                 console.log("Map not found");
                 message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
                 objcount.x++;
