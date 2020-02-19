@@ -65,7 +65,7 @@ function getMapPP(phash, pcombo, pacc, pmissc, pmod = "", cb) {
             } catch (e) {
                 return cb(false)
             }
-            if (!obj[0]) return cb(false);
+            if (!obj || !obj[0]) return cb(false);
             var mapinfo = obj[0];
             var mapid = mapinfo.beatmap_id;
             if (mapinfo.mode != 0) return cb(false);
