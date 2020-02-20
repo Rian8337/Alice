@@ -1,32 +1,27 @@
-var Discord = require('discord.js');
-var https = require('https');
-var apikey = process.env.OSU_API_KEY;
-var config = require('../config.json');
+const Discord = require('discord.js');
+const https = require('https');
+const apikey = process.env.OSU_API_KEY;
+const config = require('../config.json');
 
 function progress (level) {
-    var final = (parseFloat(level) - Math.floor(parseFloat(level))) * 100;
+    let final = (parseFloat(level) - Math.floor(parseFloat(level))) * 100;
     return final.toFixed(2)
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-    var playerdb = alicedb.collection("osubind");
-    var query = {discordid: message.author.id};
+    let playerdb = alicedb.collection("osubind");
+    let query = {discordid: message.author.id};
     playerdb.find(query).toArray((err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        var username;
+        let username;
         if (args[0] === 'set') {
             username = args.slice(1).join(" ");
             if (!username) return message.channel.send("❎ **| Hey, I don't know what account to bind!**");
             if (!res[0]) {
-                var insertVal = {
+                let insertVal = {
                     discordid: message.author.id,
                     username: username
                 };
@@ -39,7 +34,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send("✅ **| Your osu! profile has been set to " + username + ".**")
                 })
             } else {
-                var updateVal = {
+                let updateVal = {
                     $set: {
                         discordid: message.author.id,
                         username: username
@@ -57,7 +52,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         else {
             username = res[0].username;
-            var mode = args[0];
+            let mode = args[0];
             if (mode === 'std') mode = 0;
             else if (mode === 'taiko') mode = 1;
             else if (mode === 'ctb') mode = 2;
@@ -66,8 +61,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
             if (args[1]) username = args.slice(1).join(" ");
 
-            var options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
-            var content;
+            let options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
+            let content;
 
             https.get(options, res => {
                 res.setEncoding("utf8");
@@ -79,14 +74,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
                 });
                 res.on("end", () => {
-                    var obj;
+                    let obj;
                     try {
                         obj = JSON.parse(content)
                     } catch (e) {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
                     }
                     if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
-                    var playerinfo = obj[0];
+                    let playerinfo = obj[0];
+                    
+                    let rolecheck;
+                    try {
+                        rolecheck = message.member.highestRole.hexColor
+                    } catch (e) {
+                        rolecheck = "#000000"
+                    }
                     let footer = config.avatar_list;
                     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
                     let embed = new Discord.RichEmbed()
@@ -109,20 +111,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (mode === 2) embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
                     if (mode === 3) embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
 
-                    message.channel.send({embed: embed})
+                    message.channel.send({embed: embed}).catch(console.error)
                 })
-            })
+            }).end()
         }
     })
 };
 
 module.exports.config = {
+    name: "osu",
     description: "Retrieves an osu! account profile.",
     usage: "osu [mode] [user]\nosu set <username>",
     detail: "`mode`: Gamemode. Accepted arguments are `std`, `taiko`, `ctb`, `mania`\n`user`: The user to retrieve information from [UserResolvable (mention or user ID) or String]\n`username`: The username to bind [String]",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "osu"
 };
