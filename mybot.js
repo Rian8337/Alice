@@ -2,14 +2,14 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
 const fs = require("fs");
-let http = require("http");
-let mongodb = require('mongodb');
+const http = require("http");
+const mongodb = require('mongodb');
 require("dotenv").config();
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
-let elainadbkey = process.env.ELAINA_DB_KEY;
-let alicedbkey = process.env.ALICE_DB_KEY;
-let droidapikey = process.env.DROID_API_KEY;
-let require_api = config.require_api;
+const elainadbkey = process.env.ELAINA_DB_KEY;
+const alicedbkey = process.env.ALICE_DB_KEY;
+const droidapikey = process.env.DROID_API_KEY;
+const require_api = config.require_api;
 let apidown = false;
 
 // Command loading
