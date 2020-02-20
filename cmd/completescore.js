@@ -1,18 +1,17 @@
-var Discord = require('discord.js');
-var request = require('request');
-require('dotenv').config();
-var apikey = process.env.OSU_API_KEY;
-var droidapikey = process.env.DROID_API_KEY;
+const Discord = require('discord.js');
+const request = require('request');
+const droidapikey = process.env.DROID_API_KEY;
+const osudroid = require('../modules/osu!droid');
 
 function scoreRequirement(lvl) {
-    var xp;
+    let xp;
     if (lvl <= 100) xp = (5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60)) / 1.128;
     else xp = 23875169174 + 15000000000 * (lvl - 100);
     return Math.round(xp)
 }
 
 function levelUp(level, score, cb) {
-    var nextlevel = scoreRequirement(level + 1);
+    let nextlevel = scoreRequirement(level + 1);
     if (score < nextlevel) cb(level, true);
     else {
         level++;
@@ -21,9 +20,9 @@ function levelUp(level, score, cb) {
 }
 
 function calculateLevel(lvl, score, cb) {
-    var xpreq = scoreRequirement(lvl + 1);
-    var nextlevel = 0;
-    var prevlevel = 0;
+    let xpreq = scoreRequirement(lvl + 1);
+    let nextlevel = 0;
+    let prevlevel = 0;
     if (score >= xpreq) levelUp(lvl, score, function testcb(newlevel, stopSign) {
         if (stopSign) {
             nextlevel = scoreRequirement(newlevel + 1);
@@ -37,7 +36,7 @@ function calculateLevel(lvl, score, cb) {
     else {
         nextlevel = xpreq;
         prevlevel = scoreRequirement(lvl);
-        var newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
+        let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
         console.log(newlevel);
         cb(newlevel)
     }
@@ -45,22 +44,21 @@ function calculateLevel(lvl, score, cb) {
 
 function retrievePlay(uid, page, cb) {
     console.log("Current page: " + page);
-    var url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
+    let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
     request(url, (err, response, data) => {
-        if (!data) {
+        if (err || !data) {
             console.log("Empty response");
             page--;
+            return cb([], false)
         }
-        else {
-            var entries = [];
-            var line = data.split("<br>");
-            for (var i = 0; i < line.length; i++) {
-                entries.push(line[i].split(" "))
-            }
-            entries.shift();
-            if (!entries[0]) cb(entries, true);
-            else cb(entries, false)
+        let entries = [];
+        let line = data.split("<br>");
+        for (let i = 0; i < line.length; i++) {
+            entries.push(line[i].split(" "))
         }
+        entries.shift();
+        if (!entries[0]) cb(entries, true);
+        else cb(entries, false)
     })
 }
 
@@ -73,34 +71,16 @@ function scoreCheck(scoreentries, score, cb) {
         console.log("0 score found");
         return cb()
     }
-    var url = "https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&h=" + score[8];
-    request(url, (err, response, data) => {
-        if (!data) {
-            console.log("Empty response");
-            return cb()
-        }
-        if (data.includes("<html>")) {
-            console.log("JSON error");
-            return cb(true)
-        }
-        var obj;
-        try {
-            obj = JSON.parse(data)
-        } catch (e) {
-            console.log("JSON error");
-            return cb(true)
-        }
-        if (!obj[0]) {
+    new osudroid.MapInfo().get({hash: score[8]}, mapinfo => {
+        if (!mapinfo.title) {
             console.log("Map not found");
             return cb()
         }
-        var mapinfo = obj[0];
-        if (mapinfo.mode != 0) cb();
         if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
             console.log("Map is not ranked, approved, or loved");
             return cb()
         }
-        var scoreentry = [parseInt(score[1]), score[8]];
+        let scoreentry = [parseInt(score[1]), score[8]];
         scoreentries.push(scoreentry);
         cb()
     })
@@ -111,12 +91,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     if (!args[0]) return message.channel.send("❎ **| Hey, I don't know who to recalculate!**");
-    var ufind = args[0];
-    ufind = ufind.replace("<@", "");
-    ufind = ufind.replace(">", "");
-    var page = 0;
-    var playc = 0;
-    var scoreentries = [];
+    let ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
+    let page = 0;
+    let playc = 0;
+    let scoreentries = [];
 
     let binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
@@ -144,7 +122,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     scoreentries.sort((a, b) => {
                         return b[0] - a[0]
                     });
-                    var score = 0;
+                    let score = 0;
                     for (i = 0; i < scoreentries.length; i++) {
                         score += scoreentries[i][0]
                     }
@@ -152,7 +130,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(score.toLocaleString());
                         message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()} (level ${Math.floor(level)}).**`);
                         if (res[0]) {
-                            var updateVal = {
+                            let updateVal = {
                                 $set: {
                                     level: level,
                                     score: score,
@@ -168,7 +146,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 console.log("Score updated")
                             })
                         } else {
-                            var insertVal = {
+                            let insertVal = {
                                 uid: uid,
                                 username: username,
                                 level: level,
@@ -188,7 +166,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return
                 }
                 console.table(entries);
-                var i = 0;
+                let i = 0;
                 scoreCheck(scoreentries, entries[i], function cb(stopFlag = false) {
                     console.log(i);
                     i++;
@@ -196,6 +174,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (i < entries.length && !stopFlag) scoreCheck(scoreentries, entries[i], cb);
                     else {
                         console.log("Done");
+                        scoreentries.sort((a, b) => {return b[0] - a[0]});
                         page++;
                         retrievePlay(uid, page, testcb)
                     }
@@ -206,12 +185,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "completescore",
     description: "Recalculates all plays of an account.",
     usage: "completescore <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
-};
-
-module.exports.help = {
-    name: "completescore"
 };
