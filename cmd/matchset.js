@@ -1,4 +1,4 @@
-let Discord = require('discord.js');
+const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
             if (channelres[0]) {
-                var updateVal = {
+                let updateVal = {
                     $set: {
                         matchid: matchid
                     }
@@ -37,7 +37,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 })
             }
             else {
-                var insertVal = {
+                let insertVal = {
                     channelid: message.channel.id,
                     matchid: matchid
                 };
@@ -54,12 +54,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "matchset",
     description: "Sets a match in a channel.\nIntended for tournament use.",
     usage: "matchset <match id>",
     detail: "`match id`: The ID of the match [String]",
     permission: "Referee"
-};
-
-module.exports.help = {
-    name: "matchset"
 };
