@@ -20,6 +20,13 @@ function playValidation(mod, requirement) {
 	}
 }
 
+function getPlay(i, uid, cb) {
+	new osudroid.PlayerInfo().get({uid: uid}, player => {
+		let play = player.recent_plays[0];
+		cb([i, play])
+	})
+}
+
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
@@ -37,19 +44,16 @@ module.exports.run = (client, message, args, maindb) => {
 		let play_list = [];
 		let min_time_diff = 0;
 		let hash = '';
-		let count = 0;
 		let i = -1;
 		players.forEach(player => {
-			new osudroid.PlayerInfo().get({uid: player[1]}, user => {
-				i++;
-				let play = user.recent_plays[0];
-				play_list.push([i, play]);
-				if (min_time_diff > play.date) {
-					min_time_diff = play.date;
-					hash = play.hash
+			i++;
+			getPlay(i, player[1], data => {
+				play_list.push(data);
+				if (min_time_diff < data[1].date) {
+					min_time_diff = data[1].date;
+					hash = data[1].hash
 				}
-				count++;
-				if (count == player.length) {
+				if (play_list.length == players.length) {
 					play_list.sort((a, b) => {return a[0] - b[0]});
 					query = {poolid: id.split(".")[0]};
 					mapdb.find(query).toArray(function (err, poolres) {
@@ -61,6 +65,7 @@ module.exports.run = (client, message, args, maindb) => {
 						let max_score;
 						let requirement;
 						let title;
+						console.log(hash);
 						for (let i in poolres[0].map) {
 							if (hash == poolres[0].map[i][3]) {
 								requirement = poolres[0].map[i][0];
@@ -79,22 +84,22 @@ module.exports.run = (client, message, args, maindb) => {
 						let score_list = [];
 
 						for (let i in play_list) {
-							if (play_list[i].hash == hash && playValidation(play_list[i].mode, requirement)) {
-								temp_score = scoreCalc(play_list[i].score, max_score, play_list[i].accuracy, play_list[i].miss);
-								if (play_list[i].mode == "hd") temp_score = Math.round(temp_score / 1.0625);
+							if (play_list[i][1].hash == hash && playValidation(play_list[i][1].mode, requirement)) {
+								temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy / 1000, play_list[i][1].miss);
+								if (play_list[i][1].mode == "hd") temp_score = Math.round(temp_score / 1.0625);
 							}
 							else temp_score = 0;
 							score_list.push(temp_score);
 
 							if (i % 2 == 0) {
 								team_1_score += temp_score;
-								if (temp_score != 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[0][0]} - (${osudroid.mods.droid_to_PC(play_list[i].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i].mark}** - ${play_list[i].accuracy}% - ${play_list[i].miss} ❌\n`;
-								else team_1_string += `${players[i][0]} (N/A): **0** - Failed`
+								if (temp_score != 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[0][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+								else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[0][0]} (N/A): **0** - Failed\n`
 							}
 							else {
 								team_2_score += temp_score;
-								if (temp_score != 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[1][0]} - (${osudroid.mods.droid_to_PC(play_list[i].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i].mark}** - ${play_list[i].accuracy}% - ${play_list[i].miss} ❌\n`;
-								else team_2_string += `${players[i][0]} (N/A): **0** - Failed`
+								if (temp_score != 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[1][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+								else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[1][0]} (N/A): **0** - Failed\n`
 							}
 						}
 
@@ -142,7 +147,7 @@ module.exports.run = (client, message, args, maindb) => {
 							.addField(t2name, `**${t2win}**`, true);
 
 						message.channel.send({embed: embed}).catch(console.error);
-						result.push(score_list);
+						for (let p in score_list) result[p].push(score_list[p]);
 						let updateVal = {
 							$set: {
 								status: "on-going",
