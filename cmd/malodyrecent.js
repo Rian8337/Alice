@@ -151,12 +151,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+	name: "malodyrecent",
 	description: "Retrieves recent Malody plays of a user.",
 	usage: "malodyrecent <user> <mode> <limit>",
 	detail: "`user`: The user to retrieve profile from [String]\n`mode`: Gamemode. Accepted arguments are `all`, `key`, `step`, `dj`, `catch` , `pad`, `taiko`, `ring`\n`limit`: The amount of plays to retrieve from 1 to 10 [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "malodyrecent"
 };
