@@ -210,12 +210,6 @@ client.on("message", message => {
 			cmd.run(client, message, args, maindb, alicedb)
 		}
 	}
-	
-	// whitelist logging
-	if (message.content.startsWith("&whitelist") || message.content.startsWith("&whitelistset") || message.content.startsWith("a!whitelist") || message.content.startsWith("a!whitelistset")) {
-		let cmd = client.commands.get("whitelistlog");
-		cmd.run(client, message, args)
-	}
 });
 
 // welcome message for international server
@@ -266,7 +260,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.roles.size == newMember.roles.size) return;
 	let guild = client.guilds.get('528941000555757598');
 	let logchannel = guild.channels.get('655829748957577266');
-        let footer = config.avatar_list;
+	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 	let embed = new Discord.RichEmbed()
                 .setFooter("Alice Synthesis Thirty", footer[index])
@@ -394,12 +388,3 @@ client.on("roleDelete", role => {
 });
 
 client.login(process.env.BOT_TOKEN).catch(console.error);
-
-// personal stuff
-/*const me = new Discord.Client();
-me.on("ready", () => {
-	console.log("Login initiated");
-	me.user.setActivity("Sword Art Online: Alicization Rising Steel", {type: "STREAMING", url: "https://github.com/Rian8337/Alice"}).catch(console.error)
-});
-
-me.login(process.env.MY_TOKEN).catch(console.error)*/
