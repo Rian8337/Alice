@@ -1,12 +1,12 @@
-var Discord = require("discord.js");
-var config = require("../config.json");
-var cd = new Set();
+const Discord = require("discord.js");
+const config = require("../config.json");
+const cd = new Set();
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!args[0]) return;
     if (message.member.roles.find(r => r.name === 'report-ban')) {
-        message.author.lastMessage.delete();
+        message.author.lastMessage.delete().catch(console.error);
         return message.reply("you were banned from submitting reports!").then (message => {
             message.delete(5000)
         });
@@ -15,9 +15,7 @@ module.exports.run = async (client, message, args) => {
     if (!channel) return message.reply(`please create #${config.report_channel} first!`);
     let user = message.author.id;
     if (message.member.roles.find(r => r.name === 'Helper') || message.member.roles.find(r => r.name === 'Moderator')) cd.delete(user);
-    if (cd.has(user)) return message.reply("you are still on cooldown!").then(message => {
-            message.delete(5000)
-        });
+    if (cd.has(user)) return message.reply("you are still on cooldown!").then(message => message.delete(5000));
 
     let toreport = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!toreport) return message.reply("please make sure you have entered the correct user!");
@@ -26,11 +24,17 @@ module.exports.run = async (client, message, args) => {
     let reason = args.slice(1).join(" ");
     if (!reason) return message.reply("please add a reason.");
 
-    message.author.lastMessage.delete();
+    message.author.lastMessage.delete().catch(console.error);
 
+    let rolecheck;
+    try {
+        rolecheck = message.member.highestRole.hexColor
+    } catch (e) {
+        rolecheck = "#000000"
+    }
     let reportembed = new Discord.RichEmbed()
         .setAuthor(message.author.tag, message.author.avatarURL)
-        .setColor(message.member.highestRole.hexColor)
+        .setColor(rolecheck)
         .setTimestamp(new Date())
         .setFooter("React to this message upon completing report based on decision given")
         .addField("Reported user: " + toreport.user.username, "Reported in: " + message.channel)
@@ -66,12 +70,9 @@ module.exports.run = async (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "report",
     description: "Reports a user for breaking rules.",
     usage: "report <user> <reason>",
     detail: "`user`: The user to report [UserResolvable (mention or user ID)]\n`reason`: Reason for reporting [String]",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "report"
 };
