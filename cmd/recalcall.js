@@ -1,8 +1,5 @@
-let Discord = require('discord.js');
-let droid = require('./ojsamadroid');
-let https = require('https');
-let request = require('request');
-let apikey = process.env.OSU_API_KEY;
+const Discord = require('discord.js');
+const osudroid = require('../modules/osu!droid');
 
 function retrieveList(res, i, cb) {
     if (!res[i]) return cb([], true);
@@ -15,97 +12,53 @@ function retrieveList(res, i, cb) {
 
 function recalcPlay(target, i, newtarget, whitelist, cb) {
     if (!target[i]) return cb(false, true);
-    let modstring = '';
-    if (target[i][1].includes("+")) {
-        let mapstring = target[i][1].split("+");
-        modstring = mapstring[mapstring.length - 1]
+    let modstring;
+    if (target[i][1].includes('+'))  {
+        let mapstring = target[i][1].split('+');
+        modstring = mapstring[mapstring.length-1]
     }
-    let guessing_mode = false;
-    let isWhitelist = false;
+
+    let guessing_mode = true;
     let whitelistQuery = {hashid: target[i][0]};
+
     whitelist.findOne(whitelistQuery, (err, wlres) => {
+        let query = {hash: target[i][0]};
         if (err) {
             console.log("Whitelist find error");
             return cb(true)
         }
-        if (wlres) isWhitelist = true;
-        let options = '';
-        if (isWhitelist) options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${wlres.mapid}`);
-        else options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${target[i][0]}`);
-        let content = '';
-        let req = https.get(options, function(res) {
-            res.setEncoding("utf8");
-            res.on("data", function(chunk) {
-                content += chunk
+        if (wlres) query = {beatmap_id: wlres.mapid};
+        new osudroid.MapInfo().get(query, mapinfo => {
+            if (!mapinfo.title) {
+                console.log("Map not found");
+                return cb()
+            }
+            if (!mapinfo.objects) {
+                console.log("0 objects found");
+                return cb()
+            }
+            let mods = osudroid.mods.droid_to_PC(modstring);
+            let acc_percent = 100;
+            if (target[i][4]) {
+                acc_percent = parseFloat(target[i][4]);
+                guessing_mode = false;
+            }
+            let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
+            let miss = target[i][5] ? parseInt(target[i][5]) : 0;
+            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+            let npp = osudroid.ppv2({
+                stars: star.droid_stars,
+                combo: combo,
+                acc_percent: acc_percent,
+                miss: miss,
+                mode: "droid"
             });
-            res.on("end", function() {
-                let obj = JSON.parse(content);
-                if (!obj[0]) {
-                    console.log("Map not found");
-                    return cb()
-                }
-                let mapinfo = obj[0];
-                if (mapinfo.mode != 0) return cb();
-                let mods = 4 + (modstring ? droid.modbits.from_string(modstring) : 0);
-                let acc_percent = 100;
-                if (target[i][4]) acc_percent = parseFloat(target[i][4]);
-                else guessing_mode = true;
-                let combo = parseInt(target[i][3] ? target[i][3] : mapinfo.max_combo);
-                let nmiss = target[i][5] ? parseInt(target[i][5]) : 0;
-                let parser = new droid.parser();
-                let url = `https://osu.ppy.sh/osu/${mapinfo.beatmap_id}`;
-                request(url, function(err, response, data) {
-                    if (err) {
-                        console.log("Error downloading .osu file");
-                        console.log(err);
-                        return cb(true)
-                    }
-                    parser.feed(data);
-                    let map = parser.map;
-                    let cur_cs = map.cs - 4;
-                    let cur_ar = map.ar;
-                    let cur_od = map.od;
-                    if (modstring.includes("HR")) {
-                        mods -= 16;
-                        cur_ar = Math.min(cur_ar * 1.4, 10);
-                        cur_od = Math.min(cur_od * 1.4, 10);
-                        cur_cs++
-                    }
-                    if (modstring.includes("EZ")) {
-                        mods -= 2;
-                        cur_ar /= 2;
-                        cur_od /= 2;
-                        cur_cs--
-                    }
-                    let droidtoMS = 75 + 5 * (5 - cur_od);
-                    if (modstring.includes("PR")) droidtoMS = 55 + 6 * (5 - cur_od);
-                    cur_od = 5 - (droidtoMS - 50) / 6;
-                    map.od = cur_od;
-                    map.ar = cur_ar;
-                    map.cs = cur_cs;
-                    if (map.ncircles == 0 && map.nsliders == 0) {
-                        console.log(target[i][0] + ' - Error: no object found');
-                        console.log(target[i][2] + " -> " + target[i][2]);
-                        newtarget.push([target[i][0], target[i][1], target[i][2], target[i][3], target[i][4], target[i][5]]);
-                        return cb()
-                    }
-                    let stars = new droid.diff().calc({map: map, mods: mods});
-                    let pp = droid.ppv2({
-                        stars: stars,
-                        combo: combo,
-                        nmiss: nmiss,
-                        acc_percent: acc_percent
-                    });
-                    parser.reset();
-                    let newpp = parseFloat(pp.toString().split("(")[0]);
-                    let real_pp = guessing_mode ? parseFloat(parseFloat(target[i][2]).toFixed(2)) : newpp;
-                    console.log(target[i][2] + " -> " + real_pp);
-                    guessing_mode ? newtarget.push([target[i][0], target[i][1], real_pp]) : newtarget.push([target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
-                    cb()
-                })
-            })
-        });
-        req.end()
+            let pp = parseFloat(npp.toString().split(" ")[0]);
+            let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
+            console.log(`${target[i][2]} -> ${real_pp}`);
+            newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
+            cb()
+        })
     })
 }
 
@@ -162,7 +115,7 @@ module.exports.run = (client, message, args, maindb) => {
                                     console.log("Error inserting data to database");
                                     console.log(err);
                                     if (!error) count--;
-                                    return recalcPlay(ppentry, count, newppentry, whitelist, testPlay)
+                                    return testPlay
                                 }
                                 console.log(totalpp);
                                 console.log("Done");
@@ -186,12 +139,9 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.config = {
+    name: "recalcall",
     description: "Recalculates the entire userbind database.",
     usage: "recalcall",
     detail: "None",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
-};
-
-module.exports.help = {
-    name: "recalcall"
 };
