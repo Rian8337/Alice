@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.get("381965207427219456")) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
