@@ -1068,6 +1068,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                 }
                             }
+                            console.log(bonuslist);
                             new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
                                 let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
                                 let npp = osudroid.ppv2({
@@ -1148,6 +1149,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         case "scorev2": {
                                             if (scoreCalc(score, bonus[i][2], acc, miss) > bonus[i][1]) {
                                                 points += bonus[i][3];
+                                                bonuslist[i + 1] = true;
                                                 complete = true
                                             }
                                             break
