@@ -567,7 +567,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "acc": {
-                                    if (acc > parseFloat(passreq[1])) pass = true;
+                                    if (acc >= parseFloat(passreq[1])) pass = true;
                                     break
                                 }
                                 case "miss": {
@@ -607,7 +607,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "acc": {
-                                    if (acc > bonus[1]) points += bonus[2];
+                                    if (acc >= bonus[1]) points += bonus[2];
                                     break
                                 }
                                 case "miss": {
@@ -1068,7 +1068,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                 }
                             }
-                            console.log(bonuslist);
                             new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
                                 let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
                                 let npp = osudroid.ppv2({
@@ -1097,7 +1096,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         break
                                     }
                                     case "acc": {
-                                        if (acc > parseFloat(passreq[1])) pass = true;
+                                        if (acc >= parseFloat(passreq[1])) pass = true;
                                         break
                                     }
                                     case "miss": {
@@ -1127,7 +1126,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
+                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                                 if (!found) points += dailyres[0].points;
 
@@ -1163,7 +1162,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "acc": {
-                                            if (acc > bonus[i][1]) {
+                                            if (acc >= bonus[i][1]) {
                                                 points += bonus[i][2];
                                                 bonuslist[i + 1] = true;
                                                 complete = true
