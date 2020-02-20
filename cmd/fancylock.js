@@ -1,5 +1,5 @@
-let Discord = require('discord.js');
-let config = require('../config.json');
+const Discord = require('discord.js');
+const config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (role) user.removeRole(role, "Locked from lounge").catch(console.error);
         message.channel.send("✅ **| User has been locked from <#667400988801368094>.**");
 
-        var rolecheck;
+        let rolecheck;
         try {
             rolecheck = message.member.highestRole.hexColor
         } catch (e) {
@@ -51,12 +51,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "fancylock",
     description: "Locks a user from lounge channel.",
     usage: "fancylock <user> <reason>",
     detail: "`user`: The user to lock [UserResolvable (mention or user ID)]\n`reason`: Reason to lock",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
-};
-
-module.exports.help = {
-    name: "fancylock"
 };
