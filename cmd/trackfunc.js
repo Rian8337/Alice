@@ -61,7 +61,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 						let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
 						embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`);
-						message.channel.send(ppline >= 450 ? "<@119496080269377536>" : "", {embed: embed}).catch(console.error)
+						client.channels.get("665106609382359041").send(ppline >= 450 ? "<@119496080269377536>" : "", {embed: embed}).catch(console.error)
 					})
 				}
 			})
