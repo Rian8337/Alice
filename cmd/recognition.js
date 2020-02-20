@@ -135,7 +135,7 @@ module.exports.run = (client, message) => {
 };
 
 module.exports.config = {
-    name: "title",
+    name: "recognition",
     description: "Loads map info based on screenshot",
     usage: "title",
     detail: "None",
