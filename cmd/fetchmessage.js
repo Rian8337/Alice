@@ -1,4 +1,4 @@
-let Discord = require('discord.js');
+const Discord = require('discord.js');
 
 async function filterMessage(message, filter, i, count, embed, startid) {
     let final = await message.channel.fetchMessages({limit: 100, after: startid});
@@ -34,12 +34,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
 }
 
 module.exports.run = async (client, message, args) => {
-    try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-    if (!message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("❎ **| Please enter valid message ID!**");
@@ -50,19 +45,14 @@ module.exports.run = async (client, message, args) => {
     let embed = new Discord.RichEmbed()
         .setTitle("Users who sent `" + filter + "`:")
         .setColor(message.member.highestRole.hexColor);
-    let i = 1;
-    let count = 1;
 
-    await filterMessage(message, filter, i, count, embed, startid);
+    await filterMessage(message, filter, 1, 1, embed, startid);
 };
 
 module.exports.config = {
+    name: "fetchmessage",
     description: "Fetches messages after a specified message with specific filter.",
     usage: "fetchmessage <id> <filter>",
     detail: "`id`: The message's ID [Snowflake (String)]\n`filter`: The filter to only search messages containing the filter [String]",
-    permission: "Owner"
-};
-
-module.exports.help = {
-    name: "fetchmessage"
+    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
