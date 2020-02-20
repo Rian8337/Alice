@@ -1,6 +1,6 @@
-let Discord = require('discord.js');
-let config = require('../config.json');
-let osudroid = require('../modules/osu!droid');
+const Discord = require('discord.js');
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, false, true);
@@ -18,64 +18,62 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 				message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 				return cb(false, false)
 			}
+			if (!mapinfo.objects) {
+				message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+				return cb(false, false)
+			}
 			if ((mapinfo.approved == 3 || mapinfo.approved <= 0) && !wlres) {
 				message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 				return cb(false, false)
 			}
-			let beatmapid = mapinfo.beatmap_id;
-			let mod = mapinfo.modConvert(play.mod);
-			new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
-				if (!star.droid_stars) {
-					message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's droid star rating!**");
-					return cb(false, false)
+			let mod = osudroid.mods.droid_to_PC(play.mod);
+			let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+			let npp = osudroid.ppv2({
+				stars: star.droid_stars,
+				combo: play.combo,
+				acc_percent: play.accuracy,
+				miss: play.miss,
+				mode: "droid"
+			});
+			let pp = parseFloat(npp.toString().split(" ")[0]);
+			let playinfo = mapinfo.showStatistics(mod, 0);
+			let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
+			if (isNaN(pp)) {
+				message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
+				return cb()
+			}
+			playc++;
+			let dup = false;
+			for (let i in pplist) {
+				if (ppentry[0] == pplist[i][0]) {
+					pplist[i] = ppentry;
+					dup = true;
+					break
 				}
-				let npp = new osudroid.MapPP().calculate({
-					stars: star.droid_stars,
-					combo: play.combo,
-					miss: play.miss,
-					acc_percent: play.accuracy,
-					mode: "droid"
-				});
-				let pp = parseFloat(npp.pp.toString().split(" ")[0]);
-				let playinfo = mapinfo.showStatistics(mod, 0);
-				let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
-				if (isNaN(pp)) {
-					message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
-					return cb()
-				}
-				playc++;
-				let dup = false;
-				for (let i in pplist) {
-					if (ppentry[0] == pplist[i][0]) {
-						pplist[i] = ppentry;
-						dup = true;
+			}
+			if (!dup) pplist.push(ppentry);
+			pplist.sort(function (a, b) {
+				return b[2] - a[2]
+			});
+			if (pplist.length > 75) pplist.splice(75);
+			if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+			else {
+				let x = 0;
+				for (x; x < pplist.length; x++) {
+					if (pplist[x][1].includes(playinfo)) {
+						embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
 						break
 					}
 				}
-				if (!dup) pplist.push(ppentry);
-				pplist.sort(function (a, b) {
-					return b[2] - a[2]
-				});
-				while (pplist.length > 75) pplist.pop();
-				if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
-				else {
-					let x = 0;
-					for (x; x < pplist.length; x++) {
-						if (pplist[x][1].includes(playinfo)) {
-							embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
-							break
-						}
-					}
-					if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
-				}
-				cb()
-			})
+				if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+			}
+			cb()
 		})
 	})
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	let channels = config.pp_channel;
 	let found = false;
 	for (let i = 0; i < channels.length; i++) {
@@ -104,7 +102,6 @@ module.exports.run = (client, message, args, maindb) => {
 		}
 		if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = userres[0].uid;
-		let discordid = userres[0].discordid;
 		let pplist = [];
 		let pptotal = 0;
 		let pre_pptotal = 0;
@@ -155,7 +152,7 @@ module.exports.run = (client, message, args, maindb) => {
 					}
 					let diff = pptotal - pre_pptotal;
 					embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
-					message.channel.send('✅ **| <@' + discordid + '> successfully submitted your play(s). More info in embed.**', {embed: embed});
+					message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
 					let updateVal = {
 						$set: {
 							pptotal: pptotal,
@@ -177,12 +174,9 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.config = {
+	name: "pp",
 	description: "Submits plays from user's profile into the user's droid pp profile. Only allowed in bot channel and pp project channel in osu!droid International Discord server.",
 	usage: "pp [offset] [start]",
 	detail: "`offset`: The amount of play to submit from 1 to 5, defaults to 1 [Integer]\n`start`: The position in your recent play list that you want to start submitting, up to 50, defaults to 1 [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "pp"
 };
