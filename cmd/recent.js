@@ -50,7 +50,7 @@ module.exports.run = (client, message, args) => {
 				mode: "droid"
 			});
 			let pcpp = osudroid.ppv2({
-				stars: star.droid_stars,
+				stars: star.pc_stars,
 				combo: combo,
 				acc_percent: acc,
 				miss: miss,
