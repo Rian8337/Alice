@@ -1,4 +1,4 @@
-let Discord = require('discord.js');
+const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
@@ -22,12 +22,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "matchunset",
     description: "Removes a match binded to the channel.\nIntended for tournament use.",
     usage: "matchunset",
     detail: "None",
     permission: "Referee"
-};
-
-module.exports.help = {
-    name: "matchunset"
 };
