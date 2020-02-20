@@ -173,7 +173,6 @@ client.on("message", message => {
 	}
 	
 	// osu! automatic recognition
-	if (message.attachments.size !== 0) client.commands.get("recognition").run(client, message);
 	if (message.content.startsWith("https://osu.ppy.sh/")) {
 		let a = command.split("/");
 		let id = parseInt(a[a.length - 1]);
