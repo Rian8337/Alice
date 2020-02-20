@@ -1,143 +1,204 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config  = require('../config.json');
 const osudroid = require('../modules/osu!droid');
 
-module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
-    if (message.author != null || message.channel instanceof Discord.DMChannel) return;
-    let dailydb = alicedb.collection("dailychallenge");
-    let query = {status: "ongoing"};
-    dailydb.find(query).toArray((err, dailyres) => {
-        if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
-        let timelimit = dailyres[0].timelimit;
-        if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
-        let pass = dailyres[0].pass;
-        let bonus = dailyres[0].bonus;
-        let challengeid = dailyres[0].challengeid;
-        let constrain = dailyres[0].constrain.toUpperCase();
-        let beatmapid = dailyres[0].beatmapid;
-        let featured = dailyres[0].featured;
-        if (!featured) featured = '386742340968120321';
-        new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-            if (!mapinfo.title) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
-            if (!mapinfo.objects) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
-            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-            let pass_string = '';
-            let bonus_string = '';
-            switch (pass[0]) {
-                case "score": {
-                    pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
-                    break
-                }
-                case "acc": {
-                    pass_string = `Accuracy above **${pass[1]}%**`;
-                    break
-                }
-                case "scorev2": {
-                    pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
-                    break
-                }
-                case "miss": {
-                    pass_string = pass[1] == 0 ? "No misses" : `Miss count below **${pass[1]}**`;
-                    break
-                }
-                case "combo": {
-                    pass_string = `Combo above **${pass[1]}**`;
-                    break
-                }
-                case "rank": {
-                    pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                    break
-                }
-                case "dpp": {
-                    pass_string = `**${pass[1]}** dpp or more`;
-                    break
-                }
-                case "pp": {
-                    pass_string = `**${pass[1]}** pp or more`;
-                    break
-                }
-                default:
-                    pass_string = 'No pass condition'
-            }
-            let difflist = ["Easy", "Normal", "Hard", "Insane"];
-            for (let i = 0; i < bonus.length; i++) {
-                bonus_string += `${difflist[i]}: `;
-                switch (bonus[i][0]) {
-                    case "score": {
-                        bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "acc": {
-                        bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "scorev2": {
-                        bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "miss": {
-                        bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "mod": {
-                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "combo": {
-                        bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "rank": {
-                        bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "dpp": {
-                        bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "pp": {
-                        bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                        break
-                    }
-                    default:
-                        bonus_string += "No bonuses available"
-                }
-                bonus_string += '\n'
-            }
-            let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
-            let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-            let embed = new Discord.RichEmbed()
-                .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
-                .setColor(mapinfo.statusColor())
-                .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
-                .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-                .setDescription(`**${mapinfo.showStatistics("", 0)}(https://osu.ppy.sh/b/${beatmapid})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
-                .addField("Map Info", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                .addField(`Star Rating:\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+function isEligible(member) {
+    let res = 0;
+    let eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
+    eligibleRoleList.forEach((id) => {
+        if (member.roles.has(id[0])) res = id[1]
+    });
+    return res
+}
 
-            client.channels.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
+function rejectionMessage(id) {
+    switch (id) {
+        case 1: return "NF/EZ/HT mod used";
+        case 2: return "Rank achieved is not S or accuracy achieved is less than 97% with A rank";
+        case 3: return "Accuracy achieved is less than 93%";
+        case 4: return "Accuracy achieved is less than 90%";
+        case 5: return "Rank achieved is not A or S";
+        default: return "Unknown"
+    }
+}
 
-            let updateVal = {
-                $set: {
-                    status: "finished"
-                }
-            };
-            dailydb.updateOne(query, updateVal, err => {
-                if (err) return console.log("Cannot update challenge status");
-                console.log("Challenge status updated")
+function danCheck(hash) {
+    switch (hash) {
+        case "53d46ac17cc3cf56f35c923f72343fa5": return [1, "1st Dan"];
+        case "520e21c012c50b328cec7dff20d6ba37": return [2, "2nd Dan"];
+        case "78ce191ff0e732fb7a3c76b5b1b68180": return [3, "3rd Dan"];
+        case "461f0c615a5cba0d33137ce28dd815fb": return [4, "4th Dan"];
+        case "f3577717c5a3ecbe7663a9b562453ea3": return [5, "5th Dan"];
+        case "056bf9d0d67b0b862d831cfe65f09ae7": return [6, "6th Dan"];
+        case "26beb83acc2133f3b756288d158fded4": return [7, "7th Dan"];
+        case "47d5130e26c70c7ab8f4fc08424f4459": return [8, "8th Dan"];
+        case "5c10b8deba7725ba1009275f1240f950": return [9, "9th Dan"];
+        case "40261e470a4649e3f77b65d64964529e": return [10, "Chuuden"];
+        case "c12aa4ce57bf072ffa47b223b81534dd": return [11, "Kaiden"];
+        case "b07292999f84789970bf8fbad72d5680": return [12, "Aleph-0 Dan"];
+        default: return undefined
+    }
+}
+
+function validation(dan, mod, acc, rank) {
+    let res = 0;
+    if (mod.includes("n") || mod.includes("e") || mod.includes("t")) {
+        res = 1;
+        return res
+    }
+    if (dan >= 1 && dan <= 9 && (acc < 97 && !rank.includes("S"))) res = 2; // 1st-9th Dan
+    if (dan === 10 && acc < 93) res = 3; // Chuuden
+    if (dan === 11 && acc < 90) res = 4;// Kaiden
+    if (dan === 12 && (!rank.includes("A") && !rank.includes("S"))) res = 5; // Aleph-0 Dan
+    return res
+}
+
+module.exports.run = (client, message, args, maindb) => {
+    if (message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
+    let objcount = {x: 0};
+    let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
+    let channel = message.guild.channels.get("316545691545501706");
+
+    if (args[0] == 'about') {
+        //if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
+        let footer = config.avatar_list;
+        let helper = message.guild.roles.get("369108742077284353");
+        let mod = message.guild.roles.get("595667274707370024");
+        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+        let rolecheck;
+        try {
+            rolecheck = message.member.highestRole.hexColor
+        } catch (e) {
+            rolecheck = "#000000"
+        }
+        let embed = new Discord.RichEmbed()
+            .setTitle("osu!droid Daninintei Courses")
+            .setThumbnail("https://cdn.discordapp.com/attachments/430939277720027136/623153414414532609/BG.png")
+            .setFooter("Alice Synthesis Thirty", footer[index])
+            .setColor(rolecheck)
+            .setDescription("__osu!droid Daninintei Courses__ is a course system to measure your skill level. Receive roles and gain scores (yes) as you progress through each course!\n\nThere are **" + danlist.length + "** available courses: **" + danlist.join(", ") + "**.")
+            .addField("Requirements", "1. You **must be logged in to the server** when you do courses.\n2. You **cannot** use HT, EZ, NF, and any unranked mods.\n3. For 1st Dan to 9th Dan, **you must achieve S rank regardless of accuracy *or* A rank with at least 97% accuracy.**\n4. For Chuuden, **you must achieve at least 93% accuracy.**\n5. For Kaiden, **you must achieve at least 90% accuracy.**\n6. For Aleph-0 Dan, **you must achieve A or S rank.**")
+            .addField("Submission", "After you have completed a course, simply type `a!dancourse` in " + (!channel?"#dan-courses":channel) + " to get the role *if your score was recent and it was submitted to the server*. Otherwise, tag " + (!mod?"@Moderator":mod) + " or " + (!helper?"@Helper":helper) + ".")
+            .addField("Course Download", "You can download courses in pinned messages of " + (!channel?"#dan-courses":channel) + ".")
+            .addField("FAQ", "**Q: Is this necessary?**\nA: No, you can ignore this if you want to.\n\n**Q: Can I skip lower courses?**\nA: Yes, you don't have to do them in order.\n\n**Q: Is there a list of maps for each course?**\nA: Yes, click/tap [here](https://docs.google.com/spreadsheets/d/1oGu7Y9T8q_V6Sd-gYJKgu0_h-emcCqAZM0pp2ghGA_E/edit?usp=sharing).\n\n**Q: I have questions that are not answered in this FAQ!**\nA: You can ask a Helper or Moderator for help.");
+
+        message.channel.send({embed: embed}).catch(console.error)
+    }
+    else {
+        if (args[0]) {
+            let perm = isEligible(message.member);
+            if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
+
+            let togive = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+            if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
+
+            let rolename = args.slice(1).join(" ");
+            if (!rolename) return message.channel.send("❎ **| Hey, I don't know what dan role to give!**");
+            if (!danlist.includes(rolename)) {
+                let rolelist = '';
+                danlist.forEach(role => {
+                    rolelist += '`' + role + '`;';
+                });
+                rolelist = rolelist.split(";").join(", ").slice(0, -2);
+                return message.channel.send(`❎ **| I'm sorry, I cannot find the role! Accepted arguments are ${rolelist}.**`)
+            }
+            let role = message.guild.roles.find(r => r.name === rolename);
+            if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${rolename} role!**`);
+            if (togive.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!**`);
+
+            togive.addRole(role.id, "Successfully completed dan course").then (() => {
+                message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!**`);
+                if (danlist.slice(7, danlist.length).includes(rolename)) channel.send(`**<@${togive.id}> has just completed ${rolename}. Congratulations to <@${togive.id}>!**`)
+            }).catch(e => console.log(e));
+
+            // Dan Course Master
+            danlist.pop();
+            let count = 1;
+            danlist.forEach(role => {
+                if (togive.roles.find(r => r.name === role)) count++
             });
-            let nextchallenge = "d" + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) + 1);
-            client.commands.get("dailyautostart").run(client, message, [nextchallenge], maindb, alicedb);
-        })
-    })
+            if (count == danlist.length) {
+                let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
+                if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
+                if (!togive.roles.has(dcmrole.id)) togive.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                    message.channel.send(`✅ **| <@${togive.id}>, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
+                    channel.send(`**<@${togive.id}> has just achieved Dan Course Master. Congratulations to <@${togive.id}>!**`)
+                }).catch(e => console.log(e));
+            }
+        }
+        else {
+            let binddb = maindb.collection("userbind");
+            let query = {discordid: message.author.id};
+            binddb.find(query).toArray((err, res) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                let uid = res[0].uid;
+                new osudroid.PlayerInfo().get({uid: uid}, player => {
+                    let play = player.recent_plays;
+                    let danentries = [];
+                    for (let i = 0; i < 5; i++) {
+                        if (!play[i]) break;
+                        let dan = danCheck(play[i].hash);
+                        if (dan) {
+                            let mods = play[i].mode;
+                            let acc = (parseInt(play[i].accuracy) / 1000).toFixed(2);
+                            let rank = play[i].mark;
+                            let danentry = {
+                                dan: dan[0],
+                                play: dan[1],
+                                mod: mods,
+                                acc: acc,
+                                rank: rank
+                            };
+                            danentries.push(danentry)
+                        }
+                    }
+                    if (danentries.length == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
+
+                    console.log(danentries);
+                    danentries.forEach(x => {
+                        objcount.x++;
+                        console.log(objcount);
+                        let valid = validation(x.dan, x.mod, x.acc, x.rank);
+                        if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
+                        let danrole = x.play;
+                        let role = message.guild.roles.find(r => r.name === danrole);
+                        if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
+                        if (!message.member.roles.has(role.id)) message.member.addRole(role.id, "Successfully completed dan course").then(() => {
+                            message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
+                            if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
+                        }).catch(console.error);
+
+                        // Dan Course Master
+                        if (objcount.x == danentries.length) {
+                            danlist.pop();
+                            let count = 1;
+                            danlist.forEach(role => {
+                                if (message.member.roles.find(r => r.name === role)) count++
+                            });
+                            if (count == danlist.length) {
+                                let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
+                                if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
+                                if (!message.member.roles.has(dcmrole.id)) message.member.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                                    message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
+                                    channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
+                                }).catch(console.error)
+                            }
+                        }
+                    })
+                })
+            })
+        }
+    }
 };
 
 module.exports.config = {
-    name: "dailytrack",
-	description: "Used to track daily and weekly challenge time limit.",
-	usage: "None",
-	detail: "None",
-	permission: "None"
+    name: "dancourse",
+    description: "Dan course command for international server.",
+    usage: "dancourse\ndancourse about\ndancourse [user] [role] (Helper+)",
+    detail: "`user`: The user to give the role to [UserResolvable (mention or user ID)]\n`role`: Dan role to give. Accepted arguments are `1st Dan`, `2nd Dan`, `3rd Dan`, `4th Dan`, `5th Dan`, `6th Dan`, `7th Dan`, `8th Dan`, `9th Dan`, `Chuuden`, `Kaiden`, `Aleph-0 Dan`",
+    permission: "None | Helper"
 };
