@@ -44,10 +44,6 @@ module.exports.run = (client, message) => {
         if (values[1].includes("by")) creator = values[1].split("by")[1].trim();
         if (creator.indexOf("(") !== -1) creator = creator.substring(0, creator.indexOf("(")).trim();
         if ([title, artist, creator, difficulty].some(value => !value)) return;
-        console.log(title);
-        console.log(artist);
-        console.log(creator);
-        console.log(difficulty);
 
         let options = new URL(`https://osusearch.com/query/?title=${title}&artist=${artist}&mapper=${creator}&diff_name=${difficulty}&statuses=Ranked,Qualified,Loved`);
         let content = '';
