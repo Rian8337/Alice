@@ -1,6 +1,6 @@
-var Discord = require('discord.js');
-var cd = new Set();
-let config = require('../config.json');
+const Discord = require('discord.js');
+const cd = new Set();
+const config = require('../config.json');
 
 function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
@@ -10,7 +10,7 @@ function editpp(page, pp, ppentry, discordid, uid, username, footer, index, role
 		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
-	for (var x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
+	for (let x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
 		if (ppentry[x]) {
 			let combo = ppentry[x][3];
 			if (!combo) combo = '0x';
@@ -59,91 +59,87 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!");
 		}
-		if (res[0]) {
-			var uid = res[0].uid;
-			var username = res[0].username;
-			var discordid = res[0].discordid;
-			var pp = 0;
-			var ppentry = [];
-			if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
-			if (res[0].pp) ppentry = res[0].pp;
-			var rolecheck;
-			try {
-				rolecheck = message.member.highestRole.hexColor
-			} catch (e) {
-				rolecheck = "#000000"
-			}
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+		if (!res[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		let uid = res[0].uid;
+		let username = res[0].username;
+		let discordid = res[0].discordid;
+		let pp = 0;
+		let ppentry = [];
+		if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
+		if (res[0].pp) ppentry = res[0].pp;
+		let rolecheck;
+		try {
+			rolecheck = message.member.highestRole.hexColor
+		} catch (e) {
+			rolecheck = "#000000"
+		}
+		let footer = config.avatar_list;
+		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 
-			message.channel.send(embed).then(msg => {
-				msg.react("⏮️").then(() => {
-					msg.react("⬅️").then(() => {
-						msg.react("➡️").then(() => {
-							msg.react("⏭️").catch(e => console.log(e))
-						})
+		message.channel.send(embed).then(msg => {
+			msg.react("⏮️").then(() => {
+				msg.react("⬅️").then(() => {
+					msg.react("➡️").then(() => {
+						msg.react("⏭️").catch(e => console.log(e))
 					})
-				});
-
-				let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-				let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-				let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
-
-				backward.on('collect', () => {
-					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					else page = 1;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
-				});
-
-				back.on('collect', () => {
-					if (page === 1) page = 15;
-					else page--;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
-				});
-
-				next.on('collect', () => {
-					if (page === 15) page = 1;
-					else page++;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
-				});
-
-				forward.on('collect', () => {
-					if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					else page = 15;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-					embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
-				});
-				
-				backward.on("end", () => {
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-					msg.reactions.forEach(reaction => reaction.remove(client.user.id))
 				})
 			});
-			cd.add(message.author.id);
-			setTimeout(() => {
-				cd.delete(message.author.id)
-			}, 10000)
-		}
-		else message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
+
+			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+
+			backward.on('collect', () => {
+				if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				else page = 1;
+				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+				msg.edit(embed).catch(e => console.log(e))
+			});
+
+			back.on('collect', () => {
+				if (page === 1) page = 15;
+				else page--;
+				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+				msg.edit(embed).catch(e => console.log(e))
+			});
+
+			next.on('collect', () => {
+				if (page === 15) page = 1;
+				else page++;
+				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+				msg.edit(embed).catch(e => console.log(e))
+			});
+
+			forward.on('collect', () => {
+				if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				else page = 15;
+				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+				msg.edit(embed).catch(e => console.log(e))
+			});
+
+			backward.on("end", () => {
+				msg.reactions.forEach(reaction => reaction.remove(message.author.id));
+				msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+			})
+		});
+		cd.add(message.author.id);
+		setTimeout(() => {
+			cd.delete(message.author.id)
+		}, 10000)
+
 	})
 };
 
 module.exports.config = {
+	name: "ppcheck",
 	description: "Checks a user's droid pp profile.",
 	usage: "ppcheck [page/user] [page]",
 	detail: "`user`: The user to check [UserResolvable (mention or user ID)]\n`page`: Page to check from 1 to 15. If specified, the first argument will be treated as `user` [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "ppcheck"
 };
