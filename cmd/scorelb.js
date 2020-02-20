@@ -1,16 +1,16 @@
-var cd = new Set();
+const cd = new Set();
 
 function spaceFill (s, l) {
-    var a = s.length;
-    for (var i = 1; i < l-a; i++) {
+    let a = s.length;
+    for (let i = 1; i < l-a; i++) {
         s += ' ';
     }
     return s
 }
 
 function editscore(res, page) {
-    var output = '#   | Username         | UID    | Play  | Score (Lv)\n';
-    for (var i = page * 20; i < page * 20 + 20; i++) {
+    let output = '#   | Username         | UID    | Play  | Score (Lv)\n';
+    for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
             if (res[i].score && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 6) + ' | ' + parseInt(res[i].score).toLocaleString() + ' (' + Math.floor(res[i].level).toString() + ')\n';}
             else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 6) + ' | ' + '0 (0)\n';}
@@ -23,16 +23,16 @@ function editscore(res, page) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    var page = 0;
+    let page = 0;
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
-    var scoredb = alicedb.collection("playerscore");
-    var scoresort = {score: -1};
+    let scoredb = alicedb.collection("playerscore");
+    let scoresort = {score: -1};
     scoredb.find({}, {projection: {_id: 0, uid: 1, score: 1, playc: 1, username: 1, level: 1}}).sort(scoresort).toArray((err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
-        if (!res[page*20]) return message.channel.send("Nah we don't have that much player :p");
+        if (!res[page*20]) return message.channel.send("❎ **| Eh, we don't have that many players.**");
         let output = editscore(res, page);
         message.channel.send('```c\n' + output + '```').then (msg => {
             msg.react("⏮️").then(() => {
@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 msg.edit('```c\n' + output + '```').catch(e => console.log(e));
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
             });
-            
+
             backward.on("end", () => {
                 msg.reactions.forEach(reaction => reaction.remove(message.author.id));
                 msg.reactions.forEach(reaction => reaction.remove(client.user.id))
@@ -91,12 +91,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "scorelb",
     description: "Views ranked score leaderboard.",
     usage: "scorelb [page]",
     detail: "`page`: Page of leaderboard [Integer]",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "scorelb"
 };
