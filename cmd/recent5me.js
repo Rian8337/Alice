@@ -1,17 +1,17 @@
-let Discord = require('discord.js');
-let cd = new Set();
-let config = require('../config.json');
-let osudroid = require('../modules/osu!droid');
+const Discord = require('discord.js');
+const cd = new Set();
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 function modread(input) {
 	let res = '';
 	if (input.includes('n')) res += 'NF';
-	if (input.includes('h')) res += 'HD';
-	if (input.includes('r')) res += 'HR';
 	if (input.includes('e')) res += 'EZ';
 	if (input.includes('t')) res += 'HT';
-	if (input.includes('c')) res += 'NC';
+	if (input.includes('h')) res += 'HD';
 	if (input.includes('d')) res += 'DT';
+	if (input.includes('r')) res += 'HR';
+	if (input.includes('c')) res += 'NC';
 	if (res) res = '+' + res;
 	return res
 }
