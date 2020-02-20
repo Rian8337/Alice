@@ -1,10 +1,7 @@
-let Discord = require('discord.js');
-var https = require("https");
-require("mongodb");
-require("dotenv").config();
-var apikey = process.env.OSU_API_KEY;
-let config = require('../config.json');
-
+const Discord = require('discord.js');
+const https = require("https");
+const apikey = process.env.OSU_API_KEY;
+const config = require('../config.json');
 function mapstatusread(status) {
 	switch (status) {
 		case -2: return 16711711;
@@ -19,21 +16,21 @@ function mapstatusread(status) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
-    if (!message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("You don't have permission to do this");
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
+    if (message.member.roles == null || !message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
-    var whitelist = maindb.collection("mapwhitelist");
-    var link_in = args[0];
-    whitelistInfo(link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
+    let whitelist = maindb.collection("mapwhitelist");
+    let link_in = args[0];
+    whitelistInfo(client, link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
         if (res > 0) {
-            var i = 0;
-            var entryarr = [];
+            let i = 0;
+            let entryarr = [];
             for (i in mapid) {
-                var finalstring = mapstring + " [" + diffstring[i] + "]";
+                let finalstring = mapstring + " [" + diffstring[i] + "]";
                 entryarr.push([mapid[i], hashid[i], finalstring]);
             }
             entryarr.forEach((entry) => {
-                var dupQuery = {mapid: parseInt(entry[0])};
+                let dupQuery = {mapid: parseInt(entry[0])};
                 whitelist.findOne(dupQuery, (err, wlres) => {
                     console.log(wlres);
                     if (err) {
@@ -41,70 +38,72 @@ module.exports.run = (client, message, args, maindb) => {
                         return message.channel.send("Error: Empty database response. Please try again!")
                     }
                     if (!wlres) {
-                        var insertData = {
+                        let insertData = {
                             mapid: parseInt(entry[0]),
                             hashid: entry[1],
                             mapname: entry[2]
                         };
                         console.log("Whitelist entry added");
                         whitelist.insertOne(insertData, () => {
-                            message.channel.send("Whitelist entry added | `" + entry[2] + "`")
+                            message.channel.send("Whitelist entry added | `" + entry[2] + "`");
+                            client.channels.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`")
                         })
                     }
                     else {
-                        var updateData = { $set: {
+                        let updateData = { $set: {
                             mapid: parseInt(entry[0]),
                             hashid: entry[1],
                             mapname: entry[2]
                         }};
                         console.log("Whitelist entry update");
                         whitelist.updateOne(dupQuery, updateData, () => {
-                            message.channel.send("Whitelist entry updated | `" + entry[2] + "`")
+                            message.channel.send("Whitelist entry updated | `" + entry[2] + "`");
+                            client.channels.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`")
                         })
                     }
                 })
             })
         }
-        else message.channel.send("Beatmap white-listing failed")
+        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**")
     })
 };
 
-function whitelistInfo(link_in, message, callback) {
-    var setid = "";
-    var mapid = [];
-    var hashid = [];
-    var diffstring = [];
+function whitelistInfo(client, link_in, message, callback) {
+    let setid = "";
+    let mapid = [];
+    let hashid = [];
+    let diffstring = [];
 
-    if(link_in) {                 //Normal mode
-        var line_sep = link_in.split('/');
+    if(link_in) {  //Normal mode
+        let line_sep = link_in.split('/');
         setid = line_sep[line_sep.length-1]
     }
-    var options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&s=" + setid);
+    let options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&s=" + setid);
 
-	var content = "";   
+	let content = "";
 
-	var req = https.get(options, function(res) {
+	let req = https.get(options, function(res) {
 		res.setEncoding("utf8");
 		res.on("data", function (chunk) {
 			content += chunk;
         });
 		res.on("error", err => {
 		    console.log(err);
-		    return message.channel.send("Error: Empty API response. Please try again!")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again later!**")
         });
         res.on("end", function () {
-            var obj;
+            let obj;
             try {
                 obj = JSON.parse(content);
             } catch (e) {
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**")
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again later!**")
             }
             if (!obj[0]) {console.log("Set not found"); callback(0);}
-            var mapinfo = obj;
-            var firstmapinfo = mapinfo[0];
+            let mapinfo = obj;
+            let firstmapinfo = mapinfo[0];
             if (firstmapinfo.mode !=0) callback(0);
 
-            for (i in mapinfo) {
+            for (let i in mapinfo) {
                 if (mapinfo[i].mode == 0) {
                     mapid.push(mapinfo[i].beatmap_id);
                     hashid.push(mapinfo[i].file_md5);
@@ -112,13 +111,13 @@ function whitelistInfo(link_in, message, callback) {
                 }
             }
             
-            var listoutput = "";
+            let listoutput = "";
 
-            for (i in diffstring) {
+            for (let i in diffstring) {
                 listoutput += "- " + diffstring[i] + " - **" + parseFloat(mapinfo[i].difficultyrating).toFixed(2) + "**\n" ;
             }
 
-            var mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
+            let mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * (footer.length - 1) + 1);
             const embed = {
@@ -144,7 +143,8 @@ function whitelistInfo(link_in, message, callback) {
                     }
                 ]
             };
-            message.channel.send({embed});
+            message.channel.send({embed: embed}).catch(console.error);
+            client.channels.get("638671295470370827").send({embed: embed}).catch(console.error);
             console.log(mapid);
             console.log(hashid);
             console.log(mapstring);
@@ -156,12 +156,9 @@ function whitelistInfo(link_in, message, callback) {
 }
 
 module.exports.config = {
+    name: "whitelistset",
     description: "Whitelists a beatmap set.",
     usage: "whitelistset <map set link/map set ID>",
     detail: "`map set link/map set ID`: The beatmap set link or ID to whitelist [String]",
     permission: "pp-project Map Validator"
-};
-
-module.exports.help = {
-	name: "whitelistset"
 };
