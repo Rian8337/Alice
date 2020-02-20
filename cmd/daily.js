@@ -1028,167 +1028,173 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         }
                         if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                        new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-                            let npp = osudroid.ppv2({
-                                stars: star.droid_stars,
-                                combo: combo,
-                                miss: miss,
-                                acc_percent: acc,
-                                mode: "droid"
-                            });
-                            let pcpp = osudroid.ppv2({
-                                stars: star.pc_stars,
-                                combo: combo,
-                                miss: miss,
-                                acc_percent: acc,
-                                mode: "osu"
-                            });
-                            let dpp = parseFloat(npp.toString().split(" ")[0]);
-                            let pp = parseFloat(pcpp.toString().split(" ")[0]);
-                            let passreq = dailyres[0].pass;
-                            let pass = false;
-                            switch (passreq[0]) {
-                                case "score": {
-                                    if (score > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "acc": {
-                                    if (acc > parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < passreq[1] || miss == 0) pass = true;
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
-                                    break
-                                }
-                                case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "dpp": {
-                                    if (dpp >= parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "pp": {
-                                    if (pp >= parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
+                        pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                            if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                            found = false;
+                            let bonuslist = [challengeid, false, false, false, false];
+                            let challengelist = playerres[0].challenges;
+                            let k = 0;
+                            if (playerres[0]) {
+                                for (k; k < challengelist.length; k++) {
+                                    if (challengelist[k][0] == challengeid) {
+                                        bonuslist = challengelist[k];
+                                        found = true;
+                                        break
+                                    }
+                                }
+                            }
+                            new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
+                                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                                let npp = osudroid.ppv2({
+                                    stars: star.droid_stars,
+                                    combo: combo,
+                                    miss: miss,
+                                    acc_percent: acc,
+                                    mode: "droid"
+                                });
+                                let pcpp = osudroid.ppv2({
+                                    stars: star.pc_stars,
+                                    combo: combo,
+                                    miss: miss,
+                                    acc_percent: acc,
+                                    mode: "osu"
+                                });
+                                let dpp = parseFloat(npp.toString().split(" ")[0]);
+                                let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-                            let points = 0;
-                            let index = 0;
-                            let bonus = dailyres[0].bonus;
-                            let bonus_string = '';
-                            let mode = ['easy', 'normal', 'hard', 'insane'];
-                            for (let i = 0; i < bonus.length; i++) {
-                                let complete = false;
-                                switch (bonus[i][0]) {
+                                let points = 0;
+                                let passreq = dailyres[0].pass;
+                                let pass = false;
+                                switch (passreq[0]) {
                                     case "score": {
-                                        if (score > bonus[i][1]) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
-                                        break
-                                    }
-                                    case "scorev2": {
-                                        if (scoreCalc(score, bonus[i][2], acc, miss) > bonus[i][1]) {
-                                            points += bonus[i][3];
-                                            complete = true
-                                        }
-                                        break
-                                    }
-                                    case "mod": {
-                                        if (osudroid.mods.droid_to_modbits(mod) - 4 == osudroid.mods.modbits_from_string(bonus[i][1].toUpperCase())) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (score > passreq[1]) pass = true;
                                         break
                                     }
                                     case "acc": {
-                                        if (acc > bonus[i][1]) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
-                                        break
-                                    }
-                                    case "combo": {
-                                        if (combo > bonus[i][1]) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (acc > parseFloat(passreq[1])) pass = true;
                                         break
                                     }
                                     case "miss": {
-                                        if (miss < bonus[i][1] || miss == 0) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (miss < passreq[1] || miss == 0) pass = true;
+                                        break
+                                    }
+                                    case "combo": {
+                                        if (combo > passreq[1]) pass = true;
+                                        break
+                                    }
+                                    case "scorev2": {
+                                        if (scoreCalc(score, passreq[2], acc, miss) > passreq[1]) pass = true;
                                         break
                                     }
                                     case "rank": {
-                                        if (rankConvert(rank) >= rankConvert(bonus[i][1])) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
                                         break
                                     }
                                     case "dpp": {
-                                        if (dpp >= bonus[i][1]) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (dpp >= parseFloat(passreq[1])) pass = true;
                                         break
                                     }
                                     case "pp": {
-                                        if (pp >= bonus[i][1]) {
-                                            points += bonus[i][2];
-                                            complete = true
-                                        }
+                                        if (pp >= parseFloat(passreq[1])) pass = true;
+                                        break
                                     }
+                                    default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
-                                if (complete) bonus_string += `${mode[i]} `
-                            }
-                            if (bonus_string) bonus_string = bonus_string.split(" ").join(", ");
-                            let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
-                            pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                }
-                                let bonuslist = [challengeid, false, false, false];
-                                bonuslist[index] = bonuscomplete;
-                                if (playerres[0]) {
-                                    let challengelist = playerres[0].challenges;
-                                    found = false;
-                                    let bonuscheck = false;
-                                    for (let i = 0; i < challengelist.length; i++) {
-                                        if (challengelist[i][0] == challengeid) {
-                                            bonuscheck = challengelist[i][index];
-                                            challengelist[i][index] = bonuscomplete;
-                                            found = true;
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
+                                if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                                if (!found) points += dailyres[0].points;
+
+                                let bonus = dailyres[0].bonus;
+                                let bonus_string = '';
+                                let mode = ['easy', 'normal', 'hard', 'insane'];
+                                for (let i = 0; i < bonus.length; i++) {
+                                    if (bonuslist[i + 1]) continue;
+                                    let complete = false;
+                                    switch (bonus[i][0]) {
+                                        case "score": {
+                                            if (score > bonus[i][1]) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
                                             break
                                         }
+                                        case "scorev2": {
+                                            if (scoreCalc(score, bonus[i][2], acc, miss) > bonus[i][1]) {
+                                                points += bonus[i][3];
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "mod": {
+                                            if (osudroid.mods.droid_to_modbits(mod) - 4 == osudroid.mods.modbits_from_string(bonus[i][1].toUpperCase())) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "acc": {
+                                            if (acc > bonus[i][1]) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "combo": {
+                                            if (combo > bonus[i][1]) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "miss": {
+                                            if (miss < bonus[i][1] || miss == 0) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "rank": {
+                                            if (rankConvert(rank) >= rankConvert(bonus[i][1])) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "dpp": {
+                                            if (dpp >= bonus[i][1]) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                            break
+                                        }
+                                        case "pp": {
+                                            if (pp >= bonus[i][1]) {
+                                                points += bonus[i][2];
+                                                bonuslist[i + 1] = true;
+                                                complete = true
+                                            }
+                                        }
                                     }
-                                    if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
-                                    if (!found) {
-                                        points += dailyres[0].points;
-                                        challengelist.push(bonuslist)
-                                    }
+                                    if (complete) bonus_string += `${mode[i]} `
+                                }
+                                if (bonus_string) bonus_string = ` and \`${bonus_string.trimRight().split(" ").join(", ")}\` bonus`;
+                                if (playerres[0]) {
+                                    if (found) challengelist[k] = bonuslist;
+                                    else challengelist.push(bonuslist);
                                     let totalpoint = playerres[0].points + points;
                                     let alicecoins = playerres[0].alicecoins + points * 2;
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete?` and \`${bonus_string}\` bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                                     updateVal = {
                                         $set: {
                                             username: username,
@@ -1225,9 +1231,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             })
                                         })
                                     }
-                                } else {
-                                    points += dailyres[0].points;
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${bonus_string}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
+                                }
+                                else {
+                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
                                     insertVal = {
                                         username: username,
                                         uid: uid,
