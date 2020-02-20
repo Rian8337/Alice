@@ -1,9 +1,9 @@
-var Discord = require('discord.js');
-var modhelp = require('../modhelp.json');
-var config = require('../config.json');
+const Discord = require('discord.js');
+const modhelp = require('../modhelp.json');
+const config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
-	var rolecheck;
+	let rolecheck;
 	try {
 		rolecheck = message.member.highestRole.hexColor
 	} catch (e) {
@@ -20,40 +20,40 @@ module.exports.run = (client, message, args) => {
 				.setColor(rolecheck)
 				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setDescription(help);
-			message.channel.send({embed: embed})
+			message.channel.send({embed: embed}).catch(console.error)
 		}
 	} else {
 		let helper = modhelp.helper;
 		let helperhelp = '';
-		for (var i = 0; i < helper.length; i++) {
+		for (let i = 0; i < helper.length; i++) {
 			helperhelp += "`" + helper[i] + "` "
 		}
 		helperhelp = helperhelp.slice(0, -1);
 
 		let moderator = modhelp.moderator;
 		let moderatorhelp = '';
-		for (i = 0; i < moderator.length; i++) {
+		for (let i = 0; i < moderator.length; i++) {
 			moderatorhelp += "`" + moderator[i] + "` "
 		}
 		moderatorhelp = moderatorhelp.slice(0, -1);
 
 		let owner = modhelp.owner;
 		let ownerhelp = '';
-		for (i = 0; i < owner.length; i++) {
+		for (let i = 0; i < owner.length; i++) {
 			ownerhelp += "`" + owner[i] + "` "
 		}
 		ownerhelp = ownerhelp.slice(0, -1);
 
 		let specific = modhelp.specific;
 		let specifichelp = 'These commands are exclusive to <@132783516176875520> and <@386742340968120321>.\n';
-		for (i = 0; i < specific.length; i++) {
+		for (let i = 0; i < specific.length; i++) {
 			specifichelp += "`" + specific[i] + "` "
 		}
 		specifichelp = specifichelp.slice(0, -1);
 
 		let botowner = modhelp.bot_owner;
 		let botownerhelp = '';
-		for (i = 0; i < botowner.length; i++) {
+		for (let i = 0; i < botowner.length; i++) {
 			botownerhelp += "`" + botowner[i] + "` "
 		}
 		botownerhelp = botownerhelp.slice(0, -1);
@@ -77,12 +77,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+	name: "modhelp",
 	description: "Moderator help command.",
 	usage: "modhelp [cmd]",
 	detail: "`cmd`: Command name",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "modhelp"
 };
