@@ -1,7 +1,7 @@
-let http = require('http');
-let request = require('request');
-let tatsukey = process.env.TATSU_API_KEY;
-let droidapikey = process.env.DROID_API_KEY;
+const request = require('request');
+const tatsukey = process.env.TATSU_API_KEY;
+const droidapikey = process.env.DROID_API_KEY;
+const osudroid = require('../modules/osu!droid');
 
 function memberValidation(message, user, role, time, userres, cb) {
     switch (role.toLowerCase()) {
@@ -23,54 +23,29 @@ function memberValidation(message, user, role, time, userres, cb) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 6 months!**");
                 return cb()
             }
-            var uid = userres[0].uid;
-            var options = {
-                host: "ops.dgsrz.com",
-                port: 80,
-                path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
-            };
-            var content = '';
-            var req = http.request(options, res => {
-                res.setEncoding("utf8");
-                res.on("data", chunk => {
-                    content += chunk
-                });
-                res.on("end", () => {
-                    var resarr = content.split("<br>");
-                    var headerres = resarr[0].split(" ");
-                    if (headerres[0] == 'FAILED') {
-                        message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
+            let uid = userres[0].uid;
+            new osudroid.PlayerInfo().get({uid: uid}, player => {
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
+                let rank = player.rank;
+                if (rank > 5000) {
+                    message.channel.send("❎ **| I'm sorry, this user's rank is above 5000!**");
+                    return cb()
+                }
+                let url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${user.id}/stats`;
+                request(url, {headers: {"Authorization": tatsukey}}, (err, response, data) => {
+                    if (err) {
+                        message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from Tatsumaki's API. Please try again!**");
                         return cb()
                     }
-                    var obj;
-                    try {
-                        obj = JSON.parse(resarr[1])
-                    } catch (e) {
-                        message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
+                    let userstats = JSON.parse(data);
+                    let userscore = parseInt(userstats.score);
+                    if (userscore < 125000) {
+                        message.channel.send("❎ **| I'm sorry, you don't have 125,000 Tatsumaki XP yet!**");
                         return cb()
                     }
-                    let rank = parseInt(obj.rank);
-                    if (rank > 5000) {
-                        message.channel.send("❎ **| I'm sorry, this user's rank is above 5000!**");
-                        return cb()
-                    }
-                    var url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${user.id}/stats`;
-                    request(url, {headers: {"Authorization": tatsukey}}, (err, response, data) => {
-                        if (err) {
-                            message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from Tatsumaki's API. Please try again!**");
-                            return cb()
-                        }
-                        var userstats = JSON.parse(data);
-                        var userscore = parseInt(userstats.score);
-                        if (userscore < 125000) {
-                            message.channel.send("❎ **| I'm sorry, you don't have 125,000 Tatsumaki XP yet!**");
-                            return cb()
-                        }
-                        cb(true)
-                    })
+                    cb(true)
                 })
             });
-            req.end();
             break
         }
         case "veteran": {
@@ -85,59 +60,34 @@ function memberValidation(message, user, role, time, userres, cb) {
                     message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
                     return cb()
                 }
-                var line = data.split("<br>").shift();
-                var first = parseInt(line[0].split(" ")[7]) + 3600 * 7;
-                for (var i = 1; i < line.length; i++) {
+                let line = data.split("<br>").shift();
+                let first = parseInt(line[0].split(" ")[7]) + 3600 * 7;
+                for (let i = 1; i < line.length; i++) {
                     let entry = line[i].split(" ");
                     let date = parseInt(entry[7]) + 3600 * 7;
                     if (entry[1] == '0') date = parseInt(entry[5]) + 3600 * 7;
                     if (date < first) first = date
                 }
-                var curyear = new Date().getUTCFullYear();
-                var firstyear = new Date(first * 1000).getUTCFullYear();
+                let curyear = new Date().getUTCFullYear();
+                let firstyear = new Date(first * 1000).getUTCFullYear();
                 if (curyear - firstyear < 2) {
-                    message.channel.send("❎ **| I'm sorry, the user hasn't been registered for 2 years!**");
+                    message.channel.send("❎ **| I'm sorry, the user hasn't been registered in Discord for 2 years!**");
                     return cb()
                 }
-                var options = {
-                    host: "ops.dgsrz.com",
-                    port: 80,
-                    path: "/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid
-                };
-                var content = '';
-                var req = http.request(options, res => {
-                    res.setEncoding("utf8");
-                    res.on("data", chunk => {
-                        content += chunk
-                    });
-                    res.on("end", () => {
-                        var resarr = content.split("<br>");
-                        var headerres = resarr[0].split(" ");
-                        if (headerres[0] == 'FAILED') {
-                            message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
-                            return cb()
-                        }
-                        var obj;
-                        try {
-                            obj = JSON.parse(resarr[1])
-                        } catch (e) {
-                            message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid API. Please try again!**");
-                            return cb()
-                        }
-                        let rank = parseInt(obj.rank);
-                        if (rank > 1000) {
-                            message.channel.send("❎ **| I'm sorry, this user's rank is above 1000!**");
-                            return cb()
-                        }
-                        let playc = parseInt(headerres[4]);
-                        if (playc < 1000) {
-                            message.channel.send("❎ **| I'm sorry, this user's play count is below 1000!**");
-                            return cb()
-                        }
-                        cb(true)
-                    })
-                });
-                req.end()
+                new osudroid.PlayerInfo().get({uid: uid}, player => {
+                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
+                    let rank = player.rank;
+                    if (rank > 1000) {
+                        message.channel.send("❎ **| I'm sorry, this user's rank is above 1000!**");
+                        return cb()
+                    }
+                    let playc = player.play_count;
+                    if (playc < 1000) {
+                        message.channel.send("❎ **| I'm sorry, this user's play count is below 1000!**");
+                        return cb()
+                    }
+                    cb(true)
+                })
             });
             break
         }
@@ -177,7 +127,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (valid) {
                     let pass = message.guild.roles.find(r => r.name === 'Lounge Pass');
                     user.addRole(pass, "Fulfilled requirement for role").then(() => {
-                        message.channel.send("✅ **| Successfully given `" + pass.name + "` for " + user + ".**")
+                        message.channel.send("✅ **| Successfully given `" + pass.name + " for " + user)
                     }).catch(() => message.channel.send("❎ **| I'm sorry, this user already has a pass!**"))
                 }
             })
@@ -186,12 +136,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "fancy",
     description: "Gives a user access to lounge channel.",
     usage: "fancy <user> <role>",
     detail: "`user`: The user to give [UserResolvable (mention or user ID)]\n`role`: Role to give. Accepted arguments are `skilled`, `dedicated`, and `veteran`.",
     permission: "Moderator"
-};
-
-module.exports.help = {
-    name: "fancy"
 };
