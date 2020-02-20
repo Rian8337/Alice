@@ -1,43 +1,29 @@
-var mongodb = require('mongodb');
-
 module.exports.run = (client, message, args, maindb) => {
-	try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-	if (message.member.roles.find("name", "Owner")) {
-		let uid = args[0];
-		if (isNaN(parseInt(uid))) {message.channel.send("uid please!")}
-		else {
-		let trackdb = maindb.collection("tracking");
-			let query = { uid: uid };
-			trackdb.find(query).toArray(function(err, res) {
-				if (err) throw err;
-				if (!res[0]) {
-					console.log("track not found");
-					message.channel.send("uid " + uid + " is not tracked");
-				}
-				else {
-					trackdb.deleteOne(query, function(err, res) {
-						if (err) throw err;
-						console.log("track deleted");
-						message.channel.send("uid " + uid + " is deleted from tracking list");
-					});
-				}
-			});
+	if (message.member == null || message.member.roles == null || !message.member.roles.get("325613708673810433")) return message.channel.send("❎ **| You don't have enough permission to use this.**");
+	let uid = args[0];
+	if (isNaN(parseInt(uid))) return message.channel.send("❎ **| I'm sorry, that uid is invalid!**");
+	let trackdb = maindb.collection("tracking");
+	let query = { uid: uid };
+	trackdb.find(query).toArray(function(err, res) {
+		if (err) {
+			console.log(err);
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
-	}
-	else message.channel.send("You don't have enough permission to use this :3");
+		if (!res[0]) return message.channel.send("❎ **| I'm sorry, this uid is not currently being tracked!**");
+		trackdb.deleteOne(query, function(err) {
+			if (err) {
+				console.log(err);
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+			}
+			message.channel.send(`✅ **| No longer tracking uid ${uid}.**`);
+		})
+	})
 };
 
 module.exports.config = {
+	name: "deletetrack",
 	description: "Deletes a uid from tracking list.",
 	usage: "deletetrack <uid>",
 	detail: "`uid`: Uid to delete [Integer]",
-	permission: "Owner"
-};
-
-module.exports.help = {
-	name: "deletetrack"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
