@@ -1,5 +1,5 @@
-let config = require('../config.json');
-let cd = new Set();
+const config = require('../config.json');
+const cd = new Set();
 
 module.exports.run = (client, message, args) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
@@ -19,12 +19,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "changeavatar",
     description: "Changes the bot's avatar.",
     usage: "changeavatar <number>",
     detail: "`number`: Order in config file [Integer]",
     permission: "Bot Owner"
-};
-
-module.exports.help = {
-    name: "changeavatar"
 };
