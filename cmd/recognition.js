@@ -3,6 +3,14 @@ const {createWorker} = require('tesseract.js');
 const https = require('https');
 const osudroid = require('../modules/osu!droid');
 const config = require('../config.json');
+const worker = createWorker();
+
+(async() => {
+    await worker.load().catch(console.error);
+    await worker.loadLanguage('eng').catch(console.error);
+    await worker.initialize('eng').catch(console.error);
+    console.log("Tesseract initialized")
+})();
 
 function imageValidation(url) {
     let length = url.length;
@@ -15,10 +23,6 @@ module.exports.run = (client, message) => {
     message.attachments.forEach(async attachment => {
         let url = attachment.url;
         if (!imageValidation(url)) return;
-        const worker = createWorker();
-        await worker.load().catch(console.error);
-        await worker.loadLanguage('eng').catch(console.error);
-        await worker.initialize('eng').catch(console.error);
         let values = [];
         for (let i = 0; i < rectangle.length; i++) {
             const { data: { text } } = await worker.recognize(url, {rectangle: rectangle[i]}).catch(async() => {
@@ -27,7 +31,6 @@ module.exports.run = (client, message) => {
             });
             if (text) values.push(text);
         }
-        await worker.terminate();
         if (values.length < 2) return;
         let title = '';
         let artist = '';
@@ -41,6 +44,10 @@ module.exports.run = (client, message) => {
         if (values[1].includes("by")) creator = values[1].split("by")[1].trim();
         if (creator.indexOf("(") !== -1) creator = creator.substring(0, creator.indexOf("(")).trim();
         if ([title, artist, creator, difficulty].some(value => !value)) return;
+        console.log(title);
+        console.log(artist);
+        console.log(creator);
+        console.log(difficulty);
 
         let options = new URL(`https://osusearch.com/query/?title=${title}&artist=${artist}&mapper=${creator}&diff_name=${difficulty}&statuses=Ranked,Qualified,Loved`);
         let content = '';
