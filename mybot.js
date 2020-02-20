@@ -172,14 +172,6 @@ client.on("message", message => {
 		if (message.author.id == '386742340968120321') return message.channel.send("woi");
 	}
 	
-	// main bot offline notification
-	if (message.content.startsWith("&")) {
-		let mainbot = message.guild.members.get("391268244796997643");
-		if (!mainbot) return;
-		let cmd = client.commands.get(command.slice(1));
-		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now! Please use `a!" + cmd.help.name + "`!")
-	}
-	
 	// osu! automatic recognition
 	if (message.attachments.size !== 0) client.commands.get("recognition").run(client, message);
 	if (message.content.startsWith("https://osu.ppy.sh/")) {
@@ -202,6 +194,16 @@ client.on("message", message => {
 		cmd.run(client, message, args)
 	}
 	
+	if (message.content.startsWith("&")) {
+		let mainbot = message.guild.members.get("391268244796997643");
+		if (!mainbot) return;
+		let cmd = client.commands.get(command.slice(1));
+		if (cmd && mainbot.user.presence.status == 'offline') {
+			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
+			cmd.run(client, message, args, maindb, alicedb)
+		}
+	}
+	
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd) {
@@ -221,6 +223,7 @@ client.on("guildMemberAdd", member => {
 	channel.send(joinMessage)
 });
 
+// introduction message
 client.on("guildMemberUpdate", oldMember => {
 	if (oldMember.user.bot) return;
 	let general = oldMember.guild.channels.get("316545691545501706");
