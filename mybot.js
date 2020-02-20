@@ -26,7 +26,7 @@ fs.readdir("./cmd/" , (err, files) => {
 	cmdfile.forEach((f, i) => {
 		let props = require(`./cmd/${f}`);
 		console.log(`${i+1} : ${f} loaded`);
-		if(f !== 'ojsamadroid.js') client.commands.set(props.help.name, props)
+		client.commands.set(props.config.name, props)
 	})
 });
 
@@ -37,7 +37,6 @@ let elainadb = new mongodb.MongoClient(elainauri, {useNewUrlParser: true});
 
 elainadb.connect( function(err, db) {
 	if (err) throw err;
-	//if (db)
 	maindb = db.db('ElainaDB');
 	console.log("Elaina DB connection established");
 });
@@ -60,7 +59,7 @@ client.on("ready", () => {
     console.log("Webhook initiated");
 	
 	let i = 1;
-    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["version 2.0 soon!", "PLAYING"]];
+    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["version 2.0 live!", "PLAYING"]];
     setInterval(() => {
     	client.user.setActivity(activity_list[i][0], {type: activity_list[i][1]}).catch(console.error);
     	if (i == 0) i++;
@@ -73,6 +72,7 @@ client.on("ready", () => {
 		client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
 		//client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000);
+	
 	setInterval(() => {
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
@@ -178,6 +178,17 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') return message.channel.send("Hey, unfortunately Elaina is offline now! Please use `a!" + cmd.help.name + "`!")
+	}
+	
+	// osu! automatic recognition
+	if (message.attachments.size !== 0) client.commands.get("title").run(client, message);
+	if (message.content.startsWith("https://osu.ppy.sh/")) {
+		let a = command.split("/");
+		let id = parseInt(a[a.length - 1]);
+		if (!isNaN(id)) {
+			if (command.indexOf("#osu/") !== -1 || command.indexOf("/b/") !== -1 || command.indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray);
+			else if (command.indexOf("/beatmapsets/") !== -1 || command.indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray, true)
+		}
 	}
 	
 	// commands
