@@ -1,6 +1,6 @@
 let https = require('https');
 let apikey = process.env.OSU_API_KEY;
-let droid = require('./ojsamadroid');
+let droid = require('../modules/ojsamadroid');
 let osu = require('ojsama');
 let request = require('request');
 let cd = new Set();
