@@ -1,33 +1,17 @@
-let http = require('http');
-let droidapikey = process.env.DROID_API_KEY;
+const osudroid = require('../modules/osu!droid');
 
 function getRank(memberlist, i, ranklist, cb) {
     if (!memberlist[i]) return cb(ranklist, true);
     let uid = memberlist[i][1];
-    let options = {
-        host: "ops.dgsrz.com",
-        port: 80,
-        path: `/api/getuserinfo.php?apiKey=${droidapikey}&uid=${uid}`
-    };
-    let content = '';
-    let req = http.request(options, res => {
-        res.setEncoding("utf8");
-        res.on("data", chunk => {
-            content += chunk
-        });
-        res.on("end", () => {
-            let resarr = content.split("<br>");
-            let headerres = resarr[0].split(" ");
-            if (headerres[0] == 'FAILED') return cb(ranklist);
-            let obj = JSON.parse(resarr[1]);
-            ranklist.push(obj.rank);
-            cb(ranklist)
-        })
-    });
-    req.end()
+    new osudroid.PlayerInfo().get({uid: uid}, player => {
+        if (!player.name) return cb(ranklist);
+        ranklist.push(player.rank);
+        cb(ranklist)
+    })
 }
 
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
+    if (message.channel instanceof Discord.DMChannel || message.author != null) return;
     console.log("Retrieving clan data");
     let binddb = maindb.collection("userbind");
     let clandb = maindb.collection("clandb");
@@ -43,7 +27,6 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 clearInterval(check);
                 return console.log("Done checking")
             }
-            console.log(clan[count].name);
             let weeklytime = clan[count].weeklyfee - curtime;
             if (weeklytime > 0) return;
             let memberlist = clan[count].member_list;
@@ -53,7 +36,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             let ranklist = [];
             getRank(memberlist, i, ranklist, function testRank(ranklist, stopSign = false) {
                 if (stopSign) {
-                    let totalcost = 0;
+                    let totalcost = 200;
                     for (i in ranklist) {
                         totalcost += 20 + Math.floor(480 - 34.74 * Math.log(ranklist[i]))
                     }
@@ -69,7 +52,8 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                                 let kicked = memberlist[index][0];
                                 memberlist[index] = false;
                                 memberlist = memberlist.filter(member => member);
-                                client.fetchUser(kicked).then(user => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
+                                client.fetchUser(leader).then(user => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!").catch(console.error)).catch(console.error);
+                                client.fetchUser(kicked).then(user => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
                                 let updateVal = {
                                     $set: {
                                         member_list: memberlist,
@@ -149,17 +133,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 i++;
                 getRank(memberlist, i, ranklist, testRank)
             })
-        }, 15000)
+        }, 5000)
     })
 };
 
 module.exports.config = {
+    name: "clantrack",
     description: "Used to track clan data.",
     usage: "None",
     detail: "None",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "clantrack"
 };
