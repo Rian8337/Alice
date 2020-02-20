@@ -1,141 +1,85 @@
 const Discord = require('discord.js');
-const cd = new Set();
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
 
-function modread(input) {
-	let res = '';
-	if (input.includes('n')) res += 'NF';
-	if (input.includes('h')) res += 'HD';
-	if (input.includes('r')) res += 'HR';
-	if (input.includes('e')) res += 'EZ';
-	if (input.includes('t')) res += 'HT';
-	if (input.includes('c')) res += 'NC';
-	if (input.includes('d')) res += 'DT';
-	if (res) res = '+' + res;
-	return res
-}
-
-function rankEmote(input) {
-	if (!input) return;
-	switch (input) {
-		case 'A': return '611559473236148265';
-		case 'B': return '611559473169039413';
-		case 'C': return '611559473328422942';
-		case 'D': return '611559473122639884';
-		case 'S': return '611559473294606336';
-		case 'X': return '611559473492000769';
-		case 'SH': return '611559473361846274';
-		case 'XH': return '611559473479155713';
-		default : return
-	}
-}
-
-function editpp(client, rplay, name, page, footer, index, rolecheck) {
-	let embed = new Discord.RichEmbed()
-		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-		.setColor(rolecheck)
-		.setFooter("Alice Synthesis Thirty", footer[index]);
-
-	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
-		if (!rplay[i]) break;
-		let date = new Date(rplay[i].date*1000);
-		date.setUTCHours(date.getUTCHours() + 7);
-		let play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
-		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
-		embed.addField(play, score)
-	}
-	return embed
-}
-
 module.exports.run = (client, message, args) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let uid = parseInt(args[0]);
-	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
-	let page = 1;
-	if (args[1]) page = parseInt(args[1]);
-	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
+	if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
 	new osudroid.PlayerInfo().get({uid: uid}, player => {
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 		if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+		let rplay = player.recent_plays[0];
+		let score = rplay.score.toLocaleString();
 		let name = player.name;
-		let rplay = player.recent_plays;
-		let rolecheck;
-		try {
-			rolecheck = message.member.highestRole.hexColor
-		} catch (e) {
-			rolecheck = "#000000"
-		}
+		let title = rplay.filename;
+		let rank = osudroid.rankImage.get(rplay.mark);
+		let combo = rplay.combo;
+		let ptime = new Date(rplay.date * 1000);
+		ptime.setUTCHours(ptime.getUTCHours() + 7);
+		let acc = parseFloat((rplay.accuracy / 1000).toFixed(2));
+		let miss = rplay.miss;
+		let mod = rplay.mode;
+		let hash = rplay.hash;
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-		let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-
-		message.channel.send({embed: embed}).then(msg => {
-			msg.react("⏮️").then(() => {
-				msg.react("⬅️").then(() => {
-					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(e => console.log(e))
-					})
-				})
+		let embed = {
+			"title": title,
+			"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + osudroid.mods.droid_to_PC(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
+			"color": 8311585,
+			"author": {
+				"name": "Recent Play for " + name,
+				"icon_url": rank
+			},
+			"footer": {
+				"icon_url": footer[index],
+				"text": "Alice Synthesis Thirty"
+			}
+		};
+		message.channel.send({embed: embed}).catch(console.error);
+		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
+			if (!mapinfo.title || !mapinfo.objects) return;
+			mod = osudroid.mods.droid_to_PC(mod);
+			let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+			let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
+			let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);
+			let npp = osudroid.ppv2({
+				stars: star.droid_stars,
+				combo: combo,
+				acc_percent: acc,
+				miss: miss,
+				mode: "droid"
 			});
-
-			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
-
-			backward.on('collect', () => {
-				if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				else page = 1;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
+			let pcpp = osudroid.ppv2({
+				stars: star.droid_stars,
+				combo: combo,
+				acc_percent: acc,
+				miss: miss,
+				mode: "osu"
 			});
+			let dpp = parseFloat(npp.toString().split(" ")[0]);
+			let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-			back.on('collect', () => {
-				if (page === 1) page = 10;
-				else page--;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
-			});
+			embed = new Discord.RichEmbed()
+				.setFooter("Alice Synthesis Thirty", footer[index])
+				.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+				.setColor(mapinfo.statusColor(mapinfo.approved))
+				.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+				.setTitle(mapinfo.showStatistics(mod, 0))
+				.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+				.setDescription(mapinfo.showStatistics(mod, 1))
+				.addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
+				.addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
+				.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
 
-			next.on('collect', () => {
-				if (page === 10) page = 1;
-				else page++;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
-			});
-
-			forward.on('collect', () => {
-				if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				else page = 10;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
-			});
-
-			backward.on("end", () => {
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-				msg.reactions.forEach(reaction => reaction.remove(client.user.id))
-			})
+			message.channel.send({embed: embed}).catch(console.error)
 		})
-	});
-	cd.add(message.author.id);
-	setTimeout(() => {
-		cd.delete(message.author.id)
-	}, 10000)
+	})
 };
 
 module.exports.config = {
-	description: "Retrieves an osu!droid account's recent plays based on uid.",
-	usage: "recent5 <uid> [page]",
-	detail: "`uid`: The uid to retrieve [Integer]\n`page`: The page to view from 1 to 10 [Integer]",
+	name: "recent",
+	description: "Retrieves an osu!droid account's recent play based on uid.",
+	usage: "recent <uid>",
+	detail: "`uid`: The uid to retrieve [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "recent5"
 };
