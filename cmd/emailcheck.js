@@ -1,59 +1,45 @@
-var Discord = require('discord.js');
-var http = require('http');
-require("dotenv").config();
-var droidapikey = process.env.DROID_API_KEY;
-let config = require('../config.json');
+const Discord = require('discord.js');
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 module.exports.run = (client, message, args) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let uid = args[0];
-	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid.**");
-	var options = new URL("http://ops.dgsrz.com/api/getuserinfo.php?apiKey=" + droidapikey + "&uid=" + uid);
-	var content = "";
+	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
+	new osudroid.PlayerInfo().get({uid: uid}, player => {
+		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
+		let name = player.name;
+		let email = player.email;
 
-	var req = http.get(options, function (res) {
-		res.setEncoding("utf8");
-		res.on("data", function (chunk) {
-			content += chunk;
-		});
-		res.on("error", err => {
-			console.log(err);
-			return message.channel.send("Error: Unable to retrieve user data. Please try again!")
-		});
-		res.on("end", function () {
-			var resarr = content.split('<br>');
-			var headerres = resarr[0].split(' ');
-			if (headerres[0] == 'FAILED') return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist.**");
-			var name = headerres[2];
-			var email = headerres[6];
-			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let embed = new Discord.RichEmbed()
-				.setTitle("User profile")
-				.setColor(message.member.highestRole.hexColor)
-				.setFooter("Alice Synthesis Thirty", footer[index])
-				.addField("Username", name)
-				.addField("Uid", uid)
-				.addField("Email", email);
+		let rolecheck;
+		try {
+			rolecheck = message.member.highestRole.hexColor
+		} catch (e) {
+			rolecheck = "#000000"
+		}
+		let footer = config.avatar_list;
+		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		let embed = new Discord.RichEmbed()
+			.setTitle("User profile")
+			.setColor(rolecheck)
+			.setFooter("Alice Synthesis Thirty", footer[index])
+			.addField("Username", name)
+			.addField("Uid", uid)
+			.addField("Email", email);
 
-			try {
-				message.author.send(embed)
-			} catch (e) {
-				return message.channel.send(`❎ **| ${message.author}, your DM is locked!**`);
-			}
-			message.channel.send(`✅ **| ${message.author}, the user info has been sent to you!**`);
-		})
-	});
-	req.end()
+		try {
+			message.author.send({embed: embed})
+		} catch (e) {
+			return message.channel.send(`❎ **| ${message.author}, your DM is locked!**`);
+		}
+		message.channel.send(`✅ **| ${message.author}, the user info has been sent to you!**`)
+	})
 };
 
 module.exports.config = {
+	name: "emailcheck",
 	description: "Retrieves the registered email of an osu!droid account.",
 	usage: "emailcheck <uid>",
-	detail: "`uid`: Uid to retrieve email from [Integer]",
+	detail: "`uid`: Uid to retrieve email from [Integer]`",
 	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
-};
-
-module.exports.help = {
-	name: "emailcheck"
 };
