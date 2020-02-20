@@ -2,7 +2,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let user = message.author.id;
     let skindb = alicedb.collection("playerskins");
     let query = {discordid: user};
-    if (args[0] == 'set') {
+    if (args[0] === 'set') {
         let skinlink = args.slice(1).join(" ");
         if (!skinlink) return message.channel.send("❎ **| Please enter skin link!**");
         skindb.find(query).toArray((err, res) => {
@@ -11,7 +11,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("Error: Empty database response. Please try again!")
             }
             if (!res[0]) {
-                var skinval = {
+                let skinval = {
                     discordid: user,
                     skin: skinlink
                 };
@@ -24,7 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send(`✅ **| ${message.author.username}'s skin has been set to ${skinlink}.**`)
                 })
             } else {
-                var updateval = {
+                let updateval = {
                     $set: {
                         discordid: user,
                         skin: skinlink
@@ -43,8 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     }
     else {
         if (args[0]) user = args[0];
-        user = user.replace("<@", "");
-        user = user.replace(">", "");
+        user.replace("<@!", "").replace("<@", "").replace(">", "");
         query = {discordid: user};
         skindb.find(query).toArray(async (err, res) => {
             if (err) {
@@ -66,12 +65,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "skin",
     description: "Sets a skin or retrieves a user's skin.",
     usage: "skin [user]\nskin set <skin link>",
     detail: "`user`: The user to retrieve [UserResolvable (mention or user ID)]",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "skin"
 };
