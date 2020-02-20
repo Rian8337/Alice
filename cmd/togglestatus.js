@@ -1,4 +1,4 @@
-let config = require('../config.json');
+const config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
@@ -36,12 +36,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "togglestatus",
     description: "Toggles bot status.",
     usage: "togglestatus <list>\ntogglestatus c <type> <activity>",
     detail: "`list`: Activity order in config file [Integer]\n`type`: Activity type [String]. Accepted arguments are `playing`, `streaming`, `watching`, `listening`\n`activity`: Activity [String]",
     permission: "Bot Owner"
-};
-
-module.exports.help = {
-    name: "togglestatus"
 };
