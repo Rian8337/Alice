@@ -1,6 +1,6 @@
-let Discord = require('discord.js');
-let cd = new Set();
-let config = require('../config.json');
+const Discord = require('discord.js');
+const cd = new Set();
+const config = require('../config.json');
 
 function responseFactor(message, msg, like, hate, badword) {
     let res = 0;
@@ -50,9 +50,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
+            let count = 0;
+            if (askres[0]) count = askres[0].count;
             let footer = config.avatar_list;
             const footerindex = Math.floor(Math.random() * (footer.length - 1) + 1);
-            var rolecheck;
+            let rolecheck;
             try {
                 rolecheck = message.member.highestRole.hexColor
             } catch (e) {
@@ -63,13 +65,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .setAuthor(message.author.tag, message.author.avatarURL)
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
-                .setDescription(`**Q**: ${msg}\n**A**: ${answer}`);
+                .addField(`Question #${count + 1}`, `**Q**: ${msg}\n**A**: ${answer}`);
 
             message.channel.send({embed: embed}).catch(console.error);
             if (askres[0]) {
-                var updateVal = {
+                let updateVal = {
                     $set: {
-                        count: askres[0].count + 1
+                        count: count + 1
                     }
                 };
                 askdb.updateOne({discordid: message.author.id}, updateVal, err => {
@@ -78,7 +80,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 })
             }
             else {
-                var insertVal = {
+                let insertVal = {
                     discordid: message.author.id,
                     count: 1
                 };
@@ -92,12 +94,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "response",
     description: "Configuration for 8ball responses.",
     usage: "None",
     detail: "None",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "response"
 };
