@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-let config = require('../config.json');
+const config = require('../config.json');
 
 module.exports.run = (client, message) => {
 	console.log("Pong!");
@@ -15,12 +15,9 @@ module.exports.run = (client, message) => {
 };
 
 module.exports.config = {
+	name: "ping",
 	description: "Pong!",
 	usage: "ping",
 	detail: "None",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "ping"
 };
