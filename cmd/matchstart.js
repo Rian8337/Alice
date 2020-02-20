@@ -1,5 +1,5 @@
-let Discord = require('discord.js');
-let config = require('../config.json');
+const Discord = require('discord.js');
+const config = require('../config.json');
 
 function time(second) {
     return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
@@ -11,6 +11,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
     let map = args[0];
     if (!map) return message.channel.send("❎ **| Hey, I don't know what map is playing!**");
+    map.toUpperCase();
 
     let channeldb = alicedb.collection("matchchannel");
     let mapdb = alicedb.collection("mapinfolength");
@@ -33,18 +34,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             if (!poolres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the pool!**");
             let maplist = poolres[0].map;
-            var mapfound;
-            var timelimit = 0;
-            for (var i = 0; i < maplist.length; i++) {
-                if (maplist[i][0] == map.toUpperCase()) {
+            let mapfound;
+            let timelimit = 0;
+            for (let i = 0; i < maplist.length; i++) {
+                if (maplist[i][0] == map) {
                     timelimit = parseInt(maplist[i][1]);
                     mapfound = true;
                     break
                 }
             }
             if (!mapfound) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-            if (map.toUpperCase().includes("DT") && poolid == "t8q") timelimit = Math.ceil(timelimit / 1.5);
-            var rolecheck;
+            if (map.includes("DT") && poolid == "t8q") timelimit = Math.ceil(timelimit / 1.5);
+            let rolecheck;
             try {
                 rolecheck = message.member.highestRole.hexColor
             } catch (e) {
@@ -58,7 +59,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .setTimestamp(new Date())
                 .setColor(rolecheck)
                 .addField("Match ID", matchid, true)
-                .addField("Map", map.toUpperCase(), true)
+                .addField("Map", map, true)
                 .addField("Map Length", time(timelimit), true);
 
             message.channel.send("✅ **| Round initiated!**", {embed: embed});
@@ -75,12 +76,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
+    name: "matchstart",
     description: "Starts a round in a match. Channel must be set with `matchset` beforehand.\nIntended for tournament use.",
     usage: "matchstart <pick>",
     detail: "`pick`: Current pick (NM1, NM2, etc) [String]",
     permission: "Referee"
-};
-
-module.exports.help = {
-    name: "matchstart"
 };
