@@ -1,6 +1,6 @@
-let Discord = require('discord.js');
-let config = require('../config.json');
-let osudroid = require('../modules/osu!droid');
+const Discord = require('discord.js');
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 function modread(input) {
 	let res = '';
@@ -36,26 +36,19 @@ module.exports.run = (client, message, args) => {
 	new osudroid.PlayerInfo().get({uid: uid}, player => {
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 		if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-		let name = player.name;
-		let avalink = player.avatarURL;
-		let location = player.location;
-		let tscore = player.score;
-		let pcount = player.play_count;
-		let oacc = player.accuracy;
 		let rplay = player.recent_plays[0];
-		let rank = player.rank;
 		let date = new Date(rplay.date * 1000);
 		date.setUTCHours(date.getUTCHours() + 7);
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 		let embed = new Discord.RichEmbed()
-			.setDescription(`**Username**: ${name}\n**Rank**: ${rank}`)
+			.setDescription(`**Username**: ${player.name}\n**Rank**: ${player.rank}`)
 			.setColor(8102199)
 			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setThumbnail(avalink)
+			.setThumbnail(player.avatarURL)
 			.setAuthor("osu!droid profile (click/tap here to view profile)", "https://image.frl/p/beyefgeq5m7tobjg.jpg", `https://ops.dgsrz.com/profile.php?uid=${uid}`)
-			.addField(`Total Score: ${tscore.toLocaleString()}`, `Overall Accuracy: ${oacc}%`)
-			.addField(`Play Count: ${pcount}`, `Location: ${location}`)
+			.addField(`Total Score: ${player.score.toLocaleString()}`, `Overall Accuracy: ${player.accuracy}%`)
+			.addField(`Play Count: ${player.play_count}`, `Location: ${player.location}`)
 			.addField("Most Recent Play", `${client.emojis.get(rankEmote(rplay.mark)).toString()} | ${rplay.filename} ${modread(rplay.mode)}\n${rplay.score.toLocaleString()} / ${rplay.combo}x / ${(parseFloat(rplay.accuracy) / 1000).toFixed(2)}% / ${rplay.miss}m\n${date.toUTCString()}`);
 
 		message.channel.send({embed: embed}).catch(console.error)
@@ -63,12 +56,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+	name: "profileid",
 	description: "Retrieves an osu!droid profile based on uid (detailed).",
 	usage: "profileid <uid>",
 	detail: "`uid`: Uid to retrieve profile from [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "profileid"
 };
