@@ -137,12 +137,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "malodychart",
     description: "Retrieves Malody chart.",
     usage: "malodychart",
     detail: "None",
     permission: "None"
-};
-
-module.exports.help = {
-	name: "malodychart"
 };
