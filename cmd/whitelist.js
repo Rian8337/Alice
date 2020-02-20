@@ -9,7 +9,7 @@ module.exports.run = (client, message, args, maindb) => {
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
     let hash_in = args[1];
-    whitelistInfo(link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
+    whitelistInfo(client, link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
         if (res > 0) {
             let dupQuery = {mapid: parseInt(mapid)};
             whitelist.findOne(dupQuery, (err, wlres) => {
@@ -26,7 +26,8 @@ module.exports.run = (client, message, args, maindb) => {
                     };
                     whitelist.insertOne(insertData, () => {
                         console.log("Whitelist entry added");
-                        message.channel.send("Whitelist entry added | `" + mapstring + "`")
+                        message.channel.send("Whitelist entry added | `" + mapstring + "`");
+                        client.channels.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`")
                     })
                 }
                 else {
@@ -37,7 +38,8 @@ module.exports.run = (client, message, args, maindb) => {
                     }};
                     whitelist.updateOne(dupQuery, updateData, () => {
                         console.log("Whitelist entry updated");
-                        message.channel.send("Whitelist entry updated | `" + mapstring + "`")
+                        message.channel.send("Whitelist entry updated | `" + mapstring + "`");
+                        client.channels.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`")
                     })
                 }
             })
@@ -46,7 +48,7 @@ module.exports.run = (client, message, args, maindb) => {
     })
 };
 
-function whitelistInfo(link_in, hash_in, message, callback) {
+function whitelistInfo(client, link_in, hash_in, message, callback) {
     let beatmapid = "";
     let hashid = "";
     let query = {};
@@ -79,6 +81,7 @@ function whitelistInfo(link_in, hash_in, message, callback) {
             .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.diff_total}`);
 
         message.channel.send({embed: embed}).catch(console.error);
+        client.channels.get("638671295470370827").send({embed: embed}).catch(console.error);
         callback(1, beatmapid, hashid, mapstring)
     })
 }
