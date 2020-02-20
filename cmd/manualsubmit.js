@@ -107,7 +107,7 @@ module.exports.run = (client, message, args, maindb) => {
 				]
 			};
 			message.channel.send({embed: embed}).catch(console.error);
-			result.push(pscore);
+			for (let p in pscore) result[p].push(pscore[p]);
 			let update = {
 				$set: {
 					status: "on-going",
