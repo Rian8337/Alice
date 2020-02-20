@@ -1,17 +1,17 @@
-let Discord = require('discord.js');
-let request = require('request');
-let droidapikey = process.env.DROID_API_KEY;
-let osudroid = require('../modules/osu!droid');
+const Discord = require('discord.js');
+const request = require('request');
+const droidapikey = process.env.DROID_API_KEY;
+const osudroid = require('../modules/osu!droid');
 
 function test(uid, page, cb) {
     console.log("Current page: " + page);
     let url = 'http://ops.dgsrz.com/api/scoresearch.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
     request(url, function (err, response, data) {
-        if (!data) {
+        if (err || !data) {
             console.log("Empty response from droid API");
             page--;
+            return cb([], false)
         }
-        //console.log(data);
         let entries = [];
         let line = data.split('<br>');
         for (let i in line) {
@@ -37,30 +37,28 @@ function calculatePP(ppentries, entry, cb) {
             console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
             return cb()
         }
-        let beatmapid = mapinfo.beatmap_id;
-        let mods = mapinfo.modConvert(entry[4]);
+        let mods = osudroid.mods.droid_to_PC(entry[4]);
         let acc_percent = parseFloat(entry[5]) / 1000;
         let combo = parseInt(entry[2]);
         let miss = parseInt(entry[6]);
-        new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mods}, star => {
-            let npp = new osudroid.MapPP().calculate({
-                stars: star.droid_stars,
-                combo: combo,
-                miss: miss,
-                acc_percent: acc_percent,
-                mode: "droid"
-            });
-            let playinfo = mapinfo.showStatistics(mods, 0);
-            let pp = parseFloat(npp.pp.toString().split(" ")[0]);
-            let ppentry = [entry[8], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
-            if (!isNaN(pp)) ppentries.push(ppentry);
-            cb()
-        })
+        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+        let npp = osudroid.ppv2({
+            stars: star.droid_stars,
+            combo: combo,
+            acc_percent: acc_percent,
+            miss: miss,
+            mode: "droid"
+        });
+        let playinfo = mapinfo.showStatistics(mods, 0);
+        let pp = parseFloat(npp.toString().split(" ")[0]);
+        let ppentry = [entry[8], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
+        if (!isNaN(pp)) ppentries.push(ppentry);
+        cb()
     })
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     let ppentries = [];
     let page = 0;
@@ -73,7 +71,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, userres) {
-        if (!userres[0]) return console.log('user not found');
+        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres[0].uid;
         let pplist = [];
         if (userres[0].pp) pplist = userres[0].pp;
@@ -86,7 +84,6 @@ module.exports.run = (client, message, args, maindb) => {
                 console.table(ppentries); 
                 ppentries.forEach((ppentry) => {
                     let dup = false;
-                    //pplist.push(ppentry)
                     for (i in pplist) {
                         if (ppentry[0].trim() == pplist[i][0].trim()) {
                             if(ppentry[2] >= pplist[i][2]) pplist[i] = ppentry; 
@@ -139,12 +136,9 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.config = {
+    name: "completepp",
     description: "Recalculates all plays of an account.",
     usage: "completepp <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
-};
-
-module.exports.help = {
-	name: "completepp"
 };
