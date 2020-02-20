@@ -1,49 +1,34 @@
-var Discord = require('discord.js');
-var config = require('../config.json');
+const Discord = require('discord.js');
+const config = require('../config.json');
 
-module.exports.run = (client, message, args) => {
-    try {
-		let rolecheck = message.member.roles;
-	} catch (e) {
-		return
-	}
+module.exports.run = async (client, message, args) => {
     let user = message.author;
+    let rolecheck;
+    try {
+        rolecheck = message.member.highestRole.hexColor
+    } catch (e) {
+        rolecheck = "#000000"
+    }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-    if (args[0]) {
-        try {
-            user = message.guild.member(message.mentions.members.first() || message.guild.members.get(args[0]))
-        } catch (e) {
-            message.channel.send("Unable to find user");
-            return;
-        }
-        const embed = new Discord.RichEmbed()
-            .setDescription(`**${user.user.tag}**`)
-            .setColor(message.member.highestRole.hexColor)
-            .setTimestamp(new Date())
-            .setImage(user.user.avatarURL)
-            .setFooter("Alice Synthesis Thirty", footer[index]);
-
-        message.channel.send({embed});
-        return;
-    }
-    const embed = new Discord.RichEmbed()
-        .setDescription(`**${user.tag}**`)
-        .setColor(message.member.highestRole.hexColor)
+    let embed = new Discord.RichEmbed()
+        .setColor(rolecheck)
         .setTimestamp(new Date())
-        .setImage(user.avatarURL)
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
-    message.channel.send({embed})
+    if (args[0]) {
+        user = await client.fetchUser(args[0] || message.mentions.users.first().id);
+        if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
+    }
+    embed.setDescription(`**${user.tag}**`).setImage(user.avatarURL);
+
+    await message.channel.send({embed: embed})
 };
 
 module.exports.config = {
+    name: "avatar",
     description: "Retrieves a user's avatar.",
     usage: "avatar [user]",
-    detail: "`user`: The user to retrieve avatar from [UserResolvable (mention or user ID)]",
+    detail: "`user`: UserResolvable (mention or user ID)",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "avatar"
 };
