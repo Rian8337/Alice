@@ -1,7 +1,7 @@
-let Discord = require('discord.js');
-let cd = new Set();
-let config = require('../config.json');
-let osudroid = require('../modules/osu!droid');
+const Discord = require('discord.js');
+const cd = new Set();
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 function modread(input) {
 	let res = '';
@@ -130,12 +130,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+	name: "recent5",
 	description: "Retrieves an osu!droid account's recent plays based on uid.",
 	usage: "recent5 <uid> [page]",
 	detail: "`uid`: The uid to retrieve [Integer]\n`page`: The page to view from 1 to 10 [Integer]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "recent5"
 };
