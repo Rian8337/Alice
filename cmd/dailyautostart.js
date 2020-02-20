@@ -11,7 +11,6 @@ function timeconvert(num) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    //TODO: add very hard bonus
     if (message.channel instanceof Discord.DMChannel || message.author != null) return;
     let channel = client.channels.get("546135349533868072");
     let challengeid = args[0];
