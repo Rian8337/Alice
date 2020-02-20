@@ -1,10 +1,9 @@
-var Discord = require('discord.js');
-var config = require("../config.json");
+const Discord = require('discord.js');
+const config = require("../config.json");
 
 function isEligible(member) {
-    var res = 0;
-    var eligibleRoleList = config.verify_perm; //verify_permission
-    //console.log(eligibleRoleList)
+    let res = 0;
+    let eligibleRoleList = config.verify_perm; //verify_permission
     eligibleRoleList.forEach((id) => {
         if(member.roles.has(id)) res = 1;
     });
@@ -18,7 +17,7 @@ module.exports.run = (client, message, args) => {
     if (!verifying) return message.channel.send("❎ **| Hey, please mention a valid user to verify!**");
     let memberrole = message.guild.roles.find(r => r.name === 'Member');
     if (!memberrole) return message.channel.send("Role not found");
-    
+
     if (!verifying.roles.has(memberrole.id)) {
         message.channel.send("✅ **| User has been verified.**");
         verifying.addRole(memberrole).catch(console.error)
@@ -27,12 +26,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "verify",
     description: "Verifies a user.",
     usage: "verify <user>",
     detail: "`user`: The user to verify [UserResolvable (mention or user ID)]",
     permission: "Helper"
-};
-
-module.exports.help = {
-    name: "verify"
 };
