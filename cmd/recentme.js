@@ -1,22 +1,6 @@
-let Discord = require('discord.js');
-let osudroid = require('../modules/osu!droid');
-let config = require('../config.json');
-
-function rankread(imgsrc) {
-	let rank;
-	switch(imgsrc) {
-		case 'S':rank="http://ops.dgsrz.com/assets/images/ranking-S-small.png";break;
-		case 'A':rank="http://ops.dgsrz.com/assets/images/ranking-A-small.png";break;
-		case 'B':rank="http://ops.dgsrz.com/assets/images/ranking-B-small.png";break;
-		case 'C':rank="http://ops.dgsrz.com/assets/images/ranking-C-small.png";break;
-		case 'D':rank="http://ops.dgsrz.com/assets/images/ranking-D-small.png";break;
-		case 'SH':rank="http://ops.dgsrz.com/assets/images/ranking-SH-small.png";break;
-		case 'X':rank="http://ops.dgsrz.com/assets/images/ranking-X-small.png";break;
-		case 'XH':rank="http://ops.dgsrz.com/assets/images/ranking-XH-small.png";break;
-		default: rank="unknown";
-	}
-	return rank;
-}
+const Discord = require('discord.js');
+const osudroid = require('../modules/osu!droid');
+const config = require('../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
@@ -42,7 +26,7 @@ module.exports.run = (client, message, args, maindb) => {
 			let score = rplay.score.toLocaleString();
 			let name = player.name;
 			let title = rplay.filename;
-			let rank = rankread(rplay.mark);
+			let rank = osudroid.rankImage.get(rplay.mark);
 			let combo = rplay.combo;
 			let ptime = new Date(rplay.date * 1000);
 			ptime.setUTCHours(ptime.getUTCHours() + 7);
@@ -54,7 +38,7 @@ module.exports.run = (client, message, args, maindb) => {
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			let embed = {
 				"title": title,
-				"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + new osudroid.MapInfo().modConvert(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
+				"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + osudroid.mods.droid_to_PC(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
 				"color": 8311585,
 				"author": {
 					"name": "Recent Play for " + name,
@@ -67,53 +51,50 @@ module.exports.run = (client, message, args, maindb) => {
 			};
 			message.channel.send({embed: embed}).catch(console.error);
 			new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-				if (!mapinfo.title) return;
-				let beatmapid = mapinfo.beatmap_id;
-				mod = mapinfo.modConvert(mod);
-				new osudroid.MapStars().calculate({beatmap_id: beatmapid, mods: mod}, star => {
-					let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-					let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
-					let npp = new osudroid.MapPP().calculate({
-						stars: star.droid_stars,
-						combo: combo,
-						miss: miss,
-						acc_percent: acc,
-						mode: "droid"
-					});
-					let pcpp = new osudroid.MapPP().calculate({
-						stars: star.pc_stars,
-						combo: combo,
-						miss: miss,
-						acc_percent: acc,
-						mode: "osu"
-					});
-					let ppline = parseFloat(npp.pp.toString().split(" ")[0]);
-					let pcppline = parseFloat(pcpp.pp.toString().split(" ")[0]);
-					embed = new Discord.RichEmbed()
-						.setFooter("Alice Synthesis Thirty", footer[index])
-						.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-						.setColor(mapinfo.statusColor(mapinfo.approved))
-						.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-						.setTitle(mapinfo.showStatistics(mod, 0))
-						.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-						.addField(mapinfo.showStatistics(mod, 1), mapinfo.showStatistics(mod, 2))
-						.addField(mapinfo.showStatistics(mod, 3), mapinfo.showStatistics(mod, 4))
-						.addField(`Droid pp (Experimental): __${ppline} pp__ - ${starsline} stars`, `PC pp: ${pcppline} pp - ${pcstarsline} stars`);
+				if (!mapinfo.title || !mapinfo.objects) return;
+				mod = osudroid.mods.droid_to_PC(mod);
+				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+				let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
+				let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);
+				let npp = osudroid.ppv2({
+					stars: star.droid_stars,
+					combo: combo,
+					acc_percent: acc,
+					miss: miss,
+					mode: "droid"
+				});
+				let pcpp = osudroid.ppv2({
+					stars: star.droid_stars,
+					combo: combo,
+					acc_percent: acc,
+					miss: miss,
+					mode: "osu"
+				});
+				let dpp = parseFloat(npp.toString().split(" ")[0]);
+				let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-					message.channel.send({embed: embed}).catch(console.error)
-				})
+				embed = new Discord.RichEmbed()
+					.setFooter("Alice Synthesis Thirty", footer[index])
+					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+					.setColor(mapinfo.statusColor(mapinfo.approved))
+					.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+					.setTitle(mapinfo.showStatistics(mod, 0))
+					.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+					.setDescription(mapinfo.showStatistics(mod, 1))
+					.addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
+					.addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
+					.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
+
+				message.channel.send({embed: embed}).catch(console.error)
 			})
 		})
 	})
 };
 
 module.exports.config = {
+	name: "recentme",
 	description: "Retrieves a user's most recent play (detailed).",
 	usage: "recentme [user]",
 	detail: "`user`: The user to retrieve [UserResolvable (mention or user ID)]",
 	permission: "None"
-};
-
-module.exports.help = {
-	name: "recentme"
 };
