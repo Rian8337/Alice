@@ -1,15 +1,15 @@
-var Discord = require('discord.js');
-var config = require('../config.json');
-var http = require('http');
+const Discord = require('discord.js');
+const config = require('../config.json');
+const osudroid = require('../modules/osu!droid');
 
 function levelBar(levelprogress) {
-    let barcount = 20;
+    let barcount = 15;
     let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / (100 / barcount));
-    return "🔵".repeat(progress) + "⚪".repeat(barcount - progress)
+    return "🟢".repeat(Math.min(5, progress)) + "🟡".repeat(Math.min(5, Math.min(0, progress - 5))) + "🔴".repeat(Math.min(5, Math.min(0, progress - 10))) + "⚪".repeat(barcount - progress)
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    var ufind = message.author.id;
+    let ufind = message.author.id;
     if (args[0]) {
         ufind = args[0];
         ufind = ufind.replace("<@", "");
@@ -42,59 +42,26 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 playc = res[0].playc
             }
             let levelremain = (level - Math.floor(level)) * 100;
+            new osudroid.PlayerInfo().get(query, player => {
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
+                let avalink = player.avatarURL;
+                let rolecheck;
+                try {
+                    rolecheck = message.member.highestRole.hexColor
+                } catch (e) {
+                    rolecheck = "#000000"
+                }
+                let footer = config.avatar_list;
+                const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+                let embed = new Discord.RichEmbed()
+                    .setColor(rolecheck)
+                    .setThumbnail(avalink)
+                    .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
+                    .setFooter("Alice Synthesis Thirty", footer[index])
+                    .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
 
-            var options = {
-                host: "ops.dgsrz.com",
-                port: 80,
-                path: "/profile.php?uid=" + uid + ".html"
-            };
-            var content = '';
-
-            var req = http.request(options, res => {
-                res.setEncoding("utf8");
-                res.on("data", chunk => {
-                    content += chunk
-                });
-                res.on("error", err => {
-                    console.log(err);
-                    avalink = "https://cdn.discordapp.com/embed/avatars/0.png"
-                });
-                res.on("end", () => {
-                    const a = content;
-                    let b = a.split('\n');
-                    let avalink = "";
-                    let location = "";
-                    for (x = 0; x < b.length; x++) {
-                        if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                            b[x-3] = b[x-3].replace('<img src="',"");
-                            b[x-3] = b[x-3].replace('" class="img-circle">',"");
-                            b[x-3] = b[x-3].trim();
-                            avalink = b[x-3];
-                            b[x+1] = b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-                            b[x+1] = b[x+1].replace("<\/small>","");
-                            b[x+1] = b[x+1].trim();
-                            location = b[x+1]
-                        }
-                    }
-                    var rolecheck;
-                    try {
-                        rolecheck = message.member.highestRole.hexColor
-                    } catch (e) {
-                        rolecheck = "#000000"
-                    }
-                    let footer = config.avatar_list;
-                    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                    let embed = new Discord.RichEmbed()
-                        .setColor(rolecheck)
-                        .setThumbnail(avalink)
-                        .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
-                        .setFooter("Alice Synthesis Thirty", footer[index])
-                        .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
-
-                    message.channel.send({embed: embed}).catch(console.error)
-                })
-            });
-            req.end()
+                message.channel.send({embed: embed}).catch(console.error)
+            })
         })
     })
 };
