@@ -1,4 +1,4 @@
-let Discord = require('discord.js');
+const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb) => {
     let username = args[0];
@@ -43,12 +43,9 @@ module.exports.run = (client, message, args, maindb) => {
 };
 
 module.exports.config = {
+    name: "usersearch",
     description: "Checks if specific username is binded.",
     usage: "usersearch <username>",
     detail: "`username`: The username to check [String]",
     permission: "None"
-};
-
-module.exports.help = {
-    name: "usersearch"
 };
