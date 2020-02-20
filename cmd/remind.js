@@ -7,8 +7,7 @@ module.exports.run = (client, message, args) => {
         message.channel.send("Please specify correct user to remind!");
         return
     }
-    user = user.replace('<@', '');
-    user = user.replace('>', '');
+    user = user.replace('<@!', '').replace("<@", "").replace(">", "");
     let toremind = message.guild.members.get(user);
     if (!toremind) {
         message.channel.send("User not found");
@@ -63,7 +62,7 @@ module.exports.run = (client, message, args) => {
         return
     }
 
-    message.channel.send("Got it! I will remind the user!");
+    message.channel.send(`Got it! I will remind the user in ${hours[0]} hours, ${minutes[0]} minutes, ${seconds[0]} seconds!`);
 
     const embed = new Discord.RichEmbed()
         .setTitle("Reminder!")
@@ -78,12 +77,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "remind",
     description: "Reminds a user about an activity.",
     usage: "remind [hours]h[minutes]m<seconds>s <reminder>",
     detail: "`hours`: Time to remind in hours [Integer]\n`minutes`: Time to remind in minutes [Integer]\n`seconds`: Time to remind in seconds [Integer]",
     permission: "Bot Owner"
-};
-
-module.exports.help = {
-    name: "remind"
 };
