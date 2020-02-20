@@ -17,6 +17,7 @@
     "dotenv": "^6.0.0",
     "mongodb": "^3.1.6",
     "ojsama": "^1.2.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "tesseract.js": "^2.0.2"
   }
 }
