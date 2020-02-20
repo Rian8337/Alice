@@ -1,9 +1,9 @@
-var Discord = require("discord.js");
-var config = require("../config.json");
+const Discord = require("discord.js");
+const config = require("../config.json");
 
 function isEligible(member) {
-    var res = 0;
-    var eligibleRoleList = config.mute_perm; //mute_permission
+    let res = 0;
+    let eligibleRoleList = config.mute_perm; //mute_permission
     //console.log(eligibleRoleList)
     eligibleRoleList.forEach((id) => {
         if(member.roles.has(id[0])) res = id[1]
@@ -12,8 +12,8 @@ function isEligible(member) {
 }
 
 function isImmuned(member) {
-    var res = 0;
-    var immunedRoleList = config.mute_immune;
+    let res = 0;
+    let immunedRoleList = config.mute_immune;
     immunedRoleList.forEach((id) => {
         if(member.roles.has(id)) {console.log("immune role found"); res = 1}
     });
@@ -29,17 +29,13 @@ function timeconvert (num) {
 }
 
 module.exports.run = async (client, message, args) => {
-    try {
-        let rolecheck = message.member.roles
-    } catch (e) {
-        return
-    }
-    var timeLimit = isEligible(message.member);
+    if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    let timeLimit = isEligible(message.member);
     if (timeLimit == 0) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!tomute) return;
-    if (isImmuned(tomute)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
+    if (isImmuned(tomute) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
 
@@ -52,23 +48,23 @@ module.exports.run = async (client, message, args) => {
 
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
-    let muterole = message.guild.roles.find(`name`, "elaina-muted");
+    let muterole = message.guild.roles.find(r => r.name === 'elaina-muted');
     //start of create role
-    if(!muterole){
-        try{
+    if (!muterole) {
+        try {
             muterole = await message.guild.createRole({
                 name: "elaina-muted",
                 color: "#000000",
                 permissions:[]
             });
-            message.guild.channels.forEach(async (channel, id) => {
-                await channel.overwritePermissions(muterole, {
+            message.guild.channels.forEach(channel => {
+                channel.overwritePermissions(muterole, {
                     SEND_MESSAGES: false,
                     ADD_REACTIONS: false
-                });
-            });
-        }catch(e){
-            console.log(e.stack);
+                }).catch(console.error)
+            })
+        } catch(e) {
+            console.log(e.stack)
         }
     }
     //end of create role
@@ -108,12 +104,9 @@ module.exports.run = async (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "tempmute",
     description: "Temporarily mutes a user.",
     usage: "tempmute <user> <duration> <reason>",
     detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting [String]",
     permission: "Helper"
-};
-
-module.exports.help = {
-    name: "tempmute"
 };
