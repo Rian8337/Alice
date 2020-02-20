@@ -1,9 +1,8 @@
-let Discord = require('discord.js');
-let config = require('../config.json');
+const Discord = require('discord.js');
+const config = require('../config.json');
 
 module.exports.run = (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not avaiable in DMs");
-
     if (!message.member.roles.find(r => r.name === 'Moderator')) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
@@ -13,9 +12,7 @@ module.exports.run = (client, message, args) => {
     if (!tokick) return message.channel.send("❎ **| I can't find the user. Can you make sure you have entered a correct one?**");
 
     let immune = config.mute_immune;
-    immune.forEach(id => {
-       if (tokick.roles.get(id)) return message.channel.send("❎ **| I'm sorry, this user cannot be kicked!**")
-    });
+    for (let i = 0; i < immune; i++) if (tokick.roles.get(immune[i])) return message.channel.send("❎ **| I'm sorry, this user cannot be kicked!**");
 
     let reason = args.slice(1).join(" ");
     if (!reason) reason = 'Not specified.';
@@ -34,12 +31,9 @@ module.exports.run = (client, message, args) => {
 };
 
 module.exports.config = {
+    name: "kick",
     description: "Kicks a user.",
     usage: "kick <user> [reason]",
     detail: "`user`: The user to kick [UserResolvable (mention or user ID)]\n`reason`: Reason for kicking [String]",
     permission: "Moderator"
-};
-
-module.exports.help = {
-    name: "kick"
 };
