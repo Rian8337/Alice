@@ -1,10 +1,18 @@
-let Discord = require('discord.js');
-let config = require("../config.json");
+const Discord = require('discord.js');
+const config = require("../config.json");
+
+function timeconvert (num) {
+    let sec = parseInt(num);
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+}
 
 module.exports.run = (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (!message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-    
+
     let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
 
@@ -20,10 +28,7 @@ module.exports.run = (client, message, args) => {
     if (!reason) return message.channel.send("Please enter your reason.");
 
     message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
-        let hours = Math.floor(maxage / 3600);
-        let minutes = Math.floor((maxage - hours * 3600) / 60);
-        let seconds = (maxage - hours * 3600 - minutes * 60);
-        let time = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        let time = timeconvert(maxage);
         if (maxage == 0) time = 'Never';
         if (maxuses == 0) maxuses = 'Infinite';
 
@@ -42,17 +47,14 @@ module.exports.run = (client, message, args) => {
             .addField("Reason", reason)
             .addField("Invite link", invite.url);
 
-        message.channel.send({embed})
+        message.channel.send({embed: embed}).catch(console.error)
     })
 };
 
 module.exports.config = {
+    name: "createinvite",
     description: "Creates an invite link to the server's system channel.",
     usage: "createinvite <duration> <usage>",
     detail: "`duration`: Invite link expiration in seconds, set to 0 for never expire [Integer]\n`usage`: Maximum usage of invite link, set to 0 for infinite [Integer]",
     permission: "Owner"
-};
-
-module.exports.help = {
-    name: "createinvite"
 };
