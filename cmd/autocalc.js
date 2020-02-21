@@ -86,7 +86,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 								.setColor(mapinfo.statusColor())
 								.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
 								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-								.setDescription(`${mapinfo.showStatistics("", 1)}\nBPM: ${mapinfo.bpmConvert(mod)} - Length: ${mapinfo.timeConvert(mod)}`);
+								.setDescription(`${mapinfo.showStatistics("", 1)}\n**BPM**: ${mapinfo.bpmConvert(mod)} - **Length**: ${mapinfo.timeConvert(mod)}`);
 
 							for (let i = 0; i < map_entries.length; i++) {
 								let star_rating = map_entries[i][2];
