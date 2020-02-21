@@ -102,6 +102,10 @@ function challengeRequirements(challengeid, pass, bonus) {
     }
     if (challengeid.includes("w")) {
         switch (bonus[0]) {
+            case "none": {
+                bonus_string += "None";
+                break
+            }
             case "score": {
                 bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                 break
@@ -146,6 +150,10 @@ function challengeRequirements(challengeid, pass, bonus) {
         for (let i = 0; i < bonus.length; i++) {
             bonus_string += `${difflist[i]}: `;
             switch (bonus[i][0]) {
+                case "none": {
+                    bonus_string += "None";
+                    break
+                }
                 case "score": {
                     bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                     break
@@ -1126,6 +1134,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                                console.log(osudroid.mods.droid_to_modbits(mod) - 4);
+                                console.log(osudroid.mods.modbits_from_string(constrain));
                                 if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                                 if (!found) points += dailyres[0].points;
@@ -1135,6 +1145,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let mode = ['easy', 'normal', 'hard', 'insane'];
                                 for (let i = 0; i < bonus.length; i++) {
                                     if (bonuslist[i + 1]) continue;
+                                    if (bonus[i][0] == 'none') {
+                                        bonuslist[i + 1] = true;
+                                        continue
+                                    }
                                     let complete = false;
                                     switch (bonus[i][0]) {
                                         case "score": {
