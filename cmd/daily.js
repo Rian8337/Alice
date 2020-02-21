@@ -879,7 +879,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (challengeid.includes("w")) bonus = dailyres[0].bonus;
                             else bonus = dailyres[0].bonus[3];
                             if (challengeid.includes("d") && !bonus) return message.channel.send("❎ **| I'm sorry, `insane` bonus type is only available for weekly challenges!**");
-                            index = 1;
+                            if (challengeid.includes("d")) index = 4;
+                            else index = 1;
                             break
                         }
                     }
