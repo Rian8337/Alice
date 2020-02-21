@@ -36,7 +36,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 				mode: "droid"
 			});
 			let pp = parseFloat(npp.toString().split(" ")[0]);
-			let playinfo = mapinfo.showStatistics(mod, 0);
+			let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
 			let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
 			if (isNaN(pp)) {
 				message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
