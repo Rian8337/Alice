@@ -60,6 +60,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 default: pass_string = 'No pass condition'
             }
             switch (bonus[0]) {
+                case "none": {
+                    bonus_string += "None";
+                    break
+                }
                 case "score": {
                     bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
                     break
