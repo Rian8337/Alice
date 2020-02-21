@@ -534,12 +534,12 @@ mods.modbits_from_string = function(str) {
 
 // convert mods bitmask into a string, such as "HDHR"
 // again thanks Francesco
-mods.modbits_to_string = function(mods) {
+mods.modbits_to_string = function(mod) {
     let res = "";
     for (let property in mods) {
         if (property.length != 2) continue;
         if (!mods.hasOwnProperty(property)) continue;
-        if (mods & mods[property]) res += property.toUpperCase()
+        if (mod & mods[property]) res += property.toUpperCase()
     }
     if (res.indexOf("DT") >= 0 && res.indexOf("NC") >= 0) res = res.replace("DT", "");
     return res
