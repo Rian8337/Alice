@@ -74,6 +74,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             if (challengeid.includes("w")) {
                 switch (bonus[0]) {
+                    case "none": {
+                        bonus_string += "None";
+                        break
+                    }
                     case "score": {
                         bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
@@ -118,6 +122,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 for (let i = 0; i < bonus.length; i++) {
                     bonus_string += `${difflist[i]}: `;
                     switch (bonus[i][0]) {
+                        case "none": {
+                            bonus_string += "None";
+                            break
+                        }
                         case "score": {
                             bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
