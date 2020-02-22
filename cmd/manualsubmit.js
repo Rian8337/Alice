@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const config = require('../config.json');
 
 function scoreCalc(mode, score, maxscore, accuracy, misscount) {
 	let hddt = false;
@@ -57,11 +58,17 @@ module.exports.run = (client, message, args, maindb) => {
 			if (t1score > t2score) {displayRes3 = `${res[0].team[0][0]} won by ` + Math.abs(t1score - t2score); color = 16711680;}
 			else if (t1score < t2score) {displayRes3 = `${res[0].team[0][0]} won by ` + Math.abs(t1score - t2score); color = 262399;}
 			else displayRes3 = "It's a Draw";
+			let footer = config.avatar_list;
+			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
 			let embed = {
 				"title": poolres[0].map[mapid-1][1],
 				"color": color,
 				"thumbnail": {
 					"url": "https://cdn.discordapp.com/embed/avatars/0.png"
+				},
+				"footer": {
+					"icon_url": footer[index],
+					"text": "Alice Synthesis Thirty"
 				},
 				"author": {
 					"name": res[0].name
@@ -93,6 +100,10 @@ module.exports.run = (client, message, args, maindb) => {
 			embed = {
 				"title": name,
 				"color": 65280,
+				"footer": {
+					"icon_url": footer[index],
+					"text": "Alice Synthesis Thirty"
+				},
 				"fields": [
 					{
 						"name": t1name,
