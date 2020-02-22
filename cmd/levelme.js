@@ -5,7 +5,7 @@ const osudroid = require('../modules/osu!droid');
 function levelBar(levelprogress) {
     let barcount = 15;
     let progress = Math.floor(parseFloat(levelprogress.toFixed(2)) / (100 / barcount));
-    return "🟢".repeat(Math.min(5, progress)) + "🟡".repeat(Math.min(5, Math.min(0, progress - 5))) + "🔴".repeat(Math.min(5, Math.min(0, progress - 10))) + "⚪".repeat(barcount - progress)
+    return "🟢".repeat(Math.min(5, progress)) + "🟡".repeat(Math.min(5, Math.max(0, progress - 5))) + "🔴".repeat(Math.min(5, Math.max(0, progress - 10))) + "⚪".repeat(barcount - progress)
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
