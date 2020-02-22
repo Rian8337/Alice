@@ -11,7 +11,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
     let map = args[0];
     if (!map) return message.channel.send("❎ **| Hey, I don't know what map is playing!**");
-    map.toUpperCase();
+    map = map.toUpperCase();
 
     let channeldb = alicedb.collection("matchchannel");
     let mapdb = alicedb.collection("mapinfolength");
