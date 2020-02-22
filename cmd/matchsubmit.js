@@ -143,6 +143,7 @@ module.exports.run = (client, message, args, maindb) => {
 						embed = new Discord.RichEmbed()
 							.setTitle(name)
 							.setColor(65280)
+							.setFooter("Alice Synthesis Thirty", footer[index])
 							.addField(t1name, `**${t1win}**`, true)
 							.addField(t2name, `**${t2win}**`, true);
 
