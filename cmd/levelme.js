@@ -12,8 +12,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let ufind = message.author.id;
     if (args[0]) {
         ufind = args[0];
-        ufind = ufind.replace("<@", "");
-        ufind = ufind.replace(">", "")
+        ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "")
     }
     let binddb = maindb.collection("userbind");
     let scoredb = alicedb.collection("playerscore");
