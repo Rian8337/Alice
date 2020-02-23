@@ -806,7 +806,7 @@ function ppv2(params) {
             default: throw new TypeError("Mode is not supported")
         }
     }
-    if (!params.combo || params.combo > params.stars.map.max_combo()) params.combo = params.stars.map.max_combo();
+    if (!params.combo) params.combo = params.stars.map.max_combo();
     return new MapPP().calculate(params)
 }
 
