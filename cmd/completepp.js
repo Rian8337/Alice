@@ -96,7 +96,7 @@ module.exports.run = (client, message, args, maindb) => {
                 if (pplist.length > 75) pplist.splice(75);
                 console.table(pplist);
                 let weight = 1;
-                for (i in pplist) {
+                for (let i in pplist) {
                     pptotal += weight*pplist[i][2];
                     weight *= 0.95;
                 }
