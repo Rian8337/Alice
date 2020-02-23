@@ -56,7 +56,8 @@ function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry
             message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
             return cb(false, false)
         }
-        let playinfo = mapinfo.showStatistics(osudroid.mods.droid_to_PC(play.mod), 0);
+        let mod = osudroid.mods.droid_to_PC(play.mod);
+        let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
         let dup = false;
         let diff = 0;
         let scoreentry = [play.score, play.hash];
