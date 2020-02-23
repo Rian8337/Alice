@@ -54,7 +54,8 @@ function validation(dan, mod, acc, rank) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
+    let danchannel = message.guild.channels.get('361785436982476800');
+    if (!danchannel || message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
     let objcount = {x: 0};
     let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
     let channel = message.guild.channels.get("316545691545501706");
@@ -78,8 +79,8 @@ module.exports.run = (client, message, args, maindb) => {
             .setColor(rolecheck)
             .setDescription("__osu!droid Daninintei Courses__ is a course system to measure your skill level. Receive roles and gain scores (yes) as you progress through each course!\n\nThere are **" + danlist.length + "** available courses: **" + danlist.join(", ") + "**.")
             .addField("Requirements", "1. You **must be logged in to the server** when you do courses.\n2. You **cannot** use HT, EZ, NF, and any unranked mods.\n3. For 1st Dan to 9th Dan, **you must achieve S rank regardless of accuracy *or* A rank with at least 97% accuracy.**\n4. For Chuuden, **you must achieve at least 93% accuracy.**\n5. For Kaiden, **you must achieve at least 90% accuracy.**\n6. For Aleph-0 Dan, **you must achieve A or S rank.**")
-            .addField("Submission", "After you have completed a course, simply type `a!dancourse` in " + (!channel?"#dan-courses":channel) + " to get the role *if your score was recent and it was submitted to the server*. Otherwise, tag " + (!mod?"@Moderator":mod) + " or " + (!helper?"@Helper":helper) + ".")
-            .addField("Course Download", "You can download courses in pinned messages of " + (!channel?"#dan-courses":channel) + ".")
+            .addField("Submission", "After you have completed a course, simply type `a!dancourse` in " + (!danchannel?"#dan-courses":danchannel) + " to get the role *if your score was recent and it was submitted to the server*. Otherwise, tag " + (!mod?"@Moderator":mod) + " or " + (!helper?"@Helper":helper) + ".")
+            .addField("Course Download", "You can download courses in pinned messages of " + (!danchannel?"#dan-courses":danchannel) + ".")
             .addField("FAQ", "**Q: Is this necessary?**\nA: No, you can ignore this if you want to.\n\n**Q: Can I skip lower courses?**\nA: Yes, you don't have to do them in order.\n\n**Q: Is there a list of maps for each course?**\nA: Yes, click/tap [here](https://docs.google.com/spreadsheets/d/1oGu7Y9T8q_V6Sd-gYJKgu0_h-emcCqAZM0pp2ghGA_E/edit?usp=sharing).\n\n**Q: I have questions that are not answered in this FAQ!**\nA: You can ask a Helper or Moderator for help.");
 
         message.channel.send({embed: embed}).catch(console.error)
