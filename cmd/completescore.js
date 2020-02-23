@@ -123,9 +123,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return b[0] - a[0]
                     });
                     let score = 0;
-                    for (i = 0; i < scoreentries.length; i++) {
-                        score += scoreentries[i][0]
-                    }
+                    for (let i = 0; i < scoreentries.length; i++) score += scoreentries[i][0];
                     calculateLevel(0, score, level => {
                         console.log(score.toLocaleString());
                         message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()} (level ${Math.floor(level)}).**`);
