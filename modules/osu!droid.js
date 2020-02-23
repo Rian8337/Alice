@@ -166,8 +166,12 @@ function MapInfo() {
 MapInfo.prototype.get = function(params, callback) {
     let beatmapid = params.beatmap_id;
     let hash = params.hash;
-    if (!beatmapid && !hash) throw new TypeError("Beatmap ID or MD5 hash must be defined");
-    let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&${beatmapid ? `b=${beatmapid}` : `h=${hash}`}`);
+
+    let options;
+    if (beatmapid) options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
+    else if (hash) options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
+    else throw new TypeError("Beatmap ID or MD5 hash must be defined");
+
     let content = '';
     let req = https.get(options, res => {
         res.setTimeout(10000);
@@ -190,7 +194,6 @@ MapInfo.prototype.get = function(params, callback) {
             }
             if (!obj || !obj[0]) return callback(this);
             let mapinfo = obj[0];
-            if (mapinfo.mode !== 0) return callback(this);
             this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.title = mapinfo.title;
             this.artist = mapinfo.artist;
