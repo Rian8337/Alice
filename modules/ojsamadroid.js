@@ -883,11 +883,11 @@ std_beatmap_stats.prototype.with_mods = function(mods) {
   if (mods & modbits.dt) {
     stats.speed_mul = 1.5;
   }
-  if (mods & modbits.ht) {
-    stats.speed_mul *= 0.75;
-  }
   if (mods & modbits.nc) {
     stats.speed_mul = 1.39
+  }
+  if (mods & modbits.ht) {
+    stats.speed_mul *= 0.75;
   }
 
   var od_ar_hp_multiplier = 1.0;
@@ -1277,7 +1277,7 @@ std_diff.prototype._normalizer_vector = function(circlesize) {
       + Math.min(CIRCLESIZE_BUFF_THRESHOLD - radius, 5.0) / 50.0;
   }
   return [scaling_factor, scaling_factor];
-};
+}
 
 // _(internal)_
 // initialize diffobjs (or reset if already initialized) and
@@ -1608,7 +1608,7 @@ std_ppv2.prototype.calc = function(params) {
   // common values used in all pp calculations
 
   var nobjects_over_2k = nobjects / 2000.0;
-  var length_bonus = 1.650668 + (0.4845796 - 1.650668)/(1 + Math.pow(nobjects/817.9306,1.147469));
+  var length_bonus = 1.650668 + (0.4845796 - 1.650668)/(1 + Math.pow(nobjects/817.9306,1.147469))
 
   // if (nobjects > 2000) {
   //   length_bonus += Math.log10(nobjects_over_2k) * 0.5;
@@ -1797,6 +1797,7 @@ function ppv2(params) {
 
 // exports
 // ----------------------------------------------------------------
+
 
 osu.timing = timing;
 osu.objtypes = objtypes;
