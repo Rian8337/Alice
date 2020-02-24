@@ -65,7 +65,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .setAuthor(message.author.tag, message.author.avatarURL)
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
-                .addField(`Question #${count + 1}`, `**Q**: ${msg}\n**A**: ${answer}`);
+                .setDescription(`**Q**: ${msg}\n**A**: ${answer}`);
 
             message.channel.send({embed: embed}).catch(console.error);
             if (askres[0]) {
