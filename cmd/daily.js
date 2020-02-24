@@ -187,7 +187,7 @@ function challengeRequirements(challengeid, pass, bonus) {
                     break
                 }
                 case "pp": {
-                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                     break
                 }
                 default:
