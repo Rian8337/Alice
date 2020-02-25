@@ -44,7 +44,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
             })
         }
-        else message.channel.send("Beatmap white-listing failed")
+        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**")
     })
 };
 
@@ -66,7 +66,7 @@ function whitelistInfo(client, link_in, hash_in, message, callback) {
         }
         beatmapid = mapinfo.beatmap_id;
         hashid = mapinfo.hash;
-        let mapstring = mapinfo.showStatistics("", 0);
+        let mapstring = mapinfo.full_title;
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * (footer.length - 1) + 1);
         let embed = new Discord.RichEmbed()
@@ -74,7 +74,7 @@ function whitelistInfo(client, link_in, hash_in, message, callback) {
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
             .setColor(mapinfo.statusColor())
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-            .setTitle(mapstring)
+            .setTitle(mapinfo.showStatistics("", 0))
             .setDescription(mapinfo.showStatistics("", 1))
             .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
             .addField(mapinfo.showStatistics("", 2), mapinfo.showStatistics("", 3))
