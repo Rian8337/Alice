@@ -173,13 +173,13 @@ client.on("message", message => {
 	}
 	
 	// osu! automatic recognition
-	for (let i = 0; i < args.length; i++) {
-		if (!args[i].startsWith("https://osu.ppy.sh/")) continue;
-		let a = args[i].split("/");
+	for (let i = 0; i < msgArray.length; i++) {
+		if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
+		let a = msgArray[i].split("/");
 		let id = parseInt(a[a.length - 1]);
 		if (isNaN(id)) continue;
-		if (args[i].indexOf("#osu/") !== -1 || args[i].indexOf("/b/") !== -1 || args[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, args.slice(i));
-		else if (args[i].indexOf("/beatmapsets/") !== -1 || args[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, args.slice(i), true)
+		if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i));
+		else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), true)
 	}
 	
 	// commands
