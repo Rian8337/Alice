@@ -44,7 +44,8 @@ module.exports.run = (client, message, args, mapset = false) => {
 					console.log("Error retrieving map info");
 					return console.log(e)
 				}
-				if (!obj[0]) return console.log("Map not found");
+				if (!obj || !obj[0]) return console.log("Map not found");
+				if (obj[0].mode !== 0) return;
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
@@ -86,9 +87,9 @@ module.exports.run = (client, message, args, mapset = false) => {
 								.setColor(mapinfo.statusColor())
 								.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
 								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-								.setDescription(`${mapinfo.showStatistics("", 1)}\n**BPM**: ${mapinfo.bpmConvert(mod)} - **Length**: ${mapinfo.timeConvert(mod)}`);
+								.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo.bpmConvert(mod)} - **Length**: ${mapinfo.timeConvert(mod)}`);
 
-							for (let i = 0; i < map_entries.length; i++) {
+							for (i = 0; i < map_entries.length; i++) {
 								let star_rating = map_entries[i][2];
 								let diff_icon = '';
 								switch (true) {
@@ -99,7 +100,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 									case star_rating < 6.5: diff_icon = client.emojis.get("679325905641930762"); break; // Expert
 									default: diff_icon = client.emojis.get("679325905645993984") // Extreme
 								}
-								let description = `${map_entries[i][0].showStatistics("", 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+								let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
 								embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
 							}
 
@@ -112,7 +113,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 		return req.end()
 	}
 	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0) return;
+		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0) return;
 		if (!combo) combo = mapinfo.max_combo;
 		let max_score = mapinfo.max_score(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
