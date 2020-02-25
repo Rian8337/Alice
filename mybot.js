@@ -54,13 +54,13 @@ alcdb.connect((err, db) => {
 
 // Main client events
 client.on("ready", () => {
-    console.log("Alice Synthesis Thirty is up and running");
-    client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
-    console.log("Webhook initiated");
+	console.log("Alice Synthesis Thirty is up and running");
+	client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
+	console.log("Webhook initiated");
 	
 	let i = 1;
-    let activity_list = [["a!help | a!modhelp", "PLAYING"], ["version 2.0 live!", "PLAYING"]];
-    setInterval(() => {
+	let activity_list = [["a!help | a!modhelp", "PLAYING"], ["version 2.0 live!", "PLAYING"]];
+	setInterval(() => {
     	client.user.setActivity(activity_list[i][0], {type: activity_list[i][1]}).catch(console.error);
     	if (i == 0) i++;
     	else i--
@@ -174,6 +174,7 @@ client.on("message", message => {
 	
 	// osu! automatic recognition
 	for (let i = 0; i < msgArray.length; i++) {
+		if (message.content.startsWith("&manualcalc") || message.content.startsWith("a!manualcalc")) break;
 		if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
 		let a = msgArray[i].split("/");
 		let id = parseInt(a[a.length - 1]);
