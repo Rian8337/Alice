@@ -173,12 +173,14 @@ client.on("message", message => {
 	}
 	
 	// osu! automatic recognition
-	if (message.content.startsWith("https://osu.ppy.sh/")) {
-		let a = command.split("/");
-		let id = parseInt(a[a.length - 1]);
-		if (!isNaN(id)) {
-			if (command.indexOf("#osu/") !== -1 || command.indexOf("/b/") !== -1 || command.indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray);
-			else if (command.indexOf("/beatmapsets/") !== -1 || command.indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray, true)
+	for (let i = 0; i < args.length; i++) {
+		if (args[i].startsWith("https://osu.ppy.sh/")) {
+			let a = args[i].split("/");
+			let id = parseInt(a[a.length - 1]);
+			if (!isNaN(id)) {
+				if (args[i].indexOf("#osu/") !== -1 || args[i].indexOf("/b/") !== -1 || args[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, args.slice(i));
+				else if (args[i].indexOf("/beatmapsets/") !== -1 || args[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, args.slice(i), true)
+			}
 		}
 	}
 	
