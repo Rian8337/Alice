@@ -38,15 +38,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let bonus_string = '';
             switch (pass[0]) {
                 case "score": {
-                    pass_string = `Score V1 above **${pass[1].toLocaleString()}**`;
+                    pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
                     break
                 }
                 case "acc": {
-                    pass_string = `Accuracy above **${pass[1]}%**`;
+                    pass_string = `Accuracy at least **${pass[1]}%**`;
                     break
                 }
                 case "scorev2": {
-                    pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
+                    pass_string = `Score V2 at least **${pass[1].toLocaleString()}**`;
                     break
                 }
                 case "miss": {
@@ -54,7 +54,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     break
                 }
                 case "combo": {
-                    pass_string = `Combo above **${pass[1]}**`;
+                    pass_string = `Combo at least **${pass[1]}**`;
                     break
                 }
                 case "rank": {
@@ -79,15 +79,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         break
                     }
                     case "score": {
-                        bonus_string += `Score V1 above **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "acc": {
-                        bonus_string += `Accuracy above **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "scorev2": {
-                        bonus_string += `Score V2 above **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1 ? "point" : "points"})`;
+                        bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "miss": {
@@ -99,7 +99,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         break
                     }
                     case "combo": {
-                        bonus_string += `Combo above **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                         break
                     }
                     case "rank": {
@@ -127,15 +127,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "score": {
-                            bonus_string += `Score V1 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                            bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "acc": {
-                            bonus_string += `Accuracy above **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                            bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "scorev2": {
-                            bonus_string += `Score V2 above **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
+                            bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "miss": {
@@ -147,7 +147,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "combo": {
-                            bonus_string += `Combo above **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                            bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
                             break
                         }
                         case "rank": {
