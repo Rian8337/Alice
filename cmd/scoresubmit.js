@@ -61,8 +61,8 @@ function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry
         let diff = 0;
         let scoreentry = [play.score, play.hash];
         for (let i in scorelist) {
-            if (play.hash == scorelist[i][1]) {
-                diff = scorelist[i][0] - play.score;
+            if (play.hash == scorelist[i][0]) {
+                diff = play.score - scorelist[i][0];
                 scorelist[i] = scoreentry;
                 dup = true;
                 break
