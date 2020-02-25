@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 					return console.log(e)
 				}
 				if (!obj || !obj[0]) return console.log("Map not found");
-				if (obj[0].mode !== 0) return;
+				if (obj[0].mode != 0) return;
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
