@@ -58,14 +58,8 @@ client.on("ready", () => {
 	client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
 	console.log("Webhook initiated");
 	
-	let i = 1;
-	let activity_list = [["a!help | a!modhelp", "PLAYING"], ["version 2.0 live!", "PLAYING"]];
-	setInterval(() => {
-    	client.user.setActivity(activity_list[i][0], {type: activity_list[i][1]}).catch(console.error);
-    	if (i == 0) i++;
-    	else i--
-	}, 10000)
-	
+	// Intervals
+	// Daily challenges and tracking
 	setInterval(() => {
 		if (!apidown) client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
 		client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
@@ -73,7 +67,10 @@ client.on("ready", () => {
 		//client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000);
 	
+	// API check and unverified prune
 	setInterval(() => {
+		client.commands.get("unverified").run(client, message = "", args = {}, maindb, alicedb);
+		
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
 			res.setTimeout(5000);
@@ -98,6 +95,7 @@ client.on("ready", () => {
 		}).end()
 	}, 10000);
 	
+	// Automatic role assigments
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
 	let channel = guild.channels.get("640165306404438026");
