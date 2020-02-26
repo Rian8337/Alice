@@ -49,8 +49,9 @@ module.exports.run = (client, message, args, mapset = false) => {
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
+				obj = obj.filter(map => map.mode != 0);
+				if (obj.length > 3) obj.splice(3);
 				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
-				while (obj.length > 3) obj.pop();
 
 				obj.forEach(map => {
 					new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}, mapinfo => {
