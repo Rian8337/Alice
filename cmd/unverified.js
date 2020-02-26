@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message && (message.channel instanceof Discord.DMChannel || ![client.user.id, '386742340968120321', '132783516176875520'].includes(message.author.id))) return;
+    if (message != "" && (message.channel instanceof Discord.DMChannel || ![client.user.id, '386742340968120321', '132783516176875520'].includes(message.author.id))) return;
     let guild = client.guilds.get("316545691545501706");
     let channel = guild.channels.get("360716684174032896");
     let unverified = guild.members.filter(member => !member.roles.find(r => r.name === 'Member') && !member.user.bot);
@@ -43,8 +43,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         i++;
         if (i == unverified.size && count) {
-            if (!message) console.log(`Pruned ${count} user(s)`);
-            if (message && message.author.id != client.user.id) message.channel.send(`✅ **| Successfully pruned \`${count}\` ${count == 1 ? "user" : "users"}.**`)
+            if (message == "") console.log(`Pruned ${count} user(s)`);
+            if (message != "" && message.author.id != client.user.id) message.channel.send(`✅ **| Successfully pruned \`${count}\` ${count == 1 ? "user" : "users"}.**`)
         }
     })
 };
