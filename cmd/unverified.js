@@ -42,7 +42,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             })
         }
         i++;
-        if (message.author.id != client.user.id && i == unverified.size && count) message.channel.send(`✅ **| Successfully pruned \`${count}\` ${count == 1 ? "user" : "users"}.**`)
+        if (i == unverified.size && count) {
+            if (!message) console.log(`Pruned ${count} user(s)`);
+            if (message && message.author.id != client.user.id) message.channel.send(`✅ **| Successfully pruned \`${count}\` ${count == 1 ? "user" : "users"}.**`)
+        }
     })
 };
 
