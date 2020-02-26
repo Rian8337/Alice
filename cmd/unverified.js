@@ -17,7 +17,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (Date.now() - member.joinedTimestamp > 86400 * 1000 * 7) {
             count++;
             kicked = true;
-            member.kick(`Unverified prune (user joined at ${member.joinedAt.toUTCString()})`).catch(console.error);
+            let join_date = member.joinedAt.toUTCString();
+            member.kick(`Unverified prune (user joined at ${join_date})`).catch(console.error);
             unverified_db.find({discordid: member.id}).toArray((err, res) => {
                 if (err) console.log(err);
                 if (res[0]) unverified_db.deleteOne({discordid: member.id}, err => {
