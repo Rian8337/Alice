@@ -197,7 +197,7 @@ MapInfo.prototype.get = function(params, callback) {
                 return callback(this)
             }
             let mapinfo = obj[0];
-            if (mapinfo.mode !== 0) return callback(this);
+            if (mapinfo.mode != 0) return callback(this);
             this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.title = mapinfo.title;
             this.artist = mapinfo.artist;
