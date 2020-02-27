@@ -26,49 +26,51 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     message.channel.fetchMessages({limit: 1}).then(last_message => {
         let message_id = last_message.first().id;
         count_all_message(message.channel, message_id, current_date, daily_counter, function testResult(count, last_id, iterateDate = false, stopSign = false) {
-            if (stopSign) return message.channel.send("✅ **| Message logging done!**");
-            if (iterateDate) {
-                daily_counter += count;
-                let query = {timestamp: current_date};
-                channeldb.findOne(query, (err, res) => {
-                    if (err) return console.log(err);
-                    if (res) {
-                        let channels = res.channels;
-                        let dup = false;
-                        for (let i = 0; i < channels.length; i++) {
-                            if (channels[i][0] == message.channel.id) {
-                                channels[i][1] = daily_counter;
-                                dup = true;
-                                break
+            setTimeout(() => {
+                if (stopSign) return message.channel.send("✅ **| Message logging done!**");
+                if (iterateDate) {
+                    daily_counter += count;
+                    let query = {timestamp: current_date};
+                    channeldb.findOne(query, (err, res) => {
+                        if (err) return console.log(err);
+                        if (res) {
+                            let channels = res.channels;
+                            let dup = false;
+                            for (let i = 0; i < channels.length; i++) {
+                                if (channels[i][0] == message.channel.id) {
+                                    channels[i][1] = daily_counter;
+                                    dup = true;
+                                    break
+                                }
                             }
+                            if (!dup) channels.push([message.channel.id, daily_counter]);
+                            let updateVal = {
+                                $set: {
+                                    channels: channels
+                                }
+                            };
+                            channeldb.updateOne(query, updateVal, err => {
+                                if (err) return console.log(err);
+                                current_date -= 24 * 3600000;
+                                daily_counter = 0;
+                                count_all_message(message.channel, last_id, current_date, daily_counter, testResult)
+                            })
+                        } else {
+                            let insertVal = {
+                                timestamp: current_date,
+                                channels: [[message.channel.id, daily_counter]]
+                            };
+                            channeldb.insertOne(insertVal, err => {
+                                if (err) return console.log(err);
+                                current_date -= 24 * 3600000;
+                                daily_counter = 0;
+                                count_all_message(message.channel, last_id, current_date, daily_counter, testResult)
+                            })
                         }
-                        if (!dup) channels.push([message.channel.id, daily_counter]);
-                        let updateVal = {
-                            $set: {
-                                channels: channels
-                            }
-                        };
-                        channeldb.updateOne(query, updateVal, err => {
-                            if (err) return console.log(err);
-                            current_date -= 24 * 3600000;
-                            daily_counter = 0;
-                            count_all_message(message.channel, last_id, current_date, daily_counter, testResult)
-                        })
-                    } else {
-                        let insertVal = {
-                            timestamp: current_date,
-                            channels: [[message.channel.id, daily_counter]]
-                        };
-                        channeldb.insertOne(insertVal, err => {
-                            if (err) return console.log(err);
-                            current_date -= 24 * 3600000;
-                            daily_counter = 0;
-                            count_all_message(message.channel, last_id, current_date, daily_counter, testResult)
-                        })
-                    }
-                })
-            }
-            else count_all_message(message.channel, last_id, current_date, count, testResult)
+                    })
+                }
+                else count_all_message(message.channel, last_id, current_date, count, testResult)
+            }, 750)
         })
     })
 };
