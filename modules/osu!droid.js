@@ -192,8 +192,12 @@ MapInfo.prototype.get = function(params, callback) {
                 console.log("Error parsing map info");
                 return callback(this)
             }
-            if (!obj || !obj[0]) return callback(this);
+            if (!obj || !obj[0]) {
+                console.log("Map not found");
+                return callback(this)
+            }
             let mapinfo = obj[0];
+            if (mapinfo.mode !== 0) return callback(this);
             this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
             this.title = mapinfo.title;
             this.artist = mapinfo.artist;
@@ -294,12 +298,12 @@ MapInfo.prototype.timeConvert = function(mod) {
 // mode 3: return BPM, map length, max combo
 // mode 4: return last update date and map status
 // mode 5: return favorite count and play count
-MapInfo.prototype.showStatistics = function(mods = "", mode) {
+MapInfo.prototype.showStatistics = function(mods = "", option) {
     this.mods = mods;
     this.mode = 'osu';
     let mapstat = new MapStats().calculate(this);
-    switch (mode) {
-        case 0: return `**${this.full_title}${mods ? ` +${mods}` : ""}**`;
+    switch (option) {
+        case 0: return `${this.full_title}${mods ? ` +${mods}` : ""}`;
         case 1: return `**Download**: [osu!](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download) ([no video](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
         case 2: return `**CS**: ${this.cs}${this.cs == mapstat.cs ? "": ` (${mapstat.cs})`} - **AR**: ${this.ar}${this.ar == mapstat.ar ? "": ` (${mapstat.ar})`} - **OD**: ${this.od}${this.od == mapstat.od ? "": ` (${mapstat.od})`} - **HP**: ${this.hp}${this.hp == mapstat.hp ? "": ` (${mapstat.hp})`}`;
         case 3: return `**BPM**: ${this.bpmConvert(this.mods)} - **Length**: ${this.timeConvert(this.mods)} - **Max Combo**: ${this.max_combo}x`;
@@ -463,13 +467,16 @@ MapInfo.prototype.toString = function() {
 };
 
 let mods = {
-    n: 1,
-    e: 2,
-    h: 8,
-    r: 16,
-    d: 64,
-    t: 256,
-    c: 576,
+    // droid
+    n: 1<<0,
+    e: 1<<1,
+    h: 1<<3,
+    r: 1<<4,
+    d: 1<<6,
+    t: 1<<8,
+    c: 1<<9,
+
+    // pc
     nomod: 0,
     nf: 1<<0,
     ez: 1<<1,
@@ -484,34 +491,54 @@ let mods = {
 };
 
 // convert droid mod string to modbits
-mods.droid_to_modbits = function(mods) {
+mods.droid_to_modbits = function(mod) {
     let modbits = 4;
-    if (!mods || mods == '-') return modbits;
-    for (let i = 0; i < mods.length; i++) modbits += this[mods[i]];
+    if (!mod || mod == '-') return modbits;
+    while (mod != '') {
+        for (let property in mods) {
+            if (property.length != 1) continue;
+            if (!mods.hasOwnProperty(property)) continue;
+            if (mod.startsWith(property)) {
+                modbits |= mods[property];
+                break
+            }
+        }
+        mod = mod.substr(1)
+    }
     return modbits
 };
 
 // converts droid mod string to PC mod string
 // ============================================
 // you can choose to return a detailed response
-mods.droid_to_PC = function(mods, detailed = false) {
-    if (!mods) return '';
+mods.droid_to_PC = function(mod, detailed = false) {
+    if (!mod) return '';
     if (detailed) {
         let res = '';
         let count = 0;
-        if (mods.includes("-")) {res += 'None '; count++}
-        if (mods.includes("n")) {res += 'NoFail '; count++}
-        if (mods.includes("e")) {res += 'Easy '; count++}
-        if (mods.includes("t")) {res += 'HalfTime '; count++}
-        if (mods.includes("h")) {res += 'Hidden '; count++}
-        if (mods.includes("d")) {res += 'DoubleTime '; count++}
-        if (mods.includes("r")) {res += 'HardRock '; count++}
-        if (mods.includes("c")) {res += 'NightCore '; count++}
+        if (mod.includes("-")) {res += 'None '; count++}
+        if (mod.includes("n")) {res += 'NoFail '; count++}
+        if (mod.includes("e")) {res += 'Easy '; count++}
+        if (mod.includes("t")) {res += 'HalfTime '; count++}
+        if (mod.includes("h")) {res += 'Hidden '; count++}
+        if (mod.includes("d")) {res += 'DoubleTime '; count++}
+        if (mod.includes("r")) {res += 'HardRock '; count++}
+        if (mod.includes("c")) {res += 'NightCore '; count++}
         if (count > 1) return res.trimRight().split(" ").join(", ");
         else return res.trimRight()
     }
     let modbits = 0;
-    for (let i = 0; i < mods.length; i++) modbits += this[mods[i]];
+    while (mod != '') {
+        for (let property in mods) {
+            if (property.length != 1) continue;
+            if (!mods.hasOwnProperty(property)) continue;
+            if (mod.startsWith(property)) {
+                modbits |= mods[property];
+                break
+            }
+        }
+        mod = mod.substr(1)
+    }
     return this.modbits_to_string(modbits)
 };
 
