@@ -100,7 +100,7 @@ module.exports.run = (client, message, args, maindb) => {
                     pptotal += weight*pplist[i][2];
                     weight *= 0.95;
                 }
-                message.channel.send('<@' + message.author.id + '> recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp');
+                message.channel.send('✅ **| <@' + message.author.id + '>, recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp.**');
                 let updateVal = { $set: {
                         pptotal: pptotal,
                         pp: pplist,
