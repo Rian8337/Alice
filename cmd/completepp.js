@@ -49,7 +49,7 @@ function calculatePP(ppentries, entry, cb) {
             miss: miss,
             mode: "droid"
         });
-        let playinfo = mapinfo.showStatistics(mods, 0);
+        let playinfo = mapinfo.full_title;
         let pp = parseFloat(npp.toString().split(" ")[0]);
         let ppentry = [entry[8], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
         if (!isNaN(pp)) ppentries.push(ppentry);
