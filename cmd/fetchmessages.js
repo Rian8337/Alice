@@ -11,9 +11,10 @@ function countAllMessage(channel, last_msg, date, daily_counter, cb) {
             if (!messages.size) return cb(0, null, true);
             for (const [snowflake, message] of messages.entries()) {
                 if (message.createdTimestamp < date) {
-                    console.log(new Date(date).toUTCString() + ": " + daily_counter);
-                    return cb(daily_counter, snowflake)
+                    console.log(channel.name + ": " + daily_counter);
+                    return cb(daily_counter, snowflake, true)
                 }
+                if (message.createdTimestamp - date > 86400 * 1000) continue;
                 ++daily_counter
             }
             cb(daily_counter, messages.last().id)
@@ -30,6 +31,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
     let channel_list = [];
     for (const [snowflake, channel] of message.guild.channels.entries()) {
+        if (channel.type !== "text") continue;
         if (['360714803691388928', '415559968062963712', '360715303149240321', '360715871187894273', '360715992621514752'].includes(channel.parentID)) continue;
         if (['326152555392532481', '361785436982476800', '316863464888991745', '549109230284701718', '468042874202750976', '430002296160649229', '430939277720027136'].includes(snowflake)) continue;
         channel_list.push(channel)
@@ -81,10 +83,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 list.push([channel_list[i].id, daily_counter]);
                 i++;
                 daily_counter = 0;
-                console.log(`${i} channel(s) done`);
                 return getLastMessage(channel_list, i, testChannel)
             }
-            countAllMessage(message.channel, last_id, current_date, count, testResult)
+            countAllMessage(channel_list[i], last_id, current_date, count, testResult)
         })
     })
 };
