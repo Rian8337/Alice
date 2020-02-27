@@ -70,7 +70,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     })
                 }
                 else count_all_message(message.channel, last_id, current_date, count, testResult)
-            }, 750)
+            }, 250)
         })
     })
 };
