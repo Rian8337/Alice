@@ -1,5 +1,10 @@
 const Discord = require('discord.js');
 
+function getLastMessage(channel_list, i, cb) {
+    if (!channel_list[i]) return cb(0, true);
+    channel_list[i].fetchMessages({limit: 1}).then(message => cb(message.first().id))
+}
+
 function countAllMessage(channel, last_msg, date, daily_counter, cb) {
     channel.fetchMessages({limit: 100, before: last_msg})
         .then(messages => {
@@ -13,11 +18,6 @@ function countAllMessage(channel, last_msg, date, daily_counter, cb) {
             }
             cb(daily_counter, messages.last().id)
         }).catch(console.error)
-}
-
-function getLastMessage(channel_list, i, cb) {
-    if (!channel_list[i]) return cb(0, true);
-    channel_list[i].fetchMessages({limit: 1}).then(message => cb(message.first().id))
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -53,6 +53,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                     };
                     channeldb.updateOne(query, updateVal, err => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        message.channel.send(`✅ **| ${message.author}, message logging done!**`)
+                    })
+                } else {
+                    let insertVal = {
+                        timestamp: current_date,
+                        channels: list
+                    };
+                    channeldb.insertOne(insertVal, err => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
