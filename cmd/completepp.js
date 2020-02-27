@@ -84,7 +84,7 @@ module.exports.run = (client, message, args, maindb) => {
                 console.table(ppentries); 
                 ppentries.forEach((ppentry) => {
                     let dup = false;
-                    for (i in pplist) {
+                    for (let i in pplist) {
                         if (ppentry[0].trim() == pplist[i][0].trim()) {
                             if(ppentry[2] >= pplist[i][2]) pplist[i] = ppentry; 
                             dup = true; playc++; break;
