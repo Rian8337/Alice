@@ -29,7 +29,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         }
         if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = res.uid;
-        let name = res.username;
 
         let options = {
             host: "ops.dgsrz.com",
@@ -47,6 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let resarr = content.split("<br>");
                 if (resarr.length != 2) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
                 let entry = resarr[1].split(" ");
+                let name = entry[2];
                 let score = parseInt(entry[3]).toLocaleString();
                 let combo = parseInt(entry[4]);
                 let rank = osudroid.rankImage.get(entry[5]);
