@@ -7,10 +7,12 @@
     "messasgeinfo",
     "modhelp",
     "ping",
-    "report"
+    "report",
+    "vote"
   ],
   "droid": [
     "bindsearch",
+    "c",
     "coins",
     "clan",
     "daily",
