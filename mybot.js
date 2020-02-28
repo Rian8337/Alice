@@ -208,7 +208,7 @@ client.on("message", message => {
 		if (cmd) {
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
-			cmd.run(client, message, args, maindb, alicedb)
+			cmd.run(client, message, args, maindb, alicedb, current_map)
 		}
 	}
 });
