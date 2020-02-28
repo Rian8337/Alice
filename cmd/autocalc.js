@@ -45,11 +45,11 @@ module.exports.run = (client, message, args, mapset = false) => {
 					return console.log(e)
 				}
 				if (!obj || !obj[0]) return console.log("Map not found");
-				if (obj[0].mode != 0) return;
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
 				obj = obj.filter(map => map.mode != 0);
+                                if (!obj) return;
 				if (obj.length > 3) obj.splice(3);
 				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
 
