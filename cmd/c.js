@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             });
             res.on("end", () => {
                 let resarr = content.split("<br>");
-                if (resarr.length != 2) return message.channel.send("❎ **| I'm sorry, you don't have scores set in this map!**");
+                if (resarr.length != 2) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
                 let entry = resarr[1].split(" ");
                 let score = parseInt(entry[3]).toLocaleString();
                 let combo = parseInt(entry[4]);
