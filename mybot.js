@@ -11,6 +11,7 @@ const alicedbkey = process.env.ALICE_DB_KEY;
 const droidapikey = process.env.DROID_API_KEY;
 const require_api = config.require_api;
 let apidown = false;
+let current_map = [];
 
 // Command loading
 client.commands = new Discord.Collection();
@@ -198,7 +199,7 @@ client.on("message", message => {
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
-			cmd.run(client, message, args, maindb, alicedb)
+			cmd.run(client, message, args, maindb, alicedb, current_map)
 		}
 	}
 	
