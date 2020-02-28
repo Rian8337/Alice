@@ -76,10 +76,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                     found = true;
                     break
                 }
-                if (!found) current_map.push(entry);
-                setTimeout(() => {
-                    current_map = current_map.filter(entry => entry[0] != time)
-                }, 60000)
+                if (!found) current_map.push(entry)
             })
         })
     })
