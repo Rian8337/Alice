@@ -36,6 +36,17 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 .setTitle(title)
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setColor(8311585);
+            
+            let time = Date.now();
+            let entry = [time, message.channel.id, hash];
+            let found = false;
+            for (let i = 0; i < current_map.length; i++) {
+                if (current_map[i][1] != message.channel.id) continue;
+                current_map[i] = entry;
+                found = true;
+                break
+            }
+            if (!found) current_map.push(entry);
 
             new osudroid.MapInfo().get({hash: hash}, mapinfo => {
                 if (!mapinfo.title || !mapinfo.objects) {
@@ -65,18 +76,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
                 embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`);
-                message.channel.send({embed: embed}).catch(console.error);
-
-                let time = Date.now();
-                let entry = [time, message.channel.id, hash];
-                let found = false;
-                for (let i = 0; i < current_map.length; i++) {
-                    if (current_map[i][1] != message.channel.id) continue;
-                    current_map[i] = entry;
-                    found = true;
-                    break
-                }
-                if (!found) current_map.push(entry)
+                message.channel.send({embed: embed}).catch(console.error)
             })
         })
     })
