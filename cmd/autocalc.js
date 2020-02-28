@@ -4,7 +4,7 @@ const apikey = process.env.OSU_API_KEY;
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
 
-module.exports.run = (client, message, args, mapset = false) => {
+module.exports.run = (client, message, args, current_map, mapset = false) => {
 	let beatmapid;
 	let combo;
 	let acc = 100;
@@ -48,8 +48,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
-				obj = obj.filter(map => map.mode == 0);
-                                if (!obj) return;
+				obj = obj.filter(map => map.mode != 0);
 				if (obj.length > 3) obj.splice(3);
 				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
 
@@ -114,7 +113,7 @@ module.exports.run = (client, message, args, mapset = false) => {
 		return req.end()
 	}
 	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0) return;
+		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0) return;
 		if (!combo) combo = mapinfo.max_combo;
 		let max_score = mapinfo.max_score(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -153,7 +152,21 @@ module.exports.run = (client, message, args, mapset = false) => {
 
 		if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
 		if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
-		message.channel.send({embed: embed}).catch(console.error)
+		message.channel.send({embed: embed}).catch(console.error);
+
+		let time = Date.now();
+		let entry = [time, message.channel.id, mapinfo.hash];
+		let found = false;
+		for (let i = 0; i < current_map.length; i++) {
+			if (current_map[i][1] != message.channel.id) continue;
+			current_map[i] = entry;
+			found = true;
+			break
+		}
+		if (!found) current_map.push(entry);
+		setTimeout(() => {
+			current_map = current_map.filter(entry => entry[0] != time)
+		}, 120000)
 	})
 };
 
