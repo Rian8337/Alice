@@ -163,10 +163,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 			found = true;
 			break
 		}
-		if (!found) current_map.push(entry);
-		setTimeout(() => {
-			current_map = current_map.filter(entry => entry[0] != time)
-		}, 120000)
+		if (!found) current_map.push(entry)
 	})
 };
 
