@@ -36,6 +36,18 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			}
 		};
 		message.channel.send({embed: embed}).catch(console.error);
+		
+		let time = Date.now();
+		let entry = [time, message.channel.id, hash];
+		let found = false;
+		for (let i = 0; i < current_map.length; i++) {
+			if (current_map[i][1] != message.channel.id) continue;
+			current_map[i] = entry;
+			found = true;
+			break
+		}
+		if (!found) current_map.push(entry);
+		
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
 			if (!mapinfo.title || !mapinfo.objects) return;
 			mod = osudroid.mods.droid_to_PC(mod);
@@ -71,18 +83,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 				.addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
 				.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
 
-			message.channel.send({embed: embed}).catch(console.error);
-
-			let time = Date.now();
-			let entry = [time, message.channel.id, hash];
-			let found = false;
-			for (let i = 0; i < current_map.length; i++) {
-				if (current_map[i][1] != message.channel.id) continue;
-				current_map[i] = entry;
-				found = true;
-				break
-			}
-			if (!found) current_map.push(entry)
+			message.channel.send({embed: embed}).catch(console.error)
 		})
 	})
 };
