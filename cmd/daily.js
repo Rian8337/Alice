@@ -1066,9 +1066,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             found = false;
                             let bonuslist = [challengeid, false, false, false, false];
-                            let challengelist = playerres[0].challenges;
+                            let challengelist = [];
                             let k = 0;
                             if (playerres[0]) {
+                                challengelist = playerres[0].challenges;
                                 for (k; k < challengelist.length; k++) {
                                     if (challengelist[k][0] == challengeid) {
                                         bonuslist = challengelist[k];
