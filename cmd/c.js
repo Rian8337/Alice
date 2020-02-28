@@ -14,8 +14,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     }
     if (!hash) return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
 
+    let ufind = message.author.id;
+    if (args[0]) {
+        ufind = args[0];
+        ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "")
+    }
+
     let binddb = maindb.collection("userbind");
-    let query = {discordid: message.author.id};
+    let query = {discordid: ufind};
     binddb.findOne(query, function(err, res) {
         if (err) {
             console.log(err);
