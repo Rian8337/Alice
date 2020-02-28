@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
 
-module.exports.run = (client, message, args) => {
+module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 	let beatmapid;
 	let combo;
 	let acc = 100;
@@ -24,7 +24,6 @@ module.exports.run = (client, message, args) => {
 	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
 		if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
 		if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-		if (mapinfo.mode !== 0) return message.channel.send("❎ **| I'm sorry, I can only calculate standard mode maps!**");
 		if (!combo) combo = mapinfo.max_combo;
 		let max_score = mapinfo.max_score(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -63,7 +62,21 @@ module.exports.run = (client, message, args) => {
 
 		if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
 		if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
-		message.channel.send({embed: embed}).catch(console.error)
+		message.channel.send({embed: embed}).catch(console.error);
+
+		let time = Date.now();
+		let entry = [time, message.channel.id, mapinfo.hash];
+		let found = false;
+		for (let i = 0; i < current_map.length; i++) {
+			if (current_map[i][1] != message.channel.id) continue;
+			current_map[i] = entry;
+			found = true;
+			break
+		}
+		if (!found) current_map.push(entry);
+		setTimeout(() => {
+			current_map = current_map.filter(entry => entry[0] != time)
+		}, 120000)
 	})
 };
 
