@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const osudroid = require('../modules/osu!droid');
 const config = require('../config.json');
 
-module.exports.run = (client, message, args, maindb) => {
+module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 	let ufind = message.author.id;
 	if (args[0]) {
 		ufind = args[0];
@@ -85,7 +85,21 @@ module.exports.run = (client, message, args, maindb) => {
 					.addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
 					.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
 
-				message.channel.send({embed: embed}).catch(console.error)
+				message.channel.send({embed: embed}).catch(console.error);
+
+				let time = Date.now();
+				let entry = [time, message.channel.id, hash];
+				let found = false;
+				for (let i = 0; i < current_map.length; i++) {
+					if (current_map[i][1] != message.channel.id) continue;
+					current_map[i] = entry;
+					found = true;
+					break
+				}
+				if (!found) current_map.push(entry);
+				setTimeout(() => {
+					current_map = current_map.filter(entry => entry[0] != time)
+				}, 120000)
 			})
 		})
 	})
