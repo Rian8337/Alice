@@ -48,7 +48,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 				let i = 0;
 				let map_entries = [];
 				let total_map = obj.length;
-				obj = obj.filter(map => map.mode != 0);
+				obj = obj.filter(map => map.mode == 0);
 				if (obj.length > 3) obj.splice(3);
 				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
 
