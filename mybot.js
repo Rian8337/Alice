@@ -177,7 +177,7 @@ client.on("message", message => {
 	}
 	
 	// osu! automatic recognition
-	if (!message.content.startsWith("&") || !message.content.startsWith(config.prefix)) {
+	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
 		for (let i = 0; i < msgArray.length; i++) {
 			if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
 			let a = msgArray[i].split("/");
