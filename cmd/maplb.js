@@ -26,21 +26,30 @@ async function fetchScores(hash, page) {
 
 function rankEmote(input) {
     switch (input) {
-        case 'A': return '611559473236148265';
-        case 'B': return '611559473169039413';
-        case 'C': return '611559473328422942';
-        case 'D': return '611559473122639884';
-        case 'S': return '611559473294606336';
-        case 'X': return '611559473492000769';
-        case 'SH': return '611559473361846274';
-        case 'XH': return '611559473479155713';
-        default : return
+        case 'A':
+            return '611559473236148265';
+        case 'B':
+            return '611559473169039413';
+        case 'C':
+            return '611559473328422942';
+        case 'D':
+            return '611559473122639884';
+        case 'S':
+            return '611559473294606336';
+        case 'X':
+            return '611559473492000769';
+        case 'SH':
+            return '611559473361846274';
+        case 'XH':
+            return '611559473479155713';
+        default :
+            return
     }
 }
 
 async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, footer, index, global_star) {
     return new Promise(async resolve => {
-        let page_limit = Math.floor(page / 20);
+        let page_limit = Math.floor((page - 1) / 20);
         let entries = null;
         for (let i = 0; i < cache.length; i++) {
             if (page_limit != cache[i].page) continue;
@@ -65,7 +74,10 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
             .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
             .addField("Top Score", `${client.emojis.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
 
-        for (let i = 5 * page_limit; i < 5 + 5 * page_limit; i++) {
+        let i = 5 * (page - 1);
+        if (i >= 100) i -= page_limit * 100;
+        let limit = i + 5;
+        for (i; i < limit; i++) {
             if (entries[i]) {
                 let entry = entries[i].split(" ");
                 let player = entry[2];
@@ -96,9 +108,9 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
                 let dpp = parseFloat(npp.toString().split(" ")[0]);
                 let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-                embed.addField(`**#${5 * (page - 1) + i + 1} ${client.emojis.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
+                embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
             }
-            else embed.addField(`**#${5 * (page - 1) + i + 1}** -`, '-')
+            else embed.addField(`**#${5 * (page_limit * 20) + i + 1}** -`, '-')
         }
         resolve([cache, embed])
     })
