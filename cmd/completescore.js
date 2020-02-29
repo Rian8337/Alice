@@ -44,18 +44,15 @@ function calculateLevel(lvl, score, cb) {
 
 function retrievePlay(uid, page, cb) {
     console.log("Current page: " + page);
-    let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
+    let url = "http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
     request(url, (err, response, data) => {
         if (err || !data) {
             console.log("Empty response");
-            page--;
             return cb([], false)
         }
         let entries = [];
         let line = data.split("<br>");
-        for (let i = 0; i < line.length; i++) {
-            entries.push(line[i].split(" "))
-        }
+        for (let i = 0; i < line.length; i++) entries.push(line[i].split(" "));
         entries.shift();
         if (!entries[0]) cb(entries, true);
         else cb(entries, false)
@@ -63,15 +60,7 @@ function retrievePlay(uid, page, cb) {
 }
 
 function scoreCheck(scoreentries, score, cb) {
-    if (!score) {
-        console.log("erm how do we get here");
-        return cb()
-    }
-    if (score[1] == '0') {
-        console.log("0 score found");
-        return cb()
-    }
-    new osudroid.MapInfo().get({hash: score[8]}, mapinfo => {
+    new osudroid.MapInfo().get({hash: score[11]}, mapinfo => {
         if (!mapinfo.title) {
             console.log("Map not found");
             return cb()
@@ -80,7 +69,7 @@ function scoreCheck(scoreentries, score, cb) {
             console.log("Map is not ranked, approved, or loved");
             return cb()
         }
-        let scoreentry = [parseInt(score[1]), score[8]];
+        let scoreentry = [parseInt(score[3]), score[11]];
         scoreentries.push(scoreentry);
         cb()
     })
