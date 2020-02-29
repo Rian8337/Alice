@@ -5,7 +5,7 @@ const osudroid = require('../modules/osu!droid');
 
 function test(uid, page, cb) {
     console.log("Current page: " + page);
-    let url = 'http://ops.dgsrz.com/api/scoresearch.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
+    let url = 'http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
     request(url, function (err, response, data) {
         if (err || !data) {
             console.log("Empty response from droid API");
@@ -14,9 +14,7 @@ function test(uid, page, cb) {
         }
         let entries = [];
         let line = data.split('<br>');
-        for (let i in line) {
-            entries.push(line[i].split(' '));
-        }
+        for (let i in line) entries.push(line[i].split(' '));
         entries.shift();
         if (!entries[0]) cb(entries, true);
         else cb(entries, false)
@@ -24,11 +22,7 @@ function test(uid, page, cb) {
 }
 
 function calculatePP(ppentries, entry, cb) {
-    if (entry[1] == '0') {
-        console.log("0 score found");
-        return cb()
-    }
-    new osudroid.MapInfo().get({hash: entry[8]}, mapinfo => {
+    new osudroid.MapInfo().get({hash: entry[11]}, mapinfo => {
         if (!mapinfo.title) {
             console.log("Map not found");
             return cb()
@@ -37,10 +31,10 @@ function calculatePP(ppentries, entry, cb) {
             console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
             return cb()
         }
-        let mods = osudroid.mods.droid_to_PC(entry[4]);
-        let acc_percent = parseFloat(entry[5]) / 1000;
-        let combo = parseInt(entry[2]);
-        let miss = parseInt(entry[6]);
+        let mods = osudroid.mods.droid_to_PC(entry[6]);
+        let acc_percent = parseFloat(entry[7]) / 1000;
+        let combo = parseInt(entry[4]);
+        let miss = parseInt(entry[8]);
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
         let npp = osudroid.ppv2({
             stars: star.droid_stars,
@@ -51,7 +45,7 @@ function calculatePP(ppentries, entry, cb) {
         });
         let playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
         let pp = parseFloat(npp.toString().split(" ")[0]);
-        let ppentry = [entry[8], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
+        let ppentry = [entry[11], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
         if (!isNaN(pp)) ppentries.push(ppentry);
         cb()
     })
