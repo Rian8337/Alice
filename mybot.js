@@ -99,7 +99,7 @@ client.on("ready", () => {
 	// Map list clearing
 	setInterval(() => {
 		current_map = current_map.filter(entry => Date.now() - entry[0] < 120000)
-	}, 1500);
+	}, 5000);
 	
 	// Automatic role assigments
 	// Mudae role assignment reaction-based on droid cafe
