@@ -66,6 +66,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
         let droid_stars = parseFloat(global_star.droid_stars.toString().split(" ")[0]);
         let pc_stars = parseFloat(global_star.pc_stars.toString().split(" ")[0]);
         let embed = new Discord.RichEmbed()
+            .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
             .setColor(rolecheck)
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
