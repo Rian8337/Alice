@@ -77,6 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 entries = listEntries("daily", res, date.getTime())
             }
         }
+        entries.sort((a, b) => {return b[1] - a[1]})
         let description = `**${type} channel activity per ${date.getUTCDate()} `;
         switch (date.getUTCMonth()) {
             case 0: description += 'Jan '; break;
