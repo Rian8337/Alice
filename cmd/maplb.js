@@ -253,7 +253,7 @@ module.exports.run = (client, message, args) => {
 module.exports.config = {
     name: "maplb",
     description: "Retrieves a map's leaderboard.",
-    usage: "maplb <beatmap id>",
-    detail: "`beatmap id`: The beatmap ID to retrieve [Integer]",
+    usage: "maplb <beatmap id> [page]",
+    detail: "`beatmap id`: The beatmap ID to retrieve [Integer]\n`page`: Leaderboard page to view (defaults at 1) [Integer]",
     permission: "None"
 };
