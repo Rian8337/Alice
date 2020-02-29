@@ -177,14 +177,15 @@ client.on("message", message => {
 	}
 	
 	// osu! automatic recognition
-	for (let i = 0; i < msgArray.length; i++) {
-		if (message.content.startsWith("&manualcalc") || message.content.startsWith("a!manualcalc")) break;
-		if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
-		let a = msgArray[i].split("/");
-		let id = parseInt(a[a.length - 1]);
-		if (isNaN(id)) continue;
-		if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map);
-		else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
+	if (!message.content.startsWith("&") || !message.content.startsWith(config.prefix)) {
+		for (let i = 0; i < msgArray.length; i++) {
+			if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
+			let a = msgArray[i].split("/");
+			let id = parseInt(a[a.length - 1]);
+			if (isNaN(id)) continue;
+			if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map);
+			else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
+		}
 	}
 	
 	// commands
