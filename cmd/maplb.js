@@ -117,7 +117,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
     })
 }
 
-module.exports.run = (client, message, args) => {
+module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let beatmap_id;
     let hash;
