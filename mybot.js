@@ -191,7 +191,7 @@ client.on("message", message => {
 	// mention log
 	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
 		let embed = new Discord.RichEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL, message.url)
+			.setAuthor(`${message.author.tag} (click to go to message)`, message.author.avatarURL, message.url)
 			.setColor("#00cb16")
 			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
 			.setTimestamp(new Date())
