@@ -1,9 +1,32 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
+const request = require('request');
+const apikey = process.env.DROID_API_KEY;
 const osudroid = require('../modules/osu!droid');
+
+async function fetchScores(hash, page) {
+    return new Promise(resolve => {
+        let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${apikey}&hash=${hash}&page=${page}&order=score`;
+        request(url, (err, response, data) => {
+            if (err || !data) {
+                console.log("Empty response from droid API");
+                page--;
+                resolve(null)
+            }
+            let entries = [];
+            let line = data.split('<br>');
+            line.shift();
+            for (let i in line) entries.push(line[i]);
+            if (!line[0]) resolve(null);
+            else resolve(entries)
+        })
+    })
+}
 
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel || message.author != null) return;
+    let binddb = maindb.collection("userbind");
+    let pointdb = alicedb.collection("playerpoints");
     let dailydb = alicedb.collection("dailychallenge");
     let query = {status: "w-ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
@@ -18,9 +41,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         let beatmapid = dailyres[0].beatmapid;
         let featured = dailyres[0].featured;
         if (!featured) featured = '386742340968120321';
-        new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
+        new osudroid.MapInfo().get({beatmap_id: beatmapid}, async mapinfo => {
             if (!mapinfo.title) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
             if (!mapinfo.objects) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
+            let hash = mapinfo.hash;
             let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
             let pass_string = '';
             let bonus_string = '';
@@ -128,6 +152,44 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             });
             let nextchallenge = "w" + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) + 1);
             client.commands.get("dailyautostart").run(client, message, [nextchallenge], maindb, alicedb);
+
+            let entries = await fetchScores(hash, 0);
+            if (!entries) return;
+            let bonus_winner_uid = entries[0].split(" ")[1];
+            let coin = client.emojis.get("669532330980802561");
+            binddb.findOne({uid: bonus_winner_uid}, (err, userres) => {
+                if (err) console.log("Cannot access database");
+                if (!userres) return;
+                let discordid = userres.discordid;
+                let username = userres.username;
+                pointdb.findOne({uid: bonus_winner_uid}, (err, res) => {
+                    if (err) return console.log("Cannot access database");
+                    if (res) {
+                        let updateVal = {
+                            points: res.points + 15,
+                            alicecoins: res.alicecoins + 30
+                        };
+                        pointdb.updateOne({uid: bonus_winner_uid}, updateVal, err => {
+                            if (err) return console.log("Cannot access database");
+                            client.channels.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`)
+                        })
+                    } else {
+                        let insertVal = {
+                            username: username,
+                            uid: bonus_winner_uid,
+                            discordid: message.author.id,
+                            challenges: [],
+                            points: 15,
+                            dailycooldown: 0,
+                            alicecoins: 30
+                        };
+                        pointdb.insertOne(insertVal, err => {
+                            if (err) return console.log("Cannot access database");
+                            client.channels.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`)
+                        })
+                    }
+                })
+            })
         })
     })
 };
