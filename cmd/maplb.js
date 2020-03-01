@@ -123,11 +123,20 @@ module.exports.run = (client, message, args) => {
     let a = args[0].split("/");
     let beatmap_id = parseInt(a[a.length - 1]);
     if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
+    let hash;
+    if (!beatmap_id) {
+        for (let i = 0; i < current_map.length; i++) {
+            if (Date.now() - current_map[i][0] > 120000 || current_map[i][1] != message.channel.id) continue;
+            hash = current_map[i][2];
+            break
+        }
+    }
+    let params = beatmap_id ? {beatmap_id: beatmap_id} : {hash: hash};
 
     let page = parseInt(args[1]);
     if (!isFinite(page) || page < 1) page = 1;
 
-    new osudroid.MapInfo().get({beatmap_id: beatmap_id}, async mapinfo => {
+    new osudroid.MapInfo().get(params, async mapinfo => {
         if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
         if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
         let hash = mapinfo.hash;
