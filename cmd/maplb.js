@@ -123,7 +123,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     let hash;
     if (!args[0]) {
         for (let i = 0; i < current_map.length; i++) {
-            if (Date.now() - current_map[i][0] > 120000 || current_map[i][1] != message.channel.id) continue;
+            if (Date.now() - current_map[i][0] > 300000 || current_map[i][1] != message.channel.id) continue;
             hash = current_map[i][2];
             break
         }
