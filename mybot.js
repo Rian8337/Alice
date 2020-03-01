@@ -195,7 +195,8 @@ client.on("message", message => {
 			.setColor("#00cb16")
 			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
 			.setTimestamp(new Date())
-			.setDescription(message.content);
+			.addField("Channel", message.channel)
+			.addField("Content", message.content.substring(0, 1024));
 
 		client.channels.get("683504788272578577").send({embed: embed})
 	}
