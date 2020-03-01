@@ -191,11 +191,11 @@ client.on("message", message => {
 	// mention log
 	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
 		let embed = new Discord.RichEmbed()
-			.setAuthor(`${message.author.tag} (click to go to message)`, message.author.avatarURL, message.url)
+			.setAuthor(message.author.tag, message.author.avatarURL)
 			.setColor("#00cb16")
 			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
 			.setTimestamp(new Date())
-			.addField("Channel", message.channel)
+			.addField("Channel", `${message.channel} | [Go to message](${message.url})`)
 			.addField("Content", message.content.substring(0, 1024));
 
 		client.channels.get("683504788272578577").send({embed: embed})
