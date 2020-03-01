@@ -133,6 +133,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         beatmap_id = parseInt(a[a.length - 1]);
         if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");        
     }
+    if (!beatmap_id && !hash) return message.channel.send("❎ **| Hey, can you at least give me a map to retrieve?**");
     let params = beatmap_id ? {beatmap_id: beatmap_id} : {hash: hash};
 
     let page = parseInt(args[1]);
