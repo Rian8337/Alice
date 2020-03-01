@@ -96,11 +96,6 @@ client.on("ready", () => {
 		}).end()
 	}, 10000);
 	
-	// Map list clearing
-	setInterval(() => {
-		current_map = current_map.filter(entry => Date.now() - entry[0] < 120000)
-	}, 5000);
-	
 	// Automatic role assigments
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.get("635532651029332000");
