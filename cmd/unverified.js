@@ -9,26 +9,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (message && message.author.id != client.user.id) message.channel.send("❎ **| I'm sorry, I don't detect any unverified members!**");
         return
     }
-    let i = 0;
     let count = 0;
     let unverified_db = alicedb.collection("unverified");
-    unverified.forEach((member) => {
-        let kicked = false;
+    for (const [snowflake, member] of unverified.entries()) {
         if (Date.now() - member.joinedTimestamp > 86400 * 1000 * 7) {
             count++;
-            kicked = true;
-            member.kick("Unverified prune").catch(console.error);
-            unverified_db.find({discordid: member.id}).toArray((err, res) => {
+            let join_date = member.joinedAt.toUTCString();
+            member.kick(`Unverified prune (user joined at ${join_date})`).catch(console.error);
+            unverified_db.findOne({discordid: member.id}, (err, res) => {
                 if (err) console.log(err);
-                if (res[0]) unverified_db.deleteOne({discordid: member.id}, err => {
-                    if (err) console.log(err)
+                if (res) unverified_db.deleteOne({discordid: member.id}, err => {
+                    if (err) console.log(err);
                 })
-            })
+            });
+            continue
         }
-        if (!kicked && Date.now() - member.joinedTimestamp > 86400 * 1000 * 5) {
-            unverified_db.find({discordid: member.id}).toArray((err, res) => {
+        if (Date.now() - member.joinedTimestamp > 86400 * 1000 * 5) {
+            unverified_db.findOne({discordid: member.id}, (err, res) => {
                 if (err) console.log(err);
-                if (!res[0]) {
+                if (!res) {
                     let verify_date = Math.floor((member.joinedTimestamp + 86400 * 1000 * 7 - Date.now()) / 1000);
                     let hour = Math.floor(verify_date / 3600);
                     let minute = Math.floor((verify_date - hour * 3600) / 60);
@@ -41,12 +40,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             })
         }
-        i++;
-        if (i == unverified.size && count) {
-            if (!message) console.log(`Pruned ${count} user(s)`);
-            if (message && message.author.id != client.user.id) message.channel.send(`✅ **| Successfully pruned \`${count}\` ${count == 1 ? "user" : "users"}.**`)
-        }
-    })
+    }
+    if (count > 0) console.log(`Pruned ${count} user(s)`)
 };
 
 module.exports.config = {
