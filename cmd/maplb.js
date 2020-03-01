@@ -119,17 +119,19 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
 
 module.exports.run = (client, message, args) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    if (!args[0]) return message.channel.send("❎ **| Hey, can you give me a map?**");
-    let a = args[0].split("/");
-    let beatmap_id = parseInt(a[a.length - 1]);
-    if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
+    let beatmap_id;
     let hash;
-    if (!beatmap_id) {
+    if (!args[0]) {
         for (let i = 0; i < current_map.length; i++) {
             if (Date.now() - current_map[i][0] > 120000 || current_map[i][1] != message.channel.id) continue;
             hash = current_map[i][2];
             break
         }
+    }
+    else {
+        let a = args[0].split("/");
+        beatmap_id = parseInt(a[a.length - 1]);
+        if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");        
     }
     let params = beatmap_id ? {beatmap_id: beatmap_id} : {hash: hash};
 
