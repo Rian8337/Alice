@@ -196,6 +196,9 @@ client.on("message", message => {
 		client.channels.get("683504788272578577").send({embed: embed})
 	}
 	
+	// self-talking (for fun lol)
+	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.get("316545691545501706").send(message.content);
+	
 	// commands
 	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
 		apidown = !apidown;
