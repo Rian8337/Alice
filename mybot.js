@@ -188,6 +188,20 @@ client.on("message", message => {
 		}
 	}
 	
+	// mention log
+	if (message.mentions.users.size > 0) {
+		let footer = config.avatar_list;
+		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		let embed = new Discord.RichEmbed()
+			.setAuthor(message.author.tag, message.author.avatarURL)
+			.setColor("#00cb16")
+			.setFooter(`Alice Synthesis Thirty | Author ID: ${message.author.id} | Message ID: ${message.id}`, footer[index])
+			.setTimestamp(new Date())
+			.setDescription(`[Go to message](${message.url})\n\n${message.content}`);
+
+		client.channels.get("683504788272578577").send({embed: embed})
+	}
+	
 	// commands
 	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
 		apidown = !apidown;
