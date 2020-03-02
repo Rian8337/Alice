@@ -174,7 +174,7 @@ client.on("message", message => {
 	// osu! automatic recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
 		for (let i = 0; i < msgArray.length; i++) {
-			if (!msgArray[i].startsWith("https://osu.ppy.sh/")) continue;
+			if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
 			let a = msgArray[i].split("/");
 			let id = parseInt(a[a.length - 1]);
 			if (isNaN(id)) continue;
