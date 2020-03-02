@@ -1,4 +1,6 @@
 # Alice
+Bot is planned to be rewritten (again) to use Discord.js v12 features.
+
 A multipurpose Discord bot mainly made for osu!droid and Malody.
 
 Optimized for [osu!droid International Discord server](https://discord.gg/nyD92cE) usage.
