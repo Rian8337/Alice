@@ -2,16 +2,16 @@ const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message && (message.channel instanceof Discord.DMChannel || ![client.user.id, '386742340968120321', '132783516176875520'].includes(message.author.id))) return;
-    let guild = client.guilds.get("316545691545501706");
-    let channel = guild.channels.get("360716684174032896");
-    let unverified = guild.members.filter(member => !member.roles.find(r => r.name === 'Member') && !member.user.bot);
+    let guild = client.guilds.cache.get("316545691545501706");
+    let channel = guild.channels.cache.get("360716684174032896");
+    let unverified = guild.members.cache.filter((member) => !member.roles.cache.find((r) => r.name === 'Member') && !member.user.bot);
     if (unverified.size == 0) {
         if (message && message.author.id != client.user.id) message.channel.send("❎ **| I'm sorry, I don't detect any unverified members!**");
         return
     }
     let count = 0;
     let unverified_db = alicedb.collection("unverified");
-    for (const [snowflake, member] of unverified.entries()) {
+    for (const [, member] of unverified.entries()) {
         if (Date.now() - member.joinedTimestamp > 86400 * 1000 * 7) {
             count++;
             let join_date = member.joinedAt.toUTCString();
@@ -19,7 +19,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             unverified_db.findOne({discordid: member.id}, (err, res) => {
                 if (err) console.log(err);
                 if (res) unverified_db.deleteOne({discordid: member.id}, err => {
-                    if (err) console.log(err);
+                    if (err) console.log(err)
                 })
             });
             continue
