@@ -22,28 +22,13 @@ module.exports.run = async (client, message, args) => {
     if (!reason) return message.channel.send("❎ **| Hey, please enter your ban reason!**");
 
     message.guild.members.ban(toban, {reason: reason + ` (banned by ${message.author.username})`}).then(() => {
-        let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * footer.length);
-
-        let embed = new Discord.MessageEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-            .setFooter("Alice Synthesis Thirty", footer[index])
-            .setTimestamp(new Date())
-            .setColor(message.member.roles.highest.hexColor)
-            .setThumbnail(toban.avatarURL({dynamic: true}))
-            .setTitle("Ban executed")
-            .addField("Banned user: " + toban.username, "User ID: " + userid)
-            .addField("=========================", "Reason:\n" + reason);
-
         if (message.attachments.size > 0) {
             let attachments = [];
             message.attachments.forEach((attachment) => {
                 attachments.push(attachment.proxyURL);
-                if (attachments.length === message.attachments.size) logchannel.send({embed: embed, files: attachments})
+                if (attachments.length === message.attachments.size) logchannel.send({files: attachments})
             });
         }
-        else logchannel.send({embed: embed});
-
         message.author.lastMessage.delete();
     }).catch(() => message.channel.send("❎ **| I'm sorry, looks like the user is already banned or cannot be banned!**"))
 };
