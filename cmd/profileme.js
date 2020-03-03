@@ -1,4 +1,3 @@
-// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
@@ -53,7 +52,7 @@ module.exports.run = (client, message, args, maindb) => {
 			let date = new Date(rplay.date * 1000);
 			date.setUTCHours(date.getUTCHours() + 7);
 			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			const index = Math.floor(Math.random() * footer.length);
 			let embed = new Discord.MessageEmbed()
 				.setDescription(`**Username**: ${player.name}\n**Rank**: ${player.rank}`)
 				.setColor(8102199)
