@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args) => {
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
             .setColor(message.member.roles.highest.hexColor)
-            .setThumbnail(toban.avatarURL())
+            .setThumbnail(toban.avatarURL({dynamic: true}))
             .setTitle("Ban executed")
             .addField("Banned user: " + toban.username, "User ID: " + userid)
             .addField("=========================", "Reason:\n" + reason);
