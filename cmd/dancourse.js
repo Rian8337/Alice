@@ -54,25 +54,26 @@ function validation(dan, mod, acc, rank) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-    let danchannel = message.guild.channels.get('361785436982476800');
+    if (message.channel instanceof Discord.DMChannel) return;
+    let danchannel = message.guild.channels.cache.get('361785436982476800');
     if (!danchannel || message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
     let objcount = {x: 0};
     let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
-    let channel = message.guild.channels.get("316545691545501706");
+    let channel = message.guild.channels.cache.get("316545691545501706");
 
     if (args[0] == 'about') {
-        //if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
+        if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
         let footer = config.avatar_list;
-        let helper = message.guild.roles.get("369108742077284353");
-        let mod = message.guild.roles.get("595667274707370024");
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+        let helper = message.guild.roles.cache.get("369108742077284353");
+        let mod = message.guild.roles.cache.get("595667274707370024");
+        const index = Math.floor(Math.random() * footer.length);
         let rolecheck;
         try {
-            rolecheck = message.member.highestRole.hexColor
+            rolecheck = message.member.roles.highest.hexColor
         } catch (e) {
             rolecheck = "#000000"
         }
-        let embed = new Discord.RichEmbed()
+        let embed = new Discord.MessageEmbed()
             .setTitle("osu!droid Daninintei Courses")
             .setThumbnail("https://cdn.discordapp.com/attachments/430939277720027136/623153414414532609/BG.png")
             .setFooter("Alice Synthesis Thirty", footer[index])
@@ -88,9 +89,9 @@ module.exports.run = (client, message, args, maindb) => {
     else {
         if (args[0]) {
             let perm = isEligible(message.member);
-            if (perm == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
+            if (!perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
 
-            let togive = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+            let togive = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
             if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
 
             let rolename = args.slice(1).join(" ");
@@ -103,28 +104,28 @@ module.exports.run = (client, message, args, maindb) => {
                 rolelist = rolelist.split(";").join(", ").slice(0, -2);
                 return message.channel.send(`❎ **| I'm sorry, I cannot find the role! Accepted arguments are ${rolelist}.**`)
             }
-            let role = message.guild.roles.find(r => r.name === rolename);
+            let role = message.guild.roles.cache.find((r) => r.name === rolename);
             if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${rolename} role!**`);
-            if (togive.roles.has(role.id)) return message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!**`);
+            if (togive.roles.cache.has(role.id)) return message.channel.send(`❎ **| I'm sorry, the user already has ${rolename} role!**`);
 
-            togive.addRole(role.id, "Successfully completed dan course").then (() => {
+            togive.roles.add(role.id, "Successfully completed dan course").then (() => {
                 message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!**`);
                 if (danlist.slice(7, danlist.length).includes(rolename)) channel.send(`**<@${togive.id}> has just completed ${rolename}. Congratulations to <@${togive.id}>!**`)
-            }).catch(e => console.log(e));
+            }).catch(console.error);
 
             // Dan Course Master
             danlist.pop();
             let count = 1;
             danlist.forEach(role => {
-                if (togive.roles.find(r => r.name === role)) count++
+                if (togive.roles.cache.find((r) => r.name === role)) count++
             });
             if (count == danlist.length) {
-                let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
+                let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
                 if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
-                if (!togive.roles.has(dcmrole.id)) togive.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                if (!togive.roles.cache.has(dcmrole.id)) togive.roles.add(dcmrole.id, "Successfully completed required dan courses").then(() => {
                     message.channel.send(`✅ **| <@${togive.id}>, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
                     channel.send(`**<@${togive.id}> has just achieved Dan Course Master. Congratulations to <@${togive.id}>!**`)
-                }).catch(e => console.log(e));
+                }).catch(console.error);
             }
         }
         else {
@@ -166,9 +167,9 @@ module.exports.run = (client, message, args, maindb) => {
                         let valid = validation(x.dan, x.mod, x.acc, x.rank);
                         if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
                         let danrole = x.play;
-                        let role = message.guild.roles.find(r => r.name === danrole);
+                        let role = message.guild.roles.cache.find((r) => r.name === danrole);
                         if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
-                        if (!message.member.roles.has(role.id)) message.member.addRole(role.id, "Successfully completed dan course").then(() => {
+                        if (!message.member.roles.cache.has(role.id)) message.member.roles.add(role.id, "Successfully completed dan course").then(() => {
                             message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
                             if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
                         }).catch(console.error);
@@ -178,12 +179,12 @@ module.exports.run = (client, message, args, maindb) => {
                             danlist.pop();
                             let count = 1;
                             danlist.forEach(role => {
-                                if (message.member.roles.find(r => r.name === role)) count++
+                                if (message.member.roles.cache.find((r) => r.name === role)) count++
                             });
                             if (count == danlist.length) {
-                                let dcmrole = message.guild.roles.find(r => r.name === "Dan Course Master");
+                                let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
                                 if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
-                                if (!message.member.roles.has(dcmrole.id)) message.member.addRole(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                                if (!message.member.roles.cache.has(dcmrole.id)) message.member.roles.add(dcmrole.id, "Successfully completed required dan courses").then(() => {
                                     message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
                                     channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
                                 }).catch(console.error)
