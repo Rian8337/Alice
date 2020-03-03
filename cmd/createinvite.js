@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const config = require("../config.json");
 
-function timeconvert (num) {
+function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
@@ -11,9 +11,9 @@ function timeconvert (num) {
 
 module.exports.run = (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (!message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.member.hasPermission("ADMINISTRATOR", {checkAdmin: true, checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
-    let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
+    let logchannel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
 
     let maxage = args[0];
@@ -27,19 +27,25 @@ module.exports.run = (client, message, args) => {
     let reason = args.slice(2).join(" ");
     if (!reason) return message.channel.send("Please enter your reason.");
 
-    message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses}, reason).then((invite) => {
-        let time = timeconvert(maxage);
+    message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses, reason: reason}).then((invite) => {
+        let time = timeConvert(maxage);
         if (maxage == 0) time = 'Never';
         if (maxuses == 0) maxuses = 'Infinite';
 
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+        const index = Math.floor(Math.random() * footer.length);
+        let rolecheck;
+        try {
+            rolecheck = message.member.roles.highest.hexColor
+        } catch (e) {
+            rolecheck = "#000000"
+        }
 
-        const embed = new Discord.RichEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL)
+        const embed = new Discord.MessageEmbed()
+            .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
-            .setColor(message.member.highestRole.hexColor)
+            .setColor(rolecheck)
             .setTitle("Invite link created")
             .addField("Created in", message.channel)
             .addField("Maximum usage", maxuses)
