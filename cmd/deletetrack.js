@@ -1,45 +1,29 @@
-const Discord = require('discord.js');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
-
-module.exports.run = (client, message, args) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+module.exports.run = (client, message, args, maindb) => {
+	if (message.member == null || message.member.roles == null || !message.member.roles.cache.get("325613708673810433")) return message.channel.send("❎ **| You don't have enough permission to use this.**");
 	let uid = args[0];
-	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
-	new osudroid.PlayerInfo().get({uid: uid}, player => {
-		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
-		let name = player.name;
-		let email = player.email;
-
-		let rolecheck;
-		try {
-			rolecheck = message.member.roles.highest.hexColor
-		} catch (e) {
-			rolecheck = "#000000"
+	if (isNaN(parseInt(uid))) return message.channel.send("❎ **| I'm sorry, that uid is invalid!**");
+	let trackdb = maindb.collection("tracking");
+	let query = { uid: uid };
+	trackdb.find(query).toArray(function(err, res) {
+		if (err) {
+			console.log(err);
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
-		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = new Discord.MessageEmbed()
-			.setTitle("User profile")
-			.setColor(rolecheck)
-			.setFooter("Alice Synthesis Thirty", footer[index])
-			.addField("Username", name)
-			.addField("Uid", uid)
-			.addField("Email", email);
-
-		try {
-			message.author.send({embed: embed})
-		} catch (e) {
-			return message.channel.send(`❎ **| ${message.author}, your DM is locked!**`);
-		}
-		message.channel.send(`✅ **| ${message.author}, the user info has been sent to you!**`)
+		if (!res[0]) return message.channel.send("❎ **| I'm sorry, this uid is not currently being tracked!**");
+		trackdb.deleteOne(query, function(err) {
+			if (err) {
+				console.log(err);
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+			}
+			message.channel.send(`✅ **| No longer tracking uid ${uid}.**`);
+		})
 	})
 };
 
 module.exports.config = {
-	name: "emailcheck",
-	description: "Retrieves the registered email of an osu!droid account.",
-	usage: "emailcheck <uid>",
-	detail: "`uid`: Uid to retrieve email from [Integer]`",
+	name: "deletetrack",
+	description: "Deletes a uid from tracking list.",
+	usage: "deletetrack <uid>",
+	detail: "`uid`: Uid to delete [Integer]",
 	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
