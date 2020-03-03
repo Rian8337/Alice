@@ -1,8 +1,9 @@
+// done rewriting
 const Discord = require('discord.js');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+    if (message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
     let matchid = args[0];
     if (!matchid) return message.channel.send("❎ **| Hey, I don't know what match to set!**");
     let matchdb = maindb.collection("matchinfo");
