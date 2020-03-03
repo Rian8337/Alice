@@ -13,7 +13,6 @@ module.exports.run = async (client, message, args) => {
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed()
         .setColor(rolecheck)
-        .setTimestamp(new Date())
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
     if (args[0]) {
