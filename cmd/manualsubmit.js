@@ -129,7 +129,7 @@ module.exports.run = (client, message, args, maindb) => {
 			matchdb.updateOne(query, update, function(err) {
 				if (err) {
 					console.log(err);
-					return message.channel.send("")
+					return message.channel.send("Empty database response")
 				}
 				console.log("match info updated");
 			})
