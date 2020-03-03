@@ -4,7 +4,7 @@ const osudroid = require('../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    if (message.member.roles == null || !message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+    if (message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb) => {
                     whitelist.insertOne(insertData, () => {
                         console.log("Whitelist entry added");
                         message.channel.send("Whitelist entry added | `" + mapstring + "`");
-                        client.channels.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`")
+                        client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`")
                     })
                 }
                 else {
@@ -39,7 +39,7 @@ module.exports.run = (client, message, args, maindb) => {
                     whitelist.updateOne(dupQuery, updateData, () => {
                         console.log("Whitelist entry updated");
                         message.channel.send("Whitelist entry updated | `" + mapstring + "`");
-                        client.channels.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`")
+                        client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`")
                     })
                 }
             })
@@ -68,8 +68,8 @@ function whitelistInfo(client, link_in, hash_in, message, callback) {
         hashid = mapinfo.hash;
         let mapstring = mapinfo.full_title;
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        let embed = new Discord.RichEmbed()
+        const index = Math.floor(Math.random() * footer.length);
+        let embed = new Discord.MessageEmbed()
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
             .setColor(mapinfo.statusColor())
@@ -81,7 +81,7 @@ function whitelistInfo(client, link_in, hash_in, message, callback) {
             .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.diff_total}`);
 
         message.channel.send({embed: embed}).catch(console.error);
-        client.channels.get("638671295470370827").send({embed: embed}).catch(console.error);
+        client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
         callback(1, beatmapid, hashid, mapstring)
     })
 }
