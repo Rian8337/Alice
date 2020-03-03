@@ -1,6 +1,6 @@
 const cd = new Set();
 
-function spaceFill (s, l) {
+function spaceFill(s, l) {
     let a = s.length;
     for (let i = 1; i < l-a; i++) {
         s += ' ';
@@ -38,7 +38,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
-                        msg.react("⏭️").catch(e => console.log(e))
+                        msg.react("⏭️").catch(console.error)
                     })
                 })
             });
@@ -51,36 +51,36 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             backward.on('collect', () => {
                 page = 0;
                 output = editscore(res, page);
-                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                msg.edit('```c\n' + output + '```').catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
 
             back.on('collect', () => {
                 if (page === 0) page = Math.floor(res.length / 20);
                 else page--;
                 output = editscore(res, page);
-                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                msg.edit('```c\n' + output + '```').catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
 
             next.on('collect', () => {
                 if ((page + 1) * 20 >= res.length) page = 0;
                 else page++;
                 output = editscore(res, page);
-                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                msg.edit('```c\n' + output + '```').catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
 
             forward.on('collect', () => {
                 page = Math.floor(res.length / 20);
                 output = editscore(res, page);
-                msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                msg.edit('```c\n' + output + '```').catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
 
             backward.on("end", () => {
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-                msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
             })
         });
         cd.add(message.author.id);
