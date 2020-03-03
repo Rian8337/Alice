@@ -46,6 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let resarr = content.split("<br>");
                 if (resarr.length != 2) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
                 let entry = resarr[1].split(" ");
+                let uid = entry[1];
                 let name = entry[2];
                 let score = parseInt(entry[3]).toLocaleString();
                 let combo = parseInt(entry[4]);
@@ -59,8 +60,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
                 let footer = config.avatar_list;
                 const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                let embed = new Discord.RichEmbed()
-                    .setAuthor(`Comparison play for ${name}`, rank)
+                let embed = new Discord.MessageEmbed()
+                    .setAuthor(`Comparison play for ${name}`, rank, `http://ops.dgsrz.com/profile.php?uid=${uid}`)
                     .setTitle(title)
                     .setFooter("Alice Synthesis Thirty", footer[index])
                     .setColor(8311585);
@@ -92,7 +93,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                     let ppline = parseFloat(npp.toString().split(" ")[0]);
                     let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-                    embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${date.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`);
+                    embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${date.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
                     message.channel.send({embed: embed}).catch(console.error);
                 })
             })
