@@ -5,7 +5,7 @@ const config = require('../config.json');
 function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
 	let mirror = "[Mirror](https://droidpp.glitch.me/profile?uid=" + uid + ")";
-	let embed = new Discord.RichEmbed()
+	let embed = new Discord.MessageEmbed()
 		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
 		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
@@ -69,19 +69,19 @@ module.exports.run = (client, message, args, maindb) => {
 		if (res[0].pp) ppentry = res[0].pp;
 		let rolecheck;
 		try {
-			rolecheck = message.member.highestRole.hexColor
+			rolecheck = message.member.roles.highest.hexColor
 		} catch (e) {
 			rolecheck = "#000000"
 		}
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		const index = Math.floor(Math.random() * footer.length);
 		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 
-		message.channel.send(embed).then(msg => {
+		message.channel.send({embed: embed}).then(msg => {
 			msg.react("⏮️").then(() => {
 				msg.react("⬅️").then(() => {
 					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(e => console.log(e))
+						msg.react("⏭️").catch(console.error)
 					})
 				})
 			});
@@ -92,40 +92,40 @@ module.exports.run = (client, message, args, maindb) => {
 			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
 			backward.on('collect', () => {
-				if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 1;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
+				msg.edit({embed: embed}).catch(console.error)
 			});
 
 			back.on('collect', () => {
 				if (page === 1) page = 15;
 				else page--;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
+				msg.edit({embed: embed}).catch(console.error)
 			});
 
 			next.on('collect', () => {
 				if (page === 15) page = 1;
 				else page++;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
+				msg.edit({embed: embed}).catch(console.error)
 			});
 
 			forward.on('collect', () => {
-				if (page === 15) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				if (page === 15) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 15;
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit(embed).catch(e => console.log(e))
+				msg.edit({embed: embed}).catch(console.error)
 			});
 
 			backward.on("end", () => {
-				msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-				msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
 			})
 		});
 		cd.add(message.author.id);
