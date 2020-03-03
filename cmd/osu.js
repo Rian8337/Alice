@@ -3,7 +3,7 @@ const https = require('https');
 const apikey = process.env.OSU_API_KEY;
 const config = require('../config.json');
 
-function progress (level) {
+function progress(level) {
     let final = (parseFloat(level) - Math.floor(parseFloat(level))) * 100;
     return final.toFixed(2)
 }
@@ -82,18 +82,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
                     let playerinfo = obj[0];
-                    
+
                     let rolecheck;
                     try {
-                        rolecheck = message.member.highestRole.hexColor
+                        rolecheck = message.member.roles.highest.hexColor
                     } catch (e) {
                         rolecheck = "#000000"
                     }
                     let footer = config.avatar_list;
-                    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                    let embed = new Discord.RichEmbed()
+                    const index = Math.floor(Math.random() * footer.length);
+                    let embed = new Discord.MessageEmbed()
                         .setThumbnail("https://a.ppy.sh/" + playerinfo.user_id)
-                        .setColor(message.member.highestRole.hexColor)
+                        .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .addField("Rank", "#" + playerinfo.pp_rank, true)
                         .addField("Country rank", playerinfo.country + " #" + playerinfo.pp_country_rank, true)
