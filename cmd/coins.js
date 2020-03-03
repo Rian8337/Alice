@@ -14,7 +14,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000' && message.guild.id != '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");
     let binddb = maindb.collection("userbind");
     let pointdb = alicedb.collection("playerpoints");
-    let coin = client.emojis.get("669532330980802561");
+    let coin = client.emojis.cache.get("669532330980802561");
     let curtime = Math.floor(Date.now() / 1000);
     if (curtime - (message.member.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, you haven't been in the server for a week!**");
     let query = {};
