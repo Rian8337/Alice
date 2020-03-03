@@ -32,7 +32,7 @@ function rankEmote(input) {
 }
 
 function editpp(client, rplay, name, page, footer, index, rolecheck) {
-	let embed = new Discord.RichEmbed()
+	let embed = new Discord.MessageEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
 		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
@@ -82,10 +82,10 @@ module.exports.run = (client, message, args, maindb) => {
 			let name = player.name;
 			let rplay = player.recent_plays;
 			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			const index = Math.floor(Math.random() * footer.length);
 			let rolecheck;
 			try {
-				rolecheck = message.member.highestRole.hexColor
+				rolecheck = message.member.roles.highest.hexColor
 			} catch (e) {
 				rolecheck = "#000000"
 			}
@@ -106,40 +106,40 @@ module.exports.run = (client, message, args, maindb) => {
 				let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
 
 				backward.on('collect', () => {
-					if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					else page = 1;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
+					msg.edit({embed: embed}).catch(console.error)
 				});
 
 				back.on('collect', () => {
 					if (page === 1) page = 10;
 					else page--;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
+					msg.edit({embed: embed}).catch(console.error)
 				});
 
 				next.on('collect', () => {
 					if (page === 10) page = 1;
 					else page++;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e));
+					msg.edit({embed: embed}).catch(console.error)
 				});
 
 				forward.on('collect', () => {
-					if (page === 10) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					else page = 10;
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 					embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-					msg.edit(embed).catch(e => console.log(e))
+					msg.edit({embed: embed}).catch(console.error)
 				});
 
 				backward.on("end", () => {
-					msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-					msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
 				})
 			})
 		});
