@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("Error: Empty database response. Please try again!")
             }
             if (res[0]) {
-                let name = await client.fetchUser(user);
+                let name = await client.users.fetch(user);
                 name = name.username;
                 let skinlink = res[0].skin;
                 message.channel.send(`✅ **| ${name}'s skin: ${skinlink}.**\nFor a collection of skins, visit https://tsukushi.site/`)
