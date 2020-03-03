@@ -83,16 +83,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     // embed stuff
     let rolecheck;
     try {
-        rolecheck = message.member.highestRole.hexColor
+        rolecheck = message.member.roles.highest.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    const index = Math.floor(Math.random() * footer.length);
 
     // actual command
     if (args[0] == 'about') {
-        let embed = new Discord.RichEmbed()
+        let embed = new Discord.MessageEmbed()
             .setTitle("Ranked Score Project")
             .setColor(rolecheck)
             .setFooter("Alice Synthesis Thirty", footer[index])
@@ -133,7 +133,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
             let rplay = player.recent_plays;
             let playentry = [];
-            let embed = new Discord.RichEmbed()
+            let embed = new Discord.MessageEmbed()
                 .setTitle("PP submission info")
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setColor(rolecheck);
