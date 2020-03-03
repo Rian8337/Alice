@@ -73,7 +73,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
             .setTitle(`${mapinfo.full_title} (${droid_stars}★ | ${pc_stars}★)`)
             .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
             .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField("**Top Score**", `${client.emojis.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
+            .addField("**Top Score**", `${client.emojis.cache.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
 
         let i = 5 * (page - 1);
         if (i >= 100) i -= page_limit * 100;
