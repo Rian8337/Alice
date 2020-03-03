@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 async function filterMessage(message, filter, i, count, embed, startid) {
-    let final = await message.channel.fetchMessages({limit: 100, after: startid});
+    let final = await message.channel.messages.fetch({limit: 100, after: startid});
     let lastid = final.first();
     if (!lastid) {
         console.log("Complete!");
@@ -13,7 +13,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
     console.log("Start ID: " + startid);
     console.log("Last ID: " + lastid + "\n");
 
-    final = final.filter(m => m.content.toLowerCase() == filter && !m.author.bot);
+    final = final.filter((m) => m.content.toLowerCase() == filter && !m.author.bot);
     final.forEach(msg => {
         let d = new Date(msg.createdAt);
         d = [d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes().toString().padStart(2, "0"), d.getSeconds().toString().padStart(2, "0")].join(':');
@@ -25,9 +25,9 @@ async function filterMessage(message, filter, i, count, embed, startid) {
         if (i > 25) {
             message.channel.send(embed);
             i = 1;
-            embed = new Discord.RichEmbed()
+            embed = new Discord.MessageEmbed()
                 .setTitle("Users who sent `" + filter + "`:")
-                .setColor(message.member.highestRole.hexColor);
+                .setColor(message.member.roles.highest.hexColor)
         }
     });
     return filterMessage(message, filter, i, count, embed, lastid)
@@ -42,9 +42,9 @@ module.exports.run = async (client, message, args) => {
     let filter = args.slice(1).join(" ");
     if (!filter) return message.channel.send("❎ **| Please insert filter!**");
 
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
         .setTitle("Users who sent `" + filter + "`:")
-        .setColor(message.member.highestRole.hexColor);
+        .setColor(message.member.roles.highest.hexColor);
 
     await filterMessage(message, filter, 1, 1, embed, startid);
 };
