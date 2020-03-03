@@ -10,7 +10,7 @@ function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
     eligibleRoleList.forEach((id) => {
-        if (member.roles.has(id[0])) res = id[1]
+        if (member.roles.cache.has(id[0])) res = id[1]
     });
     return res
 }
