@@ -7,13 +7,13 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (args[0]) ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
     let binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
-    binddb.find(query).toArray((err, res) => {
+    binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!res[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = res[0].uid;
+        if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        let uid = res.uid;
         new osudroid.PlayerInfo().get({uid: uid}, player => {
             if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
             if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
@@ -30,13 +30,13 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let mod = play.mode;
             let hash = play.hash;
             let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-            let embed = new Discord.RichEmbed()
+            const index = Math.floor(Math.random() * footer.length);
+            let embed = new Discord.MessageEmbed()
                 .setAuthor(`Recent play for ${name}`, rank)
                 .setTitle(title)
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setColor(8311585);
-            
+
             let time = Date.now();
             let entry = [time, message.channel.id, hash];
             let found = false;
@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let ppline = parseFloat(npp.toString().split(" ")[0]);
                 let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-                embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`);
+                embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
                 message.channel.send({embed: embed}).catch(console.error)
             })
         })
