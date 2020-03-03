@@ -132,7 +132,7 @@ module.exports.run = (client, message, args, maindb) => {
         confirm.on("end", () => {
             if (!confirmation) {
                 msg.delete();
-                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
             }
         })
     })
