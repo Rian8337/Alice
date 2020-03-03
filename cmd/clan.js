@@ -45,7 +45,7 @@ function spaceFill(s, l) {
     for (let i = 1; i < l-a; i++) {
         s += ' ';
     }
-    return s;
+    return s
 }
 
 function editlb(res, page) {
