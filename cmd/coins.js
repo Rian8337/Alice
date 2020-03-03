@@ -1,3 +1,4 @@
+// done rewriting
 const Discord = require('discord.js');
 const osudroid = require('../modules/osu!droid');
 
@@ -91,7 +92,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         case "transfer": {
-            let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
+            let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!totransfer) return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
             if ((curtime - totransfer.joinedTimestamp) / 1000 < 86400 * 7) return message.channel.send("❎ **| I'm sorry, the user you are giving your coins to has not been in the server for a week!**");
             let amount = parseInt(args[2]);
