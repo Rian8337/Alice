@@ -82,12 +82,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     // embed stuff
     let rolecheck;
     try {
-        rolecheck = message.member.highestRole.hexColor
+        rolecheck = message.member.roles.highest.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    const index = Math.floor(Math.random() * footer.length);
     // actual command
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
     let ufind = args[0];
@@ -110,14 +110,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres[0].uid;
-        let discordid = userres[0].discordid;
         let username = userres[0].username;
         new osudroid.PlayerInfo().get({uid: uid}, player => {
-            if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
-            if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+            if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
+            if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");
             let rplay = player.recent_plays;
             let playentry = [];
-            let embed = new Discord.RichEmbed()
+            let embed = new Discord.MessageEmbed()
                 .setTitle("PP submission info")
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setColor(rolecheck);
