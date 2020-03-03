@@ -109,7 +109,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
             let dpp = parseFloat(npp.toString().split(" ")[0]);
             let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-            embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
+            embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.cache.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
         }
         resolve([cache, embed])
     })
