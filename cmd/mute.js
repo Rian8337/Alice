@@ -24,30 +24,23 @@ module.exports.run = async (client, message, args) => {
     let timeLimit = isEligible(message.member);
     if (timeLimit != -1) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
-    let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return;
     if (isImmuned(tomute) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
-    let muterole = message.guild.roles.find(r => r.name === 'elaina-muted');
+    let muterole = message.guild.roles.cache.find(r => r.name === 'elaina-muted');
     //start of create role
-    if(!muterole){
-        try{
-            muterole = await message.guild.createRole({
-                name: "elaina-muted",
-                color: "#000000",
-                permissions:[]
-            });
-            message.guild.channels.forEach(channel => {
-                channel.overwritePermissions(muterole, {
-                    SEND_MESSAGES: false,
-                    ADD_REACTIONS: false
-                }).catch(console.error)
+    if (!muterole) {
+        try {
+            muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
+            message.guild.channels.cache.forEach(channel => {
+                channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
             })
-        }catch(e){
-            console.log(e.stack);
+        } catch(e) {
+            console.log(e.stack)
         }
     }
     //end of create role
@@ -60,13 +53,13 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(`A user has been muted... but their DMs are locked. The user will be muted permanently.`)
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    const index = Math.floor(Math.random() * footer.lengt);
 
-    let channel = message.guild.channels.find(c => c.name === config.management_channel);
+    let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!channel) return message.reply("Please create a mute log channel first!");
 
-    let muteembed = new Discord.RichEmbed()
-        .setAuthor(message.author.tag, message.author.avatarURL)
+    let muteembed = new Discord.MessageEmbed()
+        .setAuthor(message.author.tag, message.author.avatarURL())
         .setTitle("Mute executed")
         .setColor("#000000")
         .setTimestamp(new Date())
@@ -75,10 +68,10 @@ module.exports.run = async (client, message, args) => {
         .addField("Length: Permanent", "=========================")
         .addField("Reason: ", reason);
 
-    channel.send(muteembed);
+    channel.send({embed: muteembed});
 
-    tomute.addRole(muterole.id)
-            .catch(console.error);
+    tomute.roles.add(muterole.id)
+            .catch(console.error)
 };
 
 module.exports.config = {
