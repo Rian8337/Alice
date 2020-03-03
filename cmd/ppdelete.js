@@ -4,8 +4,8 @@ const config = require('../config.json');
 module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
-	let guild = client.guilds.get('528941000555757598');
-	let logchannel = guild.channels.get('638671295470370827');
+	let guild = client.guilds.cache.get('528941000555757598');
+	let logchannel = guild.channels.cache.get('638671295470370827');
 	if (!logchannel) return message.channel.send("❎ **| Please create #pp-log first!**");
 
 	let ufind = args[0];
@@ -52,9 +52,9 @@ module.exports.run = (client, message, args, maindb) => {
 			weight *= 0.95;
 		}
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		const index = Math.floor(Math.random() * footer.length);
 
-		const embed = new Discord.RichEmbed()
+		const embed = new Discord.MessageEmbed()
 			.setTitle("__Deleted play data__")
 			.setColor("#6699cb")
 			.setFooter("Alice Synthesis Thirty", footer[index])
@@ -62,10 +62,8 @@ module.exports.run = (client, message, args, maindb) => {
 			.addField("**User stats**", `Discord User: <@${discordid}>\nUsername: ${username}\nUid: ${uid}`)
 			.addField("**Play stats**", `Map Name: ${scdelete[1]}\nPP: ${scdelete[2]} pp\nCombo: ${scdelete[3]}\nAccuracy: ${scdelete[4]}\nMiss count: ${scdelete[5]} miss(es)`)
 			.addField("**PP stats**", `Pre-PP count: ${parseFloat(pre_pptotal.toString()).toFixed(2)} pp\nPost-PP count: ${parseFloat(pptotal.toString()).toFixed(2)} pp\nPP difference: ${(parseFloat(pre_pptotal) - parseFloat(pptotal)).toFixed(2)}`);
-		logchannel.send({embed: embed});
 
 		playc--;
-		message.channel.send("✅ **| Successfully deleted play data!**");
 		let updateVal = {
 			$set: {
 				pptotal: pptotal,
@@ -78,6 +76,8 @@ module.exports.run = (client, message, args, maindb) => {
 				console.log(err);
 				return message.channel.send("Error: Empty database response. Please try again!")
 			}
+			message.channel.send("✅ **| Successfully deleted play data!**");
+			logchannel.send({embed: embed});
 			console.log('pp updated')
 		})
 	})
