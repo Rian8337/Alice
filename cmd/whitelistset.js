@@ -17,7 +17,7 @@ function mapstatusread(status) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    if (message.member.roles == null || !message.member.roles.find(r => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+    if (message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
@@ -46,7 +46,7 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Whitelist entry added");
                         whitelist.insertOne(insertData, () => {
                             message.channel.send("Whitelist entry added | `" + entry[2] + "`");
-                            client.channels.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`")
+                            client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`")
                         })
                     }
                     else {
@@ -58,7 +58,7 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Whitelist entry update");
                         whitelist.updateOne(dupQuery, updateData, () => {
                             message.channel.send("Whitelist entry updated | `" + entry[2] + "`");
-                            client.channels.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`")
+                            client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`")
                         })
                     }
                 })
@@ -119,7 +119,7 @@ function whitelistInfo(client, link_in, message, callback) {
 
             let mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
             let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+            const index = Math.floor(Math.random() * footer.length);
             const embed = {
                 "title": mapstring,
                 "description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat]()",
@@ -144,11 +144,7 @@ function whitelistInfo(client, link_in, message, callback) {
                 ]
             };
             message.channel.send({embed: embed}).catch(console.error);
-            client.channels.get("638671295470370827").send({embed: embed}).catch(console.error);
-            console.log(mapid);
-            console.log(hashid);
-            console.log(mapstring);
-            console.log(diffstring);
+            client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
             callback(1, mapid, hashid, mapstring, diffstring)
         })
     });
