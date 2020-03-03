@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 function count_all_message(channel, last_msg, date, daily_counter, cb) {
-    channel.fetchMessages({limit: 100, before: last_msg})
+    channel.messages.fetch({limit: 100, before: last_msg})
         .then(messages => {
             if (!messages.size) return cb(0, null, false, true);
             for (const [snowflake, message] of messages.entries()) {
@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     current_date = current_date.getTime();
     let daily_counter = 0;
     let channeldb = alicedb.collection("channeldata");
-    message.channel.fetchMessages({limit: 1}).then(last_message => {
+    message.channel.messages.fetch({limit: 1}).then(last_message => {
         let message_id = last_message.first().id;
         count_all_message(message.channel, message_id, current_date, daily_counter, function testResult(count, last_id, iterateDate = false, stopSign = false) {
             if (stopSign) return message.channel.send(`✅ **| ${message.author}, message logging done!**`);
