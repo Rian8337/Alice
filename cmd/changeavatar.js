@@ -1,3 +1,4 @@
+// done rewriting
 const config = require('../config.json');
 const cd = new Set();
 
@@ -9,7 +10,7 @@ module.exports.run = (client, message, args) => {
     if (isNaN(x)) return message.channel.send("Invalid input");
     let avatar = config.avatar_list;
     if (!avatar[x]) return message.channel.send("There is no avatar!");
-    client.user.setAvatar(avatar[x]).then (() => {
+    client.user.setAvatar(avatar[x]).then(() => {
         message.channel.send(`Changed avatar`, {file: avatar[x]});
         cd.add(ufind);
         setTimeout(() => {
