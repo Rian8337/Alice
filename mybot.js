@@ -204,7 +204,7 @@ client.on("message", message => {
 	}
 	
 	if (message.content.startsWith("&")) {
-		let mainbot = message.guild.members.get("391268244796997643");
+		let mainbot = message.guild.members.cache.get("391268244796997643");
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
