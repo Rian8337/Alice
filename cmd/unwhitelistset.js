@@ -103,7 +103,7 @@ function whitelistInfo(link_in, message, callback) {
 
             let mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
             let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+            const index = Math.floor(Math.random() * footer.length);
             const embed = {
                 "title": mapstring,
                 "description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat]()",
