@@ -56,8 +56,8 @@ function whitelistInfo(link_in, hash_in, message, callback) {
         hashid = mapinfo.hash;
         let mapstring = mapinfo.showStatistics("", 0);
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        let embed = new Discord.RichEmbed()
+        const index = Math.floor(Math.random() * footer.length);
+        let embed = new Discord.MessageEmbed()
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
             .setColor(mapinfo.statusColor())
