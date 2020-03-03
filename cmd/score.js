@@ -175,6 +175,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let submitted = 1;
                 scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, function testResult(error = false, success = true, stopSign = false) {
                     if (stopSign) {
+                        if (submitted === 1) return;
                         scorelist.sort((a, b) => {
                             return b[0] - a[0]
                         });
