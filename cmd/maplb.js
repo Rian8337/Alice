@@ -65,7 +65,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
 
         let droid_stars = parseFloat(global_star.droid_stars.toString().split(" ")[0]);
         let pc_stars = parseFloat(global_star.pc_stars.toString().split(" ")[0]);
-        let embed = new Discord.RichEmbed()
+        let embed = new Discord.MessageEmbed()
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
             .setColor(rolecheck)
@@ -79,39 +79,37 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
         if (i >= 100) i -= page_limit * 100;
         let limit = i + 5;
         for (i; i < limit; i++) {
-            if (entries[i]) {
-                let entry = entries[i].split(" ");
-                let player = entry[2];
-                let score = parseInt(entry[3]).toLocaleString();
-                let mod = osudroid.mods.droid_to_PC(entry[6]);
-                let combo = parseInt(entry[4]);
-                let rank = rankEmote(entry[5]);
-                let accuracy = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
-                let date = new Date(parseInt(entry[9]) * 1000);
-                date.setUTCHours(date.getUTCHours() + 7);
-                let miss = parseInt(entry[8]);
+            if (!entries[i]) break;
+            let entry = entries[i].split(" ");
+            let player = entry[2];
+            let score = parseInt(entry[3]).toLocaleString();
+            let mod = osudroid.mods.droid_to_PC(entry[6]);
+            let combo = parseInt(entry[4]);
+            let rank = rankEmote(entry[5]);
+            let accuracy = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
+            let date = new Date(parseInt(entry[9]) * 1000);
+            date.setUTCHours(date.getUTCHours() + 7);
+            let miss = parseInt(entry[8]);
 
-                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-                let npp = osudroid.ppv2({
-                    stars: star.droid_stars,
-                    combo: combo,
-                    acc_percent: accuracy,
-                    miss: miss,
-                    mode: "droid"
-                });
-                let pcpp = osudroid.ppv2({
-                    stars: star.pc_stars,
-                    combo: combo,
-                    acc_percent: accuracy,
-                    miss: miss,
-                    mode: "osu"
-                });
-                let dpp = parseFloat(npp.toString().split(" ")[0]);
-                let pp = parseFloat(pcpp.toString().split(" ")[0]);
+            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+            let npp = osudroid.ppv2({
+                stars: star.droid_stars,
+                combo: combo,
+                acc_percent: accuracy,
+                miss: miss,
+                mode: "droid"
+            });
+            let pcpp = osudroid.ppv2({
+                stars: star.pc_stars,
+                combo: combo,
+                acc_percent: accuracy,
+                miss: miss,
+                mode: "osu"
+            });
+            let dpp = parseFloat(npp.toString().split(" ")[0]);
+            let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-                embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
-            }
-            else embed.addField(`**#${5 * (page_limit * 20) + i + 1}** -`, '-')
+            embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
         }
         resolve([cache, embed])
     })
@@ -131,7 +129,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     else {
         let a = args[0].split("/");
         beatmap_id = parseInt(a[a.length - 1]);
-        if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");        
+        if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
     }
     if (!beatmap_id && !hash) return message.channel.send("❎ **| Hey, can you at least give me a map to retrieve?**");
     let params = beatmap_id ? {beatmap_id: beatmap_id} : {hash: hash};
@@ -196,12 +194,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         let rolecheck;
         try {
-            rolecheck = message.member.highestRole.hexColor
+            rolecheck = message.member.roles.highest.hexColor
         } catch (e) {
             rolecheck = "#000000"
         }
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+        const index = Math.floor(Math.random() * footer.length);
 
         let entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
         if (!entry) return message.channel.send("❎ **| I'm sorry, looks like the map doesn't have that many scores!**");
@@ -222,50 +220,50 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
             backward.on('collect', async () => {
-                if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(console.error));
+                if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 page = Math.max(1, page -= 10);
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(console.error));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
                 if (!entry) return;
                 cache = entry[0];
                 embed = entry[1];
-                msg.edit(embed).catch(console.error)
+                msg.edit({embed: embed}).catch(console.error)
             });
 
             back.on('collect', async () => {
                 if (page !== 1) page--;
-                else return;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(console.error));
+                else return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
                 if (!entry) return;
                 cache = entry[0];
                 embed = entry[1];
-                msg.edit(embed).catch(console.error)
+                msg.edit({embed: embed}).catch(console.error)
             });
 
             next.on('collect', async () => {
                 page++;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(console.error));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
                 if (!entry) return;
                 cache = entry[0];
                 embed = entry[1];
-                msg.edit(embed).catch(console.error)
+                msg.edit({embed: embed}).catch(console.error)
             });
 
             forward.on('collect', async () => {
                 page += 10;
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(console.error));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
                 if (!entry) return;
                 cache = entry[0];
                 embed = entry[1];
-                msg.edit(embed).catch(console.error)
+                msg.edit({embed: embed}).catch(console.error)
             });
 
             backward.on("end", () => {
-                msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-                msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
             })
         });
         cd.add(message.author.id);
