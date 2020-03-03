@@ -80,8 +80,8 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 						if (i === obj.length) {
 							map_entries.sort((a, b) => {return b[2] - a[2]});
 							let footer = config.avatar_list;
-							const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-							let embed = new Discord.RichEmbed()
+							const index = Math.floor(Math.random() * footer.length);
+							let embed = new Discord.MessageEmbed()
 								.setFooter("Alice Synthesis Thirty", footer[index])
 								.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
 								.setColor(mapinfo.statusColor())
@@ -137,8 +137,8 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 		let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-		let embed = new Discord.RichEmbed()
+		const index = Math.floor(Math.random() * footer.length);
+		let embed = new Discord.MessageEmbed()
 			.setFooter("Alice Synthesis Thirty", footer[index])
 			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
 			.setColor(mapinfo.statusColor())
