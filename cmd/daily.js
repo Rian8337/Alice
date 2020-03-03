@@ -13,7 +13,7 @@ function isEligible(member) {
     return res
 }
 
-function timeconvert(num) {
+function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
@@ -208,10 +208,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let dailydb = alicedb.collection("dailychallenge");
     let pointdb = alicedb.collection("playerpoints");
     let clandb = maindb.collection("clandb");
-    let coin = client.emojis.get("669532330980802561");
+    let coin = client.emojis.cache.get("669532330980802561");
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-    let embed = new Discord.RichEmbed();
+    const index = Math.floor(Math.random() * footer.length);
+    let embed = new Discord.MessageEmbed();
     let query = {};
     let updateVal = {};
     let insertVal = {};
@@ -223,7 +223,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // Discord's message limit
             let rolecheck;
             try {
-                rolecheck = message.member.highestRole.hexColor
+                rolecheck = message.member.roles.highest.hexColor
             } catch (e) {
                 rolecheck = "#000000"
             }
@@ -250,7 +250,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ===========================
             // if args[1] is not defined,
             // defaults to the message author
-            let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]?args[1]:message.author.id));
+            let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]?args[1]:message.author.id));
             if (!user) return message.channel.send("❎ **| Hey, can you give me a valid user?**");
 
             query = {discordid: user.id};
@@ -312,7 +312,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             let rolecheck;
                             try {
-                                rolecheck = message.member.highestRole.hexColor
+                                rolecheck = message.member.roles.highest.hexColor
                             } catch (e) {
                                 rolecheck = "#000000"
                             }
@@ -354,7 +354,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
-                                msg.react("⏭️").catch(e => console.log(e))
+                                msg.react("⏭️").catch(console.error)
                             })
                         })
                     });
@@ -367,36 +367,36 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     backward.on('collect', () => {
                         page = 0;
                         output = editPoint(res, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
                         if (page === 0) page = Math.floor(res.length / 20);
                         else page--;
                         output = editPoint(res, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     next.on('collect', () => {
                         if ((page + 1) * 20 >= res.length) page = 0;
                         else page++;
                         output = editPoint(res, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     forward.on('collect', () => {
                         page = Math.floor(res.length / 20);
                         output = editPoint(res, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     backward.on("end", () => {
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-                        msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
                     })
                 });
                 cd.add(message.author.id);
@@ -434,10 +434,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
-                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
+                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
                         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                         .setDescription(`[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                         .addField("Map Info", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
@@ -482,10 +482,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let requirements = challengeRequirements(challengeid, pass, bonus);
                         let pass_string = requirements[0];
                         let bonus_string = requirements[1];
-                        let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                        let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                         embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                             .setColor(mapinfo.statusColor())
-                            .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit)}`, footer[index])
+                            .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
                             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                             .setDescription(`[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                             .addField("Map Info", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
@@ -579,7 +579,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "miss": {
-                                    if (miss < passreq[1] || miss == 0) pass = true;
+                                    if (miss < passreq[1] || !miss) pass = true;
                                     break
                                 }
                                 case "combo": {
@@ -605,8 +605,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                             }
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                            if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain != '' && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                             let points = 0;
                             let bonus = dailyres[0].bonus;
                             switch (bonus[0]) {
@@ -619,7 +617,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "miss": {
-                                    if (miss < bonus[1] || miss == 0) points += bonus[2];
+                                    if (miss < bonus[1] || !miss) points += bonus[2];
                                     break
                                 }
                                 case "combo": {
@@ -631,7 +629,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "mod": {
-                                    if (osudroid.mods.droid_to_modbits(mod) - 4 == osudroid.mods.modbits_from_string(bonus[1].toUpperCase())) points += bonus[2];
+                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods[mod]) points += bonus[2];
                                     break
                                 }
                                 case "rank": {
@@ -664,6 +662,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                     }
+                                    if (!bonuscheck && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                                    if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                                     if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
                                     if (!found) {
                                         points += dailyres[0].points;
@@ -789,10 +789,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
-                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeconvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
+                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
                         .setDescription(`[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
                         .addField("Map Info", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
@@ -801,7 +801,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
                     client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
-                    let updateVal;
+                    let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) - 1);
+                    updateVal = {
+                        $set: {
+                            status: "finished"
+                        }
+                    };
+                    dailydb.updateOne({challengeid: previous_challenge}, updateVal, err => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        console.log("Challenge data updated")
+                    });
+
                     if (challengeid.includes("w")) updateVal = {
                         $set: {
                             status: "w-ongoing",
@@ -831,7 +844,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // submitting for not surpassing highest score
             // requires helper or above
             if (isEligible(message.member) == 0) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this. Please ask a Helper!**");
-            let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
+            let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!user) return message.channel.send("❎ **| Hey, please enter a valid user!**");
             let challengeid = args[2];
             if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
@@ -1110,7 +1123,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         break
                                     }
                                     case "miss": {
-                                        if (miss < passreq[1] || miss == 0) pass = true;
+                                        if (miss < passreq[1] || !miss) pass = true;
                                         break
                                     }
                                     case "combo": {
@@ -1136,9 +1149,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                                 }
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                                console.log(osudroid.mods.droid_to_modbits(mod) - 4);
-                                console.log(osudroid.mods.modbits_from_string(constrain));
-                                if (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain))) pass = false;
+                                if (!found && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
                                 if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                                 if (!found) points += dailyres[0].points;
 
@@ -1146,11 +1157,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let bonus_string = '';
                                 let mode = ['easy', 'normal', 'hard', 'insane'];
                                 for (let i = 0; i < bonus.length; i++) {
+                                    if (bonus[i][0] == 'none') bonuslist[i + 1] = true;
                                     if (bonuslist[i + 1]) continue;
-                                    if (bonus[i][0] == 'none') {
-                                        bonuslist[i + 1] = true;
-                                        continue
-                                    }
                                     let complete = false;
                                     switch (bonus[i][0]) {
                                         case "score": {
@@ -1170,7 +1178,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "mod": {
-                                            if (osudroid.mods.droid_to_modbits(mod) - 4 == osudroid.mods.modbits_from_string(bonus[i][1].toUpperCase())) {
+                                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods[mod]) {
                                                 points += bonus[i][2];
                                                 bonuslist[i + 1] = true;
                                                 complete = true
@@ -1194,7 +1202,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "miss": {
-                                            if (miss < bonus[i][1] || miss == 0) {
+                                            if (miss < bonus[i][1] || !miss) {
                                                 points += bonus[i][2];
                                                 bonuslist[i + 1] = true;
                                                 complete = true
