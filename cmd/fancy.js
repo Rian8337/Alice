@@ -100,9 +100,9 @@ function memberValidation(message, user, role, time, userres, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
-    if (!message.member.roles.find(r => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
+    if (!message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
 
-    let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
     let role = args[1];
     if (!role) return message.channel.send("❎ **| Hey, I don't know what role to give!**");
@@ -125,9 +125,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!userres[0]) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.");
             memberValidation(message, user, role, time, userres, (valid = false) => {
                 if (valid) {
-                    let pass = message.guild.roles.find(r => r.name === 'Lounge Pass');
-                    user.addRole(pass, "Fulfilled requirement for role").then(() => {
-                        message.channel.send("✅ **| Successfully given `" + pass.name + "` for " + user + ".**")
+                    let pass = message.guild.roles.cache.find((r) => r.name === 'Lounge Pass');
+                    user.roles.add(pass, "Fulfilled requirement for role").then(() => {
+                        message.channel.send("✅ **| Successfully given `" + pass.name + " for " + user)
                     }).catch(() => message.channel.send("❎ **| I'm sorry, this user already has a pass!**"))
                 }
             })
