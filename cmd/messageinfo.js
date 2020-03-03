@@ -10,24 +10,24 @@ module.exports.run = (client, message, args) => {
     if (!message_id) return message.channel.send("❎ **| Hey, I don't know the message to retrieve!**");
     if ([parseInt(channel_id), parseInt(message_id)].some(isNaN)) return message.channel.send("❎ **| I'm sorry, channel ID or message ID is invalid!**");
 
-    let channel = message.guild.channels.get(channel_id);
+    let channel = message.guild.channels.cache.get(channel_id);
     if (!channel) return message.channel.send("❎ **| I'm sorry, I can't find the channel!**");
 
-    channel.fetchMessage(args[1]).then(msg => {
+    channel.messages.fetch(args[1]).then((msg) => {
         let rolecheck;
         try {
-            rolecheck = message.member.highestRole.hexColor
+            rolecheck = message.member.roles.highest.hexColor
         } catch (e) {
             rolecheck = "#000000"
         }
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        let embed = new Discord.RichEmbed()
+        const index = Math.floor(Math.random() * footer.length);
+        let embed = new Discord.MessageEmbed()
             .setTitle("Message Info")
             .setDescription(`[Go to message](${msg.url})`)
             .setColor(rolecheck)
             .setFooter("Alice Synthesis Thirty", footer[index])
-            .setThumbnail(msg.author.avatarURL)
+            .setThumbnail(msg.author.avatarURL({dynamic: true}))
             .addField("Message Author", `${msg.author} (${msg.author.id})`)
             .addField("Date Sent", new Date(msg.createdTimestamp).toUTCString())
             .addField("Message Content", msg.content.substring(0, 1024));
