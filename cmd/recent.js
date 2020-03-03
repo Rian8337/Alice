@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		let mod = rplay.mode;
 		let hash = rplay.hash;
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		const index = Math.floor(Math.random() * footer.length);
 		let embed = {
 			"title": title,
 			"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + osudroid.mods.droid_to_PC(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
@@ -36,7 +36,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			}
 		};
 		message.channel.send({embed: embed}).catch(console.error);
-		
+
 		let time = Date.now();
 		let entry = [time, message.channel.id, hash];
 		let found = false;
@@ -47,7 +47,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			break
 		}
 		if (!found) current_map.push(entry);
-		
+
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
 			if (!mapinfo.title || !mapinfo.objects) return;
 			mod = osudroid.mods.droid_to_PC(mod);
@@ -71,7 +71,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			let dpp = parseFloat(npp.toString().split(" ")[0]);
 			let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-			embed = new Discord.RichEmbed()
+			embed = new Discord.MessageEmbed()
 				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
 				.setColor(mapinfo.statusColor(mapinfo.approved))
