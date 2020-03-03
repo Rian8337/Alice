@@ -20,7 +20,7 @@ function isImmuned(member) {
     return res;
 }
 
-function timeconvert (num) {
+function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
@@ -31,9 +31,9 @@ function timeconvert (num) {
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let timeLimit = isEligible(message.member);
-    if (timeLimit == 0) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
-    let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return;
     if (isImmuned(tomute) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
@@ -48,20 +48,13 @@ module.exports.run = async (client, message, args) => {
 
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
-    let muterole = message.guild.roles.find(r => r.name === 'elaina-muted');
+    let muterole = message.guild.roles.cache.find((r) => r.name === 'elaina-muted');
     //start of create role
     if (!muterole) {
         try {
-            muterole = await message.guild.createRole({
-                name: "elaina-muted",
-                color: "#000000",
-                permissions:[]
-            });
-            message.guild.channels.forEach(channel => {
-                channel.overwritePermissions(muterole, {
-                    SEND_MESSAGES: false,
-                    ADD_REACTIONS: false
-                }).catch(console.error)
+            muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
+            message.guild.channels.cache.forEach(channel => {
+                channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
             })
         } catch(e) {
             console.log(e.stack)
@@ -77,28 +70,28 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(`A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} seconds`)
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+    const index = Math.floor(Math.random() * footer.length);
 
-    let muteembed = new Discord.RichEmbed()
-        .setAuthor(message.author.tag, message.author.avatarURL)
+    let muteembed = new Discord.MessageEmbed()
+        .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
         .setTitle("Mute executed")
         .setColor("#000000")
         .setTimestamp(new Date())
         .setFooter("User ID: " + tomute.id, footer[index])
         .addField("Muted User: " + tomute.user.username, "Muted in: " + message.channel)
-        .addField("Length: " + timeconvert(mutetime), "=========================")
+        .addField("Length: " + timeConvert(mutetime), "=========================")
         .addField("Reason: ", reason);
 
-    let channel = message.guild.channels.find(c => c.name === config.management_channel);
+    let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!channel) return message.reply("Please create a mute log channel first!");
-    channel.send(muteembed).then(msg => {
-        tomute.addRole(muterole.id)
+    channel.send({embed: muteembed}).then(msg => {
+        tomute.roles.add(muterole.id)
             .catch(console.error);
 
         setTimeout(() => {
-            tomute.removeRole(muterole.id);
+            tomute.roles.remove(muterole.id);
             muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
-            msg.edit(muteembed)
+            msg.edit({embed: muteembed})
         }, mutetime * 1000)
     })
 };
