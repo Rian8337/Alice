@@ -17,9 +17,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 };
 
 module.exports.config = {
-    name: "ask",
+    name: "askcount",
     description: "See how many times you have asked me.",
-    usage: "ask",
+    usage: "askcount",
     detail: "None",
     permission: "None"
 };
