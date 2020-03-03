@@ -13,13 +13,13 @@ module.exports.run = (client, message, args) => {
 
 		let rolecheck;
 		try {
-			rolecheck = message.member.highestRole.hexColor
+			rolecheck = message.member.roles.highest.hexColor
 		} catch (e) {
 			rolecheck = "#000000"
 		}
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-		let embed = new Discord.RichEmbed()
+		const index = Math.floor(Math.random() * footer.length);
+		let embed = new Discord.MessageEmbed()
 			.setTitle("User profile")
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index])
