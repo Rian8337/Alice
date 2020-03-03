@@ -4,7 +4,7 @@ const config = require("../config.json");
 function shuffle(input) {
     var temp; var rpick;
     for (var i = 0; i < input.length*2; i++) {
-        rpick = parseInt(Math.floor(Math.random() * input.length));
+        rpick = Math.floor(Math.random() * input.length);
         temp = input[rpick];
         input[rpick] = input[i % input.length];
         input[i % input.length] = temp;
@@ -13,13 +13,13 @@ function shuffle(input) {
 
 function categoryRandomSelect() {
     var total = 0;
-    for (i in config.question_weight) {
+    for (let i in config.question_weight) {
         total += config.question_weight[i];
     }
     var number = Math.floor(Math.random()*total);
     console.log(number);
     var current = 0;
-    for (i in config.question_weight) {
+    for (let i in config.question_weight) {
         current += config.question_weight[i];
         if (number < current) return parseInt(i);
     }
@@ -28,8 +28,8 @@ function categoryRandomSelect() {
 
 module.exports.run = (client, message, args) => {
     var forced_type = 0;
-    for (i in args) {
-        if (args[i] == '-c') forced_type = 1
+    for (let i in args) {
+        if (args[i] == '-c') forced_type = 1;
         if (args[i] == '-a') forced_type = 2
     }
     var submitted_answer = [];
@@ -83,12 +83,12 @@ module.exports.run = (client, message, args) => {
         if (forced_type) {
             for (i in all_question) if (all_question[i].split(" | ")[1] == forced_type) {avail_question.push(all_question[i])}
             if (!avail_question[0]) {message.channel.send("No question of that type in this category, guess i need more question"); return;}
-            if (parseInt(args[1])) var pick = avail_question[parseInt(args[1]) - 1]
-            else var pick = avail_question[parseInt(Math.floor(Math.random() * avail_question.length))];
+            if (parseInt(args[1])) var pick = avail_question[parseInt(args[1]) - 1];
+            else var pick = avail_question[Math.floor(Math.random() * avail_question.length)];
         }
         else {
-            if (parseInt(args[1])) var pick = all_question[parseInt(args[1]) - 1]
-            else var pick = all_question[parseInt(Math.floor(Math.random() * all_question.length))];
+            if (parseInt(args[1])) var pick = all_question[parseInt(args[1]) - 1];
+            else var pick = all_question[Math.floor(Math.random() * all_question.length)];
         }
         var component;
         if (pick) component = pick.split(" | ");
@@ -99,7 +99,7 @@ module.exports.run = (client, message, args) => {
         var question = component[3];
         if (type === 1 || type === 3) {
             var correct_answer = component[4];
-            var correct_index
+            var correct_index;
             var answer = [];
             if (type == 1) {
                 for (var i = 4; i < component.length; i++) answer.push(component[i]);
