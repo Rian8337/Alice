@@ -3,9 +3,9 @@ const config = require('../config.json');
 
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (!message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.member.hasPermission("ADMINISTRATOR", {checkAdmin: true, checkOwner: true})) return message.channel.send("❎  **| I'm sorry, you don't have the permission to use this.**");
     
-    let logchannel = message.guild.channels.find(c => c.name === config.management_channel);
+    let logchannel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`"❎ **| Hey, please create ${config.management_channel} first!**`);
     
     let user = await message.guild.fetchBan(args[0]);
@@ -15,23 +15,29 @@ module.exports.run = async (client, message, args) => {
     let reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Hey, please enter your unban reason!**");
 
-    message.guild.unban(user.user, reason).then (() => {
+    message.guild.members.unban(user.user, reason).then(() => {
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+        const index = Math.floor(Math.random() * footer.length);
+        let rolecheck;
+        try {
+            rolecheck = message.member.roles.highest.hexColor
+        } catch (e) {
+            rolecheck = "#000000"
+        }
 
-        let embed = new Discord.RichEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL)
+        let embed = new Discord.MessageEmbed()
+            .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
-            .setColor(message.member.highestRole.hexColor)
-            .setThumbnail(user.user.avatarURL)
+            .setColor(rolecheck)
+            .setThumbnail(user.user.avatarURL({dynamic: true}))
             .setTitle("Unban executed")
             .addField("Unbanned user: " + user.user.username, "User ID: " + user.user.id)
             .addField("=================", "Reason:\n" + reason);
 
         if (message.attachments.size > 0) {
             let attachments = [];
-            message.attachments.forEach(attachment => {
+            message.attachments.forEach((attachment) => {
                 attachments.push(attachment.proxyURL)
             });
             logchannel.send({embed: embed, files: attachments})
