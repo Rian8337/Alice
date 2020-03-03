@@ -28,7 +28,7 @@ function getPlay(i, uid, cb) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, I need a match ID!**");
 	let matchdb = maindb.collection("matchinfo");
@@ -65,7 +65,6 @@ module.exports.run = (client, message, args, maindb) => {
 						let max_score;
 						let requirement;
 						let title;
-						console.log(hash);
 						for (let i in poolres[0].map) {
 							if (hash == poolres[0].map[i][3]) {
 								requirement = poolres[0].map[i][0];
@@ -119,8 +118,8 @@ module.exports.run = (client, message, args, maindb) => {
 						else description = "It's a draw";
 
 						let footer = config.avatar_list;
-						const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-						let embed = new Discord.RichEmbed()
+						const index = Math.floor(Math.random() * footer.length);
+						let embed = new Discord.MessageEmbed()
 							.setTitle(title)
 							.setColor(color)
 							.setFooter("Alice Synthesis Thirty", footer[index])
@@ -140,7 +139,7 @@ module.exports.run = (client, message, args, maindb) => {
 						matchres[0].team[1][1] = t2win;
 						let result = matchres[0].result;
 
-						embed = new Discord.RichEmbed()
+						embed = new Discord.MessageEmbed()
 							.setTitle(name)
 							.setColor(65280)
 							.setFooter("Alice Synthesis Thirty", footer[index])
