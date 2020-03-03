@@ -19,7 +19,7 @@ function isImmuned(member) {
     return res;
 }
 
-function timeconvert (num) {
+function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args) => {
     let timeLimit = isEligible(message.member);
     if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
 
-    let toban = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let toban = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!toban) return;
     if (isImmuned(toban)) return message.channel.send("You can't ban this user");
     let reason = args.slice(2).join(" ");
@@ -47,20 +47,13 @@ module.exports.run = async (client, message, args) => {
 
     if (!reason) return message.channel.send("Please add a reason.");
 
-    let banrole = message.guild.roles.find(r => r.name === 'mudae-ban');
+    let banrole = message.guild.roles.cache.find((r) => r.name === 'mudae-ban');
     //start of create role
     if (!banrole) {
         try {
-            banrole = await message.guild.createRole({
-                name: "mudae-ban",
-                color: "#000000",
-                permissions:[]
-            });
-            message.guild.channels.forEach(channel => {
-                channel.overwritePermissions(banrole, {
-                    SEND_MESSAGES: false,
-                    ADD_REACTIONS: false
-                }).catch(console.error)
+            banrole = await message.guild.roles.create({data: {name: "mudae-ban", color: "#000000", permissions: []}});
+            message.guild.channels.cache.forEach((channel) => {
+                channel.overwritePermissions([{id: banrole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
             })
         } catch(e) {
             console.log(e.stack);
@@ -76,29 +69,29 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(`A user has been Mudae-banned... but their DMs are locked. They will be banned for ${bantime} seconds`)
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-    let banembed = new Discord.RichEmbed()
+    const index = Math.floor(Math.random() * footer.length);
+    let banembed = new Discord.MessageEmbed()
         .setDescription(`Mudae ban executed by ${message.author}`)
         .setColor("#ffa826")
         .setFooter("Alice Synthesis Thirty", footer[index])
         .addField("Banned User: " + toban.user.username, "Banned in: " + message.channel)
-        .addField("Length: " + timeconvert(bantime), "=========================")
+        .addField("Length: " + timeConvert(bantime), "=========================")
         .addField("Reason: ", reason);
 
-    let channel = message.guild.channels.get("648445681551409152");
+    let channel = message.guild.channels.cache.get("648445681551409152");
     if (!channel) return message.reply("Please create a mute log channel first!");
-    channel.send(banembed);
+    channel.send({embed: banembed});
 
-    toban.addRole(banrole.id)
+    toban.roles.add(banrole.id)
         .catch(console.error);
 
-    let mudaerole = message.guild.roles.find(r => r.name === "Mudae Player");
-    toban.removeRole(mudaerole.id)
+    let mudaerole = message.guild.roles.cache.find((r) => r.name === "Mudae Player");
+    toban.roles.remove(mudaerole.id)
         .catch(console.error);
 
     setTimeout(function(){
-        toban.removeRole(banrole.id);
-        toban.addRole(mudaerole.id)
+        toban.roles.remove(banrole.id);
+        toban.roles.add(mudaerole.id)
     }, bantime * 1000)
 };
 
