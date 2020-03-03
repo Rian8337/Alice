@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb) => {
 	let channels = config.pp_channel;
 	let found = false;
 	for (let i = 0; i < channels.length; i++) {
-		if (message.guild.channels.get(channels[i])) {
+		if (message.guild.channels.cache.get(channels[i])) {
 			found = true;
 			break
 		}
@@ -116,14 +116,14 @@ module.exports.run = (client, message, args, maindb) => {
 			let rplay = player.recent_plays;
 			let playentry = [];
 			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			const index = Math.floor(Math.random() * footer.length);
 			let rolecheck;
 			try {
-				rolecheck = message.member.highestRole.hexColor
+				rolecheck = message.member.roles.highest.hexColor
 			} catch (e) {
 				rolecheck = "#000000"
 			}
-			let embed = new Discord.RichEmbed()
+			let embed = new Discord.MessageEmbed()
 				.setTitle("PP submission info")
 				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setColor(rolecheck);
