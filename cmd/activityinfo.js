@@ -1,3 +1,4 @@
+// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 
@@ -49,7 +50,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
         let entries;
-        let type = '';
+        let type;
         switch (args[0]) {
             case "weekly": {
                 let time_limit = date.getTime();
@@ -72,12 +73,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 entries = listEntries(args[0], res, time_limit);
                 break
             }
+            case "daily": {
+                date.setUTCDate(date.getUTCDate() - 1);
+                type = "Daily";
+                entries = listEntries('daily', res, date.getTime());
+                break
+            }
             default: {
-                type = 'Daily';
-                entries = listEntries("daily", res, date.getTime())
+                type = 'Overall';
+                entries = listEntries(null, res, null)
             }
         }
-        entries.sort((a, b) => {return b[1] - a[1]})
+        entries.sort((a, b) => {return b[1] - a[1]});
         let description = `**${type} channel activity per ${date.getUTCDate()} `;
         switch (date.getUTCMonth()) {
             case 0: description += 'Jan '; break;
@@ -97,8 +104,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         for (let i = 0; i < entries.length; i++) description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`;
 
         let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-        let embed = new Discord.RichEmbed()
+        const index = Math.floor(Math.random() * footer.length);
+        let embed = new Discord.MessageEmbed()
             .setColor("#b58d3c")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setDescription(description);
