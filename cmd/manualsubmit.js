@@ -11,7 +11,7 @@ function scoreCalc(mode, score, maxscore, accuracy, misscount) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, please specify a match ID!**");
 	let mapid = args[1];
@@ -56,10 +56,10 @@ module.exports.run = (client, message, args, maindb) => {
 			t1score = Math.round(t1score);
 			t2score = Math.round(t2score);
 			if (t1score > t2score) {displayRes3 = `${res[0].team[0][0]} won by ` + Math.abs(t1score - t2score); color = 16711680;}
-			else if (t1score < t2score) {displayRes3 = `${res[0].team[0][0]} won by ` + Math.abs(t1score - t2score); color = 262399;}
+			else if (t1score < t2score) {displayRes3 = `${res[0].team[1][0]} won by ` + Math.abs(t1score - t2score); color = 262399;}
 			else displayRes3 = "It's a Draw";
 			let footer = config.avatar_list;
-			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+			const index = Math.floor(Math.random() * footer.length);
 			let embed = {
 				"title": poolres[0].map[mapid-1][1],
 				"color": color,
