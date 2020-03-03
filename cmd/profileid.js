@@ -40,7 +40,7 @@ module.exports.run = (client, message, args) => {
 		let date = new Date(rplay.date * 1000);
 		date.setUTCHours(date.getUTCHours() + 7);
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		const index = Math.floor(Math.random() * footer.length);
 		let embed = new Discord.MessageEmbed()
 			.setDescription(`**Username**: ${player.name}\n**Rank**: ${player.rank}`)
 			.setColor(8102199)
