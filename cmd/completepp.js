@@ -58,9 +58,7 @@ module.exports.run = (client, message, args, maindb) => {
     let page = 0;
     let ufind = args[0];
     if (!ufind) return message.channel.send("Please mention a user or user ID");
-    ufind = ufind.replace('<@!','');
-    ufind = ufind.replace('<@','');
-    ufind = ufind.replace('>','');
+    ufind = ufind.replace('<@!','').replace('<@', '').replace('>', '');
 
     let binddb = maindb.collection("userbind");
     let query = { discordid: ufind };
@@ -76,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
             if (stopSign) { 
                 console.log("COMPLETED!"); 
                 console.table(ppentries); 
-                ppentries.forEach((ppentry) => {
+                ppentries.forEach(ppentry => {
                     let dup = false;
                     for (let i in pplist) {
                         if (ppentry[0].trim() == pplist[i][0].trim()) {
