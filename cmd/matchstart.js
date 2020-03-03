@@ -1,3 +1,4 @@
+// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 
@@ -7,7 +8,7 @@ function time(second) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+    if (message.member.roles == null || !message.member.roles.cache.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
 
     let map = args[0];
     if (!map) return message.channel.send("❎ **| Hey, I don't know what map is playing!**");
@@ -47,13 +48,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (map.includes("DT") && poolid == "t8q") timelimit = Math.ceil(timelimit / 1.5);
             let rolecheck;
             try {
-                rolecheck = message.member.highestRole.hexColor
+                rolecheck = message.member.roles.highest.hexColor
             } catch (e) {
                 rolecheck = "#000000"
             }
             let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-            let embed = new Discord.RichEmbed()
+            const index = Math.floor(Math.random() * footer.length);
+            let embed = new Discord.MessageEmbed()
                 .setTitle("Round info")
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setTimestamp(new Date())
