@@ -15,7 +15,7 @@ function isEligible(member) {
     return res
 }
 
-function timeconvert(num) {
+function timeConvert(num) {
     let sec = parseInt(num);
     let days = Math.floor(sec / 86400);
     let hours = Math.floor((sec - days * 86400) / 3600);
@@ -25,7 +25,7 @@ function timeconvert(num) {
 }
 
 function editmember(clanres, page, rolecheck, footer, index) {
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
         .setTitle(`${clanres[0].name} Members (Page ${page}/4)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
@@ -69,18 +69,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let clandb = maindb.collection("clandb");
     let pointdb = alicedb.collection("playerpoints");
-    let coin = client.emojis.get("669532330980802561");
+    let coin = client.emojis.cache.get("669532330980802561");
     let curtime = Math.floor(Date.now() / 1000);
     let query = {};
     let rolecheck;
     try {
-        rolecheck = message.member.highestRole.hexColor
+        rolecheck = message.member.roles.highest.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-    let embed = new Discord.RichEmbed()
+    const index = Math.floor(Math.random() * footer.length);
+    let embed = new Discord.MessageEmbed()
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
 
@@ -110,7 +110,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let power = clanres[0].power;
                     let clandate = clanres[0].createdAt * 1000;
                     let members = clanres[0].member_list.length;
-                    let clanrole = message.guild.roles.find(r => r.name === clan);
+                    let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) embed.setColor(clanrole.hexColor);
                     embed.setTitle(clan)
                         .addField("Clan Leader", `<@${clanres[0].leader}>\n(${clanres[0].leader})`, true)
@@ -153,14 +153,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    let clanrole = message.guild.roles.find(r => r.name === clan);
+                    let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) rolecheck = clanrole.hexColor;
                     let embed = editmember(clanres, page, rolecheck, footer, index);
                     message.channel.send({embed}).then(msg => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
                                 msg.react("➡️").then(() => {
-                                    msg.react("⏭️").catch(e => console.log(e))
+                                    msg.react("⏭️").catch(console.error)
                                 })
                             })
                         });
@@ -171,35 +171,40 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 45000});
 
                         backward.on('collect', () => {
-                            if (page === 1) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 1;
-                            msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
-                            msg.edit(embed).catch(e => console.log(e))
+                            msg.edit({embed: embed}).catch(console.error)
                         });
 
                         back.on('collect', () => {
                             if (page === 1) page = 5;
                             else page--;
-                            msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
-                            msg.edit(embed).catch(e => console.log(e))
+                            msg.edit({embed: embed}).catch(console.error)
                         });
 
                         next.on('collect', () => {
                             if (page === 5) page = 1;
                             else page++;
-                            msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
-                            msg.edit(embed).catch(e => console.log(e));
+                            msg.edit({embed: embed}).catch(console.error);
                         });
 
                         forward.on('collect', () => {
-                            if (page === 5) return msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 5;
-                            msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
-                            msg.edit(embed).catch(e => console.log(e))
+                            msg.edit({embed: embed}).catch(console.error)
+                        });
+
+                        backward.on("end", () => {
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
                         })
                     })
                 })
@@ -227,7 +232,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
-                                msg.react("⏭️").catch(e => console.log(e))
+                                msg.react("⏭️").catch(console.error)
                             })
                         })
                     });
@@ -240,36 +245,36 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     backward.on('collect', () => {
                         page = 0;
                         output = editlb(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
                         if (page === 0) page = Math.floor(clanres.length / 20);
                         else page--;
                         output = editlb(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     next.on('collect', () => {
                         if ((page + 1) * 20 >= clanres.length) page = 0;
                         else page++;
                         output = editlb(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch(e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     forward.on('collect', () => {
                         page = Math.floor(clanres.length / 20);
                         output = editlb(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(e => console.log(e));
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id).catch (e => console.log(e)))
+                        msg.edit('```c\n' + output + '```').catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     backward.on("end", () => {
-                        msg.reactions.forEach(reaction => reaction.remove(message.author.id));
-                        msg.reactions.forEach(reaction => reaction.remove(client.user.id))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
                     })
                 })
             });
@@ -300,8 +305,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
-                    let time = timeconvert(clanres[0].weeklyfee - curtime);
-                    message.channel.send(`✅ **| ${message.author}, your clan's weekly upkeep will be picked up in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                    let time = timeConvert(clanres[0].weeklyfee - curtime);
+                    message.channel.send(`✅ **| ${message.author}, your clan's weekly upkeep will be picked up in ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0 ? "" : ", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                 })
             });
             cd.add(message.author.id);
@@ -311,7 +316,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         case "accept": {
-            let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
+            let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             query = {discordid: message.author.id};
             binddb.find(query).toArray((err, userres) => {
@@ -331,13 +336,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (joinres[0].clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
                     let cooldown = joinres[0].joincooldown - curtime;
                     if (cooldown > 0) {
-                        let time = timeconvert(cooldown);
-                        return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                        let time = timeConvert(cooldown);
+                        return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0 ? "" : ", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                     }
                     let oldcooldown = userres[0].oldjoincooldown - curtime;
                     if (oldcooldown > 0 && userres[0].oldclan == joinres[0].clan) {
-                        let time = timeconvert(oldcooldown);
-                        return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                        let time = timeConvert(oldcooldown);
+                        return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0 ? "" : ", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                     }
                     let uid = joinres[0].uid;
                     query = {name: userres[0].clan};
@@ -364,9 +369,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (confirmbox.length == 2) {
                                     confirmation = true;
                                     msg.delete();
-                                    let role = message.guild.roles.find(r => r.name === 'Clans');
-                                    let clanrole = message.guild.roles.find(r => r.name === userres[0].clan);
-                                    if (clanrole) toaccept.addRoles([role, clanrole], "Accepted into clan").catch(console.error);
+                                    let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                    let clanrole = message.guild.roles.cache.find((r) => r.name === userres[0].clan);
+                                    if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
                                     memberlist.push([toaccept.id, uid]);
                                     let updateVal = {
                                         $set: {
@@ -392,7 +397,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             confirm.on("end", () => {
                                 if (!confirmation) {
                                     msg.delete();
-                                    message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                    message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                 }
                             })
                         })
@@ -410,7 +415,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ===============================
             // for now this is only restricted
             // to clan leaders and server mods
-            let tokick = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]));
+            let tokick = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!tokick) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             if (message.author.id == tokick.id) return message.channel.send("❎ **| Hey, you cannot kick yourself!**");
             let reason = args.slice(2).join(" ");
@@ -450,9 +455,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let role = message.guild.roles.find(r => r.name === 'Clans');
-                            let clanrole = message.guild.roles.find(r => r.name === clan);
-                            if (clanrole) tokick.removeRoles([role, clanrole], "Kicked from clan").catch(console.error);
+                            let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                            let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                            if (clanrole) tokick.roles.remove([role, clanrole], "Kicked from clan").catch(console.error);
                             let updateVal = {
                                 $set: {
                                     member_list: memberlist.filter(id => id[0] != tokick.id)
@@ -479,7 +484,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("end", () => {
                             if (!confirmation) {
                                 msg.delete();
-                                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                             }
                         })
                     })
@@ -519,9 +524,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let role = message.guild.roles.find(r => r.name === 'Clans');
-                            let clanrole = message.guild.roles.find(r => r.name === clan);
-                            if (clanrole) message.member.removeRoles([role, clanrole], "Left the clan").catch(console.error);
+                            let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                            let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                            if (clanrole) message.member.roles.remove([role, clanrole], "Left the clan").catch(console.error);
                             let memberlist = clanres[0].member_list;
                             let updateVal = {
                                 $set: {
@@ -549,7 +554,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("end", () => {
                             if (!confirmation) {
                                 msg.delete();
-                                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                             }
                         })
                     })
@@ -642,7 +647,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             confirm.on("end", () => {
                                 if (!confirmation) {
                                     msg.delete();
-                                    message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                    message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                 }
                             })
                         })
@@ -691,12 +696,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let clanrole = message.guild.roles.find(r => r.name === clanname);
+                            let clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
                             if (clanrole) {
                                 clanrole.delete("Clan disbanded").catch(console.error);
-                                let role = message.guild.roles.find(r => r.name === 'Clans');
-                                clanres[0].member_list.forEach(member => {
-                                    message.guild.members.get(member[0]).removeRole(role, "Clan disbanded").catch(console.error)
+                                let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                clanres[0].member_list.forEach((member) => {
+                                    message.guild.members.cache.get(member[0]).roles.remove(role, "Clan disbanded").catch(console.error)
                                 })
                             }
                             let updateVal = {
@@ -715,7 +720,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         confirm.on("end", () => {
                             if (!confirmation) {
                                 msg.delete();
-                                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                             }
                         })
                     })
@@ -760,8 +765,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (clanres[0].power < 250) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 250!**");
                             let cooldown = clanres[0].iconcooldown - curtime;
                             if (cooldown > 0) {
-                                let time = timeconvert(cooldown);
-                                return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                                let time = timeConvert(cooldown);
+                                return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0 ? "" : ", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan icon? You wouldn't be able to change it for 5 minutes!**`).then(msg => {
                                 msg.react("✅").catch(console.error);
@@ -784,7 +789,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 confirm.on("end", () => {
                                     if (!confirmation) {
                                         msg.delete();
-                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                     }
                                 })
                             })
@@ -840,7 +845,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 confirm.on("end", () => {
                                     if (!confirmation) {
                                         msg.delete();
-                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                     }
                                 })
                             })
@@ -882,10 +887,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             let powerups = clanres[0].powerups;
                             embed.setTitle(`Current owned powerups by ${clan}`);
-                            for (let i = 0; i < powerups.length; i++) {
-                                embed.addField(capitalizeString(powerups[i][0]), powerups[i][1], true);
-                                if (i % 2 != 0) embed.addBlankField(true)
-                            }
+                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i][0]), powerups[i][1]);
                             message.channel.send({embed: embed}).catch(console.error)
                         })
                     });
@@ -913,9 +915,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (activepowerups.length == 0) return message.channel.send(`❎ **| I'm sorry, \`${clan}\` clan does not have any powerups active!**`);
                             embed.setTitle(`Current active powerups for ${clan}`);
                             let description_string = '';
-                            for (let i = 0; i < activepowerups.length; i++) {
-                                description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`
-                            }
+                            for (let i = 0; i < activepowerups.length; i++) description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`;
                             embed.setDescription(description_string);
                             message.channel.send({embed: embed}).catch(console.error)
                         })
@@ -984,7 +984,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 confirm.on("end", () => {
                                     if (!confirmation) {
                                         msg.delete();
-                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                     }
                                 })
                             })
@@ -1042,8 +1042,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (clanres[0].power < 500) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
                                 let cooldown = clanres[0].namecooldown - curtime;
                                 if (cooldown > 0) {
-                                    let time = timeconvert(cooldown);
-                                    return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0?"":", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0?"":", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0?"":", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                                    let time = timeConvert(cooldown);
+                                    return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] == 0 ? "" : `${time[0] == 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] == 0 ? "" : `${time[0] == 0 ? "" : ", "}${time[1] == 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] == 0 ? "" : `${time[1] == 0 ? "" : ", "}${time[2] == 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] == 0 ? "" : `${time[2] == 0 ? "" : ", "}${time[3] == 1 ? `${time[3]} second` : `${time[3]} seconds`}`}**`)
                                 }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
                                     msg.react("✅").catch(console.error);
@@ -1084,7 +1084,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("end", () => {
                                         if (!confirmation) {
                                             msg.delete();
-                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                         }
                                     })
                                 })
@@ -1129,15 +1129,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
-                                        let clanrole = message.guild.roles.find(r => r.name === 'Clans');
-                                        message.guild.createRole({
+                                        let clanrole = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                        message.guild.roles.create({data: {
                                             name: clan,
                                             color: "DEFAULT",
                                             permissions: [],
-                                            position: clanrole.calculatedPosition - 1
-                                        }).then(role => {
-                                            memberlist.forEach(id => {
-                                                message.guild.members.get(id[0]).addRoles([clanrole, role], "Clan leader bought clan role").catch(console.error)
+                                            position: clanrole.position - 1
+                                        }, reason: "Clan leader bought clan role"}).then(role => {
+                                            memberlist.forEach((id) => {
+                                                message.guild.members.cache.get(id[0]).roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error)
                                             })
                                         }).catch(console.error);
                                         let updateVal = {
@@ -1153,7 +1153,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("end", () => {
                                         if (!confirmation) {
                                             msg.delete();
-                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                         }
                                     })
                                 })
@@ -1169,7 +1169,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // affects clan role color and only supports
                     // integer color format
                     let color = args[2];
-                    if (!/^#[0-9A-F]{6}$/i.test(color)) return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
+                    if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
                     query = {discordid: message.author.id};
                     binddb.find(query).toArray((err, userres) => {
                         if (err) {
@@ -1179,7 +1179,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres[0].clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres[0].clan;
-                        let clanrole = message.guild.roles.find(r => r.name === clan);
+                        let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                         if (!clanrole) return message.channel.send("❎ **| I'm sorry, your clan doesn't have a custom clan role!**");
                         pointdb.find(query).toArray((err, pointres) => {
                             if (!pointres[0]) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to change your clan's custom role color! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
@@ -1210,7 +1210,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("end", () => {
                                         if (!confirmation) {
                                             msg.delete();
-                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                         }
                                     })
                                 })
@@ -1259,71 +1259,75 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         const gachanum = Math.random() * 100;
                                         console.log(gachanum);
                                         let powerup = false;
-                                        switch (true) {
-                                            case (gachanum > 20 && gachanum <= 50): { // 20% chance of not getting anything
-                                                powerup = "bomb"; // 30% chance
-                                                break
-                                            }
-                                            case (gachanum <= 75): {
-                                                powerup = "challenge"; // 25% chance
-                                                break
-                                            }
-                                            case (gachanum <= 82.5): {
-                                                powerup = "debuff"; // 7.5% chance
-                                                break
-                                            }
-                                            case (gachanum <= 90): {
-                                                powerup = "buff"; // 7.5% chance
-                                                break
-                                            }
-                                            case (gachanum <= 94): {
-                                                powerup = "superbomb"; // 4% chance
-                                                break
-                                            }
-                                            case (gachanum <= 98): {
-                                                powerup = "superchallenge"; // 4% chance
-                                                break
-                                            }
-                                            case (gachanum <= 99): {
-                                                powerup = "superdebuff"; // 1% chance
-                                                break
-                                            }
-                                            case (gachanum <= 100): {
-                                                powerup = "buff"; // 1% chance
+                                        if (gachanum > 20) {
+                                            switch (true) {
+                                                case (gachanum <= 50): { // 20% chance of not getting anything
+                                                    powerup = "bomb"; // 30% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 75): {
+                                                    powerup = "challenge"; // 25% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 82.5): {
+                                                    powerup = "debuff"; // 7.5% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 90): {
+                                                    powerup = "buff"; // 7.5% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 94): {
+                                                    powerup = "superbomb"; // 4% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 98): {
+                                                    powerup = "superchallenge"; // 4% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 99): {
+                                                    powerup = "superdebuff"; // 1% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 100): {
+                                                    powerup = "buff" // 1% chance
+                                                }
                                             }
                                         }
                                         // reserved for special events
-                                        /*switch (true) {
-                                            case (gachanum > 20 && gachanum <= 50): { // 20% chance of not getting anything
-                                                powerup = "bomb"; // 30% chance
-                                                break
-                                            }
-                                            case (gachanum <= 75): {
-                                                powerup = "challenge"; // 25% chance
-                                                break
-                                            }
-                                            case (gachanum <= 82.5): {
-                                                powerup = "debuff"; // 7.5% chance
-                                                break
-                                            }
-                                            case (gachanum <= 90): {
-                                                powerup = "buff"; // 7.5% chance
-                                                break
-                                            }
-                                            case (gachanum <= 94): {
-                                                powerup = "superbomb"; // 4% chance
-                                                break
-                                            }
-                                            case (gachanum <= 98): {
-                                                powerup = "superchallenge"; // 4% chance
-                                                break
-                                            }
-                                            case (gachanum <= 99): {
-                                                powerup = "superdebuff"; // 1% chance
-                                                break
-                                            }
-                                            case (gachanum <= 100): {
-                                                powerup = "buff"; // 1% chance
+                                        /*if (gachanum > 20) {
+                                            switch (true) {
+                                                case (gachanum <= 50): { // 20% chance of not getting anything
+                                                    powerup = "bomb"; // 30% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 75): {
+                                                    powerup = "challenge"; // 25% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 82.5): {
+                                                    powerup = "debuff"; // 7.5% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 90): {
+                                                    powerup = "buff"; // 7.5% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 94): {
+                                                    powerup = "superbomb"; // 4% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 98): {
+                                                    powerup = "superchallenge"; // 4% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 99): {
+                                                    powerup = "superdebuff"; // 1% chance
+                                                    break
+                                                }
+                                                case (gachanum <= 100): {
+                                                    powerup = "buff" // 1% chance
+                                                }
                                             }
                                         }*/
                                         if (!powerup) {
@@ -1366,7 +1370,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("end", () => {
                                         if (!confirmation) {
                                             msg.delete();
-                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                         }
                                     })
                                 })
@@ -1379,7 +1383,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // changes the leader of a clan
                     // ============================
                     // only works for clan leaders
-                    let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!totransfer) return message.channel.send("❎ **| Hey, please enter a valid user to transfer the clan leadership to!**");
                     query = {discordid: message.author.id};
                     binddb.find(query).toArray((err, userres) => {
@@ -1446,7 +1450,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("end", () => {
                                         if (!confirmation) {
                                             msg.delete();
-                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                         }
                                     })
                                 })
@@ -1468,14 +1472,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ==============================
             // gives pp if match commence, also
             // based on active powerups
-            if ((message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) && isEligible(message.member) != -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && isEligible(message.member) != -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
             switch (args[1]) {
                 case "give": {
                     // adds power points to a clan
                     // =======================================
                     // this must be carefully watched as abuse
                     // can be easily done
-                    let togive = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let togive = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!togive) return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
                     let amount = parseInt(args[3]);
                     if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to add!**");
@@ -1515,7 +1519,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // =========================================
                     // just like add cmd, this must be carefully
                     // watched as abuse can be easily done
-                    let totake = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let totake = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
                     let amount = parseInt(args[3]);
                     if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to take.**");
@@ -1556,9 +1560,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // main cmd to use during clan matches, will automatically
                     // convert total power points based on active powerups
                     if (args.length < 4) return message.channel.send("❎ **| Hey, I need more input!**");
-                    let totake = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let totake = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
-                    let togive = message.guild.member(message.mentions.users.last() || message.guild.members.get(args[3]));
+                    let togive = message.guild.member(message.mentions.users.last() || message.guild.members.cache.get(args[3]));
                     if (totake.id == togive.id) return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
                     let challengepass = args[4];
                     query = {discordid: totake.id};
@@ -1678,7 +1682,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         confirm.on("end", () => {
                                             if (!confirmation) {
                                                 msg.delete();
-                                                message.channel.send("❎ **| Timed out.**").then(m => m.delete(5000))
+                                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
                                             }
                                         })
                                     })
@@ -1701,11 +1705,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ===========================================
             // this prevents them from activating powerups
             // in the middle of a battle, referee/mod only
-            if ((message.member.roles == null || !message.member.roles.find(r => r.name === 'Referee')) && isEligible(message.member) != -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && isEligible(message.member) != -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
             switch (args[1]) {
                 // add clan
                 case "add": {
-                    let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     query = {discordid: tomatch.id};
                     binddb.find(query).toArray((err, clanres) => {
@@ -1739,7 +1743,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 case "remove": {
                     // remove clan
-                    let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[2]));
+                    let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     query = {discordid: tomatch.id};
                     binddb.find(query).toArray((err, clanres) => {
