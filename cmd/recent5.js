@@ -41,7 +41,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 		if (!rplay[i]) break;
 		let date = new Date(rplay[i].date*1000);
 		date.setUTCHours(date.getUTCHours() + 7);
-		let play = client.emojis.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
+		let play = client.emojis.cache.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
 	}
