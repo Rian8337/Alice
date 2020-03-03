@@ -2,12 +2,12 @@ const Discord = require('discord.js');
 
 function getLastMessage(channel_list, i, cb) {
     if (!channel_list[i]) return cb(0, true);
-    channel_list[i].fetchMessages({limit: 1}).then(message => cb(message.first().id))
+    channel_list[i].messages.fetch({limit: 1}).then((message) => cb(message.first().id))
 }
 
 function countAllMessage(channel, last_msg, date, daily_counter, cb) {
-    channel.fetchMessages({limit: 100, before: last_msg})
-        .then(messages => {
+    channel.messages.fetch({limit: 100, before: last_msg})
+        .then((messages) => {
             if (!messages.size) return cb(0, null, true);
             for (const [snowflake, message] of messages.entries()) {
                 if (message.createdTimestamp < date) {
@@ -26,11 +26,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (!['132783516176875520', '386742340968120321'].includes(message.author.id)) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
-    if (args[0]) current_date.setDate(current_date.getUTCDay() - 1);
+    if (args[0]) current_date.setDate(current_date.getUTCDate() - 1);
     current_date = current_date.getTime();
 
     let channel_list = [];
-    for (const [snowflake, channel] of message.guild.channels.entries()) {
+    for (const [snowflake, channel] of message.guild.channels.cache.entries()) {
         if (channel.type !== "text") continue;
         if (['360714803691388928', '415559968062963712', '360715303149240321', '360715871187894273', '360715992621514752'].includes(channel.parentID)) continue;
         if (['326152555392532481', '361785436982476800', '316863464888991745', '549109230284701718', '468042874202750976', '430002296160649229', '430939277720027136'].includes(snowflake)) continue;
