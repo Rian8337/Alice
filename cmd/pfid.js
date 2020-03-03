@@ -7,7 +7,7 @@ module.exports.run = (client, message, args) => {
 	new osudroid.PlayerInfo().get({uid: uid}, player => {
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user!**");
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
+		const index = Math.floor(Math.random() * footer.length);
 		const embed = {
 			"description": "**Username: **"+ player.name +"  /  **Rank**: "+ player.rank + "\n" + player.location,
 			"color": 8102199,
