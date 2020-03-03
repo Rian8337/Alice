@@ -93,12 +93,12 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 								let star_rating = map_entries[i][2];
 								let diff_icon = '';
 								switch (true) {
-									case star_rating < 2: diff_icon = client.emojis.get("679325905365237791"); break; // Easy
-									case star_rating < 2.7: diff_icon = client.emojis.get("679325905734205470"); break; // Normal
-									case star_rating < 4: diff_icon = client.emojis.get("679325905658708010"); break; // Hard
-									case star_rating < 5.3: diff_icon = client.emojis.get("679325905616896048"); break; // Insane
-									case star_rating < 6.5: diff_icon = client.emojis.get("679325905641930762"); break; // Expert
-									default: diff_icon = client.emojis.get("679325905645993984") // Extreme
+									case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
+									case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
+									case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
+									case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
+									case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
+									default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
 								}
 								let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
 								embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
