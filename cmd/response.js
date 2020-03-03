@@ -61,7 +61,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
 
             let embed = new Discord.MessageEmbed()
-                .setAuthor(message.author.tag, message.author.avatarURL())
+                .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
                 .setDescription(`**Q**: ${msg}\n**A**: ${answer}`);
