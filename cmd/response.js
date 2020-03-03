@@ -35,12 +35,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let hate = res[0].hate;
         let badword = res[0].badwords;
         let response = res[0].response;
-        const index = Math.max(1, Math.floor(Math.random() * (response.length - 1) + 1));
+        const index = Math.max(1, Math.floor(Math.random() * response.length));
         let answer = response[index];
         let msg = args.join(" ");
         if (message.author.id == '386742340968120321') message.author.lastMessage.delete().catch(console.error);
         let factor = responseFactor(message, msg, like, hate, badword);
-        console.log(factor);
         if (factor === 1) answer = "Yes, absolutely.";
         if (factor === 2) answer = "N... No! I would never think of that...";
         if (factor === 3) answer = "Um... Uh...";
@@ -53,16 +52,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let count = 0;
             if (askres[0]) count = askres[0].count;
             let footer = config.avatar_list;
-            const footerindex = Math.floor(Math.random() * (footer.length - 1) + 1);
+            const footerindex = Math.floor(Math.random() * footer.length);
             let rolecheck;
             try {
-                rolecheck = message.member.highestRole.hexColor
+                rolecheck = message.member.roles.highest.hexColor
             } catch (e) {
                 rolecheck = "#000000"
             }
 
-            let embed = new Discord.RichEmbed()
-                .setAuthor(message.author.tag, message.author.avatarURL)
+            let embed = new Discord.MessageEmbed()
+                .setAuthor(message.author.tag, message.author.avatarURL())
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
                 .setDescription(`**Q**: ${msg}\n**A**: ${answer}`);
