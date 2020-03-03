@@ -53,13 +53,13 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(`A user has been muted... but their DMs are locked. The user will be muted permanently.`)
     }
     let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * footer.lengt);
+    const index = Math.floor(Math.random() * footer.length);
 
     let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!channel) return message.reply("Please create a mute log channel first!");
 
     let muteembed = new Discord.MessageEmbed()
-        .setAuthor(message.author.tag, message.author.avatarURL())
+        .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
         .setTitle("Mute executed")
         .setColor("#000000")
         .setTimestamp(new Date())
