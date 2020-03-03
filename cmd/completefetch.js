@@ -36,11 +36,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let channels = res.channels;
                         let dup = false;
                         for (let i = 0; i < channels.length; i++) {
-                            if (channels[i][0] == message.channel.id) {
-                                channels[i][1] = daily_counter;
-                                dup = true;
-                                break
-                            }
+                            if (channels[i][0] != message.channel.id) continue;
+                            channels[i][1] = daily_counter;
+                            dup = true;
+                            break
                         }
                         if (!dup) channels.push([message.channel.id, daily_counter]);
                         let updateVal = {
