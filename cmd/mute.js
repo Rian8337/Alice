@@ -64,7 +64,7 @@ module.exports.run = async (client, message, args) => {
         .setColor("#000000")
         .setTimestamp(new Date())
         .setFooter("User ID: " + tomute.id, footer[index])
-        .addField("Muted User: " + tomute.user.username, "Muted in: " + message.channel)
+        .addField("Muted User: " + tomute.user.username, "Muted in: <#" + message.channel + ">")
         .addField("Length: Permanent", "=========================")
         .addField("Reason: ", reason);
 
