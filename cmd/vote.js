@@ -7,7 +7,7 @@ function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm;
     eligibleRoleList.forEach((id) => {
-        if(member.roles.has(id[0])) res = id[1]
+        if(member.roles.cache.has(id[0])) res = id[1]
     });
     return res
 }
@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let entry = args.slice(1).join(" ");
                     if (entry.indexOf("|") === -1) return message.channel.send("❎ **| I'm sorry, your format is invalid!**");
                     let topic = entry.substring(0, entry.indexOf("|")).trim();
-                    let choices = entry.substring(entry.indexOf("|")).split("|");
+                    let choices = entry.substring(entry.indexOf("|") + 1).trim().split("|");
                     let choice_list = [];
                     for (let i = 0; i < choices.length; i++) {
                         if (!choices[i].trim()) continue;
@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing vote in this channel!**");
-                if (message.author.id != res.initiator && message.member.hasPermission("ADMINISTRATOR", false, true, true)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to end ongoing vote!**")
+                if (message.author.id != res.initiator && message.member.hasPermission("ADMINISTRATOR", {checkAdmin: true, checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you don't have the permission to end ongoing vote!**")
                 let topic = res.topic;
                 let choices = res.choices;
                 votedb.deleteOne({initiator: res.initiator}, err => {
