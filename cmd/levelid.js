@@ -42,13 +42,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let avalink = player.avatarURL;
                 let rolecheck;
                 try {
-                    rolecheck = message.member.highestRole.hexColor
+                    rolecheck = message.member.roles.highest.hexColor
                 } catch (e) {
                     rolecheck = "#000000"
                 }
                 let footer = config.avatar_list;
-                const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-                let embed = new Discord.RichEmbed()
+                const index = Math.floor(Math.random() * footer.length);
+                let embed = new Discord.MessageEmbed()
                     .setColor(rolecheck)
                     .setThumbnail(avalink)
                     .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
