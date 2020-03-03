@@ -1,51 +1,68 @@
-const Discord = require('discord.js');
+const osudroid = require('../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
-    let username = args[0];
-    if (!username) return message.channel.send("❎ **| Hey, can you at least give me a valid username?**");
-    let binddb = maindb.collection("userbind");
-    let query = {username: username};
-    let rolecheck;
-    try {
-        rolecheck = message.member.roles.highest.hexColor
-    } catch (e) {
-        rolecheck = "#000000"
-    }
-    let embed = new Discord.MessageEmbed()
-        .setColor(rolecheck);
-
-    binddb.find(query).toArray((err, res) => {
-        if (err) {
-            console.log(err);
-            return message.channel.send("❎ **| I'm not receiving any response from database. Perhaps try again?**")
-        }
-        if (!res[0]) {
-            embed.setDescription(`**Username ${username} is not binded**`);
-            return message.channel.send({embed: embed})
-        }
-        let bind = "Username " + username + " is binded to ";
-        let accounts = '';
-        let userid = '';
-        let acc = 0;
-        res.forEach(x => {
-            accounts += `<@${x.discordid}>`;
-            userid += `\`${x.discordid}\``;
-            acc++;
-            if (acc == res.length) {
-                accounts = accounts.trimRight().split(" ").join(", ");
-                userid = `.\nUser ID: ${userid.trimRight().split(" ").join(", ")}`;
-                bind += accounts + userid;
-                embed.setDescription(`**${bind}**`);
-                message.channel.send({embed: embed}).catch(console.error)
-            }
-        })
-    })
+	let uid = args[0];
+	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
+	if (isNaN(uid)) return message.channel.send("❎ **| Invalid uid.**");
+	let binddb = maindb.collection("userbind");
+	let query = {discordid: message.author.id};
+	new osudroid.PlayerInfo().get({uid: uid}, player => {
+		if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
+		let name = player.name;
+		binddb.find({uid: uid}).toArray(function (err, res) {
+			if (err) {
+				console.log(err);
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+			}
+			if (res[0] && message.author.id != res[0].discordid) return message.channel.send("❎ **| I'm sorry, this uid is already binded!**");
+			let bind = {
+				discordid: message.author.id,
+				uid: uid,
+				username: name,
+				pptotal: 0,
+				playc: 0,
+				pp: []
+			};
+			let updatebind = {
+				$set: {
+					discordid: message.author.id,
+					uid: uid,
+					username: name
+				}
+			};
+			binddb.find(query).toArray(function (err, res) {
+				if (err) {
+					console.log(err);
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+				}
+				if (!res[0]) {
+					binddb.insertOne(bind, function (err) {
+						if (err) {
+							console.log(err);
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+						}
+						console.log("bind added");
+						message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
+					})
+				} else {
+					binddb.updateOne(query, updatebind, function (err) {
+						if (err) {
+							console.log(err);
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+						}
+						console.log("bind updated");
+						message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
+					})
+				}
+			})
+		})
+	})
 };
 
 module.exports.config = {
-    name: "usersearch",
-    description: "Checks if specific username is binded.",
-    usage: "usersearch <username>",
-    detail: "`username`: The username to check [String]",
-    permission: "None"
+	name: "userbind",
+	description: "Binds a user to a specific uid.",
+	usage: "userbind <uid>",
+	detail: "`uid`: The uid to bind [Integer]",
+	permission: "None"
 };
