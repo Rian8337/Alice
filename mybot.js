@@ -249,18 +249,16 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 // member ban detection
 client.on("guildBanAdd", async (guild, user) => {
-	let banInfo = (await guild.fetchAuditLogs({type: "MEMBER_BAN_ADD", user: user.id, limit: 1})).entries.first();
-	let executor = banInfo.executor;
-	let target = banInfo.target;
-	let reason = banInfo.reason ? banInfo.reason : "Unknown";
-
+	let banInfo = await guild.fetchBan(user.id);
+        let reason = banInfo.reason;
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
 	let embed = new Discord.MessageEmbed()
-		.setAuthor(executor.tag, executor.avatarURL({dynamic: true}))
 		.setTitle("Ban executed")
+                .setThumbnail(user.avatarURL({dynamic: true}))
 		.setFooter("Alice Synthesis Thirty", footer[index])
-		.addField(`Banned user: ${target.username}`, `User ID: ${target.id}`)
+                .setTimestamp(new Date())
+		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
 		.addField("=========================", `Reason: ${reason}`);
 	
 	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed})
