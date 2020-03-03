@@ -48,12 +48,12 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                         if (alicecoins - totalcost < 0) {
                             if (memberlist.length > 1) {
                                 let index = Math.floor(Math.random() * (memberlist.length - 1) + 1);
-                                while (memberlist[index] == leader) index = Math.floor(Math.random() * (memberlist.length - 1) + 1);
+                                while (memberlist[index] == leader) index = Math.floor(Math.random() * memberlist.length);
                                 let kicked = memberlist[index][0];
                                 memberlist[index] = false;
                                 memberlist = memberlist.filter(member => member);
-                                client.fetchUser(leader).then(user => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!").catch(console.error)).catch(console.error);
-                                client.fetchUser(kicked).then(user => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
+                                client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!").catch(console.error)).catch(console.error);
+                                client.users.fetch(kicked).then((user) => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
                                 let updateVal = {
                                     $set: {
                                         member_list: memberlist,
@@ -77,7 +77,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                             }
                             else {
                                 if (power < 20) {
-                                    client.fetchUser(leader).then(user => user.send("❗**| I'm sorry, you don't have enough Alice coins for your clan's weekly fee, and it does not have enough members and power points, thus it has been disbanded!**").catch(console.error)).catch(console.error);
+                                    client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, you don't have enough Alice coins for your clan's weekly fee, and it does not have enough members and power points, thus it has been disbanded!**").catch(console.error)).catch(console.error);
                                     clandb.deleteOne({leader: leader}, err => {
                                         if (err) return console.log(err);
                                         console.log("Clan disbanded")
