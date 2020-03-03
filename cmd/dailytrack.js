@@ -31,7 +31,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let query = {status: "ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.fetchUser("386742340968120321").then(user => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
+        if (!dailyres[0]) return client.users.fetch("386742340968120321").then((user) => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
         let timelimit = dailyres[0].timelimit;
         if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
         let pass = dailyres[0].pass;
@@ -42,8 +42,8 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         let featured = dailyres[0].featured;
         if (!featured) featured = '386742340968120321';
         new osudroid.MapInfo().get({beatmap_id: beatmapid}, async mapinfo => {
-            if (!mapinfo.title) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
-            if (!mapinfo.objects) return client.fetchUser("386742340968120321").then(user => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
+            if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
+            if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
             let hash = mapinfo.hash;
             let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
             let pass_string;
@@ -133,10 +133,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 bonus_string += '\n'
             }
-            let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+            let constrain_string = constrain ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
             let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-            let embed = new Discord.RichEmbed()
+            const index = Math.floor(Math.random() * footer.length);
+            let embed = new Discord.MessageEmbed()
                 .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setColor(mapinfo.statusColor())
                 .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
@@ -145,7 +145,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 .addField("Map Info", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
                 .addField(`Star Rating:\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-            client.channels.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
+            client.channels.cache.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
             let updateVal = {
                 $set: {
                     status: "finished"
