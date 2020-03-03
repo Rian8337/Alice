@@ -7,11 +7,11 @@ module.exports.run = (client, message, args, maindb) => {
     let query = {uid: uid};
     let rolecheck;
     try {
-        rolecheck = message.member.highestRole.hexColor
+        rolecheck = message.member.roles.highest.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
         .setColor(rolecheck);
 
     binddb.find(query).toArray((err, res) => {
