@@ -47,8 +47,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
 		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-		let embed = new Discord.RichEmbed()
+		const index = Math.floor(Math.random() * footer.length);
+		let embed = new Discord.MessageEmbed()
 			.setFooter("Alice Synthesis Thirty", footer[index])
 			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
 			.setColor(mapinfo.statusColor(mapinfo.approved))
