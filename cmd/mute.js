@@ -5,7 +5,7 @@ function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm; //mute_permission
     eligibleRoleList.forEach((id) => {
-        if(member.roles.has(id[0])) res = id[1]
+        if(member.roles.cache.has(id[0])) res = id[1]
     });
     return res;
 }
@@ -14,7 +14,7 @@ function isImmuned(member) {
     let res = 0;
     let immunedRoleList = config.mute_immune;
     immunedRoleList.forEach((id) => {
-        if(member.roles.has(id)) {console.log("immune role found"); res = 1}
+        if(member.roles.cache.has(id)) {console.log("immune role found"); res = 1}
     });
     return res;
 }
