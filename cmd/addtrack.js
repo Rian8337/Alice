@@ -1,5 +1,5 @@
 module.exports.run = (client, message, args, maindb) => {
-	if (message.member == null || message.member.roles == null || !message.member.roles.get("325613708673810433")) return message.channel.send("❎ **| You don't have enough permission to use this.**");
+	if (message.member == null || message.member.roles == null || !message.member.roles.cache.get("325613708673810433")) return message.channel.send("❎ **| You don't have enough permission to use this.**");
 	let uid = args[0];
 	if (isNaN(parseInt(uid))) return message.channel.send("❎ **| I'm sorry, that uid is invalid!**");
 	let trackdb = maindb.collection("tracking");
