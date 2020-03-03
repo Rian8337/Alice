@@ -1,3 +1,4 @@
+// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
@@ -53,7 +54,7 @@ module.exports.run = (client, message, args, maindb) => {
 			date.setUTCHours(date.getUTCHours() + 7);
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * (footer.length - 1) + 1);
-			let embed = new Discord.RichEmbed()
+			let embed = new Discord.MessageEmbed()
 				.setDescription(`**Username**: ${player.name}\n**Rank**: ${player.rank}`)
 				.setColor(8102199)
 				.setFooter("Alice Synthesis Thirty", footer[index])
@@ -61,7 +62,7 @@ module.exports.run = (client, message, args, maindb) => {
 				.setAuthor("osu!droid profile (click/tap here to view profile)", "https://image.frl/p/beyefgeq5m7tobjg.jpg", `https://ops.dgsrz.com/profile.php?uid=${uid}`)
 				.addField(`Total Score: ${player.score.toLocaleString()}`, `Overall Accuracy: ${player.accuracy}%`)
 				.addField(`Play Count: ${player.play_count}`, `Location: ${player.location}`)
-				.addField("Most Recent Play", `${client.emojis.get(rankEmote(rplay.mark)).toString()} | ${rplay.filename} ${modread(rplay.mode)}\n${rplay.score.toLocaleString()} / ${rplay.combo}x / ${(parseFloat(rplay.accuracy) / 1000).toFixed(2)}% / ${rplay.miss}m\n${date.toUTCString()}`);
+				.addField("Most Recent Play", `${client.emojis.cache.get(rankEmote(rplay.mark)).toString()} | ${rplay.filename} ${modread(rplay.mode)}\n${rplay.score.toLocaleString()} / ${rplay.combo}x / ${(parseFloat(rplay.accuracy) / 1000).toFixed(2)}% / ${rplay.miss}m\n${date.toUTCString()}`);
 
 			message.channel.send({embed: embed}).catch(console.error)
 		})
