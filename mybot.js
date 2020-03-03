@@ -247,6 +247,25 @@ client.on("guildMemberUpdate", oldMember => {
 	})
 });
 
+// member ban detection
+client.on("guildBanAdd", async (guild, user) => {
+	let banInfo = (await guild.fetchAuditLogs({type: "MEMBER_BAN_ADD", user: user.id, limit: 1})).entries.first();
+	let executor = banInfo.executor;
+	let target = banInfo.target;
+	let reason = banInfo.reason ? banInfo.reason : "Unknown";
+
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * footer.length);
+	let embed = new Discord.MessageEmbed()
+		.setAuthor(executor.tag, executor.avatarURL({dynamic: true}))
+		.setTitle("Ban executed")
+		.setFooter("Alice Synthesis Thirty", footer[index])
+		.addField(`Banned user: ${target.username}`, `User ID: ${target.id}`)
+		.addField("=========================", `Reason: ${reason}`);
+	
+	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed})
+});
+
 // lounge ban detection
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
