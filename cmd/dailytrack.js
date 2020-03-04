@@ -161,7 +161,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             let entries = await fetchScores(hash, 0);
             if (!entries) return;
             let bonus_winner_uid = entries[0].split(" ")[1];
-            let coin = client.emojis.get("669532330980802561");
+            let coin = client.emojis.cache.get("669532330980802561");
             binddb.findOne({uid: bonus_winner_uid}, (err, userres) => {
                 if (err) console.log("Cannot access database");
                 if (!userres) return;
