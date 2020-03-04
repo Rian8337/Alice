@@ -177,7 +177,6 @@ client.on("message", message => {
 	}
 	
 	// picture log
-	// picture log
 	if (message.attachments.size > 0) {
 		let attachments = [];
 		for (const [, attachment] of message.attachments.entries()) {
@@ -191,12 +190,12 @@ client.on("message", message => {
 			.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
 			.setColor('#cb8900')
 			.setTimestamp(new Date())
+			.attachFiles(attachments)
 			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
 			.addField("Channel", `${message.channel} | [Go to message](${message.url})`);
 
 		if (message.content) embed.addField("Content", message.content);
 		client.channels.cache.get("684630015538626570").send({embed: embed});
-		client.channels.cache.get("684630015538626570").send({files: attachments})
 	}
 	
 	// mention log
