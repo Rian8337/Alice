@@ -176,6 +176,29 @@ client.on("message", message => {
 		}
 	}
 	
+	// picture log
+	// picture log
+	if (message.attachments.size > 0) {
+		let attachments = [];
+		for (const [, attachment] of message.attachments.entries()) {
+			let url = attachment.url;
+			let length = url.length;
+			if (url.indexOf("png", length - 3) === -1 && url.indexOf("jpg", length - 3) === -1 && url.indexOf("jpeg", length - 4) === -1 && url.indexOf("gif", length - 3) === -1) continue;
+			attachments.push(attachment)
+		}
+		if (attachments.length == 0) return;
+		let embed = new Discord.MessageEmbed()
+			.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
+			.setColor('#cb8900')
+			.setTimestamp(new Date())
+			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+			.addField("Channel", `${message.channel} | [Go to message](${message.url})`);
+
+		if (message.content) embed.addField("Content", message.content);
+		client.channels.cache.get("684630015538626570").send({embed: embed});
+		client.channels.cache.get("684630015538626570").send({files: attachments})
+	}
+	
 	// mention log
 	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
 		let embed = new Discord.MessageEmbed()
