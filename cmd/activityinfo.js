@@ -85,6 +85,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         entries.sort((a, b) => {return b[1] - a[1]});
+        let general_description = '';
+        let language_description = '';
         let description = `**${type} channel activity per ${date.getUTCDate()} `;
         switch (date.getUTCMonth()) {
             case 0: description += 'Jan '; break;
@@ -101,14 +103,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             case 11: description += 'Des '
         }
         description += `${date.getUTCFullYear()}**\n\n`;
-        for (let i = 0; i < entries.length; i++) description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`;
+
+        let general_category = ['316547304763162624', '428950708021231617', '316545691545501706', '667400988801368094', '341580764221145089', '440166346592878592', '501021206217228288', '664023693134921729', '564044964158504960'];
+        for (let i = 0; i < entries.length; i++) {
+            if (general_category.includes(entries[i][0])) general_description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`;
+            else language_description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`
+        }
 
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         let embed = new Discord.MessageEmbed()
             .setColor("#b58d3c")
             .setFooter("Alice Synthesis Thirty", footer[index])
-            .setDescription(description);
+            .setDescription(description)
+            .addFields([{name: "General Channels", value: general_description}, {name: "Language Channels", value: language_description}]);
 
         message.channel.send({embed: embed}).catch(console.error)
     })
