@@ -434,7 +434,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
@@ -482,7 +482,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let requirements = challengeRequirements(challengeid, pass, bonus);
                         let pass_string = requirements[0];
                         let bonus_string = requirements[1];
-                        let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                        let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                         embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                             .setColor(mapinfo.statusColor())
                             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
@@ -789,7 +789,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
