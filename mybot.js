@@ -177,7 +177,7 @@ client.on("message", message => {
 	}
 	
 	// picture log
-	if (message.attachments.size > 0 && message.guild.id == '316545691545501706'') {
+	if (message.attachments.size > 0 && message.guild.id == '316545691545501706') {
 		let attachments = [];
 		for (const [, attachment] of message.attachments.entries()) {
 			let url = attachment.url;
