@@ -225,7 +225,7 @@ client.on("message", message => {
 		cmd.run(client, message, args)
 	}
 	
-	if (message.content.startsWith("&")) {
+	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
 		let mainbot = message.guild.members.cache.get("391268244796997643");
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
