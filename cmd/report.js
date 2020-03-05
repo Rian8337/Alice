@@ -40,7 +40,7 @@ module.exports.run = (client, message, args) => {
         .addField("Reported user: " + toreport.user.username, "Reported in: " + message.channel)
         .addField("Reason: ", reason);
 
-    channel.send("<@369108742077284353> <@259345965046038528>", {embed: reportembed});
+    channel.send("<@&369108742077284353> <@&595667274707370024>", {embed: reportembed});
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
 
