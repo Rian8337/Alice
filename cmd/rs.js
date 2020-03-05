@@ -55,7 +55,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 }
                 let mod_string = osudroid.mods.droid_to_PC(mod, true);
                 mod = osudroid.mods.droid_to_PC(mod);
-                let computed_accuracy = osudroid.Accuracy({percent: acc, nobjects: mapinfo.objects});
+                let computed_accuracy = new osudroid.Accuracy({percent: acc, nobjects: mapinfo.objects});
                 let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                 let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
                 let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
