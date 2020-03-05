@@ -31,11 +31,11 @@ function timeConvert(num) {
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let timeLimit = isEligible(message.member);
-    if (!timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.author.bot && !timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return;
-    if (isImmuned(tomute) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
+    if (!message.author.bot && (isImmuned(tomute) || tomute.user.bot)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
 
@@ -44,7 +44,7 @@ module.exports.run = async (client, message, args) => {
     if (isNaN(mutetime)) return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
     if (mutetime < 1) return message.channel.send("❎ **| I'm sorry, you can only mute for at least 1 second.**");
     if (mutetime == Infinity) return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
-    if (timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
+    if (!message.author.bot && timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
 
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
@@ -78,7 +78,7 @@ module.exports.run = async (client, message, args) => {
         .setColor("#000000")
         .setTimestamp(new Date())
         .setFooter("User ID: " + tomute.id, footer[index])
-        .addField("Muted User: " + tomute.user.username, "Muted in: <#" + message.channel + ">")
+        .addField("Muted User: " + tomute.user.username, `Muted in: ${message.channel}`)
         .addField("Length: " + timeConvert(mutetime), "=========================")
         .addField("Reason: ", reason);
 
