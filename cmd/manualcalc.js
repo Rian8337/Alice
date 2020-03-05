@@ -24,6 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
 		if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
 		if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+		if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 		if (!combo) combo = mapinfo.max_combo;
 		let max_score = mapinfo.max_score(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
