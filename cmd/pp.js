@@ -77,10 +77,9 @@ module.exports.run = (client, message, args, maindb) => {
 	let channels = config.pp_channel;
 	let found = false;
 	for (let i = 0; i < channels.length; i++) {
-		if (message.guild.channels.cache.get(channels[i])) {
-			found = true;
-			break
-		}
+		if (message.channel.id !== channels[i]) continue;
+		found = true;
+		break
 	}
 	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = message.author.id;
