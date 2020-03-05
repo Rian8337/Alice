@@ -25,12 +25,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     current_date = current_date.getTime();
     let daily_counter = 0;
     let channeldb = alicedb.collection("channeldata");
+    let total = 0;
     message.channel.messages.fetch({limit: 1}).then(last_message => {
         let message_id = last_message.first().id;
         count_all_message(message.channel, message_id, current_date, daily_counter, function testResult(count, last_id, iterateDate = false, stopSign = false) {
-            if (stopSign) return message.channel.send(`✅ **| ${message.author}, message logging done!**`);
+            if (stopSign) return message.channel.send(`✅ **| ${message.author}, successfully logged ${total.toLocaleString()} messages!**`);
             if (iterateDate) {
                 daily_counter += count;
+                total += count;
                 let query = {timestamp: current_date};
                 channeldb.findOne(query, (err, res) => {
                     if (err) return console.log(err);
