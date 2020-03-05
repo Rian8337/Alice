@@ -33,6 +33,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			let acc = parseFloat((rplay.accuracy / 1000).toFixed(2));
 			let miss = rplay.miss;
 			let mod = rplay.mode;
+			let mod_string = osudroid.mods.droid_to_PC(mod, true);
 			let hash = rplay.hash;
 			let footer = config.avatar_list;
 			const index = Math.floor(Math.random() * footer.length);
@@ -52,7 +53,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 				if (!mapinfo.title || !mapinfo.objects) {
 					embed = {
 						"title": title,
-						"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + osudroid.mods.droid_to_PC(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
+						"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + mod_string + "`\nTime: `" + ptime.toUTCString() + "`",
 						"color": 8311585,
 						"author": {
 						"name": "Recent Play for " + name,
@@ -89,7 +90,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
 				embed = {
 					"title": title,
-					"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + `${computed_accuracy.n300}/${computed_accuracy.n100}/${computed_accuracy.n50}/${computed_accuracy.nmiss}` + "`)\nMod: `" + osudroid.mods.droid_to_PC(mod, true) + "`\nTime: `" + ptime.toUTCString() + "`",
+					"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + `${computed_accuracy.n300}/${computed_accuracy.n100}/${computed_accuracy.n50}/${computed_accuracy.nmiss}` + "`)\nMod: `" + mod_string + "`\nTime: `" + ptime.toUTCString() + "`",
 					"color": 8311585,
 					"author": {
 						"name": "Recent Play for " + name,
