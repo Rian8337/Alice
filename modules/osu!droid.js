@@ -645,8 +645,8 @@ function MapStats(values) {
     this.ar = values.hasOwnProperty("ar") ? values.ar : 0;
     this.od = values.hasOwnProperty("od") ? values.od : 0;
     this.hp = values.hasOwnProperty("hp") ? values.hp : 0;
-    this.droid_mods = values.hasOwnProperty("mods") ? mods.modbits_from_string(values.mods) : 4;
-    this.pc_mods = values.hasOwnProperty("mods") ? mods.modbits_from_string(values.mods) : 0
+    this.droid_mods = values.hasOwnProperty("mods") ? mods.modbits_from_string(values.mods) + 4 : 4;
+    this.pc_mods = this.droid_mods - 4;
 }
 
 // calculates map statistics with mods applied
@@ -654,14 +654,15 @@ function MapStats(values) {
 // specify mode (droid or osu) to switch between
 // osu!droid stats and osu! stats
 MapStats.prototype.calculate = function(params) {
+    if (params.mods) this.mods = params.mods;
     let stats = new MapStats(this);
     if ([stats.cs, stats.ar, stats.od, stats.hp].some(isNaN)) throw new TypeError("CS, AR, OD, and HP must be defined");
     let speed_mul = 1;
     let od_ar_hp_multiplier = 1;
-    if ((stats.droid_mods & mods.d) || (stats.pc_mods & mods.dt)) speed_mul = 1.5;
-    if ((stats.droid_mods & mods.t) || (stats.pc_mods & mods.ht)) speed_mul *= 0.75;
-    if ((stats.droid_mods & mods.r) || (stats.pc_mods & mods.hr)) od_ar_hp_multiplier = 1.4;
-    if ((stats.droid_mods & mods.e) || (stats.pc_mods & mods.ez)) od_ar_hp_multiplier *= 0.5;
+    if ((stats.droid_mods & mods.d) | (stats.pc_mods & mods.dt)) speed_mul = 1.5;
+    if ((stats.droid_mods & mods.t) | (stats.pc_mods & mods.ht)) speed_mul *= 0.75;
+    if ((stats.droid_mods & mods.r) | (stats.pc_mods & mods.hr)) od_ar_hp_multiplier = 1.4;
+    if ((stats.droid_mods & mods.e) | (stats.pc_mods & mods.ez)) od_ar_hp_multiplier *= 0.5;
     switch (params.mode) {
         case "osu!droid":
         case "droid": {
@@ -672,10 +673,10 @@ MapStats.prototype.calculate = function(params) {
             if (!(stats.droid_mods & mods.map_changing)) return stats;
 
             // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
-            if ((stats.droid_mods & mods.c) || (stats.droid_mods & mods.nc)) speed_mul = 1.39;
+            if ((stats.droid_mods & mods.c) | (stats.droid_mods & mods.nc)) speed_mul = 1.39;
 
-            if ((stats.droid_mods & mods.r) || (stats.droid_mods & mods.hr)) ++stats.cs;
-            if ((stats.droid_mods & mods.e) || (stats.droid_mods & mods.ez)) --stats.cs;
+            if ((stats.droid_mods & mods.r) | (stats.droid_mods & mods.hr)) ++stats.cs;
+            if ((stats.droid_mods & mods.e) | (stats.droid_mods & mods.ez)) --stats.cs;
             stats.cs = Math.min(10, stats.cs);
 
             stats.hp *= od_ar_hp_multiplier;
@@ -692,10 +693,10 @@ MapStats.prototype.calculate = function(params) {
         case "osu!":
         case "osu": {
             if (!(stats.pc_mods & mods.map_changing)) return stats;
-            if ((stats.droid_mods & mods.c) || (stats.pc_mods & mods.nc)) speed_mul = 1.5;
+            if ((stats.droid_mods & mods.c) | (stats.pc_mods & mods.nc)) speed_mul = 1.5;
             if (stats.cs) {
-                if ((stats.droid_mods & mods.r) || (stats.pc_mods & mods.hr)) stats.cs *= 1.3;
-                if ((stats.droid_mods & mods.e) || (stats.pc_mods & mods.ez)) stats.cs *= 0.5;
+                if ((stats.droid_mods & mods.r) | (stats.pc_mods & mods.hr)) stats.cs *= 1.3;
+                if ((stats.droid_mods & mods.e) | (stats.pc_mods & mods.ez)) stats.cs *= 0.5;
                 stats.cs = Math.min(10, stats.cs)
             }
             if (stats.hp) {
