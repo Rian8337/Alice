@@ -338,7 +338,9 @@ MapInfo.prototype.statusColor = function() {
 MapInfo.prototype.max_score = function(mod = "") {
     if (!this.osu_file) return 0;
     if (mod != mod.toUpperCase()) mod = mods.droid_to_PC(mod);
-    let diff_multiplier = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
+    this.mods = mod;
+    let stats = new MapStats(this).calculate({mods: mod, mode: "osu"});
+    let diff_multiplier = 1 + stats.od / 10 + stats.hp / 10 + (stats.cs - 3) / 4;
 
     let score_multiplier = 1;
     if (mod.includes("HD")) score_multiplier *= 1.06;
