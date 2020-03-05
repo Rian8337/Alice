@@ -107,6 +107,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         return message.channel.send({embed: embed})
     }
+    let channels = config.pp_channel;
+    let found = false;
+	for (let i = 0; i < channels.length; i++) {
+		if (message.channel.id != channels[i]) continue;
+		found = true;
+		break
+	}
+	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
     let ufind = message.author.id;
     let offset = 1;
