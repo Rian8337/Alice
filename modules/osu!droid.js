@@ -637,6 +637,7 @@ function modify_od(base_od, speed_mul, multiplier) {
 }
 
 function MapStats(values) {
+    if (!values) values = {};
     this.cs = values.hasOwnProperty("cs") ? values.cs : 0;
     this.ar = values.hasOwnProperty("ar") ? values.ar : 0;
     this.od = values.hasOwnProperty("od") ? values.od : 0;
