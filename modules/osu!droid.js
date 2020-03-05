@@ -645,14 +645,14 @@ function MapStats(values = {}) {
     this.od = values.hasOwnProperty("od") ? values.od : 0;
     this.hp = values.hasOwnProperty("hp") ? values.hp : 0;
     this.droid_mods = values.hasOwnProperty("mods") ? mods.modbits_from_string(values.mods) + 4 : 4;
-    this.pc_mods = this.droid_mods - 4;
+    this.pc_mods = this.droid_mods - 4
 }
 
 // calculates map statistics with mods applied
 // ===========================================
 // specify mode (droid or osu) to switch between
 // osu!droid stats and osu! stats
-MapStats.prototype.calculate = function(params) {
+MapStats.prototype.calculate = function(params = {}) {
     if (params.mods) this.mods = params.mods;
     let stats = new MapStats(this);
     if ([stats.cs, stats.ar, stats.od, stats.hp].some(isNaN)) throw new TypeError("CS, AR, OD, and HP must be defined");
@@ -785,9 +785,9 @@ MapStars.prototype.toString = function() {
 // calculate n300, n100, n50, and nmiss from a given score
 // =======================================================
 // percent and object count must be defined
-function Accuracy(values = {}) {
-    if (!values.n300) this.n300 = -1;
-    else this.n300 = values.n300;
+function Accuracy(values) {
+    this.n300 = -1;
+    if (values.n300) this.n300 = values.n300;
 
     this.n100 = values.n100 || 0;
     this.n50 = values.n50 || 0;
@@ -795,18 +795,24 @@ function Accuracy(values = {}) {
 
     let nobjects = values.nobjects;
 
-    if (values.nobjects) {
-        let n300 = this.n300;
+    if (nobjects) {
         let hitcount;
 
-        if (n300 < 0) n300 = Math.max(0, nobjects - this.n100 - this.n50 - this.nmiss);
-        hitcount = n300 + this.n100 + this.n50 + this.nmiss;
+        if (this.n300 < 0) this.n300 = Math.max(0, nobjects - this.n100 - this.n50 - this.nmiss);
+
+        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
+
+        if (hitcount > nobjects) this.n300 -= Math.min(this.n300, hitcount - nobjects);
+
+        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
 
         if (hitcount > nobjects) this.n100 -= Math.min(this.n100, hitcount - nobjects);
-        hitcount = n300 + this.n100 + this.n50 + this.nmiss;
+
+        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
 
         if (hitcount > nobjects) this.n50 -= Math.min(this.n50, hitcount - nobjects);
-        hitcount = n300 + this.n100 + this.n50 + this.nmiss;
+
+        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
 
         if (hitcount > nobjects) this.nmiss -= Math.min(this.nmiss, hitcount - nobjects);
 
@@ -825,11 +831,11 @@ function Accuracy(values = {}) {
         let acc_percent = values.percent;
         acc_percent = Math.max(0, Math.min(maxacc, acc_percent));
 
-        this.n100 = Math.round(-3 * ((acc_percent * 0.01 - 10) * nobjects + this.nmiss) / 2);
+        this.n100 = Math.round(-3 * ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) * 0.5);
 
         if (this.n100 > max300) {
             this.n100 = 0;
-            this.n50 = Math.round(-6 * ((acc_percent * 0.01 - 10) * nobjects + this.nmiss) / 2);
+            this.n50 = Math.round(-6 * ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) * 0.5);
             this.n50 = Math.min(max300, this.n50)
         }
 
@@ -849,7 +855,7 @@ Accuracy.prototype.value = function(nobjects) {
         };
         this.n300 = nobjects - this.n100 - this.n50 - this.nmiss
     }
-    else nobjects = this.n300 + this.n300 + this.n100 + this.n50 + this.nmiss;
+    else nobjects = this.n300 + this.n100 + this.n50 + this.nmiss;
     let res = (this.n300 * 300 + this.n100 * 100 + this.n50 * 50) / (nobjects * 300);
     return Math.max(0, Math.min(res, 1))
 };
