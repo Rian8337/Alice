@@ -468,13 +468,13 @@ MapInfo.prototype.toString = function() {
 
 let mods = {
     // droid
-    n: 1<<0,
-    e: 1<<1,
-    h: 1<<3,
-    r: 1<<4,
-    d: 1<<6,
-    t: 1<<8,
-    c: 1<<9,
+    n: 1<<0, // NF
+    e: 1<<1, // EZ
+    h: 1<<3, // HD
+    r: 1<<4, // HR
+    d: 1<<6, // DT
+    t: 1<<8, // HT
+    c: 1<<9, // NC
 
     // pc
     nomod: 0,
@@ -494,6 +494,7 @@ let mods = {
 mods.droid_to_modbits = function(mod) {
     let modbits = 4;
     if (!mod || mod == '-') return modbits;
+    mod = mod.toLowerCase();
     while (mod != '') {
         for (let property in mods) {
             if (property.length != 1) continue;
@@ -513,6 +514,7 @@ mods.droid_to_modbits = function(mod) {
 // you can choose to return a detailed response
 mods.droid_to_PC = function(mod, detailed = false) {
     if (!mod) return '';
+    mod = mod.toLowerCase();
     if (detailed) {
         let res = '';
         let count = 0;
@@ -576,6 +578,9 @@ mods.modbits_to_string = function(mod) {
     return res
 };
 
+mods.speed_changing = mods.d | mods.t | mods.c | mods.dt | mods.ht | mods.nc;
+mods.map_changing = mods.e | mods.h | mods.ez | mods.hr | mods.speed_changing;
+
 let rankImage = {
     S: "http://ops.dgsrz.com/assets/images/ranking-S-small.png",
     A: "http://ops.dgsrz.com/assets/images/ranking-A-small.png",
@@ -631,11 +636,12 @@ function modify_od(base_od, speed_mul, multiplier) {
     return od
 }
 
-function MapStats() {
-    this.cs = 0;
-    this.ar = 0;
-    this.od = 0;
-    this.hp = 0
+function MapStats(values) {
+    this.cs = values.cs || 0;
+    this.ar = values.ar || 0;
+    this.od = values.od || 0;
+    this.hp = values.hp || 0;
+    this.mods = mods.modbits_from_string(values.mods) || mods.droid_to_modbits(values.mods) || 0;
 }
 
 // calculates map statistics with mods applied
@@ -643,81 +649,66 @@ function MapStats() {
 // specify mode (droid or osu) to switch between
 // osu!droid stats and osu! stats
 MapStats.prototype.calculate = function(params) {
-    let cs = params.cs;
-    let ar = params.ar;
-    let od = params.od;
-    let hp = params.hp;
-    if ([cs, ar, od, hp].some(isNaN)) throw new TypeError("CS, AR, OD, and HP must be defined");
-    let mods = params.mods ? params.mods : "";
+    let stats = new MapStats(params);
+    if ([stats.cs, stats.ar, stats.od, stats.hp].some(isNaN)) throw new TypeError("CS, AR, OD, and HP must be defined");
     let speed_mul = 1;
     let od_ar_hp_multiplier = 1;
-    if (mods.includes("d") || mods.includes("DT")) speed_mul = 1.5;
-    if (mods.includes("t") || mods.includes("HT")) speed_mul *= 0.75;
-    if (mods.includes("r") || mods.includes("HR")) od_ar_hp_multiplier = 1.4;
-    if (mods.includes("e") || mods.includes("EZ")) od_ar_hp_multiplier *= 0.5;
+    if ((stats.mods & mods.d) || (stats.mods & mods.dt)) speed_mul = 1.5;
+    if ((stats.mods & mods.t) || (stats.mods & mods.ht)) speed_mul *= 0.75;
+    if ((stats.mods & mods.r) || (stats.mods & mods.hr)) od_ar_hp_multiplier = 1.4;
+    if ((stats.mods & mods.e) || (stats.mods & mods.ez)) od_ar_hp_multiplier *= 0.5;
     switch (params.mode) {
         case "osu!droid":
         case "droid": {
-            let droidtoMS = 75 + 5 * (5 - od);
-            if (mods.includes("PR")) droidtoMS = 55 + 6 * (5 - od);
-            od = 5 - (droidtoMS - 50) / 6;
-            cs -= 4;
-            if (!mods || mods == '-') {
-                this.cs = cs;
-                this.ar = ar;
-                this.od = od;
-                this.hp = hp;
-                return this
-            }
-            if (mods.includes("c") || mods.includes("NC")) speed_mul = 1.39;
+            let droidtoMS = 75 + 5 * (5 - stats.od);
+            if (params.mods.includes("PR")) droidtoMS = 55 + 6 * (5 - stats.od);
+            stats.od = 5 - (droidtoMS - 50) / 6;
+            stats.cs -= 4;
+            if (!(stats.mods & mods.map_changing)) return stats;
 
-            if (mods.includes("r") || mods.includes("HR")) cs++;
-            if (mods.includes("e") || mods.includes("EZ")) cs--;
-            cs = Math.min(10, cs);
+            // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
+            if ((stats.mods & mods.c) || (stats.mods & mods.nc)) speed_mul = 1.39;
 
-            hp *= od_ar_hp_multiplier;
-            hp = Math.min(10, hp);
+            if ((stats.mods & mods.r) || (stats.mods & mods.hr)) ++stats.cs;
+            if ((stats.mods & mods.e) || (stats.mods & mods.ez)) --stats.cs;
+            stats.cs = Math.min(10, stats.cs);
 
-            ar = modify_ar(ar, speed_mul, od_ar_hp_multiplier);
+            stats.hp *= od_ar_hp_multiplier;
+            stats.hp = Math.min(10, stats.hp);
 
-            this.cs = parseFloat(cs.toFixed(2));
-            this.ar = parseFloat(ar.toFixed(2));
-            this.od = parseFloat(od.toFixed(2));
-            this.hp = parseFloat(hp.toFixed(2));
+            stats.ar = modify_ar(stats.ar, speed_mul, od_ar_hp_multiplier);
+
+            stats.cs = parseFloat(stats.cs.toFixed(2));
+            stats.ar = parseFloat(stats.ar.toFixed(2));
+            stats.od = parseFloat(stats.od.toFixed(2));
+            stats.hp = parseFloat(stats.hp.toFixed(2));
             break
         }
         case "osu!":
         case "osu": {
-            if (!mods || mods == '-') {
-                this.cs = cs;
-                this.ar = ar;
-                this.od = od;
-                this.hp = hp;
-                return this
+            if (!(stats.mods & mods.map_changing)) return stats;
+            if ((stats.mods & mods.c) || (stats.mods & mods.nc)) speed_mul = 1.5;
+            if (stats.cs) {
+                if ((stats.mods & mods.r) || (stats.mods & mods.hr)) stats.cs *= 1.3;
+                if ((stats.mods & mods.e) || (stats.mods & mods.ez)) stats.cs *= 0.5;
+                stats.cs = Math.min(10, stats.cs)
             }
-            mods.toUpperCase();
-            if (mods.includes("C") || mods.includes("NC")) speed_mul = 1.5;
-            if (cs) {
-                if (mods.includes("R") || mods.includes("HR")) cs *= 1.3;
-                if (mods.includes("E") || mods.includes("EZ")) cs *= 0.5;
-                cs = Math.min(10, cs)
+            if (stats.hp) {
+                stats.hp *= od_ar_hp_multiplier;
+                stats.hp = Math.min(10, stats.hp)
             }
-            if (hp) {
-                hp *= od_ar_hp_multiplier;
-                hp = Math.min(10, hp)
-            }
-            if (ar) ar = modify_ar(ar, speed_mul, od_ar_hp_multiplier);
-            if (od) od = modify_od(od, speed_mul, od_ar_hp_multiplier);
+            if (stats.ar) stats.ar = modify_ar(stats.ar, speed_mul, od_ar_hp_multiplier);
+            if (stats.od) stats.od = modify_od(stats.od, speed_mul, od_ar_hp_multiplier);
 
-            this.cs = parseFloat(cs.toFixed(2));
-            this.ar = parseFloat(ar.toFixed(2));
-            this.od = parseFloat(od.toFixed(2));
-            this.hp = parseFloat(hp.toFixed(2));
+            stats.cs = parseFloat(stats.cs.toFixed(2));
+            stats.ar = parseFloat(stats.ar.toFixed(2));
+            stats.od = parseFloat(stats.od.toFixed(2));
+            stats.hp = parseFloat(stats.hp.toFixed(2));
             break
         }
         default: throw new TypeError("Mode not supported")
     }
-    return this
+    return stats
 };
 
 function MapStars() {
@@ -725,12 +716,12 @@ function MapStars() {
     this.pc_stars = 0
 }
 
-// calculates star rating of a map, returns a callback
+// calculates star rating of a map
 // ===================================================
-// beatmap id must be defined to retrieve osu file
+// specify osu file in params
 MapStars.prototype.calculate = function(params) {
     let osu_file = params.file;
-    if (!osu_file) throw new TypeError("osu file must be mentioned from mapinfo instance");
+    if (!osu_file) return this;
     let pmod = params.mods;
     if (!pmod) pmod = '';
     let nparser = new droid.parser();
@@ -819,13 +810,11 @@ MapPP.prototype.calculate = function(params) {
 
 // ppv2 calculator
 // ========================================
-// if stars is not defined, beatmap id must
-// be defined to retrieve map and returns
-// a callback instead
+// if stars is not defined, the osu file must
+// be defined to calculate map stars on fly
 //
 // specify mode to switch between
-// osu!droid pp and osu! pp if stars is not
-// defined
+// osu!droid pp and osu! pp
 function ppv2(params) {
     if (!params.stars) {
         let star = new MapStars().calculate(params);
