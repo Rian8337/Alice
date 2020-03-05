@@ -14,6 +14,10 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 		let query = {hash: play.hash};
 		if (wlres) query = {beatmap_id: wlres.mapid};
 		new osudroid.MapInfo().get(query, mapinfo => {
+			if (!mapinfo.osu_file) {
+				message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+				return cb(false, false)
+			}
 			if (!mapinfo.title) {
 				message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 				return cb(false, false)
@@ -77,7 +81,7 @@ module.exports.run = (client, message, args, maindb) => {
 	let channels = config.pp_channel;
 	let found = false;
 	for (let i = 0; i < channels.length; i++) {
-		if (message.channel.id !== channels[i]) continue;
+		if (message.channel.id != channels[i]) continue;
 		found = true;
 		break
 	}
