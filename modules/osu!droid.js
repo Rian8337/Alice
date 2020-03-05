@@ -637,11 +637,11 @@ function modify_od(base_od, speed_mul, multiplier) {
 }
 
 function MapStats(values) {
-    this.cs = values.cs || 0;
-    this.ar = values.ar || 0;
-    this.od = values.od || 0;
-    this.hp = values.hp || 0;
-    this.mods = mods.modbits_from_string(values.mods) || mods.droid_to_modbits(values.mods) || 0;
+    this.cs = values.hasOwnProperty("cs") ? values.cs : 0;
+    this.ar = values.hasOwnProperty("ar") ? values.ar : 0;
+    this.od = values.hasOwnProperty("od") ? values.od : 0;
+    this.hp = values.hasOwnProperty("hp") ? values.hp : 0;
+    this.mods = values.hasOwnProperty("mods") ? (mods.modbits_from_string(values.mods) || mods.droid_to_modbits(values.mods)) : 0
 }
 
 // calculates map statistics with mods applied
