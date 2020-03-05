@@ -308,7 +308,10 @@ MapInfo.prototype.showStatistics = function(mods = "", option) {
         case 3: return `**BPM**: ${this.bpmConvert(this.mods)} - **Length**: ${this.timeConvert(this.mods)} - **Max Combo**: ${this.max_combo}x`;
         case 4: return `**Last Update**: ${this.last_update} | **${this.statusConvert()}**`;
         case 5: return `❤️ **${this.favorites.toLocaleString()}** - ▶️ **${this.plays.toLocaleString()}**`;
-        default: throw new TypeError("Mode is not supported")
+        default: throw {
+            name: "NotSupportedError",
+            message: `This mode (${option}) is not supported`
+        }
     }
 };
 
@@ -689,10 +692,10 @@ MapStats.prototype.calculate = function(params) {
         case "osu!":
         case "osu": {
             if (!(stats.pc_mods & mods.map_changing)) return stats;
-            if ((stats.pc_mods & mods.c) || (stats.pc_mods & mods.nc)) speed_mul = 1.5;
+            if ((stats.droid_mods & mods.c) || (stats.pc_mods & mods.nc)) speed_mul = 1.5;
             if (stats.cs) {
-                if ((stats.pc_mods & mods.r) || (stats.pc_mods & mods.hr)) stats.cs *= 1.3;
-                if ((stats.pc_mods & mods.e) || (stats.pc_mods & mods.ez)) stats.cs *= 0.5;
+                if ((stats.droid_mods & mods.r) || (stats.pc_mods & mods.hr)) stats.cs *= 1.3;
+                if ((stats.droid_mods & mods.e) || (stats.pc_mods & mods.ez)) stats.cs *= 0.5;
                 stats.cs = Math.min(10, stats.cs)
             }
             if (stats.hp) {
