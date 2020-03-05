@@ -9,6 +9,8 @@ function countAllMessage(channel, last_msg, date, daily_counter, cb) {
     channel.messages.fetch({limit: 100, before: last_msg})
         .then((messages) => {
             if (!messages.size) return cb(0, null, true);
+            let bot_messages_amount = messages.filter(message => message.author.bot).size * 2;
+            daily_counter -= bot_messages_amount;
             for (const [snowflake, message] of messages.entries()) {
                 if (message.createdTimestamp < date) {
                     console.log(channel.name + ": " + daily_counter);
