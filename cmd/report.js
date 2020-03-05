@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const config = require("../config.json");
 const cd = new Set();
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!args[0]) return;
     if (message.member.roles.cache.find((r) => r.name === 'report-ban')) {
@@ -40,7 +40,7 @@ module.exports.run = async (client, message, args) => {
         .addField("Reported user: " + toreport.user.username, "Reported in: " + message.channel)
         .addField("Reason: ", reason);
 
-    channel.send("<@&369108742077284353> <@595667274707370024>", {embed: reportembed});
+    channel.send("<@369108742077284353> <@259345965046038528>", {embed: reportembed});
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
 
@@ -53,7 +53,7 @@ module.exports.run = async (client, message, args) => {
         .addField("Reason: " + reason, "Make sure you have evidence ready!\nAbuse of this command will make you unable to submit reports.");
 
     try {
-        await message.author.send({embed: replyembed});
+        message.author.send({embed: replyembed})
     } catch (e) {
         message.reply("your DM is locked, so you didn't receive a copy of your report. Sorry!").then(message => {
             message.delete({timeout: 5000})
