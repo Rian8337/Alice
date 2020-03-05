@@ -55,6 +55,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 				obj.forEach(map => {
 					new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}, mapinfo => {
 						i++;
+						if (!mapinfo.osu_file) return;
 						let max_score = mapinfo.max_score(mod);
 						let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 						let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
@@ -113,7 +114,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 		return req.end()
 	}
 	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0) return;
+		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0 || !mapinfo.osu_file) return;
 		if (!combo) combo = mapinfo.max_combo;
 		let max_score = mapinfo.max_score(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
