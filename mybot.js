@@ -215,7 +215,7 @@ client.on("message", message => {
 	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
 	
 	// pp command detection
-	if (!(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706' && message.content.startsWith("&pp")) {
+	if (!(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706' && command == "&pp") {
 		let eligible_list = config.mute_immune;
 		let found = false;
 		for (let i = 0; i < eligible_list.length; i++) {
