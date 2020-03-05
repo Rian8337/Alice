@@ -1,4 +1,3 @@
-// done rewriting
 const Discord = require('discord.js');
 const osudroid = require('../modules/osu!droid');
 const config = require('../config.json');
@@ -29,6 +28,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
     new osudroid.MapInfo().get({hash: hash}, mapinfo => {
         if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0) return;
+        if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
         if (!combo) combo = mapinfo.max_combo;
         let max_score = mapinfo.max_score(mod);
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
