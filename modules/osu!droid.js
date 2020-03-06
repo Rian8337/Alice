@@ -338,9 +338,7 @@ MapInfo.prototype.statusColor = function() {
 MapInfo.prototype.max_score = function(mod = "") {
     if (!this.osu_file) return 0;
     if (mod != mod.toUpperCase()) mod = mods.droid_to_PC(mod);
-    this.mods = mod;
-    let stats = new MapStats(this).calculate({mods: mod, mode: "osu"});
-    let diff_multiplier = 1 + stats.od / 10 + stats.hp / 10 + (stats.cs - 3) / 4;
+    let diff_multiplier = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
 
     let score_multiplier = 1;
     if (mod.includes("HD")) score_multiplier *= 1.06;
@@ -784,88 +782,6 @@ MapStars.prototype.toString = function() {
     return `${this.droid_stars.toString()}\n${this.pc_stars.toString()}`
 };
 
-// calculate n300, n100, n50, and nmiss from a given score
-// =======================================================
-// percent and object count must be defined
-function Accuracy(values) {
-    this.n300 = -1;
-    if (values.n300) this.n300 = values.n300;
-
-    this.n100 = values.n100 || 0;
-    this.n50 = values.n50 || 0;
-    this.nmiss = values.nmiss || 0;
-
-    let nobjects = values.nobjects;
-
-    if (nobjects) {
-        let hitcount;
-
-        if (this.n300 < 0) this.n300 = Math.max(0, nobjects - this.n100 - this.n50 - this.nmiss);
-
-        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
-
-        if (hitcount > nobjects) this.n300 -= Math.min(this.n300, hitcount - nobjects);
-
-        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
-
-        if (hitcount > nobjects) this.n100 -= Math.min(this.n100, hitcount - nobjects);
-
-        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
-
-        if (hitcount > nobjects) this.n50 -= Math.min(this.n50, hitcount - nobjects);
-
-        hitcount = this.n300 + this.n100 + this.n50 + this.nmiss;
-
-        if (hitcount > nobjects) this.nmiss -= Math.min(this.nmiss, hitcount - nobjects);
-
-        this.n300 = nobjects - this.n100 - this.n50 - this.nmiss;
-    }
-
-    if (values.percent) {
-        if (!nobjects) throw new TypeError("nobjects must be specified");
-
-        let max300 = nobjects - this.nmiss;
-
-        let maxacc = new Accuracy({
-            n300: max300, n100: 0, n50: 0, nmiss: this.nmiss
-        }).value() * 100;
-
-        let acc_percent = values.percent;
-        acc_percent = Math.max(0, Math.min(maxacc, acc_percent));
-
-        this.n100 = Math.round(-3 * ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) * 0.5);
-
-        if (this.n100 > max300) {
-            this.n100 = 0;
-            this.n50 = Math.round(-6 * ((acc_percent * 0.01 - 1) * nobjects + this.nmiss) * 0.5);
-            this.n50 = Math.min(max300, this.n50)
-        }
-
-        this.n300 = nobjects - this.n100 - this.n50 - this.nmiss
-    }
-}
-
-// calculates the map's acc (0.0-1.0)
-// ==================================
-// if n300 was specified in the constructor, nobjects is not
-// required and will be automatically computed
-Accuracy.prototype.value = function(nobjects) {
-    if (this.n300 < 0) {
-        if (!nobjects) throw {
-            name: "NotSpecifiedError",
-            message: "Either n300 or nobjects must be specified"
-        };
-        this.n300 = nobjects - this.n100 - this.n50 - this.nmiss
-    }
-    else nobjects = this.n300 + this.n100 + this.n50 + this.nmiss;
-    let res = (this.n300 * 300 + this.n100 * 100 + this.n50 * 50) / (nobjects * 300);
-    return Math.max(0, Math.min(res, 1))
-};
-
-Accuracy.prototype.toString = function() {
-    return `${(this.value() * 100).toFixed(2)}% - ${this.n300}x300 ${this.n100}x100 ${this.n50}x50 ${this.nmiss}xmiss`
-};
-
 function MapPP() {
     this.pp = 0
 }
@@ -924,7 +840,6 @@ osudroid.PlayerInfo = PlayerInfo;
 osudroid.MapInfo = MapInfo;
 osudroid.mods = mods;
 osudroid.rankImage = rankImage;
-osudroid.Accuracy = Accuracy;
 osudroid.MapStars = MapStars;
 osudroid.MapStats = MapStats;
 osudroid.MapPP = MapPP;
