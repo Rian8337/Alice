@@ -25,7 +25,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let rank = osudroid.rankImage.get(play.mark);
             let ptime = new Date(play.date * 1000);
             ptime.setUTCHours(ptime.getUTCHours() + 7);
-            let acc = (play.accuracy / 1000).toFixed(2);
+            let acc = parseFloat((play.accuracy / 1000).toFixed(2));
             let miss = play.miss;
             let mod = play.mode;
             let hash = play.hash;
@@ -55,7 +55,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 }
                 let mod_string = osudroid.mods.droid_to_PC(mod, true);
                 mod = osudroid.mods.droid_to_PC(mod);
-                let computed_accuracy = new osudroid.Accuracy({percent: acc, nobjects: mapinfo.objects});
                 let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                 let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
                 let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
@@ -76,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let ppline = parseFloat(npp.toString().split(" ")[0]);
                 let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-                embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${computed_accuracy.n300}/${computed_accuracy.n100}/${computed_accuracy.n50}/${computed_accuracy.nmiss}\`)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
+                embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
                 message.channel.send({embed: embed}).catch(console.error)
             })
         })
