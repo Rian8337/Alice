@@ -23,7 +23,20 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		let hash = rplay.hash;
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
-		let embed;
+		let embed = {
+			"title": title,
+			"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + mod_string + "`\nTime: `" + ptime.toUTCString() + "`",
+			"color": 8311585,
+			"author": {
+				"name": "Recent Play for " + name,
+				"icon_url": rank
+			},
+			"footer": {
+				"icon_url": footer[index],
+				"text": "Alice Synthesis Thirty"
+			}
+		};
+		message.channel.send({embed: embed}).catch(console.error);
 
 		let time = Date.now();
 		let entry = [time, message.channel.id, hash];
@@ -37,24 +50,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		if (!found) current_map.push(entry);
 
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-			if (!mapinfo.title || !mapinfo.objects) {
-				embed = {
-					"title": title,
-					"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + miss + "` x)\nMod: `" + mod_string + "`\nTime: `" + ptime.toUTCString() + "`",
-					"color": 8311585,
-					"author": {
-						"name": "Recent Play for " + name,
-						"icon_url": rank
-					},
-					"footer": {
-						"icon_url": footer[index],
-						"text": "Alice Synthesis Thirty"
-					}
-				};
-				return message.channel.send({embed: embed}).catch(console.error)
-			}
+			if (!mapinfo.title || !mapinfo.objects) return;
 			mod = osudroid.mods.droid_to_PC(mod);
-			let computed_accuracy = new osudroid.Accuracy({percent: acc, nobjects: mapinfo.objects});
 			let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 			let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
 			let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);
@@ -74,21 +71,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			});
 			let dpp = parseFloat(npp.toString().split(" ")[0]);
 			let pp = parseFloat(pcpp.toString().split(" ")[0]);
-
-			embed = {
-				"title": title,
-				"description": "**Score**: `" + score + "` - Combo: `" + combo + "x` - Accuracy: `" + acc + "%`\n(`" + `${computed_accuracy.n300}/${computed_accuracy.n100}/${computed_accuracy.n50}/${computed_accuracy.nmiss}` + "`)\nMod: `" + mod_string + "`\nTime: `" + ptime.toUTCString() + "`",
-				"color": 8311585,
-				"author": {
-					"name": "Recent Play for " + name,
-					"icon_url": rank
-				},
-				"footer": {
-					"icon_url": footer[index],
-					"text": "Alice Synthesis Thirty"
-				}
-			};
-			message.channel.send({embed: embed}).catch(console.error);
 
 			embed = new Discord.MessageEmbed()
 				.setFooter("Alice Synthesis Thirty", footer[index])
