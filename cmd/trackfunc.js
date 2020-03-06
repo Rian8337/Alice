@@ -39,6 +39,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 							embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
 							return client.channels.cache.get("665106609382359041").send({embed: embed})
 						}
+						let mods = osudroid.mods.droid_to_PC(mod);
 						let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
 						let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
 						let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
