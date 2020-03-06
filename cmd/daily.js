@@ -434,7 +434,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
@@ -482,7 +482,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let requirements = challengeRequirements(challengeid, pass, bonus);
                         let pass_string = requirements[0];
                         let bonus_string = requirements[1];
-                        let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                        let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                         embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                             .setColor(mapinfo.statusColor())
                             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
@@ -629,7 +629,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "mod": {
-                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods[mod]) points += bonus[2];
+                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
                                     break
                                 }
                                 case "rank": {
@@ -789,7 +789,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
-                    let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                    let constrain_string = constrain.length > 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
@@ -799,7 +799,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField(`Star Rating:\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                     message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
-                    client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
+                    client.channels.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
                     let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) - 1);
                     updateVal = {
@@ -1178,7 +1178,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "mod": {
-                                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods[mod]) {
+                                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
                                                 points += bonus[i][2];
                                                 bonuslist[i + 1] = true;
                                                 complete = true
