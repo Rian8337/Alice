@@ -37,6 +37,7 @@ module.exports.run = (client, message, args, maindb) => {
 		ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "");
 	}
 	let binddb = maindb.collection("userbind");
+	console.log(ufind);
 	let query = { discordid: ufind };
 	binddb.find(query).toArray(function(err, res) {
 		if (err) {
