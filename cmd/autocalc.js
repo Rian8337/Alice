@@ -85,6 +85,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 							let embed = new Discord.MessageEmbed()
 								.setFooter("Alice Synthesis Thirty", footer[index])
 								.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
+								.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 								.setColor(mapinfo.statusColor())
 								.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
 								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
