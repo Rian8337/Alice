@@ -214,29 +214,6 @@ client.on("message", message => {
 	// self-talking (for fun lol)
 	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
 	
-	// pp command detection
-	if (!(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706' && command == "&pp") {
-		let eligible_list = config.mute_immune;
-		let found = false;
-		for (let i = 0; i < eligible_list.length; i++) {
-			if (!message.member.roles.cache.has(eligible_list[i])) continue;
-			found = true;
-			break
-		}
-		if (!found) {
-			let channels = config.pp_channel;
-			let correct = false;
-			for (let i = 0; i < channels.length; i++) {
-				if (message.channel.id != channels[i]) continue;
-				correct = true;
-				break
-			}
-			if (!correct) message.channel.send("❗**| Submitting pp is not allowed in here! Please be mindful next time!**").then(msg => {
-				client.commands.get('tempmute').run(client, msg, [message.author.id, 900, "Submitting pp is not allowed in here! Please be mindful next time!"])
-			})
-		}
-	}
-	
 	// commands
 	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
 		apidown = !apidown;
