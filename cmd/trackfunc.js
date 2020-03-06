@@ -39,8 +39,6 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 							embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
 							return client.channels.cache.get("665106609382359041").send({embed: embed})
 						}
-						let mods = osudroid.mods.droid_to_PC(mod);
-						let computed_accuracy = new osudroid.Accuracy({percent: acc, nobjects: mapinfo.objects});
 						let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
 						let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
 						let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
@@ -61,7 +59,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 						let ppline = parseFloat(npp.toString().split(" ")[0]);
 						let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-						embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${computed_accuracy.n300}/${computed_accuracy.n100}/${computed_accuracy.n50}/${computed_accuracy.nmiss}\`)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
+						embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
 						client.channels.cache.get("665106609382359041").send(ppline >= 450 ? "<@119496080269377536>" : "", {embed: embed}).catch(console.error)
 					})
 				}
