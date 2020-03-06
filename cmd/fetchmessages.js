@@ -13,6 +13,7 @@ function countAllMessage(channel, last_msg, date, daily_counter, cb) {
             daily_counter -= bot_messages_amount;
             for (const [snowflake, message] of messages.entries()) {
                 if (message.createdTimestamp < date) {
+                    daily_counter = Math.max(0, daily_counter);
                     console.log(channel.name + ": " + daily_counter);
                     return cb(daily_counter, snowflake, true)
                 }
