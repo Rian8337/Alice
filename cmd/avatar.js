@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
     if (args[0]) {
-        user = await client.users.fetch(args[0] || message.mentions.users.first().id);
+        user = await client.users.fetch(message.mentions.users.first().id|| args[0]);
         if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**")
     }
     embed.setDescription(`**${user.tag}**`).setImage(user.avatarURL({dynamic: true}));
