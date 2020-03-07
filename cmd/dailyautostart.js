@@ -1,4 +1,3 @@
-// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
@@ -170,7 +169,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             }
             let timelimit = Math.floor(Date.now() / 1000) + (dailyres[0].challengeid.includes("w") ? 86400 * 7 : 86400);
-            let constrain_string = constrain ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+            let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * footer.length);
             let embed = new Discord.MessageEmbed()
