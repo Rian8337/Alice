@@ -126,7 +126,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                 }
                 default: bonus_string += "No bonuses available"
             }
-            let constrain_string = constrain == '' ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+            let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
 
             let footer = config.avatar_list;
             const index = Math.floor(Math.random() * footer.length);
@@ -156,7 +156,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             let entries = await fetchScores(hash, 0);
             if (!entries) return;
             let bonus_winner_uid = entries[0].split(" ")[1];
-            let coin = client.emojis.get("669532330980802561");
+            let coin = client.emojis.cache.get("669532330980802561");
             binddb.findOne({uid: bonus_winner_uid}, (err, userres) => {
                 if (err) console.log("Cannot access database");
                 if (!userres) return;
