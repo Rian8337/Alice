@@ -20,8 +20,6 @@ function voteStringProcessing(topic, choices) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-
-    let xp_req = 20000;
     let votedb = alicedb.collection("voting");
 
     switch (args[0]) {
@@ -32,40 +30,33 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (res) return message.channel.send("❎ **| I'm sorry, a vote is active in this channel!**");
-                let url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${message.author.id}/stats`;
-                request(url, {headers: {"Authorization": tatsukey}}, (err, response, data) => {
+                let xp_req = parseInt(args[1]);
+                if (isNaN(xp_req) || xp_req < 0) return message.channel.send("❎ **| I'm sorry, that XP requirement is invalid!**");
+
+                let entry = args.slice(2).join(" ");
+                if (entry.indexOf("|") === -1) return message.channel.send("❎ **| I'm sorry, your format is invalid!**");
+                let topic = entry.substring(0, entry.indexOf("|")).trim();
+                let choices = entry.substring(entry.indexOf("|") + 1).trim().split("|");
+                let choice_list = [];
+                for (let i = 0; i < choices.length; i++) {
+                    if (!choices[i].trim()) continue;
+                    choice_list.push([choices[i].trim(), 0, []])
+                }
+
+                let insertVal = {
+                    initiator: message.author.id,
+                    channel: message.channel.id,
+                    topic: topic,
+                    xp: xp_req,
+                    choices: choice_list
+                };
+
+                votedb.insertOne(insertVal, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from Tatsumaki's API. Please try again!**");
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    let user_stats = JSON.parse(data);
-                    let user_score = parseInt(user_stats.score);
-                    if (user_score < xp_req && !isEligible(message.member)) return message.channel.send(`❎ **| I'm sorry, you are not eligible enough to vote! You need at least \`${xp_req}\` Tatsu server XP unless you're a staff member!**`);
-
-                    let entry = args.slice(1).join(" ");
-                    if (entry.indexOf("|") === -1) return message.channel.send("❎ **| I'm sorry, your format is invalid!**");
-                    let topic = entry.substring(0, entry.indexOf("|")).trim();
-                    let choices = entry.substring(entry.indexOf("|") + 1).trim().split("|");
-                    let choice_list = [];
-                    for (let i = 0; i < choices.length; i++) {
-                        if (!choices[i].trim()) continue;
-                        choice_list.push([choices[i].trim(), 0, []])
-                    }
-
-                    let insertVal = {
-                        initiator: message.author.id,
-                        channel: message.channel.id,
-                        topic: topic,
-                        choices: choice_list
-                    };
-
-                    votedb.insertOne(insertVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        message.channel.send(`✅ **| Successfully started vote.**\n${voteStringProcessing(topic, choice_list)}`)
-                    })
+                    message.channel.send(`✅ **| Successfully started vote.**\n${voteStringProcessing(topic, choice_list)}`)
                 })
             });
             break
@@ -110,6 +101,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing vote in this channel!**");
                 let choice = parseInt(args[0]) - 1;
                 let choices = res.choices;
+                let xp_req = res.xp;
                 if (isNaN(choice) || choice < 0 || choice > choices.length) return message.channel.send("❎ **| I'm sorry, that vote option is invalid!**");
 
                 let url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${message.author.id}/stats`;
@@ -157,7 +149,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "vote",
     description: "Main voting command.",
-    usage: "vote <option>\nvote check\nvote end\nvote start <topic> | <choice 1> | <choice 2> | <choice n> | ...",
-    detail: "`choice n`: The vote's choices [Any]\n`option`: The vote option to vote for [Integer]\n`topic`: The vote's topic [String]",
+    usage: "vote <option>\nvote check\nvote end\nvote start <xp req> <topic> | <choice 1> | <choice 2> | <choice n> | ...",
+    detail: "`choice n`: The vote's choices [Any]\n`option`: The vote option to vote for [Integer]\n`topic`: The vote's topic [String]\n`xp req`: Tatsu XP requirement to vote [Integer]",
     permission: "None"
 };
