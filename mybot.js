@@ -153,6 +153,34 @@ client.on("message", message => {
 		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
 	
+	// picture detector in #cute-no-lewd
+	if (!(message.channel instanceof Discord.DMChannel) && message.channel.id === '686948895212961807') {
+		if (message.attachments.size > 1) message.delete().catch(console.error);
+
+		let images = [];
+		for (let i = 0; i < msgArray.length; i++) {
+			let part = msgArray[i];
+			let length = part.length;
+			if (!part.startsWith("http") && (part.indexOf("png", length - 3) === -1 && part.indexOf("jpg", length - 3) === -1 && part.indexOf("jpeg", length - 4) === -1 && part.indexOf("gif", length - 3) === -1)) continue;
+			try {
+				encodeURI(part)
+			} catch (e) {
+				continue
+			}
+			images.push(part)
+		}
+		if (images.length > 0 || message.attachments.size > 0) {
+			if (picture_cooldown.has(message.author.id)) {
+				client.commands.get("tempmute").run(client, message, [message.author.id, 600, `Please do not spam images in ${message.channel}!`])
+			}
+			else {
+				picture_cooldown.add(message.author.id);
+				setTimeout(() => {
+					picture_cooldown.delete(message.author.id)
+				}, 5000);
+			}
+		}
+	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
