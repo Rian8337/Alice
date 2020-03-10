@@ -12,6 +12,7 @@ const droidapikey = process.env.DROID_API_KEY;
 const require_api = config.require_api;
 let apidown = false;
 let current_map = [];
+let picture_cooldown = new Set();
 
 // Command loading
 client.commands = new Discord.Collection();
