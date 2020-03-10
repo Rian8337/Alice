@@ -180,6 +180,7 @@ client.on("message", message => {
 					picture_cooldown.delete(message.author.id)
 				}, 5000);
 			}
+			if (message.attachments.size <= 1) message.react("👍").then(() => message.react("👎").catch(console.error)).catch(console.error)
 		}
 	}
 	
