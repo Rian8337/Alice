@@ -181,6 +181,7 @@ client.on("message", message => {
 				}, 5000);
 			}
 		}
+	}
 	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
