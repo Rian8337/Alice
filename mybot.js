@@ -177,7 +177,7 @@ client.on("message", message => {
 	}
 	
 	// picture log
-	if (message.attachments.size > 0 && !(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706') {
+	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706') {
 		let attachments = [];
 		for (const [, attachment] of message.attachments.entries()) {
 			let url = attachment.url;
