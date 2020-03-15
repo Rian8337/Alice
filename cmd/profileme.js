@@ -26,7 +26,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return;
+		default : return '0';
 	}
 }
 
@@ -59,7 +59,7 @@ module.exports.run = (client, message, args, maindb) => {
 				.setColor(8102199)
 				.setFooter("Alice Synthesis Thirty", footer[index])
 				.setThumbnail(player.avatarURL)
-				.setAuthor("osu!droid profile (click/tap here to view profile)", "https://image.frl/p/beyefgeq5m7tobjg.jpg", `https://ops.dgsrz.com/profile.php?uid=${uid}`)
+				.setAuthor("osu!droid profile (click/tap here to view profile)", `https://osu.ppy.sh/images/flags/${player.location}`, `https://ops.dgsrz.com/profile.php?uid=${uid}`)
 				.addField(`Total Score: ${player.score.toLocaleString()}`, `Overall Accuracy: ${player.accuracy}%`)
 				.addField(`Play Count: ${player.play_count}`, `Location: ${player.location}`)
 				.addField("Most Recent Play", `${client.emojis.cache.get(rankEmote(rplay.mark)).toString()} | ${rplay.filename} ${modread(rplay.mode)}\n${rplay.score.toLocaleString()} / ${rplay.combo}x / ${(parseFloat(rplay.accuracy) / 1000).toFixed(2)}% / ${rplay.miss}m\n${date.toUTCString()}`);
