@@ -715,18 +715,13 @@ MapStats.prototype.calculate = function(params = {}) {
             if (stats.od >= 0) {
                 stats.od *= od_ar_hp_multiplier;
                 stats.od = Math.min(stats.od, 10);
-                if (stats.droid_mods & mods.map_changing) {
-                    stats.od = modify_od(stats.od, stats.speed_multiplier, od_ar_hp_multiplier);
-                }
 
                 let droidtoMS = 75 + 5 * (5 - stats.od);
                 if (stats.mods.includes("PR")) {
                     droidtoMS = 55 + 6 * (5 - stats.od);
                 }
                 stats.od = 5 - (droidtoMS - 50) / 6;
-                if (!(stats.droid_mods & mods.speed_changing)) {
-                    stats.od = Math.min(stats.od, 5)
-                }
+                stats.od = modify_od(stats.od, stats.speed_multiplier, od_ar_hp_multiplier)
             }
 
             if (stats.cs >= 0) {
