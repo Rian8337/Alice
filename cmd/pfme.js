@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb) => {
 				"author": {
 					"name": "osu!droid profile (click here to view profile)",
 					"url": "http://ops.dgsrz.com/profile.php?uid="+uid,
-					"icon_url": "https://image.frl/p/beyefgeq5m7tobjg.jpg"
+					"icon_url": `https://osu.ppy.sh/images/flags/${player.location}`
 				},
 				"fields": [
 					{
