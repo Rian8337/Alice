@@ -1707,7 +1707,7 @@ MapStars.prototype.toString = function() {
 function Accuracy(values) {
     this.nmiss = values.nmiss || 0;
 
-    if (!values.n300) {
+    if (values.n300 === undefined) {
         this.n300 = -1;
     } else {
         this.n300 = values.n300;
