@@ -721,7 +721,10 @@ MapStats.prototype.calculate = function(params = {}) {
                     droidtoMS = 55 + 6 * (5 - stats.od);
                 }
                 stats.od = 5 - (droidtoMS - 50) / 6;
-                stats.od = modify_od(stats.od, stats.speed_multiplier, od_ar_hp_multiplier)
+               
+                // use 1 as multiplier as the OD has been multiplied previously
+
+                stats.od = modify_od(stats.od, stats.speed_multiplier, 1)
             }
 
             if (stats.cs >= 0) {
