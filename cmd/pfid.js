@@ -21,7 +21,7 @@ module.exports.run = (client, message, args) => {
 			"author": {
 				"name": "osu!droid profile (click here to view profile)",
 				"url": "http://ops.dgsrz.com/profile.php?uid="+uid,
-				"icon_url": `https://osu.ppy.sh/images/flags/${player.location}`
+				"icon_url": `https://osu.ppy.sh/images/flags/${player.location}.png`
 			},
 			"fields": [
 				{
