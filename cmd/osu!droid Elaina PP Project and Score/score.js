@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 const cd = new Set();
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 function scoreRequirement(lvl) {
     let xp;
