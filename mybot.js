@@ -16,8 +16,8 @@ let picture_cooldown = new Set();
 
 client.commands = client.utils = new Discord.Collection();
 
-// Utility loading
 console.log("Loading utilities and commands");
+// Utility loading
 fs.readdir("./util", (err, files) => {
 	if (err) throw err;
 	files.forEach((file, i) => {
@@ -28,7 +28,6 @@ fs.readdir("./util", (err, files) => {
 });
 
 // Command loading
-console.log("Loading commands");
 fs.readdir('./cmd', (err, folders) => {
 	if (err) throw err;
 	let entries = [];
