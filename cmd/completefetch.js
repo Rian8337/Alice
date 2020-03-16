@@ -24,7 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
     current_date = current_date.getTime();
-    let time_limit = 0;
+    let time_limit = Number.NEGATIVE_INFINITY;
         if (args[0]) {
         time_limit = new Date();
         time_limit.setUTCHours(0, 0, 0, 0);
