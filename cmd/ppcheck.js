@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const cd = new Set();
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
