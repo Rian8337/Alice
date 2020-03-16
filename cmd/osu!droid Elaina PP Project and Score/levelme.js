@@ -1,7 +1,6 @@
-// done rewriting
 const Discord = require('discord.js');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 function levelBar(levelprogress) {
     let barcount = 15;
