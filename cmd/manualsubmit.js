@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function scoreCalc(mode, score, maxscore, accuracy, misscount) {
 	let hddt = false;
