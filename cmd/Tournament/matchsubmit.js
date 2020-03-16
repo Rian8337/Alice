@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 function scoreCalc(score, maxscore, accuracy, misscount) {
 	let new_score = score / maxscore * 600000 + Math.pow(accuracy / 100, 4) * 400000;
