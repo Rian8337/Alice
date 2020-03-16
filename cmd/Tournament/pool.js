@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 module.exports.run = (client, message, args) => {
-    const filepath = "./pool/" + args[0] + ".png";
+    const filepath = "../../pool/" + args[0] + ".png";
     fs.readFile(filepath, err => {
         message.channel.send(err?"❎ **| I'm sorry, that pool does not exist!**": {file: filepath})
     })
