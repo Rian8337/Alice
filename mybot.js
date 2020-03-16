@@ -15,6 +15,7 @@ let current_map = [];
 let picture_cooldown = new Set();
 
 client.commands = client.utils = new Discord.Collection();
+client.help = [];
 
 console.log("Loading utilities and commands");
 // Utility loading
@@ -30,21 +31,17 @@ fs.readdir("./util", (err, files) => {
 // Command loading
 fs.readdir('./cmd', (err, folders) => {
 	if (err) throw err;
-	let entries = [];
 	folders.forEach((folder, i) => {
 		console.log(`${i+1}. Loading folder ${folder}`);
 		fs.readdir(`./cmd/${folder}`, (err, files) => {
 			if (err) throw err;
 			files = files.map((file) => file.substring(0, file.length - 3));
 			let entry = {section: folder, commands: files};
-			entries.push(entry);
+			client.help.push(entry);
 			files.forEach((file, j) => {
 				const props = require(`./cmd/${folder}/${file}`);
 				console.log(`${i+1}.${j+1}. ${file} loaded`);
-				client.commands.set(props.config.name, props);
-				if (i+1 === folders.length && j+1 === files.length) {
-					fs.writeFile('./help.json', JSON.stringify(entries), {encoding: "utf8"}, err => {if (err) throw err})
-				}
+				client.commands.set(props.config.name, props)
 			})
 		})
 	})
