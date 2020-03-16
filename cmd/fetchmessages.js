@@ -29,8 +29,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (!['132783516176875520', '386742340968120321'].includes(message.author.id)) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
-    if (args[0]) current_date.setDate(current_date.getUTCDate() - 1);
+    if (args[0]) current_date.setUTCDate(current_date.getUTCDate() - 1);
     current_date = current_date.getTime();
+    console.log(current_date);
 
     let channel_list = [];
     for (const [snowflake, channel] of message.guild.channels.cache.entries()) {
