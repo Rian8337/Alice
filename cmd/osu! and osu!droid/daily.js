@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const http = require('http');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 const cd = new Set();
 
 function isEligible(member) {
