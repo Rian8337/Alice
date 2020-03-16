@@ -14,21 +14,40 @@ let apidown = false;
 let current_map = [];
 let picture_cooldown = new Set();
 
-// Command loading
-client.commands = new Discord.Collection();
-fs.readdir("./cmd/" , (err, files) => {
-	if (err) throw err;
-	let cmdfile = files.filter (f => f.split(".").pop() === "js");
-	if (cmdfile.length <= 0) {
-		console.log("No command found uwu");
-		return
-	}
+client.commands = client.utils = new Discord.Collection();
 
-	console.log(`Loading ${cmdfile.length} command(s), please wait...`);
-	cmdfile.forEach((f, i) => {
-		let props = require(`./cmd/${f}`);
-		console.log(`${i+1} : ${f} loaded`);
-		client.commands.set(props.config.name, props)
+// Utility loading
+console.log("Loading utilities");
+fs.readdir("./util", (err, files) => {
+	if (err) throw err;
+	files.forEach((file, i) => {
+		let props = require(`./util/${file}`);
+		console.log(`${i+1}. ${file} loaded`);
+		client.utils.set(props.config.name, props)
+	})
+});
+
+// Command loading
+console.log("Loading commands");
+fs.readdir('./cmd', (err, folders) => {
+	if (err) throw err;
+	let entries = [];
+	folders.forEach((folder, i) => {
+		console.log(`${i+1}. Loading folder ${folder}`);
+		fs.readdir(`./cmd/${folder}`, (err, files) => {
+			if (err) throw err;
+			files = files.map((file) => file.substring(0, file.length - 3));
+			let entry = {section: folder, commands: files};
+			entries.push(entry);
+			files.forEach((file, j) => {
+				const props = require(`./cmd/${folder}/${file}`);
+				console.log(`${i+1}.${j+1}. ${file} loaded`);
+				client.commands.set(props.config.name, props);
+				if (i+1 === folders.length && j+1 === files.length) {
+					fs.writeFile('./help.json', JSON.stringify(entries), {encoding: "utf8"}, err => {if (err) throw err})
+				}
+			})
+		})
 	})
 });
 
@@ -58,7 +77,7 @@ alcdb.connect((err, db) => {
 // Main client events
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
-    client.user.setActivity("a!help | a!modhelp", {type: "PLAYING"}).catch(console.error);
+    client.user.setActivity("a!help", {type: "PLAYING"}).catch(console.error);
 	
     // API check and unverified prune
 	setInterval(() => {
@@ -87,10 +106,10 @@ client.on("ready", () => {
 	}, 10000);
 	
 	setInterval(() => {
-		if (!apidown) client.commands.get("trackfunc").run(client, message = "", args = {}, maindb);
-		//client.commands.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
-		//client.commands.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
-		// client.commands.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
+		if (!apidown) client.utils.get("trackfunc").run(client, message = "", args = {}, maindb);
+		// client.utils.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
+		// client.utils.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
+		// client.utils.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
 	}, 600000);
 
 	// Mudae role assignment reaction-based on droid cafe
@@ -188,7 +207,7 @@ client.on("message", message => {
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
-		let cmd = client.commands.get("response");
+		let cmd = client.utils.get("response");
 		return cmd.run(client, message, args, maindb, alicedb)
 	}
 	
@@ -202,8 +221,8 @@ client.on("message", message => {
 			let a = msgArray[i].split("/");
 			let id = parseInt(a[a.length - 1]);
 			if (isNaN(id)) continue;
-			if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map);
-			else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.commands.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
+			if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map);
+			else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
 		}
 	}
 	
