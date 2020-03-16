@@ -1,4 +1,4 @@
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
 	let uid = args[0];
