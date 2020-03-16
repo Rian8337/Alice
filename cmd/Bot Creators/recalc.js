@@ -1,4 +1,4 @@
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	if (i >= tlength) {
