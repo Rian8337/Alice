@@ -1,5 +1,5 @@
 const fs = require('fs');
-const config = require("../config.json");
+const config = require("../../config.json");
 
 function shuffle(input) {
     var temp; var rpick;
