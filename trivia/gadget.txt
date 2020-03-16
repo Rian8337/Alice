@@ -18,3 +18,121 @@
 3 | 1 | - | Who patented a steam engine that produced continuous rotary motion? | James Watt | Nikola Tesla | Albert Einstein | Alessandro Volta
 1 | 1 | - | When was the DVD invented? | 1995 | 2000 | 1990 | 1980
 5 | 1 | - | Who built the first laser? | Theodore Harold Maiman | Nikola Tesla | Jack Kilby | Edith Clarke
+3 | 1 | - | Who invented the BALLPOINT PEN? | Biro Brothers | Waterman Brothers | Bicc Brothers | Write Brothers
+3 | 1 | - | In which decade was the first solid state integrated circuit demonstrated? | 1950s | 1960s | 1970s | 1980s
+3 | 1 | - | What J. B. Dunlop invented? | Pneumatic rubber tire | Automobile wheel rim | Rubber boot | Model airplanes
+3 | 1 | - | Which scientist discovered the radioactive element radium? | Marie Curie | Isaac Newton | Albert Einstein | Benjamin Franklin
+3 | 1 | - | When was barb wire patented? | 1874 | 1840 | 1895 | 1900
+3 | 1 | - | What is the name of the CalTech seismologist who invented the scale used to measure the magnitude of earthquakes? | Charles Richter | Hiram Walker | Giuseppe Mercalli | Joshua Rumble
+3 | 1 | - | What Galileo invented? | Thermometer | Barometer | Pendulum clock | Microscope
+3 | 1 | - | This statesman, politican, scholar, inventor, and one of early presidents of USA invented the swivel chair, the spherical sundial, the moldboard plow, and the cipher wheel. | Thomas Jefferson | George Washington | Alexander Hamilton | John Adams
+3 | 1 | - | What James Watt invented? | Rotary steam engine | Diving bell | Steam boat | Hot air balloon
+3 | 1 | - | Where is the village of Branston, after which the famous pickle is named? | Staffordshire | Yorkshire | Lancashire | Norfolk
+3 | 1 | - | Who invented Jet Engine? | Sir Frank Whittle | Gottlieb Daimler | Roger Bacon | Lewis E. Waterman
+3 | 1 | - | What invention caused many deaths while testing it? | Parachute | Dynamite | Ladders | Race cars
+3 | 1 | - | Who invented Gunpowder? | Roger Bacon | G. Ferdinand Von Zeppelin | Sir Frank Whittle | Leo H Baekeland
+3 | 1 | - | Until Victorian times, chocolate was thought of as a drink. When did the first chocolate bar appear? | There is no sure date | 1828 | 1831 | 1825
+3 | 1 | - | In which decade was the telephone invented? | 1870s | 1850s | 1860s | 1880s
+3 | 1 | - | Who perfected GENETIC ENGINEERING? | Cohen &amp; Boyer | Hunt &amp; Davids | Sinclair &amp; Roberts | Jaysson &amp; Simons
+3 | 1 | - | What now-ubiquitous device was invented by Zenith engineer Eugene Polley in 1955? | Remote control | Microwave oven | VCR | Calculator
+3 | 1 | - | What Benjamin Franklin invented? | Bifocal spectacles | Radio | Barometer | Hygrometer
+3 | 1 | - | This part-time race car driver invented the bucket seat in 1969. Who was he?? | Steve McQueen | Harrison Frazier | Paul Newman | John Wayne
+3 | 1 | - | What plaything was invented by Joe McVicker in 1956? | Play-Doh | Silly Putty | Etch-A-Sketch | Lite-Brite
+3 | 1 | - | Who was the first American female to patent her invention, a method of weaving straw with silk? | Mary Kies | Marjorie Joyner | Margaret Knight | Amanda Jones
+3 | 1 | - | Who invented Gramophone? | Thomas Alva Edison | Michael Faraday | Fahrenheit | Sir Alexander Graham Bell
+3 | 1 | - | Who invented Internal Combustion Engine? | Otto | Roger Bacon | Karl Benz | Dr. Alan M. Turing
+3 | 1 | - | When was Monopoly created? | 1930s | 1940s | 1920s | 1950s
+3 | 1 | - | What furniture item was invented by California furniture designer Charles Prior Hall in 1968? | Waterbed | Sofa bed | Captain's chair | Hammock
+3 | 1 | - | The Manhattan Project was started by President Roosevelt in 1942 to ensure that the U.S. beat the Germans in developing a nuclear bomb. Whom did Roosevelt appoint as scientific head the Manhattan Project? | Robert Oppenheimer | James B. Conant | Leslie R. Groves | Vannevar Bush
+3 | 1 | - | When was the first lawn mower invented? | 1830 | 1854 | 1835 | 1849
+3 | 1 | - | In which decade were the first successful diode and triode vacuum tubes invented? | 1900s | 1800s | 1880s | 1890s
+3 | 1 | - | Who is the English physicist responsible for the 'Big Bang Theory'? | George Gamow | Albert Einstein | Michael Skube | Roger Penrose
+3 | 1 | - | What 'game' was first produced by the Southern Novelty Company in Baltimore, Maryland in 1892? | Ouija board | Frisbee | Monopoly | Ping Pong
+3 | 1 | - | Who had an explosive idea and first patented DYNAMITE? | A. Nobel | J. R. Gluber | G. Fawks | W. Bickford
+3 | 1 | - | Who invented the Spinning Jenny? | James Hargreaves | Thornton Hargreaves | Peter Hargreaves | Simon Hargreaves
+3 | 1 | - | Which insurance salesman invented the fountain pen in 1884? | Lewis Edson Waterman | Sir William Grove | Charles Kettering | George Fountain
+3 | 1 | - | When was the first elevator built? | 1743 | 1739 | 1760 | 1785
+3 | 1 | - | What charge card, developed in 1950, was the first to be accepted nationally in the US? | Diner's Club | Visa | Discover | MasterCharge
+3 | 1 | - | What Enrico Fermi invented? | Nuclear reactor | X ray machine | Betatron | Cyclotron
+3 | 1 | - | Which of the following was first patented by an Australian in 1889? | Electric Drill | Electric Shaver | Electric Fence | Electric Heater
+3 | 1 | - | Who among the following invented the small pox vaccine? | Edward Jenner | Robert Koch | Robert Hooke | Louis Pasteur
+3 | 1 | - | What George Westinghouse invented? | Railway air brakes | Light bulb | Electric razor | Refrigerator
+3 | 1 | - | Who is the only U.S. President to invent and patent something? | Abraham Lincoln | Theodore Roosevelt | Thomas Jefferson | Rutherford B. Hayes
+3 | 1 | - | What invention is credited to the Russian born American inventor Vladimir Kosma Zworykin? | Television | Telegraph | Radio | Dishwasher
+3 | 1 | - | Benjamin Franklin was a prolific inventor. He invented the lightning rod, the Franklin stove, studied electricity, discovered the Gulf Stream, started the first library, and on and on. Among his many other inventions, what musical instrument did he invent? | Harmonium | Banjo | Oboe | Clarinet
+3 | 1 | - | What Thomas Davenport invented? | Electric streetcar | Screw propellor | Chesterfield | Sleeping (railway) car
+3 | 1 | - | What Elisha Otis invented? | The brake used in modern elevators | Jet Engine | Turbine | Hydraulic Crane
+3 | 1 | - | Where was the yo-yo invented? | Philippines | France | United States | England
+3 | 1 | - | For what does the world owe Almon Strowger a debt of gratitude? | Automatic Telephone Exchanges | Parking Meters | Vending Machines | Traffic Lights
+3 | 1 | - | Who is often called the 'first African-American' inventor? | Benjamin Banneker | Bessie Blount | George Washington Carver | Elijah McCoy
+3 | 1 | - | The first hand glider was designed by...? | Leonardo DaVinci | The Wright brothers | Francis Rogallo | Galileo
+3 | 1 | - | In which decade was the telegraph invented? | 1840s | 1810s | 1870s | 1890s
+3 | 1 | - | What inspired reflecting road lights to be invented? | The light a cat's eyes gave off on a fence | Car door reflecting mirrors | Sun light on steel posts on road sides | The sun light on the windshield
+3 | 1 | - | When were blue jeans invented? | 1850s | 1900s | 1860s | 1870s
+3 | 1 | - | Who invented Electric Generator? | Michael Faraday | Sir Alexander Graham Bell | Alfred B. Nobel | Thomas Alva Edison
+3 | 1 | - | What device for new parents did Ann Moore invent in 1969? | Infant carrier | Bottle warmer | Baby monitor | Disposable diaper
+3 | 1 | - | In which decade was the transistor invented? | 1940s | 1950s | 1960s | 1980s
+3 | 1 | - | What Igor Sikorsky invented? | Helicopter | Hydroplane | Jet engine airplane | Glider
+3 | 1 | - | What Henry Bessemer invented? | Steel Converter | Aluminum | Electroplating | Steel rolling mill
+3 | 1 | - | What invention was first installed at a Hartford, Connecticut bank in 1889? | Pay telephone | Automatic teller machine | Time-lock safe | Burglar alarm
+3 | 1 | - | Ralph Samuelson was only 18 when he invented this sporting item in 1922. What was that? | Water skis | Golf tee | Motorboat | Hang glider
+3 | 1 | - | Who invented Bifocal Lens? | Benjamin Franklin | Alfred B. Nobel | Thomas Alva Edison | Rudolf Diesel
+3 | 1 | - | What Karl Benz invented? | Gasoline powered automobile | Streetcar | Glider | Steam turbine
+3 | 1 | - | When were bar code scanners invented? | 1970s | 1940s | 1950s | 1960s
+3 | 1 | - | When was the game Frisbee invented? | 1870s | 1920s | 1900s | 1890s
+3 | 1 | - | This English inventor is known as the 'Father of Computing.' | Charles Babbage | Philo Farnsworth | J. Presper Eckert | John Mauchly
+3 | 1 | - | Who invented Airship (rigid)? | G. Ferdinand Von Zeppelin | Dr. Alan M. Turing | Roger Bacon | Otto
+3 | 1 | - | What piece of clothing was invented by French fashion designer Louis Reard in 1946? | Bikini | Zoot suit | Mini-skirt | Tank top
+3 | 1 | - | In which year was MIDI introduced? | 1983 | 1987 | 1973 | 1977
+3 | 1 | - | In which decade was the SPICE simulator introduced? | 1970s | 1950s | 1960s | 1980s
+3 | 1 | - | Who invented the first controllable flying AEROPLANE (AIRPLANE)? | Wright Brothers | Lidenbergh Brothers | South Brothers | West Brothers
+3 | 1 | - | What groovy item was invented by Englishman Edward Craven Walker in 1963? | Lava lamp | Leisure suit | Eight-track tape deck | Hot comb
+3 | 1 | - | In which decade was the Internet first implemented? | 1960s | 1940s | 1950s | 1980s
+3 | 1 | - | What did cardiologist Dr. Paul Zoll invent in Massachusetts in 1952? | Pacemaker | EKG | Artificial heart valve | Artificial heart
+3 | 1 | - | What Elmer A. Sperry invented? | Gyrocompass | Hydroplane | Hydraulic turbine | Magnetic compass
+3 | 1 | - | For over 500 years, paper was only available and sold as single sheets. In 1902, an inventive Australian used half size sheets of paper, a bit of glue and cardboard to create the what? | Notepad | Calendar | Notice Board | Telephone Book
+3 | 1 | - | Who developed the idea of Crop Rotation? | Turnip Townsend | Potato Peterson | Cabbage Carlson | Swede Svenson
+3 | 1 | - | CORN FLAKES - Who made them first? | Kellogg | Nabisco | Quaker | Archers
+3 | 1 | - | William Frederick is credited with the invention of the modern frisbee in the mid 1950's. In 1957 the Wham-O Company bought his idea and the rest is history. They named the toy after William Frisbie who was a ________? | Pie maker | Owner of a pizza parlor | Student at Yale | Ceramic plate designer
+3 | 1 | - | Who came up with the idea for INSTANT MASHED POTATO? | E. Asselbergs | S. Tuberosum | W. Raleigh | K. Edwards
+3 | 1 | - | Who invented Dynamite? | Alfred B. Nobel | Sir Alexander Graham Bell | Benjamin Franklin | Thomas Alva Edison
+3 | 1 | - | What toy did George Lerner create for Hasbro company in 1952? | Mr. Potato Head | Sit and Spin | Talking baby doll | Hula hoop
+3 | 1 | - | For whom high heeled shoes were invented? | King Louis the XIV | Cleopatra | Queen Elizabeth I | King Charles II
+3 | 1 | - | What African-American inventor received 5 patents in the field of shoemaking? | Jan Ernst Matzeliger | Elijah McCoy | Ernest Just | Lewis Latimer
+3 | 1 | - | It travels over land and water. Who invented the HOVERCRAFT? | C. Cockerell | S. Sperrow | O. Stricheg | T. Henman
+3 | 1 | - | In which decade was the AEEE (now the IEEE) founded? | 1880s | 1850s | 1930s | 1950s
+3 | 1 | - | What type of system did  Paul Nipkow, John Baird, and Charles Jenkins all invent? | Television | Telephone | Early Warning | Electricity
+3 | 1 | - | What Sir Isaac Newton invented? | Reflecting telescope | Chronometer | Microscope | Spectacles
+3 | 1 | - | Who invented Bicycle? | Kirkpatrick Macmillan | Leo H Baekeland | Karl Benz | Evangelista Torricelli
+3 | 1 | - | In which decade with the first transatlantic radio broadcast occur? | 1900s | 1850s | 1860s | 1870s
+3 | 1 | - | In the 1700s, who would pay the postage fee for letters before the stamp was invented? | The receiver of the letter | The sender | There was no fee | The post office
+3 | 1 | - | Who synthesized the first wholly artificial gene? | Hargobind Khorana | J.J. Thompson | Benjamin Franklin | Meghnad Saha
+3 | 1 | - | FROZEN FOOD - Who discovered the first practical method of freezing food? | C. Birdseye | F. Rozenosh | G. Findus | R. Scott
+3 | 1 | - | When was the Raggedy Ann doll patented? | 1915 | 1920 | 1919 | 1911
+3 | 1 | - | What Frank Whittle invented? | Jet propulsion | Radar | Ethyl gasoline | Sonar
+3 | 1 | - | When was the first Lionel trains manufactured? | 1901 | 1920 | 1890 | 1944
+3 | 1 | - | What item, originally called the 'Whirlwind', was invented by Ives McGaffey in 1869? | Vacuum cleaner | Blender | Electric mixer | Washing machine
+3 | 1 | - | What office item was invented by Bette Nesmith Graham in 1951? | Liquid Paper | Fax machine | Stapler | Copy machine
+3 | 1 | - | What George Pullman invented? | Sleeping (railway) car | Airship | Box car (railway) | Air brakes
+3 | 1 | - | Who invented Bakelite? | Leo Hendrik Baekeland | Charles Goodyear | Roy Plunkett | Henry Ford
+3 | 1 | - | What toy was invented by Joshua Lionel Cowen around 1900? | Electric train | Raggedy Ann doll | Yo-yo | Tinkertoys
+3 | 1 | - | This African-American woman physical therapist worked with soldiers disabled in World War II. She invented a device that helped the disabled to eat by delivering food through a tube to a mouthpiece. | Bessie Blount | Marjorie Joyner | Mae Jamison | Beulah Henry
+3 | 1 | - | What invention by Garnet Carter made its debut at the Fairyland Inn Resort in Lookout Mountain, Tennessee, in 1927? | Miniature golf | Swimming pool slide | Ski lift | Golf cart
+3 | 1 | - | Who invented the phonograph? | John Kruesi | Thomas Edison | Jules Levy | Alexander Graham Bell
+3 | 1 | - | What beverage was invented by Charles Alderton in 1885 in Waco, Texas? | Dr. Pepper | Cream soda | Coca-Cola | Sprite
+3 | 1 | - | Who invented fuel cells in 1839? | Sir William Grove | Buckminster Fuller | Sylvester Graham | Joyce Hall
+3 | 1 | - | The ELECTRIC BATTERY, who's charged with inventing this one? | Volta | Hertz | Amper | Galvani
+3 | 1 | - | In which decade was the ARRL founded? | 1910s | 1940s | 1930s | 1920s
+3 | 1 | - | Who invented the Seed Drill? | Jethro Tull | Arlo Guthrie | Woodie Guthrie | Thomas Hines
+3 | 1 | - | What drink was invented by Charles Leiper Grigg in 1929? | 7-Up | Yoo-Hoo | Pepsi | Hawaiian Punch
+3 | 1 | - | For what is Charles Babbage (1792-1871) remembered? | Computers | Telescopes | Radio-Telegraphy | Steam Boating
+3 | 1 | - | Who invented Automobiles using gasoline? | Karl Benz | Leo H Baekeland | Evangelista Torricelli | Kirkpatrick Macmillan
+3 | 1 | - | Who invented the battery? | Alessandro Volta | John Wilkinson | James Hargreaves | Thomas Edison
+3 | 1 | - | Where were wigs first invented? | Egypt | Japan | France | China
+3 | 1 | - | Who was the first person to patent the JET ENGINE? | F. Whittle | C. Lindbergh | W. Histell | B. Owings
+3 | 1 | - | The initials JCB on earth-moving equipment are those of the founder of the company that makes it. What is his name? | Joseph Cyril Bamford | John Christopher Ballantyne | John Christopher Baxter | Jack Croxford Baker
+3 | 1 | - | What treat was invented by 11-year-old Frank Epperson in 1905? | Popsicle | Banana split | Cotton candy | Cracker Jacks
+3 | 1 | - | When was Milk Tray first introduced? | 1915 | 1934 | 1923 | 1942
+3 | 1 | - | When was the toothbrush invented? | 1770 | 1765 | 1790 | 1742
+3 | 1 | - | What item of apparel was invented by Ellery Chun, a Hawaiian clothing merchant, in 1931? | Aloha shirt | String bikini | Muumuu | Capri pants
+3 | 1 | - | Who invented Fountain Pen? | Lewis E. Waterman | John J. Loud | Sir Frank Whittle | Kirkpatrick Macmillan
