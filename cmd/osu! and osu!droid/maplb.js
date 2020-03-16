@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const request = require('request');
 const apikey = process.env.DROID_API_KEY;
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 const cd = new Set();
 
 async function fetchScores(hash, page) {
