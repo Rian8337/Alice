@@ -24,12 +24,28 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
     current_date = current_date.getTime();
+    let time_limit = 0;
+        if (args[0]) {
+        time_limit = new Date();
+        time_limit.setUTCHours(0, 0, 0, 0);
+        let entry = args[0].split("-");
+        if (entry.length != 3) return message.channel.send("❎ **| I'm sorry, that date format is invalid!**");
+        let year = parseInt(entry[0]);
+        let month = parseInt(entry[1]) - 1;
+        let date = parseInt(entry[2]);
+        if ([year, month, date].some(isNaN)) return message.channel.send("❎ **| I'm sorry, one of the date formats is invalid!**");
+        time_limit.setUTCFullYear(parseInt(entry[0]), parseInt(entry[1]) - 1, parseInt(entry[2]));
+        time_limit = time_limit.getTime();
+        if (time_limit < message.guild.createdTimestamp) return message.channel.send("❎ **| Hey, the server didn't even exist back then!**")
+    }
+
     let daily_counter = 0;
     let channeldb = alicedb.collection("channeldata");
     let total = 0;
     message.channel.messages.fetch({limit: 1}).then(last_message => {
         let message_id = last_message.first().id;
         count_all_message(message.channel, message_id, current_date, daily_counter, function testResult(count, last_id, iterateDate = false, stopSign = false) {
+            if (current_date < time_limit) stopSign = true;
             if (stopSign) return message.channel.send(`✅ **| ${message.author}, successfully logged ${total.toLocaleString()} messages!**`);
             if (iterateDate) {
                 daily_counter += count;
@@ -80,7 +96,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "completefetch",
     description: "Fetches all messages in a channel.",
-    usage: "completefetch",
-    detail: "None",
+    usage: "completefetch [<year>-<month>-<date>]",
+    detail: "`date`: UTC date limit [Integer]\n`month`: UTC month limit [Integer]\n`year`: UTC year limit [Integer]",
     permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
