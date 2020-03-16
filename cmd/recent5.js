@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const cd = new Set();
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 function modread(input) {
 	let res = '';
