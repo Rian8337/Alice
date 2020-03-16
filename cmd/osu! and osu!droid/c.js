@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const http = require('http');
 const droidapikey = process.env.DROID_API_KEY;
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (message.channel instanceof Discord.DMChannel) return;
