@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const help = require('../../help.json');
 
 module.exports.run = (client, message, args) => {
 	let rolecheck;
@@ -29,7 +28,7 @@ module.exports.run = (client, message, args) => {
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index]);
 
-		for (const section of help) {
+		for (const section of client.help) {
 			let string = '';
 			for (const command of section.commands) string += `\`${command}\` `;
 			string = string.trimEnd();
