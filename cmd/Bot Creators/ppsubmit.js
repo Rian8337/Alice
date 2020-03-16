@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, false, true);
