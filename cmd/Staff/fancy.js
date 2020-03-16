@@ -1,7 +1,7 @@
 const request = require('request');
 const tatsukey = process.env.TATSU_API_KEY;
 const droidapikey = process.env.DROID_API_KEY;
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 function memberValidation(message, user, role, time, userres, cb) {
     switch (role.toLowerCase()) {
