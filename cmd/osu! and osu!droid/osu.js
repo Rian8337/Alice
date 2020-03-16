@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const https = require('https');
 const apikey = process.env.OSU_API_KEY;
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function progress(level) {
     let final = (parseFloat(level) - Math.floor(parseFloat(level))) * 100;
