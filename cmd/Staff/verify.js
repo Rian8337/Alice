@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require("../config.json");
+const config = require("../../config.json");
 
 function isEligible(member) {
     let res = 0;
