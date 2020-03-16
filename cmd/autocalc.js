@@ -152,9 +152,10 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 			.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
 			.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
-		if (ndetail) message.channel.send(`Raw droid pp: ${npp.toString()}`);
-		if (pcdetail) message.channel.send(`Raw PC pp: ${pcpp.toString()}`);
-		message.channel.send({embed: embed}).catch(console.error);
+		let string = '';
+		if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
+		if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
+		message.channel.send(string, {embed: embed}).catch(console.error);
 
 		let time = Date.now();
 		let entry = [time, message.channel.id, mapinfo.hash];
