@@ -1,5 +1,5 @@
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args) => {
     let uid = parseInt(args[0]);
