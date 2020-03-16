@@ -619,7 +619,8 @@
 3 | 2 | https://i.imgur.com/yt02VIz.png | What country is represented by this flag?  | Syria
 3 | 2 | https://i.imgur.com/zBYYxpN.png | What country is represented by this flag?  | Marshall Islands
 3 | 2 | https://i.imgur.com/zLuBq1l.png | What country is represented by this flag?  | Algeria
-3 | 2 | https://i.imgur.com/zTOVfhf.png | What country is represented by this flag?  | Hungary3 | 2 | https://i.imgur.com/09dDNah.png | What country is highlighted on this map?  | Egypt
+3 | 2 | https://i.imgur.com/zTOVfhf.png | What country is represented by this flag?  | Hungary
+3 | 2 | https://i.imgur.com/09dDNah.png | What country is highlighted on this map?  | Egypt
 3 | 2 | https://i.imgur.com/0iRnWAj.png | What country is highlighted on this map?  | Papua New Guinea
 3 | 2 | https://i.imgur.com/0oN9MFH.png | What country is highlighted on this map?  | Central African Republic | Car
 3 | 2 | https://i.imgur.com/14nAY83.png | What country is highlighted on this map?  | Mongolia
@@ -815,3 +816,318 @@
 3 | 2 | https://i.imgur.com/zChCrog.png | What country is highlighted on this map?  | Maldives | Republic of Maldives
 3 | 2 | https://i.imgur.com/zKslICy.png | What country is highlighted on this map?  | Cameroon
 3 | 2 | https://i.imgur.com/zRYwJsw.png | What country is highlighted on this map?  | Madagascar
+3 | 1 | - | The Homolographic projection has the correct representation of | area | shape | baring | distance
+3 | 1 | - | The latitudinal differences in pressure delineate a number of major pressure zones, which correspond with | zones of climate | zones of oceans | zones of land | zones of cyclonic depressions
+3 | 1 | - | The higher the wind  speed and the longer the fetch or distance of open water across which the wind blows and waves travel, the ____ waves and the ____ energy they process. | larger, more | larger, less | smaller, more | smaller, less
+3 | 1 | - | The hazards of radiation belts include | All of the above | deterioration of electronic circuits | damage of solar cells of spacecraft | adverse effect on living organisms
+3 | 1 | - | The great Victoria Desert is located in | Australia | Canada | West Africa | North America
+3 | 1 | - | The intersecting lines drawn on maps and globes are | geographic grids | latitudes | longitudes | None of the above
+3 | 1 | - | The light of distant stars is affected by | both (a) and (b) | the earth's atmosphere | interstellar dust | None of the above
+3 | 1 | - | The landmass of which of the following continents is the least? | Australia | Africa | Asia | Europe
+3 | 1 | - | Without ____ the equator would be much hotter than it is while the poles would be much cooler. | All are similar terms | latitudinal redistribution of heat | cycle of air circulation | global wind pattern
+3 | 1 | - | The habitats valuable for commercially harvested species are called | sea grass bed | coral reefs | hot spots | None of the above
+3 | 1 | - | Which of the following is tropical grassland? | Savannah | Taiga | Pampas | Prairies
+3 | 1 | - | With the disintegration of USSR in end 1991, comprised of ____ Union Republics. | 15 | 10 | 5 | 25
+3 | 1 | - | The iron and steel industries of which of the following  countries are almost fully dependent on imported raw materials? | Japan | Britain | Poland | Germany
+3 | 1 | - | The temperature increases rapidly after | ionosphere | exosphere | stratosphere | troposphere
+3 | 1 | - | The humidity of the air depends upon | All of the above | temperature | location | weather
+3 | 1 | - | The groundwater can become confined between two impermeable layers. This type of enclosed water is called | artesian | artesian well | unconfined groundwater | confined groundwater
+3 | 1 | - | The largest glaciers are | continental glaciers | mountain glaciers | alpine glaciers | piedmont glaciers
+3 | 1 | - | The ionosphere includes | thermosphere and exosphere | mesosphere | thermosphere | thermosphere, exosphere and mesosphere
+3 | 1 | - | The highest degree of concentration of mineral deposits are found in | northeastern zone | northwestern zone | southern zone | All of the above
+3 | 1 | - | The group of minerals chemically containing hydrocarbons is | organic group | silicate group | oxide group | hydride group
+3 | 1 | - | The iron ore mined at Bailadila is mostly | haematite | siderite | limonite | magnetic
+3 | 1 | - | The leading state in producing paper is | West Bengal | Bihar | Kerala | Orissa
+3 | 1 | - | The largest dune files are found in | both (a) and (b) | Middle East | North Africa | None of the above
+3 | 1 | - | The Harmattan is | All of the above | cool, extremely dry wind that forms over the Sahara and blows westward  or  south-westward to the African coast | wind that blows during the dry season from December to February | tertiary wind that carry great quantities of fine dust from the Sahara
+3 | 1 | - | The largest gold producing country in the world(in 2006) is | South Africa | China | Canada | USA
+3 | 1 | - | The hydrological cycle is a conceptual model that describes | both (a) and (b) | the storage of water between biosphere, hydrosphere, atmosphere and lithosphere | the movement of water between biosphere, atmosphere, lithosphere and hydrosphere | None of the above
+3 | 1 | - | The least explosive type of volcano is called | Basalt plateau | Cinder cone | Shield volcanoes | Composite volcanoes
+3 | 1 | - | The largest fish exporting region in the world is | the north-east atlantic region | the north-east pacific region | the north-west pacific region | the south-east asian region
+3 | 1 | - | The largest country of the world by geographical area is | Russia | Vatican City | Australia | USA
+3 | 1 | - | The hot and cold deserts together occupy nearly ____ land area of the world. | 1/3rd | 1/2 | 1/4th | 3/4th
+3 | 1 | - | The highest average salinity amongst the following seas is reported from | Dead Sea | Red Sea | Black Sea | Mediterranean Sea
+3 | 1 | - | The Himalayan mountain system belongs to which of the following? | Fold mountains | Volcanic mountains | Residual mountains | Block mountains
+3 | 1 | - | The heavy day soils that show significant expansion and contraction due to the presence or absence of moisture is called | vertisols | aridsols | histosols | andisols
+3 | 1 | - | The HBJ Upgradation project, upgraded the capacity of HBJ pipeline from 18.2 MM SC MD to | 33.4 MM SC MD | 20 MM SC MD | 22.3 MM SC MD | 29.6 MM SC MD
+3 | 1 | - | The highest mountains on earth namely Mount Everest, K2, Kanchenjanga are located in | the greater Himalayas | the Lesser Himalayas | the outer Himalayas | None of the above
+3 | 1 | - | The infrared radiation by sun are strongly absorbed by | carbon dioxide | water vapours | carbon dioxide and water vapours | ozone
+3 | 1 | - | The latitude of a place expresses its angular position relative to the plane of | equator | axis of earth | north pole | south pole
+3 | 1 | - | The landforms that are influences by several process namely, weathering, erosion, deposition are known as | polygenetic landforms | structural landforms | polycyclic landforms | None of the above
+3 | 1 | - | The initial increase of magnetic field in magnetic storms is caused | when the shock wave, associated with the gusty solar wind, compresses the magnetosphere | when there is a large decrease in field intensity | when the gust wind itself engulfs the magnetosphere | None of the above
+3 | 1 | - | The island state of Australia is | Tasmania | Victoria | Queensland | New South Wales
+3 | 1 | - | The Ice age ended about ____ years ago. | 14,000 | 140 | 1,400 | 140,000
+3 | 1 | - | The languages used in China is | Chinese, English | Chinese, Arabic | Chinese, French | Chinese, Korean
+3 | 1 | - | The islands with coral covered surfaces in Bay of Bengal are | Nicobar islands | Andaman islands | both (a) and (b) | None of the above
+3 | 1 | - | Within the transporting medium, transport can occur by | All of the above | suspension | solution and traction | solution
+3 | 1 | - | The length of the day is determined in | astronomical units | solar terms | length of the hours | None of the above
+3 | 1 | - | The hot, dry wind on the east or leeward side of the Rocky mountains (North America) is called | the Chinook | the Sirocco | the Harmattan | the Loo
+3 | 1 | - | The islands of Seychelles are located in the | Indian Ocean | Arctic Ocean | Atlantic Ocean | Pacific Ocean
+3 | 1 | - | The island of Sri Lanka formerly known as | Ceylon | Madagascar | Tasmania | None of the above
+3 | 1 | - | The highest sand dunes are found is | the Sahara desert | the Atacama desert | the Kalahari desert | the Gobi desert
+3 | 1 | - | The greatest variety of animal and plant species is fund in | tropical moist forests | temperate grasslands | tundra regions | in hot deserts
+3 | 1 | - | The layer of the earth, immediately below the crust, is called | outer mantle | outer core | inner core | inner mantle
+3 | 1 | - | The highest mountains in Africa, which is not part of any mountains chain, is | Mt. Kilimanjaro | Mt. Aconcagua | Mt. Kosciuszko | Mont Blanc
+3 | 1 | - | The heavier silicates named as 'Sima' or silica + magnesium are most abundant in the | ocean floors | crust | core | mantle
+3 | 1 | - | The imaginary line on the earth's surface, which closely follows the 180 º meridian, is called the | International Date Line | Tropic of Cancer | Equator | Prime Meridian
+3 | 1 | - | The largest part of our hydrosphere is | Pacific ocean | Atlantic Ocean | Indian Ocean | Antarctica ocean
+3 | 1 | - | The limit beyond which the stars suffer internal collapse is called the | Chandrasekhar limit | Raman Effect | Aurora Borealis | Quasan Zone
+3 | 1 | - | The ground water that occurs when flow of the subterranean water is not confined by the presence of impermeable layers is called | unconfined groundwater | confined groundwater | aquifer | artesian
+3 | 1 | - | The gulf that separates Finland and Sweden in Europe is | the Gulf of Bothnia | the Gulf of Lions | the Gulf of Genoa | the Gulf of Venice
+3 | 1 | - | The largest continent in the world is | Asia | Africa | Australia | Antarctica
+3 | 1 | - | The landforms that are created by massive earth movements due to plate tectonics are called | structural landforms | weathering landforms | erosional landforms | depositional landforms
+3 | 1 | - | The largest production of mica in Asia is from | India | Indonesia | Malaysia | Myanmar
+3 | 1 | - | The latitude 'AA' on the map represents the | Equator | Tropic of Cancer | Tropic of Capricorn | None of the above
+3 | 1 | - | The largest fresh water lake of Africa, area wise is | lake Victoria | lake Tanganyika | lake Malawi | Lake Rudolf
+3 | 1 | - | The important mountains of Europe include | Alps, Carpathians, Pyrenees, Apennines | Andes, Alps, Pyrenees | Alps, Himalayas, Rock mountains | None of the above
+3 | 1 | - | The last major glacial period began about 2,000,000 years before present and is commonly known as | Pleistocene or ice age | Paleocene or ice age | Pliocene or ice age | Holocene or ice age
+3 | 1 | - | The imaginary axis at which the earth rotates remains inclined at an angle of ____ to the plane of earth's orbit. | 66 1/2 &deg; | 44 1/2 &deg; | 55 1/2 &deg; | 0 &deg;
+3 | 1 | - | The ionosphere contains ionized air that protects the earth from | the falling meteorites | the ultraviolet rays of the sun | the infrared rays of the sun | None of the above
+3 | 1 | - | The horizontal of soil profile is composed of | weathered parent material that is not affected by translocation and organic modification | material affected by translocation &amp; organic modification | unweathered bedrock | None of the above
+3 | 1 | - | The largest city in Latin America is | Mexico city | Caracas | Rio-de-Janeiro | Buenos Aires
+3 | 1 | - | The highest and lowest values of a weather element observed over the entire period of record are | absolute extremes | extremes | average extremes | relative extremes
+3 | 1 | - | The highest mountain peak of Oceania is | Puncak Jaya, Indonesia. | Mt. Victoria, Papua New Guinea | Mt. Kosciusko, Australia | Mt. Cook, South Island (New Zealand)
+3 | 1 | - | The length of the tropical years (the time interval between successive occurrences of the spring equinox) is decreasing very slowly as a result of | both (a) and (b) | small, progressive changes in the earth's rotational speed | small, progressive change in earth's orbit around the sun | None of the above
+3 | 1 | - | The largest gulf in the world is | Gulf of Mexico | Persian Gulf | Gulf of Carpentaria | Gulf of Mannar
+3 | 1 | - | The hunting and gathering economy can support only | 1 person per sq. km | 3 persons per sq. km | 5 persons per sq. km | 7 persons per sq. km
+3 | 1 | - | The import of crude oil and petroleum done from national oil companies of producer countries, which have a net exportable surplus of oil is by | term contracts | term tenders | monthly tenders | All the above
+3 | 1 | - | The land-sea distribution or the positions of the world's continents and major oceans influences | both (a) and (b) | the major pressure belts that develop from the general circulation of the atmosphere | the development of the mid-latitude cyclonic depressions, at the convergence zone between polar and subtropical air masses | None of the above
+3 | 1 | - | The knowledge about the topography of the ocean basins has been derived from | All of the above | seismic surveying | echo sounder | side-scan sonar
+3 | 1 | - | The headquarters of the Commonwealth of Independent States (CIS), formed out of erstwhile USSR, is at | Minsk in Byelorussia | Moscow in Russia | Kiev in Ukraine | Kistiner in Moldavia
+3 | 1 | - | The minor planets revolving between the orbits of Jupiter and Mars are called | Asteroids | Novas | Comets | Meteors
+3 | 1 | - | The lowermost and the oldest epoch of the Tertiary Period of geologic time is | Palaeocene | Pliocene | Palaeozoic | Holocene
+3 | 1 | - | The luminous coloured ring, surrounding the sun is called the | corona | nebula | comet | asteroid
+3 | 1 | - | The longest ship canal in the world is the | St. Laurence Seaway (USA and Canada) | Suez canal, Egypt | Kiel canal, Germany | Panama canal, Central America
+3 | 1 | - | The major geological events of the Palaeozoic era include | both (a) and (b) | Caledonian mountain rise, life comes ashore | Appalachians and Central European mountains come up | None of the above
+3 | 1 | - | The major events of Pre-Cambrian era include | All of the above. | formation of crust, continents and oceans | formation of crust, birth of oldest known rock, origin of life | formation of present day atmosphere
+3 | 1 | - | The meridian passing through London is called the | Prime Meridian of 0� Meridian | equator | Tropic of Cancer | Tropic of Capricorn
+3 | 1 | - | The most recent era of the geological time scale is | cenozoic | Mesozoic | Triassic | paleocene
+3 | 1 | - | The low heating capacity of which of the types of coal reduces its value as an industrial fuel? | Peat | Anthracite | Bituminous coal | Lignite
+3 | 1 | - | The most important factor that is affecting all the chemical weathering processes is | climate | vegetation | topography | None of the above
+3 | 1 | - | The longest river in the Common wealth of independent states is the | Volga river | Irtysh river | Ob river | Yenisei river
+3 | 1 | - | The monsoon climatic regions are | South-east Asia including Australia, Africa, America | Europe and South America | Asia, Africa and Antarctica | None of the above
+3 | 1 | - | The main vegetation of the steppe type climatic regions is | large grasslands | evergreen forests | evergreen deciduous forests | coniferous forests
+3 | 1 | - | The minerals of sulphide group are | All of the above | Cinnabar | Pyrite | Galena
+3 | 1 | - | The major crude oil markets are the | both (a) and (b) | Middle East regions | far east regions | None of the above
+3 | 1 | - | The most important force that provide resistance to particles towards entertainment is | frictional resistance | particle cohesive bonds | particle adhesive bonds | momentum
+3 | 1 | - | The metamorphism which involves the chemical replacement of elements in rock minerals when gases and liquids permute into bedrock is called | metasomatic metamorphism | dynamic metamorphism | thermal metamorphism | contact metamorphism
+3 | 1 | - | The magnetosphere becomes unstable during the magnetic storms during a period of | main phase | initial phase | storm sudden commencement phase | None of the above
+3 | 1 | - | The major cause of species extinction is | habitat loss and degradation | agricultural activities | extraction (including mining, fishing, logging) | development (human settlements, industry)
+3 | 1 | - | The major crops found in Sudan are | maize, cotton, bananas, groundnut | rice, barley, bananas, cocoa | bajra, oats, tobacco | wool, wine, jute
+3 | 1 | - | The most pleasant elements i.e. summer temperatures rarely above 40� and winters are fairly mild, occur in the | temperature mid-latitude zone | tropical mid-latitude zone | sub-tropical latitude zone | sub-temperature latitude zone
+3 | 1 | - | The movement of particles by rolling, sliding and shuffling along the eroded surface is called | traction | saltation | suspension | solution
+3 | 1 | - | Which of the following is an igneous rock? | Granite | Limestone | Slate | Quartzite
+3 | 1 | - | The main dividing line between the geological regions of the Indo Gangetic plain and the peninsula is | the Vindhya range | the Aravallis | the Nilgiri hills | the Satpwas
+3 | 1 | - | The mean basin area of successive ordered streams formed a linear relationship when graphed. This statement is given by | law of basin areas | morph metric analysis | law of drainage composition | None of the above
+3 | 1 | - | The most explosive type of volcano is | the caldera | a cinder cone | basalt plateau | shield volcanoes
+3 | 1 | - | The lowest point, on land, in the world is | Dead sea, Jordan/Israel | Death valley, USA | Caspian sea, Russia | Lake Eyre, Australia
+3 | 1 | - | The low latitude zone of globe extends between | Tropic of Capricorn and Cancer | North pole to South pole | Tropic of Capricorn and equator | Equator and Tropic of Cancer
+3 | 1 | - | The main objective of multi-purpose river projects are | All of the above | extension of irrigation facilities by constructing dams to store surplus water during the rainy season, for release in summer | power generation by constructing hydro power stations | flood controls and making rivers navigable
+3 | 1 | - | The mountains which come into being after the continental drift started, with the break up of the large land mass of pangola are | young mountains | old mountains | volcanic mountains | fold mountains
+3 | 1 | - | The Mistral is | All of the above | very cold wind, which blows down from the plateau of central France | swift, dry, cold northerly wind that blows down from the western Alps and the plateau of Southern  France and out over the Mediterranean | wind that blows for 100 days a year and may cause extensive frost damage to plants
+3 | 1 | - | The main period of Mesozoic era include | Triassic period, Jurassic period and cretaceous period | Triassic period and Cretaceous period | Jurassic period and Triassic period | cretaceous period and Jurassic period
+3 | 1 | - | The main percentage of the volume of water in the hydrosphere is in | oceans and seas | groundwater, rivers and streams | glaciers and ice sheets | freshwater lakes and water vapours
+3 | 1 | - | The main tributaries of Indus river system are | both (a) and (b) | the Jhelum, the Chenab , the Ravi | the Beas, the Sutlej | None of the above
+3 | 1 | - | The model which explains the various types of igneous rocks | Bowens reaction series | rock cycle | both are similar terms | None of the above
+3 | 1 | - | The mean surface temperature of the sun is estimated to be of the prder of | 5500C | 4000C | 2000C | 1000C
+3 | 1 | - | Which of the following is an inland sea? | Caspian sea | Caribbean sea | Red sea | Yellow sea
+3 | 1 | - | The most densely populated country of Africa is | Mauritius | Rwanda | Burundi | Sierra Leone
+3 | 1 | - | The major countries of Middle East are | All of the above. | Iran, Iraq, Oman, Qatar, Saudi Arabia, Kuwait | UAE, Jordan, Syria, Lebanon, Yemen | Israel, Turkey, Cyprus, Afghanistan
+3 | 1 | - | The most recent and logical concept regarding the origin of ocean basins and continents is that of | continental data | conventional current | plate tectesic | cooling process
+3 | 1 | - | The main types of air mass include :I maritime tropical(mT), II maritime polar, III maritime arctic(mA), IV continental polar(cP) | All of the above | I, III, IV | I, IV | I, II
+3 | 1 | - | The major motion of the planet earth includes | both (a) and (b) | rotation | revolution | any of these depending upon the question under construction
+3 | 1 | - | The most salty sea in the world is | Dead sea | Red sea | Arabian sea | Mediterranean sea
+3 | 1 | - | The most densely populated regions in the world are | the monsoon climatic regions | the equatorial regions | the hot desert climatic regions | the summer climatic regions
+3 | 1 | - | The most notable example of a tectonic valley is that of the | Kashmir valley | Doon valley | plains of Aksai Chin | None of the above
+3 | 1 | - | The monetary currency of Greece is called (prior to Jan 1, 2002). | drachma | guilder | yen | dinar
+3 | 1 | - | The main examples of Rabi crop are | wheat, barley, peas, rapeseed, mustard, grams | rice, jowar, barley, wheat | peas, maize, cotton and jute | All of the above
+3 | 1 | - | The modern theory of plate tectonics states | All of the above | the creation of oceanic crust and the drifting of continents | the convention currents within the earth's mantle cause the creation of new oceanic crust at the mid oceanic ridges | that the oceanic crust is destroyed at areas where this crust type becomes subducted under the lighter continental crust
+3 | 1 | - | The mean distance of the earth from the sun is approximately | 149,502,000 km | 150,503,000 km | 148,000,000 km | 150,000,000 km
+3 | 1 | - | The major control over the form of the developing slope is exerted by | balance between inputs and outputs from the hill slope system | inputs to the hill slope | outputs from the hill slope | None of the above
+3 | 1 | - | The middle latitude extends between | 23(1/2)? and 66? in both the hemispheres | 23(1/2)? North to 32(1/2)? South | 66? North to 66? South | North pole and South pole
+3 | 1 | - | The major graphite producing country is | China | Russia | Sri Lanka | India
+3 | 1 | - | The maximum soil fertility occurs in the pH range of | 6.0 to 7.2 | 5.0 to 6.2 | 7.0 to 8.2 | 4.0 to 5.2
+3 | 1 | - | The mica belt of the Himalayas, the major part of it is situated in | Bihar | Andhra Pradesh | Rajasthan | West Bengal
+3 | 1 | - | The most well known member of halick group is | Halite | Pyrite | Galena | Hematite
+3 | 1 | - | The mountains that separate European and Arctic Russia are | the Urals | the Pyranees | the Balkans | the Carpathians
+3 | 1 | - | The main properties of cosmic ray particles are | All of these are its properties | its electric charge | its rest mass | its energy
+3 | 1 | - | The model that describes how various geological processes create, modify and influence rock is called | rock cycle | water cycle | energy cycle | None of the above
+3 | 1 | - | The magnetic field generated due to magnetic storm is directed in the ____ direction to the earth's main field. | opposite | same | southward | northward
+3 | 1 | - | The main factor determining a region's climate is | latitude | longitude | temperature | All of the above
+3 | 1 | - | The moon orbits the earth at a mean distance approximately | 0.384 million km | 149.6 million km | 579 million km | 227.9 million km
+3 | 1 | - | The mean radius of the earth is approximately | 6,400 km | 32,000 km | 9,600 km | 12,800 km
+3 | 1 | - | Which of the following is a warm current? | Kurosiwo current | Benguela current | Labrador current | South Pacific current
+3 | 1 | - | The major countries of central America are | Belize, Costa Rica, Panama | China, Taiwan, Japan | Iran, Iraq, Saudi Arabia, Kuwait | All of the above
+3 | 1 | - | The main producers of free gas are | both (a) and (b) | the south Bassein and Tapti fields in the western offshore | the gas fields in Tripura and Andhra Pradesh (KG Basin) | None of the above
+3 | 1 | - | The major pedogenic process acting on soils at the macro scale are | All of the above | laterisation and podsolisation | calcification and salinisation | salinisation and gleisation
+3 | 1 | - | The minerals resources of north-eastern zone include | coal, Fe, Mn, Cu, Mica, U, diamond | crude Petroleum and natural gas | Fe, Au(gold) | natural gas, Fe, Au, Mn, U
+3 | 1 | - | The moon | All of the above | is the natural satellite of earth | has no liquid water | has no atmosphere
+3 | 1 | - | The moon's volume is about ____ that of earth. | 1/50 th | 1/40 th | 1/60 th | 1/20 th
+3 | 1 | - | The magnetic field of earth, Magnetosphere expands to about | 64,000 km above the earth's surface | 9600 km above the earth's surface | 8000 km above the earth's surface | None of the above
+3 | 1 | - | The ministry of Water Resources lays down policies and programmes for the development and regulation of the country's water resources. It covers | All of the above | sartorial planning, coordination and policy guidelines | technical examination and techno- appraisal of project providing central assistance to specific projects | facilitation of external assistance in resolution of interstate water disputes, policy formulation planning and development of ground water resources
+3 | 1 | - | The main crops of kharif are | All of the above | rice, jowar, bajra | ragi, maize | cotton, jute
+3 | 1 | - | The main percentage of the volume of water in the hydrosphere is in | oceans and seas | groundwater's, rivers and streams | glaciers and ice sheets | freshwater lakes and water vapours
+3 | 1 | - | The longest epoch of the tertiary period is | Eocene | Palaeocene | Oligocene | Miocene
+3 | 1 | - | The main watershed of most of the peninsular river lies in the | Western Ghats | Aravalli hills | Raj Mahal hills | Siwalik hills
+3 | 1 | - | The longest day (shortest night) in the southern hemisphere is | December 22 | June 21 | July 21 | November 22
+3 | 1 | - | The most obvious effect of pressure on rocks is | the reorientation of mineral crystals | foliation | lineation | lithification
+3 | 1 | - | The longest era of the classification of the history of earth is | Pre-Cambrian era | Cainozoic era | Palaeozoic era | Mesozoic era
+3 | 1 | - | The main objective of centrally sponsored Command Area Development programme is | both (a) and (b) | improving the utilisation of irrigation potential | optimizing agricultural productivity and production from the irrigated area | None of the above
+3 | 1 | - | The minimum values of annual receipts of solar radiation occur at | the arctic | the equator | the tropics | None of the above
+3 | 1 | - | The pedogenic process associated with poor drainage and which involves the accumulation of organic matter in the upper layers of the soil is called | gleisation | salinisation | calcification | podsolisation
+3 | 1 | - | The rock formations that cannot store groundwater are called | aquicludes | aquifers | perched aquifer | spring
+3 | 1 | - | The planet that takes the highest time for completing a rotation is | Venus | Mercury | Earth | Pluto
+3 | 1 | - | The Penumbra is | both (a) and (b) | the outer portion of the moon's shadow | formed by the tangent that intersects between the sun and the moon | None of the above
+3 | 1 | - | The river situated along the border between the USA and Mexico is | the Rio Grande | the Amazon | the Mississippi | the Colorado
+3 | 1 | - | The process of capture of precipitation by the plant canopy and its subsequent return to the atmosphere is called | interception | sublimation | stem flow | through fall
+3 | 1 | - | The oldest rocks found in ocean basins are ____ than the oldest continental rocks. | younger | older | larger | smaller
+3 | 1 | - | The period of daylight | All of the above | is nearly constant near the equator | varies with latitude and the season | reaches a maximum of 24 hour in the polar zones in summer
+3 | 1 | - | The process of weathering results into | All of the above | the complete loss of particular atoms or the compounds from the weathered surface | the addition of specific atoms or compounds to the weathered surface | a breakdown of one mass in to two or more masses, with no chemical change in the mineral or rock
+3 | 1 | - | The part of continental margin that is structurally a part of continent? | both (a) and (b) | Continental shelf | Continental Slope | None of the above
+3 | 1 | - | The original landmass, pangola split into | Laurissa in the north and Godwanaland in the south | Laurissa in the south and Godwanaland in the north | Laurissa in the east and Godwanaland in the west | Laurissa in the west and Godwanaland in the east
+3 | 1 | - | The R-horizon of soil horizon consists of | unweathered bedrock | weathered parent material | plant litter at various levels of decomposition | None of the above
+3 | 1 | - | The propagation of radio signals is greatly influence by | ionosphere | troposphere | exosphere | thermosphere
+3 | 1 | - | The pyramidal peaks that form when several cirques chisel a mountain form three more sides are called | horns | cirques | aretes | medial moraines
+3 | 1 | - | The process that involves the eroded material being dissolved and carried along in water as individual ions is called | solution | suspension | saltation | traction
+3 | 1 | - | The relative abundance of dissolved salts in seawater in descending order is as follows | chlorine, sodium, sulphate, magnesium, calcium, potassium | sodium, chlorine, magnesium, potassium, sulphate, calcium | chlorine, magnesium, calcium, sodium, potassium, sulphate | chlorine, sodium, magnesium, calcium, potassium, sulphate
+3 | 1 | - | The planets with no natural satellites (reported so far) are | Mercury and Venus | Earth and Pluto | Mars and Neptune | Jupiter and Saturn
+3 | 1 | - | The percentage of the incident radiation reflected back to space is called | planet's albedo | earth's albedo | both are similar terms | None of the above
+3 | 1 | - | The plants of which of the following crops are highly sensitive to frost? | Cotton | Barely | Maize | None of the above
+3 | 1 | - | The religion of Afghanistan is | Islam | Buddhism | Hinduism | Christianity
+3 | 1 | - | The region that has a typical dispersed rural settlement pattern is the | Kerala coastal plain | western Ganga plain | eastern Rajasthan | Telengana plateau
+3 | 1 | - | The reaction between compounds and oxygen is called | oxidation | hydrolysis | carbonation | solution
+3 | 1 | - | The percentage of sun's radiation reflected back into space is about | 36 percent | 47 percent | 17 percent | None of the above
+3 | 1 | - | The progressive wave theory regarding of tides was put forth by | William Whewell | R.A. Harris | Issac Newton | G.B. Airy
+3 | 1 | - | The original founders of Common wealth of Independent States, in December 1991, are | Russia, Ukraine and Byelorus | Tadjikistan, Khirghizia and Turkemenistan | Armenia, Georgia and Azerbaijan | Moldavia, Khazakhastan and Uzbekistan
+3 | 1 | - | The Pyrenees mountains are located on the border between ____ and ____ | France, Spain | Romania, Bulgaria | Norway, Sweden | Hungary, Romania
+3 | 1 | - | The process of evaporation of water in nature is one of the basic components of the hydrological cycle. The other process that is considered to be essential for the completion of hydrological cycle is the | movement of water vapour in the atmosphere | flow tide and ebb tide in a river | flow of water in the sea | movement of water in the water table
+3 | 1 | - | The ocean water is saline due to | both (a) and (b) | evaporation of its surface | volume of fresh water added by rainfall | salts are already present in sea water
+3 | 1 | - | The platform and the basement rock together form | craton | shield | both (a) and (b) | None of the above
+3 | 1 | - | The process that explains the recent changes in the height of sea level in coastal areas of eastern and northern Canada and Scandinavi is | isostasy | continental drift | plate tectonics | None of the above
+3 | 1 | - | The planet with the maximum number of natural satellites (moons), so far discovered is | Jupiter | Neptune | Saturn | Uranus
+3 | 1 | - | The river Jordan drains into the | Dead Sea | Adriatic Garden | Gulf of Suez | Resaca Garden
+3 | 1 | - | The ratio of land to ocean in the southern hemisphere is | 1 to 4 | 1 to 1.5 | 1 to 1 | 1 to 10
+3 | 1 | - | The phosphate are a group of minerals of one or more metallic elements chemically associated with the phosphate compound  ____ | PO<sub | PO<sub | PO<sub | PO
+3 | 1 | - | The polar diameter is ____ to the equatorial diameter. | less | more | equal | they cannot be compared
+3 | 1 | - | The process that directs precipitation down plant branches and stems is called | stem flow | through flow | interception | canopy drip
+3 | 1 | - | The region of three W's that is wheat, wool and wine is | mediterranean climatic regions | china type climatic regions | steppe type climatic regions | equatorial regions
+3 | 1 | - | The process that creates a sub layer, which is white to gray in colour and composes of silica sand in the A horizon is called | podsolosation | calcification | laterisation | gleisation
+3 | 1 | - | The ratio of the weight of water vapour to the total weight of air (including the water vapor) is called | specific humidity | mixing ratio | relative humidity | absolute humidity
+3 | 1 | - | The polar Easterlies lie at | 60-90? latitude | 0-30? latitude | 30-60? latitude | 90? latitude
+3 | 1 | - | The phenomenon of an opening occurring in the earth's surface through which a jet of hot water and steam is forces out at irregular intervals is called | geyser | crater | hot spring | volcano
+3 | 1 | - | The northern hemisphere and the southern hemisphere are separated by | the plane of the equator | the International Date line | the plane of Tropic of Cancer | the plane of Tropic of Capricorn
+3 | 1 | - | The process of soil development is called | pedogenesis | leaching | illuviation | eluviations
+3 | 1 | - | The phosphate are a group of minerals of one or more metallic elements chemically associated with the phosphate compound ____ | silicates | oxides | carbonates | phosphates
+3 | 1 | - | The panama canal links | North America with South America | Canada with Greenland | Siberia with Greenland | None of the above
+3 | 1 | - | The Rhine river of northern Europe empties into | the North sea | the Baltic sea | the Bay of Biscay | the Adriatic sea
+3 | 1 | - | The place where material is excavated when the zone of maximum stream velocity approaches the stream's bed is called | scoured pools | riffles | ox-bow lakes | flood plain
+3 | 1 | - | The planets called the inner planets, are | Mercury, Venus, Earth, Mars | Jupiter, Saturn, Uranus, Neptune | Mars, Jupiter, Saturn, Uranus | Saturn, Uranus, Neptune, Pluto
+3 | 1 | - | The periodic rise and fall of the sea level on the earth, gives rise to tides. This is related to | the position of the moon with reference to the earth and the gravitational pull exerted mainly by the moon and partly by the sun | infrared rays from the sun | ultraviolet rays from the sun | None of the above
+3 | 1 | - | The planets that are called superior planets are | Jupiter, Saturn, Uranus, Neptune and Pluto | Mercury, Venus, Earth, Mars and Jupiter | Mercury, Pluto, Venus, Neptune and Earth | Earth, Uranus, Mars, Saturn and Jupiter
+3 | 1 | - | The phenomenon associated with collision and subduction of the planet is | All of the above | volcanoes | island arcs | earthquakes
+3 | 1 | - | The products of ____ are a major source of sediments for erosion and ____ | weathering, deposition | deposition, weathering | rocks, weathering | rocks, deposition
+3 | 1 | - | The polar regions of earth cannot support forest growth because | All of these factors. | the growing season is short in these areas | the ground is often frozen or snow or ice covered | the rainfall is very low
+3 | 1 | - | The part of the earth and thin layer of air above its surface, which support life on earth, are referred to as | biosphere | stratosphere | ionosphere | mesosphere
+3 | 1 | - | The ridges of the waves are where the jet stream of waves closes to the | poles | equator | prime meridian | None of the above
+3 | 1 | - | The rate at change of temperature is called | temperature gradient | temperature difference | isotherm | None of the above
+3 | 1 | - | The rate of infiltration normally declines rapidly during the early part of rainstorm event and reaches a constant value after several hours of rainfall. The factors responsible for this phenomenon are <ol style="list-style-type: upper-roman;"><li>the filling of fine soil pores with water, which reduces capillary forces </li><li> moistened soil, clay particles to swell and reduce the size of pores </li><li> raindrop impact breaking up with soil clumps, splashing fine particles into pores</li></ol> | All of the above | I, II | I, III | II, III
+3 | 1 | - | The process where the particle moves from the surface to the medium in quick, continuous, repeated cycles is called | saltation | suspension | traction | solution
+3 | 1 | - | The obscuring of one celestial body by another, particularly that of the sun or a planetary satellite | eclipse | elliptic | ecliptic | None of the above
+3 | 1 | - | The river Sutlej, on which the Bhakra Dam has been built, originates from | Rakas lake in Tibet | a spring in Vering | near Bara Lacha Pass in Lahul | Mansarovar lake
+3 | 1 | - | The process of destruction or dying of fronts is called | frontolysis | fromtogenesis | both (a) and (b) | None of the above
+3 | 1 | - | The Palaeozoic era starts at ____ million years ago and ends at ____ million years ago. | 570, 225 | 500, 100 | 470, 150 | 470, 225
+3 | 1 | - | The reaction is carbonate and bicarbonate ions with mineral is called | carbonation | hydrolysis | oxidation | solution
+3 | 1 | - | The plants grown in equatorial regions include | evergreen dense forests, rubber trees, groundnuts | wheat, barley, maize | groundnuts, soyabeens, potatoes | evergreen coniferous forests, oats, cocoa
+3 | 1 | - | The process that may cause physical weathering or mechanical rupture are | abrasion, crystallization, pressure release | abrasion, oxidation, hydrolysis | crystallization, carbonation, thermal insolation | None of the above
+3 | 1 | - | The process of particle detach ment by moving glacial ice is called | plucking | abrasion | scouring | None of the above
+3 | 1 | - | The points in the ecliptic farthest north and south of the celestial equator are called | summer and winter solstices | autumnal and vernal equinox | north celestial pole and south celestial pole | None of the above
+3 | 1 | - | Which of the following is concerned with the description and mapping of the main features of the universe? | Cosmography | Cosmology | Geomorphology | None of these
+3 | 1 | - | The process that creates the deep oceanic trenches is called | plate tectonics | sea floor spreading | continental drift | isostasy
+3 | 1 | - | The rainfall in the peninsular interior averages about | 650 mm a year | 750 mm a year | 850 mm a year | 550 mm a year
+3 | 1 | - | The Palaeozoic era contains ____ time periods. | six | four | five | seven
+3 | 1 | - | The northern portion of the western coastal plain is called | Konkan plain | Malabar coast | Coromendel coast | None of the above
+3 | 1 | - | The ozone layer at high altitude contains | mixture of atomic oxygen (O), ordinary oxygen (O<sub | atomic oxygen (O) and ordinary oxygen (O<sub | only ozone (O<sub | only ordinary oxygen (O<sub
+3 | 1 | - | The number of a topographic map is 47A/16/NW. Its scale must be | 1 : 25,000 | 1 : 250,000 | 1 : 100,000 | 1 : 50,000
+3 | 1 | - | The right ascension is the equivalent of longitude on the celestial sphere, and it is given in the units of | time-hours, minutes and seconds | degrees | only hours | only seconds
+3 | 1 | - | The radiation belts are zones in space around the | Earth, Jupiter and Saturn | Earth | Jupiter and Saturn | Mercury
+3 | 1 | - | The periods of different eras are further divided into | stages | eons | epochs | Any of the above
+3 | 1 | - | The Plio-Pleistocene boundary lies about ____ years ago, at the beginning of the interval of warming after the last Pleistocene glaciations. | 10,000 | 1,00,000 | 1,000 | 100
+3 | 1 | - | The production of wheat has increased mainly due to | increase in yield per hectare | increase in area under wheat | increase in demand for wheat | increase in prices
+3 | 1 | - | Which of the following is not a kharif crop? | Mustard | Jute | Maize | Rice
+3 | 1 | - | The shape of earth is | oblate spheroid | sphere | circular | spheroid
+3 | 1 | - | The tertiary winds on the north of the Alps (Europe) are called | the foehn | the Chinook | the sirocco | the loo
+3 | 1 | - | The tropical easterlies wind lie at | 0-30? latitude | 30-60? latitude | 60-90? latitude | 10-40? latitude
+3 | 1 | - | The spring season in the north temperate zone is when | the sun is directly overhead the equator | the sun is directly overhead the Tropic of Cancer | the sun returns to equator | the sun is at the Tropic of Cancer
+3 | 1 | - | The term 'Abyssal refers to | deeper parts of the oceans | inner most part of the earth | organism found in the shallow water zone of the seas | None of the above
+3 | 1 | - | The transport of warm air toward the poles and cold air toward the equator is due to | the development of waves | the temperature gradient | the latitude difference | the longitude difference
+3 | 1 | - | The traditional lands of the nomads of Central Asia are | All of the above | Mongolia and Tibet | Sinkiang and Turkistan | Kirghiz steppe
+3 | 1 | - | The time interval from when the given star passes directly overhead to when it next passed directly overhead, is defined as | one sidereal day | one solar day | both the terms are similar, so any of these may be used | None of the above
+3 | 1 | - | The three recognized major fishing grounds of the world are located in the | northern hemisphere only | southern hemisphere only | two in the southern hemisphere only  and one in the northern hemisphere | one in the southern hemisphere only  and two in the northern hemisphere
+3 | 1 | - | The variation in the duration of the day and the night is due to earth's | both (a) and (b) | rotation on its axis | revolution around the sun | inclination of an angle of 60(1/2) degrees
+3 | 1 | - | The sulphites are a mineral group that contain one or more metallic elements in combination with the sulphate compound ____ | SO<sub | SO<sub | SO<sub | SO
+3 | 1 | - | The term 'flora' in the context of natural vegetation refers to | plants of a particular region or period, listed by species and considered as a group | assemblage of plant species living in association with each other in a given environmental frame | a large tract covered by trees and shrubs and its administration for assessing economic benefits | role played by species of animals in the maintenance of ecological balance
+3 | 1 | - | Which of the following is concerned with the study of characteristics, origin and development of land forms? | Geomorphology | Ecology | Geography | Geology
+3 | 1 | - | The soils common to the south eastern USA are called | ultisols | alfisols | aridsols | mollisols
+3 | 1 | - | The southernmost part of the world is | Cape of Horn, S. America | Cape of Good Hope, Africa | Colombo, Sri Lanka | Wellington, New Zealand
+3 | 1 | - | The texture of a soil refers to | the size distribution of the mineral particles composing the soil | the distribution of mineral particles in the soil | the crystal distribution in soil | None of the above
+3 | 1 | - | The steady or initial phase of the magnetic storms is | preceded by storm sudden commencement | magnetic storm at middle and low altitudes | a sharp increase of the field | None of the above
+3 | 1 | - | The Suez canal connects the | Mediterranean sea and the Red sea | Baltic sea and the Caspian sea | Red sea and the Caspian sea | Mediterranean sea and the North sea
+3 | 1 | - | The uppermost epoch of the Neogene period is | the Pliocene epoch | the Pleistocen epoch | the Miocene epoch | the Oligocene epoch
+3 | 1 | - | The type of igneous rock that form from magma is a function of | All of the above | the chemical composition of the magma | temperature of solidification | the rate of cooling, which influences the crystallisation process
+3 | 1 | - | The slow down slope movement of soil and sediment because of frost heaving and thawing is called | frost creep | solifluction | gelifluction | rockfall
+3 | 1 | - | The transverse, longitudinal and surface waves in an earthquake originate from | the focus within the body of the earth | the epicentre within the body of the earth | the focus on the surface of the earth | the epicentre on the body of the earth
+3 | 1 | - | The smallest country of the world is | Vatican city | Russia | Brazil | Canada
+3 | 1 | - | The smallest annual temperature range occurs in the | equatorial tropical climate zone | subtropical climate zone | temperate climate zone | polar climate zone
+3 | 1 | - | The South Frigid Zone is the region | All of the above | lying between 66(1/2)? south and  90? south | lying between the Antarctic circle to the south pole | has the coldest climate throughout the year
+3 | 1 | - | The temperature needed to keep the earth's surface and the atmosphere in thermal equilibrium is called | the mean global surface temperature | the surface temperature | equilibrium temperature | global temperature
+3 | 1 | - | The short term variations of the atmosphere, ranging from minutes to months are called | weather | climate | temperature | humidity
+3 | 1 | - | The tide produced as a consequence of the moon and the sun pulling the earth in the same direction is called | spring tide | ebb tide | high tide | neap tide
+3 | 1 | - | The tropical cyclones with maximum sustained surface winds of 33 ms are called | hurricane | tropical depressions | tropical storms | None of the above
+3 | 1 | - | The typical soil of tropical region, formed by the weathering of laterite rock, which promotes leaching of the soil is | laterite soils | black soil | red and yellow soil | peat and marshy soil
+3 | 1 | - | The two 'equinoxes' take place respectively in the months of | March and September | January and June | July and December | September and December
+3 | 1 | - | The troughs of the waves are where the jet stream of waves is closest to the | equator | poles | Prime meridian | None of the above
+3 | 1 | - | The study of soils is called | pedology | geomorphology | hydrology | biogeography
+3 | 1 | - | The tropical cyclones do not occur to the equator because of | weak coriolis force | light and variable width | excessive humidity | connective activity
+3 | 1 | - | The term 'regur' refers to | black cotton soils | deltaic alluvial soils | lateral soils | red and yellow soils
+3 | 1 | - | The umbra is | both (a) and (b) | the inner portion of the moon's shadow | formed by tangents to the sun and moon | None of the above
+3 | 1 | - | The tunnel that connects France and Italy is | Mont Blanc Tunnel | St. Gothard road Tunnel | Mersey (Queens way) Tunnel | Orange Fish rivers Tunnel
+3 | 1 | - | The sequence of layers of atmosphere from earth to upwards is | troposphere, tropopause, stratosphere, stratopause, mesosphere, mesopause, ionosphere(thermosphere, thermopause, exosphere) | troposphere, stratosphere, stratopause, mesosphere , ionosphere | troposphere, tropopause, stratosphere, thermosphere, exosphere | troposphere, tropopause, stratosphere, mesosphere , exosphere, thermosphere, thermopause}
+3 | 1 | - | The sediment deposited at the base of the glacier is called | till | moraine | glacial sand | None of the above
+3 | 1 | - | The third world includes about 120 countries of | Asia, Africa and Central America | Asia, Australia and Europe | Africa, North America | None of the above
+3 | 1 | - | The smallest division of geological time scale is | stage | eon | eras | periods
+3 | 1 | - | The various types of plate convergence is I oceanic-oceanic convergence II oceanic-continental convergence III continental-continental convergence| All of the above | I, II | II, III | I, III
+3 | 1 | - | The smallest state, population wise, in the world is | Vatican City | Monaco | Nauru | Liechtenstein
+3 | 1 | - | The time at a place is determined by | the parallels of longitude | the parallels of latitude | distance from equator | distance from prime meridian
+3 | 1 | - | The tropical and temperate deserts of the world, occupy nearly ____ of the land surface of the worlds. | (1/7) th | (1/4) th | (1/3) rd | (1/2)
+3 | 1 | - | The shortest day (longest night) in the southern hemisphere is | June 21 | December 21 | December 22 | June 20
+3 | 1 | - | The smallest glaciers are | mountain or alpine glaciers | continental glaciers | piedmont glaciers | None of the above
+3 | 1 | - | The time interval between one vernal equinox and the next is nearest to which of the following figures? | 365 days | 359 days | 361 days | 363 days
+3 | 1 | - | Which of the following is measured on the Richter scale? | Intensity of earthquakes | Density of liquids | Velocity of tornadoes | Height of mountains
+3 | 1 | - | The term used to describe the combined effect of all shortwave losses in | earth albedo | earth scattering | earth radiation | None of the above
+3 | 1 | - | The time difference between each side of the International Date line is | 24 hours | 12 hours | 36 hours | 48 hours
+3 | 1 | - | The soil used for cutting bricks, use in the construction of houses is | laterite soil | black soil | alluvial soil | saline and alkaline soils
+3 | 1 | - | The sidereal month may be defined  as | the period in which the moon completes an orbit around the earth and returns to the same positions in the sky | the period in which the moon completes an orbit around the earth | the period of rotation of moon | None of the above
+3 | 1 | - | The shallow seas found in the Atlantic basin include the | All of the above | Caribbean sea and Mediterranean | Baltic and Arctic seas | Gulf of Mexico
+3 | 1 | - | The study of human geography includes study of | All of the above | human society and culture | behaviour and urban systems | economics and politics
+3 | 1 | - | The snow line of the Rocky Mountains of the USA is about | 3 km above sea level | 6 km above sea level | it is at the sea level | None of the above
+3 | 1 | - | The study of day-to-day variations in weather called is called | meteorology | climatology | cyclogenesis | None of the above
+3 | 1 | - | The type of soil needed for rice is | rich , muddy and saturated with water | clayey loam | deep, loamy, well drained | humus, rich in Fe and potash
+3 | 1 | - | The south temperature zone is a region lying between | the Tropic of Capricorn and the Antarctic circle | the Antarctic circle and the South pole | the Tropic of Cancer and the tropic of Capricorn | the Tropic of Capricorn and the equator
+3 | 1 | - | The soils whose parent material tend to be rich in sand are | spodsols | alfisols | aridsols | ultisols
+3 | 1 | - | The tide produced when the moon and the sun are at right angles to the earth, thus pulling in opposite directions, is called | neap tide | spring tide | diurnal tide | ebb tide
+3 | 1 | - | The soil found in areas of heavy rainfall and high humidity, where there is good growth of vegetation is | peat and marshy soil | saline and alkaline soil | black soil | alluvial soil
+3 | 1 | - | The thickness of biosphere is | 8-10 km above the earth's surface | 5-8 km above the earth's surface | 5-10 km above the earth's surface | 10-12 km above the earth's surface
+3 | 1 | - | The temperature inversion is | whenever the normal decrease of atmospheric temperature or moisture or both change with height over a short vertical interval | whenever the normal decrease of atmospheric temperature | when the decrease in temperature or moisture or both takes place | All of the above
+3 | 1 | - | Which of the following is most useful for measuring the shortest distance between two places on the earth and path between them? | Globe | Atlas map | Thematic maps | Wall maps
+3 | 1 | - | The second largest continent in the world is | Africa | Asia | Australia | Europe
+3 | 1 | - | The southern Deccan area is in a rain shadow and receives only | 50 to 1000 mm of rainfall a year | 100 to 200 mm of rainfall a year | 200 to 400 mm of rainfall a year | 50 to 400 mm of rainfall a year
+3 | 1 | - | The underlying cause of bio diversity loss is | All of the above | poverty and unsustainable development projects | macroeconomic policies | international trade factors
+3 | 1 | - | The temperature increases rapidly after | ionosphere | exosphere | stratosphere | troposphere
+3 | 1 | - | The spiral flow in a stream caused by channel shape is called | helical flow | stream flow | laminar flow | turbulent flow
+3 | 1 | - | The storms or frontal systems develop where | All of the above | air is rising | atmospheric pressure is low | at the equator and in the mid-latitudes
+3 | 1 | - | The subatomic particles arriving from outer space having high energy are called | cosmic rays | protons | electrons | None of the above
+3 | 1 | - | The strongest bonds exist between the particles found within | igneous rocks | metamorphic rocks | sedimentary rock | all have similar strength of bonds
+3 | 1 | - | The snow line on the northern side of greater Himalayas range about | 5,500 to 6,000 metres | 4,500 to 6,000 metres | 3,500 to 6,000 metres | None of the above
+3 | 1 | - | The unit of the light year is used for measuring | distance between bodies in the universe | speed of satellites | speed of ships | speed of rockets
+3 | 1 | - | The tide of minimum rise is called | low tide | spring tide | ebb tide | None of the above
+3 | 1 | - | The second largest island (next to Greenland) in the world is | New Guinea | Borneo | Malagasy | Sumatra
