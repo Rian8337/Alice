@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs");
