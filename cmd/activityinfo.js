@@ -85,6 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         entries.sort((a, b) => {return b[1] - a[1]});
+        if (entries.length == 0) return message.channel.send("❎ **| I'm sorry, there are no message data on this date!**");
         let general_description = '';
         let language_description = '';
         let description = `**${type} channel activity per ${date.getUTCDate()} `;
