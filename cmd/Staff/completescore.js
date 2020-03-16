@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 function scoreRequirement(lvl) {
     let xp;
