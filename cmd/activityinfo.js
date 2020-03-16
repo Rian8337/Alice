@@ -1,4 +1,3 @@
-// done rewriting
 const Discord = require('discord.js');
 const config = require('../config.json');
 
@@ -32,7 +31,7 @@ function listEntries(mode, res, time_limit) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel) return;
+    if (message.channel instanceof Discord.DMChannel || message.guild.id != '316545691545501706') return;
     let date = new Date();
     if (args[1]) {
         let entry = args[1].split("-");
@@ -42,6 +41,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     date.setUTCHours(0, 0, 0, 0);
     if (date.getTime() < message.guild.createdTimestamp) return message.channel.send("❎ **| Hey, the server didn't exist back then!**");
     if (date.getTime() > Date.now()) return message.channel.send("❎ **| You're in the future already, are you? Unfortunately I'm not.**");
+    let general = message.guild.channels.cache.get("316545691545501706");
+    let parent = general.parentID;
     
     let channeldb = alicedb.collection("channeldata");
     channeldb.find({}).sort({timestamp: -1}).toArray((err, res) => {
@@ -68,9 +69,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             case "monthly": {
                 date.setUTCDate(1);
-                let time_limit = date.getTime();
                 type = 'Monthly';
-                entries = listEntries(args[0], res, time_limit);
+                entries = listEntries(args[0], res, date.getTime());
                 break
             }
             case "daily": {
@@ -105,10 +105,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         description += `${date.getUTCFullYear()}**\n\n`;
 
-        let general_category = ['316547304763162624', '428950708021231617', '316545691545501706', '667400988801368094', '341580764221145089', '440166346592878592', '501021206217228288', '664023693134921729', '564044964158504960'];
         for (let i = 0; i < entries.length; i++) {
-            if (general_category.includes(entries[i][0])) general_description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`;
-            else language_description += `<#${entries[i][0]}>: **${entries[i][1].toLocaleString()}** messages\n`
+            let channel = message.guild.channels.resolve(entries[i][0]);
+            if (channel.parentID === parent) general_description += `${channel}: **${entries[i][1].toLocaleString()}** messages\n`;
+            else language_description += `${channel}: **${entries[i][1].toLocaleString()}** messages\n`
         }
 
         let footer = config.avatar_list;
