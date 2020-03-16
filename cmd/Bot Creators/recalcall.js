@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('../../modules/osu!droid');
 
 function retrieveList(res, i, cb) {
     if (!res[i]) return cb([], true);
