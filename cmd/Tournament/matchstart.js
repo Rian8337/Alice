@@ -1,6 +1,5 @@
-// done rewriting
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function time(second) {
     return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
