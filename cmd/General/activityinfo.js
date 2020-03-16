@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function listEntries(mode, res, time_limit) {
     let list = [];
