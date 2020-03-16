@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config  = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const config  = require('../../config.json');
+const osudroid = require('../../modules/osu!droid');
 
 function isEligible(member) {
     let res = 0;
