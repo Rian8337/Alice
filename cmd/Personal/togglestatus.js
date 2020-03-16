@@ -1,4 +1,4 @@
-const config = require('../config.json');
+const config = require('../../config.json');
 
 module.exports.run = (client, message, args) => {
     if (message.author.id != '386742340968120321') return message.channel.send("You don't have permission to do this");
