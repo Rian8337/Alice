@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const request = require('request');
 const tatsukey = process.env.TATSU_API_KEY;
-const config = require('../config.json');
+const config = require('../../config.json');
 
 function isEligible(member) {
     let res = 0;
