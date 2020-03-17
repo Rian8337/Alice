@@ -3,6 +3,7 @@ const osudroid = require('../../modules/osu!droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(300, 300);
 const c = canvas.getContext('2d');
+c.imageSmoothingEnabled = false;
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
 	let ufind = message.author.id;
