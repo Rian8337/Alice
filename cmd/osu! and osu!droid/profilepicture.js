@@ -319,8 +319,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "change": {
-                                            let color = args[2];
-                                            if (!color) color = "#008bff";
+                                            let color = args[3];
+                                            if (!color) color = "#008BFF";
                                             if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box color to the same color!**");
                                             if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
                                             pictureConfig.bgColor = color;
@@ -410,7 +410,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "change": {
-                                            let color = args[2];
+                                            let color = args[3];
                                             if (!color) color = '#000000';
                                             if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box text color to the same color!**");
                                             if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
