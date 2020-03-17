@@ -35,7 +35,6 @@ module.exports.run = (client, message, args, maindb) => {
 			c.globalAlpha = 0.9;
 			c.fillStyle = '#cccccc';
 			c.fillRect(9, 84, 70, 20);
-			c.globalAlpha = 0.8;
 			c.fillStyle = '#bba300';
 			c.fillRect(9, 109, 282, 182);
 
