@@ -184,9 +184,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         case "background": {
                             switch (args[1]) {
                                 case "change": {
-                                    let position = parseInt(args[2]) - 1;
-                                    if (isNaN(position) || position <= 0 || position >= 13) return message.channel.send("❎ **| I'm sorry, that range is invalid! The range must be between 1 and 12.**");
-                                    let type = args.slice(3).join(" ");
+                                    let type = args.slice(2).join(" ");
                                     let id = '';
                                     for (let i = 0; i < backgroundList.length; i++) {
                                         let bg = backgroundList[i];
