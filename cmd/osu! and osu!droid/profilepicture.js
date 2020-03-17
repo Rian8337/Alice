@@ -209,7 +209,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     if (owned) confirm_string += `${message.author}, are you sure you want to change your background profile picture?**`;
                                     else {
                                         if (coins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to perform this action! A background costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${coins}\` Alice coins.**`);
-                                        confirm_string += `${message.author}, you don't have this background yet! Are you sure you want to purchase this background and change your background profile picture to the background?**`;
+                                        confirm_string += `${message.author}, you don't have this background yet! Are you sure you want to purchase this background for ${coin}\`500\` Alice coins and change your background profile picture to the background?**`;
                                     }
                                     if (!pictureConfig.activeBackground) pictureConfig.activeBackground = {};
                                     pictureConfig.activeBackground.id = id;
@@ -313,6 +313,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         case "descriptionbox": {
                             switch (args[1]) {
                                 case "bgcolor": {
+                                    // TODO: add rgba support
                                     switch (args[2]) {
                                         case "view": {
                                             let color = "#008BFF";
@@ -337,7 +338,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                 pictureConfig: pictureConfig
                                             };
                                             let attachment = await drawImage(properties);
-                                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box color to ${color}?**`, {files: [attachment]}).then(msg => {
+                                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box color to \`${color}\`?**`, {files: [attachment]}).then(msg => {
                                                 msg.react("✅").catch(console.error);
                                                 let confirmation = false;
                                                 let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
@@ -348,7 +349,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                         updateVal = {
                                                             $set: {
                                                                 picture_config: {
-                                                                    bgColor: color
+                                                                    badges: pointres.picture_config.badges ? pointres.picture_config.badges : [],
+                                                                    activeBadges: pointres.picture_config.activeBadges ? pointres.picture_config.activeBadges : [],
+                                                                    activeBackground: pointres.picture_config.activeBackground ? pointres.picture_config.activeBackground : {id: "bg", name: "Default"},
+                                                                    backgrounds: pointres.picture_config.backgrounds ? pointres.picture_config.backgrounds : [],
+                                                                    bgColor: color,
+                                                                    textColor: pointres.picture_config.textColor ? pointres.picture_config.textColor : "#000000"
                                                                 }
                                                             }
                                                         };
@@ -404,6 +410,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "textcolor": {
+                                    //TODO: add rgba support
                                     switch (args[2]) {
                                         case "view": {
                                             let color = '#000000';
@@ -428,7 +435,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                 pictureConfig: pictureConfig
                                             };
                                             let attachment = await drawImage(properties);
-                                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box text color to ${color}?**`, {files: [attachment]}).then(msg => {
+                                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box text color to \`${color}\`?**`, {files: [attachment]}).then(msg => {
                                                 msg.react("✅").catch(console.error);
                                                 let confirmation = false;
                                                 let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
@@ -439,6 +446,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                         updateVal = {
                                                             $set: {
                                                                 picture_config: {
+                                                                    badges: pointres.picture_config.badges ? pointres.picture_config.badges : [],
+                                                                    activeBadges: pointres.picture_config.activeBadges ? pointres.picture_config.activeBadges : [],
+                                                                    activeBackground: pointres.picture_config.activeBackground ? pointres.picture_config.activeBackground : {id: "bg", name: "Default"},
+                                                                    backgrounds: pointres.picture_config.backgrounds ? pointres.picture_config.backgrounds : [],
+                                                                    bgColor: pointres.picture_config.bgColor ? pointres.picture_config.bgColor : "#008bff",
                                                                     textColor: color
                                                                 }
                                                             }
