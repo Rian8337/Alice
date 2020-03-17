@@ -271,7 +271,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                     background_list = background_list.trimEnd();
                                     let owned = pictureConfig.backgrounds;
-                                    if (owned.length === 0) return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
+                                    if (!owned || owned.length === 0) return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
                                     for (let i = 0; i < owned.length; i++) owned_list += `\`${owned[i].name}\` `;
 
                                     message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length} backgrounds: ${owned_list}.**`);
