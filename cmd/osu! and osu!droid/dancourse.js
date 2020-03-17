@@ -160,10 +160,8 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     if (danentries.length == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
 
-                    console.log(danentries);
                     danentries.forEach(x => {
                         objcount.x++;
-                        console.log(objcount);
                         let valid = validation(x.dan, x.mod, x.acc, x.rank);
                         if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
                         let danrole = x.play;
