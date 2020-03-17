@@ -34,8 +34,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					let coins = 0;
 					let pictureConfig = {};
 					if (pointres) {
-					coins = pointres.alicecoins;
-					pictureConfig = pointres.picture_config
+						coins = pointres.alicecoins;
+						pictureConfig = pointres.picture_config;
+						if (!pictureConfig) pictureConfig = {}
 					}
 
 					// background
