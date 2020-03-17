@@ -17,7 +17,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     let mod = '';
     let ndetail = false;
     let pcdetail = false;
-    for (let i = 1; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
         if (args[i].endsWith("%")) acc = parseFloat(args[i]);
         if (args[i].endsWith("m")) missc = parseInt(args[i]);
         if (args[i].endsWith("x")) combo = parseInt(args[i]);
