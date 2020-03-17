@@ -11,7 +11,7 @@ function timeconvert (num) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000' && message.guild.id != '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");
+    if (message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000' && message.guild.id != '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in droid (International) Discord server and droid café server!**");
     let binddb = maindb.collection("userbind");
     let pointdb = alicedb.collection("playerpoints");
     let coin = client.emojis.cache.get("669532330980802561");
@@ -93,7 +93,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         case "transfer": {
             let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!totransfer) return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
-            if ((curtime - totransfer.joinedTimestamp) / 1000 < 86400 * 7) return message.channel.send("❎ **| I'm sorry, the user you are giving your coins to has not been in the server for a week!**");
+            if (totransfer.user.bot) return message.channel.send("❎ **| Hey, you can't transfer coins to a bot!**");
+            if (curtime - totransfer.joinedTimestamp / 1000 < 86400 * 7) return message.channel.send("❎ **| I'm sorry, the user you are giving your coins to has not been in the server for a week!**");
             let amount = parseInt(args[2]);
             if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, I need a valid amount to give!**");
             query = {discordid: message.author.id};
