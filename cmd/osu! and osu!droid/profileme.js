@@ -22,7 +22,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = res.uid;
 		let pp = res.pptotal;
-		new osudroid.PlayerInfo().get({uid: uid}, async player => {
+		new osudroid.PlayerInfo().get({uid: uid}, player => {
 			if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 			scoredb.findOne({uid: uid}, (err, playerres) => {
 				if (err) {
