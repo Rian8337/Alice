@@ -87,7 +87,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.beginPath();
 					c.moveTo(15, 236);
 					c.lineTo(285, 236);
-					for (let i = 60; i < 285; i + 45) {
+					for (let i = 60; i < 285; i += 45) {
 						c.moveTo(i, 191);
 						c.lineTo(i, 281)
 					}
