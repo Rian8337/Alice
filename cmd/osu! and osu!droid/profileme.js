@@ -135,14 +135,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					let textColor = pictureConfig.textColor;
 					if (!textColor) textColor = "#000000";
 					c.fillStyle = textColor;
-					c.font = '12px Exo';
+					c.font = '11px Exo';
 					c.fillText(`Lv${Math.floor(level)}`, 15, 128.5);
 					c.fillText(`Lv${next_level}`, 255, 128.5);
 
 					// alice coins
 					let coinImage = await loadImage(client.emojis.cache.get("669532330980802561").url);
 					c.drawImage(coinImage, 15, 145, 30, 30);
-					c.font = 'bold 13px Exo';
+					c.font = '12px Exo';
 					c.fillText(`${coins.toLocaleString()} Alice Coins`, 50, 165);
 
 					// badges
