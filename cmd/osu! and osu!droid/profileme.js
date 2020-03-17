@@ -4,34 +4,6 @@ const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(300, 300);
 const c = canvas.getContext('2d');
 
-function modread(input) {
-	let res = '';
-	if (input.includes('n')) res += 'NF';
-	if (input.includes('h')) res += 'HD';
-	if (input.includes('r')) res += 'HR';
-	if (input.includes('e')) res += 'EZ';
-	if (input.includes('t')) res += 'HT';
-	if (input.includes('c')) res += 'NC';
-	if (input.includes('d')) res += 'DT';
-	if (res) res = '+' + res;
-	return res;
-}
-
-function rankEmote(input) {
-	if (!input) return;
-	switch (input) {
-		case 'A': return '611559473236148265';
-		case 'B': return '611559473169039413';
-		case 'C': return '611559473328422942';
-		case 'D': return '611559473122639884';
-		case 'S': return '611559473294606336';
-		case 'X': return '611559473492000769';
-		case 'SH': return '611559473361846274';
-		case 'XH': return '611559473479155713';
-		default : return;
-	}
-}
-
 module.exports.run = (client, message, args, maindb) => {
 	let ufind = message.author.id;
 	if (args[0]) {
