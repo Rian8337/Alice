@@ -211,6 +211,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         if (coins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to perform this action! A background costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${coins}\` Alice coins.**`);
                                         confirm_string += `${message.author}, you don't have this background yet! Are you sure you want to purchase this background and change your background profile picture to the background?**`;
                                     }
+                                    if (!pictureConfig.activeBackground) pictureConfig.activeBackground = {};
                                     pictureConfig.activeBackground.id = id;
                                     let properties = {
                                         res: res,
@@ -321,7 +322,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                         case "change": {
                                             let color = args[3];
-                                            if (!color) color = "#008BFF";
+                                            if (!color) color = "#008bff";
                                             if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box color to the same color!**");
                                             if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
                                             pictureConfig.bgColor = color;
