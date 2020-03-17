@@ -38,10 +38,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 						return message.channel.send("Error: Empty database response. Please try again!")
 					}
 					let coins = 0;
-					if (playerres) coins = pointres.alicecoins;
-					let pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {};
-
+                    let pictureConfig = {};
+                    if (pointres) {
+                        coins = pointres.alicecoins;
+                        pictureConfig = pointres.picture_config
+                    }
+					
 					// background
 					let backgroundImage = pictureConfig.activeBackground;
 					if (!backgroundImage) backgroundImage = 'bg';
