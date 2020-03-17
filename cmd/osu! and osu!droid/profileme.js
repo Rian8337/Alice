@@ -89,7 +89,7 @@ module.exports.run = (client, message, args, maindb) => {
 			c.fillText(`Score: ${player.score.toLocaleString()}`, 89, 39, 243);
 			c.fillText(`Accuracy: ${player.accuracy}%`, 89, 54, 243);
 			c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 89, 69, 243);
-			c.fillText(player.location, 265, flag.height + 5);
+			c.fillText(player.location, 263, flag.height + 5);
 			c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 89, 84, 243);
 
 			c.font = 'bold 14px Exo';
