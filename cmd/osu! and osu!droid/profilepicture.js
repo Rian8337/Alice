@@ -197,6 +197,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                     if (!id) return message.channel.send("❎ **| I'm sorry, the background you have mentioned is invalid!**");
                                     let owned_list = pictureConfig.backgrounds;
+                                    if (!owned_list) owned_list = [];
                                     let owned = false;
                                     if (id === 'bg') owned = true;
                                     for (let i = 0; i < owned_list.length; i++) {
