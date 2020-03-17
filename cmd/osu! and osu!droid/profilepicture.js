@@ -239,11 +239,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                 $set: {
                                                     alicecoins: coins,
                                                     picture_config: {
+                                                        badges: pictureConfig.badges ? pictureConfig.badges : [],
+                                                        activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
                                                         activeBackground: {
                                                             id: id,
                                                             name: type
                                                         },
-                                                        backgrounds: owned_list
+                                                        backgrounds: owned_list,
+                                                        bgColor: pictureConfig.bgColor ? pictureConfig.bgColor : "#008bff",
+                                                        textColor: pictureConfig.textColor ? pictureConfig.textColor : "#000000"
                                                     }
                                                 }
                                             };
@@ -349,12 +353,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                         updateVal = {
                                                             $set: {
                                                                 picture_config: {
-                                                                    badges: pointres.picture_config.badges ? pointres.picture_config.badges : [],
-                                                                    activeBadges: pointres.picture_config.activeBadges ? pointres.picture_config.activeBadges : [],
-                                                                    activeBackground: pointres.picture_config.activeBackground ? pointres.picture_config.activeBackground : {id: "bg", name: "Default"},
-                                                                    backgrounds: pointres.picture_config.backgrounds ? pointres.picture_config.backgrounds : [],
+                                                                    badges: pictureConfig.badges ? pictureConfig.badges : [],
+                                                                    activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
+                                                                    activeBackground: pictureConfig.activeBackground ? pictureConfig.activeBackground : {id: "bg", name: "Default"},
+                                                                    backgrounds: pictureConfig.backgrounds ? pictureConfig.backgrounds : [],
                                                                     bgColor: color,
-                                                                    textColor: pointres.picture_config.textColor ? pointres.picture_config.textColor : "#000000"
+                                                                    textColor: pictureConfig.textColor ? pictureConfig.textColor : "#000000"
                                                                 }
                                                             }
                                                         };
@@ -446,11 +450,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                         updateVal = {
                                                             $set: {
                                                                 picture_config: {
-                                                                    badges: pointres.picture_config.badges ? pointres.picture_config.badges : [],
-                                                                    activeBadges: pointres.picture_config.activeBadges ? pointres.picture_config.activeBadges : [],
-                                                                    activeBackground: pointres.picture_config.activeBackground ? pointres.picture_config.activeBackground : {id: "bg", name: "Default"},
-                                                                    backgrounds: pointres.picture_config.backgrounds ? pointres.picture_config.backgrounds : [],
-                                                                    bgColor: pointres.picture_config.bgColor ? pointres.picture_config.bgColor : "#008bff",
+                                                                    badges: pictureConfig.badges ? pictureConfig.badges : [],
+                                                                    activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
+                                                                    activeBackground: pictureConfig.activeBackground ? pictureConfig.activeBackground : {id: "bg", name: "Default"},
+                                                                    backgrounds: pictureConfig.backgrounds ? pictureConfig.backgrounds : [],
+                                                                    bgColor: pictureConfig.bgColor ? pictureConfig.bgColor : "#008bff",
                                                                     textColor: color
                                                                 }
                                                             }
