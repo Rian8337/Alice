@@ -179,7 +179,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     let pictureConfig = {};
                     if (pointres) {
                         coins = pointres.alicecoins;
-                        pictureConfig = pointres.picture_config
+                        pictureConfig = pointres.picture_config;
+                        if (!pictureConfig) pictureConfig = {}
                     }
 
                     switch (args[0]) {
