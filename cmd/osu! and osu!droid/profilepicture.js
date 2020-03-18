@@ -110,11 +110,10 @@ async function drawImage(properties, template = false) {
     if (!textColor) textColor = "#000000";
     c.fillStyle = textColor;
     c.fillText(((properties.level - Math.floor(properties.level)) * 100).toFixed(2) + "%", 245, 226);
-    c.font = '20px Exo';
+    c.font = '19px Exo';
     c.fillText(`Lv${Math.floor(properties.level)}`, 15, 230);
 
     // alice coins
-    c.font = '19px Exo';
     c.fillText(`${properties.coins.toLocaleString()} Alice Coins | ${properties.points} Challenge Points`, 75, 285);
 
     // badges
