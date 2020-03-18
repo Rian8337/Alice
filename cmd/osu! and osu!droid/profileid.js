@@ -120,7 +120,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 							c.fillStyle = '#e1b000';
 							break;
 						case player.rank <= 100:
-							c.fillStyle = 'rgba(180, 44, 44, 0.81)';
+							c.fillStyle = 'rgba(180, 44, 44, 1)';
 							break;
 						case player.rank <= 1000:
 							c.fillStyle = '#008708';
@@ -148,11 +148,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					if (!textColor) textColor = "#000000";
 					c.fillStyle = textColor;
 					c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 245, 226);
-					c.font = '20px Exo';
+					c.font = '19px Exo';
 					c.fillText(`Lv${Math.floor(level)}`, 15, 230);
 
 					// alice coins
-					c.font = '19px Exo';
 					c.fillText(`${coins.toLocaleString()} Alice Coins | ${points} Challenge Points`, 75, 285);
 
 					// badges
