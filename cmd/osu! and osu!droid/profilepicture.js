@@ -82,7 +82,7 @@ async function drawImage(properties, template = false) {
             c.fillStyle = '#e1b000';
             break;
         case properties.player.rank <= 100:
-            c.fillStyle = 'rgba(180, 44, 44, 0.81)';
+            c.fillStyle = 'rgba(180, 44, 44, 1)';
             break;
         case properties.player.rank <= 1000:
             c.fillStyle = '#008708';
