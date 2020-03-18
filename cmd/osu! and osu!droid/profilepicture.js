@@ -1,70 +1,79 @@
 const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 const {createCanvas, loadImage} = require('canvas');
-const canvas = createCanvas(300, 300);
+const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
+c.imageSmoothingQuality = "high";
 
 async function drawImage(properties, template = false) {
     // background
     let backgroundImage = properties.pictureConfig.activeBackground;
     if (!backgroundImage) backgroundImage = 'bg';
     else backgroundImage = backgroundImage.id;
-    backgroundImage = `./img/${backgroundImage}.png`;
-    const bg = await loadImage(backgroundImage);
+    const bg = await loadImage(`./img/${backgroundImage}.png`);
     c.drawImage(bg, 0, 0);
 
     // player avatar
     const avatar = await loadImage(properties.player.avatarURL);
-    c.drawImage(avatar, 9, 9, 70, 70);
+    c.drawImage(avatar, 9, 9, 150, 150);
 
     // area
-    c.globalAlpha = 0.7;
+    // user profile
+    c.globalAlpha = 0.9;
     c.fillStyle = '#bbbbbb';
-    c.fillRect(84, 9, 207, 95);
+    c.fillRect(164, 9, 327, 185);
 
+    // player flag
+    c.globalAlpha = 1;
+    const flag = await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`);
+    c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+
+    // player rank
     c.globalAlpha = 0.9;
     c.fillStyle = '#cccccc';
-    c.fillRect(9, 84, 70, 20);
+    c.fillRect(9, 164, 150, 30);
 
-    c.globalAlpha = 0.8;
+    // description box
+    c.globalAlpha = 0.85;
     let bgColor = properties.pictureConfig.bgColor;
     if (!bgColor) bgColor = 'rgb(0,139,255)';
     c.fillStyle = bgColor;
-    c.fillRect(9, 109, 282, 182);
+    c.fillRect(9, 197, 482, 294);
 
+    // badges
     c.globalAlpha = 0.6;
     c.fillStyle = '#b9a29b';
-    c.fillRect(15, 191, 270, 90);
+    c.fillRect(15, 312, 470, 170);
 
-    c.fillRect(50, 115, 195, 20);
+    // level
+    c.fillRect(100, 206, 382, 30);
     c.fillStyle = '#979797';
-    c.fillRect(52, 117, 191, 16);
+    c.fillRect(102, 208, 380, 26);
 
-    let progress = (properties.level - Math.floor(properties.level)) * 191;
-    c.globalAlpha = 0.9;
+    let progress = (properties.level - Math.floor(properties.level)) * 380;
+    c.globalAlpha = 1;
     c.fillStyle = '#e1c800';
-    if (progress > 0) c.fillRect(52, 117, progress, 16);
+    if (progress > 0) c.fillRect(77, 208, progress, 26);
+
+    // alice coins
+    let coinImage = await loadImage(properties.coinImage.url);
+    c.drawImage(coinImage, 15, 255, 50, 50);
 
     // line
     c.globalAlpha = 0.7;
     c.fillStyle = '#000000';
     c.beginPath();
-    c.moveTo(15, 236);
-    c.lineTo(285, 236);
-    for (let i = 60; i < 285; i += 45) {
-        c.moveTo(i, 191);
-        c.lineTo(i, 281)
+    c.moveTo(15, 397);
+    c.lineTo(485, 397);
+    for (let i = 15 + 94; i < 15 + 94 * 6; i += 94) {
+        c.moveTo(i, 312);
+        c.lineTo(i, 482)
     }
     c.stroke();
-
-    // player flag
-    c.globalAlpha = 1;
-    const flag = await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`);
-    c.drawImage(flag, 253, 12, flag.width / 2, flag.height / 2);
-
     // text
     // player rank
-    c.font = 'bold 14px Exo';
+    c.globalAlpha = 1;
+    c.font = 'bold 24px Exo';
     switch (true) {
         case properties.player.rank === 1:
             c.fillStyle = '#0009cd';
@@ -80,34 +89,33 @@ async function drawImage(properties, template = false) {
             break;
         default: c.fillStyle = '#787878'
     }
-    c.fillText(`#${properties.player.rank.toLocaleString()}`, 12, 99);
+    c.fillText(`#${properties.player.rank.toLocaleString()}`, 12, 187);
 
     // profile
-    c.fillStyle = '#000000';
-    c.font = 'bold 15px Exo';
-    c.fillText(properties.player.name, 89, 24, 243);
+    c.fillStyle = "#000000";
+    c.font = 'bold 25px Exo';
+    c.fillText(properties.player.name, 169, 45, 243);
 
-    c.font = '13px Exo';
-    c.fillText(`Score: ${properties.player.score.toLocaleString()}`, 89, 39, 243);
-    c.fillText(`Accuracy: ${properties.player.accuracy}%`, 89, 53, 243);
-    c.fillText(`Play Count: ${properties.player.play_count.toLocaleString()}`, 89, 67, 243);
-    c.fillText(properties.player.location, 265, flag.height + 5);
-    if (properties.res) c.fillText(`Droid pp: ${properties.res.pptotal.toFixed(2)}pp`, 89, 81, 243);
-    if (properties.res.clan) c.fillText(`Clan: ${properties.res.clan}`, 89, 95, 243);
+    c.font = '18px Exo';
+    c.fillText(`Total Score: ${properties.player.score.toLocaleString()}`, 169, 84);
+    c.fillText(`Ranked Score: ${properties.score.toLocaleString()}`, 169, 104);
+    c.fillText(`Accuracy: ${properties.player.accuracy}%`, 169, 124);
+    c.fillText(`Play Count: ${properties.player.play_count.toLocaleString()}`, 169, 144);
+    if (properties.res && properties.res.pptotal) c.fillText(`Droid pp: ${properties.res.pptotal.toFixed(2)}pp`, 169, 164);
+    if (properties.res && properties.res.clan) c.fillText(`Clan: ${properties.res.clan}`, 169, 184);
+    c.fillText(properties.player.location, 451, flag.height + 20);
 
     // ranked level
     let textColor = properties.pictureConfig.textColor;
     if (!textColor) textColor = "#000000";
     c.fillStyle = textColor;
-    c.font = '13px Exo';
-    c.fillText(`Lv${Math.floor(properties.level)}`, 15, 128.5);
-    c.fillText(`Lv${properties.next_level}`, 255, 128.5);
+    c.fillText(((properties.level - Math.floor(properties.level)) * 100).toFixed(2) + "%", 245, 226);
+    c.font = '20px Exo';
+    c.fillText(`Lv${Math.floor(properties.level)}`, 15, 230);
 
     // alice coins
-    c.globalAlpha = 1;
-    c.drawImage(properties.coinImage, 15, 145, 30, 30);
-    c.font = '12px Exo';
-    c.fillText(`${properties.coins.toLocaleString()} Alice Coins`, 50, 165);
+    c.font = '19px Exo';
+    c.fillText(`${properties.coins.toLocaleString()} Alice Coins | ${properties.points} Challenge Points`, 75, 285);
 
     // badges
     if (template) {
@@ -168,16 +176,21 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     return message.channel.send("Error: Empty database response. Please try again!")
                 }
                 let level = 1;
-                if (playerres) level = playerres.level;
-                let next_level = Math.floor(level) + 1;
+                let score = 0;
+                if (playerres) {
+                    score = playerres.score;
+                    level = playerres.level;
+                }
                 pointdb.findOne({discordid: message.author.id}, async (err, pointres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("Error: Empty database response. Please try again!")
                     }
                     let coins = 0;
+                    let points = 0;
                     let pictureConfig = {};
                     if (pointres) {
+                        points = pointres.points;
                         coins = pointres.alicecoins;
                         pictureConfig = pointres.picture_config;
                         if (!pictureConfig) pictureConfig = {}
@@ -218,8 +231,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         player: player,
                                         coinImage: coinImage,
                                         level: level,
-                                        next_level: next_level,
                                         pp: pp,
+                                        points: points,
+                                        score: score,
                                         coins: coins,
                                         pictureConfig: pictureConfig
                                     };
@@ -294,10 +308,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     /*let properties = {
                                         res: res,
                                         player: player,
+                                        score: score,
                                         coinImage: coinImage,
                                         level: level,
-                                        next_level: next_level,
                                         pp: pp,
+                                        points: points,
                                         coins: coins,
                                         pictureConfig: pictureConfig
                                     };
@@ -321,7 +336,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         case "view": {
                                             let color = "#008BFF";
                                             if (pictureConfig.bgColor) color = pictureConfig.bgColor;
-                                            if (color.includes(",")) return message.channel.send(`✅ **| Your description box RGBA color is (${color}).**`);
+                                            if (color.includes(",")) return message.channel.send(`✅ **| Your description box RGBA color is \`${color}\`.**`);
                                             message.channel.send(`✅ **| Your description box color hex code is \`${color}\`.**`);
                                             break
                                         }
@@ -342,10 +357,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             let properties = {
                                                 res: res,
                                                 player: player,
+                                                score: score,
                                                 coinImage: coinImage,
                                                 level: level,
-                                                next_level: next_level,
                                                 pp: pp,
+                                                points: points,
                                                 coins: coins,
                                                 pictureConfig: pictureConfig
                                             };
@@ -426,6 +442,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         case "view": {
                                             let color = '#000000';
                                             if (pictureConfig.textColor) color = pictureConfig.textColor;
+                                            if (color.includes(",")) return message.channel.send(`✅ **| Your description box text RGBA color is \`${color}\`.**`);
                                             message.channel.send(`✅ **| Your description box text color hex code is \`${color}\`.**`);
                                             break
                                         }
@@ -446,9 +463,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             let properties = {
                                                 res: res,
                                                 player: player,
+                                                score: score,
                                                 coinImage: coinImage,
                                                 level: level,
-                                                next_level: next_level,
+                                                points: points,
                                                 pp: pp,
                                                 coins: coins,
                                                 pictureConfig: pictureConfig
@@ -541,6 +559,6 @@ module.exports.config = {
     name: "profilepicture",
     description: "Modify your profile picture.",
     usage: "profilepicture background <change/list>\nprofilepicture badges <change/list/template>\nprofilepicture descriptionbox <bgcolor/textcolor> <change/view>",
-    detail: "`background change`: Change your profile picture background.\n`background list`: List all available backgrounds and those you currently have\n`badges change`: Change your badge depending on position\n`badges list`: List all the badges you currently own\n`badges template`: Show the template number for each badge slot\n`descriptionbox change`: Change background color/text color of your profile picture description box\n`descriptionbox view`: Show your current description box background/text color",
+    detail: "`background change`: Change your profile picture background.\n`background list`: List all available backgrounds and those you currently have\n`badges change`: Change your badge depending on position\n`badges list`: List all the badges you currently own\n`badges template`: Show the template number for each badge slot\n`descriptionbox change`: Change background color/text color of your profile picture description box. Supports hex code and RGBA\n`descriptionbox view`: Show your current description box background/text color",
     permission: "None"
 };
