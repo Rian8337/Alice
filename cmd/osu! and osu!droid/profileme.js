@@ -141,7 +141,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.font = 'bold 25px Exo';
 					c.fillText(player.name, 169, 45, 243);
 
-					c.font = '20px Exo';
+					c.font = '19px Exo';
 					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
 					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 124);
@@ -160,6 +160,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(`Lv${Math.floor(level)}`, 15, 230);
 
 					// alice coins
+					c.font = '19px Exo';
 					c.fillText(`${coins.toLocaleString()} Alice Coins | ${points} Challenge Points`, 75, 285);
 
 					// badges
