@@ -141,14 +141,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.font = 'bold 25px Exo';
 					c.fillText(player.name, 169, 45, 243);
 
-					c.font = '19px Exo';
+					c.font = '18px Exo';
 					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
 					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 124);
 					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
 					c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 164);
 					if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
-					c.font = '18px Exo';
 					c.fillText(player.location, 451, flag.height + 20);
 
 					// ranked level
