@@ -280,7 +280,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     if (!owned || owned.length === 0) return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
                                     for (let i = 0; i < owned.length; i++) owned_list += `\`${owned[i].name}\` `;
 
-                                    message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length + 1} backgrounds: ${owned_list}.**`);
+                                    message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length} backgrounds: ${owned_list}.**`);
                                     break
                                 }
                                 default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[1]}) is invalid! Accepted arguments are \`change\` and \`list\`.**`)
@@ -317,11 +317,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         case "descriptionbox": {
                             switch (args[1]) {
                                 case "bgcolor": {
-                                    // TODO: add rgba support
                                     switch (args[2]) {
                                         case "view": {
                                             let color = "#008BFF";
                                             if (pictureConfig.bgColor) color = pictureConfig.bgColor;
+                                            if (color.includes(",")) return message.channel.send(`✅ **| Your description box RGBA color is (${color}).**`);
                                             message.channel.send(`✅ **| Your description box color hex code is \`${color}\`.**`);
                                             break
                                         }
@@ -329,7 +329,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             let color = args[3];
                                             if (!color) color = "#008bff";
                                             if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box color to the same color!**");
-                                            if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
+                                            if (color.includes(",")) {
+                                                let color_entry = color.split(",");
+                                                if (color_entry.length !== 4) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                                color_entry = color_entry.map((x) => parseFloat(x));
+                                                if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                                if (color_entry[3] < 0 || color_entry[3] > 1) return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
+                                                color = `rgba(${color_entry.join(",")})`
+                                            }
+                                            else if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
                                             pictureConfig.bgColor = color;
                                             let properties = {
                                                 res: res,
@@ -414,7 +422,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "textcolor": {
-                                    //TODO: add rgba support
                                     switch (args[2]) {
                                         case "view": {
                                             let color = '#000000';
@@ -426,6 +433,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             let color = args[3];
                                             if (!color) color = '#000000';
                                             if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box text color to the same color!**");
+                                            if (color.includes(",")) {
+                                                let color_entry = color.split(",");
+                                                if (color_entry.length !== 4) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                                color_entry = color_entry.map((x) => parseFloat(x));
+                                                if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                                if (color_entry[3] < 0 || color_entry[3] > 1) return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
+                                                color = `rgba(${color_entry.join(",")})`
+                                            }
                                             if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
                                             pictureConfig.textColor = color;
                                             let properties = {
