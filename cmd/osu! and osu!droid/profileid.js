@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 const {createCanvas, loadImage} = require('canvas');
-const canvas = createCanvas(300, 300);
+const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
+c.imageSmoothingQuality = "high";
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let uid = parseInt(args[0]);
@@ -15,7 +16,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		new osudroid.PlayerInfo().get({uid: uid}, player => {
 			if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 			scoredb.findOne({uid: uid}, (err, playerres) => {
@@ -24,16 +24,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					return message.channel.send("Error: Empty database response. Please try again!")
 				}
 				let level = 1;
-				if (playerres) level = playerres.level;
-				let next_level = Math.floor(level) + 1;
+				let score = 0;
+				if (playerres) {
+					score = playerres.score;
+					level = playerres.level;
+				}
 				pointdb.findOne({uid: uid}, async (err, pointres) => {
 					if (err) {
 						console.log(err);
 						return message.channel.send("Error: Empty database response. Please try again!")
 					}
 					let coins = 0;
+					let points = 0;
 					let pictureConfig = {};
 					if (pointres) {
+						points = pointres.points;
 						coins = pointres.alicecoins;
 						pictureConfig = pointres.picture_config;
 						if (!pictureConfig) pictureConfig = {}
@@ -48,56 +53,65 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 					// player avatar
 					const avatar = await loadImage(player.avatarURL);
-					c.drawImage(avatar, 9, 9, 70, 70);
+					c.drawImage(avatar, 9, 9, 150, 150);
 
 					// area
-					c.globalAlpha = 0.7;
+					// user profile
+					c.globalAlpha = 0.9;
 					c.fillStyle = '#bbbbbb';
-					c.fillRect(84, 9, 207, 95);
+					c.fillRect(164, 9, 327, 185);
 
+					// player flag
+					c.globalAlpha = 1;
+					const flag = await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`);
+					c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+
+					// player rank
 					c.globalAlpha = 0.9;
 					c.fillStyle = '#cccccc';
-					c.fillRect(9, 84, 70, 20);
+					c.fillRect(9, 164, 150, 30);
 
-					c.globalAlpha = 0.8;
+					// description box
+					c.globalAlpha = 0.85;
 					let bgColor = pictureConfig.bgColor;
 					if (!bgColor) bgColor = 'rgb(0,139,255)';
 					c.fillStyle = bgColor;
-					c.fillRect(9, 109, 282, 182);
+					c.fillRect(9, 197, 482, 294);
 
+					// badges
 					c.globalAlpha = 0.6;
 					c.fillStyle = '#b9a29b';
-					c.fillRect(15, 191, 270, 90);
+					c.fillRect(15, 312, 470, 170);
 
-					c.fillRect(50, 115, 195, 20);
+					// level
+					c.fillRect(100, 206, 382, 30);
 					c.fillStyle = '#979797';
-					c.fillRect(52, 117, 191, 16);
+					c.fillRect(102, 208, 380, 26);
 
-					let progress = (level - Math.floor(level)) * 191;
-					c.globalAlpha = 0.9;
+					let progress = (level - Math.floor(level)) * 380;
+					c.globalAlpha = 1;
 					c.fillStyle = '#e1c800';
-					if (progress > 0) c.fillRect(52, 117, progress, 16);
+					if (progress > 0) c.fillRect(77, 208, progress, 26);
+
+					// alice coins
+					let coinImage = await loadImage(client.emojis.cache.get("669532330980802561").url);
+					c.drawImage(coinImage, 15, 255, 50, 50);
 
 					// line
 					c.globalAlpha = 0.7;
 					c.fillStyle = '#000000';
 					c.beginPath();
-					c.moveTo(15, 236);
-					c.lineTo(285, 236);
-					for (let i = 60; i < 285; i += 45) {
-						c.moveTo(i, 191);
-						c.lineTo(i, 281)
+					c.moveTo(15, 397);
+					c.lineTo(485, 397);
+					for (let i = 15 + 94; i < 15 + 94 * 6; i += 94) {
+						c.moveTo(i, 312);
+						c.lineTo(i, 482)
 					}
 					c.stroke();
-
-					// player flag
-					c.globalAlpha = 1;
-					const flag = await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`);
-					c.drawImage(flag, 253, 12, flag.width / 2, flag.height / 2);
-
 					// text
 					// player rank
-					c.font = 'bold 14px Exo';
+					c.globalAlpha = 1;
+					c.font = 'bold 24px Exo';
 					switch (true) {
 						case player.rank === 1:
 							c.fillStyle = '#0009cd';
@@ -113,34 +127,33 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 							break;
 						default: c.fillStyle = '#787878'
 					}
-					c.fillText(`#${player.rank.toLocaleString()}`, 12, 99);
+					c.fillText(`#${player.rank.toLocaleString()}`, 12, 187);
 
 					// profile
 					c.fillStyle = "#000000";
-					c.font = 'bold 15px Exo';
-					c.fillText(player.name, 89, 24, 243);
+					c.font = 'bold 25px Exo';
+					c.fillText(player.name, 169, 45, 243);
 
-					c.font = '13px Exo';
-					c.fillText(`Score: ${player.score.toLocaleString()}`, 89, 39, 243);
-					c.fillText(`Accuracy: ${player.accuracy}%`, 89, 53, 243);
-					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 89, 67, 243);
-					c.fillText(player.location, 265, flag.height + 5);
-					if (res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 89, 81, 243);
-					if (res.clan) c.fillText(`Clan: ${res.clan}`, 89, 95, 243);
+					c.font = '18px Exo';
+					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
+					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
+					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 124);
+					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
+					if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
+					if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
+					c.fillText(player.location, 451, flag.height + 20);
 
 					// ranked level
 					let textColor = pictureConfig.textColor;
 					if (!textColor) textColor = "#000000";
 					c.fillStyle = textColor;
-					c.font = '11px Exo';
-					c.fillText(`Lv${Math.floor(level)}`, 15, 128.5);
-					c.fillText(`Lv${next_level}`, 255, 128.5);
+					c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 245, 226);
+					c.font = '20px Exo';
+					c.fillText(`Lv${Math.floor(level)}`, 15, 230);
 
 					// alice coins
-					let coinImage = await loadImage(client.emojis.cache.get("669532330980802561").url);
-					c.drawImage(coinImage, 15, 145, 30, 30);
-					c.font = '12px Exo';
-					c.fillText(`${coins.toLocaleString()} Alice Coins`, 50, 165);
+					c.font = '19px Exo';
+					c.fillText(`${coins.toLocaleString()} Alice Coins | ${points} Challenge Points`, 75, 285);
 
 					// badges
 					let badges = pictureConfig.activeBadges;
@@ -148,8 +161,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					if (badges.length > 0) {
 						for (let i = 0; i < badges.length; i++) {
 							let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
-							if (i % 2 === 0) c.drawImage(badge, Math.floor(i / 2) * 45 + 15, 191, 45, 45);
-							else c.drawImage(badge, Math.floor(i / 2) * 45 + 15, 236, 45, 45)
+							if (i % 2 === 0) c.drawImage(badge, Math.floor(i / 2) * 94 + 15, 312, 85, 85);
+							else c.drawImage(badge, Math.floor(i / 2) * 94 + 15, 397, 85, 85)
 						}
 					}
 					let attachment = new Discord.MessageAttachment(canvas.toBuffer());
