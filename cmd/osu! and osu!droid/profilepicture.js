@@ -46,14 +46,14 @@ async function drawImage(properties, template = false) {
     c.fillRect(15, 312, 470, 170);
 
     // level
-    c.fillRect(100, 206, 382, 30);
+    c.fillRect(77, 206, 405, 30);
     c.fillStyle = '#979797';
-    c.fillRect(102, 208, 380, 26);
+    c.fillRect(79, 208, 401, 26);
 
-    let progress = (properties.level - Math.floor(properties.level)) * 380;
+    let progress = (properties.level - Math.floor(properties.level)) * 401;
     c.globalAlpha = 1;
     c.fillStyle = '#e1c800';
-    if (progress > 0) c.fillRect(77, 208, progress, 26);
+    if (progress > 0) c.fillRect(79, 208, progress, 26);
 
     // alice coins
     let coinImage = await loadImage(properties.coinImage.url);
