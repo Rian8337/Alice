@@ -193,12 +193,15 @@ class MapInfo {
     // retrieve a beatmap's information
     // -------------------------------------------
     // params:
-    //  beatmap_id or hash (one is required)
+    //  beatmap_id or hash (one is required), file = true
     //
     // returns a callback of the map's information
     get(params, callback) {
         let beatmapid = params.beatmap_id;
         let hash = params.hash;
+        if (params.file === undefined) {
+            params.file = true;
+        }
 
         let options;
         if (beatmapid) {
@@ -267,6 +270,9 @@ class MapInfo {
                 this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
                 this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
                 this.hash = mapinfo.file_md5;
+                if (!params.file) {
+                    return callback(this)
+                }
                 let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
                 request(url, (err, response, data) => {
                     if (err) {
@@ -497,10 +503,6 @@ let mods = {
     fl: 1<<10,
     so: 1<<12,
 
-    // map-changing and speed-changing mods
-    speed_changing: this.dt | this.nc | this.ht,
-    map_changing: this.ez | this.hr | this.speed_changing,
-
     // functions
     // -----------------------------------
     // convert droid mod string to modbits
@@ -512,8 +514,8 @@ let mods = {
         mod = mod.toLowerCase();
         while (mod != '') {
             for (let property in this) {
-                if (property.length != 1) continue;
                 if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 1) continue;
                 if (mod.startsWith(property)) {
                     modbits |= this[property];
                     break
@@ -528,7 +530,7 @@ let mods = {
     // --------------------------------------------
     // you can choose to return a detailed response
     droid_to_PC(mod = "", detailed = false) {
-        if (!mod) return '';
+        if (!mod || mod == '-') return '';
         mod = mod.toLowerCase();
         if (detailed) {
             let res = '';
@@ -550,8 +552,8 @@ let mods = {
         let modbits = 0;
         while (mod != '') {
             for (let property in this) {
-                if (property.length != 1) continue;
                 if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 1) continue;
                 if (mod.startsWith(property)) {
                     modbits |= this[property];
                     break
@@ -570,8 +572,8 @@ let mods = {
         while (str != "") {
             let nchars = 1;
             for (let property in this) {
-                if (property.length != 2) continue;
                 if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 2) continue;
                 if (str.startsWith(property)) {
                     mask |= this[property];
                     nchars = 2;
@@ -596,6 +598,9 @@ let mods = {
         return res
     }
 };
+
+mods.speed_changing = mods.dt | mods.nc | mods.ht;
+mods.map_changing = mods.ez | mods.hr | mods.speed_changing;
 
 let rankImage = {
     S: "http://ops.dgsrz.com/assets/images/ranking-S-small.png",
@@ -717,7 +722,7 @@ class MapStats {
     //  mode: droid or osu, switch between osu!droid stats
     //        and osu!standard stats
     //  mods: applied modifications in string, if this has
-    //        been applied in the constructor then you can
+    //        been applied in the constructor you can
     //        ignore this
     calculate(params = {}) {
         if (params.mods) {
@@ -767,6 +772,9 @@ class MapStats {
                     stats.od = modify_od(stats.od, stats.speed_multiplier, 1)
                 }
 
+                // HR and EZ works differently in droid in terms of
+                // CS modification, instead of CS *= 1.3 or CS *= 0.5,
+                // it is incremented or decremented
                 if (stats.cs >= 0) {
                     if (stats.droid_mods & mods.r) {
                         stats.droid_mods -= mods.r;
@@ -803,8 +811,12 @@ class MapStats {
                     stats.speed_multiplier = 1.5;
                 }
                 if (stats.cs >= 0) {
-                    if (stats.pc_mods & mods.hr) stats.cs *= 1.3;
-                    if (stats.pc_mods & mods.ez) stats.cs *= 0.5;
+                    if (stats.pc_mods & mods.hr) {
+                        stats.cs *= 1.3;
+                    }
+                    if (stats.pc_mods & mods.ez) {
+                        stats.cs *= 0.5;
+                    }
                     stats.cs = Math.min(10, stats.cs)
                 }
                 if (stats.hp >= 0) {
