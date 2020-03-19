@@ -530,7 +530,7 @@ let mods = {
     // --------------------------------------------
     // you can choose to return a detailed response
     droid_to_PC(mod = "", detailed = false) {
-        if (!mod || mod == '-') return '';
+        if (!mod || mod == '-') return 'None';
         mod = mod.toLowerCase();
         if (detailed) {
             let res = '';
