@@ -43,7 +43,7 @@ function calculateLevel(lvl, score, cb) {
 function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, cb) {
     if (!playentry[i]) return cb(false, false, true);
     let play = playentry[i];
-    new osudroid.MapInfo().get({hash: play.hash}, mapinfo => {
+    new osudroid.MapInfo().get({hash: play.hash, file: false}, mapinfo => {
         if (!mapinfo.title) {
             message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
             return cb(false, false)
