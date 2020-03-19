@@ -110,7 +110,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.font = 'bold 20px Exo';
 					c.fillText(player.name, 169, 30, 243);
 
-					c.font = '17px Exo';
+					c.font = '16px Exo';
 					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 50);
 					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 68);
 					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 86);
@@ -124,7 +124,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					if (!textColor) textColor = "#000000";
 					c.fillStyle = textColor;
 					c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 321, 173);
-					c.font = '17px Exo';
 					c.fillText(`Lv${Math.floor(level)}`, 169, 173);
 
 					let attachment = new Discord.MessageAttachment(canvas.toBuffer());
