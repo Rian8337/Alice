@@ -119,9 +119,9 @@ async function drawImage(properties, template = false) {
     // badges
     if (template) {
         c.font = 'bold 12px Exo';
-        for (let i = 0; i < 12; i++) {
-            if (i % 2 === 0) c.fillText((i+1).toString(), 37.5 + Math.floor(i / 2) * 45, 213.5 + Math.floor(i / 2) * 45);
-            else c.fillText((i+1).toString(), 82.5 + Math.floor(i / 2) * 45, 258.5 + Math.floor(i / 2) * 45)
+        for (let i = 0; i < 10; i++) {
+            if (i / 5 < 1) c.fillText((i+1).toString(), 45 + i * 47, 352);
+            else c.fillText((i+1).toString(), 45 + (i - 5) * 47, 437)
         }
     } else {
         let badges = properties.pictureConfig.activeBadges;
