@@ -59,17 +59,6 @@ async function drawImage(properties, template = false) {
     let coinImage = await loadImage(properties.coinImage.url);
     c.drawImage(coinImage, 15, 255, 50, 50);
 
-    // line
-    c.globalAlpha = 0.7;
-    c.fillStyle = '#000000';
-    c.beginPath();
-    c.moveTo(15, 397);
-    c.lineTo(485, 397);
-    for (let i = 15 + 94; i < 15 + 94 * 6; i += 94) {
-        c.moveTo(i, 312);
-        c.lineTo(i, 482)
-    }
-    c.stroke();
     // text
     // player rank
     c.globalAlpha = 1;
@@ -118,6 +107,18 @@ async function drawImage(properties, template = false) {
 
     // badges
     if (template) {
+        // line
+        c.globalAlpha = 0.7;
+        c.fillStyle = '#000000';
+        c.beginPath();
+        c.moveTo(15, 397);
+        c.lineTo(485, 397);
+        for (let i = 15 + 94; i < 15 + 94 * 6; i += 94) {
+            c.moveTo(i, 312);
+            c.lineTo(i, 482)
+        }
+        c.stroke();
+        
         c.font = 'bold 12px Exo';
         for (let i = 0; i < 10; i++) {
             if (i / 5 < 1) c.fillText((i+1).toString(), 45 + i * 47, 352);
