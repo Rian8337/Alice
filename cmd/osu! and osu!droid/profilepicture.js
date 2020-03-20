@@ -301,10 +301,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "badges": {
-                            //TODO: add badges
                             switch (args[1]) {
                                 case "template": {
-                                    /*let properties = {
+                                    let properties = {
                                         res: res,
                                         player: player,
                                         score: score,
@@ -316,8 +315,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         pictureConfig: pictureConfig
                                     };
                                     let attachment = await drawImage(properties, true);
-                                    message.channel.send(attachment);*/
-                                    message.channel.send("❎ **| I'm sorry, badges will be coming soon!**");
+                                    message.channel.send(attachment);
                                     break
                                 }
                                 case "change": {
