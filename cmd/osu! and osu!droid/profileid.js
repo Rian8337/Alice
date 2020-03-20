@@ -97,17 +97,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					let coinImage = await loadImage(client.emojis.cache.get("669532330980802561").url);
 					c.drawImage(coinImage, 15, 255, 50, 50);
 
-					// line
-					c.globalAlpha = 0.7;
-					c.fillStyle = '#000000';
-					c.beginPath();
-					c.moveTo(15, 397);
-					c.lineTo(485, 397);
-					for (let i = 15 + 94; i < 15 + 94 * 6; i += 94) {
-						c.moveTo(i, 312);
-						c.lineTo(i, 482)
-					}
-					c.stroke();
 					// text
 					// player rank
 					c.globalAlpha = 1;
