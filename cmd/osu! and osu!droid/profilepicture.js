@@ -129,8 +129,8 @@ async function drawImage(properties, template = false) {
         if (badges.length > 0) {
             for (let i = 0; i < badges.length; i++) {
                 let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
-                if (i % 2 === 0) c.drawImage(badge, Math.floor(i / 2) * 45 + 15, 191, 45, 45);
-                else c.drawImage(badge, Math.floor(i / 2) * 45 + 15, 236, 45, 45)
+                if (i % 5 <= 0) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
+                else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85)
             }
         }
     }
