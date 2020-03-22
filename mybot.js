@@ -202,7 +202,6 @@ client.on("message", message => {
 	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
-		message.channel.startTyping().catch(console.error);
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.utils.get("response");
@@ -278,10 +277,6 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
-			message.channel.startTyping().catch(console.error);
-			setTimeout(() => {
-				message.channel.stopTyping(true)
-			}, 5000);
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
@@ -295,10 +290,6 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd) {
-			message.channel.startTyping().catch(console.error);
-			setTimeout(() => {
-				message.channel.stopTyping(true)
-			}, 5000);
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
@@ -335,7 +326,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 // typing indicator
 client.on("typingStart", (channel, user) => {
-	if (channel.id !== '683633835753472032' && user.id !== '386742340968120321') return;
+	if (channel.id != '683633835753472032' && user.id != '386742340968120321') return;
 	let general = client.channels.cache.get('316545691545501706');
 	if (!general.typing) general.startTyping().catch(console.error)
 });
