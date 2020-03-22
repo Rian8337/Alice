@@ -13,6 +13,7 @@ const require_api = config.require_api;
 let apidown = false;
 let current_map = [];
 let picture_cooldown = new Set();
+let cd = new Set();
 
 client.commands = client.utils = new Discord.Collection();
 client.help = [];
@@ -276,17 +277,26 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
+			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
-			cmd.run(client, message, args, maindb, alicedb, current_map)
+			cmd.run(client, message, args, maindb, alicedb, current_map);
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 5000)
 		}
 	}
 	
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd) {
+			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
-			if (message.content.startsWith("$")) return message.channel.send("I'm not Mudae!");
-			cmd.run(client, message, args, maindb, alicedb, current_map)
+			cmd.run(client, message, args, maindb, alicedb, current_map);
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id)
+			}, 5000)
 		}
 	}
 });
