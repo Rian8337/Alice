@@ -2029,7 +2029,7 @@ class MapPP {
         }
 
         let miss_penality = Math.pow(0.97, nmiss);
-        let combo_break = Math.pow(combo, 0.8) / Math.pow(max_combo, 0.8);
+        let combo_break = Math.min(Math.pow(combo, 0.8) / Math.pow(max_combo, 0.8), 1.0);
         let mapstats = new MapStats({
             ar: base_ar,
             od: base_od,
