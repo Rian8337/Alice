@@ -334,7 +334,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 // typing indicator
 client.on("typingStart", (channel, user) => {
-	if (channel.id != '683633835753472032' && user.id != '386742340968120321') return;
+	if (channel.id != '683633835753472032' || user.id != '386742340968120321') return;
 	let general = client.channels.cache.get('316545691545501706');
 	general.startTyping().catch(console.error);
 	setTimeout(() => {
