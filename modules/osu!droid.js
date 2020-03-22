@@ -97,46 +97,32 @@ class PlayerInfo {
                 this.rank = rank;
                 this.recent_plays = recent_plays;
 
-                let avatar_page = {
-                    host: "ops.dgsrz.com",
-                    port: 80,
-                    path: `/profile.php?uid=${uid}`
-                };
-                let avatar_content = '';
-                let avatar_req = http.request(avatar_page, avatar_res => {
-                    avatar_res.setTimeout(10000);
-                    avatar_res.setEncoding("utf8");
-                    avatar_res.on("data", avatar_chunk => {
-                        avatar_content += avatar_chunk
-                    });
-                    avatar_res.on("error", avatar_err => {
-                        console.log("Error retrieving player location and avatar");
-                        console.log(avatar_err);
+                let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
+                request(avatar_page, (err, response, data) => {
+                    if (err) {
+                        console.log(err);
                         return callback(this)
-                    });
-                    avatar_res.on("end", () => {
-                        let b = avatar_content.split("\n");
-                        let avalink = '';
-                        let location = '';
-                        for (let x = 0; x < b.length; x++) {
-                            if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                                b[x-3]=b[x-3].replace('<img src="',"");
-                                b[x-3]=b[x-3].replace('" class="img-circle">',"");
-                                b[x-3]=b[x-3].trim();
-                                avalink = b[x-3];
-                                b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-                                b[x+1]=b[x+1].replace("<\/small>","");
-                                b[x+1]=b[x+1].trim();
-                                location=b[x+1];
-                                break
-                            }
+                    }
+                    let b = data.split("\n");
+                    let avalink = '';
+                    let location = '';
+                    for (let x = 0; x < b.length; x++) {
+                        if (b[x].includes('h3 m-t-xs m-b-xs')) {
+                            b[x-3]=b[x-3].replace('<img src="',"");
+                            b[x-3]=b[x-3].replace('" class="img-circle">',"");
+                            b[x-3]=b[x-3].trim();
+                            avalink = b[x-3];
+                            b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+                            b[x+1]=b[x+1].replace("<\/small>","");
+                            b[x+1]=b[x+1].trim();
+                            location=b[x+1];
+                            break
                         }
-                        this.avatarURL = avalink;
-                        this.location = location;
-                        callback(this)
-                    })
-                });
-                avatar_req.end()
+                    }
+                    this.avatarURL = avalink;
+                    this.location = location;
+                    callback(this)
+                })
             })
         });
         req.end()
@@ -502,6 +488,7 @@ let mods = {
     nc: 1<<9,
     fl: 1<<10,
     so: 1<<12,
+    v2: 1<<29,
 
     // functions
     // -----------------------------------
@@ -679,28 +666,14 @@ class MapStats {
     //  ar: approach rate
     //  od: overall difficulty
     //  hp: health drain rate
+    //  mods: enabled modifications in osu!standard string
     //
     // all value properties are optional and can be ignored
     constructor(values = {}) {
         this.cs = values.cs;
-        if (this.cs === undefined) {
-            this.cs = -1
-        }
-
         this.ar = values.ar;
-        if (this.ar === undefined) {
-            this.ar = -1
-        }
-
         this.od = values.od;
-        if (this.od === undefined) {
-            this.od = -1
-        }
-
         this.hp = values.hp;
-        if (this.hp === undefined) {
-            this.hp = -1
-        }
 
         this.mods = values.mods;
         if (this.mods === undefined) {
@@ -708,11 +681,13 @@ class MapStats {
         }
 
         this.mods = this.mods.toUpperCase();
-        this.droid_mods = this.mods ? mods.modbits_from_string(this.mods) : 4;
+        this.droid_mods = this.pc_mods = this.mods ? mods.modbits_from_string(this.mods) : 0;
+
+        // apply TD mod to droid bitwise enum if it hasn't
+        // been applied
         if (!(this.droid_mods & mods.td)) {
             this.droid_mods += mods.td;
         }
-        this.pc_mods = this.droid_mods - 4;
         this.speed_multiplier = 1;
     }
 
@@ -754,18 +729,18 @@ class MapStats {
                 // CS and OD work differently in droid, therefore it
                 // needs to be computed regardless of map-changing mods
                 // and od_ar_hp_multiplier
-                if (stats.od >= 0) {
+                if (stats.od !== undefined) {
 
                     // apply EZ or HR to OD
                     stats.od *= od_ar_hp_multiplier;
                     stats.od = Math.min(stats.od, 10);
 
                     // convert original OD to droid OD
-                    let droidtoMS = 75 + 5 * (5 - stats.od);
+                    let droid_to_MS = 75 + 5 * (5 - stats.od);
                     if (stats.mods.includes("PR")) {
-                        droidtoMS = 55 + 6 * (5 - stats.od);
+                        droid_to_MS = 55 + 6 * (5 - stats.od)
                     }
-                    stats.od = 5 - (droidtoMS - 50) / 6;
+                    stats.od = 5 - (droid_to_MS - 50) / 6;
 
                     // apply speed-changing mods to OD
                     // use 1 as multiplier as it has been multiplied previously
@@ -775,7 +750,11 @@ class MapStats {
                 // HR and EZ works differently in droid in terms of
                 // CS modification, instead of CS *= 1.3 or CS *= 0.5,
                 // it is incremented or decremented
-                if (stats.cs >= 0) {
+                //
+                // if present mods are found, they need to be removed
+                // from the bitwise enum of mods to prevent double
+                // calculation
+                if (stats.cs !== undefined) {
                     if (stats.droid_mods & mods.r) {
                         stats.droid_mods -= mods.r;
                         ++stats.cs;
@@ -788,16 +767,12 @@ class MapStats {
                     stats.cs = Math.min(10, stats.cs);
                 }
 
-                if (!(stats.droid_mods & mods.map_changing)) {
-                    return stats;
-                }
-
-                if (stats.hp >= 0) {
+                if (stats.hp !== undefined) {
                     stats.hp *= od_ar_hp_multiplier;
                     stats.hp = Math.min(10, stats.hp);
                 }
 
-                if (stats.ar >= 0) {
+                if (stats.ar !== undefined) {
                     stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
                 }
                 break
@@ -810,7 +785,7 @@ class MapStats {
                 if (stats.pc_mods & mods.nc) {
                     stats.speed_multiplier = 1.5;
                 }
-                if (stats.cs >= 0) {
+                if (stats.cs !== undefined) {
                     if (stats.pc_mods & mods.hr) {
                         stats.cs *= 1.3;
                     }
@@ -819,14 +794,14 @@ class MapStats {
                     }
                     stats.cs = Math.min(10, stats.cs)
                 }
-                if (stats.hp >= 0) {
+                if (stats.hp !== undefined) {
                     stats.hp *= od_ar_hp_multiplier;
                     stats.hp = Math.min(10, stats.hp)
                 }
-                if (stats.ar >= 0) {
+                if (stats.ar !== undefined) {
                     stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
                 }
-                if (stats.od >= 0) {
+                if (stats.od !== undefined) {
                     stats.od = modify_od(stats.od, stats.speed_multiplier, od_ar_hp_multiplier);
                 }
                 break
@@ -1128,7 +1103,7 @@ class Parser {
             case "HitObjects": this._objects(); break;
             default:
                 let fmtpos = line.indexOf("file format v");
-                if (fmtpos< 0) {
+                if (fmtpos < 0) {
                     break;
                 }
                 this.map.format_version = parseInt(line.substring(fmtpos + 13));
@@ -1324,6 +1299,23 @@ let PLAYFIELD_CENTER = vec_mul(PLAYFIELD_SIZE, [0.5, 0.5]);
 let DROID_EXTREME_SCALING_FACTOR = 0.4;
 let EXTREME_SCALING_FACTOR = 0.5;
 
+// (internal)
+// spacing weight constants for each difficulty type
+
+// ~200BPM 1/4 streams
+let MIN_SPEED_BONUS = 75.0;
+
+// ~280BPM 1/4 streams - edit to fit droid
+let DROID_MAX_SPEED_BONUS = 53.0;
+
+// ~330BPM 1/4 streams
+let MAX_SPEED_BONUS = 45.0;
+
+let ANGLE_BONUS_SCALE = 90;
+let AIM_TIMING_THRESHOLD = 107;
+let SPEED_ANGLE_BONUS_BEGIN = 5 * Math.PI / 6;
+let AIM_ANGLE_BONUS_BEGIN = Math.PI / 3;
+
 // osu!standard difficulty calculator
 // ----------------------------------
 // does not account for sliders because slider calculations are
@@ -1468,6 +1460,8 @@ class StandardDiff {
         )
     }
 
+    // (internal)
+    // calculate spacing weight for a difficulty type
     _spacing_weight(mode, type, distance, delta_time, prev_distance, prev_delta_time, angle) {
         let angle_bonus;
         let strain_time = Math.max(delta_time, 50);
@@ -1487,8 +1481,7 @@ class StandardDiff {
                 }
                 let weighted_distance = Math.pow(distance, 0.99);
                 return Math.max(
-                    result +
-                    weighted_distance / Math.max(AIM_TIMING_THRESHOLD, strain_time),
+                    result + weighted_distance / Math.max(AIM_TIMING_THRESHOLD, strain_time),
                     weighted_distance / strain_time
                 );
             }
@@ -1560,7 +1553,7 @@ class StandardDiff {
         if (obj.type & (object_types.slider | object_types.circle)) {
             let distance = vec_len(vec_sub(diffobj.normpos, prev_diffobj.normpos));
             diffobj.d_distance = distance;
-            if (type == DIFF_SPEED) {
+            if (type === DIFF_SPEED) {
                 diffobj.is_single = distance > SINGLE_SPACING;
             }
             value = this._spacing_weight(mode, type, distance, time_elapsed,
@@ -1691,23 +1684,6 @@ class StandardDiff {
         }
     }
 }
-
-// (internal)
-// calculate spacing weight for a difficulty type
-
-// ~200BPM 1/4 streams
-let MIN_SPEED_BONUS = 75.0;
-
-// ~280BPM 1/4 streams - edit to fit droid
-let DROID_MAX_SPEED_BONUS = 53.0;
-
-// ~330BPM 1/4 streams
-let MAX_SPEED_BONUS = 45.0;
-
-let ANGLE_BONUS_SCALE = 90;
-let AIM_TIMING_THRESHOLD = 107;
-let SPEED_ANGLE_BONUS_BEGIN = 5 * Math.PI / 6;
-let AIM_ANGLE_BONUS_BEGIN = Math.PI / 3;
 
 // generic star rating calculator
 class MapStars {
