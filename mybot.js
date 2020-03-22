@@ -336,14 +336,10 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 client.on("typingStart", (channel, user) => {
 	if (channel.id != '683633835753472032' && user.id != '386742340968120321') return;
 	let general = client.channels.cache.get('316545691545501706');
-	if (!general.typing) general.startTyping().catch(console.error)
-});
-
-
-client.on("typingStop", (channel, user) => {
-	if (channel.id !== '683633835753472032' && user.id !== '386742340968120321') return;
-	let general = client.channels.cache.get('316545691545501706');
-	if (general.typing) general.stopTyping(true)
+	general.startTyping().catch(console.error);
+	setTimeout(() => {
+		general.stopTyping(true)
+	}, 10000)
 });
 
 // member ban detection
