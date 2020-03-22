@@ -12,10 +12,10 @@ function retrieveList(res, i, cb) {
 
 function recalcPlay(target, i, newtarget, whitelist, cb) {
     if (!target[i]) return cb(false, true);
-    let modstring;
+    let mods = "";
     if (target[i][1].includes('+'))  {
         let mapstring = target[i][1].split('+');
-        modstring = mapstring[mapstring.length-1]
+        mods = mapstring[mapstring.length-1]
     }
 
     let guessing_mode = true;
@@ -37,7 +37,6 @@ function recalcPlay(target, i, newtarget, whitelist, cb) {
                 console.log("0 objects found");
                 return cb()
             }
-            let mods = osudroid.mods.droid_to_PC(modstring);
             let acc_percent = 100;
             if (target[i][4]) {
                 acc_percent = parseFloat(target[i][4]);
