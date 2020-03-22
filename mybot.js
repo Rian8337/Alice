@@ -145,6 +145,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+	if (message.author.id === client.user.id && message.channel.typing) message.channel.stopTyping(true);
 	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
