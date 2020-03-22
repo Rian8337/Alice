@@ -150,6 +150,7 @@ client.on("message", message => {
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
 	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
+		message.channel.startTyping().catch(console.error);
 		let images = [
 			"https://cdn.discordapp.com/attachments/440319362407333939/666825359198519326/unknown.gif",
 			"https://cdn.discordapp.com/attachments/316545691545501706/667287014152077322/unknown.gif",
@@ -167,6 +168,7 @@ client.on("message", message => {
 		if (message.channel.name != 'trash-talk') return;
 		args = command.slice(1);
 		if (!args) return;
+		message.channel.startTyping().catch(console.error);
 		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
 	}
 	
@@ -202,6 +204,7 @@ client.on("message", message => {
 	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
+		message.channel.startTyping().catch(console.error);
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.utils.get("response");
@@ -213,6 +216,7 @@ client.on("message", message => {
 	
 	// osu! automatic recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+		message.channel.startTyping().catch(console.error);
 		for (let i = 0; i < msgArray.length; i++) {
 			if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
 			let a = msgArray[i].split("/");
@@ -277,6 +281,7 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
+			message.channel.startTyping().catch(console.error);
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
@@ -291,9 +296,6 @@ client.on("message", message => {
 		let cmd = client.commands.get(command.slice(config.prefix.length));
 		if (cmd) {
 			message.channel.startTyping().catch(console.error);
-			setTimeout(() => {
-				message.channel.stopTyping(true)
-			}, 5000);
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
