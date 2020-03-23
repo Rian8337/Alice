@@ -169,6 +169,7 @@ class MapInfo {
         this.ar = 0;
         this.od = 0;
         this.hp = 0;
+        this.packs = '';
         this.diff_aim = 0;
         this.diff_speed = 0;
         this.diff_total = 0;
@@ -252,6 +253,7 @@ class MapInfo {
                 this.ar = parseFloat(mapinfo.diff_approach);
                 this.od = parseFloat(mapinfo.diff_overall);
                 this.hp = parseFloat(mapinfo.diff_drain);
+                if (mapinfo.packs) this.packs = mapinfo.packs;
                 this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
                 this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
                 this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
@@ -342,7 +344,7 @@ class MapInfo {
 
         switch (option) {
             case 0: return `${this.full_title}${mods ? ` +${mods}` : ""}`;
-            case 1: return `**Download**: [osu!](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download) ([no video](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
+            case 1: return `**Download**: [osu!](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download) ([no video](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download?noVideo=1))${this.packs ? ` - [Beatmap Pack ${this.packs}](https://osu.ppy.sh/beatmaps/packs/${this.packs})` : ""} - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
             case 2: return `**CS**: ${this.cs}${this.cs == mapstat.cs ? "": ` (${mapstat.cs})`} - **AR**: ${this.ar}${this.ar == mapstat.ar ? "": ` (${mapstat.ar})`} - **OD**: ${this.od}${this.od == mapstat.od ? "": ` (${mapstat.od})`} - **HP**: ${this.hp}${this.hp == mapstat.hp ? "": ` (${mapstat.hp})`}`;
             case 3: return `**BPM**: ${this._bpmConvert(this.mods)} - **Length**: ${this._timeConvert(this.mods)} - **Max Combo**: ${this.max_combo}x`;
             case 4: return `**Last Update**: ${this.last_update} | **${this._statusConvert()}**`;
