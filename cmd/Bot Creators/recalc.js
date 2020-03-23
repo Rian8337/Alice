@@ -25,7 +25,8 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	let mods = '';
 	if (target[i][1].includes('+'))  {
 		let mapstring = target[i][1].split('+');
-		mods = mapstring[mapstring.length-1].trim()
+		mods = mapstring[mapstring.length-1];
+		if (mods.includes("[")) mods = ''
 	}
 
 	let guessing_mode = true;
