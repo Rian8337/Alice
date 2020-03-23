@@ -63,7 +63,7 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 			let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
 			console.log(`${target[i][2]} -> ${real_pp}`);
 			newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
-			recalc(target, tlength, i+1, newtarget, binddb, whitelist)
+			recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 		})
 	})
 }
