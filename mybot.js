@@ -13,7 +13,7 @@ const require_api = config.require_api;
 let apidown = false;
 let current_map = [];
 let picture_cooldown = new Set();
-let cd = new Set();
+//let cd = new Set();
 
 client.commands = client.utils = new Discord.Collection();
 client.help = [];
@@ -284,10 +284,10 @@ client.on("message", message => {
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
-			cd.add(message.author.id);
-			setTimeout(() => {
-				cd.delete(message.author.id)
-			}, 5000)
+			//cd.add(message.author.id);
+			//setTimeout(() => {
+			//	cd.delete(message.author.id)
+			//}, 5000)
 		}
 	}
 	
@@ -301,10 +301,10 @@ client.on("message", message => {
 			if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			cmd.run(client, message, args, maindb, alicedb, current_map);
-			cd.add(message.author.id);
-			setTimeout(() => {
-				cd.delete(message.author.id)
-			}, 5000)
+			//cd.add(message.author.id);
+			//setTimeout(() => {
+			//	cd.delete(message.author.id)
+			//}, 5000)
 		}
 	}
 });
