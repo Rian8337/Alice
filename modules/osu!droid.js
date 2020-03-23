@@ -345,12 +345,16 @@ class MapInfo {
         switch (option) {
             case 0: return `${this.full_title}${mods ? ` +${mods}` : ""}`;
             case 1: {
-                let string = `**Download**: [osu!](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download) ([no video](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download?noVideo=1)) - `;
+                let string = `**Download**: [osu!](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download) ([no video](https://osu.ppy.sh/beatmapsets/${this.beatmapset_id}/download?noVideo=1)) - [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
                 if (this.packs) {
                     let pack_list = this.packs.split(",");
-                    for (let i = 0; i < pack_list.length; i++) string += `[Beatmap Pack ${pack_list[i]}](https://osu.ppy.sh/beatmaps/packs/${pack_list[i]}) - `;
+                    if (pack_list.length > 1) string += '\n**Beatmap Packs:** ';
+                    else string += '\n**Beatmap Pack**: ';
+                    for (let i = 0; i < pack_list.length; i++) {
+                        string += `[${pack_list[i]}](https://osu.ppy.sh/beatmaps/packs/${pack_list[i]})`;
+                        if (i + 1 < pack_list.length) string += ' - '
+                    }
                 }
-                string += `[Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
                 return string
             }
             case 2: return `**CS**: ${this.cs}${this.cs == mapstat.cs ? "": ` (${mapstat.cs})`} - **AR**: ${this.ar}${this.ar == mapstat.ar ? "": ` (${mapstat.ar})`} - **OD**: ${this.od}${this.od == mapstat.od ? "": ` (${mapstat.od})`} - **HP**: ${this.hp}${this.hp == mapstat.hp ? "": ` (${mapstat.hp})`}`;
