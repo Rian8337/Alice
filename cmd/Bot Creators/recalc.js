@@ -22,10 +22,10 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 		});
 		return
 	}
-	let modstring;
+	let mods = '';
 	if (target[i][1].includes('+'))  {
 		let mapstring = target[i][1].split('+');
-		modstring = mapstring[mapstring.length-1]
+		mods = mapstring[mapstring.length-1].trim()
 	}
 
 	let guessing_mode = true;
@@ -44,7 +44,6 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 				console.log("0 object found");
 				return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 			}
-			let mods = osudroid.mods.droid_to_PC(modstring);
 			let acc_percent = 100;
 			if (target[i][4]) {
 				acc_percent = parseFloat(target[i][4]);
