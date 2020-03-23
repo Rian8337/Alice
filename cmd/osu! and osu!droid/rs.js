@@ -16,7 +16,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let uid = res.uid;
         new osudroid.PlayerInfo().get({uid: uid}, player => {
             if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
-            if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+            if (player.recent_plays.length == 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
             let name = player.name;
             let play = player.recent_plays[0];
             let title = play.filename;
