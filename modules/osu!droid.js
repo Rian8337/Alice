@@ -423,6 +423,10 @@ class MapInfo {
         let objects = map.objects;
         let combo = 0;
         let score = 0;
+        
+        let tindex = -1;
+        let tnext = Number.NEGATIVE_INFINITY;
+        let px_per_beat = 0;
         for (let i = 0; i < objects.length; i++) {
             let object = objects[i];
             if (!(object.type & object_types.slider)) {
@@ -430,9 +434,6 @@ class MapInfo {
                 ++combo;
                 continue
             }
-            let tindex = -1;
-            let tnext = Number.NEGATIVE_INFINITY;
-            let px_per_beat = 0;
             while (object.time >= tnext) {
                 ++tindex;
                 if (map.timing_points.length > tindex + 1) {
