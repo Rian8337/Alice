@@ -38,6 +38,7 @@ module.exports.run = async (client, message, args) => {
     if (!message.author.bot && (isImmuned(tomute) || tomute.user.bot)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
+    if (reason.length > 1024) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1024 characters!**");
 
     let mutetime = args[1];
     if (!mutetime) return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
@@ -48,27 +49,29 @@ module.exports.run = async (client, message, args) => {
 
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
+    let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
+    if (!channel) return message.channel.send(`❎ **| I'm sorry, please ask server managers to create a mute log channel first!**`);
+
     let muterole = message.guild.roles.cache.find((r) => r.name === 'elaina-muted');
     //start of create role
     if (!muterole) {
         try {
             muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
-            message.guild.channels.cache.forEach(channel => {
+            message.guild.channels.cache.forEach((channel) => {
                 channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
             })
         } catch(e) {
             console.log(e.stack)
         }
+    } else {
+        message.guild.channels.cache.forEach((channel) => {
+            channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
+        })
     }
     //end of create role
 
     message.delete().catch(O_o=>{});
 
-    try{
-        await tomute.send(`Hi! You've been muted for ${mutetime} seconds. Sorry!`)
-    } catch (e) {
-        message.channel.send(`A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} seconds`)
-    }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
 
@@ -82,8 +85,12 @@ module.exports.run = async (client, message, args) => {
         .addField("Length: " + timeConvert(mutetime), "=========================")
         .addField("Reason: ", reason);
 
-    let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
-    if (!channel) return message.reply("Please create a mute log channel first!");
+    try{
+        await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed})
+    } catch (e) {
+        message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`)
+    }
+
     channel.send({embed: muteembed}).then(msg => {
         tomute.roles.add(muterole.id)
             .catch(console.error);
@@ -100,6 +107,6 @@ module.exports.config = {
     name: "tempmute",
     description: "Temporarily mutes a user.",
     usage: "tempmute <user> <duration> <reason>",
-    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting [String]",
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
     permission: "Helper"
 };
