@@ -41,14 +41,14 @@ module.exports.run = async (client, message, args) => {
         try {
             muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
             message.guild.channels.cache.forEach((channel) => {
-                channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
+                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error)
             })
         } catch(e) {
             console.log(e.stack)
         }
     } else {
         message.guild.channels.cache.forEach((channel) => {
-            channel.overwritePermissions([{id: muterole.id, deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]).catch(console.error)
+            channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error)
         })
     }
     //end of create role
