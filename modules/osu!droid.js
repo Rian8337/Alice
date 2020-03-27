@@ -53,7 +53,7 @@ class PlayerInfo {
         let options = {
             host: "ops.dgsrz.com",
             port: 80,
-            path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${username}`}`
+            encodeURIComponent(path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${username}`}`)
         };
         let content = '';
         let req = http.request(options, res => {
