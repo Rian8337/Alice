@@ -75,7 +75,32 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let ppline = parseFloat(npp.toString().split(" ")[0]);
                 let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-                embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
+                if (miss > 0 || combo < mapinfo.max_combo) {
+                    let if_fc_acc = new osudroid.Accuracy({
+                        n300: npp.computed_accuracy.n300,
+                        n100: npp.computed_accuracy.n100,
+                        n50: npp.computed_accuracy.n50,
+                        nmiss: 0,
+                        nobjects: mapinfo.objects
+                    }).value() * 100;
+                    let if_fc_dpp = osudroid.ppv2({
+                        stars: star.droid_stars,
+                        combo: mapinfo.max_combo,
+                        acc_percent: if_fc_acc,
+                        miss: 0,
+                        mode: "droid"
+                    });
+                    let if_fc_pp = osudroid.ppv2({
+                        stars: star.pc_stars,
+                        combo: mapinfo.max_combo,
+                        acc_percent: if_fc_acc,
+                        miss: 0,
+                        mode: "osu"
+                    });
+                    let dline = parseFloat(if_fc_dpp.toString().split(" ")[0]);
+                    let pline = parseFloat(if_fc_pp.toString().split(" ")[0]);
+                    embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\`\n\`If FC (${if_fc_acc.toFixed(2)}): ${dline} droid pp - ${pline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
+                } else embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
                 message.channel.send({embed: embed}).catch(console.error)
             })
         })
