@@ -122,7 +122,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 					});
 					let dline = parseFloat(if_fc_dpp.toString().split(" ")[0]);
 					let pline = parseFloat(if_fc_pp.toString().split(" ")[0]);
-					embed.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars\n**Droid pp (if FC)**: __${dline} pp__ **(${if_fc_acc.toFixed(2)}%)**`, `**PC pp**: ${pp} pp - ${pc_stars} stars\n**PC pp (if FC)**: ${pline} pp **(${if_fc_acc.toFixed(2)}%)**`)
+					embed.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars\n**Droid pp (if FC)**: __${dline} pp__ **(${mapinfo.max_combo}x, ${if_fc_acc.toFixed(2)}%)**`, `**PC pp**: ${pp} pp - ${pc_stars} stars\n**PC pp (if FC)**: ${pline} pp **(${mapinfo.max_combo}x, ${if_fc_acc.toFixed(2)}%)**`)
 				} else embed.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
 
 				message.channel.send({embed: embed}).catch(console.error)
