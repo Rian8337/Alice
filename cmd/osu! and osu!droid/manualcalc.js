@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		const index = Math.floor(Math.random() * footer.length);
 		let embed = new Discord.MessageEmbed()
 			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
 			.setColor(mapinfo.statusColor(mapinfo.approved))
 			.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 			.setTitle(mapinfo.showStatistics(mod, 0))
