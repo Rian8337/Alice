@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 const config = require('../../config.json');
-const {createCanvas} = require('canvas');
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 	let ufind = message.author.id;
