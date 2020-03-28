@@ -49,7 +49,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             if (!found) current_map.push(entry);
 
             new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-                if (!mapinfo.title || !mapinfo.objects) {
+                if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
                     embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.droid_to_PC(mod, true)}\`\nTime: \`${ptime.toUTCString()}\``);
                     return message.channel.send({embed: embed}).catch(console.error)
                 }
