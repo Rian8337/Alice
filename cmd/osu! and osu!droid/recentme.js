@@ -65,7 +65,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			if (!found) current_map.push(entry);
 
 			new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-				if (!mapinfo.title || !mapinfo.objects) return;
+				if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
 				mod = osudroid.mods.droid_to_PC(mod);
 				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 				let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
