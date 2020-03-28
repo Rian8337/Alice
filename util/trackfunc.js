@@ -35,7 +35,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 
 					new osudroid.MapInfo().get({hash: hash}, mapinfo => {
 						let mod_string = osudroid.mods.droid_to_PC(mod, true);
-						if (!mapinfo.title || !mapinfo.objects) {
+						if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
 							embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
 							return client.channels.cache.get("665106609382359041").send({embed: embed})
 						}
