@@ -3,13 +3,9 @@ const osudroid = require('../../modules/osu!droid');
 const config = require('../../config.json');
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
-    let hash;
-    for (let i = 0; i < current_map.length; i++) {
-        if (Date.now() - current_map[i][0] > 600000 || current_map[i][1] != message.channel.id) continue;
-        hash = current_map[i][2];
-        break
-    }
-    if (!hash) return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
+    let channel_index = current_map.findIndex(map => map[0] === message.channel.id);
+    if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
+    let hash = current_map[channel_index][1];
 
     let combo;
     let acc = 100;
