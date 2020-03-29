@@ -4,7 +4,7 @@ const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs");
-    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321' && message.author.id != "293340533021999105") return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
