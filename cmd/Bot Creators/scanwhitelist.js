@@ -23,6 +23,17 @@ module.exports.run = (client, message, args, maindb) => {
             let beatmap_id = whitelist.mapid;
             let hash = whitelist.hashid;
             new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}, mapinfo => {
+                if (!mapinfo.title) {
+                    console.log("Whitelist entry not available");
+                    whitelistdb.deleteOne({mapid: beatmap_id}, err => {
+                        if (err) {
+                            console.log(err);
+                            return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        }
+                        ++i;
+                        return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    })
+                }
                 if (hash && mapinfo.hash === hash) {
                     ++i;
                     return retrieveWhitelist(whitelist_list, i, whitelistCheck)
