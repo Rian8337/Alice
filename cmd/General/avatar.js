@@ -17,6 +17,7 @@ module.exports.run = async (client, message, args) => {
 
     if (args[0]) {
         user = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
+        if (isNaN(user)) return message.channel.send("❎ **| I'm sorry, that is not a valid user ID!**");
         user = await client.users.fetch(user);
         if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**")
     }
