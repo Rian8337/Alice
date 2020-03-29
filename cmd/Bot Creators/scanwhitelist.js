@@ -28,21 +28,23 @@ module.exports.run = (client, message, args, maindb) => {
                     whitelistdb.deleteOne({mapid: beatmap_id}, err => {
                         if (err) {
                             console.log(err);
-                            return setTimeout(() => {
+                            setTimeout(() => {
                                 retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                            }, 50)
+                            }, 50);
+                            return
                         }
                         ++i;
-                        return setTimeout(() => {
+                        setTimeout(() => {
                             retrieveWhitelist(whitelist_list, i, whitelistCheck)
                         }, 50)
                     })
                 }
                 if (hash && mapinfo.hash === hash) {
                     ++i;
-                    return setTimeout(() => {
+                    setTimeout(() => {
                         retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                    }, 50)
+                    }, 50);
+                    return
                 }
                 console.log("Whitelist entry outdated");
                 let updateVal = {
@@ -53,9 +55,10 @@ module.exports.run = (client, message, args, maindb) => {
                 whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return setTimeout(() => {
+                        setTimeout(() => {
                             retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                        }, 50)
+                        }, 50);
+                        return
                     }
                     ++i;
                     setTimeout(() => {
