@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 
 function retrieveWhitelist(whitelist_entries, i, cb) {
-    if (!whitelist_entries[i]) cb(null, true);
+    if (!whitelist_entries[i]) return cb(null, true);
     cb(whitelist_entries[i])
 }
 
