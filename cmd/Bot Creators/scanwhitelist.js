@@ -21,16 +21,16 @@ module.exports.run = (client, message, args, maindb) => {
             if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
             console.log(i);
             let beatmap_id = whitelist.mapid;
-            let hash = whitelist.hash;
+            let hash = whitelist.hashid;
             new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}, mapinfo => {
-                if (mapinfo.hash === hash) {
+                if (hash && mapinfo.hash === hash) {
                     ++i;
                     return retrieveWhitelist(whitelist_list, i, whitelistCheck)
                 }
                 console.log("Whitelist entry outdated");
                 let updateVal = {
                     $set: {
-                        hash: hash
+                        hash: mapinfo.hash
                     }
                 };
                 whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
