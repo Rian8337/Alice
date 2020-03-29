@@ -238,6 +238,29 @@ client.on("message", message => {
 		}
 	}
 	
+	// YouTube link detection
+	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+		for (let i = 0; i < msgArray.length; i++) {
+			let msg = msgArray[i];
+			if (!msg.startsWith("https://youtu.be/") && !msg.startsWith("https://youtube.com/watch?v=") && !msg.startsWith("https://www.youtube.com/watch?v=")) continue;
+			let video_id;
+			let a = msg.split("/");
+			if (msg.startsWith("https://youtu.be")) video_id = a[a.length - 1];
+			if (!video_id) {
+				let params = a[a.length - 1].split("?");
+				params = params[params.length - 1].split("&");
+				for (let i = 0; i < params.length; i++) {
+					let param = params[i];
+					if (!param.startsWith("v=")) continue;
+					video_id = param.slice(2);
+					break;
+				}
+			}
+			if (!video_id) continue;
+			client.utils.get("youtube").run(client, message, video_id, current_map)
+		}
+	}
+	
 	// picture log
 	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706') {
 		let attachments = [];
@@ -247,7 +270,7 @@ client.on("message", message => {
 			if (url.indexOf("png", length - 3) === -1 && url.indexOf("jpg", length - 3) === -1 && url.indexOf("jpeg", length - 4) === -1 && url.indexOf("gif", length - 3) === -1) continue;
 			attachments.push(attachment)
 		}
-		if (attachments.length == 0) return;
+		if (attachments.length === 0) return;
 		let embed = new Discord.MessageEmbed()
 			.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
 			.setColor('#cb8900')
