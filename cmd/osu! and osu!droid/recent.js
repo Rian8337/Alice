@@ -38,19 +38,13 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		};
 		message.channel.send({embed: embed}).catch(console.error);
 
-		let time = Date.now();
-		let entry = [time, message.channel.id, hash];
-		let found = false;
-		for (let i = 0; i < current_map.length; i++) {
-			if (current_map[i][1] != message.channel.id) continue;
-			current_map[i] = entry;
-			found = true;
-			break
-		}
-		if (!found) current_map.push(entry);
+		let entry = [message.channel.id, hash];
+		let map_index = current_map.findIndex(map => map[0] === message.channel.id);
+		if (map_index === -1) current_map.push(entry);
+		else current_map[map_index] = entry;
 
 		new osudroid.MapInfo().get({hash: hash}, mapinfo => {
-			if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
+			if (!mapinfo.title || mapinfo.objects.length === 0 || !mapinfo.osu_file) return;
 			mod = osudroid.mods.droid_to_PC(mod);
 			let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 			let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
