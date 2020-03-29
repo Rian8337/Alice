@@ -1,6 +1,17 @@
+const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = (client, message, args, maindb) => {
+	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs!**");
+	let inter_server = client.guilds.cache.get("316545691545501706");
+	let member = inter_server.member(message.author.id);
+	if (!member) return message.channel.send("❎ **| I'm sorry, you must be a verified member of the osu!droid International Discord server to use this command!**");
+	let role = member.roles.cache.find(r => r.name === "Member");
+	if (!role) {
+		if (message.guild.id === '316545691545501706') return message.channel.send("❎ **| I'm sorry, you must be a verified member to use this command!**");
+		else return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
+	}
+	
 	let uid = args[0];
 	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
 	if (isNaN(uid)) return message.channel.send("❎ **| Invalid uid.**");
