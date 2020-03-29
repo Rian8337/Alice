@@ -28,29 +28,39 @@ module.exports.run = (client, message, args, maindb) => {
                     whitelistdb.deleteOne({mapid: beatmap_id}, err => {
                         if (err) {
                             console.log(err);
-                            return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                            return setTimeout(() => {
+                                retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                            }, 50)
                         }
                         ++i;
-                        return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        return setTimeout(() => {
+                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        }, 50)
                     })
                 }
                 if (hash && mapinfo.hash === hash) {
                     ++i;
-                    return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    return setTimeout(() => {
+                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    }, 50)
                 }
                 console.log("Whitelist entry outdated");
                 let updateVal = {
                     $set: {
-                        hash: mapinfo.hash
+                        hashid: mapinfo.hash
                     }
                 };
                 whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        return setTimeout(() => {
+                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        }, 50)
                     }
                     ++i;
-                    retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    setTimeout(() => {
+                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    }, 50)
                 })
             })
         })
