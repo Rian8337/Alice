@@ -23,9 +23,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
 
-    let uid = args[0];
-    if (!uid) return;
-    binddb.find({uid: uid}).toArray((err, player_list) => {
+    binddb.find({}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
