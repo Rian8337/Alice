@@ -9,7 +9,6 @@ function retrievePlayer(player_list, i, cb) {
 function retrievePlay(play_list, i, cb) {
     if (!play_list[i]) return cb(null, null, true);
     let hash = play_list[i][0];
-    console.log(hash);
 
     new osudroid.MapInfo().get({hash: hash, file: false}, mapinfo => {
         cb(hash, mapinfo)
@@ -47,13 +46,13 @@ module.exports.run = (client, message, args, maindb) => {
                 let playc = player.playc;
                 retrievePlay(play_list, j, function validatePlay(hash, mapinfo, stopFlag = false) {
                     if (stopFlag) {
-                        console.log("Check done");
                         let pptotal = 0;
                         let weight = 1;
                         for (let i in play_list) {
                             pptotal += weight * play_list[i][2];
                             weight *= 0.95;
                         }
+                        console.log(pptotal);
                         let updateVal = {
                             $set: {
                                 pp: play_list,
@@ -69,6 +68,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 }, 50);
                                 return
                             }
+                            console.log("Check done");
                             ++i;
                             retrievePlayer(player_list, i, checkPlayer)
                         });
