@@ -39,6 +39,7 @@ module.exports.run = (client, message, args, maindb) => {
             retrievePlayer(player_list, i, function checkPlayer(player, stopSign = false) {
                 if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
                 console.log(i);
+                console.log("Uid:", player.uid);
                 let j = 0;
                 let discordid = player.discordid;
                 let play_list = player.pp;
