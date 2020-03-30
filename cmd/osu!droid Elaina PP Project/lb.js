@@ -34,7 +34,7 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (!(res[page*20])) return message.channel.send("Nah we don't have that much player :p");
         let output = editpp(res, page);
-        message.channel.send('```' + output + '```').then((msg) => {
+        message.channel.send('```c\n' + output + '```').then((msg) => {
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
