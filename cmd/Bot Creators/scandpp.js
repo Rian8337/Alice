@@ -41,6 +41,7 @@ module.exports.run = (client, message, args, maindb) => {
                 console.log(i);
                 console.log("Uid:", player.uid);
                 let j = 0;
+                let prev_pptotal = player.pptotal;
                 let discordid = player.discordid;
                 let play_list = player.pp;
                 let playc = player.playc;
@@ -52,7 +53,7 @@ module.exports.run = (client, message, args, maindb) => {
                             pptotal += weight * play_list[i][2];
                             weight *= 0.95;
                         }
-                        console.log(pptotal);
+                        console.log(prev_pptotal + " -> " + pptotal);
                         let updateVal = {
                             $set: {
                                 pp: play_list,
