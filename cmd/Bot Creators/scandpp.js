@@ -23,16 +23,19 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
 
+    console.log("Retrieving player entries");
     binddb.find({}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
+        console.log("Retrieving whitelist entries");
         whitelistdb.find({}).toArray((err, whitelist_list) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("Error: Empty database response. Please try again!")
             }
+            console.log("Scanning player entries");
             let i = 0;
             retrievePlayer(player_list, i, function checkPlayer(player, stopSign = false) {
                 if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
