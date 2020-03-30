@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb) => {
     let whitelistdb = maindb.collection("mapwhitelist");
 
     console.log("Retrieving player entries");
-    binddb.find({}).toArray((err, player_list) => {
+    binddb.find({}).sort({pptotal: -1}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
