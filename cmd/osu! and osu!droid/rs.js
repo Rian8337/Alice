@@ -24,7 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let combo = play.combo;
             let rank = osudroid.rankImage.get(play.mark);
             let ptime = new Date(play.date * 1000);
-            ptime.setUTCHours(ptime.getUTCHours() + 7);
+            ptime.setUTCHours(ptime.getUTCHours() + 8);
             let acc = parseFloat((play.accuracy / 1000).toFixed(2));
             let miss = play.miss;
             let mod = play.mode;
