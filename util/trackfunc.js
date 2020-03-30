@@ -15,7 +15,7 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 				let play = player.recent_plays;
 				let curtime = Math.floor(Date.now() / 1000);
 				for (let i = 0; i < play.length; i++) {
-					let timeDiff = curtime - (play[i].date + 3600 * 7); //server time is UTC-7, while curtime is in UTC
+					let timeDiff = curtime - (play[i].date + 3600 * 8); //server time is UTC-8, while curtime is in UTC
 					if (timeDiff > 600) break;
 					let title = play[i].filename;
 					let score = play[i].score.toLocaleString();
