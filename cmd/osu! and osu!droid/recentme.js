@@ -29,7 +29,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			let rank = osudroid.rankImage.get(rplay.mark);
 			let combo = rplay.combo;
 			let ptime = new Date(rplay.date * 1000);
-			ptime.setUTCHours(ptime.getUTCHours() + 8);
+			ptime.setUTCHours(ptime.getUTCHours() + 7);
 			let acc = parseFloat((rplay.accuracy / 1000).toFixed(2));
 			let miss = rplay.miss;
 			let mod = rplay.mode;
