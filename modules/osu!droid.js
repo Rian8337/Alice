@@ -22,6 +22,87 @@ let log = {warn: Function.prototype};
 if (typeof exports !== "undefined") {
     log = console
 }
+    
+// PlayInfo instance
+// ------------------------------
+// represents a play of osu!droid
+class PlayInfo {
+    
+    // values:
+    //  score_id: The ID of the score
+    //  player_name: Player name
+    //  title: The title of the beatmap
+    //  combo: Max combo of the play
+    //  score: Score achieved
+    //  rank: Rank achieved
+    //  date: Play date
+    //  accuracy: Accuracy gained
+    //  miss: Miss count
+    //  mods: Mods string of the play, this will be automatically
+    //        converted to PC mods
+    //  hash: MD5 hash of the play
+    constructor(values = {}) {
+        this.score_id = values.score_id || 0;
+        this.player_name = values.player_name || '';
+        this.player_uid = values.player_uid || 0;
+        this.title = values.title || '';
+        this.combo = values.combo || 0;
+        this.score = values.score || 0;
+        this.rank = values.rank || '';
+        this.date = values.date || '';
+        this.accuracy = values.accuracy || 0;
+        this.miss = values.miss || 0;
+        this.mods = mods.droid_to_PC(values.mods) || '';
+        this.hash = values.hash || '';
+    }
+
+    // retrieves play information
+    // --------------------------------------
+    // params:
+    //  uid: uid of player (required)
+    //  hash: the beatmap's hash (required)
+    //
+    // outputs a callback of the play's information
+    getFromHash(params, callback) {
+        let uid = this.player_uid = this.player_uid || params.uid;
+        let hash = this.hash = this.hash || params.hash;
+        if (!uid || !hash) {
+            throw new TypeError("Uid and hash must be specified");
+        }
+
+        let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
+        request(url, (err, response, data) => {
+            if (err || !data) {
+                return callback(this);
+            }
+            let entry = data.split("<br>");
+            entry.shift();
+            if (entry.length === 0) {
+                return callback(this)
+            }
+            let play = entry[0].split(" ");
+            this.score_id = parseInt(play[0]);
+            this.player_uid = parseInt(play[1]);
+            this.player_name = play[2];
+            this.score = parseInt(play[3]);
+            this.combo = parseInt(play[4]);
+            this.rank = play[5];
+            this.mods = mods.droid_to_PC(play[6]);
+            this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
+            this.miss = parseInt(play[8]);
+            let date = new Date(parseInt(play[9]) * 1000);
+            date.setUTCHours(date.getUTCHours() + 7);
+            this.date = date.toUTCString();
+            this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, "");
+            this.hash = play[11];
+            callback(this)
+        })
+    }
+
+    toString() {
+        return `Player: ${this.player_name}, uid: ${this.player_uid}, title: ${this.title}, score: ${this.score}, combo: ${this.combo}, rank: ${this.rank}, acc: ${this.accuracy}%, miss: ${this.miss}, date: ${this.date}, mods: ${this.mods}, hash: ${this.hash}`
+    }
+}
 
 // PlayerInfo instance
 // ------------------------------
@@ -2253,6 +2334,7 @@ function ppv2(params) {
 // exports
 // ----------------------------------------------------------------
 
+osudroid.PlayInfo = PlayInfo;
 osudroid.PlayerInfo = PlayerInfo;
 osudroid.object_types = object_types;
 osudroid.MapInfo = MapInfo;
