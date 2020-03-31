@@ -359,6 +359,7 @@ client.on("message", message => {
 					});
 					collector.on('end', () => {
 						if (!correct) {
+                                                        msg.delete().catch(console.error);
 							message.channel.send("❎ **| Timed out.**").then((msg) => {
 								msg.delete({timeout: 5000}).catch(console.error)
 							})
@@ -414,6 +415,7 @@ client.on("message", message => {
 					});
 					collector.on('end', () => {
 						if (!correct) {
+                                                        msg.delete().catch(console.error);
 							message.channel.send("❎ **| Timed out.**").then((msg) => {
 								msg.delete({timeout: 5000}).catch(console.error)
 							})
