@@ -377,7 +377,7 @@ client.on("typingStart", (channel, user) => {
 	general.startTyping().catch(console.error);
 	setTimeout(() => {
 		general.stopTyping(true)
-	}, 10000)
+	}, 5000)
 });
 
 // member ban detection
