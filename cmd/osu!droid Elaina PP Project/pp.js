@@ -79,6 +79,10 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 
+	let channels = config.pp_channel;
+	let channel_index = channels.findIndex(id => message.channel.id === id);
+	if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+	
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
 
@@ -116,10 +120,6 @@ module.exports.run = (client, message, args, maindb) => {
 
 		switch (args[0]) {
 			case "past": {
-				let channels = config.pp_channel;
-				let channel_index = channels.findIndex(id => message.channel.id === id);
-				if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
-
 				let beatmap = args[1];
 				if (!beatmap) return message.channel.send("❎ **| Hey, please give me a beatmap to submit!**");
 				if (typeof beatmap !== "number") {
@@ -211,10 +211,6 @@ module.exports.run = (client, message, args, maindb) => {
 				break
 			}
 			default: {
-				let channels = config.pp_channel;
-				let channel_index = channels.findIndex(id => message.channel.id === id);
-				if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
-
 				let offset = 1;
 				let start = 1;
 				if (args[0]) offset = parseInt(args[0]);
