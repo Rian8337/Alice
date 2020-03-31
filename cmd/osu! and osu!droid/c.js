@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 let acc = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
                 let miss = parseInt(entry[8]);
                 let date = new Date(parseInt(entry[9]) * 1000);
-                date.setUTCHours(date.getUTCHours() + 8);
+                date.setUTCHours(date.getUTCHours() + 7);
                 let title = entry[10].replace(/_/g, " ").substring(0, entry[10].length - 4);
 
                 let footer = config.avatar_list;
