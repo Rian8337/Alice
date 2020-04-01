@@ -130,11 +130,11 @@ module.exports.run = (client, message, args) => {
                     let string = '✅ **| ';
                     switch (mode) {
                         case 'single':
-                            string += `${message.author}, game ended! Game statistics can be found in embed.**`;
+                            string += `${message.author}, game ended! ${equation ? `The correct answer is:\n\`${equation} = ${answer}\`\n\n` : ""}Game statistics can be found in embed.**`;
                             cd.delete(message.author.id);
                             break;
                         case 'multi':
-                            string += `Game ended! Game statistics can be found in embed.**`;
+                            string += `Game ended! ${equation ? `The correct answer is:\n\`${equation} = ${answer}\`\n\n` : ""}Game statistics can be found in embed.**`;
                             cd.delete(message.channel.id)
                     }
 
