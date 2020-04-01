@@ -128,7 +128,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(`Ranked Score: 0`, 169, 104);
 					c.fillText(`Accuracy: 100.00%`, 169, 124);
 					c.fillText(`Play Count: 0`, 169, 144);
-					if (res && res.pptotal) c.fillText(`Droid pp: 0.00pp`, 169, 164);
+					if (res && res.pptotal && res.discordid === '457940676206919702') c.fillText(`Droid pp: Infinity pp`, 169, 164);
+					else c.fillText(`Droid pp: 0.00pp`, 169, 164);
 					if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
 					c.fillText(player.location, 451, flag.height + 20);
 
