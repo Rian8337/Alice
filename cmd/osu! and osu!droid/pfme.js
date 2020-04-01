@@ -115,7 +115,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(`Ranked Score: 0`, 169, 68);
 					c.fillText(`Accuracy: 100.00%`, 169, 86);
 					c.fillText(`Play Count: 0`, 169, 104);
-					c.fillText(`Droid pp: 0.00pp`, 169, 122);
+					if (res.discorid === '457940676206919702') c.fillText(`Droid pp: Infinity pp`, 169, 122);
+					else c.fillText(`Droid pp: 0.00pp`, 169, 122);
 					if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 140);
 					c.fillText(player.location, 451, flag.height + 20);
 
