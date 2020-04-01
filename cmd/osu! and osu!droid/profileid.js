@@ -25,10 +25,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 				let level = 1;
 				let score = 0;
-				//if (playerres) {
-				//	score = playerres.score;
-				//	level = playerres.level;
-				//}
+				if (playerres) {
+					score = playerres.score;
+					level = playerres.level;
+				}
 				pointdb.findOne({uid: uid}, async (err, pointres) => {
 					if (err) {
 						console.log(err);
@@ -124,12 +124,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(player.name, 169, 45, 243);
 
 					c.font = '18px Exo';
-					c.fillText(`Total Score: 0`, 169, 84);
-					c.fillText(`Ranked Score: 0`, 169, 104);
-					c.fillText(`Accuracy: 100.00%`, 169, 124);
-					c.fillText(`Play Count: 0`, 169, 144);
-					if (res && res.pptotal && res.discordid === '457940676206919702') c.fillText(`Droid pp: Infinity pp`, 169, 164);
-					else c.fillText(`Droid pp: 0.00pp`, 169, 164);
+					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
+					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
+					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 124);
+					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
+					if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
 					if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
 					c.fillText(player.location, 451, flag.height + 20);
 
