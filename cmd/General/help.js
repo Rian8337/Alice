@@ -13,7 +13,7 @@ module.exports.run = (client, message, args) => {
 	if (args[0]) {
 		let cmd = client.commands.get(args[0]);
 		if (!cmd) return message.channel.send("❎ **| I'm sorry, I cannot find the command you are looking for!**");
-		let help = `${cmd.config.description}\n\n\`<...>\`: required arguments\n\`[...]\`: optional arguments\n\n**Permission: **${cmd.config.permission}\n**Usage:**\n\`${cmd.config.usage}\`\n**Details:**\n${cmd.config.detail}`;
+		let help = `${cmd.config.description}\n\n\`<...>\`: required arguments\n\`[...]\`: optional arguments\n\n**Permission: **${cmd.config.permission}\n\n**Usage:**\n\`${cmd.config.usage}\`\n\n**Details:**\n${cmd.config.detail}`;
 		let embed = new Discord.MessageEmbed()
 			.setTitle(config.prefix + args[0])
 			.setColor(rolecheck)
