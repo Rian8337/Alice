@@ -62,6 +62,7 @@ module.exports.run = (client, message, args) => {
         });
         collector.on('end', () => {
             if (!correct) {
+                msg.delete().catch(console.error);
                 message.channel.send(`❎ **| ${message.author}, timed out. The correct answer is \`${equation} = ${result}\`.**`);
                 cd.delete(message.author.id)
             }
