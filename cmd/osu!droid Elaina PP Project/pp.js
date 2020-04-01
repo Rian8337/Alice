@@ -60,7 +60,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 				return b[2] - a[2]
 			});
 			if (pplist.length > 75) pplist.splice(75);
-			if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+			if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
 			else {
 				let x = 0;
 				for (x; x < pplist.length; x++) {
@@ -69,7 +69,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 						break
 					}
 				}
-				if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+				if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
 			}
 			cb()
 		})
@@ -78,11 +78,10 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-
 	let channels = config.pp_channel;
 	let channel_index = channels.findIndex(id => message.channel.id === id);
 	if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
-	
+
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
 
@@ -174,16 +173,16 @@ module.exports.run = (client, message, args, maindb) => {
 								return b[2] - a[2]
 							});
 							if (pplist.length > 75) pplist.splice(75);
-							if (dup) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+							if (dup) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`); // dup
 							else {
 								let x = 0;
 								for (x; x < pplist.length; x++) {
 									if (pplist[x][1].includes(playinfo)) {
-										embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+										embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`); // normal
 										break
 									}
 								}
-								if (x == pplist.length) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+								if (x == pplist.length) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`); // worth no pp
 							}
 
 							let pptotal = 0;
@@ -192,8 +191,8 @@ module.exports.run = (client, message, args, maindb) => {
 								pptotal += weight * pplist[i][2];
 								weight *= 0.95;
 							}
-							let diff = pptotal - pre_pptotal;
-							embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
+							//let diff = pptotal - pre_pptotal;
+							embed.setDescription(`Total PP: **0.00 pp**\nPP gained: **0.00 pp**`);
 							message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
 							let updateVal = {
 								$set: {
@@ -249,7 +248,7 @@ module.exports.run = (client, message, args, maindb) => {
 								weight *= 0.95;
 							}
 							let diff = pptotal - pre_pptotal;
-							embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**`);
+							embed.setDescription(`Total PP: **Infinity pp**\nPP gained: **${diff.toFixed(2)} pp**`);
 							message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
 							let updateVal = {
 								$set: {
