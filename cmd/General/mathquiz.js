@@ -51,13 +51,14 @@ module.exports.run = (client, message, args) => {
 
     message.channel.send(`❗**| ${message.author}, here is your equation (level ${level}, ${prev_operator_amount} operators):\n\`${equation} = ...\`\nYou have 30 seconds to solve it.**`).then(msg => {
         cd.add(message.author.id);
-        let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 30000});
+        let collector = message.channel.createMessageCollector(m => parseFloat(m.content) === result && m.author.id === message.author.id, {time: 30000});
         let correct = false;
         collector.on('collect', () => {
             msg.delete().catch(console.error);
             correct = true;
             let timeDiff = Date.now() - msg.createdTimestamp;
             message.channel.send(`✅ **| ${message.author}, your answer is correct! It took you ${timeDiff / 1000}s!\n\`${equation} = ${result}\`**`);
+            collector.stop();
             cd.delete(message.author.id)
         });
         collector.on('end', () => {
