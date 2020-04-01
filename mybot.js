@@ -351,8 +351,8 @@ client.on("message", message => {
 				}
 
 				let correct = false;
-				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 10 seconds!**\n\`${equation} = ...\``).then((msg) => {
-					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 10000});
+				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 20 seconds!**\n\`${equation} = ...\``).then((msg) => {
+					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 20000});
 					collector.on('collect', () => {
 						msg.delete().catch(console.error);
 						correct = true;
@@ -407,8 +407,8 @@ client.on("message", message => {
 				}
 
 				let correct = false;
-				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 10 seconds!**\n\`${equation} = ...\``).then((msg) => {
-					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 10000});
+				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 20 seconds!**\n\`${equation} = ...\``).then((msg) => {
+					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 20000});
 					collector.on('collect', () => {
 						msg.delete().catch(console.error);
 						correct = true;
