@@ -12,7 +12,7 @@ function editpp(res, page) {
     let output = '#   | Username         | UID    | Play | PP \n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].pptotal && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(`Player #${i+1}`, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 5) + ' | ' + res[i].pptotal.toFixed(2) + '\n';}
+            if (res[i].pptotal && res[i].playc) {output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].discordid === '457940676206919702' ? res[i].username : `Player #${i+1}`, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 5) + ' | ' + res[i].pptotal.toFixed(2) + '\n';}
             else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(`Player #${i+1}`, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 5) + ' | ' + "0.00" + '\n';}
         }
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 5) + ' | ' + "-" + '\n';
@@ -34,9 +34,11 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (!(res[page*20])) return message.channel.send("Nah we don't have that much player :p");
         res.forEach(player => {
-            player.uid = "NaN";
-            player.playc = 0;
-            player.pptotal = 0
+            if (player.discordid !== '457940676206919702') {
+                player.uid = "NaN";
+                player.playc = 0;
+                player.pptotal = 0
+            }
         });
         let output = editpp(res, page);
         message.channel.send('```c\n' + output + '```').then((msg) => {
