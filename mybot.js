@@ -356,8 +356,7 @@ client.on("message", message => {
 					collector.on('collect', () => {
 						msg.delete().catch(console.error);
 						correct = true;
-						cmd.run(client, message, args, maindb, alicedb, current_map);
-						collector.end()
+						cmd.run(client, message, args, maindb, alicedb, current_map)
 					});
 					collector.on('end', () => {
 						if (!correct) {
@@ -412,8 +411,7 @@ client.on("message", message => {
 					collector.on('collect', () => {
 						msg.delete().catch(console.error);
 						correct = true;
-						cmd.run(client, message, args, maindb, alicedb, current_map);
-						collector.end()
+						cmd.run(client, message, args, maindb, alicedb, current_map)
 					});
 					collector.on('end', () => {
 						if (!correct) {
