@@ -28,7 +28,8 @@ function editpp(page, pp, ppentry, discordid, uid, username, footer, index, role
 			let miss = ppentry[x][5];
 			if (!miss) miss = '0 ❌';
 			else miss = miss.toString() + " ❌";
-			embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
+			//embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
+			embed.addField(`${x+1}. ${ppentry[x][1]}`, `${combo} | ${acc} | ${miss} | __0 pp__ (Net pp: 0 pp)`)
 		}
 		else embed.addField((x+1) + '. -', '-')
 	}
@@ -65,7 +66,7 @@ module.exports.run = (client, message, args, maindb) => {
 		let discordid = res[0].discordid;
 		let pp = 0;
 		let ppentry = [];
-		if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
+		//if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
 		if (res[0].pp) ppentry = res[0].pp;
 		let rolecheck;
 		try {
