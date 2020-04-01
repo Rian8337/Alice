@@ -166,6 +166,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+	if (message.author.id === '391268244796997643') message.delete().catch(console.error);
 	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
@@ -327,7 +328,46 @@ client.on("message", message => {
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
-			cmd.run(client, message, args, maindb, alicedb, current_map);
+			if (message.author.id === '386742340968120321' || message.author.id === '132783516176875520') cmd.run(client, message, args, maindb, alicedb, current_map);
+			else {
+				let operators = ['/', '-', '+', '*'];
+				let equation = '';
+				let result = Number.NaN;
+
+				while (!Number.isInteger(result)) {
+					while (operators.length > 0) {
+						let number = createRandomNumber(Math.random() * 5, Math.max(5, Math.random() * 15));
+						const index = Math.floor(Math.random() * operators.length);
+						equation += `${number} ${operators[index]} `;
+						operators.splice(index, 1)
+					}
+					equation += createRandomNumber(Math.random() * 5, Math.min(5, Math.random() * 15));
+					result = eval(equation);
+					if (!Number.isInteger(result)) {
+						result = Number.NaN;
+						equation = '';
+						operators = ['/', '-', '+', '*']
+					}
+				}
+
+				let correct = false;
+				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 10 seconds!**\n\`${equation} = ...\``).then((msg) => {
+					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 10000});
+					collector.on('collect', () => {
+						msg.delete().catch(console.error);
+						correct = true;
+						cmd.run(client, message, args, maindb, alicedb, current_map);
+						collector.end()
+					});
+					collector.on('end', () => {
+						if (!correct) {
+							message.channel.send("❎ **| Timed out.**").then((msg) => {
+								msg.delete({timeout: 5000}).catch(console.error)
+							})
+						}
+					})
+				})
+			}
 			//cd.add(message.author.id);
 			//setTimeout(() => {
 			//	cd.delete(message.author.id)
@@ -344,7 +384,46 @@ client.on("message", message => {
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
-			cmd.run(client, message, args, maindb, alicedb, current_map);
+			if (message.author.id === '386742340968120321' || message.author.id === '132783516176875520') cmd.run(client, message, args, maindb, alicedb, current_map);
+			else {
+				let operators = ['/', '-', '+', '*'];
+				let equation = '';
+				let result = Number.NaN;
+
+				while (!Number.isInteger(result)) {
+					while (operators.length > 0) {
+						let number = createRandomNumber(Math.random() * 5, Math.max(5, Math.random() * 15));
+						const index = Math.floor(Math.random() * operators.length);
+						equation += `${number} ${operators[index]} `;
+						operators.splice(index, 1)
+					}
+					equation += createRandomNumber(Math.random() * 5, Math.min(5, Math.random() * 15));
+					result = eval(equation);
+					if (!Number.isInteger(result)) {
+						result = Number.NaN;
+						equation = '';
+						operators = ['/', '-', '+', '*']
+					}
+				}
+
+				let correct = false;
+				message.channel.send(`❗**| ${message.author}, solve this equation in order to access the command. You have 10 seconds!**\n\`${equation} = ...\``).then((msg) => {
+					let collector = message.channel.createMessageCollector(m => parseInt(m.content) === result && m.author.id === message.author.id, {time: 10000});
+					collector.on('collect', () => {
+						msg.delete().catch(console.error);
+						correct = true;
+						cmd.run(client, message, args, maindb, alicedb, current_map);
+						collector.end()
+					});
+					collector.on('end', () => {
+						if (!correct) {
+							message.channel.send("❎ **| Timed out.**").then((msg) => {
+								msg.delete({timeout: 5000}).catch(console.error)
+							})
+						}
+					})
+				})
+			}
 			//cd.add(message.author.id);
 			//setTimeout(() => {
 			//	cd.delete(message.author.id)
