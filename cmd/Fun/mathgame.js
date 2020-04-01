@@ -171,7 +171,7 @@ module.exports.run = (client, message, args) => {
 
 module.exports.config = {
     name: "mathgame",
-    description: "Creates a simple math equation that you have to solve within 30 seconds.",
+    description: "A math game! Creates a simple math equation that you have to solve within 30 seconds. If not answered, the game will end. The equation goes more difficult as time progresses.",
     usage: "mathgame [mode]",
     detail: "`mode`: Whether to play the game by yourself (singleplayer) or with others (multiplayer). Use `single` for singleplayer and `multi` for multiplayer. Defaults to `single` [String]",
     permission: "None"
