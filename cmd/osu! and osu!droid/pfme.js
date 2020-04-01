@@ -32,10 +32,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 				let level = 1;
 				let score = 0;
-				if (playerres) {
-					score = playerres.score;
-					level = playerres.level;
-				}
+				//if (playerres) {
+				//	score = playerres.score;
+				//	level = playerres.level;
+				//}
 				pointdb.findOne(query, async function(err, pointres) {
 					if (err) {
 						console.log(err);
@@ -111,11 +111,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(player.name, 169, 30, 243);
 
 					c.font = '16px Exo';
-					c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 50);
-					c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 68);
-					c.fillText(`Accuracy: ${player.accuracy}%`, 169, 86);
-					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 104);
-					c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 122);
+					c.fillText(`Total Score: 0`, 169, 50);
+					c.fillText(`Ranked Score: 0`, 169, 68);
+					c.fillText(`Accuracy: 100.00%`, 169, 86);
+					c.fillText(`Play Count: 0`, 169, 104);
+					c.fillText(`Droid pp: 0.00pp`, 169, 122);
 					if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 140);
 					c.fillText(player.location, 451, flag.height + 20);
 
