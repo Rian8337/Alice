@@ -34,7 +34,7 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (!(res[page*20])) return message.channel.send("Nah we don't have that much player :p");
         res.forEach(player => {
-            player.uid = Number.NaN;
+            player.uid = "NaN";
             player.playc = 0;
             player.pptotal = 0
         });
