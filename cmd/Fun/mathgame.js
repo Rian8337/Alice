@@ -21,8 +21,10 @@ function generateEquation(level, operator_amount, callback) {
     let operators = ['/', '*', '+', '-'];
     let equation = '';
     let answer = Number.NaN;
+    let infinity_count = 0;
 
     while (!Number.isInteger(answer)) {
+        if (infinity_count === 50) break;
         while (operator_amount > 0) {
             let number = createRandomNumber(Math.random() * 5 * Math.max(1, level / 2), Math.max(5 * Math.max(1, level / 2), Math.random() * 15 * level / 2));
             const index = Math.floor(Math.random() * operators.length);
@@ -47,6 +49,7 @@ function generateEquation(level, operator_amount, callback) {
         }
         else equation += createRandomNumber(Math.random() * 5 * level, Math.max(5 * Math.max(1, level / 2), Math.random() * 15 * Math.max(1, level / 2)));
         answer = eval(equation);
+        if (answer === Infinity) infinity_count++;
         if (
             !Number.isInteger(answer) ||
             (level >= 5 && (
@@ -90,7 +93,8 @@ module.exports.run = (client, message, args) => {
 
         let string = '❗**| ';
         if (mode === 'single') string += `${message.author}, solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
-        else string += `Solve this equation within 30 seconds (level ${level}, ${operator_amount} operator(s))!\n\`${equation} = ...\``;
+        else string += `Solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
+        if (!equation) string = `❗**| Equation generator has returned \`Infinity\` result 50 times! Ending the game.**`;
 
         message.channel.send(string).then(msg => {
             let collector;
@@ -101,6 +105,7 @@ module.exports.run = (client, message, args) => {
                 case "multi":
                     collector = message.channel.createMessageCollector(m => parseFloat(m.content) === answer, {time: 30000, max: 1})
             }
+            if (!equation) collector.stop();
 
             collector.on('collect', m => {
                 msg.delete().catch(console.error);
@@ -121,7 +126,7 @@ module.exports.run = (client, message, args) => {
             });
             collector.on('end', () => {
                 if (!correct) {
-                    msg.delete().catch(console.error);
+                    if (equation) msg.delete().catch(console.error);
                     let string = '✅ **| ';
                     switch (mode) {
                         case 'single':
