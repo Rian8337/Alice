@@ -166,7 +166,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-	if (message.author.id === '391268244796997643') message.delete().catch(console.error);
+	if (message.author.id === '391268244796997643' || message.author.id === '116275390695079945') message.delete().catch(console.error);
 	if (message.author.bot) return;
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
