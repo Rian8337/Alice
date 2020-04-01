@@ -206,7 +206,7 @@ module.exports.run = (client, message, args) => {
             else {
                 var output = 'Hey someone got that correctly\n';
                 for (i in correct_user) {
-                    output += client.users.get(correct_user[i][0]).username + " - " + correct_user[i][2] + "s \n";
+                    output += client.users.cache.get(correct_user[i][0]).username + " - " + correct_user[i][2] + "s \n";
                 }
                 var embed = {
                     "description": output,
