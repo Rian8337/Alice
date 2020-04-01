@@ -341,7 +341,7 @@ client.on("message", message => {
 						equation += `${number} ${operators[index]} `;
 						operators.splice(index, 1)
 					}
-					equation += createRandomNumber(Math.random() * 5, Math.min(5, Math.random() * 15));
+					equation += createRandomNumber(Math.random() * 5, Math.max(5, Math.random() * 15));
 					result = eval(equation);
 					if (!Number.isInteger(result)) {
 						result = Number.NaN;
@@ -397,7 +397,7 @@ client.on("message", message => {
 						equation += `${number} ${operators[index]} `;
 						operators.splice(index, 1)
 					}
-					equation += createRandomNumber(Math.random() * 5, Math.min(5, Math.random() * 15));
+					equation += createRandomNumber(Math.random() * 5, Math.max(5, Math.random() * 15));
 					result = eval(equation);
 					if (!Number.isInteger(result)) {
 						result = Number.NaN;
