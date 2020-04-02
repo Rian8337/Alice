@@ -12,6 +12,7 @@ module.exports.run = (client, message, video_id, current_map) => {
         } catch (e) {
             return
         }
+        if (!info.items || info.items.length === 0) return;
         let items = info.items[0].snippet;
         let description = items.description;
         let desc_entry = description.split("\n");
