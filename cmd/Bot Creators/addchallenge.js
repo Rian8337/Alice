@@ -504,7 +504,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     .setAuthor(challenge_id.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challenge_id}`, footer[index])
-                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${map})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${main_entry.link[0]}) - [OneDrive](${main_entry.link[1]})`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
                     .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${main_entry.points === 1?"Point":"Points"}**: ${main_entry.points} ${main_entry.points === 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
