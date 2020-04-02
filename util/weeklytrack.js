@@ -113,7 +113,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     break
                 }
                 case "rank": {
-                    bonus_string += `**${bonus[1].toUpperCase()} rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                    bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
                     break
                 }
                 case "dpp": {
