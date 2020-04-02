@@ -124,10 +124,10 @@ client.on("ready", () => {
 	}, 10000);
 	
 	setInterval(() => {
-		if (!apidown) client.utils.get("trackfunc").run(client, message = "", args = {}, maindb);
-		// client.utils.get("dailytrack").run(client, message = "", args = {}, maindb, alicedb);
-		// client.utils.get("weeklytrack").run(client, message = "", args = {}, maindb, alicedb);
-		// client.utils.get("clantrack").run(client, message = "", args = {}, maindb, alicedb)
+		if (!apidown) client.utils.get("trackfunc").run(client, "", [], maindb);
+		client.utils.get("dailytrack").run(client, "", [], maindb, alicedb);
+		client.utils.get("weeklytrack").run(client, "", [], maindb, alicedb);
+		// client.utils.get("clantrack").run(client, "", [], maindb, alicedb)
 	}, 600000);
 
 	// Mudae role assignment reaction-based on droid cafe
