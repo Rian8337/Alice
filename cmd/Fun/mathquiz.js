@@ -35,7 +35,7 @@ function generateNumber(level, operator) {
         case "*":
             return createRandomNumber(Math.random() * 5 * Math.max(1, Math.random() * level / 2), Math.random() * 10 * Math.max(1, Math.random() * level / 2));
         case "!":
-            return createRandomNumber(Math.random() * Math.max(1, Math.random() * level / 15), Math.random() * 5 * Math.max(1, Math.random() * level / 15));
+            return createRandomNumber(Math.random() * (level - 10) / 5, Math.random() * 3 * Math.max(1 + (level - 10) / 5, Math.random() * (level - 10) / 5));
     }
 }
 
