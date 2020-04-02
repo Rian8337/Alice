@@ -78,7 +78,7 @@ function generateEquation(level, operator_amount, callback) {
             if (factorial) {
                 // nerf number for factorials
                 number = generateNumber(level, "!");
-                while (number <= 2)
+                while (number < 2 || number > 4)
                     number = generateNumber(level, "!")
             }
 
@@ -106,7 +106,7 @@ function generateEquation(level, operator_amount, callback) {
         if (factorial) {
             // nerf number for factorials
             number = generateNumber(level, "!");
-            while (number <= 2)
+            while (number < 2 || number > 4)
                 number = generateNumber(level, "!")
         }
 
