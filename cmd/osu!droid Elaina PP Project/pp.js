@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('../../modules/osu!droid');
+let cd = new Set();
 
 function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, false, true);
@@ -78,6 +79,7 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+	if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let channels = config.pp_channel;
 	let channel_index = channels.findIndex(id => message.channel.id === id);
 	if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
@@ -119,6 +121,10 @@ module.exports.run = (client, message, args, maindb) => {
 
 		switch (args[0]) {
 			case "past": {
+				cd.add(message.author.id);
+				setTimeout(() => {
+					cd.delete(message.author.id)
+				}, 2000);
 				let beatmap = args[1];
 				if (!beatmap) return message.channel.send("❎ **| Hey, please give me a beatmap to submit!**");
 				if (typeof beatmap !== "number") {
@@ -218,6 +224,10 @@ module.exports.run = (client, message, args, maindb) => {
 				if (isNaN(start)) start = 1;
 				if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
 				if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
+				cd.add(message.author.id);
+				setTimeout(() => {
+					cd.delete(message.author.id)
+				}, 1000 * offset);
 
 				new osudroid.PlayerInfo().get({uid: uid}, player => {
 					if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
