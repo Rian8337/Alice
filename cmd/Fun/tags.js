@@ -3,7 +3,7 @@ const config = require('../../config.json');
 
 function listTag(tags, page, footer, index, rolecheck) {
     let embed = new Discord.MessageEmbed()
-        .setFooter(`Alice Synthesis Thirty | Page ${page + 1}/${Math.floor(tags.length / 20) + 1}`, footer[index])
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.floor(tags.length / 20)}`, footer[index])
         .setColor(rolecheck);
 
     let list = '';
@@ -60,7 +60,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, you don't have any saved tags in this server!**");
                 }
 
-                let page = 0;
+                let page = 1;
                 embed = listTag(tags_list, page, footer, index, rolecheck);
 
                 message.channel.send({embed: embed}).then(msg => {
@@ -81,14 +81,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
                     backward.on('collect', () => {
-                        page = 0;
+                        page = 1;
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
-                        if (page === 0) page = Math.floor(tags_list.length / 20);
+                        if (page === 1) page = Math.floor(tags_list.length / 20);
                         else page--;
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
@@ -96,7 +96,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     next.on('collect', () => {
-                        if ((page + 1) * 20 >= tags_list.length) page = 0;
+                        if (page * 20 >= tags_list.length) page = 1;
                         else page++;
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
