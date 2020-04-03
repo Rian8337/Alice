@@ -157,7 +157,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let tag = {
                             author: message.author.id,
                             name: name,
-                            date: Math.floor(message.createdTimestamp / 1000),
+                            date: message.createdTimestamp,
                             content: tag_content,
                             attachment_message: attachment_id,
                             attachments: attachment_list
@@ -194,7 +194,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let tag = {
                         author: message.author.id,
                         name: name,
-                        date: Math.floor(message.createdTimestamp / 1000),
+                        date: message.createdTimestamp,
                         content: tag_content,
                         attachment_message: '',
                         attachments: []
@@ -389,9 +389,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, there is no tag with that name!**");
 
                 let tag = tags[tag_index];
-                let string = `**Tag Information**\n\n**Name**: ${tag.name}\n**Author**: <@${tag.author}>\n**Creation date**: ${new Date(tag.date).toUTCString()}\n**Attachment amount**: ${tag.attachments.length}`;
+                let string = `**Name**: ${tag.name}\n**Author**: <@${tag.author}>\n**Creation date**: ${new Date(tag.date).toUTCString()}\n**Attachment amount**: ${tag.attachments.length}`;
 
-                embed.setDescription(string);
+                embed.setTitle("Tag Information").setDescription(string);
                 message.channel.send({embed: embed})
             });
             break
