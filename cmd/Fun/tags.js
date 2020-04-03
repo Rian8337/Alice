@@ -150,7 +150,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let attachments = [];
                 if (message.attachments.size > 0) {
                     for (const [, attachment] of message.attachments.entries()) attachments.push(attachment.proxyURL);
-                    attachments_channel.send(`Tag by <@${message.author.id}> (${message.author.id}), named \`${name}\`, created at ${message.createdAt}`, {files: attachments}).then(msg => {
+                    attachments_channel.send(`**Tag by <@${message.author.id}>**\n**User ID**: ${message.author.id}\n**Name**: \`${name}\`\n**Created at ${message.createdAt.toUTCString()}**`, {files: attachments}).then(msg => {
                         let attachment_id = msg.id;
                         let attachment_list = [];
                         for (const [, attachment] of msg.attachments.entries()) attachment_list.push(attachment.url);
