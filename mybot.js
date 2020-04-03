@@ -49,7 +49,7 @@ fs.readdir('./cmd', (err, folders) => {
 				const props = require(`./cmd/${folder}/${file}`);
 				console.log(`${i+1}.${j+1}. ${file} loaded`);
 				client.commands.set(props.config.name, props);
-				if (cmd.config.aliases) client.aliases.set(props.config.name, props)
+				if (props.config.aliases) client.aliases.set(props.config.name, props)
 			})
 		})
 	})
