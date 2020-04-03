@@ -3,7 +3,7 @@ const config = require('../../config.json');
 
 function listTag(tags, page, footer, index, rolecheck) {
     let embed = new Discord.MessageEmbed()
-        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.floor(tags.length / 20)}`, footer[index])
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(tags.length / 20)}`, footer[index])
         .setColor(rolecheck);
 
     let list = '';
