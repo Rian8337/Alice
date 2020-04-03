@@ -40,11 +40,11 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         let constrain = dailyres[0].constrain.toUpperCase();
         let beatmapid = dailyres[0].beatmapid;
         let featured = dailyres[0].featured;
+	    let hash = dailyres[0].hash;
         if (!featured) featured = '386742340968120321';
         new osudroid.MapInfo().get({beatmap_id: beatmapid}, async mapinfo => {
             if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
             if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
-            let hash = mapinfo.hash;
             let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
             let pass_string = '';
             let bonus_string = '';
