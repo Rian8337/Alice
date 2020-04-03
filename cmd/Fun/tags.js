@@ -397,7 +397,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         default: {
-            let name = args[1];
+            let name = args[0];
             if (!name)
                 return message.channel.send("❎ **| Hey, give me a tag name!**");
             if (name.length > 30)
