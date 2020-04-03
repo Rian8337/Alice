@@ -21,7 +21,7 @@ function createRandomNumber(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-client.commands = client.utils = new Discord.Collection();
+client.commands = client.utils = client.aliases = new Discord.Collection();
 client.help = [];
 
 console.log("Loading utilities and commands");
@@ -48,7 +48,8 @@ fs.readdir('./cmd', (err, folders) => {
 			files.forEach((file, j) => {
 				const props = require(`./cmd/${folder}/${file}`);
 				console.log(`${i+1}.${j+1}. ${file} loaded`);
-				client.commands.set(props.config.name, props)
+				client.commands.set(props.config.name, props);
+				if (cmd.config.aliases) client.aliases.set(props.config.name, props)
 			})
 		})
 	})
@@ -319,7 +320,7 @@ client.on("message", message => {
 	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
 		let mainbot = message.guild.members.cache.get("391268244796997643");
 		if (!mainbot) return;
-		let cmd = client.commands.get(command.slice(1));
+		let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
@@ -336,7 +337,7 @@ client.on("message", message => {
 	}
 	
 	if (message.content.startsWith(config.prefix)) {
-		let cmd = client.commands.get(command.slice(config.prefix.length));
+		let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
 		if (cmd) {
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
