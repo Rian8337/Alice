@@ -108,7 +108,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         bonus: []
     };
 
-    let req_constants = ['none', 'combo', 'rank', 'acc', 'score', 'scorev2', 'miss', 'rank', 'dpp', 'pp'];
+    const req_constants = ['none', 'combo', 'rank', 'acc', 'score', 'scorev2', 'miss', 'rank', 'dpp', 'pp', 'mod'];
 
     let pass_v2 = false;
     let easy_v2 = false;
