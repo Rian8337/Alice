@@ -63,7 +63,17 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             if (typeof value !== "number" || value < 0)
                 return message.channel.send("❎ **| I'm sorry, that's an invalid pp requirement!**");
             if (value > pp)
-                return message.channel.send(`❎ **| I'm sorry, pp requirement is above maximum pp (${pp})!**`)
+                return message.channel.send(`❎ **| I'm sorry, pp requirement is above maximum pp (${pp})!**`);
+            break
+        }
+        case 'mod': {
+            if (typeof value !== "string")
+                return message.channel.send("❎ **| I'm sorry, the mod combination is invalid!**");
+            value = osudroid.mods.modbits_from_string(value);
+            if (!value)
+                return message.channel.send("❎ **| I'm sorry, that mod combination is invalid!**");
+            value = osudroid.mods.modbits_to_string(value);
+            break
         }
     }
 
