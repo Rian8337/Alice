@@ -4,7 +4,7 @@ function getLastMessage(channel_list, i, cb) {
     if (!channel_list[i]) return cb(0, true);
     channel_list[i].messages.fetch({limit: 1}).then((messages) => {
         if (messages.size === 0) cb(null)
-        else cb(message.first().id)
+        else cb(messages.first().id)
     })
 }
 
