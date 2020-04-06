@@ -119,7 +119,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 104);
 					c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 122);
 					if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 140);
-					c.fillText(player.location, 451, flag.height + 20);
+					if (player.location !== "LL") c.fillText(player.location, 451, flag.height + 20);
 
 					// ranked level
 					let textColor = pictureConfig.textColor;
