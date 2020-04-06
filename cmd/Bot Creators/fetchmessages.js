@@ -92,7 +92,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (stopFlag) {
                 daily_counter += count;
                 list.push([channel_list[i].id, daily_counter]);
-                ++i!
+                ++i;
                 daily_counter = 0;
                 return getLastMessage(channel_list, i, testChannel)
             }
