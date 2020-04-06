@@ -60,8 +60,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 					// player flag
 					c.globalAlpha = 1;
-					const flag = await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`);
-					c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+					if (player.location !== "LL") {
+                                            const flag = await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`);
+					    c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+                                        }
 
 					// player rank
 					c.globalAlpha = 0.9;
