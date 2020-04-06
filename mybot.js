@@ -15,12 +15,6 @@ let current_map = [];
 let picture_cooldown = new Set();
 //let cd = new Set();
 
-function createRandomNumber(min, max) {
-	min = Math.floor(min);
-	max = Math.ceil(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
 client.commands = client.utils = client.aliases = new Discord.Collection();
 client.help = [];
 
