@@ -119,7 +119,7 @@ module.exports.run = (client, maindb, alicedb) => {
                             }
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
-                                if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1]}** Alice coins\n`;
+                                if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1].toLocaleString()}** Alice coins\n`;
                                 else top_string += `#${i+1}: -\n`
                             }
                             embed.setTitle("Auction Information")
@@ -158,10 +158,10 @@ module.exports.run = (client, maindb, alicedb) => {
 
                     let top_string = '';
                     for (let i = 0; i < 5; i++) {
-                        if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1]}** Alice coins\n`;
+                        if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1].toLocaleString()}** Alice coins\n`;
                         else top_string += `#${i+1}: -\n`
                     }
-                    if (j > 4) top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j][1]}** Alice coins`;
+                    if (j > 4) top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j][1].toLocaleString()}** Alice coins`;
 
                     embed.setTitle("Auction Information")
                         .setDescription(auction_info)
