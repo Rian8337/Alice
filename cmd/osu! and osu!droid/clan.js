@@ -31,10 +31,11 @@ function editmember(clanres, page, rolecheck, footer, index) {
         .setColor(rolecheck);
     
     let list = clanres[0].member_list;
+    let leader = clanres.leader;
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
-        memberstring += `${i+1}. <@${list[i][0]}> (${list[i][0]}) - ${list[i][2] ? "Leader/Co-Leader": "Member"}\n`
+        memberstring += `${i+1}. <@${list[i][0]}> (${list[i][0]}) - ${list[i][2] ? `${list[i][0] === leader ? "Leader" : "Co-Leader"}` : "Member"}\n`
     }
     embed.setDescription(memberstring);
     return embed
@@ -103,6 +104,436 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         .setColor(rolecheck);
 
     switch (args[0]) {
+        case "about": {
+            // everything normal members need to know about clans!
+            // ===================================================
+            // also has explanation for each commands
+            let help_array = [
+                [
+                    // 1
+                    "Introduction",
+                    "Welcome to Clans!\n" +
+                    "\n" +
+                    "This is a new system that emulates the feeling of a real guild-based game. You can make a clan and compete with other clans to gain power points.\n" +
+                    "\n" +
+                    "__**General Rules and Guidelines**__\n" +
+                    "- **All clans must abide by server rules. Failure to do so may result in your clan getting and potentially getting banned from the server disbanded without any further notice.**\n" +
+                    "- **Abuse of the clan system of any kind will result in your clan getting disbanded and potentially getting banned from the server without any further notice.**\n" +
+                    "- This is a heavily team-based system. You'll want to find friends before forming a clan. Trust me, this will be very hard to keep up without friends!\n" +
+                    "- Clans can have up to 25 members (including the clan leader).\n" +
+                    "\n" +
+                    "Make sure you read this wiki thoroughly before diving in to clans. Stuff will get very confusing, otherwise.\n" +
+                    "\n" +
+                    "__**Contents**__\n" +
+                    "- Page 2: Clan Member Positions\n" +
+                    "- Page 3: A Letter to Clan Leaders\n" +
+                    "- Page 4: Clan Icons\n" +
+                    "- Page 5: Clan Description\n" +
+                    "- Page 6: Power Points\n" +
+                    "- Page 7: Clan Powerups\n" +
+                    "- Page 8-13: Clan Shop\n" +
+                    "- Page 14: Auctions\n" +
+                    "- Page 15-16: Clan Battles\n" +
+                    "- Page 17: Weekly Upkeep\n" +
+                    "- Page 18-22: Command Information\n" +
+                    "- Page 23-25: Stats for nerds"
+                ],
+                [
+                    // 2
+                    "Clan Member Positions",
+                    "There are three member positions in a clan. They are:\n" +
+                    "**1. Member**\n" +
+                    "This is the lowest position of a clan member. Any newly joined members will be assigned to this position.\n" +
+                    "Clan members in this position have very limited permissions, with only having the ability to buy powerups for their clan via clan shop, which will be explained later.\n" +
+                    "**2. Co-Leader**\n" +
+                    "This is the second position of a clan member. To acquire this position, clan members must be promoted by the clan leader.\n" +
+                    "Clan members in this position have more permissions than regular clan members. They are able to accept new clan members, kick existing clan members, change clan description and icon, activate clan powerups, and start an auction.\n" +
+                    "**3. Leader**\n" +
+                    "This is the highest position of a clan member. When a new clan is created, the creator will automatically be the clan leader.\n" +
+                    "The clan leader has the most permissions out of all clan members. The clan leader can kick co-leaders and normal members, promote normal clan members to co-leaders, demote co-leaders to normal clan members, change clan name, and more."
+                ],
+                [
+                    // 3
+                    "A Letter to Clan Leaders",
+                    "As mentioned previously in page 2, your clan can have co-leaders to help maintain your clan activity.\n" +
+                    "To promote a normal clan member to co-leader, use `a!clan promote <user to promote>`.\n" +
+                    "To demote a co-leader to a normal clan member, use `a!clan demote <user to demote>`.\n" +
+                    "You will need someone else to monitor your clan in case you went inactive, but be careful on promoting clan members as co-leaders have more powers as described in page 3.\n" +
+                    "\n" +
+                    "If you want to transfer your leadership to another clan member, there is a way to do that, which will be shown later."
+                ],
+                [
+                    // 4
+                    "Clan Icons",
+                    "When your clan power reaches 250, you can change your clan's icon. This will be viewed when someone views your clan info or clan member list. You must be at least a co-leader in the clan to change clan icon.\n" +
+                    "You can use `a!clan icon set <link>` to set an icon or override an existing one (5-minute cooldown will be applied) and `a!clan icon remove [name]` to remove your clan's icon."
+                ],
+                [
+                    // 5
+                    "Clan Description",
+                    "A clan has a description box in which the clan can describe stuff about itself.\n" +
+                    "\n" +
+                    "The description box is accessible using `a!clan description`. You must be at least a co-leader of the clan to perform changes to clan description.\n" +
+                    "To edit your clan's description, use `a!clan description edit <text>`. Be mindful that clan descriptions can only have up to 1,024 characters due to Discord's limitation.\n" +
+                    "To clear your clan's description, use `a!clan description clear`.\n" +
+                    "\n" +
+                    "Do note that a moderator can edit or remove your clan's description if it's deembed inappropriate or not bound to server rules as mentioned previously in page 1."
+                ],
+                [
+                    // 6
+                    "Power Points",
+                    "Power points represents your clan's power.\n" +
+                    "\n" +
+                    "Clan members can obtain power points for their clan by playing daily and weekly challenges in <#669221772083724318> and by battling other clans. Clan battles are explained in page 15 and 16.\n" +
+                    "\n" +
+                    "However, aside of earning power points, a clan can also lose them!\n" +
+                    "If a clan loses to another clan in clan battles, the clan loses power points based on its current power points.\n" +
+                    "On top of that, if a clan is unable to pay a weekly upkeep, which will be explained in page 16, the clan loses 50 power points."
+                ],
+                [
+                    // 7
+                    "Clan Powerups",
+                    "Powerups will amplify the amount of power points exchanged during clan battles, which will be discussed in page 13. Each powerup gives different multiplier and has different required conditions:\n" +
+                    "- Buff: awards more points for winner clan if loser clan has enough points\n" +
+                    "- Challenge: if the winner clan meets a certain task, awards more points for winner clan if loser clan has enough points\n" +
+                    "- Debuff: awards less points for winner clan if loser clan has this active\n" +
+                    "- Bomb: if the winner clan does not meet a certain task, awards less points for winner clan\n" +
+                    "\n" +
+                    "Each powerup has its own `super` and `mega` version, which has a stronger amplifier than its preceeding versions.\n" +
+                    "\n" +
+                    "You can access powerups section using `a!clan powerup`. Clan leaders and co-leaders are able to activate a powerup using `a!clan powerup activate <powerup>`.\n" +
+                    "To view the list of powerups your clan has, use `a!clan powerup list`. To view view the list of currently active powerups, use `a!clan powerup activelist`.\n" +
+                    "\n" +
+                    "The effects of each powerup can be found at page 23.\n" +
+                    "The next section will discuss about clan shop, which is where you will be able to obtain powerups."
+                ],
+                [
+                    // 8
+                    "Clan Shop",
+                    "The clan shop offers different items to spice up your clan. Each item has its own cost and power point requirement:\n" +
+                    `- Rename clan: ${coin}\`2,500\` Alice coins, clan must have at least 500 power points (7-day cooldown per name change)\n` +
+                    `- Clan role: ${coin}\`5,000\` Alice coins, clan must have at least 2,000 power points\n` +
+                    `- Clan role color: ${coin}\`500\` Alice coins, clan must have clan role\n` +
+                    `- Leadership transfer: ${coin}\`500\` Alice coins, clan must have at least 2 members\n` +
+                    `- Powerup: ${coin}\`100\` Alice coins, gives a random powerup for your clan\n` +
+                    "\n" +
+                    "You can access the shop using `a!clan shop`.\n" +
+                    "There will be special events (such as double drop rate of a powerup or discounts) occasionally."
+                ],
+                [
+                    // 9
+                    "Clan Shop",
+                    "**Clan Rename**\n" +
+                    "\n" +
+                    "This shop item gives you the ability to change your clan name. Do note that your clan name will be reset if your clan name is deemed inappropriate or not bound to server rules as mentioned previously in page 1.\n" +
+                    "You must be the clan's leader and your clan must have at least 500 power points to use this item.\n" +
+                    "\n" +
+                    `This item costs ${coin}\`2,500\` Alice coins. To buy it, use \`a!clan shop rename <new name>\`.\n` +
+                    "Once you buy this item, your clan will be imposed to a 7-day cooldown during which you will not be able to change your clan name."
+                ],
+                [
+                    // 10
+                    "Clan Shop",
+                    "**Clan Role**\n" +
+                    "This shop item allows your clan members to have an exclusive role. If you buy a clan rename, the role name will change accordingly.\n" +
+                    "This role will be permanent until your clan is disbanded.\n" +
+                    "You must be the clan's leader and your clan must have at least 2,000 power points to use this item.\n" +
+                    "\n" +
+                    `This item costs${coin}\`5,000\` Alice coins. To buy it, use \`a!clan shop role\`.\n` +
+                    "Once you buy this item, every member of your clan will be automatically assigned to the role."
+                ],
+                [
+                    // 11
+                    "Clan Shop",
+                    "**Clan Role Color**\n" +
+                    "\n" +
+                    "This shop item allows you to change your clan's role color provided that your clan own one. The accepted color format is in hex code, for example `#FFFFFF`.\n" +
+                    "You must be the clan's leader and your clan must own a clan role to use this item.\n" +
+                    "\n" +
+                    `This item costs ${coin}\`500\` Alice coins. To buy it, use \`a!clan shop color <hex color code>\`.\n` +
+                    "Once you buy this item, your clan role will be automatically changed to the color you have mentioned."
+                ],
+                [
+                    // 12
+                    "Clan Shop",
+                    "**Clan Leadership Transfer**\n" +
+                    "This shop item allows you to transfer your clan's leadership to another clan member. Be cautious with this item as you cannot refund it!\n" +
+                    "You must be the clan's leader and your clan must have at least 2 members (including the clan leader) to use this item.\n" +
+                    "\n" +
+                    `This item costs ${coin}\`500\` Alice coins. To buy it, use \`a!clan shop leader <user to transfer>\`.\n` +
+                    "Once you buy this item, your clan member will take the leadership position and you will be demoted to co-leader."
+                ],
+                [
+                    // 13
+                    "Clan Shop",
+                    "**Powerup**\n" +
+                    "This shop item gives you a chance to obtain a powerup that can be used during clan battles. Each powerup has different chances, which you can see at page 24.\n" +
+                    "\n" +
+                    `This item costs ${coin}\`100\` Alice coins. To buy it, use \`a!clan shop powerup\`.\n` +
+                    "Once you buy this item, the obtained powerup will be automatically added to your clan's existing powerups."
+                ],
+                [
+                    // 14
+                    "Auctions",
+                    `If your clan has excess powerups, you can sell them in an auction for ${coin}Alice coins. To initiate an auction, you must be in a clan and must be a co-leader of in it.\n` +
+                    "The auction section can be accessed by `a!clan auction`.\n" +
+                    `Other clans can bid to an auction using ${coin}Alice coins. The clan who bid the highest amount of it will win the auction.\n` +
+                    "Be careful when initiating an auction. You can cancel an auction, however this option is taken out if another clan has bidded to your auction!"
+                ],
+                [
+                    // 15
+                    "Clan Battles",
+                    "A clan is able to match another clan provided that both clans have more than 0 power points.\n" +
+                    "\n" +
+                    "To start a battle, both clans must agree to a scheduled time during which the battle will be held. After that, they can contact a referee or moderator to supervise the battle during the previously agreed time.\n" +
+                    "\n" +
+                    "Before the battle, the referee or moderator will add both clans into match mode by using `a!clan match add <user who match>`. During match mode, a clan cannot activate powerups. Make sure to activate your powerups before battle!\n" +
+                    "\n" +
+                    "A battle consists of 3 maps, with the first clan to get 2 points first wins."
+                ],
+                [
+                    // 16
+                    "Clan Battles",
+                    "During battle, a representative of each clan will use the `!roll 1d100` command. The clan with highest roll points will pick a map to play and specify a challenge for the opposing clan to complete. The challenge must not be impossible and too hard, which in that case the referee will be able to deny the challenge.\n" +
+                    "\n" +
+                    "After that, the pick will alternate. If a third map is present, both clans will pick a map and then use the `!roll 1d100` command again. The clan who gets the highest points will get their pick played.\n" +
+                    "\n" +
+                    "After battle, the referee or moderator will use the `a!clan power transfer <user to take> <user to give> [challenge passed? omit if no]` to transfer power points from the losing clan to the winning clan. Active powerups from both clans will automatically be considered and both clans will be put out of match mode after power points have been transferred.\n" +
+                    "\n" +
+                    "In case something goes wrong, the referee or moderator can use `a!clan match remove <user>` to remove the specified user's clan from match mode and `a!clan power <give/take> <user>` to manually transfer power points."
+                ],
+                [
+                    // 17
+                    "Weekly Upkeep",
+                    "Weekly upkeep is a system that prevents high-ranked players from creating and staying in the same clan.\n" +
+                    "\n" +
+                    `Each week, there will be an upkeep that a clan must pay. Upkeeps will be paid automatically using the clan leader's ${coin}Alice coins each week. The upkeep cost is based on the size of a clan and each clan member's osu!droid rank.\n` +
+                    "The formula for weekly upkeep can be found in page 25.\n" +
+                    "You can use `a!clan upkeep` to view how much time your clan has before the next upkeep is picked up.\n" +
+                    "\n" +
+                    "If a clan cannot pay the upkeep, there will be consequences given depending on the situation:\n" +
+                    "- If the clan leader doesn't have enough coins, a random member will be kicked, be it a co-leader or a normal clan member\n" +
+                    "- If the clan only has 1 member (aka the leader itself) and the condition above is met, the clan's power will decrease by 50\n" +
+                    "- If the clan has less than 50 power points and both conditions above are met, the clan will be disbanded"
+                ],
+                [
+                    // 18
+                    "Command Information",
+                    "`a!clan accept <user>`\n" +
+                    "Accepts a user to your clan.\n" +
+                    "\n" +
+                    "`a!clan auction <params>`\n" +
+                    "The base command for auctions.\n" +
+                    "Parameters:\n" +
+                    "- `bid <name> <amount>`: Bids to an existing auction. The auction name and amount of Alice coins to bid is required.\n" +
+                    "- `cancel <name>`: Cancels an existing auction. If a clan has bidded to the auction, this is not possible.\n" +
+                    "- `create <name> <powerup> <amount> <min. price> <duration (in seconds)>`: Creates an auction with the specified amount of powerup for the specified duration. Minimal duration is 1 minute and maximum duration is 1 day.\n" +
+                    "- `list`: Lists current auctions.\n" +
+                    "- `status <name>`: Checks current status of an auction.\n" +
+                    "\n" +
+                    "`a!clan description <params>`\n" +
+                    "The base command for clan description.\n" +
+                    "Parameters:\n" +
+                    "- `clear`: Clears your clan's description.\n" +
+                    "- `edit <text>`: Edits your clan's description.\n" +
+                    "\n" +
+                    "`a!clan demote <user>`\n" +
+                    "Demotes a co-leader to normal clan member."
+                ],
+                [
+                    // 19
+                    "Command Information",
+                    "`a!clan disband`\n" +
+                    "Disbands your current clan\n" +
+                    "\n" +
+                    "`a!clan lb [page]`\n" +
+                    "Shows a leaderboard of clans based on power points.\n" +
+                    "\n" +
+                    "`a!clan icon <params>`\n" +
+                    "The base command for clan icons.\n" +
+                    "Parameters:\n" +
+                    "- `remove`: Removes your current clan icon.\n" +
+                    "- `set <link>`: Sets your clan icon to the specified link.\n" +
+                    "\n" +
+                    "`a!clan info [name]`\n" +
+                    "Shows information of a clan. If name is omitted, your current clan information will be shown.\n" +
+                    "\n" +
+                    "`a!clan kick <user>`\n" +
+                    "Kicks a user from your clan provided that the user is lower position-wise.\n" +
+                    "\n" +
+                    "`a!clan leave`\n" +
+                    "Leaves your current clan."
+                ],
+                [
+                    // 20
+                    "Command Information",
+                    "`a!clan match <params>`\n" +
+                    "The base command for clan match mode.\n" +
+                    "Parameters:\n" +
+                    "- `add <user>`: Adds the specified user's clan into match mode.\n" +
+                    "- `remove <user>`: Removes the specified user's clan from match mode.\n" +
+                    "\n" +
+                    "`a!clan members [name]`\n" +
+                    "Shows members of a clan. If name is omitted, your current's clan members will be shown.\n" +
+                    "\n" +
+                    "`a!clan power <params>`\n" +
+                    "The base command for power points.\n" +
+                    "Parameters:\n" +
+                    "- `give <user> <amount>`: Gives the specified amount of points to the specified user's clan.\n" +
+                    "- `take <user> <amount>`: Takes the specified amount of points from the specified user's clan.\n" +
+                    "- `transfer <user to take> <user to give> [challenge passed?]`: Transfers power points from a clan (the firstly mentioned user) to another clan (the secondly mentioned user). The third argument must be specified with anything if the challenge from clan to take is completed by clan to give.\n" +
+                    "\n" +
+                    "`a!clan powerup <params>`\n" +
+                    "The base command for powerups.\n" +
+                    "Parameters:\n" +
+                    "- `activate <powerup>`: Activates a powerup provided your clan has sufficient amount of the specified powerup and your clan currently doesn't have an active powerup of the same type. For example, you cannot activate a `bomb` powerup if your clan already have a `bomb` powerup active.\n" +
+                    "- `activelist`: Shows current active powerups of your clan.\n" +
+                    "- `list`: Lists current powerups that your clan has."
+                ],
+                [
+                    // 21
+                    "Command Information",
+                    "`a!clan promote <user>`\n" +
+                    "Promotes a normal clan member to a co-leader.\n" +
+                    "\n" +
+                    "`a!clan shop <params>`\n" +
+                    "The base command for clan shop.\n" +
+                    "Parameters:\n" +
+                    "- `color <hex code>`: Changes the color of your clan role provided that your clan has one.\n" +
+                    "- `leader <user>`: Transfers your leadership position to the specified user provided that the user is in your clan.\n" +
+                    "- `rename <name>`: Renames your clan to the specified name.\n" +
+                    "- `role`: Enables clan role for all members in the clan."
+                ],
+                [
+                    // 22
+                    "A Letter for Moderators",
+                    "To help the moderation of clans, all moderators are able to apply these following commands to any clans:\n" +
+                    "- `a!clan description clear <clan>`\n" +
+                    "- `a!clan description edit <clan> <text>`\n" +
+                    "- `a!clan demote <user>`\n" +
+                    "- `a!clan disband [clan]`\n" +
+                    "- `a!clan icon remove <clan>`\n" +
+                    "- `a!clan kick <user>`\n" +
+                    "- `a!clan match add <user>`\n" +
+                    "- `a!clan match remove <user>`\n" +
+                    "- `a!clan power give <user> <amount>`\n" +
+                    "- `a!clan power take <user> <amount>`\n" +
+                    "- `a!clan power transfer <user to take> <user to give> [challenge passed?]`"
+                ],
+                [
+                    // 23
+                    "Stats for nerds",
+                    "**Clan Powerup Effects**\n" +
+                    "\n" +
+                    "Clan powerups will affect an overall multiplier that will amplify the amount of power points given from the losing clan to\n" +
+                    "The effects of powerups can stack despite them being in the same category (for example, a superbuff can stack with a normal buff).\n" +
+                    "\n" +
+                    "Base multiplier: 0.1\n" +
+                    "\n" +
+                    "These powerups will amplify the multiplier for the winning clan:\n" +
+                    "- Megabuff: `multiplier *= 2.0`\n" +
+                    "- Megachallenge: `multiplier *= 1.8`\n" +
+                    "- Superbuff: `multiplier *= 1.7`\n" +
+                    "- Superchallenge: `multiplier *= 1.4`\n" +
+                    "- Buff: `multiplier *= 1.2`\n" +
+                    "- Challenge: `multiplier *= 1.1`\n" +
+                    "\n" +
+                    "These powerups will amplify the multiplier for the losing clan:\n" +
+                    "- Megadebuff: `multiplier /= 1.8`\n" +
+                    "- Megabomb: `multiplier /= 1.6`\n" +
+                    "- Superdebuff: `multiplier /= 1.5`\n" +
+                    "- Superbomb: `multiplier /= 1.3`\n" +
+                    "- Debuff: `multiplier /= 1.1`\n" +
+                    "- Bomb: `multiplier /= 1.05`\n" +
+                    "\n" +
+                    "`Final points = min(losing clan's power points, losing clan's power points * multiplier)`"
+                ],
+                [
+                    // 24
+                    "Stats for nerds",
+                    "**Powerup loot drop rate**\n" +
+                    "\n" +
+                    "When buying powerups from the shop, there is a chance for each powerup to appear:\n" +
+                    "- Nothing: 20%\n" +
+                    "- Bomb: 30%\n" +
+                    "- Challenge: 25%\n" +
+                    "- Debuff: 7.5%\n" +
+                    "- Buff: 7.5%\n" +
+                    "- Superbomb: 4%\n" +
+                    "- Superchallenge: 4%\n" +
+                    "- Superdebuff: 1%\n" +
+                    "- Superbuff: 1%\n" +
+                    "\n" +
+                    "The mega version of each powerup type can only be obtained through special events."
+                ],
+                [
+                    // 25
+                    "Stats for nerds",
+                    "**Weekly Upkeep Cost**\n" +
+                    "\n" +
+                    "As mentioned previously in page 17, the weekly upkeep cost is based on the size of a clan and each clan member's osu!droid rank.\n" +
+                    "The weekly upkeep cost has a base of `200`.\n" +
+                    "After that, the following formula will be applied for each clan member:\n" +
+                    "`f(x) = 500 - 34.74 * ln(x)`\n" +
+                    "where *x* is the clan member's current osu!droid rank.\n" +
+                    "\n" +
+                    "Which means, the final upkeep cost is `200 + f(x1) + f(x2) + f(x3) + ... + f(xn)`\n" +
+                    "where *n* is the amount of clan members in a clan."
+                ]
+            ];
+            let page = 1;
+            embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+            message.channel.send({embed: embed}).then(msg => {
+                msg.react("⏮️").then(() => {
+                    msg.react("⬅️").then(() => {
+                        msg.react("➡️").then(() => {
+                            msg.react("⏭️").catch(console.error)
+                        })
+                    })
+                });
+
+                let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 600000});
+                let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 600000});
+                let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 600000});
+                let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 600000});
+
+                backward.on('collect', () => {
+                    page = Math.max(1, page - 10);
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    msg.edit({embed: embed}).catch(console.error)
+                });
+
+                back.on('collect', () => {
+                    if (page === 1) page = 25;
+                    else --page;
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    msg.edit({embed: embed}).catch(console.error)
+                });
+
+                next.on('collect', () => {
+                    if (page === 25) page = 1;
+                    else ++page;
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    msg.edit({embed: embed}).catch(console.error);
+                });
+
+                forward.on('collect', () => {
+                    page = Math.min(25, page + 10);
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    msg.edit({embed: embed}).catch(console.error)
+                });
+
+                backward.on("end", () => {
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
+                })
+            });
+            break
+        }
         case "info": {
             // view info of a clan
             // ============================
@@ -110,12 +541,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // it will search for the user's
             // clan
             query = {discordid: message.author.id};
-            binddb.find(query).toArray((err, userres) => {
+            binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                let clan = userres[0].clan;
+                let clan = userres.clan;
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
                 query = {name: clan};
@@ -131,11 +562,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) embed.setColor(clanrole.hexColor);
                     embed.setTitle(clan)
-                        .addField("Clan Leader", `<@${clanres[0].leader}>\n(${clanres[0].leader})`, true)
+                        .addField("Clan Leader", `<@${clanres.leader}>\n(${clanres.leader})`, true)
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", members.toLocaleString(), true)
                         .addField("Created at", new Date(clandate).toUTCString());
-                    if (clanres[0].icon) embed.setThumbnail(clanres[0].icon);
+                    if (clanres.icon) embed.setThumbnail(clanres.icon);
+                    if (clanres.description) embed.setDescription(clanres.description);
                     message.channel.send({embed: embed}).catch(console.error);
                 })
             });
@@ -151,10 +583,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // not really special, just
             // like other lbs one it uses paging
             let page = 1;
-            if (args[2]) {
-                if (isNaN(args[2]) || parseInt(args[2]) > 5 || parseInt(args[1]) <= 0) page = 1;
-                else page = parseInt(args[2]);
-            }
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
@@ -197,7 +625,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         back.on('collect', () => {
-                            if (page === 1) page = 5;
+                            if (page === 1) page = 4;
                             else page--;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
@@ -205,7 +633,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         next.on('collect', () => {
-                            if (page === 5) page = 1;
+                            if (page === 4) page = 1;
                             else page++;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
@@ -213,8 +641,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         forward.on('collect', () => {
-                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            else page = 5;
+                            if (page === 4) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            else page = 4;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editmember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error)
@@ -370,12 +798,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
                         if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
-                        if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, only the clan leader can accept new members!**");
+
                         let memberlist = clanres[0].member_list;
-                        for (let i = 0; i < memberlist.length; i++) {
-                            if (memberlist[i][0] === toaccept.id) return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
-                        }
+                        let cl_index = memberlist.findIndex(member => member[0] === message.author.id);
+                        if (!memberlist[cl_index][2]) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+
+                        let member_index = memberlist.findIndex(member => member[0] === toaccept.id);
+                        if (member_index !== -1) return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
+
                         if (memberlist.length >= 25) return message.channel.send("❎ **| I'm sorry, a clan can only have up to 25 members (including leader)!");
+
                         message.channel.send(`❗**| ${message.author}, are you sure you want to accept ${toaccept} to your clan?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
@@ -454,11 +886,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (message.author.id !== clanres.leader && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                     if (tokick.id === clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick the leader of the clan!**");
+
                     let memberlist = clanres.member_list;
+                    let perm_index = memberlist.findIndex(member => member[0] === message.author.id);
+                    if (!memberlist[perm_index][2] && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
                     let member_index = clanres.member_list.findIndex(member => member[0] === tokick.id);
                     if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
+                    if (memberlist[member_index][2] && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
+
                     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user out from ${perm?`\`${clan}\``:""} clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
@@ -579,6 +1016,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2000);
             break
         }
+        case "description": {
+            //TODO: clan descriptions
+            break
+        }
         case "create": {
             // creates a clan
             // =========================
@@ -647,7 +1088,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     namecooldown: 0,
                                     weeklyfee: curtime + 86400 * 7,
                                     isMatch: false,
-                                    powerups: [['megabuff', 0], ['megadebuff', 0], ["superbuff", 0], ["superdebuff", 0], ["superchallenge", 0], ["superbomb", 0], ["buff", 0], ["debuff", 0], ["challenge", 0], ["bomb", 0]],
+                                    powerups: [['megabuff', 0], ['megadebuff', 0], ['megachallenge', 0], ['megabomb', 0], ["superbuff", 0], ["superdebuff", 0], ["superchallenge", 0], ["superbomb", 0], ["buff", 0], ["debuff", 0], ["challenge", 0], ["bomb", 0]],
                                     active_powerups: [],
                                     member_list: [[message.author.id, uid, true]]
                                 };
@@ -963,11 +1404,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (args[2]) clan = args.slice(2).join(" ");
                             else clan = userres.clan;
                             if (!clan) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
-                            query = {name: clan}
-                        } else {
-                            clan = userres.clan;
-                            query = {name: clan}
-                        }
+                        } else clan = userres.clan;
+
+                        query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
@@ -1562,7 +2001,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                                 if (message.author.id === totransfer.id) return message.channel.send("❎ **| You cannot transfer clan leadership to yourself!**");
                                 let memberlist = clanres.member_list;
-                                if (memberlist.length === 1) return message.channel.send("❎ **| I'm sorry, looks like you are alone in your clan! Who would you transfer leadershp to?**");
+                                if (memberlist.length === 1) return message.channel.send("❎ **| I'm sorry, looks like you are alone in your clan! Who would you transfer leadership to?**");
                                 if (clanres.power < 300) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 300!**");
                                 let member_index = memberlist.findIndex(member => member[0] === totransfer.id);
                                 if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
@@ -1574,9 +2013,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
+
+                                        memberlist[member_index][2] = true;
                                         updateVal = {
                                             $set: {
-                                                leader: totransfer.id
+                                                leader: totransfer.id,
+                                                member_list: memberlist
                                             }
                                         };
                                         clandb.updateOne(query, updateVal, err => {
@@ -1745,6 +2187,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let givemultiplier = 0.1;
                                 for (let i = 0; i < t_activepowerups.length; i++) {
                                     switch (t_activepowerups[i]) {
+                                        case "megadebuff": {
+                                            message.channel.send(`⬇️⬇️ **| \`${takeclan}\` has \`megadebuff\` powerup active!**`);
+                                            givemultiplier /= 1.8;
+                                            break
+                                        }
+                                        case "megabomb": {
+                                            message.channel.send(`⬇️ **| \`${takeclan}\` has \`megabomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
+                                            if (!challengepass) givemultiplier /= 1.6;
+                                            break
+                                        }
                                         case "superdebuff": {
                                             message.channel.send(`⬇️⬇️ **| \`${takeclan}\` has \`superdebuff\` powerup active!**`);
                                             givemultiplier /= 1.5;
@@ -1777,6 +2229,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let g_activepowerups = gclanres.active_powerups;
                                     for (let i = 0; i < g_activepowerups.length; i++) {
                                         switch (g_activepowerups[i]) {
+                                            case "megabuff": {
+                                                message.channel.send(`⬆️⬆️ **| \`${giveclan}\` has \`megabuff\` powerup active!**`);
+                                                givemultiplier *= 2.0;
+                                                break
+                                            }
+                                            case "megachallenge": {
+                                                message.channel.send(`⬆️ **| \`${giveclan}\` has \`megachallenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
+                                                if (challengepass) givemultiplier *= 1.8;
+                                                break
+                                            }
                                             case "superbuff": {
                                                 message.channel.send(`⬆️⬆️ **| \`${giveclan}\` has \`superbuff\` powerup active!**`);
                                                 givemultiplier *= 1.7;
@@ -2319,14 +2781,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
-        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `accept`, `auction`, `create`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, and `shop`.**")
+        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `about`, `accept`, `auction`, `create`, `demote`, `description`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, `promote`, and `shop`.**")
     }
 };
 
 module.exports.config = {
     name: "clan",
     description: "Main command for clans.",
-    usage: "clan accept <user>\nclan auction <bid/cancel/create/list/status>\nclan create <name>\nclan disband [name]\nclan lb [page]\nclan icon <remove/set>\nclan info [name]\nclan kick <user>\nclan leave\nclan match <add/remove>\nclan members [name]\nclan power <give/take/transfer>\nclan powerup <activate/activelist/list>\nclan shop <color/leader/powerup/rename/role>\nclan upkeep",
-    detail: "`accept`: Accepts a user into your clan\n`auction`: Manager for auction\n`create`: Creates a clan with given name\n`disband`: Disbands your clan. Name is required if mod wants to disband another clan (leader/mod only)\n`lb`: Views leaderboard for clans based on power points\n`icon`: Sets/removes an icon for your clan from a given image URL. Clan name must be specified if mod wants to clear a clan's icon (leader/mod only)\n`info`: Views info about a clan\n`kick`: Kicks a user out from your clan. If mod and clan name is specified, will kick the user out from the given clan (leader/mod only)\n`leave`: Leaves your current clan\n`match`: Adds/removes a clan to match mode. Prevents the clan from activating powerups mid-match (referee/mod only)\n`members`: Views members of a clan\n`power`: Main hub for power points (referee/mod only)\n`powerup`: Main hub for clan powerups\n`shop`: Main hub for clan shop\n`upkeep`: Views the user's clan weekly upkeep pickup",
+    usage: "clan about",
+    detail: "Usage outputs the clans wiki which contains every information about clans.",
     permission: "None / Clan Leader / Referee / Moderator"
 };
