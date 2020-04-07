@@ -135,7 +135,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- Page 14: Auctions\n" +
                     "- Page 15-16: Clan Battles\n" +
                     "- Page 17: Weekly Upkeep\n" +
-                    "- Page 18-22: Command Information\n" +
+                    "- Page 18-21: Command Information\n" +
+                    "- Page 22: A Letter to Moderators\n" +
                     "- Page 23-25: Stats for nerds"
                 ],
                 [
