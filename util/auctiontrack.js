@@ -1,6 +1,10 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
 
+function capitalizeString(string = "") {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 function retrieveAuction(res, current_time, i, cb) {
     if (!res[i]) return cb(null, true);
     cb(res[i])
@@ -74,7 +78,11 @@ module.exports.run = (client, maindb, alicedb) => {
                             console.log(err);
                             return retrieveAuction(auctionres, curtime, i, checkAuction)
                         }
-                        embed.setColor('#cb3438').setTitle("Auction Information").setDescription(auction_info);
+                        embed.setColor('#cb3438')
+                            .setTitle("Auction Information")
+                            .setDescription(auction_info)
+                            .addField("**Auction Info**", `**Powerup**: ${capitalizeString(powerup)}\n**Amount**: ${amount.toLocaleString()}`);
+
                         auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are no bids put!**`, {embed: embed});
                         ++i;
                         retrieveAuction(auctionres, curtime, i, checkAuction)
@@ -117,8 +125,8 @@ module.exports.run = (client, maindb, alicedb) => {
                             embed.setTitle("Auction Information")
                                 .setDescription(auction_info)
                                 .setColor('#cb9000')
-                                .addField("**Auction Info**", `**Powerup**: ${powerup}\n**Amount**: ${amount}`)
-                                .addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Top bidders**:\n${top_string}`);
+                                .addField("**Auction Info**", `**Powerup**: ${capitalizeString(powerup)}\n**Amount**: ${amount.toLocaleString()}`)
+                                .addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are bids put, however all bidders were disbanded!**`, {embed: embed});
                             ++i;
                             retrieveAuction(auctionres, curtime, i, checkAuction)
@@ -158,8 +166,8 @@ module.exports.run = (client, maindb, alicedb) => {
                     embed.setTitle("Auction Information")
                         .setDescription(auction_info)
                         .setColor('#25cb19')
-                        .addField("**Auction Info**", `**Powerup**: ${powerup}\n**Amount**: ${amount}`)
-                        .addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Winning bidder**: ${clan.name}\n\n**Top bidders**:\n${top_string}`);
+                        .addField("**Auction Info**", `**Powerup**: ${capitalizeString(powerup)}\n**Amount**: ${amount.toLocaleString()}`)
+                        .addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Winning bidder**: ${clan.name}\n\n**Top bidders**:\n${top_string}`);
 
                     auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
                     ++i;
