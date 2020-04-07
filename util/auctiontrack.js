@@ -32,13 +32,12 @@ module.exports.run = (client, maindb, alicedb) => {
         .setTimestamp(new Date())
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
-    console.log("Checking auction expiry time");
     auctiondb.find({}).sort({expirydate: 1}).toArray((err, auctionres) => {
         if (err) return console.log(err);
         if (auctionres.length === 0) return;
         let i = 0;
         retrieveAuction(auctionres, curtime, i, function checkAuction(auction, stopSign = false) {
-            if (stopSign || curtime < auction.expirydate) return console.log("Done checking auctions");
+            if (stopSign || curtime < auction.expirydate) return;
             let powerup = auction.powerup;
             let amount = auction.amount;
             let bids = auction.bids;
@@ -76,7 +75,7 @@ module.exports.run = (client, maindb, alicedb) => {
                             return retrieveAuction(auctionres, curtime, i, checkAuction)
                         }
                         embed.setColor('#cb3438').setTitle("Auction Information").setDescription(auction_info);
-                        auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` has ended! There are no bids put!**`, {embed: embed});
+                        auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are no bids put!**`, {embed: embed});
                         ++i;
                         retrieveAuction(auctionres, curtime, i, checkAuction)
                     })
@@ -120,7 +119,7 @@ module.exports.run = (client, maindb, alicedb) => {
                                 .setColor('#cb9000')
                                 .addField("**Auction Info**", `**Powerup**: ${powerup}\n**Amount**: ${amount}`)
                                 .addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Top bidders**:\n${top_string}`);
-                            auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` has ended! There are bids put, however all bidders were disbanded!**`, {embed: embed});
+                            auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are bids put, however all bidders were disbanded!**`, {embed: embed});
                             ++i;
                             retrieveAuction(auctionres, curtime, i, checkAuction)
                         })
@@ -162,7 +161,7 @@ module.exports.run = (client, maindb, alicedb) => {
                         .addField("**Auction Info**", `**Powerup**: ${powerup}\n**Amount**: ${amount}`)
                         .addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Winning bidder**: ${clan.name}\n\n**Top bidders**:\n${top_string}`);
 
-                    auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
+                    auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
                     ++i;
                     retrieveAuction(auctionres, curtime, i, checkAuction)
                 })
