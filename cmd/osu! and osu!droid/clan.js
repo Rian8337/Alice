@@ -601,9 +601,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                    if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                     let alicecoins = pointres.alicecoins;
-                    if (alicecoins < 7500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                    if (alicecoins < 7500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
                     query = {name: clanname};
                     clandb.findOne(query, (err, clanres) => {
                         if (err) {
@@ -611,7 +611,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
                         if (clanres) return message.channel.send("❎ **| I'm sorry, that name is already taken by other clan!**");
-                        message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan named \`${clanname}\` for ${coin}\`7500\` Alice coins?**`).then(msg => {
+                        message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan named \`${clanname}\` for ${coin}\`7,500\` Alice coins?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
                             let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
@@ -653,7 +653,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 };
                                 clandb.insertOne(insertVal, err => {
                                     if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                    message.channel.send(`✅ **| ${message.author}, successfully created a clan named \`${clanname}\`. You now have ${coin}\`${alicecoins - 7500}\` Alice coins.**`);
+                                    message.channel.send(`✅ **| ${message.author}, successfully created a clan named \`${clanname}\`. You now have ${coin}\`${(alicecoins - 7500).toLocaleString()}\` Alice coins.**`);
                                     console.log("Clan data added")
                                 })
                             });
@@ -1184,9 +1184,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 2500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 2500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
@@ -1201,7 +1201,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let time = timeConvert(cooldown);
                                     return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}**`)
                                 }
-                                message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
+                                message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2,500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
                                     let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
@@ -1226,7 +1226,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         };
                                         clandb.updateOne(query, updateVal, err => {
                                             if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                            message.channel.send(`✅ **| ${message.author}, successfully changed your clan name to \`${newname}\`. You now have ${coin}\`${alicecoins - 2500}\` Alice coins.**`);
+                                            message.channel.send(`✅ **| ${message.author}, successfully changed your clan name to \`${newname}\`. You now have ${coin}\`${(alicecoins - 2500).toLocaleString()}\` Alice coins.**`);
                                         });
                                         updateVal = {
                                             $set: {
@@ -1265,9 +1265,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         pointdb.findOne(query, (err, pointres) => {
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5000\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
@@ -1278,7 +1278,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                                 if (clanres.power < 2000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 2000!**");
                                 let memberlist = clanres.member_list;
-                                message.channel.send(`❗**| ${message.author}, are you sure you want to buy a custom clan role for ${coin}\`1000\` Alice coins?**`).then(msg => {
+                                message.channel.send(`❗**| ${message.author}, are you sure you want to buy a custom clan role for ${coin}\`5,000\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
                                     let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
@@ -1303,7 +1303,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
                                             if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                            message.channel.send(`✅ **| ${message.author}, successfully bought clan role for your clan. You now have ${coin}\`${alicecoins - 5000}\` Alice coins.**`)
+                                            message.channel.send(`✅ **| ${message.author}, successfully bought clan role for your clan. You now have ${coin}\`${(alicecoins - 5000).toLocaleString()}\` Alice coins.**`)
                                         })
                                     });
                                     confirm.on("end", () => {
@@ -1360,7 +1360,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
                                             if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                            message.channel.send(`✅ **| Successfully changed clan role color. You now have ${coin}\`${alicecoins - 500}\` Alice coins.**`)
+                                            message.channel.send(`✅ **| Successfully changed clan role color. You now have ${coin}\`${(alicecoins - 500).toLocaleString()}\` Alice coins.**`)
                                         })
                                     });
                                     confirm.on("end", () => {
@@ -1485,7 +1485,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             }
                                         }*/
                                         if (!powerup) {
-                                            message.channel.send(`✅ **| ${message.author}, unfortunately you didn't get anything! You now have ${coin}\`${alicecoins - 100}\` Alice coins.**`);
+                                            message.channel.send(`✅ **| ${message.author}, unfortunately you didn't get anything! You now have ${coin}\`${(alicecoins - 100).toLocaleString()}\` Alice coins.**`);
                                             updateVal = {
                                                 $set: {
                                                     alicecoins: alicecoins - 100
@@ -1581,7 +1581,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         };
                                         clandb.updateOne(query, updateVal, err => {
                                             if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                            message.channel.send(`✅ **| ${message.author}, successfully transfered clan leadership to ${totransfer}. You now have ${coin}\`${alicecoins - 500}\` Alice coins.**`)
+                                            message.channel.send(`✅ **| ${message.author}, successfully transfered clan leadership to ${totransfer}. You now have ${coin}\`${(alicecoins - 500).toLocaleString()}\` Alice coins.**`)
                                         });
                                         updateVal = {
                                             $set: {
@@ -1795,7 +1795,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         }
                                     }
                                     let totalpower = Math.min(t_power, Math.floor(t_power * givemultiplier));
-                                    message.channel.send(`❗**| ${message.author}, are you sure you want to transfer \`${totalpower}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan?**`).then(msg => {
+                                    message.channel.send(`❗**| ${message.author}, are you sure you want to transfer \`${totalpower.toLocaleString()}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan?**`).then(msg => {
                                         msg.react("✅").catch(console.error);
                                         let confirmation = false;
                                         let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
@@ -1821,7 +1821,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             };
                                             clandb.updateOne({name: giveclan}, updateVal, err => {
                                                 if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                                message.channel.send(`✅ **| ${message.author}, successfully transferred \`${totalpower}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan.**`)
+                                                message.channel.send(`✅ **| ${message.author}, successfully transferred \`${totalpower.toLocaleString()}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan.**`)
                                             })
                                         });
                                         confirm.on("end", () => {
@@ -1949,7 +1949,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -2000,7 +2000,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 console.log(err);
                                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                             }
-                                            message.channel.send(`✅ **| ${message.author}, successfully bidded ${coin}\`${amount}\`Alice coins to auction \`${name}\`. Your clan is currently #${bid_index + 1} with ${coin}\`${cur_amount}\` Alice coins bidded. Use \`a!clan auction status ${name}\` to check the auction's status.**`)
+                                            message.channel.send(`✅ **| ${message.author}, successfully bidded ${coin}\`${amount.toLocaleString()}\`Alice coins to auction \`${name}\`. Your clan is currently #${bid_index + 1} with ${coin}\`${cur_amount.toLocaleString()}\` Alice coins bidded. You now have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.\n\nUse \`a!clan auction status ${name}\` to check the auction's status.**`)
                                         })
                                     });
                                     confirm.on("end", () => {
