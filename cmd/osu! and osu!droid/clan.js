@@ -52,8 +52,8 @@ function editlb(res, page) {
     let output = '#   | Clan Name            | Members | Power\n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].power && res[i].name) {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toString(), 8) + ' | ' + res[i].power.toString() + '\n';}
-            else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toString(), 8) + ' | ' + res[i].power.toString() + '\n';}
+            if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
+            else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
         }
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 21) + ' | ' + spaceFill("-", 8) + ' | - \n';
     }
@@ -65,11 +65,11 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
     let embed = new Discord.MessageEmbed()
         .setColor(rolecheck)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.floor(res.length / 5)}`, footer[index])
-        .setDescription(`**${res.length === 1 ? "Auction" : "Auctions"}**: ${res.length}`);
+        .setDescription(`**${res.length === 1 ? "Auction" : "Auctions"}**: ${res.length.toLocaleString()}`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}. ${res[i].name}**`, `**Auctioneer**: ${res[i].auctioneer}\n**Created at**: ${new Date(res[i].creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(res[i].expirydate * 1000).toUTCString()}\n\n**Powerup**: ${res[i].powerup}\n**Amount**: ${res[i].amount}\n**Minimum bid amount**: ${coin}**${res[i].min_price.toLocaleString()}** Alice coins\n**Bidders**: ${res[i].bids.length}`)
+        embed.addField(`**${i+1}. ${res[i].name}**`, `**Auctioneer**: ${res[i].auctioneer}\n**Created at**: ${new Date(res[i].creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(res[i].expirydate * 1000).toUTCString()}\n\n**Powerup**: ${capitalizeString(res[i].powerup)}\n**Amount**: ${res[i].amount.toLocaleString()}\n**Minimum bid amount**: ${coin}**${res[i].min_price.toLocaleString()}** Alice coins\n**Bidders**: ${res[i].bids.length.toLocaleString()}`)
     }
 
     return embed
@@ -132,8 +132,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (clanrole) embed.setColor(clanrole.hexColor);
                     embed.setTitle(clan)
                         .addField("Clan Leader", `<@${clanres[0].leader}>\n(${clanres[0].leader})`, true)
-                        .addField("Power", power, true)
-                        .addField("Members", members, true)
+                        .addField("Power", power.toLocaleString(), true)
+                        .addField("Members", members.toLocaleString(), true)
                         .addField("Created at", new Date(clandate).toUTCString());
                     if (clanres[0].icon) embed.setThumbnail(clanres[0].icon);
                     message.channel.send({embed: embed}).catch(console.error);
@@ -1134,7 +1134,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     };
                                     clandb.updateOne(query, updateVal, err => {
                                         if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                        message.channel.send(`✅ **| ${message.author}, successfully activated \`${powertype}\` powerup for your clan. Your clan now has \`${powercount}\` remaining ${powertype} powerups.**`)
+                                        message.channel.send(`✅ **| ${message.author}, successfully activated \`${powertype}\` powerup for your clan. Your clan now has \`${powercount.toLocaleString()}\` remaining ${powertype} powerups.**`)
                                     })
                                 });
                                 confirm.on("end", () => {
@@ -1506,7 +1506,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         };
                                         clandb.updateOne(query, updateVal, err => {
                                             if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                            message.channel.send(`✅ **| ${message.author}, you have earned the \`${powerup}\` powerup! Your clan now has \`${powercount}\` ${powerup} ${powercount === 1 ? "powerup" : "powerups"}. You now have ${coin}\`${alicecoins - 100}\` Alice coins.**`);
+                                            message.channel.send(`✅ **| ${message.author}, you have earned the \`${powerup}\` powerup! Your clan now has \`${powercount.toLocaleString()}\` ${powerup} ${powercount === 1 ? "powerup" : "powerups"}. You now have ${coin}\`${(alicecoins - 100).toLocaleString()}\` Alice coins.**`);
                                         });
                                         updateVal = {
                                             $set: {
@@ -1617,7 +1617,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ==============================
             // gives pp if match commence, also
             // based on active powerups
-            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && isEligible(message.member) !== -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
             switch (args[1]) {
                 case "give": {
                     // adds power points to a clan
@@ -1626,8 +1626,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // can be easily done
                     let togive = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!togive) return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
-                    let amount = parseInt(args[3]);
+                    let amount = args[3];
                     if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to add!**");
+                    amount = parseInt(amount);
                     if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to add.**");
                     query = {discordid: togive.id};
                     binddb.findOne(query, (err, userres) => {
@@ -1653,7 +1654,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             };
                             clandb.updateOne(query, updateVal, err => {
                                 if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                message.channel.send(`✅ **| ${message.author}, successfully given \`${amount}\` power points to \`${clan}\` clan. The clan now has \`${newpower}\` power points.**`)
+                                message.channel.send(`✅ **| ${message.author}, successfully given \`${amount.toLocaleString()}\` power points to \`${clan}\` clan. The clan now has \`${newpower.toLocaleString()}\` power points.**`)
                             })
                         })
                     });
@@ -1666,8 +1667,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // watched as abuse can be easily done
                     let totake = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
-                    let amount = parseInt(args[3]);
-                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to take.**");
+                    let amount = args[3];
+                    if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to remove!**");
+                    amount = parseInt(amount);
+                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to remove.**");
                     query = {discordid: totake.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
@@ -1693,7 +1696,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             };
                             clandb.updateOne(query, updateVal, err => {
                                 if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                message.channel.send(`✅ **| ${message.author}, successfully taken \`${amount}\` power points from \`${clan}\` clan. The clan now has \`${newpower}\` power points.**`)
+                                message.channel.send(`✅ **| ${message.author}, successfully taken \`${amount.toLocaleString()}\` power points from \`${clan}\` clan. The clan now has \`${newpower.toLocaleString()}\` power points.**`)
                             })
                         })
                     });
@@ -1850,7 +1853,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ===========================================
             // this prevents them from activating powerups
             // in the middle of a battle, referee/mod only
-            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && isEligible(message.member) !== -1) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
             switch (args[1]) {
                 // add clan
                 case "add": {
@@ -2059,7 +2062,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let powerups = clanres.powerups;
                             let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
                             if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup you are looking for!**");
-                            if (powerups[powerup_index][1] < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1]}\` of it.**`);
+                            if (powerups[powerup_index][1] < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -2108,7 +2111,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                             embed.setTitle("Auction Information")
                                                 .setDescription(`**Name**: ${name}\n**Auctioneer**: ${clan}\n**Created at**: ${new Date(curtime * 1000).toUTCString()}\n**Expires at**: ${new Date((curtime + auction_duration) * 1000).toUTCString()}`)
-                                                .addField("**Auction Item**", `**Powerup**: ${powerup}\n**Amount**: ${amount}\n**Minimum bid amount**: ${coin}**${min_price.toLocaleString()}** Alice coins`);
+                                                .addField("**Auction Item**", `**Powerup**: ${capitalizeString(powerup)}\n**Amount**: ${amount.toLocaleString()}\n**Minimum bid amount**: ${coin}**${min_price.toLocaleString()}** Alice coins`);
                                             client.channels.cache.get("696646867567640586").send(`❗**| An auction has started with the following details:**`, {embed: embed})
                                         })
                                     });
@@ -2215,15 +2218,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             embed.setTitle("Auction Information")
                                 .setDescription(`**Name**: ${name}\n**Auctioneer**: ${auctionres.auctioneer}\n**Created at**: ${new Date(auctionres.creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(auctionres.expirydate * 1000).toUTCString()}`)
-                                .addField("**Auction Item**", `**Powerup**: ${auctionres.powerup}\n**Amount**: ${auctionres.amount}\n**Minimum bid amount**: ${coin}**${auctionres.min_price.toLocaleString()}** Alice coins`);
+                                .addField("**Auction Item**", `**Powerup**: ${capitalizeString(auctionres.powerup)}\n**Amount**: ${auctionres.amount.toLocaleString()}\n**Minimum bid amount**: ${coin}**${auctionres.min_price.toLocaleString()}** Alice coins`);
 
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
                                 if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1]}** Alice coins\n`;
                                 else top_string += `#${i+1}: -\n`
                             }
-                            if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index][1]}** Alice coins`;
-                            embed.addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Top bidders**:\n${top_string}`);
+                            if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index][1].toLocaleString()}** Alice coins`;
+                            embed.addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             message.channel.send({embed: embed})
                         })
                     });
