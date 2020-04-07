@@ -49,7 +49,7 @@ module.exports.run = (client, message, args, maindb) => {
             let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
             backward.on('collect', () => {
-                page = 0;
+                page = Math.max(0, page - 10);
                 output = editpp(res, page);
                 msg.edit('```c\n' + output + '```').catch(console.error);
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
@@ -72,7 +72,7 @@ module.exports.run = (client, message, args, maindb) => {
             });
 
             forward.on('collect', () => {
-                page = Math.floor(res.length / 20);
+                page = Math.min(page + 10, Math.floor(res.length / 20));
                 output = editpp(res, page);
                 msg.edit('```c\n' + output + '```').catch(console.error);
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
