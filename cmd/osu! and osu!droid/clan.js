@@ -2223,7 +2223,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 else top_string += `#${i+1}: -\n`
                             }
                             if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index][1]}** Alice coins`;
-                            embed.addField("Bid Information", `**Bidders**: ${bids.length}\n**Top bidders**:\n${top_string}`);
+                            embed.addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Top bidders**:\n${top_string}`);
                             message.channel.send({embed: embed})
                         })
                     });
@@ -2316,7 +2316,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
-        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `accept`, `create`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, and `shop`.**")
+        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `accept`, `auction`, `create`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, and `shop`.**")
     }
 };
 
@@ -2324,6 +2324,6 @@ module.exports.config = {
     name: "clan",
     description: "Main command for clans.",
     usage: "clan accept <user>\nclan auction <bid/cancel/create/list/status>\nclan create <name>\nclan disband [name]\nclan lb [page]\nclan icon <remove/set>\nclan info [name]\nclan kick <user>\nclan leave\nclan match <add/remove>\nclan members [name]\nclan power <give/take/transfer>\nclan powerup <activate/activelist/list>\nclan shop <color/leader/powerup/rename/role>\nclan upkeep",
-    detail: "`accept`: Accepts a user into your clan\n`create`: Creates a clan with given name\n`disband`: Disbands your clan. Name is required if mod wants to disband another clan (leader/mod only)\n`lb`: Views leaderboard for clans based on power points\n`icon`: Sets/removes an icon for your clan from a given image URL. Clan name must be specified if mod wants to clear a clan's icon (leader/mod only)\n`info`: Views info about a clan\n`kick`: Kicks a user out from your clan. If mod and clan name is specified, will kick the user out from the given clan (leader/mod only)\n`leave`: Leaves your current clan\n`match`: Adds/removes a clan to match mode. Prevents the clan from activating powerups mid-match (referee/mod only)\n`members`: Views members of a clan\n`power`: Main hub for power points (referee/mod only)\n`powerup`: Main hub for clan powerups\n`shop`: Main hub for clan shop\n`upkeep`: Views the user's clan weekly upkeep pickup",
+    detail: "`accept`: Accepts a user into your clan\n`auction`: Manager for auction\n`create`: Creates a clan with given name\n`disband`: Disbands your clan. Name is required if mod wants to disband another clan (leader/mod only)\n`lb`: Views leaderboard for clans based on power points\n`icon`: Sets/removes an icon for your clan from a given image URL. Clan name must be specified if mod wants to clear a clan's icon (leader/mod only)\n`info`: Views info about a clan\n`kick`: Kicks a user out from your clan. If mod and clan name is specified, will kick the user out from the given clan (leader/mod only)\n`leave`: Leaves your current clan\n`match`: Adds/removes a clan to match mode. Prevents the clan from activating powerups mid-match (referee/mod only)\n`members`: Views members of a clan\n`power`: Main hub for power points (referee/mod only)\n`powerup`: Main hub for clan powerups\n`shop`: Main hub for clan shop\n`upkeep`: Views the user's clan weekly upkeep pickup",
     permission: "None / Clan Leader / Referee / Moderator"
 };
