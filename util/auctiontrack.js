@@ -160,7 +160,7 @@ module.exports.run = (client, maindb, alicedb) => {
                         .setDescription(auction_info)
                         .setColor('#25cb19')
                         .addField("**Auction Info**", `**Powerup**: ${powerup}\n**Amount**: ${amount}`)
-                        .addField("Bid Information", `**Bidders**: ${bids.length}\n**Winning bidder**: ${clan.name}\n\n**Top bidders**:\n${top_string}`);
+                        .addField("**Bid Information**", `**Bidders**: ${bids.length}\n**Winning bidder**: ${clan.name}\n\n**Top bidders**:\n${top_string}`);
 
                     auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
                     ++i;
