@@ -24,7 +24,7 @@ function timeConvert(num) {
     return [days, hours, minutes, seconds]
 }
 
-function editmember(clanres, page, rolecheck, footer, index) {
+function editMember(clanres, page, rolecheck, footer, index) {
     let embed = new Discord.MessageEmbed()
         .setTitle(`${clanres[0].name} Members (Page ${page + 1}/4)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -49,7 +49,7 @@ function spaceFill(s, l) {
     return s;
 }
 
-function editlb(res, page) {
+function editLeaderboard(res, page) {
     let output = '#   | Clan Name            | Members | Power\n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
@@ -125,19 +125,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Make sure you read this wiki thoroughly before diving in to clans. Stuff will get very confusing, otherwise.\n" +
                     "\n" +
                     "__**Contents**__\n" +
-                    "- Page 2: Clan Member Positions\n" +
-                    "- Page 3: A Letter to Clan Leaders\n" +
-                    "- Page 4: Clan Icons\n" +
-                    "- Page 5: Clan Description\n" +
-                    "- Page 6: Power Points\n" +
-                    "- Page 7: Clan Powerups\n" +
-                    "- Page 8-13: Clan Shop\n" +
-                    "- Page 14: Auctions\n" +
-                    "- Page 15-17: Clan Battles\n" +
-                    "- Page 18: Weekly Upkeep\n" +
-                    "- Page 19-22: Command Information\n" +
-                    "- Page 23-25: Stats for nerds\n" +
-                    "- Page 26: A Letter to Moderators"
+                    "- Page 3: Clan Member Positions\n" +
+                    "- Page 4: A Letter to Clan Leaders\n" +
+                    "- Page 5: Clan Icons\n" +
+                    "- Page 6: Clan Description\n" +
+                    "- Page 7: Power Points\n" +
+                    "- Page 8: Clan Powerups\n" +
+                    "- Page 9-14: Clan Shop\n" +
+                    "- Page 15: Auctions\n" +
+                    "- Page 16-18: Clan Battles\n" +
+                    "- Page 19: Weekly Upkeep\n" +
+                    "- Page 20-23: Command Information\n" +
+                    "- Page 24-26: Stats for nerds\n" +
+                    "- Page 27: A Letter to Moderators"
                 ],
                 [
                     // 2
@@ -608,7 +608,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                     let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) rolecheck = clanrole.hexColor;
-                    let embed = editmember(clanres, page, rolecheck, footer, index);
+                    let embed = editMember(clanres, page, rolecheck, footer, index);
                     message.channel.send({embed: embed}).then(msg => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
@@ -627,7 +627,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 1;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editmember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
@@ -635,7 +635,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (page === 1) page = 4;
                             else page--;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editmember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
@@ -643,7 +643,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (page === 4) page = 1;
                             else page++;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editmember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error);
                         });
 
@@ -651,7 +651,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (page === 4) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 4;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editmember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
@@ -680,7 +680,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!clanres[page*20]) return message.channel.send("Nah we don't have that much clan :p");
-                let output = editlb(clanres, page);
+                let output = editLeaderboard(clanres, page);
                 message.channel.send('```c\n' + output + '```').then(msg => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
@@ -697,7 +697,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     backward.on('collect', () => {
                         page = 0;
-                        output = editlb(clanres, page);
+                        output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
@@ -705,7 +705,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     back.on('collect', () => {
                         if (page === 0) page = Math.floor(clanres.length / 20);
                         else page--;
-                        output = editlb(clanres, page);
+                        output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
@@ -713,14 +713,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     next.on('collect', () => {
                         if ((page + 1) * 20 >= clanres.length) page = 0;
                         else page++;
-                        output = editlb(clanres, page);
+                        output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     forward.on('collect', () => {
                         page = Math.floor(clanres.length / 20);
-                        output = editlb(clanres, page);
+                        output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
