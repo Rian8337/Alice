@@ -31,7 +31,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let query = {status: "w-ongoing"};
     dailydb.find(query).toArray((err, dailyres) => {
         if (err) return console.log("Cannot access database");
-        if (!dailyres[0]) return client.users.fetch("386742340968120321").then((user) => user.send("Hey, I need you to start a daily challenge now!")).catch(console.error);
+        if (!dailyres[0]) return client.users.fetch("386742340968120321").then((user) => user.send("Hey dear, I need you to start a daily challenge now!")).catch(console.error);
         let timelimit = dailyres[0].timelimit;
         if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
         let pass = dailyres[0].pass;
