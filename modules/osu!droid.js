@@ -344,7 +344,7 @@ class MapInfo {
                 }
                 let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
                 request(url, (err, response, data) => {
-                    if (err) {
+                    if (err || !data) {
                         console.log("Error downloading osu file");
                         return callback(this)
                     }
