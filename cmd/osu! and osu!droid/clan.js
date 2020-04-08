@@ -529,52 +529,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let page = 1;
             embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki (Beta)", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
             message.channel.send({embed: embed}).then(msg => {
-                msg.react("⏮️").then(() => {
-                    msg.react("⬅️").then(() => {
-                        msg.react("➡️").then(() => {
-                            msg.react("⏭️").catch(console.error)
-                        })
-                    })
-                });
-
-                let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 600000});
-                let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 600000});
-                let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 600000});
-                let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 600000});
-
-                backward.on('collect', () => {
-                    page = Math.max(1, page - 10);
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, {time: 600000});
+                collector.on("collect", m => {
+                    let page_number = parseInt(m.content);
+                    if (isNaN(page_number) || page_number < 1 || page_number > help_array.length) return;
+                    m.delete().catch(console.error);
+                    page = page_number;
                     embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
                     msg.edit({embed: embed}).catch(console.error)
-                });
-
-                back.on('collect', () => {
-                    if (page === 1) page = help_array.length;
-                    else --page;
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
-                    msg.edit({embed: embed}).catch(console.error)
-                });
-
-                next.on('collect', () => {
-                    if (page === help_array.length) page = 1;
-                    else ++page;
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
-                    msg.edit({embed: embed}).catch(console.error);
-                });
-
-                forward.on('collect', () => {
-                    page = Math.min(help_array.length, page + 10);
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
-                    msg.edit({embed: embed}).catch(console.error)
-                });
-
-                backward.on("end", () => {
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
                 })
             });
             break
