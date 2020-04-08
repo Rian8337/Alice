@@ -141,6 +141,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 ],
                 [
                     // 2
+                    "Starting",
+                    `To start with the system, you can create a clan or join an existing one. It is recommended to have a few ${coin}Alice coins before diving in to the system as this consumes quite a lot of them.\n` +
+                    "\n" +
+                    `To create a clan, use \`a!clan create <name>\`. This costs ${coin}\`7,500\` Alice coins.\n` +
+                    "If you don't want to create a clan, you can join an existing one. You must contact the co-leader or leader of the clan to join the clan."
+                ],
+                [
+                    // 3
                     "Clan Member Positions",
                     "There are three member positions in a clan. They are:\n" +
                     "**1. Member**\n" +
@@ -154,23 +162,23 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "The clan leader has the most permissions out of all clan members. The clan leader can kick co-leaders and normal members, promote normal clan members to co-leaders, demote co-leaders to normal clan members, change clan name, and more."
                 ],
                 [
-                    // 3
+                    // 4
                     "A Letter to Clan Leaders",
                     "As mentioned previously in page 2, your clan can have co-leaders to help maintain your clan activity.\n" +
                     "To promote a normal clan member to co-leader, use `a!clan promote <user to promote>`.\n" +
                     "To demote a co-leader to a normal clan member, use `a!clan demote <user to demote>`.\n" +
-                    "You will need someone else to monitor your clan in case you went inactive, but be careful on promoting clan members as co-leaders have more powers as described in page 2.\n" +
+                    "You will need someone else to monitor your clan in case you went inactive, but be careful on promoting clan members as co-leaders have more powers as described in page 3.\n" +
                     "\n" +
                     "If you want to transfer your leadership to another clan member, there is a way to do that, which will be shown later."
                 ],
                 [
-                    // 4
+                    // 5
                     "Clan Icons",
                     "When your clan power reaches 250, you can change your clan's icon. This will be viewed when someone views your clan info or clan member list. You must be at least a co-leader in the clan to change clan icon.\n" +
                     "You can use `a!clan icon set <link>` to set an icon or override an existing one (5-minute cooldown will be applied) and `a!clan icon remove [name]` to remove your clan's icon."
                 ],
                 [
-                    // 5
+                    // 6
                     "Clan Description",
                     "A clan has a description box in which the clan can describe stuff about itself.\n" +
                     "\n" +
@@ -181,7 +189,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Do note that a moderator can edit or remove your clan's description if it's deemed inappropriate or not bound to server rules as mentioned previously in page 1."
                 ],
                 [
-                    // 6
+                    // 7
                     "Power Points",
                     "Power points represents your clan's power.\n" +
                     "\n" +
@@ -189,12 +197,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "\n" +
                     "However, aside of earning power points, a clan can also lose them!\n" +
                     "If a clan loses to another clan in clan battles, the clan loses power points based on its current power points.\n" +
-                    "On top of that, if a clan is unable to pay a weekly upkeep, which will be explained in page 16, the clan loses 50 power points."
+                    "On top of that, if a clan is unable to pay a weekly upkeep, which will be explained in page 17, the clan loses 50 power points."
                 ],
                 [
-                    // 7
+                    // 8
                     "Clan Powerups",
-                    "Powerups will amplify the amount of power points exchanged during clan battles, which will be discussed in page 13. Each powerup gives different multiplier and has different required conditions:\n" +
+                    "Powerups will amplify the amount of power points exchanged during clan battles, which will be discussed in page 14. Each powerup gives different multiplier and has different required conditions:\n" +
                     "- Buff: awards more points for winner clan if loser clan has enough points\n" +
                     "- Challenge: if the winner clan meets a certain task, awards more points for winner clan if loser clan has enough points\n" +
                     "- Debuff: awards less points for winner clan if loser clan has this active\n" +
@@ -206,11 +214,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "To view the list of powerups your clan has, use `a!clan powerup list`.\n" +
                     "To view the list of currently active powerups, use `a!clan powerup activelist`.\n" +
                     "\n" +
-                    "The amplifiers of each powerup can be found at page 23.\n" +
+                    "The amplifiers of each powerup can be found at page 24.\n" +
                     "The next section will discuss about clan shop, which is where you will be able to obtain powerups."
                 ],
                 [
-                    // 8
+                    // 9
                     "Clan Shop",
                     "The clan shop offers different items to spice up your clan. Each item has its own cost and power point requirement:\n" +
                     `- Rename clan: ${coin}\`2,500\` Alice coins, clan must have at least 500 power points (7-day cooldown per name change)\n` +
@@ -223,7 +231,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "There will be special events (such as double drop rate of a powerup or discounts) occasionally."
                 ],
                 [
-                    // 9
+                    // 10
                     "Clan Shop",
                     "**Clan Rename**\n" +
                     "\n" +
@@ -234,7 +242,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Once you buy this item, your clan will be imposed to a 7-day cooldown during which you will not be able to change your clan name."
                 ],
                 [
-                    // 10
+                    // 11
                     "Clan Shop",
                     "**Clan Role**\n" +
                     "\n" +
@@ -246,7 +254,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Once you buy this item, every member of your clan will be automatically assigned to the role."
                 ],
                 [
-                    // 11
+                    // 12
                     "Clan Shop",
                     "**Clan Role Color**\n" +
                     "\n" +
@@ -257,7 +265,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Once you buy this item, your clan role will be automatically changed to the color you have mentioned."
                 ],
                 [
-                    // 12
+                    // 13
                     "Clan Shop",
                     "**Clan Leadership Transfer**\n" +
                     "\n" +
@@ -268,17 +276,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Once you buy this item, your clan member will take the leadership position and you will be demoted to co-leader."
                 ],
                 [
-                    // 13
+                    // 14
                     "Clan Shop",
                     "**Powerup**\n" +
                     "\n" +
-                    "This shop item gives you a chance to obtain a powerup that can be used during clan battles. Each powerup has different chances, which can be found at page 24.\n" +
+                    "This shop item gives you a chance to obtain a powerup that can be used during clan battles. Each powerup has different chances, which can be found at page 25.\n" +
                     "\n" +
                     `This item costs ${coin}\`100\` Alice coins. To buy it, use \`a!clan shop powerup\`.\n` +
                     "Once you buy this item, the obtained powerup will be automatically added to your clan's existing powerups."
                 ],
                 [
-                    // 14
+                    // 15
                     "Auctions",
                     `If your clan has excess powerups, you can sell them in an auction for ${coin}Alice coins. To initiate an auction, you must be in a clan and must be a co-leader of in it.\n` +
                     "The auction section can be accessed by `a!clan auction`.\n" +
@@ -286,7 +294,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Be careful when initiating an auction. You can cancel an auction, however this option is taken out if another clan has bidded to your auction!"
                 ],
                 [
-                    // 15
+                    // 16
                     "Clan Battles",
                     "A clan is able to match another clan provided that both clans have more than 0 power points.\n" +
                     "\n" +
@@ -297,7 +305,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "A battle consists of 3 maps, with the first clan to get 2 points first wins."
                 ],
                 [
-                    // 16
+                    // 17
                     "Clan Battles",
                     "During battle, the representative of each clan will use the `!roll 1d100` command. The clan with highest roll points will pick a map to play (along with required mods) and specify a challenge for the opposing clan to complete. The challenge must not be impossible and too hard, which in that case the referee or moderator will be able to deny the challenge.\n" +
                     "In addition, the challenge must also be completed by the issuer clan. Therefore, if the opposing clan doesn't pass the challenge, but the issuer clan also doesn't pass the challenge, the challenge will be nullified (is not fulfilled).\n" +
@@ -309,7 +317,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "In case something goes wrong, the referee or moderator can use `a!clan match remove <user>` to remove the specified user's clan from match mode and `a!clan power <give/take> <user>` to manually transfer power points."
                 ],
                 [
-                    // 17
+                    // 18
                     "Clan Battles",
                     "As mentioned previously in page 16, clans can set a challenge for the opposing clan to complete. However, the challenge giver must also be able to complete the challenge.\n" +
                     "If the challenge condition is fulfilled (issuer clan completes the challenge while the opposing clan doesn't), the `bomb` powerup will activate provided that the losing clan has the powerup active.\n" +
@@ -328,12 +336,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "All given challenges must be possible and not too hard for the opposing clan to complete."
                 ],
                 [
-                    // 18
+                    // 19
                     "Weekly Upkeep",
                     "Weekly upkeep is a system that prevents high-ranked players from creating and staying in the same clan.\n" +
                     "\n" +
                     `Each week, there will be an upkeep that a clan must pay. Upkeeps will be paid automatically using the clan leader's ${coin}Alice coins each week. The upkeep cost is based on the size of a clan and each clan member's osu!droid rank.\n` +
-                    "The formula for weekly upkeep can be found in page 25.\n" +
+                    "The formula for weekly upkeep can be found in page 26.\n" +
                     "You can use `a!clan upkeep` to view how much time your clan has before the next upkeep is picked up.\n" +
                     "\n" +
                     "If a clan cannot pay the upkeep, there will be consequences given depending on the situation:\n" +
@@ -342,7 +350,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- If the clan has less than 50 power points and both conditions above are met, the clan will be disbanded"
                 ],
                 [
-                    // 19
+                    // 20
                     "Command Information",
                     "`a!clan about`\n" +
                     "Prints this wiki.\n" +
@@ -366,7 +374,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- `join [user]`: Views the cooldown of a user to join a new clan and the user's old clan (if available)."
                 ],
                 [
-                    // 20
+                    // 21
                     "Command Information",
                     "`a!clan create <name>`\n" +
                     "Creates a clan with the specified name. Name must be less than 20 characters.\n" +
@@ -396,7 +404,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Shows information of a clan. If name is omitted, your current clan information will be shown."
                 ],
                 [
-                    // 21
+                    // 22
                     "Command Information",
                     "`a!clan kick <user>`\n" +
                     "Kicks a user from your clan provided that the user is lower position-wise (Co-Leader+ only).\n" +
@@ -421,7 +429,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- `transfer <user to take> <user to give> [challenge passed?]`: Transfers power points from a clan (the firstly mentioned user) to another clan (the secondly mentioned user). The third argument must be specified with anything if challenge requirements are fulfilled."
                 ],
                 [
-                    // 22
+                    // 23
                     "Command Information",
                     "`a!clan powerup <params>`\n" +
                     "The base command for powerups.\n" +
@@ -443,7 +451,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- `role`: Enables clan role for all members in the clan (Clan Leader only)."
                 ],
                 [
-                    // 23
+                    // 24
                     "Stats for nerds",
                     "**Clan Powerup Effects**\n" +
                     "\n" +
@@ -471,7 +479,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "`Final points = min(losing clan's power points, losing clan's power points * multiplier)`"
                 ],
                 [
-                    // 24
+                    // 25
                     "Stats for nerds",
                     "**Powerup Loot Drop Rate**\n" +
                     "\n" +
@@ -489,7 +497,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "The mega version of each powerup type can only be obtained through special events."
                 ],
                 [
-                    // 25
+                    // 26
                     "Stats for nerds",
                     "**Weekly Upkeep Cost**\n" +
                     "\n" +
@@ -503,7 +511,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "where *n* is the amount of clan members in a clan."
                 ],
                 [
-                    // 26
+                    // 27
                     "A Letter to Moderators",
                     "To help the moderation of clans, all moderators are able to apply these following commands to any clans:\n" +
                     "- `a!clan description clear <clan>`\n" +
@@ -3055,5 +3063,5 @@ module.exports.config = {
     description: "Main command for clans.",
     usage: "clan about",
     detail: "Usage outputs the clans wiki which contains every information about clans.",
-    permission: "None / Clan Leader / Referee / Moderator"
+    permission: "None / Clan Co-Leader / Clan Leader / Referee / Moderator"
 };
