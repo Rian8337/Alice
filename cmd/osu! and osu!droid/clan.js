@@ -79,7 +79,7 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     //if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
-    if (message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    if (args[0] !== "about" && message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let binddb = maindb.collection("userbind");
     let clandb = maindb.collection("clandb");
@@ -117,10 +117,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "This is a new system that emulates the feeling of a real guild-based game. You can make a clan and compete with other clans to gain power points.\n" +
                     "\n" +
                     "__**General Rules and Guidelines**__\n" +
-                    "- **All clans must abide by server rules. Failure to do so may result in your clan getting and potentially getting banned from the server disbanded without any further notice.**\n" +
-                    "- **Abuse of the clan system of any kind will result in your clan getting disbanded and potentially getting banned from the server without any further notice.**\n" +
-                    "- This is a heavily team-based system. You'll want to find friends before forming a clan. Trust me, this will be very hard to keep up without friends!\n" +
-                    "- Clans can have up to 25 members (including the clan leader).\n" +
+                    "- **All clans must abide by server rules. Failure to do so may result in your clan getting disbanded and potentially getting you banned from the server without any further notice.**\n" +
+                    "- **Abuse of the clan system of any kind will result in your clan getting disbanded and potentially getting you banned from the server without any further notice.**\n" +
+                    "- This is a heavily team-based system. You'll want to find friends to form a clan with you. Trust me, this will be very hard to keep up without friends!\n" +
+                    "- A clan can have up to 25 members (including the clan leader).\n" +
                     "\n" +
                     "Make sure you read this wiki thoroughly before diving in to clans. Stuff will get very confusing, otherwise.\n" +
                     "\n" +
@@ -133,11 +133,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- Page 7: Clan Powerups\n" +
                     "- Page 8-13: Clan Shop\n" +
                     "- Page 14: Auctions\n" +
-                    "- Page 15-16: Clan Battles\n" +
-                    "- Page 17: Weekly Upkeep\n" +
-                    "- Page 18-21: Command Information\n" +
-                    "- Page 22: A Letter to Moderators\n" +
-                    "- Page 23-25: Stats for nerds"
+                    "- Page 15-17: Clan Battles\n" +
+                    "- Page 18: Weekly Upkeep\n" +
+                    "- Page 19-22: Command Information\n" +
+                    "- Page 23-25: Stats for nerds\n" +
+                    "- Page 26: A Letter to Moderators"
                 ],
                 [
                     // 2
@@ -159,7 +159,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "As mentioned previously in page 2, your clan can have co-leaders to help maintain your clan activity.\n" +
                     "To promote a normal clan member to co-leader, use `a!clan promote <user to promote>`.\n" +
                     "To demote a co-leader to a normal clan member, use `a!clan demote <user to demote>`.\n" +
-                    "You will need someone else to monitor your clan in case you went inactive, but be careful on promoting clan members as co-leaders have more powers as described in page 3.\n" +
+                    "You will need someone else to monitor your clan in case you went inactive, but be careful on promoting clan members as co-leaders have more powers as described in page 2.\n" +
                     "\n" +
                     "If you want to transfer your leadership to another clan member, there is a way to do that, which will be shown later."
                 ],
@@ -178,14 +178,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "To edit your clan's description, use `a!clan description edit <text>`. Be mindful that clan descriptions can only have up to 1,024 characters due to Discord's limitation.\n" +
                     "To clear your clan's description, use `a!clan description clear`.\n" +
                     "\n" +
-                    "Do note that a moderator can edit or remove your clan's description if it's deembed inappropriate or not bound to server rules as mentioned previously in page 1."
+                    "Do note that a moderator can edit or remove your clan's description if it's deemed inappropriate or not bound to server rules as mentioned previously in page 1."
                 ],
                 [
                     // 6
                     "Power Points",
                     "Power points represents your clan's power.\n" +
                     "\n" +
-                    "Clan members can obtain power points for their clan by playing daily and weekly challenges in <#669221772083724318> and by battling other clans. Clan battles are explained in page 15 and 16.\n" +
+                    "Clan members can obtain power points for their clan by playing daily and weekly challenges in <#669221772083724318> and by battling other clans. Clan battles will be explained in page 15-17.\n" +
                     "\n" +
                     "However, aside of earning power points, a clan can also lose them!\n" +
                     "If a clan loses to another clan in clan battles, the clan loses power points based on its current power points.\n" +
@@ -203,9 +203,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Each powerup has its own `super` and `mega` version, which has a stronger amplifier than its preceeding versions.\n" +
                     "\n" +
                     "You can access powerups section using `a!clan powerup`. Clan leaders and co-leaders are able to activate a powerup using `a!clan powerup activate <powerup>`.\n" +
-                    "To view the list of powerups your clan has, use `a!clan powerup list`. To view view the list of currently active powerups, use `a!clan powerup activelist`.\n" +
+                    "To view the list of powerups your clan has, use `a!clan powerup list`.\n" +
+                    "To view the list of currently active powerups, use `a!clan powerup activelist`.\n" +
                     "\n" +
-                    "The effects of each powerup can be found at page 23.\n" +
+                    "The amplifiers of each powerup can be found at page 23.\n" +
                     "The next section will discuss about clan shop, which is where you will be able to obtain powerups."
                 ],
                 [
@@ -236,6 +237,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // 10
                     "Clan Shop",
                     "**Clan Role**\n" +
+                    "\n" +
                     "This shop item allows your clan members to have an exclusive role. If you buy a clan rename, the role name will change accordingly.\n" +
                     "This role will be permanent until your clan is disbanded.\n" +
                     "You must be the clan's leader and your clan must have at least 2,000 power points to use this item.\n" +
@@ -258,6 +260,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // 12
                     "Clan Shop",
                     "**Clan Leadership Transfer**\n" +
+                    "\n" +
                     "This shop item allows you to transfer your clan's leadership to another clan member. Be cautious with this item as you cannot refund it!\n" +
                     "You must be the clan's leader and your clan must have at least 2 members (including the clan leader) to use this item.\n" +
                     "\n" +
@@ -268,7 +271,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // 13
                     "Clan Shop",
                     "**Powerup**\n" +
-                    "This shop item gives you a chance to obtain a powerup that can be used during clan battles. Each powerup has different chances, which you can see at page 24.\n" +
+                    "\n" +
+                    "This shop item gives you a chance to obtain a powerup that can be used during clan battles. Each powerup has different chances, which can be found at page 24.\n" +
                     "\n" +
                     `This item costs ${coin}\`100\` Alice coins. To buy it, use \`a!clan shop powerup\`.\n` +
                     "Once you buy this item, the obtained powerup will be automatically added to your clan's existing powerups."
@@ -286,7 +290,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Clan Battles",
                     "A clan is able to match another clan provided that both clans have more than 0 power points.\n" +
                     "\n" +
-                    "To start a battle, both clans must agree to a scheduled time during which the battle will be held. After that, they can contact a referee or moderator to supervise the battle during the previously agreed time.\n" +
+                    "To start a battle, both clans must have a representative clan member that's currently not in cooldown and agree to a scheduled time during which the battle will be held. After that, they can contact a referee or moderator to supervise the battle during the previously agreed time. Do note that a newly joined member is imposed to a 4-day cooldown during which the clan member cannot participate in a clan battle.\n" +
                     "\n" +
                     "Before the battle, the referee or moderator will add both clans into match mode by using `a!clan match add <user who match>`. During match mode, a clan cannot activate powerups. Make sure to activate your powerups before battle!\n" +
                     "\n" +
@@ -295,16 +299,36 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 [
                     // 16
                     "Clan Battles",
-                    "During battle, a representative of each clan will use the `!roll 1d100` command. The clan with highest roll points will pick a map to play and specify a challenge for the opposing clan to complete. The challenge must not be impossible and too hard, which in that case the referee will be able to deny the challenge.\n" +
+                    "During battle, the representative of each clan will use the `!roll 1d100` command. The clan with highest roll points will pick a map to play (along with required mods) and specify a challenge for the opposing clan to complete. The challenge must not be impossible and too hard, which in that case the referee or moderator will be able to deny the challenge.\n" +
+                    "In addition, the challenge must also be completed by the issuer clan. Therefore, if the opposing clan doesn't pass the challenge, but the issuer clan also doesn't pass the challenge, the challenge will be nullified (is not fulfilled).\n" +
                     "\n" +
                     "After that, the pick will alternate. If a third map is present, both clans will pick a map and then use the `!roll 1d100` command again. The clan who gets the highest points will get their pick played.\n" +
                     "\n" +
-                    "After battle, the referee or moderator will use the `a!clan power transfer <user to take> <user to give> [challenge passed? omit if no]` to transfer power points from the losing clan to the winning clan. Active powerups from both clans will automatically be considered and both clans will be put out of match mode after power points have been transferred.\n" +
+                    "After battle, the referee or moderator will use the `a!clan power transfer <user to take> <user to give> [challenge fulfilled? omit if no]` to transfer power points from the losing clan to the winning clan. Active powerups from both clans will automatically be considered and both clans will be put out of match mode after power points have been transferred. The representative of each clan will be put at a 4-day cooldown during which they cannot participate in a clan battle.\n" +
                     "\n" +
                     "In case something goes wrong, the referee or moderator can use `a!clan match remove <user>` to remove the specified user's clan from match mode and `a!clan power <give/take> <user>` to manually transfer power points."
                 ],
                 [
                     // 17
+                    "Clan Battles",
+                    "As mentioned previously in page 16, clans can set a challenge for the opposing clan to complete. However, the challenge giver must also be able to complete the challenge.\n" +
+                    "If the challenge condition is fulfilled (issuer clan completes the challenge while the opposing clan doesn't), the `bomb` powerup will activate provided that the losing clan has the powerup active.\n" +
+                    "However, the `bomb` powerup can be tackled by using the `challenge` powerup. A bomb and challenge powerup with the same tier will cancel each other.\n" +
+                    "\n" +
+                    "There are multiple challenge types that a clan can give:\n" +
+                    "- Combo: at most 80% of the map's full combo\n" +
+                    "- Rank: at most S rank (SH if HD is required)\n" +
+                    "- Accuracy: at most 99.8%\n" +
+                    "- Score: at most 90% of the map's maximum score\n" +
+                    "- ScoreV2: at most 990,000\n" +
+                    "- Miss: no specific conditions\n" +
+                    "- dpp (droid pp): at most 95% of the map's maximum dpp with required mods applied\n" +
+                    "- pp: at most 85% of the map's maximum pp with required mods applied\n" +
+                    "\n" +
+                    "All given challenges must be possible and not too hard for the opposing clan to complete."
+                ],
+                [
+                    // 18
                     "Weekly Upkeep",
                     "Weekly upkeep is a system that prevents high-ranked players from creating and staying in the same clan.\n" +
                     "\n" +
@@ -318,13 +342,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- If the clan has less than 50 power points and both conditions above are met, the clan will be disbanded"
                 ],
                 [
-                    // 18
+                    // 19
                     "Command Information",
+                    "`a!clan about`\n" +
+                    "Prints this wiki.\n" +
+                    "\n" +
                     "`a!clan accept <user>`\n" +
-                    "Accepts a user to your clan.\n" +
+                    "Accepts a user to your clan (Co-Leader+ only).\n" +
                     "\n" +
                     "`a!clan auction <params>`\n" +
-                    "The base command for auctions.\n" +
+                    "The base command for auctions (Co-Leader+ only).\n" +
                     "Parameters:\n" +
                     "- `bid <name> <amount>`: Bids to an existing auction. The auction name and amount of Alice coins to bid is required.\n" +
                     "- `cancel <name>`: Cancels an existing auction. If a clan has bidded to the auction, this is not possible.\n" +
@@ -332,44 +359,53 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- `list`: Lists current auctions.\n" +
                     "- `status <name>`: Checks current status of an auction.\n" +
                     "\n" +
-                    "`a!clan description <params>`\n" +
-                    "The base command for clan description.\n" +
+                    "`a!clan cooldown <params>`\n" +
+                    "The base command for cooldowns.\n" +
                     "Parameters:\n" +
-                    "- `clear`: Clears your clan's description.\n" +
+                    "- `battle [user]`: Views the cooldown of a user to participate in a clan battle.\n" +
+                    "- `join [user]`: Views the cooldown of a user to join a new clan and the user's old clan (if available)."
+                ],
+                [
+                    // 20
+                    "Command Information",
+                    "`a!clan create <name>`\n" +
+                    "Creates a clan with the specified name. Name must be less than 20 characters.\n" +
+                    "\n" +
+                    "`a!clan description <params>`\n" +
+                    "The base command for clan description (Co-Leader+ / Moderator only).\n" +
+                    "Parameters:\n" +
+                    "- `clear [clan]`: Clears your clan's description. Moderators can specify a clan name to clear other clan's description.\n" +
                     "- `edit <text>`: Edits your clan's description.\n" +
                     "\n" +
                     "`a!clan demote <user>`\n" +
-                    "Demotes a co-leader to normal clan member."
-                ],
-                [
-                    // 19
-                    "Command Information",
-                    "`a!clan disband`\n" +
-                    "Disbands your current clan\n" +
+                    "Demotes a co-leader to normal clan member (Clan Leader / Moderator only).\n" +
+                    "\n" +
+                    "`a!clan disband [clan]`\n" +
+                    "Disbands your current clan. Moderators can specify a clan name to disband other clans (Clan Leader / Moderator only).\n" +
                     "\n" +
                     "`a!clan lb [page]`\n" +
                     "Shows a leaderboard of clans based on power points.\n" +
                     "\n" +
                     "`a!clan icon <params>`\n" +
-                    "The base command for clan icons.\n" +
+                    "The base command for clan icons (Co-Leader+ / Moderator only).\n" +
                     "Parameters:\n" +
-                    "- `remove`: Removes your current clan icon.\n" +
+                    "- `remove [clan]`: Removes your current clan icon. Moderators can specify a clan name to remove other clan's icon.\n" +
                     "- `set <link>`: Sets your clan icon to the specified link.\n" +
                     "\n" +
                     "`a!clan info [name]`\n" +
-                    "Shows information of a clan. If name is omitted, your current clan information will be shown.\n" +
-                    "\n" +
-                    "`a!clan kick <user>`\n" +
-                    "Kicks a user from your clan provided that the user is lower position-wise.\n" +
-                    "\n" +
-                    "`a!clan leave`\n" +
-                    "Leaves your current clan."
+                    "Shows information of a clan. If name is omitted, your current clan information will be shown."
                 ],
                 [
-                    // 20
+                    // 21
                     "Command Information",
+                    "`a!clan kick <user>`\n" +
+                    "Kicks a user from your clan provided that the user is lower position-wise (Co-Leader+ only).\n" +
+                    "\n" +
+                    "`a!clan leave`\n" +
+                    "Leaves your current clan.\n" +
+                    "\n" +
                     "`a!clan match <params>`\n" +
-                    "The base command for clan match mode.\n" +
+                    "The base command for clan match mode (Referee / Moderator only).\n" +
                     "Parameters:\n" +
                     "- `add <user>`: Adds the specified user's clan into match mode.\n" +
                     "- `remove <user>`: Removes the specified user's clan from match mode.\n" +
@@ -378,48 +414,33 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Shows members of a clan. If name is omitted, your current's clan members will be shown.\n" +
                     "\n" +
                     "`a!clan power <params>`\n" +
-                    "The base command for power points.\n" +
+                    "The base command for power points (Referee / Moderator only).\n" +
                     "Parameters:\n" +
                     "- `give <user> <amount>`: Gives the specified amount of points to the specified user's clan.\n" +
                     "- `take <user> <amount>`: Takes the specified amount of points from the specified user's clan.\n" +
-                    "- `transfer <user to take> <user to give> [challenge passed?]`: Transfers power points from a clan (the firstly mentioned user) to another clan (the secondly mentioned user). The third argument must be specified with anything if the challenge from clan to take is completed by clan to give.\n" +
-                    "\n" +
+                    "- `transfer <user to take> <user to give> [challenge passed?]`: Transfers power points from a clan (the firstly mentioned user) to another clan (the secondly mentioned user). The third argument must be specified with anything if challenge requirements are fulfilled."
+                ],
+                [
+                    // 22
+                    "Command Information",
                     "`a!clan powerup <params>`\n" +
                     "The base command for powerups.\n" +
                     "Parameters:\n" +
-                    "- `activate <powerup>`: Activates a powerup provided your clan has sufficient amount of the specified powerup and your clan currently doesn't have an active powerup of the same type. For example, you cannot activate a `bomb` powerup if your clan already have a `bomb` powerup active.\n" +
+                    "- `activate <powerup>`: Activates a powerup provided your clan has sufficient amount of the specified powerup and your clan currently doesn't have an active powerup of the same type. For example, you cannot activate a `bomb` powerup if your clan already have a `bomb` powerup active (Co-Leader+ only).\n" +
                     "- `activelist`: Shows current active powerups of your clan.\n" +
-                    "- `list`: Lists current powerups that your clan has."
-                ],
-                [
-                    // 21
-                    "Command Information",
+                    "- `list`: Lists current powerups that your clan has.\n" +
+                    "\n" +
                     "`a!clan promote <user>`\n" +
-                    "Promotes a normal clan member to a co-leader.\n" +
+                    "Promotes a normal clan member to a co-leader (Clan Leader only).\n" +
                     "\n" +
                     "`a!clan shop <params>`\n" +
                     "The base command for clan shop.\n" +
                     "Parameters:\n" +
-                    "- `color <hex code>`: Changes the color of your clan role provided that your clan has one.\n" +
-                    "- `leader <user>`: Transfers your leadership position to the specified user provided that the user is in your clan.\n" +
-                    "- `rename <name>`: Renames your clan to the specified name.\n" +
-                    "- `role`: Enables clan role for all members in the clan."
-                ],
-                [
-                    // 22
-                    "A Letter for Moderators",
-                    "To help the moderation of clans, all moderators are able to apply these following commands to any clans:\n" +
-                    "- `a!clan description clear <clan>`\n" +
-                    "- `a!clan description edit <clan> <text>`\n" +
-                    "- `a!clan demote <user>`\n" +
-                    "- `a!clan disband [clan]`\n" +
-                    "- `a!clan icon remove <clan>`\n" +
-                    "- `a!clan kick <user>`\n" +
-                    "- `a!clan match add <user>`\n" +
-                    "- `a!clan match remove <user>`\n" +
-                    "- `a!clan power give <user> <amount>`\n" +
-                    "- `a!clan power take <user> <amount>`\n" +
-                    "- `a!clan power transfer <user to take> <user to give> [challenge passed?]`"
+                    "- `color <hex code>`: Changes the color of your clan role provided that your clan has one (Clan Leader only).\n" +
+                    "- `leader <user>`: Transfers your leadership position to the specified user provided that the user is in your clan (Clan Leader only).\n" +
+                    "- `powerup`: Buys a random powerup which will be stored automatically to your clan's powerup collection." +
+                    "- `rename <name>`: Renames your clan to the specified name (Clan Leader only).\n" +
+                    "- `role`: Enables clan role for all members in the clan (Clan Leader only)."
                 ],
                 [
                     // 23
@@ -433,15 +454,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "\n" +
                     "These powerups will amplify the multiplier for the winning clan:\n" +
                     "- Megabuff: `multiplier *= 2.0`\n" +
-                    "- Megachallenge: `multiplier *= 1.8`\n" +
-                    "- Superbuff: `multiplier *= 1.7`\n" +
-                    "- Superchallenge: `multiplier *= 1.4`\n" +
+                    "- Megachallenge: `multiplier *= 1.7`\n" +
+                    "- Superbuff: `multiplier *= 1.6`\n" +
+                    "- Superchallenge: `multiplier *= 1.3`\n" +
                     "- Buff: `multiplier *= 1.2`\n" +
-                    "- Challenge: `multiplier *= 1.1`\n" +
+                    "- Challenge: `multiplier *= 1.05`\n" +
                     "\n" +
                     "These powerups will amplify the multiplier for the losing clan:\n" +
                     "- Megadebuff: `multiplier /= 1.8`\n" +
-                    "- Megabomb: `multiplier /= 1.6`\n" +
+                    "- Megabomb: `multiplier /= 1.7`\n" +
                     "- Superdebuff: `multiplier /= 1.5`\n" +
                     "- Superbomb: `multiplier /= 1.3`\n" +
                     "- Debuff: `multiplier /= 1.1`\n" +
@@ -452,7 +473,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 [
                     // 24
                     "Stats for nerds",
-                    "**Powerup loot drop rate**\n" +
+                    "**Powerup Loot Drop Rate**\n" +
                     "\n" +
                     "When buying powerups from the shop, there is a chance for each powerup to appear:\n" +
                     "- Nothing: 20%\n" +
@@ -480,10 +501,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "\n" +
                     "Which means, the final upkeep cost is `200 + f(x1) + f(x2) + f(x3) + ... + f(xn)`\n" +
                     "where *n* is the amount of clan members in a clan."
+                ],
+                [
+                    // 26
+                    "A Letter to Moderators",
+                    "To help the moderation of clans, all moderators are able to apply these following commands to any clans:\n" +
+                    "- `a!clan description clear <clan>`\n" +
+                    "- `a!clan demote <user>`\n" +
+                    "- `a!clan disband [clan]`\n" +
+                    "- `a!clan icon remove <clan>`\n" +
+                    "- `a!clan kick <user>`\n" +
+                    "- `a!clan match add <user>`\n" +
+                    "- `a!clan match remove <user>`\n" +
+                    "- `a!clan power give <user> <amount>`\n" +
+                    "- `a!clan power take <user> <amount>`\n" +
+                    "- `a!clan power transfer <user to take> <user to give> [challenge passed?]`"
                 ]
             ];
             let page = 1;
-            embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+            embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki (Beta)", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
             message.channel.send({embed: embed}).then(msg => {
                 msg.react("⏮️").then(() => {
                     msg.react("⬅️").then(() => {
@@ -501,30 +537,30 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 backward.on('collect', () => {
                     page = Math.max(1, page - 10);
                     msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
                     msg.edit({embed: embed}).catch(console.error)
                 });
 
                 back.on('collect', () => {
-                    if (page === 1) page = 25;
+                    if (page === 1) page = help_array.length;
                     else --page;
                     msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
                     msg.edit({embed: embed}).catch(console.error)
                 });
 
                 next.on('collect', () => {
-                    if (page === 25) page = 1;
+                    if (page === help_array.length) page = 1;
                     else ++page;
                     msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
                     msg.edit({embed: embed}).catch(console.error);
                 });
 
                 forward.on('collect', () => {
-                    page = Math.min(25, page + 10);
+                    page = Math.min(help_array.length, page + 10);
                     msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                    embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/25`, footer[index]);
+                    embed.setTitle(help_array[page - 1][0]).setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
                     msg.edit({embed: embed}).catch(console.error)
                 });
 
@@ -781,11 +817,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                     if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
+                    if (!joinres.joincooldown) joinres.joincooldown = 0;
                     let cooldown = joinres.joincooldown - curtime;
                     if (cooldown > 0) {
                         let time = timeConvert(cooldown);
                         return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                     }
+                    if (!joinres.oldjoincooldown) joinres.oldjoincooldown = 0;
                     let oldcooldown = userres.oldjoincooldown - curtime;
                     if (oldcooldown > 0 && userres.oldclan === joinres.clan) {
                         let time = timeConvert(oldcooldown);
@@ -823,7 +861,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                     let clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
                                     if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
-                                    memberlist.push([toaccept.id, uid, false]);
+                                    memberlist.push([toaccept.id, uid, false, curtime + 86400 * 4]);
                                     updateVal = {
                                         $set: {
                                             member_list: memberlist
@@ -1017,10 +1055,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2000);
             break
         }
-        case "description": {
-            //TODO: clan descriptions
-            break
-        }
         case "create": {
             // creates a clan
             // =========================
@@ -1084,6 +1118,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     power: 0,
                                     createdAt: curtime,
                                     leader: message.author.id,
+                                    description: "",
                                     icon: "",
                                     iconcooldown: 0,
                                     namecooldown: 0,
@@ -1091,7 +1126,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     isMatch: false,
                                     powerups: [['megabuff', 0], ['megadebuff', 0], ['megachallenge', 0], ['megabomb', 0], ["superbuff", 0], ["superdebuff", 0], ["superchallenge", 0], ["superbomb", 0], ["buff", 0], ["debuff", 0], ["challenge", 0], ["bomb", 0]],
                                     active_powerups: [],
-                                    member_list: [[message.author.id, uid, true]]
+                                    member_list: [[message.author.id, uid, true, 0]]
                                 };
                                 clandb.insertOne(insertVal, err => {
                                     if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
@@ -1113,6 +1148,133 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             setTimeout(() => {
                 cd.delete(message.author.id)
             }, 2500);
+            break
+        }
+        case "description": {
+            switch (args[1]) {
+                case "clear": {
+                    query = {discordid: message.author.id};
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        let clan;
+                        if (perm && args[2]) clan = args[2];
+                        else {
+                            if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                            if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                            clan = userres.clan
+                        }
+
+                        query = {name: clan};
+                        clandb.findOne(query, (err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
+                            let hasPermission = memberlist[member_index][2];
+                            if (!perm && !hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
+                            message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${args[2]}\` clan's description` : "your clan's description"}?**`).then(msg => {
+                                msg.react("✅").catch(console.error);
+                                let confirmation = false;
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                confirm.on("collect", () => {
+                                    confirmation = true;
+                                    msg.delete();
+
+                                    updateVal = {
+                                        $set: {
+                                            description: ""
+                                        }
+                                    };
+                                    clandb.updateOne(query, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        }
+                                        message.channel.send(`✅ **| ${message.author}, successfully cleared ${perm && args[2] ? `\`${args[2]}\` clan's description` : "your clan's description"}.**`)
+                                    })
+                                });
+                                confirm.on("end", () => {
+                                    if (!confirmation) {
+                                        msg.delete();
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                    }
+                                })
+                            })
+                        })
+                    });
+                    break
+                }
+                case "edit": {
+                    let new_desc = args.slice(2).join(" ");
+                    if (!new_desc) return message.channel.send("❎ **| Hey, please enter a new description!**");
+
+                    query = {discordid: message.author.id};
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        let clan = userres.clan;
+
+                        query = {name: clan};
+                        clandb.findOne(query, (err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
+                            let hasPermission = memberlist[member_index][2];
+                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
+                            if (new_desc === clanres.description) return message.channel.send("❎ **| Hey, your new description is the same as the old description!**");
+
+                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan's description?**`).then(msg => {
+                                msg.react("✅").catch(console.error);
+                                let confirmation = false;
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                confirm.on("collect", () => {
+                                    confirmation = true;
+                                    msg.delete();
+
+                                    updateVal = {
+                                        $set: {
+                                            description: new_desc
+                                        }
+                                    };
+                                    clandb.updateOne(query, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        }
+                                        message.channel.send(`✅ **| ${message.author}, successfully changed your clan's description.**`)
+                                    })
+                                });
+                                confirm.on("end", () => {
+                                    if (!confirmation) {
+                                        msg.delete();
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                    }
+                                })
+                            })
+                        })
+                    });
+                    break
+                }
+                default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `clear` and `edit`.**")
+            }
             break
         }
         case "promote": {
@@ -1211,7 +1373,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     let member_list = clanres.member_list;
                     let member_index = member_list.findIndex(member => member[0] === todemote.id);
-                    if (!perm && member_index === -1) return message.channel.send("❎ **| I'm sorry, the user is not in a clan!**");
+                    if (!perm && member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in a clan!**");
                     if (!member_list[member_index][2]) return message.channel.send("❎ **| I'm sorry, this user is already a normal member!**");
                     member_list[member_index][2] = false;
 
@@ -1264,7 +1426,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (perm) {
                     if (args[1]) clanname = args.slice(1).join(" ");
                     else clanname = userres.clan;
-                    if (!clanname) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
+                    if (!clanname) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 }
                 else clanname = userres.clan;
                 query = {name: clanname};
@@ -1351,10 +1513,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
                             let memberlist = clanres.member_list;
                             let member_index = memberlist.findIndex(member => member[0] === message.author.id);
                             let hasPermission = memberlist[member_index][2];
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
                             if (clanres.power < 250) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 250!**");
                             let cooldown = clanres.iconcooldown - curtime;
                             if (cooldown > 0) {
@@ -2195,7 +2359,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         }
                                         case "megabomb": {
                                             message.channel.send(`⬇️ **| \`${takeclan}\` has \`megabomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
-                                            if (!challengepass) givemultiplier /= 1.6;
+                                            if (!challengepass) givemultiplier /= 1.7;
                                             break
                                         }
                                         case "superdebuff": {
@@ -2237,17 +2401,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             }
                                             case "megachallenge": {
                                                 message.channel.send(`⬆️ **| \`${giveclan}\` has \`megachallenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
-                                                if (challengepass) givemultiplier *= 1.8;
+                                                if (challengepass) givemultiplier *= 1.7;
                                                 break
                                             }
                                             case "superbuff": {
                                                 message.channel.send(`⬆️⬆️ **| \`${giveclan}\` has \`superbuff\` powerup active!**`);
-                                                givemultiplier *= 1.7;
+                                                givemultiplier *= 1.6;
                                                 break
                                             }
                                             case "superchallenge": {
                                                 message.channel.send(`⬆️ **| \`${giveclan}\` has \`superchallenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
-                                                if (challengepass) givemultiplier *= 1.4;
+                                                if (challengepass) givemultiplier *= 1.3;
                                                 break
                                             }
                                             case "buff": {
@@ -2255,7 +2419,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 break
                                             }
                                             case "challenge": {
-                                                if (challengepass) givemultiplier *= 1.1;
+                                                if (challengepass) givemultiplier *= 1.05;
                                                 break
                                             }
                                         }
@@ -2268,21 +2432,33 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         confirm.on("collect", () => {
                                             confirmation = true;
                                             msg.delete();
+
+                                            let t_memberlist = tclanres.member_list;
+                                            let t_member_index = t_memberlist.findIndex(member => member[0] === totake.id);
+                                            t_memberlist[t_member_index][3] = curtime + 86400 * 4;
+
                                             updateVal = {
                                                 $set: {
                                                     power: t_power - totalpower,
                                                     isMatch: false,
-                                                    active_powerups: []
+                                                    active_powerups: [],
+                                                    member_list: t_memberlist
                                                 }
                                             };
                                             clandb.updateOne({name: takeclan}, updateVal, err => {
                                                 if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
                                             });
+
+                                            let g_memberlist = gclanres.member_list;
+                                            let g_member_index = g_memberlist.findIndex(member => member[0] === togive.id);
+                                            g_memberlist[g_member_index][3] = curtime + 86400 * 4;
+
                                             updateVal = {
                                                 $set: {
                                                     power: g_power + totalpower,
                                                     isMatch: false,
-                                                    active_powerups: []
+                                                    active_powerups: [],
+                                                    member_list: g_memberlist
                                                 }
                                             };
                                             clandb.updateOne({name: giveclan}, updateVal, err => {
@@ -2323,14 +2499,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
                     if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     query = {discordid: tomatch.id};
-                    binddb.findOne(query, (err, clanres) => {
+                    binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!clanres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!clanres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = clanres.clan;
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        let clan = userres.clan;
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
@@ -2339,6 +2515,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             if (clanres.power === 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member[0] === tomatch.id);
+                            if (memberlist[member_index][3] > curtime) return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
+
                             updateVal = {
                                 $set: {
                                     isMatch: true
@@ -2383,6 +2564,89 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             setTimeout(() => {
                 cd.delete(message.author.id)
             }, 2500);
+            break
+        }
+        case "cooldown": {
+            switch (args[1]) {
+                case "join": {
+                    let user = message.author;
+                    if (args[2]) {
+                        user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
+                        if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
+                        query = {discordid: user.id}
+                    }
+                    query = {discordid: user.id};
+
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (userres.clan) return message.channel.send("❎ **| I'm sorry, this user is in a clan!**");
+                        if (!userres.joincooldown) userres.joincooldown = 0;
+                        let cooldown = Math.max(0, userres.joincooldown - curtime);
+
+                        if (!cooldown) message.channel.send("✅ **| The user is currently not in cooldown to join a clan.**");
+                        else {
+                            let time = timeConvert(cooldown);
+                            message.channel.send(`✅ **| The user cannot join a clan for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                        }
+
+                        if (userres.oldclan) {
+                            if (!userres.oldjoincooldown) userres.oldjoincooldown = 0;
+                            let old_cooldown = Math.max(0, userres.oldjoincooldown - curtime);
+                            if (!old_cooldown) message.channel.send("✅ **| The user is currently not in cooldown to join the user's old clan.**");
+                            else {
+                                let time = timeConvert(old_cooldown);
+                                message.channel.send(`✅ **| The user cannot join the user's old clan for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                            }
+                        }
+                    });
+                    break
+                }
+                case "battle": {
+                    // views a user's cooldown in participating a clan battle
+                    let user = message.author;
+                    if (args[2]) {
+                        user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
+                        if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
+                        query = {discordid: user.id}
+                    }
+                    query = {discordid: user.id};
+
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        let clan = userres.clan;
+                        query = {name: clan};
+
+                        clandb.findOne(query, (err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member[0] === user.id);
+                            let cooldown = Math.max(0, memberlist[member_index][3] - curtime);
+
+                            if (!cooldown) return message.channel.send("✅ **| The user is currently not in cooldown from participating in a clan battle.**");
+                            else {
+                                let time = timeConvert(cooldown);
+                                return message.channel.send(`✅ **| The user cannot participate in a clan battle for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                            }
+                        })
+                    });
+                    break
+                }
+                default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `battle` and `join`.**")
+            }
             break
         }
         case "auction": {
@@ -2782,7 +3046,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
-        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `about`, `accept`, `auction`, `create`, `demote`, `description`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, `promote`, and `shop`.**")
+        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `about`, `accept`, `auction`, `cooldown`, `create`, `demote`, `description`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, `promote`, and `shop`.**")
     }
 };
 
