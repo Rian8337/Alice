@@ -147,6 +147,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     };
                                     pointdb.updateOne({discordid: totransfer.id}, updateVal, err => {
                                         if (err) return console.log(err);
+                                    });
+                                    updateVal = {
+                                        $set: {
+                                            alicecoins: coins - amount
+                                        }
+                                    };
+                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                        if (err) return console.log(err)
                                     })
                                 })
                             });
