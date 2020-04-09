@@ -150,7 +150,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     });
                                     updateVal = {
                                         $set: {
-                                            alicecoins: coins - amount
+                                            alicecoins: giveres[0].alicecoins - amount
                                         }
                                     };
                                     pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
