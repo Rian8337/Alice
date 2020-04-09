@@ -125,6 +125,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Make sure you read this wiki thoroughly before diving in to clans. Stuff will get very confusing, otherwise.\n" +
                     "\n" +
                     "__**Contents**__\n" +
+                    "- Page 2: Starting\n" +
                     "- Page 3: Clan Member Positions\n" +
                     "- Page 4: A Letter to Clan Leaders\n" +
                     "- Page 5: Clan Icons\n" +
