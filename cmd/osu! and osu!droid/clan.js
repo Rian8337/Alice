@@ -35,7 +35,7 @@ function editMember(clanres, page, rolecheck, footer, index) {
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
-        memberstring += `${i+1}. <@${list[i][0]}> (${list[i][0]}) - ${list[i][2] ? `${list[i][0] === leader ? "Leader" : "Co-Leader"}` : "Member"}\n`
+        memberstring += `${i+1}. <@${list[i].id}> (${list[i].id}) - ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n`
     }
     embed.setDescription(memberstring);
     return embed
@@ -476,7 +476,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- Debuff: `multiplier /= 1.1`\n" +
                     "- Bomb: `multiplier /= 1.05`\n" +
                     "\n" +
-                    "`Final points = min(losing clan's power points, losing clan's power points * multiplier)`"
+                    "`Final points = min(losing clan's power points, floor(losing clan's power points * multiplier))`"
                 ],
                 [
                     // 25
@@ -527,7 +527,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 ]
             ];
             let page = 1;
-            embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki (Beta)", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
+            embed.setTitle(help_array[page - 1][0]).setAuthor("Clans Wiki", "https://image.frl/p/beyefgeq5m7tobjg.jpg").setDescription(help_array[page - 1][1]).setFooter(`Alice Synthesis Thirty | Page ${page}/${help_array.length}`, footer[index]);
             message.channel.send({embed: embed}).then(msg => {
                 const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, {time: 600000});
                 collector.on("collect", m => {
@@ -809,10 +809,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
 
                         let memberlist = clanres[0].member_list;
-                        let cl_index = memberlist.findIndex(member => member[0] === message.author.id);
+                        let cl_index = memberlist.findIndex(member => member.id === message.author.id);
                         if (!memberlist[cl_index][2]) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
-                        let member_index = memberlist.findIndex(member => member[0] === toaccept.id);
+                        let member_index = memberlist.findIndex(member => member.id === toaccept.id);
                         if (member_index !== -1) return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
 
                         if (memberlist.length >= 25) return message.channel.send("❎ **| I'm sorry, a clan can only have up to 25 members (including leader)!");
@@ -831,7 +831,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                     let clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
                                     if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
-                                    memberlist.push([toaccept.id, uid, false, curtime + 86400 * 4]);
+                                    memberlist.push({
+                                        id: toaccept.id,
+                                        uid: uid,
+                                        hasPermission: false,
+                                        battle_cooldown: curtime + 86400 * 4
+                                    });
                                     updateVal = {
                                         $set: {
                                             member_list: memberlist
@@ -898,12 +903,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (tokick.id === clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick the leader of the clan!**");
 
                     let memberlist = clanres.member_list;
-                    let perm_index = memberlist.findIndex(member => member[0] === message.author.id);
-                    if (!memberlist[perm_index][2] && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    let perm_index = memberlist.findIndex(member => member.id === message.author.id);
+                    if (!memberlist[perm_index].hasPermission && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
-                    let member_index = clanres.member_list.findIndex(member => member[0] === tokick.id);
+                    let member_index = clanres.member_list.findIndex(member => member.id === tokick.id);
                     if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
-                    if (memberlist[member_index][2] && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
+                    if (memberlist[member_index].hasPermission && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user out from ${perm?`\`${clan}\``:""} clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
@@ -1094,9 +1099,66 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     namecooldown: 0,
                                     weeklyfee: curtime + 86400 * 7,
                                     isMatch: false,
-                                    powerups: [['megabuff', 0], ['megadebuff', 0], ['megachallenge', 0], ['megabomb', 0], ["superbuff", 0], ["superdebuff", 0], ["superchallenge", 0], ["superbomb", 0], ["buff", 0], ["debuff", 0], ["challenge", 0], ["bomb", 0]],
+                                    powerups: [
+                                        {
+                                            name: 'megabuff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'megadebuff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'megachallenge',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'megabomb',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'superbuff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'superdebuff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'superchallenge',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'superbomb',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'buff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'debuff',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'challenge',
+                                            amount: 0
+                                        },
+                                        {
+                                            name: 'bomb',
+                                            amount: 0
+                                        }
+
+                                    ],
                                     active_powerups: [],
-                                    member_list: [[message.author.id, uid, true, 0]]
+                                    member_list: [
+                                        {
+                                            id: message.author.id,
+                                            uid: uid,
+                                            hasPermission: true,
+                                            battle_cooldown: 0
+                                        }
+                                    ]
                                 };
                                 clandb.insertOne(insertVal, err => {
                                     if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
@@ -1146,9 +1208,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
-                            if (!perm && !hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!perm && !memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${args[2]}\` clan's description` : "your clan's description"}?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
@@ -1205,8 +1266,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             if (new_desc === clanres.description) return message.channel.send("❎ **| Hey, your new description is the same as the old description!**");
@@ -1255,6 +1316,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // role color, and promoting other members
             let topromote = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!topromote) return message.channel.send("❎ **| Hey, please mention a valid user to promote!**");
+            if (topromote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot promote yourself!**");
 
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
@@ -1276,10 +1338,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                     let member_list = clanres.member_list;
-                    let member_index = member_list.findIndex(member => member[0] === topromote.id);
+                    let member_index = member_list.findIndex(member => member.id === topromote.id);
                     if (member_index === -1) return message.channel.send("❎ **| I'm sorry, the user is not in your clan!**");
-                    if (member_list[member_index][2]) return message.channel.send("❎ **| I'm sorry, this user is already a co-leader!**");
-                    member_list[member_index][2] = true;
+                    if (member_list[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, this user is already a co-leader!**");
+                    member_list[member_index].hasPermission = true;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to promote ${topromote} to co-leader?**`).then(msg => {
                         msg.react("✅").catch(console.error);
@@ -1321,6 +1383,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // clan
             let todemote = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!todemote) return message.channel.send("❎ **| Hey, please mention a valid user to demote!**");
+            if (todemote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot demote yourself!**");
 
             query = {discordid: todemote.id};
             binddb.findOne(query, (err, userres) => {
@@ -1342,10 +1405,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!perm && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                     let member_list = clanres.member_list;
-                    let member_index = member_list.findIndex(member => member[0] === todemote.id);
+                    let member_index = member_list.findIndex(member => member.id === todemote.id);
                     if (!perm && member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in a clan!**");
-                    if (!member_list[member_index][2]) return message.channel.send("❎ **| I'm sorry, this user is already a normal member!**");
-                    member_list[member_index][2] = false;
+                    if (!member_list[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, this user is already a normal member!**");
+                    member_list[member_index].hasPermission = false;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to demote ${todemote} to normal member?**`).then(msg => {
                         msg.react("✅").catch(console.error);
@@ -1406,7 +1469,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (message.author.id !== clanres.leader && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this command.**");
+                    if (message.author.id !== clanres.leader && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
                     message.channel.send(`❗**| ${message.author}, are you sure you want to disband ${perm && args[1]?`\`${clanname}\` clan`:"your clan"}?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
@@ -1419,7 +1482,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 clanrole.delete("Clan disbanded").catch(console.error);
                                 let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                 clanres.member_list.forEach((member) => {
-                                    message.guild.members.cache.get(member[0]).roles.remove(role, "Clan disbanded").catch(console.error)
+                                    message.guild.members.cache.get(member.id).roles.remove(role, "Clan disbanded").catch(console.error)
                                 })
                             }
                             updateVal = {
@@ -1485,8 +1548,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             if (clanres.power < 250) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 250!**");
@@ -1550,8 +1613,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s icon?**`).then(msg => {
@@ -1616,7 +1679,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             let powerups = clanres.powerups;
                             embed.setTitle(`Current owned powerups by ${clan}`);
-                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i][0]), powerups[i][1]);
+                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i].name), powerups[i].amount);
                             message.channel.send({embed: embed}).catch(console.error)
                         })
                     });
@@ -1676,20 +1739,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             if (clanres.isMatch) return message.channel.send("❎ **| I'm sorry, your clan is currently in match mode, therefore you cannot activate powerups!**");
                             let powerups = clanres.powerups;
                             let activepowerups = clanres.active_powerups;
-                            let powercount = 0;
-                            let powerup_index = powerups.findIndex(powerup => powerup[0] === powertype);
+                            let powerup_index = powerups.findIndex(powerup => powerup.name === powertype);
                             if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup type you are looking for!**");
 
-                            if (powerups[powerup_index][1] === 0) return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup view\`.**`);
-                            --powerups[powerup_index][1];
-                            powercount = powerups[powerup_index][1];
+                            if (powerups[powerup_index].amount === 0) return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup view\`.**`);
+                            --powerups[powerup_index].amount;
+                            let powercount = powerups[powerup_index].amount;
 
                             if (activepowerups.includes(powertype)) return message.channel.send(`❎ **| I'm sorry, your clan currently has an active \`${powertype}\` powerup!**`);
                             message.channel.send(`❗**| ${message.author}, are you sure you want to activate \`${powertype}\` powerup for your clan?**`).then(msg => {
@@ -1916,9 +1978,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let alicecoins = pointres.alicecoins;
                             if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
                             query = {name: clan};
-                            clandb.find(query).toArray((err, clanres) => {
+                            clandb.findOne(query, (err, clanres) => {
                                 if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres[0].leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a clan role color change for ${coin}\`500\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
@@ -2070,9 +2132,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             });
                                             return
                                         }
-                                        let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
-                                        ++powerups[powerup_index][1];
-                                        let powercount = powerups[powerup_index][1];
+                                        let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                                        ++powerups[powerup_index].amount;
+                                        let powercount = powerups[powerup_index].amount;
                                         updateVal = {
                                             $set: {
                                                 powerups: powerups
@@ -2138,7 +2200,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let memberlist = clanres.member_list;
                                 if (memberlist.length === 1) return message.channel.send("❎ **| I'm sorry, looks like you are alone in your clan! Who would you transfer leadership to?**");
                                 if (clanres.power < 300) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 300!**");
-                                let member_index = memberlist.findIndex(member => member[0] === totransfer.id);
+
+                                let member_index = memberlist.findIndex(member => member.id === totransfer.id);
                                 if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to transfer clan leadership to ${totransfer} for ${coin}\`500\` Alice coins?**`).then(msg => {
@@ -2149,7 +2212,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         confirmation = true;
                                         msg.delete();
 
-                                        memberlist[member_index][2] = true;
+                                        memberlist[member_index].hasPermission = true;
                                         updateVal = {
                                             $set: {
                                                 leader: totransfer.id,
@@ -2404,8 +2467,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             msg.delete();
 
                                             let t_memberlist = tclanres.member_list;
-                                            let t_member_index = t_memberlist.findIndex(member => member[0] === totake.id);
-                                            t_memberlist[t_member_index][3] = curtime + 86400 * 4;
+                                            let t_member_index = t_memberlist.findIndex(member => member.id === totake.id);
+                                            t_memberlist[t_member_index].battle_cooldown = curtime + 86400 * 4;
 
                                             updateVal = {
                                                 $set: {
@@ -2420,8 +2483,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             });
 
                                             let g_memberlist = gclanres.member_list;
-                                            let g_member_index = g_memberlist.findIndex(member => member[0] === togive.id);
-                                            g_memberlist[g_member_index][3] = curtime + 86400 * 4;
+                                            let g_member_index = g_memberlist.findIndex(member => member.id === togive.id);
+                                            g_memberlist[g_member_index].battle_cooldown = curtime + 86400 * 4;
 
                                             updateVal = {
                                                 $set: {
@@ -2487,8 +2550,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (clanres.power === 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === tomatch.id);
-                            if (memberlist[member_index][3] > curtime) return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
+                            let member_index = memberlist.findIndex(member => member.id === tomatch.id);
+                            if (memberlist[member_index].battle_cooldown > curtime) return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
 
                             updateVal = {
                                 $set: {
@@ -2603,8 +2666,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === user.id);
-                            let cooldown = Math.max(0, memberlist[member_index][3] - curtime);
+                            let member_index = memberlist.findIndex(member => member.id === user.id);
+                            let cooldown = Math.max(0, memberlist[member_index].battle_cooldown - curtime);
 
                             if (!cooldown) return message.channel.send("✅ **| The user is currently not in cooldown from participating in a clan battle.**");
                             else {
@@ -2662,11 +2725,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (auctionres.expirydate - curtime <= 0) return message.channel.send("❎ **| I'm sorry, this auction is over!**");
 
                                 let bids = auctionres.bids;
-                                let bid_index = bids.findIndex(bid => bid[0] === clan);
-                                if (bid_index !== -1) bids[bid_index][1] += amount;
-                                else bids.push([clan, amount]);
-                                bids.sort((a, b) => {return b[1] - a[1]});
-                                bid_index = bids.findIndex(bid => bid[0] === clan);
+                                let bid_index = bids.findIndex(bid => bid.clan === clan);
+                                if (bid_index !== -1) bids[bid_index].amount += amount;
+                                else bids.push({
+                                    clan: clan,
+                                    amount: amount
+                                });
+                                bids.sort((a, b) => {return b.amount - a.amount});
+                                bid_index = bids.findIndex(bid => bid.clan === clan);
                                 let cur_amount = bids[bid_index][1];
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
@@ -2752,12 +2818,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             let powerups = clanres.powerups;
-                            let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
+                            let powerup_index = powerups.findIndex(pow => pow.name === powerup);
                             if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup you are looking for!**");
                             if (powerups[powerup_index][1] < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
 
@@ -2911,7 +2977,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!auctionres) return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
                             let bids = auctionres.bids;
-                            let bid_index = bids.findIndex(bid => bid[0] === clan);
+                            let bid_index = bids.findIndex(bid => bid.clan === clan);
 
                             embed.setTitle("Auction Information")
                                 .setDescription(`**Name**: ${name}\n**Auctioneer**: ${auctionres.auctioneer}\n**Created at**: ${new Date(auctionres.creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(auctionres.expirydate * 1000).toUTCString()}`)
@@ -2919,10 +2985,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
-                                if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1]}** Alice coins\n`;
+                                if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount}** Alice coins\n`;
                                 else top_string += `#${i+1}: -\n`
                             }
-                            if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index][1].toLocaleString()}** Alice coins`;
+                            if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index].amount.toLocaleString()}** Alice coins`;
                             embed.addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             message.channel.send({embed: embed})
                         })
@@ -2952,8 +3018,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
-                            let hasPermission = memberlist[member_index][2];
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
                             if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             query = {name: name};
@@ -2969,8 +3035,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 let powerup = auctionres.powerup;
                                 let amount = auctionres.amount;
                                 let powerups = clanres.powerups;
-                                let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
-                                powerups[powerup_index][1] += amount;
+                                let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                                powerups[powerup_index].amount += amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to cancel the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
