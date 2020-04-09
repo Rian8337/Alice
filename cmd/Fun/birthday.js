@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "birthday",
-    string: "Sets your birthday date. Get 1000 Alice coins and a happy birthday role in your birthday!\n\nIf someone's birthday is February 29, it will be celebrated in March 1 in nonleap years.",
+    description: "Sets your birthday date. Get 1000 Alice coins and a happy birthday role in your birthday!\n\nIf someone's birthday is February 29, it will be celebrated in March 1 in nonleap years.",
     usage: "birthday <month> <date>",
     detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]",
     permission: "None"
