@@ -114,7 +114,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Introduction",
                     "Welcome to Clans!\n" +
                     "\n" +
-                    "This is a new system that emulates the feeling of a real guild-based game. You can make a clan and compete with other clans to gain power points.\n" +
+                    "This is a system that emulates the feeling of a real guild-based game. You can make a clan and compete with other clans to gain power points.\n" +
                     "\n" +
                     "__**General Rules and Guidelines**__\n" +
                     "- **All clans must abide by server rules. Failure to do so may result in your clan getting disbanded and potentially getting you banned from the server without any further notice.**\n" +
@@ -123,6 +123,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- A clan can have up to 25 members (including the clan leader).\n" +
                     "\n" +
                     "Make sure you read this wiki thoroughly before diving in to clans. Stuff will get very confusing, otherwise.\n" +
+                    "To move through pages, simply write the page in chat.\n" +
                     "\n" +
                     "__**Contents**__\n" +
                     "- Page 2: Starting\n" +
