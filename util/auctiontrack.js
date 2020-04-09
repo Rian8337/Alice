@@ -12,7 +12,7 @@ function retrieveAuction(res, current_time, i, cb) {
 
 function checkClan(clandb, bids, j, cb) {
     if (!bids[j]) return cb(null, false, true);
-    let name = bids[j][0];
+    let name = bids[j].clan;
     clandb.findOne({name: name}, (err, clanres) => {
         if (err) {
             console.log(err);
@@ -59,8 +59,8 @@ module.exports.run = (client, maindb, alicedb) => {
                         return retrieveAuction(auctionres, curtime, i, checkAuction)
                     }
                     let powerups = clanres.powerups;
-                    let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
-                    powerups[powerup_index][1] += amount;
+                    let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                    powerups[powerup_index].amount += amount;
 
                     auctiondb.deleteOne({auctioneer: auction.auctioneer}, err => {
                         if (err) {
@@ -104,8 +104,8 @@ module.exports.run = (client, maindb, alicedb) => {
                             return checkClan(clandb, bids, j, isClanAvailable)
                         }
                         let powerups = clanres.powerups;
-                        let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
-                        powerups[powerup_index][1] += amount;
+                        let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                        powerups[powerup_index].amount += amount;
 
                         updateVal = {
                             $set: {
@@ -119,7 +119,7 @@ module.exports.run = (client, maindb, alicedb) => {
                             }
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
-                                if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1].toLocaleString()}** Alice coins\n`;
+                                if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
                                 else top_string += `#${i+1}: -\n`
                             }
                             embed.setTitle("Auction Information")
@@ -139,8 +139,8 @@ module.exports.run = (client, maindb, alicedb) => {
                     return checkClan(clandb, bids, j, isClanAvailable)
                 }
                 let powerups = clan.powerups;
-                let powerup_index = powerups.findIndex(pow => pow[0] === powerup);
-                powerups[powerup_index][1] += amount;
+                let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                powerups[powerup_index].amount += amount;
 
                 updateVal = {
                     $set: {
@@ -158,10 +158,10 @@ module.exports.run = (client, maindb, alicedb) => {
 
                     let top_string = '';
                     for (let i = 0; i < 5; i++) {
-                        if (bids[i]) top_string += `#${i+1}: ${bids[i][0]} - ${coin}**${bids[i][1].toLocaleString()}** Alice coins\n`;
+                        if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
                         else top_string += `#${i+1}: -\n`
                     }
-                    if (j > 4) top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j][1].toLocaleString()}** Alice coins`;
+                    if (j > 4) top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j].amount.toLocaleString()}** Alice coins`;
 
                     embed.setTitle("Auction Information")
                         .setDescription(auction_info)
