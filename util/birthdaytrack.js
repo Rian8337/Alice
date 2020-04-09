@@ -19,8 +19,15 @@ module.exports.run = (client, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let birthday = alicedb.collection("birthday");
     let points = alicedb.collection("playerpoints");
+    
+    let query = {
+        date: date,
+        month: month
+    };
+    
+    if (isLeapYear) query.isLeapYear = isLeapYear;
 
-    birthday.find({date: date, month: month, isLeapYear: isLeapYear}).toArray((err, res) => {
+    birthday.find(query).toArray((err, res) => {
         if (err) return console.log(err);
 
         let i = 0;
