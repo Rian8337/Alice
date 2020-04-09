@@ -26,11 +26,11 @@ function timeConvert(num) {
 
 function editMember(clanres, page, rolecheck, footer, index) {
     let embed = new Discord.MessageEmbed()
-        .setTitle(`${clanres[0].name} Members (Page ${page + 1}/4)`)
+        .setTitle(`${clanres.name} Members (Page ${page}/4)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
     
-    let list = clanres[0].member_list;
+    let list = clanres.member_list;
     let leader = clanres.leader;
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -407,7 +407,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 [
                     // 22
                     "Command Information",
-                    "`a!clan kick <user>`\n" +
+                    "`a!clan kick <user> <reason>`\n" +
                     "Kicks a user from your clan provided that the user is lower position-wise (Co-Leader+ only).\n" +
                     "\n" +
                     "`a!clan leave`\n" +
@@ -519,7 +519,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "- `a!clan demote <user>`\n" +
                     "- `a!clan disband [clan]`\n" +
                     "- `a!clan icon remove <clan>`\n" +
-                    "- `a!clan kick <user>`\n" +
+                    "- `a!clan kick <user> <reason>`\n" +
                     "- `a!clan match add <user>`\n" +
                     "- `a!clan match remove <user>`\n" +
                     "- `a!clan power give <user> <amount>`\n" +
@@ -809,55 +809,51 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
 
-                        let memberlist = clanres[0].member_list;
+                        let memberlist = clanres.member_list;
                         let cl_index = memberlist.findIndex(member => member.id === message.author.id);
-                        if (!memberlist[cl_index][2]) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+                        if (!memberlist[cl_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
                         let member_index = memberlist.findIndex(member => member.id === toaccept.id);
                         if (member_index !== -1) return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
 
                         if (memberlist.length >= 25) return message.channel.send("❎ **| I'm sorry, a clan can only have up to 25 members (including leader)!");
 
-                        message.channel.send(`❗**| ${message.author}, are you sure you want to accept ${toaccept} to your clan?**`).then(msg => {
+                        message.channel.send(`❗**| ${toaccept}, are you sure you want to join \`${userres.clan}\`?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
-                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && (user.id === message.author.id || user.id === toaccept.id), {time: 20000});
-                            let confirmbox = [];
+                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === toaccept.id, {time: 20000});
+
                             confirm.on("collect", () => {
-                                if (!confirmbox.includes(message.author.id)) confirmbox.push(message.author.id);
-                                if (!confirmbox.includes(toaccept.id)) confirmbox.push(toaccept.id);
-                                if (confirmbox.length === 2) {
-                                    confirmation = true;
-                                    msg.delete();
-                                    let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                                    let clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
-                                    if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
-                                    memberlist.push({
-                                        id: toaccept.id,
-                                        uid: uid,
-                                        hasPermission: false,
-                                        battle_cooldown: curtime + 86400 * 4
-                                    });
-                                    updateVal = {
-                                        $set: {
-                                            member_list: memberlist
-                                        }
-                                    };
-                                    clandb.updateOne(query, updateVal, err => {
-                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                        console.log("Clan data updated")
-                                    });
-                                    updateVal = {
-                                        $set: {
-                                            clan: userres.clan
-                                        }
-                                    };
-                                    binddb.updateOne({discordid: toaccept.id}, updateVal, err => {
-                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
-                                        message.channel.send(`✅ **| ${message.author}, successfully accepted ${toaccept} as your clan member.**`);
-                                        console.log("User data updated")
-                                    })
-                                }
+                                confirmation = true;
+                                msg.delete();
+                                let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                let clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
+                                if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
+                                memberlist.push({
+                                    id: toaccept.id,
+                                    uid: uid,
+                                    hasPermission: false,
+                                    battle_cooldown: curtime + 86400 * 4
+                                });
+                                updateVal = {
+                                    $set: {
+                                        member_list: memberlist
+                                    }
+                                };
+                                clandb.updateOne(query, updateVal, err => {
+                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    console.log("Clan data updated")
+                                });
+                                updateVal = {
+                                    $set: {
+                                        clan: userres.clan
+                                    }
+                                };
+                                binddb.updateOne({discordid: toaccept.id}, updateVal, err => {
+                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    message.channel.send(`✅ **| ${toaccept}, successfully joined \`${userres.clan}\`.**`);
+                                    console.log("User data updated")
+                                })
                             });
                             confirm.on("end", () => {
                                 if (!confirmation) {
@@ -921,9 +917,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                             let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                             if (clanrole) tokick.roles.remove([role, clanrole], "Kicked from clan").catch(console.error);
+
+                            memberlist.splice(member_index, 1);
+
                             updateVal = {
                                 $set: {
-                                    member_list: memberlist.splice(member_index, 1)
+                                    member_list: memberlist
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
@@ -991,8 +990,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                             if (clanrole) message.member.roles.remove([role, clanrole], "Left the clan").catch(console.error);
                             let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member[0] === message.author.id);
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+
                             memberlist.splice(member_index, 1);
+
                             updateVal = {
                                 $set: {
                                     member_list: memberlist
@@ -1679,8 +1680,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             let powerups = clanres.powerups;
-                            embed.setTitle(`Current owned powerups by ${clan}`);
-                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i].name), powerups[i].amount);
+                            embed.setTitle(`Currently owned powerups by ${clan}`);
+                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i].name), powerups[i].amount, true);
                             message.channel.send({embed: embed}).catch(console.error)
                         })
                     });
@@ -1705,8 +1706,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                             let activepowerups = clanres.active_powerups;
-                            if (activepowerups.length === 0) return message.channel.send(`❎ **| I'm sorry, \`${clan}\` clan does not have any powerups active!**`);
-                            embed.setTitle(`Current active powerups for ${clan}`);
+                            if (activepowerups.length === 0) return message.channel.send(`❎ **| I'm sorry, your clan does not have any powerups active!**`);
+                            embed.setTitle(`Currently active powerups for ${clan}`);
                             let description_string = '';
                             for (let i = 0; i < activepowerups.length; i++) description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`;
                             embed.setDescription(description_string);
@@ -1750,7 +1751,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let powerup_index = powerups.findIndex(powerup => powerup.name === powertype);
                             if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup type you are looking for!**");
 
-                            if (powerups[powerup_index].amount === 0) return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup view\`.**`);
+                            if (powerups[powerup_index].amount === 0) return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup list\`.**`);
                             --powerups[powerup_index].amount;
                             let powercount = powerups[powerup_index].amount;
 
@@ -1833,6 +1834,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                                 if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                                 if (clanres.power < 500) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
+                                if (clanres.name === newname) return message.channel.send("❎ **| Hey, your new clan name must be different from your old clan name!**");
                                 let cooldown = clanres.namecooldown - curtime;
                                 if (cooldown > 0) {
                                     let time = timeConvert(cooldown);
@@ -1901,6 +1903,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
+                        let c_role = message.guild.roles.cache.find((r) => r.name === clan);
+                        if (c_role) return message.channel.send("❎ **| I'm sorry, your clan already has a clan role!**");
                         pointdb.findOne(query, (err, pointres) => {
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
@@ -1929,8 +1933,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             permissions: [],
                                             position: clanrole.position - 1
                                         }, reason: "Clan leader bought clan role"}).then(role => {
-                                            memberlist.forEach((id) => {
-                                                message.guild.members.cache.get(id[0]).roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error)
+                                            memberlist.forEach((member) => {
+                                                message.guild.members.cache.get(member.id).roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error)
                                             })
                                         }).catch(console.error);
                                         updateVal = {
@@ -1989,7 +1993,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
-                                        clanrole.setColor(parseInt(color), "Clan leader changed role color").catch(console.error);
+                                        clanrole.setColor(color, "Clan leader changed role color").catch(console.error);
                                         updateVal = {
                                             $set: {
                                                 alicecoins: alicecoins - 500
@@ -2670,10 +2674,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let member_index = memberlist.findIndex(member => member.id === user.id);
                             let cooldown = Math.max(0, memberlist[member_index].battle_cooldown - curtime);
 
-                            if (!cooldown) return message.channel.send("✅ **| The user is currently not in cooldown from participating in a clan battle.**");
+                            if (!cooldown) return message.channel.send(`✅ **| ${args[2] ? `${user} is` : "You are"} currently not in cooldown from participating in a clan battle.**`);
                             else {
                                 let time = timeConvert(cooldown);
-                                return message.channel.send(`✅ **| The user cannot participate in a clan battle for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                                return message.channel.send(`✅ **| ${args[2] ? user : "You"} cannot participate in a clan battle for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                             }
                         })
                     });
@@ -2723,7 +2727,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 if (!auctionres) return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
                                 if (auctionres.auctioneer === clan) return message.channel.send("❎ **| Hey, you cannot bid on your clan's auction!**");
-                                if (auctionres.expirydate - curtime <= 0) return message.channel.send("❎ **| I'm sorry, this auction is over!**");
+                                if (auctionres.expirydate <= curtime) return message.channel.send("❎ **| I'm sorry, this auction is over!**");
 
                                 let bids = auctionres.bids;
                                 let bid_index = bids.findIndex(bid => bid.clan === clan);
@@ -2734,7 +2738,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 });
                                 bids.sort((a, b) => {return b.amount - a.amount});
                                 bid_index = bids.findIndex(bid => bid.clan === clan);
-                                let cur_amount = bids[bid_index][1];
+                                let cur_amount = bids[bid_index].amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
@@ -2826,7 +2830,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let powerups = clanres.powerups;
                             let powerup_index = powerups.findIndex(pow => pow.name === powerup);
                             if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup you are looking for!**");
-                            if (powerups[powerup_index][1] < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
+                            if (powerups[powerup_index].amount < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -2835,7 +2839,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
                                 if (auctionres) return message.channel.send("❎ **| I'm sorry, an auction with that name exists! Please choose another name!**");
-                                powerups[powerup_index][1] -= amount;
+                                powerups[powerup_index].amount -= amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
