@@ -94,6 +94,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!totransfer) return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
             if (totransfer.user.bot) return message.channel.send("❎ **| Hey, you can't transfer coins to a bot!**");
+            if (totransfer.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot transfer coins to yourself!**");
             if (curtime - totransfer.joinedTimestamp / 1000 < 86400 * 7) return message.channel.send("❎ **| I'm sorry, the user you are giving your coins to has not been in the server for a week!**");
             let amount = parseInt(args[2]);
             if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, I need a valid amount to give!**");
