@@ -224,9 +224,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (easy_entry.length !== 3)
                     return message.channel.send("❎ **| Hey, that easy condition format is invalid!**");
                 if (easy_condition === 'scorev2') easy_v2 = true;
-                easy_value = parseInt(easy_entry[1]);
-                if (isNaN(easy_value))
-                    return message.channel.send("❎ **| I'm sorry, that easy bonus value is invalid!**");
+                easy_value = easy_entry[1];
                 easy_points = parseInt(easy_entry[2]);
                 if (isNaN(easy_points))
                     return message.channel.send("❎ **| I'm sorry, that easy bonus points is invalid!**");
