@@ -1,12 +1,16 @@
 const osudroid = require('../modules/osu!droid');
 
-function getRank(memberlist, i, ranklist, cb) {
-    if (!memberlist[i]) return cb(ranklist, true);
-    let uid = memberlist[i][1];
+function retrieveClan(clans, i, cb) {
+    if (!clans[i]) cb(null, true);
+    cb(clans[i])
+}
+
+function getRank(memberlist, i, cb) {
+    if (!memberlist[i]) return cb(null, true);
+    let uid = memberlist[i].uid;
     new osudroid.PlayerInfo().get({uid: uid}, player => {
-        if (!player.name) return cb(ranklist);
-        ranklist.push(player.rank);
-        cb(ranklist)
+        if (!player.name) return cb();
+        cb(player.rank)
     })
 }
 
@@ -18,45 +22,43 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     let pointdb = alicedb.collection("playerpoints");
     let curtime = Math.floor(Date.now() / 1000);
 
-    clandb.find({}).toArray((err, clan) => {
+    clandb.find({}).sort({weeklyfee: 1}).toArray((err, clans) => {
         if (err) return console.log(err);
-        let count = -1;
-        let check = setInterval(() => {
-            count++;
-            if (count == clan.length) {
-                clearInterval(check);
-                return console.log("Done checking")
-            }
-            let weeklytime = clan[count].weeklyfee - curtime;
-            if (weeklytime > 0) return;
-            let memberlist = clan[count].member_list;
-            let leader = clan[count].leader;
-            let power = clan[count].power;
+        let count = 0;
+        retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
+            if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
+            ++count;
+            let member_list = clan.member_list;
+            let leader = clan.leader;
+            let power = clan.power;
+
             let i = 0;
-            let ranklist = [];
-            getRank(memberlist, i, ranklist, function testRank(ranklist, stopSign = false) {
-                if (stopSign) {
-                    let totalcost = 200;
-                    for (i in ranklist) {
-                        totalcost += 20 + Math.floor(480 - 34.74 * Math.log(ranklist[i]))
-                    }
-                    console.log(clan[count].name, "total cost:", totalcost);
-                    pointdb.find({discordid: leader}).toArray((err, pointres) => {
+            let rank_list = [];
+            getRank(member_list, i, function checkRank(player_rank, stopFlag = false) {
+                if (stopFlag) {
+                    let total_cost = 200;
+                    for (let rank of rank_list) total_cost += 20 + Math.floor(480 - 34.74 * Math.log(rank));
+                    console.log(clan.name, "total cost:", total_cost);
+                    pointdb.findOne({discordid: leader}, (err, pointres) => {
                         if (err) return console.log(err);
                         let alicecoins = 0;
-                        if (pointres[0]) alicecoins = pointres[0].alicecoins;
-                        if (alicecoins - totalcost < 0) {
-                            if (memberlist.length > 1) {
-                                let index = Math.floor(Math.random() * (memberlist.length - 1) + 1);
-                                while (memberlist[index] == leader) index = Math.floor(Math.random() * memberlist.length);
-                                let kicked = memberlist[index][0];
-                                memberlist[index] = false;
-                                memberlist = memberlist.filter(member => member);
+                        if (pointres) alicecoins = pointres.alicecoins;
+
+                        // clan cannot pay upkeep cost
+                        if (alicecoins - total_cost < 0) {
+                            // has members
+                            if (member_list.length > 1) {
+                                let index = Math.floor(Math.random() * member_list.length);
+                                while (member_list[index].id === leader) index = Math.floor(Math.random() * member_list.length);
+                                let kicked = member_list[index].id;
+                                
+                                member_list.splice(index, 1);
+                                
                                 client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!").catch(console.error)).catch(console.error);
                                 client.users.fetch(kicked).then((user) => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
                                 let updateVal = {
                                     $set: {
-                                        member_list: memberlist,
+                                        member_list: member_list,
                                         weeklyfee: curtime + 86400 * 7
                                     }
                                 };
@@ -74,10 +76,12 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                                     if (err) return console.log(err);
                                     console.log("Kicked user data updated")
                                 })
-                            }
-                            else {
-                                if (power < 20) {
-                                    client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, you don't have enough Alice coins for your clan's weekly fee, and it does not have enough members and power points, thus it has been disbanded!**").catch(console.error)).catch(console.error);
+                            } else {
+                                // leader only
+                                if (power < 50) {
+                                    client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, you don't have enough Alice coins for your clan's weekly fee, and your clan does not have enough members and power points, thus it has been disbanded!**").catch(console.error)).catch(console.error);
+                                    let clanrole = client.guilds.cache.get("316545691545501706").roles.cache.find((r) => r.name === clan.name);
+                                    if (clanrole) clanrole.delete("Clan disbanded").catch(console.error);
                                     clandb.deleteOne({leader: leader}, err => {
                                         if (err) return console.log(err);
                                         console.log("Clan disbanded")
@@ -91,11 +95,10 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                                         if (err) return console.log(err);
                                         console.log("Leader data updated")
                                     })
-                                }
-                                else {
+                                } else {
                                     let updateVal = {
                                         $set: {
-                                            power: power - 20,
+                                            power: power - 50,
                                             weeklyfee: curtime + 86400 * 7
                                         }
                                     };
@@ -105,11 +108,11 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                                     })
                                 }
                             }
-                        }
-                        else {
+                        } else {
+                            // clan can pay upkeep cost
                             let updateVal = {
                                 $set: {
-                                    alicecoins: alicecoins - totalcost
+                                    alicecoins: alicecoins - total_cost
                                 }
                             };
                             pointdb.updateOne({discordid: leader}, updateVal, err => {
@@ -127,13 +130,14 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                             })
                         }
                     });
-                    return
+                    return retrieveClan(clans, count, checkClan)
                 }
                 console.log(i);
-                i++;
-                getRank(memberlist, i, ranklist, testRank)
+                rank_list.push(player_rank);
+                ++i;
+                getRank(member_list, i, checkRank)
             })
-        }, 5000)
+        })
     })
 };
 
