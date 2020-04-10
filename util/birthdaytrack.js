@@ -5,8 +5,7 @@ module.exports.run = (client, maindb, alicedb) => {
     let year = d.getUTCFullYear();
 
     // detect if it's leap year and if it is detect if current date is 29 Feb
-    let isLeapYear = false;
-    if (year % 4 === 0) isLeapYear = true;
+    const isLeapYear = year % 4 === 0;
     if (isLeapYear && month === 1 && date === 29) {
         date = 1;
         month = 2
