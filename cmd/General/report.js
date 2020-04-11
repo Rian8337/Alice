@@ -49,7 +49,7 @@ module.exports.run = (client, message, args) => {
         .setColor("#527ea3")
         .setTimestamp(new Date())
         .setFooter("Alice Synthesis Thirty", footer[index])
-        .addField("Reported user: " + toreport.user.username, "Reported in: " + message.channel)
+        .addField("Reported user: " + toreport.user.username, `Reported in: ${message.channel}`)
         .addField("Reason: " + reason, "Make sure you have evidence ready!\nAbuse of this command will make you unable to submit reports.");
 
     try {
@@ -71,7 +71,7 @@ module.exports.run = (client, message, args) => {
 
 module.exports.config = {
     name: "report",
-    description: "Reports a user for breaking rules.",
+    description: "Reports a user for breaking rules.\n\nBeware! This will ping all moderators and helpers across the server! Abuse of command can result in mute or inability to submit further reports.",
     usage: "report <user> <reason>",
     detail: "`user`: The user to report [UserResolvable (mention or user ID)]\n`reason`: Reason for reporting [String]",
     permission: "None"
