@@ -3,7 +3,7 @@ const config = require('../../config.json');
 
 function listTag(tags, page, footer, index, rolecheck) {
     let embed = new Discord.MessageEmbed()
-        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(tags.length / 20)}`, footer[index])
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.floor(tags.length / 20)}`, footer[index])
         .setColor(rolecheck);
 
     let list = '';
@@ -125,7 +125,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (name.length > 30)
                 return message.channel.send("❎ **| I'm sorry, a tag's name must not exceed 30 characters!**");
 
-            let tag_content = args.slice(2).join(" ");
+            let tag_content = message.content.replace(`a!t add ${name} `, "");
             if (!tag_content)
                 tag_content = '';
             if (tag_content.length > 1500)
