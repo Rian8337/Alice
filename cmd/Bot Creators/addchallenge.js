@@ -55,7 +55,7 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             if (typeof value !== "number" || value < 0)
                 return message.channel.send("❎ **| I'm sorry, that's an invalid dpp requirement!**");
             if (value > dpp)
-                return message.channel.send(`❎ **| I'm sorry, dpp requirement is above maximum dpp (${dpp})!**`);
+                message.channel.send(`❎ **| Warning! dpp requirement is above maximum dpp (${dpp})!**`);
             break
         }
         case 'pp': {
@@ -63,7 +63,7 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             if (typeof value !== "number" || value < 0)
                 return message.channel.send("❎ **| I'm sorry, that's an invalid pp requirement!**");
             if (value > pp)
-                return message.channel.send(`❎ **| I'm sorry, pp requirement is above maximum pp (${pp})!**`);
+                message.channel.send(`❎ **| Warning! pp requirement is above maximum pp (${pp})!**`);
             break
         }
         case 'mod': {
