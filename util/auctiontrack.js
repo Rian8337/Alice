@@ -24,19 +24,19 @@ function checkClan(clandb, bids, j, cb) {
 }
 
 module.exports.run = (client, maindb, alicedb) => {
-    let clandb = maindb.collection("clandb");
-    let auctiondb = alicedb.collection("auction");
-    let curtime = Math.floor(Date.now() / 1000);
-    let coin = client.emojis.cache.get("669532330980802561");
-    let auction_channel = client.channels.cache.get("696646867567640586");
+    const clandb = maindb.collection("clandb");
+    const auctiondb = alicedb.collection("auction");
+    const curtime = Math.floor(Date.now() / 1000);
+    const coin = client.emojis.cache.get("669532330980802561");
+    const auction_channel = client.channels.cache.get("696646867567640586");
     let updateVal;
-    let footer = config.avatar_list;
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed()
         .setTimestamp(new Date())
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
-    auctiondb.find({}).sort({expirydate: 1}).toArray((err, auctionres) => {
+    auctiondb.find({expirydate: {$lte: curtime}}).sort({expirydate: 1}).toArray((err, auctionres) => {
         if (err) return console.log(err);
         if (auctionres.length === 0) return;
         let i = 0;
