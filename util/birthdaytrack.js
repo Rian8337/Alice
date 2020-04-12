@@ -3,6 +3,7 @@ module.exports.run = (client, maindb, alicedb) => {
     let date = d.getUTCDate();
     let month = d.getUTCMonth();
     let year = d.getUTCFullYear();
+    const hour = d.getUTCHours();
 
     // detect if it's leap year and if it is detect if current date is 29 Feb
     const isLeapYear = year % 4 === 0;
@@ -18,25 +19,35 @@ module.exports.run = (client, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let birthday = alicedb.collection("birthday");
     let points = alicedb.collection("playerpoints");
-    
-    let query = {
-        date: date,
-        month: month
-    };
-    
-    if (isLeapYear) query.isLeapYear = isLeapYear;
 
-    birthday.find(query).toArray((err, res) => {
+    birthday.find({}).toArray((err, res) => {
         if (err) return console.log(err);
+        let current_birthday = [];
+        let timezone = -12;
+
+        for (timezone; timezone < 13; ++timezone) {
+            d.setUTCHours(hour + timezone);
+            date = d.getUTCDate();
+            month = d.getUTCMonth();
+            if (isLeapYear) {
+                if (month === 1 && date === 29) {
+                    date = 1;
+                    month = 2
+                }
+                current_birthday.push(res.filter((entry) => entry.date === date && entry.month === month && entry.timezone === timezone && entry.isLeapYear === isLeapYear))
+            } else current_birthday.push(res.filter((entry) => entry.date === date && entry.month === month && entry.timezone === timezone ));
+
+            current_birthday.flat();
+        }
 
         let i = 0;
         role.members.forEach((member) => {
-            let index = res.findIndex((entry) => entry.discordid = member.id);
+            let index = current_birthday.findIndex((entry) => entry.discordid = member.id);
             if (index === -1) member.roles.remove(role, "Not birthday anymore").catch(console.error);
             ++i;
             if (i !== role.members.size) return;
 
-            res.forEach((entry) => {
+            current_birthday.forEach((entry) => {
                 let roles = member.roles;
                 let birthday_role = roles.cache.get(role.id);
                 if (birthday_role) return;
