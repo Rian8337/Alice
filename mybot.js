@@ -75,7 +75,8 @@ alcdb.connect((err, db) => {
 // Main client events
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
-	let i = 0;
+    client.user.setActivity("a!help");
+    /*let i = 0;
     let activity_list = [
 		{
 			name: "a!help",
@@ -90,7 +91,7 @@ client.on("ready", () => {
 		if (i === 0) ++i;
 		else --i;
 		client.user.setActivity(activity_list[i]).catch(console.error)
-	}, 10000);
+	}, 10000);*/
 	
     // API check and unverified prune
 	setInterval(() => {
