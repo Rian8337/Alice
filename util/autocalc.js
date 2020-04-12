@@ -50,6 +50,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 				obj = obj.filter(map => map.mode == 0);
 				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
 				let total_map = obj.length;
+				if (obj.length > 3) obj.splice(3);
 
 				obj.forEach(map => {
 					new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}, mapinfo => {
@@ -79,7 +80,6 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 						map_entries.push(entry);
 						if (i === obj.length) {
 							map_entries.sort((a, b) => {return b[2] - a[2]});
-
 							let footer = config.avatar_list;
 							const index = Math.floor(Math.random() * footer.length);
 							let embed = new Discord.MessageEmbed()
@@ -88,81 +88,25 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 								.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 								.setColor(mapinfo.statusColor())
 								.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
-								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
 								.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`);
 
-							if (total_map > 3) {
-								let page = 1;
-								for (i = 3 * (page - 1); i < 3 + 3 * (page - 1); i++) {
-									if (!map_entries[i]) break;
-									let star_rating = map_entries[i][2];
-									let diff_icon = '';
-									switch (true) {
-										case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
-										case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
-										case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
-										case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
-										case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
-										default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
-									}
-									let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} ★ | ${map_entries[i][2]} ★\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
-									embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
+							for (i = 0; i < map_entries.length; i++) {
+								let star_rating = map_entries[i][2];
+								let diff_icon = '';
+								switch (true) {
+									case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
+									case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
+									case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
+									case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
+									case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
+									default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
 								}
-								embed.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(total_map / 3)}`, footer[index]);
-								message.channel.send(`✅ **| I found ${total_map} maps, but only displaying 3 due to my limitations. Specify the page in chat to switch pages!**`, {embed: embed}).then(msg => {
-									const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, {time: 60000});
-									collector.on("collect", m => {
-										let page_number = parseInt(m.content);
-										if (isNaN(page_number) || page_number < 1 || page_number > Math.ceil(total_map / 3)) return;
-										m.delete().catch(console.error);
-										page = page_number;
-										embed = new Discord.MessageEmbed()
-											.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
-											.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-											.setColor(mapinfo.statusColor())
-											.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
-											.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-											.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`)
-											.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(total_map / 3)}`, footer[index]);
-
-
-										for (i = 3 * (page - 1); i < 3 + 3 * (page - 1); i++) {
-											if (!map_entries[i]) break;
-											let star_rating = map_entries[i][2];
-											let diff_icon = '';
-											switch (true) {
-												case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
-												case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
-												case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
-												case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
-												case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
-												default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
-											}
-											let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} ★ | ${map_entries[i][2]} ★\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
-											embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
-										}
-
-										msg.edit(`✅ **| I found ${total_map} maps, but only displaying 3 due to my limitations. Specify the page in chat to switch pages!**`, {embed: embed}).catch(console.error)
-									})
-								})
-							} else {
-								for (i = 0; i < map_entries.length; i++) {
-									let star_rating = map_entries[i][2];
-									let diff_icon = '';
-									switch (true) {
-										case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
-										case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
-										case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
-										case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
-										case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
-										default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
-									}
-									let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} ★ | ${map_entries[i][2]} ★\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
-									embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
-								}
-
-								message.channel.send({embed: embed})
+								let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+								embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
 							}
+
+							message.channel.send(total_map > 3 ? `✅ **| I found ${total_map} maps, but only displaying 3 due to my limitations.**` : "", {embed: embed})
 						}
 					})
 				})
@@ -198,7 +142,7 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 		const index = Math.floor(Math.random() * footer.length);
 		let embed = new Discord.MessageEmbed()
 			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
 			.setColor(mapinfo.statusColor())
 			.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 			.setTitle(mapinfo.showStatistics(mod, 0))
