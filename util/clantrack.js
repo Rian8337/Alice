@@ -17,13 +17,14 @@ function getRank(memberlist, i, cb) {
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel || message.author != null) return;
     console.log("Retrieving clan data");
-    let binddb = maindb.collection("userbind");
-    let clandb = maindb.collection("clandb");
-    let pointdb = alicedb.collection("playerpoints");
-    let curtime = Math.floor(Date.now() / 1000);
+    const binddb = maindb.collection("userbind");
+    const clandb = maindb.collection("clandb");
+    const pointdb = alicedb.collection("playerpoints");
+    const curtime = Math.floor(Date.now() / 1000);
 
-    clandb.find({}).sort({weeklyfee: 1}).toArray((err, clans) => {
+    clandb.find({weeklyfee: {$lte: curtime}}).sort({weeklyfee: 1}).toArray((err, clans) => {
         if (err) return console.log(err);
+        if (clans.length === 0) return;
         let count = 0;
         retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
             if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
@@ -51,9 +52,9 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                                 let index = Math.floor(Math.random() * member_list.length);
                                 while (member_list[index].id === leader) index = Math.floor(Math.random() * member_list.length);
                                 let kicked = member_list[index].id;
-                                
+
                                 member_list.splice(index, 1);
-                                
+
                                 client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!").catch(console.error)).catch(console.error);
                                 client.users.fetch(kicked).then((user) => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
                                 let updateVal = {
