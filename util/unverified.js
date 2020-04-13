@@ -4,7 +4,7 @@ module.exports.run = client => {
     if (unverified.size === 0) return;
     let count = 0;
     for (const [, member] of unverified.entries()) {
-        if (Date.now() - member.joinedTimestamp < 86400) continue;
+        if (Date.now() - member.joinedTimestamp < 86400000) continue;
         count++;
         let join_date = member.joinedAt;
         member.kick(`Unverified prune (user joined at ${join_date.toUTCString()})`).catch(console.error);
