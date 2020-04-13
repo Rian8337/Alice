@@ -1,14 +1,10 @@
 const Discord = require('discord.js');
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message && (message.channel instanceof Discord.DMChannel || ![client.user.id, '386742340968120321', '132783516176875520'].includes(message.author.id))) return;
+module.exports.run = (client, alicedb) => {
     let guild = client.guilds.cache.get("316545691545501706");
     let channel = guild.channels.cache.get("360716684174032896");
     let unverified = guild.members.cache.filter((member) => !member.roles.cache.find((r) => r.name === 'Member') && !member.user.bot);
-    if (unverified.size == 0) {
-        if (message && message.author.id != client.user.id) message.channel.send("❎ **| I'm sorry, I don't detect any unverified members!**");
-        return
-    }
+    if (unverified.size === 0) return;
     let count = 0;
     let unverified_db = alicedb.collection("unverified");
     for (const [, member] of unverified.entries()) {
@@ -49,5 +45,5 @@ module.exports.config = {
     description: "Kicks users that are unverified for a week or longer after their join time.",
     usage: "None",
     detail: "None",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "None"
 };
