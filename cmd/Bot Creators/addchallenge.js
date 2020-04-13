@@ -197,8 +197,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!req_constants.includes(pass_condition))
                 return message.channel.send("❎ **| I'm sorry, that pass condition is invalid!**");
             if (pass_condition === 'scorev2') pass_v2 = true;
-            let pass_value = parseInt(pass_entry[1]);
-            if (isNaN(pass_value))
+            let pass_value = pass_entry[1];
+            if (pass_condition !== 'rank') pass_value = parseInt(pass_value)
+            if (!pass_value)
                 return message.channel.send("❎ **| I'm sorry, that pass value is invalid!**");
 
             let constrain = args[8];
