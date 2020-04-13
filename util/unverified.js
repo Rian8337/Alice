@@ -11,7 +11,7 @@ module.exports.run = (client, alicedb) => {
         if (Date.now() - member.joinedTimestamp > 86400 * 1000 * 7) {
             count++;
             let join_date = member.joinedAt;
-            member.kick(`Unverified prune${join_date ? `(user joined at ${join_date.toUTCString()})` : ""}`).catch(console.error);
+            member.kick(`Unverified prune${join_date != null ? `(user joined at ${join_date.toUTCString()})` : ""}`).catch(console.error);
             unverified_db.findOne({discordid: member.id}, (err, res) => {
                 if (err) console.log(err);
                 if (res) unverified_db.deleteOne({discordid: member.id}, err => {
@@ -28,7 +28,7 @@ module.exports.run = (client, alicedb) => {
                     let hour = Math.floor(verify_date / 3600);
                     let minute = Math.floor((verify_date - hour * 3600) / 60);
                     let second = verify_date - hour * 3600 - minute * 60;
-                    let time_string = `${hour == 0 ? "" : `${hour} ${hour == 1 ? "hour" : "hours"}`}${minute == 0 ? "" : `, ${minute} ${minute == 1 ? "minute" : "minutes"}`}${second == 0 ? "" : `, ${second} ${second == 1 ? "second" : "seconds"}`}`;
+                    let time_string = `${hour === 0 ? "" : `${hour} ${hour === 1 ? "hour" : "hours"}`}${minute === 0 ? "" : `, ${minute} ${minute === 1 ? "minute" : "minutes"}`}${second === 0 ? "" : `, ${second} ${second === 1 ? "second" : "seconds"}`}`;
                     channel.send(`❗**| ${member}, you have ${time_string} to verify before you get kicked for being unverified for too long!**`);
                     unverified_db.insertOne({discordid: member.id}, err => {
                         if (err) console.log(err)
