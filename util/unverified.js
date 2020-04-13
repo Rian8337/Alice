@@ -7,14 +7,14 @@ module.exports.run = client => {
         if (Date.now() - member.joinedTimestamp < 86400000) continue;
         count++;
         let join_date = member.joinedAt;
-        member.kick(`Unverified prune (user joined at ${join_date.toUTCString()})`).catch(console.error);
+        member.kick(`Unverified prune${join_date instanceof Date ? ` (user joined at ${join_date.toUTCString()})` : ""}`).catch(console.error);
     }
     if (count > 0) console.log(`Pruned ${count} user(s)`)
 };
 
 module.exports.config = {
     name: "unverified",
-    description: "Kicks users that are unverified for a week or longer after their join time.",
+    description: "Kicks users that are unverified for a day or longer after their join time.",
     usage: "None",
     detail: "None",
     permission: "None"
