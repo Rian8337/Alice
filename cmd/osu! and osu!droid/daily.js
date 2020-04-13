@@ -550,7 +550,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
                             if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
                             if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                             let npp = osudroid.ppv2({
                                 stars: star.droid_stars,
                                 combo: combo,
@@ -1092,7 +1092,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                             new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                                 let npp = osudroid.ppv2({
                                     stars: star.droid_stars,
                                     combo: combo,
