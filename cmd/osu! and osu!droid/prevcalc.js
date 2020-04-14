@@ -68,8 +68,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 };
 
 module.exports.config = {
-    name: "calc",
-    description: "Automatically calculates pp for an osu!standard map.",
+    name: "prevcalc",
+    description: "Automatically calculates pp for an osu!standard map. Takes the currently cached map as the map to calculate.",
     usage: "None",
     detail: "None",
     permission: "None"
