@@ -346,6 +346,8 @@ class MapInfo {
                 request(url, (err, response, data) => {
                     if (err || !data) {
                         console.log("Error downloading osu file");
+                        if (beatmapid) console.log("Beatmap ID:", beatmapid);
+                        else console.log("MD5 hash:", hash);
                         return callback(this)
                     }
                     this.osu_file = data;
