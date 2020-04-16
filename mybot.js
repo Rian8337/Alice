@@ -11,6 +11,8 @@ const alicedbkey = process.env.ALICE_DB_KEY;
 const droidapikey = process.env.DROID_API_KEY;
 const require_api = config.require_api;
 let apidown = false;
+let maintenance = false;
+let maintenance_reason = '';
 let current_map = [];
 let picture_cooldown = new Set();
 //let cd = new Set();
@@ -303,6 +305,15 @@ client.on("message", message => {
 	// self-talking (for fun lol)
 	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
 	
+	if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
+		maintenance_reason = args.join(" ");
+		if (!maintenance_reason) maintenance_reason = 'Unknown';
+		maintenance = !maintenance;
+		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
+		if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
+		else client.user.setActivity("a!help").catch(console.error)
+	}
+	
 	// commands
 	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
 		apidown = !apidown;
@@ -319,6 +330,7 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
+			if (maintenance) return message.channel.send(`❎ **| I'm sorry, bot is currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
 				message.channel.stopTyping(true)
@@ -336,6 +348,7 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
 		if (cmd) {
+			if (maintenance) return message.channel.send(`❎ **| I'm sorry, bot is currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
 				message.channel.stopTyping(true)
