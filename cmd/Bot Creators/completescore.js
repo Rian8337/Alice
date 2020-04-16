@@ -60,7 +60,7 @@ function retrievePlay(uid, page, cb) {
 }
 
 function scoreCheck(scoreentries, score, cb) {
-    new osudroid.MapInfo().get({hash: score[11]}, mapinfo => {
+    new osudroid.MapInfo().get({hash: score[11], file: false}, mapinfo => {
         if (!mapinfo.title) {
             console.log("Map not found");
             return cb()
