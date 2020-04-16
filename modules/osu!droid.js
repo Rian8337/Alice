@@ -255,7 +255,7 @@ class MapInfo {
         this.diff_speed = 0;
         this.diff_total = 0;
         this.hash = '';
-        this.osu_file = ''
+        this.osu_file = null;
     }
 
     // retrieve a beatmap's information
