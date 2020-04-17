@@ -157,16 +157,10 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 		if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
 		message.channel.send(string, {embed: embed}).catch(console.error);
 
-		let time = Date.now();
-		let entry = [time, message.channel.id, mapinfo.hash];
-		let found = false;
-		for (let i = 0; i < current_map.length; i++) {
-			if (current_map[i][1] != message.channel.id) continue;
-			current_map[i] = entry;
-			found = true;
-			break
-		}
-		if (!found) current_map.push(entry)
+		let entry = [message.channel.id, hash];
+                let map_index = current_map.findIndex(map => map[0] === message.channel.id);
+                if (map_index === -1) current_map.push(entry);
+                else current_map[map_index][1] = hash;
 	})
 };
 
