@@ -7,6 +7,4 @@ Based on [Elaina](https://github.com/NeroYuki/Elaina) by [NeroYuki](https://gith
 
 osu!droid: http://ops.dgsrz.com/
 
-You need **NodeJS 12.0.0 or newer and Discord.js 12.0.0 or newer** to run this bot.
-
-Note: Even though this code is open-source, some codes are personalized (made for a specific server only) and you still need more things to run the bot, therefore it is not available publicly.
+This code is open-source. However, some commands in the bot are hardcoded, therefore it is not advised for public usage. Feel free to look around for code examples, though.
