@@ -13,7 +13,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     let mod = '';
     let ndetail = false;
     let pcdetail = false;
-    for (let i = 0; i < args.length; i++) {
+    for (let i = 1; i < args.length; i++) {
         if (args[i].endsWith("%")) acc = parseFloat(args[i]);
         if (args[i].endsWith("m")) missc = parseInt(args[i]);
         if (args[i].endsWith("x")) combo = parseInt(args[i]);
@@ -69,8 +69,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
 module.exports.config = {
     name: "prevcalc",
-    description: "Automatically calculates pp for an osu!standard map. Takes the currently cached map as the map to calculate.",
-    usage: "None",
-    detail: "None",
+    description: "Calculates the previously calculated map (from recent commands (`recent`/`recentme`/`rs`), `manualcalc`, or automatic calculation).",
+    usage: "prevcalc [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (-d) (-p)]",
+    detail: "`mod`: Applied game modifications (HD, HR, etc) [String]\n`combo`: Max combo reached [Integer]\n`acc`: Accuracy gained [Float]\n`miss`: Amount of misses [Integer]\n`-d`: Gives detailed response of droid pp\n`-p`: Gives detailed response of pp",
     permission: "None"
 };
