@@ -10,6 +10,7 @@ const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
 const droidapikey = process.env.DROID_API_KEY;
 const require_api = config.require_api;
+
 let apidown = false;
 let maintenance = false;
 let maintenance_reason = '';
@@ -97,6 +98,7 @@ client.on("ready", () => {
 	
     // API check and unverified prune
 	setInterval(() => {
+		client.utils.get("unverified").run(client);
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
 			res.setTimeout(5000);
