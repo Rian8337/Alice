@@ -349,7 +349,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "namechange",
-    description: "Main command for osu!droid name change requests.\n\nTo request a name change, use the first usage of the command (`namechange <email> <new username>`) in DMs. New username must be at least 2 characters and at most 20 characters, cannot contain spaces, and must not have any special characters and/or emotes.",
+    description: "Main command for osu!droid name change requests.\n\nTo request a name change, use the first usage of the command (`namechange <email> <new username>`) in DM (Direct Message). New username must be at least 2 characters and at most 20 characters, cannot contain spaces, and must not have any special characters and/or emotes.",
     usage: "namechange <email> <new username>\nnamechange accept <uid>\nnamechange deny <uid> <reason>\nnamechange list",
     detail: "`email`: The email of the osu!droid account [String]\n`new username`: The new username the user wants to change to [String]\n`reason`: Reason for denial [String]\n`uid`: Uid of osu!droid account [Integer]",
     permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
