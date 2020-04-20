@@ -249,7 +249,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         default: {
-            if (!(message.channel instanceof Discord.DMChannel)) return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**");
+            if (!(message.channel instanceof Discord.DMChannel)) {
+                message.delete({reason: "Prevent email leak"}).catch(console.error);
+                return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**")
+            }
 
             let email = args[0];
             if (!email) return message.channel.send("❎ **| Hey, please enter your email address!**");
