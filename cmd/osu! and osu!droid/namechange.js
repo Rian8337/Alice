@@ -106,7 +106,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return
                         }
 
-                        prev_names.push(new_name);
+                        prev_names.push(old_name);
 
                         updateVal = {
                             $set: {
