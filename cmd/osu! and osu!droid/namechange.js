@@ -317,7 +317,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!**")
+                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
                                     })
                                 } else {
                                     insertVal = {
@@ -335,7 +335,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!**")
+                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
                                     })
                                 }
                             })
