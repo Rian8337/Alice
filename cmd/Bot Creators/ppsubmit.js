@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let ufind = args[0];
         if (!ufind) return message.channel.send("❎ **| Hey, please mention a user!**");
-	ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", " ");
+	ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "");
 	let offset = 1;
 	let start = 1;
 	if (args[1]) offset = parseInt(args[1]);
