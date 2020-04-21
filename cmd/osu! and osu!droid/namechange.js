@@ -12,7 +12,7 @@ function processEmbed(res, page, footer, index) {
     
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}**. **${res[i].current_username} (${res.uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
+        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
     }
     
     return embed
@@ -106,7 +106,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return
                         }
 
-                        prev_names.push(new_name);
+                        prev_names.push(old_name);
 
                         updateVal = {
                             $set: {
