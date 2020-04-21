@@ -12,7 +12,7 @@ function processEmbed(res, page, footer, index) {
     
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
+        embed.addField(`**${i+1}**. **${res[i].current_username} (${res.uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
     }
     
     return embed
@@ -106,7 +106,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return
                         }
 
-                        prev_names.push(old_name);
+                        prev_names.push(new_name);
 
                         updateVal = {
                             $set: {
@@ -302,7 +302,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         new osudroid.PlayerInfo().get({username: new_name}, new_player => {
                             if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
 
-                            name_channel.send(`Name change request from <@${message.author.id}> (${message.author.id})\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
+                            name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
                                 if (nameres) {
                                     updateVal = {
                                         $set: {
@@ -349,7 +349,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "namechange",
-    description: "Main command for osu!droid name change requests.\n\nTo request a name change, use the first usage of the command (`namechange <email> <new username>`) in DM (Direct Message). New username must be at least 2 characters and at most 20 characters, cannot contain spaces, and must not have any special characters and/or emotes.\n\nYou must allow me to DM you if you want to request a name change.",
+    aliases: 'nc',
+    description: "Main command for osu!droid name change requests.\n\nTo request a name change, use the first usage of the command (`namechange <email> <new username>`) __**in DM (Direct Message)**__. New username must be at least 2 characters and at most 20 characters, cannot contain spaces, and must not have any special characters and/or emotes.\n\nYou must allow me to DM you if you want to request a name change.",
     usage: "namechange <email> <new username>\nnamechange accept <uid>\nnamechange deny <uid> <reason>\nnamechange list",
     detail: "`email`: The email of the osu!droid account [String]\n`new username`: The new username the user wants to change to [String]\n`reason`: Reason for denial [String]\n`uid`: Uid of osu!droid account [Integer]",
     permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
