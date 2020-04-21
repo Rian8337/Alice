@@ -89,6 +89,7 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = args[0];
+        if (!ufind) return message.channel.send("❎ **| Hey, please mention a user!**");
 	ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", " ");
 	let offset = 1;
 	let start = 1;
