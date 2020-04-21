@@ -79,15 +79,6 @@ function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, pla
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
 	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-	let channels = config.pp_channel;
-	let found = false;
-	for (let i = 0; i < channels.length; i++) {
-		if (message.guild.channels.cache.get(channels[i])) {
-			found = true;
-			break
-		}
-	}
-	if (!found) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 	let ufind = args[0];
         if (!ufind) return message.channel.send("❎ **| Hey, please mention a user!**");
 	ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", " ");
