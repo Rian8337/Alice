@@ -189,7 +189,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Sets the beatmap to play for next round (Game Host only).\n" +
                     "\n" +
                     "`a!mp condition <score/combo/acc/scorev2>`\n" +
-                    "Sets the win condition for the next round (Score/Combo/Accuracy/ScoreV2) (Game Host only)." +
+                    "Sets the win condition for the next round (Score/Combo/Accuracy/ScoreV2) (Game Host only).\n" +
+                    "\n" +
                     "`a!mp create <max players> <name>`\n" +
                     "Creates a multiplayer game with given name in the channel. Name must be at most 20 characters.\n" +
                     "\n" +
