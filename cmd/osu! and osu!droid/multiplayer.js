@@ -107,7 +107,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Aside of that, game hosts can also change their multiplayer game name using `a!mp rename <name>`. The general rule for multiplayer game names applies.\n" +
                     "\n" +
                     "Game hosts can also change the beatmap that will be played, win condition (explained in page 5), team mode (explained in page 6), and mods (explained in page 7). The host can initiate a round and also transfer its position to another player in the game.\n" +
-                    "They cannot leave their multiplayer game. They must transfer their position to another player first using `a!mp host <user>` before leaving the game.\n" +
+                    "When a game host leaves their game, a random user will be picked in the game. If there are no more players in it, it will be ended.\n" +
                     "\n" +
                     "Game hosts can also kick players out of their game. They can use `a!mp kick <user>` to kick the specified user from their game.\n"
                 ],
@@ -463,7 +463,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!mres) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
                         if (mres.isOngoing) return message.channel.send("❎ **| I'm sorry, a match is currently ongoing! Please join later!**");
                         let players = mres.players;
-                        let player_index = players.findIndex((player) => player.uid === uid);
+                        let player_index = players.findIndex((player) => player.discordid === message.author.id);
                         if (player_index !== -1) return message.channel.send("❎ **| Hey, you're already in this multiplayer game!**");
                         if (players.length === mres.max_players) return message.channel.send("❎ **| I'm sorry, there is no more room for a player to join this multiplayer game!**");
 
@@ -601,74 +601,59 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         // leaves multiplayer match
         case "leave": {
-            query = {discordid: message.author.id};
-            binddb.findOne(query, (err, res) => {
+            multi.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                let uid = res.uid;
+                if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
+                if (res.isOngoing) return message.channel.send("❎ **| Hey, a match is currently ongoing!**");
+                let players = res.players;
+                let player_index = players.findIndex((player) => player.discordid === message.author.id);
+                if (player_index === -1) return message.channel.send("❎ **| Hey, you're not in this multiplayer game!**");
 
-                point.findOne(query, (err, pres) => {
+                players.splice(player_index, 1);
+
+                let host = res.host;
+                if (host === message.author.id && players.length > 0) host = players[Math.random() * players.length].discordid
+
+                updateVal = {
+                    $set: {
+                        multi: ''
+                    }
+                };
+
+                point.updateOne({discordid: message.author.id}, updateVal, err => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!pres || !pres.multi) return message.channel.send("❎ **| I'm sorry, you are not currently in a multiplayer match! Please leave that one before joining another multiplayer match!**");
+                });
 
-                    query = {channel: message.channel.id};
-                    multi.findOne(query, (err, mres) => {
+                if (players.length === 0) {
+                    multi.deleteOne(query, err => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!mres) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
-                        if (mres.isOngoing) return message.channel.send("❎ **| Hey, a match is currently ongoing!**");
-                        let players = mres.players;
-                        let player_index = players.findIndex((player) => player.uid === uid);
-                        if (player_index === -1) return message.channel.send("❎ **| Hey, you're not in this multiplayer game!**");
-
-                        players.splice(player_index, 1);
-
-                        updateVal = {
-                            $set: {
-                                multi: ''
-                            }
-                        };
-
-                        point.updateOne({discordid: message.author.id}, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                        });
-
-                        if (players.length === 0) {
-                            multi.deleteOne(query, err => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                }
-                                message.channel.send(`✅ **| ${message.author}, successfully left multiplayer game.**`)
-                            })
-                            return
-                        }
-
-                        updateVal = {
-                            $set: {
-                                players: players
-                            }
-                        };
-
-                        multi.updateOne(query, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                            message.channel.send(`✅ **| ${message.author}, successfully left multiplayer game.**`)
-                        })
+                        message.channel.send(`✅ **| ${message.author}, successfully left multiplayer game.**`)
                     })
+                    return
+                }
+
+                updateVal = {
+                    $set: {
+                        host: host,
+                        players: players
+                    }
+                };
+
+                multi.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    message.channel.send(`✅ **| ${message.author}, successfully left multiplayer game.**`)
                 })
             });
             break
