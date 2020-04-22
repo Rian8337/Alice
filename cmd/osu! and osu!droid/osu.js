@@ -10,6 +10,13 @@ function progress(level) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let playerdb = alicedb.collection("osubind");
+	
+	const ssh = client.emojis.cache.get("611559473479155713");
+    const ss = client.emojis.cache.get("611559473492000769");
+    const sh = client.emojis.cache.get("611559473361846274");
+    const s = client.emojis.cache.get("611559473294606336");
+    const a = client.emojis.cache.get("611559473236148265");
+	
     let query = {discordid: message.author.id};
     playerdb.findOne(query, (err, res) => {
         if (err) {
