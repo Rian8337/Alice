@@ -59,52 +59,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         else {
             if (res) username = res.username;
-			else {
-				username = args[0];
-				if (!username) return message.channel.send("❎ **| I'm sorry, your account is not binded! Please bind using `a!osu set <username>` first.**")
-			}
+			if (args[0]) username = args[0];
+			if (!username) return message.channel.send("❎ **| I'm sorry, your account is not binded! Please bind using `a!osu set <username>` first.**");
 
-			let switched = false;
-			let mode = args[0];
+			let mode = args[1] ? args[1] : args[0];
 			switch (mode) {
 				case 'std':
 					mode = 0;
-					switched = true;
 					break;
 				case 'taiko':
 					mode = 1;
-					switched = true;
 					break;
 				case 'ctb':
 					mode = 2;
-					switched = true;
 					break;
 				case 'mania':
 					mode = 3;
-					switched = true;
 					break;
 				default:
 					mode = 0
-			}
-
-			if (!switched && args[1]) {
-				mode = args[1];
-				switch (mode) {
-					case 'std':
-						mode = 0;
-						break;
-					case 'taiko':
-						mode = 1;
-						break;
-					case 'ctb':
-						mode = 2;
-						break;
-					case 'mania':
-						mode = 3;
-						break;
-					default:
-						mode = 0
-				}
 			}
 
 			let options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
