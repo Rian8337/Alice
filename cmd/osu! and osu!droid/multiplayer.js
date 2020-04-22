@@ -106,7 +106,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "Game hosts can change the password of their multiplayer game by using `a!mp password <password>` __**in DM**__ to <@627321230902689813>. If a password is set, players are prompted to enter the password in their DM to join the game. A password can be up to 20 characters long.\n" +
                     "Aside of that, game hosts can also change their multiplayer game name using `a!mp rename <name>`. The general rule for multiplayer game names applies.\n" +
                     "\n" +
-                    "Game hosts can also change the beatmap that will be played, win condition (explained in page 5), team mode (explained in page 6), and mods (explained in page 7). The host can initiate a round and also transfer its position to another player in the game.\n" +
+                    "Game hosts can also change the beatmap that will be played, win condition (explained in page 6), team mode (explained in page 7), and mods (explained in page 8). The host can initiate a round and also transfer its position to another player in the game.\n" +
                     "When a game host leaves their game, a random user will be picked in the game. If there are no more players in it, it will be ended.\n" +
                     "\n" +
                     "Game hosts can also kick players out of their game. They can use `a!mp kick <user>` to kick the specified user from their game.\n"
