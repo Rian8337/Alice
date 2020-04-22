@@ -23,7 +23,7 @@ module.exports.run = (client, message, args) => {
 	} else {
 		let embed = new Discord.MessageEmbed()
 			.setTitle("Alice Synthesis Thirty Help\nUser Commands")
-			.setDescription(`Made by <@132783516176875520> and <@386742340968120321>.\nComplete command list can be found [here](https://github.com/Rian8337/Alice).\n**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.`)
+			.setDescription(`Made by <@132783516176875520> and <@386742340968120321>.\n[GitHub Repository](https://github.com/Rian8337/Alice).\n\n**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.\nIf you found any bugs or issues with the bot, please contact bot creators.`)
 			.setThumbnail(client.user.avatarURL({dynamic: true}))
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index]);
