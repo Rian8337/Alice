@@ -302,7 +302,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         new osudroid.PlayerInfo().get({username: new_name}, new_player => {
                             if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
 
-                            name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
+                            name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\nUid: ${uid}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
                                 if (nameres) {
                                     updateVal = {
                                         $set: {
