@@ -80,7 +80,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					mode = 0
 			}
 
-			if (!switched && !res) {
+			if (!switched && args[1]) {
 				mode = args[1];
 				switch (mode) {
 					case 'std':
