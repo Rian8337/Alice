@@ -56,11 +56,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "\n" +
                     "Despite the major goal of this system, as said before, there are many major differences of this system compared to the official multiplayer system:\n" +
                     "- **The inability to automatically submit scores**. This is due to how score submission in osu!droid works. Unlike the official game, osu!droid doesn't store failed scores and retries, eliminating the ability to track certain scores.\n" +
+                    "\n" +
                     "- The only available modes are Head to Head and Team Vs. Tag mode and Tag Team Vs mode are not available due to the way both modes function.\n" +
+                    "\n" +
                     "- The unsupported usage of unranked mods (RX and AP). Both mods will cause inconsistencies in some win conditions, mainly score, due to RX and AP having a fixed score multiplier of 1 (as opposed of the official game, which is 0).\n" +
+                    "\n" +
                     "- The entire system is command-based as opposed to real UIs in official multiplayer system. This is simply a limitation from creating a Discord bot-based multiplayer system that can't be helped.\n" +
+                    "\n" +
                     "- Channels are treated as multiplayer rooms, meaning there cannot be more than one multiplayer game in a channel. This prevents channel cluttering which will cause confusion among players.\n" +
-                    "- Some win conditions are altered. This will be explained later." +
+                    "\n" +
+                    "- Some win conditions are altered. This will be explained later.\n" +
                     "\n" +
                     "Remember that server rules apply everywhere in the server unless otherwise stated, including this system. **Any kind of infringement of server rules (i.e. inappropriate multiplayer game name) will result in a mute, kick, or ban depending on the infringement's severity.**\n" +
                     "\n" +
@@ -940,7 +945,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         name: name
                     }
                 };
-                
+
                 multi.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
