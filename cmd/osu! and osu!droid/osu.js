@@ -51,72 +51,111 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         else {
-            if (!res) return message.channel.send("❎ **| I'm sorry, you haven't linked your osu! profile yet. Please link your osu! account using `a!osu set <username>`.**");
-            username = res.username;
-            let mode = args[0];
-            if (mode === 'std') mode = 0;
-            else if (mode === 'taiko') mode = 1;
-            else if (mode === 'ctb') mode = 2;
-            else if (mode === 'mania') mode = 3;
-            else mode = 0;
+            if (res) username = res.username;
+			else {
+				username = args[0];
+				if (!username) return message.channel.send("❎ **| I'm sorry, your account is not binded! Please bind using `a!osu set <username>` first.**")
+			}
 
-            if (args[1]) username = args.slice(1).join(" ");
+			let switched = false;
+			let mode = args[0];
+			switch (mode) {
+				case 'std':
+					mode = 0;
+					switched = true;
+					break;
+				case 'taiko':
+					mode = 1;
+					switched = true;
+					break;
+				case 'ctb':
+					mode = 2;
+					switched = true;
+					break;
+				case 'mania':
+					mode = 3;
+					switched = true;
+					break;
+				default:
+					mode = 0
+			}
 
-            let options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
-            let content;
+			if (!switched && !res) {
+				mode = args[1];
+				switch (mode) {
+					case 'std':
+						mode = 0;
+						break;
+					case 'taiko':
+						mode = 1;
+						break;
+					case 'ctb':
+						mode = 2;
+						break;
+					case 'mania':
+						mode = 3;
+						break;
+					default:
+						mode = 0
+				}
+			}
 
-            https.get(options, res => {
-                res.setEncoding("utf8");
-                res.on("data", chunk => {
-                    content = chunk
-                });
-                res.on("error", err => {
-                    console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
-                });
-                res.on("end", () => {
-                    let obj;
-                    try {
-                        obj = JSON.parse(content)
-                    } catch (e) {
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
-                    }
-                    if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
-                    let playerinfo = obj[0];
+			let options = new URL("https://osu.ppy.sh/api/get_user?k=" + apikey + "&u=" + username + "&m=" + mode);
+			let content = '';
 
-                    let rolecheck;
-                    try {
-                        rolecheck = message.member.roles.highest.hexColor
-                    } catch (e) {
-                        rolecheck = "#000000"
-                    }
-                    let footer = config.avatar_list;
-                    const index = Math.floor(Math.random() * footer.length);
-                    let embed = new Discord.MessageEmbed()
-                        .setThumbnail("https://a.ppy.sh/" + playerinfo.user_id)
-                        .setColor(rolecheck)
-                        .setFooter("Alice Synthesis Thirty", footer[index])
-                        .addField("Rank", "#" + playerinfo.pp_rank, true)
-                        .addField("Country rank", playerinfo.country + " #" + playerinfo.pp_country_rank, true)
-                        .addField("Accuracy", parseFloat(playerinfo.accuracy).toFixed(2) + "%", true)
-                        .addField("Play count", playerinfo.playcount, true)
-                        .addField("Ranked score", parseInt(playerinfo.ranked_score).toLocaleString("en-US"), true)
-                        .addField("Total score", parseInt(playerinfo.total_score).toLocaleString("en-US"), true)
-                        .addField("PP", playerinfo.pp_raw, true)
-                        .addField("Level", Math.floor(parseFloat(playerinfo.level)) + " (" + progress(playerinfo.level) + "%)", true)
-                        .addField("Join date", playerinfo.join_date + " UTC", true)
-                        .addField("User ID", playerinfo.user_id, true);
+			https.get(options, res => {
+				res.setEncoding("utf8");
+				res.on("data", chunk => {
+					content += chunk
+				});
+				res.on("error", err => {
+					console.log(err);
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+				});
+				res.on("end", () => {
+					let obj;
+					try {
+						obj = JSON.parse(content)
+					} catch (e) {
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again!**")
+					}
+					if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
+					let playerinfo = obj[0];
 
-                    switch (mode) {
-                        case 0: embed.setAuthor("osu!standard Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
-                        case 1: embed.setAuthor("Taiko Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
-                        case 2: embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
-                        case 3: embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id);
-                    }
+					let string = '';
+					string += `**Rank**: #${parseInt(playerinfo.pp_rank).toLocaleString()} (${playerinfo.country}#${parseInt(playerinfo.pp_country_rank).toLocaleString()})\n`;
+					string += `**Total Score**: ${parseInt(playerinfo.total_score).toLocaleString()}\n`;
+					string += `**Ranked Score**: ${parseInt(playerinfo.ranked_score).toLocaleString()}\n`;
+					string += `**Level**: ${Math.floor(parseFloat(playerinfo.level))} (${progress(playerinfo.level)}%)\n`;
+					string += `**PP**: ${parseFloat(playerinfo.pp_raw).toLocaleString()}\n`;
+					string += `**Play Count**: ${parseInt(playerinfo.playcount).toLocaleString()}\n`;
+					string += `**Join Date**: ${playerinfo.join_date} UTC\n\n`;
+					string += `**${ssh} ${parseInt(playerinfo.count_rank_ssh).toLocaleString()}** | **${ss} ${parseInt(playerinfo.count_rank_ss).toLocaleString()}** | **${sh} ${parseInt(playerinfo.count_rank_sh).toLocaleString()}** | **${s} ${parseInt(playerinfo.count_rank_s).toLocaleString()}** | **${a} ${parseInt(playerinfo.count_rank_a).toLocaleString()}**`;
 
-                    message.channel.send({embed: embed}).catch(console.error)
-                })
-            }).end()
+					let rolecheck;
+					try {
+						rolecheck = message.member.roles.highest.hexColor
+					} catch (e) {
+						rolecheck = "#000000"
+					}
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * footer.length);
+					let embed = new Discord.MessageEmbed()
+						.setThumbnail("https://a.ppy.sh/" + playerinfo.user_id)
+						.setColor(rolecheck)
+						.setFooter("Alice Synthesis Thirty", footer[index])
+						.setDescription(string);
+
+					switch (mode) {
+						case 0: embed.setAuthor("osu!standard Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
+						case 1: embed.setAuthor("Taiko Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
+						case 2: embed.setAuthor("Catch the Beat Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id); break;
+						case 3: embed.setAuthor("osu!mania Profile for " + username, "https://osu.ppy.sh/images/flags/" + playerinfo.country + ".png", "https://osu.ppy.sh/users/" + playerinfo.user_id)
+					}
+
+					message.channel.send({embed: embed}).catch(console.error)
+				})
+			}).end()
         }
     })
 };
