@@ -142,7 +142,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let uid = parseInt(args[1]);
             if (isNaN(uid)) return message.channel.send("❎ **| Hey, that's an invalid uid!**");
 
-            let reason = message.content.replace(`a!namechange deny ${uid} `, "");
+            const cmd_length = message.content.split(" ").slice(0, 3).join(" ").length + 1;
+            let reason = message.content.substring(cmd_length);
             if (!reason) return message.channel.send("❎ **| Hey, please enter a denial reason!**")
             
             query = {uid: uid};
