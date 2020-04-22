@@ -161,13 +161,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 [
                     // 10
                     "Submitting a Score",
-                    "Upon finishing a beatmap, players have 1 minute to submit their score using `a!mp submit`. Depending on the win condition, certain type of command parameters must be provided.\n" +
+                    "Upon finishing a beatmap, players have 1 minute to submit their score using `a!mp submit`. Depending on the win condition, certain type of command parameters must be provided. Do note that ScoreV1 is required for every win condition.\n" +
                     "- Score: Only the score needs to be submitted\n" +
                     "- Accuracy: Score and accuracy must be submitted in case two or more players tie in accuracy\n" +
                     "- Combo: Score and maximum combo must be submitted in case two or more players tie in combo\n" +
                     "- ScoreV2: Score, accuracy, and miss count must be submitted in order to calculate ScoreV2\n" +
                     "\n" +
-                    "All score submissions can be done by using `a!mp submit [<score> <combo>x <accuracy>% <miss count>m]` and matching the parameter needed for the applied win condition.\n" +
+                    "All score submissions can be done by using `a!mp submit <score> [<combo>x <accuracy>% <miss count>m]` and matching the parameter needed for the applied win condition.\n" +
                     "Alternatively, if the player's score was submitted to the server, the player can use `a!mp submit recent` to automatically submit their score."
                 ],
                 [
@@ -235,7 +235,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "`a!mp start`\n" +
                     "Starts a round of the multiplayer game. Only works if all players in the game have entered ready state (Game Host only).\n" +
                     "\n" +
-                    "`a!mp submit <recent | [<score> <combo>x <accuracy>% <miss count>m]>`\n" +
+                    "`a!mp submit <recent | <score> [<combo>x <accuracy>% <miss count>m]>`\n" +
                     "Submits a play after a beatmap in a round is done.\n" +
                     "\n" +
                     "`a!mp team <params>`\n" +
@@ -1516,8 +1516,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let hash = match_settings.beatmap.hash;
                 let combo = 0;
                 let mod = '';
-                let acc = 100;
                 let score = 0;
+                let acc = 100;
                 let miss = 0;
                 let date = 0;
                 if (args[1] === 'recent') {
@@ -1536,12 +1536,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     date = Math.floor(ptime.getTime() / 1000);
                     if (date > res.last_activity - 30) return message.channel.send("❎ **| I'm sorry, your recent play is deemed as invalid! Either you've played the map too early or the score submission is late!**");
                 } else {
-                    for (let i = 1; i < args.length; i++) {
+                    score = parseInt(args[1]);
+                    for (let i = 2; i < args.length; i++) {
                         if (args[i].endsWith("%")) acc = parseFloat(args[i]);
                         else if (args[i].endsWith("m")) miss = parseInt(args[i]);
                         else if (args[i].endsWith("x")) combo = parseInt(args[i]);
                         else if (args[i].startsWith("+")) mod = osudroid.mods.modbits_from_string(args[i].replace("+", ""))
-                        else score = parseInt(args[i])
                     }
                     switch (condition) {
                         case 'score':
