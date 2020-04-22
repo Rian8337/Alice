@@ -104,6 +104,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         .setColor(rolecheck);
 
     switch (args[0]) {
+
+
         case "about": {
             // everything normal members need to know about clans!
             // ===================================================
@@ -144,7 +146,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 [
                     // 2
                     "Starting",
-                    `To start with the system, you can create a clan or join an existing one. It is recommended to have a few ${coin}Alice coins before diving in to the system as this consumes quite a lot of them.\n` +
+                    `To start with the system, **you must have an online osu!droid account binded to this bot or Elaina**. If you've done so, you can create a clan or join an existing one. It is recommended to have a few ${coin}Alice coins before diving into the system as this consumes quite a lot of them.\n` +
                     "\n" +
                     `To create a clan, use \`a!clan create <name>\`. This costs ${coin}\`7,500\` Alice coins.\n` +
                     "If you don't want to create a clan, you can join an existing one. You must contact the co-leader or leader of the clan to join the clan."
@@ -543,6 +545,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
+
+
+
         case "info": {
             // view info of a clan
             // ============================
@@ -555,6 +560,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let clan = userres.clan;
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
@@ -586,6 +592,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 4000);
             break
         }
+
+
+
         case "members": {
             // view members of a clan
             // =================================
@@ -598,6 +607,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let clan = userres.clan;
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
@@ -670,6 +680,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 5000);
             break
         }
+
+
+
         case "lb": {
             // views leaderboard of clans based on power points
             // ================================================
@@ -739,6 +752,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 4000);
             break
         }
+
+
+
         case "upkeep": {
             // views weekly uptime pickup of the user's clan
             // =============================================
@@ -770,6 +786,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 4000);
             break
         }
+
+
+        // accepts a user as clan member
         case "accept": {
             let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
@@ -872,6 +891,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2000);
             break
         }
+
+
+
         case "kick": {
             // kicks a user out of a clan
             // ===============================
@@ -959,6 +981,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2500);
             break
         }
+
+
         case "leave": {
             // leaves a clan
             // ======================
@@ -1033,6 +1057,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2000);
             break
         }
+
+
+
         case "create": {
             // creates a clan
             // =========================
@@ -1185,8 +1212,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2500);
             break
         }
+
+
+        // main hub for clan descriptions
         case "description": {
             switch (args[1]) {
+
+                // clear a clan's description
+                // moderators can specify clan to remove a clan's description
                 case "clear": {
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -1246,6 +1279,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "edit": {
                     let new_desc = args.slice(2).join(" ");
                     if (!new_desc) return message.channel.send("❎ **| Hey, please enter a new description!**");
@@ -1311,6 +1347,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
+
+
+
         case "promote": {
             // promotes a clan member to co-leader
             // ==================================================
@@ -1378,6 +1417,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
+
+
+
         case "demote": {
             // demotes a clan member to normal member
             // ======================================
@@ -1445,6 +1487,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
+
+
+
         case "disband": {
             // disbands a clan
             // ===========================
@@ -1519,6 +1564,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2000);
             break
         }
+
+
+
         case "icon": {
             // main hub for clan icons
             // ============================
@@ -1527,6 +1575,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // icons that are contradicting
             // server rules
             switch (args[1]) {
+
                 case "set": {
                     // set icon
                     let icon = args[2];
@@ -1590,6 +1639,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "remove": {
                     // remove icon
                     query = {discordid: message.author.id};
@@ -1656,12 +1708,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 3000);
             break
         }
+
+
+
         case "powerup": {
             // main hub for powerups
             // ===============================
             // options to buy, activate, and view currently
             // active and owned powerup will be in this subcommand
+
             switch (args[1]) {
+
                 case "list": {
                     // views current powerups of the user's clan
                     query = {discordid: message.author.id};
@@ -1688,6 +1745,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "activelist": {
                     // views current active powerups of the user's clan
                     query = {discordid: message.author.id};
@@ -1717,6 +1777,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "activate": {
                     // activates a powerup
                     // ===============================
@@ -1795,6 +1858,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 3000);
             break
         }
+
+
+
         case "shop": {
             // main hub for clan shops
             // ===========================================
@@ -1802,6 +1868,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // clan color change, powerups, etc in here, specified by
             // args[1]. also uses alice coins as currency
             switch (args[1]) {
+
                 case "rename": {
                     // changes the clan name
                     // ============================================
@@ -1889,6 +1956,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "role": {
                     // buy a custom role for clan members
                     // =======================================
@@ -1960,6 +2030,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "color": {
                     // changes clan role color if one is available
                     // ===========================================
@@ -2017,6 +2090,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "powerup": {
                     // buy powerups with Alice coins
                     // =============================
@@ -2171,6 +2247,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "leader": {
                     // changes the leader of a clan
                     // ============================
@@ -2258,13 +2337,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 3000);
             break
         }
+
+
+
         case "power": {
             // main hub for power points
             // ==============================
             // gives pp if match commence, also
             // based on active powerups
             if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
             switch (args[1]) {
+
                 case "give": {
                     // adds power points to a clan
                     // =======================================
@@ -2306,6 +2390,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "take": {
                     // removes power points from a clan
                     // =========================================
@@ -2348,6 +2435,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "transfer": {
                     // transfers power points from one clan to another
                     // =======================================================
@@ -2526,13 +2616,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 3000);
             break
         }
+
+
+
         case "match": {
             // adds/removes two clans into match list
             // ===========================================
             // this prevents them from activating powerups
             // in the middle of a battle, referee/mod only
             if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
             switch (args[1]) {
+
                 // add clan
                 case "add": {
                     let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
@@ -2572,6 +2667,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "remove": {
                     // remove clan
                     let tomatch = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[2]));
@@ -2605,8 +2703,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }, 2500);
             break
         }
+
+
+        // holds cooldown information such as
+        // battle cooldown and join cooldown
         case "cooldown": {
+
             switch (args[1]) {
+
+
                 case "join": {
                     let user = message.author;
                     if (args[2]) {
@@ -2644,6 +2749,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "battle": {
                     // views a user's cooldown in participating a clan battle
                     let user = message.author;
@@ -2688,12 +2796,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
+
+
+
         case "auction": {
             // auctions
             // =====================================
             // as of now only powerups are available
             // for auction
+
             switch (args[1]) {
+                
                 case "bid": {
                     let name = args[2];
                     if (!name) return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
@@ -2787,6 +2900,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "create": {
                     let name = args[2];
                     if (!name) return message.channel.send("❎ **| Hey, please enter a name for your auction!**");
@@ -2896,6 +3012,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "list": {
                     let page = 1;
                     if (parseInt(args[1]) > 1) page = parseInt(args[1]);
@@ -2961,6 +3080,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "status": {
                     let name = args[2];
                     if (!name) return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
@@ -3001,6 +3123,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+
                 case "cancel": {
                     let name = args[2];
                     if (!name) return message.channel.send("❎ **| Hey, please enter a name of your auction!**");
