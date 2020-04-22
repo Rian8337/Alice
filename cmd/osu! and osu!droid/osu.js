@@ -11,7 +11,7 @@ function progress(level) {
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let playerdb = alicedb.collection("osubind");
     let query = {discordid: message.author.id};
-    playerdb.find(query).toArray((err, res) => {
+    playerdb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -20,7 +20,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (args[0] === 'set') {
             username = args.slice(1).join(" ");
             if (!username) return message.channel.send("❎ **| Hey, I don't know what account to bind!**");
-            if (!res[0]) {
+            if (!res) {
                 let insertVal = {
                     discordid: message.author.id,
                     username: username
@@ -51,7 +51,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
         }
         else {
-            username = res[0].username;
+            if (!res) return message.channel.send("❎ **| I'm sorry, you haven't linked your osu! profile yet. Please link your osu! account using `a!osu set <username>`.**");
+            username = res.username;
             let mode = args[0];
             if (mode === 'std') mode = 0;
             else if (mode === 'taiko') mode = 1;
