@@ -125,7 +125,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (name.length > 30)
                 return message.channel.send("❎ **| I'm sorry, a tag's name must not exceed 30 characters!**");
 
-            let tag_content = message.content.replace(`${config.prefix}tags add ${name}`, "").replace(`${config.prefix}t add ${name} `, "");
+            const cmd_length = message.content.split(" ").slice(0, 3).join(" ").length + 1;
+            let tag_content = message.content.substring(cmd_length);
             if (!tag_content)
                 tag_content = '';
             if (tag_content.length > 1500)
