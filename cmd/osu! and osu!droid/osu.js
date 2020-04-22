@@ -101,6 +101,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					}
 					if (!obj[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the username!**");
 					let playerinfo = obj[0];
+					username = playerinfo.username;
 
 					let string = '';
 					string += `**Rank**: #${parseInt(playerinfo.pp_rank).toLocaleString()} (${playerinfo.country}#${parseInt(playerinfo.pp_country_rank).toLocaleString()})\n`;
