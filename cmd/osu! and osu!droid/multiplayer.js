@@ -222,7 +222,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     "`a!mp mode <hth/teamvs>`\n" +
                     "Sets the team mode for next round (Game Host only).\n" +
                     "\n" +
-                    "a!mp password [password]`\n" +
+                    "`a!mp password [password]`\n" +
                     "Sets the password for your current ongoing multiplayer game. If omitted, the password will be emptied (all players can join).\n" +
                     "This command only works in DM to keep passwords secret (Game Host only).\n" +
                     "\n" +
