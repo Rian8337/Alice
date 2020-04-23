@@ -23,6 +23,7 @@ function test(uid, page, cb) {
 
 function calculatePP(ppentries, entry, cb) {
     new osudroid.MapInfo().get({hash: entry[11]}, mapinfo => {
+        if (!mapinfo.osu_file) return cb(true);
         if (!mapinfo.title) {
             console.log("Map not found");
             return cb()
@@ -70,7 +71,7 @@ module.exports.run = (client, message, args, maindb) => {
         let playc = 0;
         let pptotal = 0;
 
-        test(uid, page, function testcb(entries, stopSign) {
+        test(uid, page, function testcb(entries, stopSign = false) {
             if (stopSign) { 
                 console.log("COMPLETED!"); 
                 console.table(ppentries); 
@@ -99,7 +100,7 @@ module.exports.run = (client, message, args, maindb) => {
                         playc: playc
                     }
                 };
-                binddb.updateOne(query, updateVal, function(err, res) {
+                binddb.updateOne(query, updateVal, function(err) {
                     if (err) throw err;
                     console.log('pp updated')
                 });
@@ -109,10 +110,12 @@ module.exports.run = (client, message, args, maindb) => {
             }
             console.table(entries);
             let i = 0;
-            calculatePP(ppentries, entries[i], function cb(stopFlag = false) {
+            calculatePP(ppentries, entries[i], function cb(error = false, stopFlag = false) {
                 console.log(i);
-                i++;
-                playc++;
+                if (!error) {
+                    i++;
+                    playc++
+                }
                 if (i < entries.length && !stopFlag) calculatePP(ppentries, entries[i], cb);
                 else {
                     console.log("done");
