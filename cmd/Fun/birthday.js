@@ -86,6 +86,6 @@ module.exports.config = {
     name: "birthday",
     description: "Sets your birthday date. Get 1000 Alice coins and a happy birthday role in your birthday! Once set, a birthday date cannot be changed.\n\nIf someone's birthday is February 29, it will be celebrated in March 1 in nonleap years.",
     usage: "birthday <month> <date> [timezone]",
-    detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]\n`timezone`: Timezone of where you live. Defaults at 0 [Integer]",
+    detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]\n`timezone`: Timezone of where you live [Integer]",
     permission: "None"
 };
