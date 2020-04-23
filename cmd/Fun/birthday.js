@@ -10,7 +10,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(date) || date < 1 || date > 31) return message.channel.send("❎ **| Hey, that's an invalid date!**");
     --month;
     let timezone = parseInt(args[2]);
-    if (isNaN(timezone) || timezone < -12 || timezone > 12) timezone = 0;
+    if (isNaN(timezone) || timezone < -12 || timezone > 12) return message.channel.send("❎ **| Hey, please enter a valid timezone!**");
 
     let max_date;
     if (month % 2 === 0) max_date = 31;
