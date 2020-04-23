@@ -107,6 +107,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
 
                         prev_names.push(old_name);
+                        
+                        updateVal = {
+                            $set: {
+                                username: new_name
+                            }
+                        };
+
+                        binddb.updateOne(query, updateVal, err => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                        });
 
                         updateVal = {
                             $set: {
