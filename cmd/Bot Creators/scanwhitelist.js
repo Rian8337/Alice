@@ -17,54 +17,53 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send("Error: Empty database response. Please try again!")
         }
         let i = 0;
-        retrieveWhitelist(whitelist_list, i, function whitelistCheck(whitelist, stopSign = false) {
+        retrieveWhitelist(whitelist_list, i, async function whitelistCheck(whitelist, stopSign = false) {
             if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
             console.log(i);
             let beatmap_id = whitelist.mapid;
             let hash = whitelist.hashid;
-            new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}, mapinfo => {
-                if (!mapinfo.title) {
-                    console.log("Whitelist entry not available");
-                    whitelistdb.deleteOne({mapid: beatmap_id}, err => {
-                        if (err) {
-                            console.log(err);
-                            setTimeout(() => {
-                                retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                            }, 50);
-                            return
-                        }
-                        ++i;
-                        setTimeout(() => {
-                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                        }, 50)
-                    })
-                }
-                if (hash && mapinfo.hash === hash) {
-                    ++i;
-                    setTimeout(() => {
-                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                    }, 50);
-                    return
-                }
-                console.log("Whitelist entry outdated");
-                let updateVal = {
-                    $set: {
-                        hashid: mapinfo.hash
-                    }
-                };
-                whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
+            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
+            if (!mapinfo.title) {
+                console.log("Whitelist entry not available");
+                whitelistdb.deleteOne({mapid: beatmap_id}, err => {
                     if (err) {
                         console.log(err);
-                        setTimeout(() => {
-                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                        setTimeout(async () => {
+                            retrieveWhitelist(whitelist_list, i, await whitelistCheck)
                         }, 50);
                         return
                     }
                     ++i;
-                    setTimeout(() => {
-                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                    setTimeout(async () => {
+                        retrieveWhitelist(whitelist_list, i, await whitelistCheck)
                     }, 50)
                 })
+            }
+            if (hash && mapinfo.hash === hash) {
+                ++i;
+                setTimeout(async () => {
+                    retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                }, 50);
+                return
+            }
+            console.log("Whitelist entry outdated");
+            let updateVal = {
+                $set: {
+                    hashid: mapinfo.hash
+                }
+            };
+            whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
+                if (err) {
+                    console.log(err);
+                    setTimeout(async () => {
+                        retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                    }, 50);
+                    return
+                }
+                ++i;
+                setTimeout(async () => {
+                    retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                }, 50)
             })
         })
     })
