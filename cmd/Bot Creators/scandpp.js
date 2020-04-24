@@ -6,13 +6,13 @@ function retrievePlayer(player_list, i, cb) {
     cb(player_list[i])
 }
 
-function retrievePlay(play_list, i, cb) {
+async function retrievePlay(play_list, i, cb) {
     if (!play_list[i]) return cb(null, null, true);
     let hash = play_list[i][0];
+    console.log(hash);
 
-    new osudroid.MapInfo().get({hash: hash, file: false}, mapinfo => {
-        cb(hash, mapinfo)
-    })
+    const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
+    cb(hash, mapinfo)
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -22,21 +22,18 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
 
-    console.log("Retrieving player entries");
     binddb.find({}).sort({pptotal: -1}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
-        console.log("Retrieving whitelist entries");
         whitelistdb.find({}).toArray((err, whitelist_list) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("Error: Empty database response. Please try again!")
             }
-            console.log("Scanning player entries");
             let i = 0;
-            retrievePlayer(player_list, i, function checkPlayer(player, stopSign = false) {
+            retrievePlayer(player_list, i, async function checkPlayer(player, stopSign = false) {
                 if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
                 console.log(i);
                 console.log("Uid:", player.uid);
@@ -45,8 +42,9 @@ module.exports.run = (client, message, args, maindb) => {
                 let discordid = player.discordid;
                 let play_list = player.pp;
                 let playc = player.playc;
-                retrievePlay(play_list, j, function validatePlay(hash, mapinfo, stopFlag = false) {
+                await retrievePlay(play_list, j, function validatePlay(hash, mapinfo, stopFlag = false) {
                     if (stopFlag) {
+                        console.log("Check done");
                         let pptotal = 0;
                         let weight = 1;
                         for (let i in play_list) {
@@ -64,12 +62,11 @@ module.exports.run = (client, message, args, maindb) => {
                         binddb.updateOne({discordid: discordid}, updateVal, err => {
                             if (err) {
                                 console.log(err);
-                                setTimeout(() => {
-                                    retrievePlay(play_list, j, validatePlay)
+                                setTimeout(async () => {
+                                    await retrievePlay(play_list, j, validatePlay)
                                 }, 50);
                                 return
                             }
-                            console.log("Check done");
                             ++i;
                             retrievePlayer(player_list, i, checkPlayer)
                         });
@@ -80,8 +77,8 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Beatmap not found");
                         play_list.splice(j, 1);
                         --playc;
-                        setTimeout(() => {
-                            retrievePlay(play_list, j, validatePlay)
+                        setTimeout(async () => {
+                            await retrievePlay(play_list, j, validatePlay)
                         }, 50);
                         return
                     }
@@ -89,15 +86,15 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Beatmap with 0 objects");
                         play_list.splice(j, 1);
                         --playc;
-                        setTimeout(() => {
-                            retrievePlay(play_list, j, validatePlay)
+                        setTimeout(async () => {
+                            await retrievePlay(play_list, j, validatePlay)
                         }, 50);
                         return
                     }
                     if (mapinfo.approved !== 3 && mapinfo.approved > 0) {
                         ++j;
-                        setTimeout(() => {
-                            retrievePlay(play_list, j, validatePlay)
+                        setTimeout(async () => {
+                            await retrievePlay(play_list, j, validatePlay)
                         }, 50);
                         return
                     }
@@ -106,14 +103,14 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Beatmap not found in whitelist database");
                         play_list.splice(j, 1);
                         --playc;
-                        setTimeout(() => {
-                            retrievePlay(play_list, j, validatePlay)
+                        setTimeout(async () => {
+                            await retrievePlay(play_list, j, validatePlay)
                         }, 50);
                         return
                     }
                     ++j;
-                    setTimeout(() => {
-                        retrievePlay(play_list, j, validatePlay)
+                    setTimeout(async () => {
+                        await retrievePlay(play_list, j, validatePlay)
                     }, 50)
                 })
             })
