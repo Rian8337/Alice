@@ -9,6 +9,9 @@ require('dotenv').config();
 const droidapikey = process.env.DROID_API_KEY;
 const apikey = process.env.OSU_API_KEY;
 const request = require('request');
+const { Readable } = require('stream');
+const unzipper = require('unzipper')
+const javaDeserialization = require('java-deserialization');
 
 let osudroid = {};
 if (typeof exports !== 'undefined') {
@@ -22,12 +25,12 @@ let log = {warn: Function.prototype};
 if (typeof exports !== "undefined") {
     log = console
 }
-    
+
 // PlayInfo instance
 // ------------------------------
 // represents a play of osu!droid
 class PlayInfo {
-    
+
     // values:
     //  score_id: The ID of the score
     //  player_name: Player name
@@ -62,40 +65,42 @@ class PlayInfo {
     //  uid: uid of player (required)
     //  hash: the beatmap's hash (required)
     //
-    // outputs a callback of the play's information
-    getFromHash(params, callback) {
-        let uid = this.player_uid = this.player_uid || params.uid;
-        let hash = this.hash = this.hash || params.hash;
-        if (!uid || !hash) {
-            throw new TypeError("Uid and hash must be specified");
-        }
+    // outputs a promise of the play's information
+    getFromHash(params) {
+        return new Promise((resolve, reject) => {
+            let uid = this.player_uid = this.player_uid || params.uid;
+            let hash = this.hash = this.hash || params.hash;
+            if (!uid || !hash) {
+                throw new TypeError("Uid and hash must be specified");
+            }
 
-        let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
-        request(url, (err, response, data) => {
-            if (err || !data) {
-                return callback(this);
-            }
-            let entry = data.split("<br>");
-            entry.shift();
-            if (entry.length === 0) {
-                return callback(this)
-            }
-            let play = entry[0].split(" ");
-            this.score_id = parseInt(play[0]);
-            this.player_uid = parseInt(play[1]);
-            this.player_name = play[2];
-            this.score = parseInt(play[3]);
-            this.combo = parseInt(play[4]);
-            this.rank = play[5];
-            this.mods = mods.droid_to_PC(play[6]);
-            this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
-            this.miss = parseInt(play[8]);
-            let date = new Date(parseInt(play[9]) * 1000);
-            date.setUTCHours(date.getUTCHours() + 7);
-            this.date = date.toUTCString();
-            this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, "");
-            this.hash = play[11];
-            callback(this)
+            let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
+            request(url, (err, response, data) => {
+                if (err || !data) {
+                    reject("API request failed (scoresearchv2)")
+                }
+                let entry = data.split("<br>");
+                entry.shift();
+                if (entry.length === 0) {
+                    reject("No play found")
+                }
+                let play = entry[0].split(" ");
+                this.score_id = parseInt(play[0]);
+                this.player_uid = parseInt(play[1]);
+                this.player_name = play[2];
+                this.score = parseInt(play[3]);
+                this.combo = parseInt(play[4]);
+                this.rank = play[5];
+                this.mods = mods.droid_to_PC(play[6]);
+                this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
+                this.miss = parseInt(play[8]);
+                let date = new Date(parseInt(play[9]) * 1000);
+                date.setUTCHours(date.getUTCHours() + 7);
+                this.date = date.toUTCString();
+                this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, "");
+                this.hash = play[11];
+                resolve(this)
+            })
         })
     }
 
@@ -126,87 +131,85 @@ class PlayerInfo {
     // params:
     //  uid or username
     //
-    // returns a callback of the player's statistics
-    get(params, callback) {
-        let uid = parseInt(params.uid);
-        let username = params.username;
-        if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
-        let options = {
-            host: "ops.dgsrz.com",
-            port: 80,
-            path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
-        };
-        let content = '';
-        let req = http.request(options, res => {
-            res.setTimeout(10000);
-            res.setEncoding("utf8");
-            res.on("data", chunk => {
-                content += chunk
-            });
-            res.on("error", err => {
-                console.log("Error retrieving player info");
-                console.log(err);
-                return callback(this)
-            });
-            res.on("end", () => {
-                let resarr = content.split("<br>");
-                let headerres = resarr[0].split(" ");
-                if (headerres[0] == 'FAILED') {
-                    return callback(this)
-                }
-                let obj;
-                try {
-                    obj = JSON.parse(resarr[1])
-                } catch (e) {
-                    console.log("Error parsing player info");
-                    return callback(this)
-                }
-                uid = headerres[1];
-                let name = headerres[2];
-                let total_score = parseInt(headerres[3]);
-                let play_count = parseInt(headerres[4]);
-                let email = headerres[6];
-                let rank = obj.rank;
-                let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
-                let recent_plays = obj.recent ? obj.recent : [];
-                this.uid = uid;
-                this.name = name;
-                this.score = total_score;
-                this.email = email;
-                this.play_count = play_count;
-                this.accuracy = acc;
-                this.rank = rank;
-                this.recent_plays = recent_plays;
+    // returns a promise of the player's statistics
+    get(params) {
+        return new Promise((resolve, reject) => {
+            let uid = parseInt(params.uid);
+            let username = params.username;
+            if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
+            let options = {
+                host: "ops.dgsrz.com",
+                port: 80,
+                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
+            };
+            let content = '';
+            let req = http.request(options, res => {
+                res.setTimeout(10000);
+                res.setEncoding("utf8");
+                res.on("data", chunk => {
+                    content += chunk
+                });
+                res.on("error", err => {
+                    reject("Error retrieving player info");
+                });
+                res.on("end", () => {
+                    let resarr = content.split("<br>");
+                    let headerres = resarr[0].split(" ");
+                    if (headerres[0] == 'FAILED') {
+                        reject("Player not found")
+                    }
+                    let obj;
+                    try {
+                        obj = JSON.parse(resarr[1])
+                    } catch (e) {
+                        reject("Error parsing player info\n" + e)
+                    }
+                    uid = headerres[1];
+                    let name = headerres[2];
+                    let total_score = parseInt(headerres[3]);
+                    let play_count = parseInt(headerres[4]);
+                    let email = headerres[6];
+                    let rank = obj.rank;
+                    let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
+                    let recent_plays = obj.recent ? obj.recent : [];
+                    this.uid = uid;
+                    this.name = name;
+                    this.score = total_score;
+                    this.email = email;
+                    this.play_count = play_count;
+                    this.accuracy = acc;
+                    this.rank = rank;
+                    this.recent_plays = recent_plays;
 
-                let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
-                request(avatar_page, (err, response, data) => {
-                    if (err) {
-                        console.log(err);
-                        return callback(this)
-                    }
-                    let b = data.split("\n");
-                    let avalink = '';
-                    let location = '';
-                    for (let x = 0; x < b.length; x++) {
-                        if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                            b[x-3]=b[x-3].replace('<img src="',"");
-                            b[x-3]=b[x-3].replace('" class="img-circle">',"");
-                            b[x-3]=b[x-3].trim();
-                            avalink = b[x-3];
-                            b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-                            b[x+1]=b[x+1].replace("<\/small>","");
-                            b[x+1]=b[x+1].trim();
-                            location=b[x+1];
-                            break
+                    let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
+                    request(avatar_page, (err, response, data) => {
+                        if (err) {
+                            reject("Error fetching website")
                         }
-                    }
-                    this.avatarURL = avalink;
-                    this.location = location;
-                    callback(this)
+                        let b = data.split("\n");
+                        let avalink = '';
+                        let location = '';
+                        for (let x = 0; x < b.length; x++) {
+                            if (b[x].includes('h3 m-t-xs m-b-xs')) {
+                                b[x-3]=b[x-3].replace('<img src="',"");
+                                b[x-3]=b[x-3].replace('" class="img-circle">',"");
+                                b[x-3]=b[x-3].trim();
+                                avalink = b[x-3];
+                                b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+                                b[x+1]=b[x+1].replace("<\/small>","");
+                                b[x+1]=b[x+1].trim();
+                                location=b[x+1];
+                                break
+                            }
+                        }
+                        this.avatarURL = avalink;
+                        this.location = location;
+                        resolve(this)
+                    })
                 })
-            })
-        });
-        req.end()
+            });
+            req.end()
+        })
     }
 
     toString() {
@@ -214,12 +217,351 @@ class PlayerInfo {
     }
 }
 
+// (internal)
+// constants for replay analyzer
+const CURSOR_ID_DOWN = 0;
+const CURSOR_ID_MOVE = 1;
+const CURSOR_ID_UP = 2;
+
+const RESULT_0 = 1;
+const RESULT_50 = 2;
+const RESULT_100 = 3;
+const RESULT_300 = 4;
+
+const BYTE_LENGTH = 1;
+const SHORT_LENGTH = 2;
+const INT_LENGTH = 4;
+const LONG_LENGTH = 8;
+
+let mods = {
+    // bitmask constant of mods both for osu!droid and osu!standard
+    // ------------------------------------------------------------
+    // osu!droid
+    n: 1<<0, // NF
+    e: 1<<1, // EZ
+    h: 1<<3, // HD
+    r: 1<<4, // HR
+    d: 1<<6, // DT
+    t: 1<<8, // HT
+    c: 1<<9, // NC
+
+    // osu!standard
+    nomod: 0,
+    nf: 1<<0,
+    ez: 1<<1,
+    td: 1<<2,
+    hd: 1<<3,
+    hr: 1<<4,
+    dt: 1<<6,
+    rx: 1<<7,
+    ht: 1<<8,
+    nc: 1<<9,
+    fl: 1<<10,
+    so: 1<<12,
+    ap: 1<<13,
+    v2: 1<<29,
+
+    // functions
+    // -----------------------------------
+    // convert droid mod string to modbits
+    droid_to_modbits(mod = "") {
+        let modbits = 4;
+        if (!mod || mod == '-') {
+            return modbits;
+        }
+        mod = mod.toLowerCase();
+        while (mod != '') {
+            for (let property in this) {
+                if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 1) continue;
+                if (mod.startsWith(property)) {
+                    modbits |= this[property];
+                    break
+                }
+            }
+            mod = mod.substr(1)
+        }
+        return modbits
+    },
+
+    // convert droid mod string to PC mod string
+    // --------------------------------------------
+    // you can choose to return a detailed response
+    droid_to_PC(mod = "", detailed = false) {
+        if (!mod) return '';
+        mod = mod.toLowerCase();
+        if (detailed) {
+            let res = '';
+            let count = 0;
+            if (mod.includes("-")) {res += 'None '; count++}
+            if (mod.includes("n")) {res += 'NoFail '; count++}
+            if (mod.includes("e")) {res += 'Easy '; count++}
+            if (mod.includes("t")) {res += 'HalfTime '; count++}
+            if (mod.includes("h")) {res += 'Hidden '; count++}
+            if (mod.includes("d")) {res += 'DoubleTime '; count++}
+            if (mod.includes("r")) {res += 'HardRock '; count++}
+            if (mod.includes("c")) {res += 'NightCore '; count++}
+            if (count > 1) {
+                return res.trimRight().split(" ").join(", ");
+            } else {
+                return res.trimRight()
+            }
+        }
+        let modbits = 0;
+        while (mod != '') {
+            for (let property in this) {
+                if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 1) continue;
+                if (mod.startsWith(property)) {
+                    modbits |= this[property];
+                    break
+                }
+            }
+            mod = mod.substr(1)
+        }
+        return this.modbits_to_string(modbits)
+    },
+
+    // construct the mods bitmask from a string such as "HDHR"
+    // thanks Francesco
+    modbits_from_string(str = "") {
+        let mask = 0;
+        str = str.toLowerCase();
+        while (str != "") {
+            let nchars = 1;
+            for (let property in this) {
+                if (!this.hasOwnProperty(property)) continue;
+                if (property.length != 2) continue;
+                if (str.startsWith(property)) {
+                    mask |= this[property];
+                    nchars = 2;
+                    break
+                }
+            }
+            str = str.slice(nchars)
+        }
+        return mask
+    },
+
+    // convert mods bitmask into a string, such as "HDHR"
+    // again thanks Francesco
+    modbits_to_string(mod = 0) {
+        let res = "";
+        for (let property in this) {
+            if (property.length != 2) continue;
+            if (!this.hasOwnProperty(property)) continue;
+            if (mod & this[property]) res += property.toUpperCase()
+        }
+        if (res.indexOf("DT") >= 0 && res.indexOf("NC") >= 0) res = res.replace("DT", "");
+        return res
+    }
+};
+
+mods.speed_changing = mods.dt | mods.nc | mods.ht;
+mods.map_changing = mods.ez | mods.hr | mods.speed_changing;
+
+// Replay analyzer
+// -----------------------------------------
+// analyzes replay from osu!droid with given
+// score ID
+class ReplayAnalyzer {
+    constructor(score_id) {
+        this.score_id = parseInt(score_id);
+        if (isNaN(this.score_id)) {
+            throw new TypeError("Score ID must be a number")
+        }
+        this.odr = undefined;
+        this.data = {}
+    }
+
+    async analyze() {
+        this.odr = await this._decompress().catch(console.error);
+        if (!this.odr) {
+            return console.log("Unable to decompress replay data")
+        }
+        this._parseReplay()
+    }
+
+    _decompress() {
+        return new Promise((resolve, reject) => {
+            const data_array = [];
+            const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
+            request(url)
+                .on('data', chunk => {
+                    data_array.push(Buffer.from(chunk))
+                })
+                .on('complete', async () => {
+                    const result = Buffer.concat(data_array);
+                    const stream = new Readable();
+                    stream.push(result);
+                    stream.push(null);
+                    stream.pipe(unzipper.Parse())
+                        .on('entry', async entry => {
+                            const fileName = entry.path;
+                            if (fileName === 'data') {
+                                resolve(await entry.buffer())
+                            } else {
+                                entry.autodrain()
+                            }
+                        })
+                        .on('error', e => {
+                            setTimeout(() => reject(e), 2000)
+                        })
+                })
+                .on('error', e => {
+                    reject(e)
+                })
+        })
+    }
+
+    _parseReplay() {
+        // javaDeserialization can only somewhat parse some string field
+        // the rest will be a buffer that we need to manually parse
+        const raw_object = javaDeserialization.parse(this.odr);
+
+        this.data.replay_version = raw_object[0].version;
+        this.data.folder_name = raw_object[1];
+        this.data.file_name = raw_object[2];
+        this.data.hash = raw_object[3];
+        this.data.time = raw_object[4].readBigUInt64BE(0);
+        this.data.hit300k = raw_object[4].readUInt32BE(8);
+        this.data.hit300 =  raw_object[4].readInt32BE(12);
+        this.data.hit100k = raw_object[4].readInt32BE(16);
+        this.data.hit100 = raw_object[4].readInt32BE(20);
+        this.data.hit50 = raw_object[4].readInt32BE(24);
+        this.data.hit0 = raw_object[4].readInt32BE(28);
+        this.data.score = raw_object[4].readInt32BE(32);
+        this.data.max_combo = raw_object[4].readInt32BE(36);
+        this.data.accuracy = raw_object[4].readFloatBE(40) * 100;
+        this.data.is_full_combo = raw_object[4][44];
+        this.data.player_name = raw_object[5];
+        this.data.mods = this._convertMods(raw_object[6].elements);
+        this.data.cursor_movement = this.data.hit_object_data = undefined;
+
+        let replay_data_buffer_array = []
+        for (let i = 7; i < raw_object.length; i++) {
+            replay_data_buffer_array.push(raw_object[i])
+        }
+
+        //merge all buffer section into one for better control when parsing
+        let replay_data_buffer = Buffer.concat(replay_data_buffer_array)
+        let buffer_counter = 0;
+
+        let size = replay_data_buffer.readInt32BE(buffer_counter)
+        buffer_counter += INT_LENGTH;
+        let move_array_collection = [];
+
+        //parse movement data
+        for (let x = 0; x < size; x++) {
+            let move_size = replay_data_buffer.readInt32BE(buffer_counter)
+            buffer_counter += INT_LENGTH
+            let move_array = {
+                size: move_size,
+                time: [],
+                x: [],
+                y: [],
+                id: []
+            }
+            for (let i = 0; i < move_size; i++) {
+                move_array.time[i] = replay_data_buffer.readInt32BE(buffer_counter)
+                buffer_counter += INT_LENGTH
+                move_array.id[i] = move_array.time[i] & 3
+                move_array.time[i] >>= 2;
+                if (move_array.id[i] != CURSOR_ID_UP) {
+                    move_array.x[i] = replay_data_buffer.readInt16BE(buffer_counter)
+                    buffer_counter += SHORT_LENGTH
+                    move_array.y[i] = replay_data_buffer.readInt16BE(buffer_counter)
+                    buffer_counter += SHORT_LENGTH
+                }
+                else {
+                    move_array.x[i] = -1
+                    move_array.y[i] = -1
+                }
+            }
+            move_array_collection.push(move_array)
+        }
+
+        let replay_object_array = [];
+        let replay_object_length = replay_data_buffer.readInt32BE(buffer_counter);
+        buffer_counter += INT_LENGTH;
+
+        //parse result data
+        for (let i = 0; i < replay_object_length; i++) {
+            let replay_object_data = {
+                accuracy: 0,
+                tickset: [],
+                result: 0
+            };
+
+            replay_object_data.accuracy = replay_data_buffer.readInt16BE(buffer_counter);
+            buffer_counter += SHORT_LENGTH;
+            let len = replay_data_buffer.readInt8(buffer_counter);
+            buffer_counter += BYTE_LENGTH;
+
+            if (len > 0) {
+                let bytes = [];
+
+                for (let j = 0; j < len; j++) {
+                    bytes.push(replay_data_buffer.readInt8(buffer_counter));
+                    buffer_counter += BYTE_LENGTH
+                }
+
+                for (let j = 0; j < len * 8; j++) replay_object_data.tickset[j] = (bytes[len - j / 8 - 1] & 1 << (j % 8)) != 0
+            }
+
+            if (this.data.replay_version >= 1) {
+                replay_object_data.result = replay_data_buffer.readInt8(buffer_counter);
+                buffer_counter += BYTE_LENGTH
+            }
+
+            replay_object_array.push(replay_object_data)
+        }
+
+        this.data.cursor_movement = move_array_collection;
+        this.data.hit_object_data = replay_object_array
+    }
+
+    // convert replay mods to regular mod string
+    _convertMods(rep_mods) {
+        const replay_mods = {
+            "NOFAIL": 1<<0,
+            "EASY": 1<<1,
+            "HIDDEN": 1<<3,
+            "HARDROCK": 1<<4,
+            "DOUBLETIME": 1<<6,
+            "HALFTIME": 1<<8,
+            "NIGHTCORE": 1<<9
+        };
+
+        let modbits = 0;
+        while (rep_mods.length) {
+            for (let property in replay_mods) {
+                if (!replay_mods.hasOwnProperty(property)) continue;
+                console.log(rep_mods[0]);
+                if (!rep_mods[0].includes(property)) continue;
+                modbits |= replay_mods[property];
+                break
+            }
+            rep_mods.shift()
+        }
+
+        return mods.modbits_to_string(modbits)
+    }
+}
+
 // bitmask constant of objects
 let object_types = {
     circle: 1<<0,
     slider: 1<<1,
-    spinner: 1<<3,
+    spinner: 1<<3
 };
+
+
+// (internal)
+// time string parsing function to statistics utility
+function timeString(second) {
+    return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+}
 
 // MapInfo instance
 // ---------------------------------------------
@@ -255,7 +597,7 @@ class MapInfo {
         this.diff_speed = 0;
         this.diff_total = 0;
         this.hash = '';
-        this.osu_file = null;
+        this.osu_file = ''
     }
 
     // retrieve a beatmap's information
@@ -263,99 +605,95 @@ class MapInfo {
     // params:
     //  beatmap_id or hash (one is required), file = true
     //
-    // returns a callback of the map's information
-    get(params, callback) {
-        let beatmapid = params.beatmap_id;
-        let hash = params.hash;
-        if (params.file === undefined) {
-            params.file = true;
-        }
+    // returns a promise of the map's information
+    get(params) {
+        return new Promise((resolve, reject) => {
+            let beatmapid = params.beatmap_id;
+            let hash = params.hash;
+            if (params.file === undefined) {
+                params.file = true;
+            }
 
-        let options;
-        if (beatmapid) {
-            options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
-        }
-        else if (hash) {
-            options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
-        }
-        else {
-            throw new TypeError("Beatmap ID or MD5 hash must be defined");
-        }
+            let options;
+            if (beatmapid) {
+                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
+            }
+            else if (hash) {
+                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
+            }
+            else {
+                throw new TypeError("Beatmap ID or MD5 hash must be defined");
+            }
 
-        let content = '';
-        let req = https.get(options, res => {
-            res.setTimeout(10000);
-            res.setEncoding("utf8");
-            res.on("data", chunk => {
-                content += chunk
-            });
-            res.on("error", err => {
-                console.log("Error retrieving map info");
-                console.log(err);
-                return callback(this)
-            });
-            res.on("end", () => {
-                let obj;
-                try {
-                    obj = JSON.parse(content)
-                } catch (e) {
-                    console.log("Error parsing map info");
-                    return callback(this)
-                }
-                if (!obj || !obj[0]) {
-                    console.log("Map not found");
-                    return callback(this)
-                }
-                let mapinfo = obj[0];
-                if (mapinfo.mode != 0) {
-                    return callback(this)
-                }
-                this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
-                this.title = mapinfo.title;
-                this.artist = mapinfo.artist;
-                this.creator = mapinfo.creator;
-                this.version = mapinfo.version;
-                this.approved = parseInt(mapinfo.approved);
-                this.mode = parseInt(mapinfo.mode);
-                this.beatmap_id = parseInt(mapinfo.beatmap_id);
-                this.beatmapset_id = parseInt(mapinfo.beatmapset_id);
-                this.plays = parseInt(mapinfo.playcount);
-                this.favorites = parseInt(mapinfo.favourite_count);
-                this.last_update = mapinfo.last_update;
-                this.hit_length = parseInt(mapinfo.hit_length);
-                this.total_length = parseInt(mapinfo.total_length);
-                this.bpm = parseFloat(mapinfo.bpm);
-                this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
-                this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
-                this.spinners = mapinfo.count_slider ? parseInt(mapinfo.count_spinner) : 0;
-                this.objects = this.circles + this.sliders + this.spinners;
-                this.max_combo = parseInt(mapinfo.max_combo);
-                this.cs = parseFloat(mapinfo.diff_size);
-                this.ar = parseFloat(mapinfo.diff_approach);
-                this.od = parseFloat(mapinfo.diff_overall);
-                this.hp = parseFloat(mapinfo.diff_drain);
-                if (mapinfo.packs) this.packs = mapinfo.packs;
-                this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
-                this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
-                this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
-                this.hash = mapinfo.file_md5;
-                if (!params.file) {
-                    return callback(this)
-                }
-                let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
-                request(url, (err, response, data) => {
-                    if (err || !data) {
-                        console.log("Error downloading osu file");
-                        if (beatmapid) console.log("Beatmap ID:", beatmapid);
-                        else console.log("MD5 hash:", hash);
-                        return callback(this)
+            let content = '';
+            let req = https.get(options, res => {
+                res.setTimeout(10000);
+                res.setEncoding("utf8");
+                res.on("data", chunk => {
+                    content += chunk
+                });
+                res.on("error", err => {
+                    reject("Error retrieving map info\n" + err)
+                });
+                res.on("end", () => {
+                    let obj;
+                    try {
+                        obj = JSON.parse(content)
+                    } catch (e) {
+                        reject("Error parsing map info")
                     }
-                    this.osu_file = data;
-                    callback(this)
+                    if (!obj || !obj[0]) {
+                        reject("Map not found")
+                    }
+                    let mapinfo = obj[0];
+                    if (mapinfo.mode != 0) {
+                        reject("Mode not supported")
+                    }
+
+                    this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
+                    this.title = mapinfo.title;
+                    this.artist = mapinfo.artist;
+                    this.creator = mapinfo.creator;
+                    this.version = mapinfo.version;
+                    this.approved = parseInt(mapinfo.approved);
+                    this.mode = parseInt(mapinfo.mode);
+                    this.beatmap_id = parseInt(mapinfo.beatmap_id);
+                    this.beatmapset_id = parseInt(mapinfo.beatmapset_id);
+                    this.plays = parseInt(mapinfo.playcount);
+                    this.favorites = parseInt(mapinfo.favourite_count);
+                    this.last_update = mapinfo.last_update;
+                    this.hit_length = parseInt(mapinfo.hit_length);
+                    this.total_length = parseInt(mapinfo.total_length);
+                    this.bpm = parseFloat(mapinfo.bpm);
+                    this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
+                    this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
+                    this.spinners = mapinfo.count_slider ? parseInt(mapinfo.count_spinner) : 0;
+                    this.objects = this.circles + this.sliders + this.spinners;
+                    this.max_combo = parseInt(mapinfo.max_combo);
+                    this.cs = parseFloat(mapinfo.diff_size);
+                    this.ar = parseFloat(mapinfo.diff_approach);
+                    this.od = parseFloat(mapinfo.diff_overall);
+                    this.hp = parseFloat(mapinfo.diff_drain);
+                    if (mapinfo.packs) this.packs = mapinfo.packs;
+                    this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
+                    this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
+                    this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
+                    this.hash = mapinfo.file_md5;
+                    if (!params.file) {
+                        resolve(this)
+                    }
+                    let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
+                    request(url, (err, response, data) => {
+                        if (err || !data) {
+                            reject("Error downloading osu file");
+                        }
+                        this.osu_file = data;
+                        resolve(this)
+                    })
                 })
-            })
-        });
-        req.end()
+            });
+            req.end()
+        })
     }
 
     // (internal)
@@ -495,6 +833,8 @@ class MapInfo {
         if (mod & mods.ez) score_multiplier *= 0.5;
         if (mod & mods.ht) score_multiplier *= 0.3;
 
+        if (mod & (mods.rx | mods.ap)) score_multiplier = 0;
+
         let parser = new Parser();
         try {
             parser.parse(this.osu_file)
@@ -506,7 +846,7 @@ class MapInfo {
         let objects = map.objects;
         let combo = 0;
         let score = 0;
-        
+
         let tindex = -1;
         let tnext = Number.NEGATIVE_INFINITY;
         let px_per_beat = 0;
@@ -557,135 +897,6 @@ class MapInfo {
         return `${this.full_title}\nCS: ${this.cs} - AR: ${this.ar} - OD: ${this.od} - HP: ${this.hp}\nBPM: ${this.bpm} - Length: ${this.hit_length}/${this.total_length} - Max Combo: ${this.max_combo}\nLast Update: ${this.last_update}`
     }
 }
-
-    function timeString(second) {
-    return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
-}
-
-let mods = {
-    // bitmask constant of mods both for osu!droid and osu!standard
-    // ------------------------------------------------------------
-    // osu!droid
-    n: 1<<0, // NF
-    e: 1<<1, // EZ
-    h: 1<<3, // HD
-    r: 1<<4, // HR
-    d: 1<<6, // DT
-    t: 1<<8, // HT
-    c: 1<<9, // NC
-
-    // osu!standard
-    nomod: 0,
-    nf: 1<<0,
-    ez: 1<<1,
-    td: 1<<2,
-    hd: 1<<3,
-    hr: 1<<4,
-    dt: 1<<6,
-    ht: 1<<8,
-    nc: 1<<9,
-    fl: 1<<10,
-    so: 1<<12,
-    v2: 1<<29,
-
-    // functions
-    // -----------------------------------
-    // convert droid mod string to modbits
-    droid_to_modbits(mod = "") {
-        let modbits = 4;
-        if (!mod || mod == '-') {
-            return modbits;
-        }
-        mod = mod.toLowerCase();
-        while (mod != '') {
-            for (let property in this) {
-                if (!this.hasOwnProperty(property)) continue;
-                if (property.length != 1) continue;
-                if (mod.startsWith(property)) {
-                    modbits |= this[property];
-                    break
-                }
-            }
-            mod = mod.substr(1)
-        }
-        return modbits
-    },
-
-    // convert droid mod string to PC mod string
-    // --------------------------------------------
-    // you can choose to return a detailed response
-    droid_to_PC(mod = "", detailed = false) {
-        if (!mod) return '';
-        mod = mod.toLowerCase();
-        if (detailed) {
-            let res = '';
-            let count = 0;
-            if (mod.includes("-")) {res += 'None '; count++}
-            if (mod.includes("n")) {res += 'NoFail '; count++}
-            if (mod.includes("e")) {res += 'Easy '; count++}
-            if (mod.includes("t")) {res += 'HalfTime '; count++}
-            if (mod.includes("h")) {res += 'Hidden '; count++}
-            if (mod.includes("d")) {res += 'DoubleTime '; count++}
-            if (mod.includes("r")) {res += 'HardRock '; count++}
-            if (mod.includes("c")) {res += 'NightCore '; count++}
-            if (count > 1) {
-                return res.trimRight().split(" ").join(", ");
-            } else {
-                return res.trimRight()
-            }
-        }
-        let modbits = 0;
-        while (mod != '') {
-            for (let property in this) {
-                if (!this.hasOwnProperty(property)) continue;
-                if (property.length != 1) continue;
-                if (mod.startsWith(property)) {
-                    modbits |= this[property];
-                    break
-                }
-            }
-            mod = mod.substr(1)
-        }
-        return this.modbits_to_string(modbits)
-    },
-
-    // construct the mods bitmask from a string such as "HDHR"
-    // thanks Francesco
-    modbits_from_string(str = "") {
-        let mask = 0;
-        str = str.toLowerCase();
-        while (str != "") {
-            let nchars = 1;
-            for (let property in this) {
-                if (!this.hasOwnProperty(property)) continue;
-                if (property.length != 2) continue;
-                if (str.startsWith(property)) {
-                    mask |= this[property];
-                    nchars = 2;
-                    break
-                }
-            }
-            str = str.slice(nchars)
-        }
-        return mask
-    },
-
-    // convert mods bitmask into a string, such as "HDHR"
-    // again thanks Francesco
-    modbits_to_string(mod = 0) {
-        let res = "";
-        for (let property in this) {
-            if (property.length != 2) continue;
-            if (!this.hasOwnProperty(property)) continue;
-            if (mod & this[property]) res += property.toUpperCase()
-        }
-        if (res.indexOf("DT") >= 0 && res.indexOf("NC") >= 0) res = res.replace("DT", "");
-        return res
-    }
-};
-
-mods.speed_changing = mods.dt | mods.nc | mods.ht;
-mods.map_changing = mods.ez | mods.hr | mods.speed_changing;
 
 let rankImage = {
     S: "http://ops.dgsrz.com/assets/images/ranking-S-small.png",
@@ -1182,7 +1393,7 @@ class Parser {
 
         // [SectionName]
         if (line.startsWith("[")) {
-            if (this.section == "Difficulty" && !this.map.ar) {
+            if (this.section === "Difficulty" && !this.map.ar) {
                 this.map.ar = this.map.od
             }
             this.section = line.substring(1, line.length - 1);
@@ -1463,7 +1674,7 @@ class StandardDiff {
     // * map: the beatmap we want to calculate difficulty for. if
     //   unspecified, it will default to the last map used
     //   in previous calls.
-    // * mods: mods bitmask, defaults to modbits.nomod
+    // * mods: mods string, defaults to none (no mod)
     // * singletap_threshold: interval threshold in milliseconds
     //   for singletaps. defaults to 240 bpm 1/2 singletaps
     //   ```(60000 / 240) / 2``` .
@@ -2338,6 +2549,7 @@ function ppv2(params) {
 
 osudroid.PlayInfo = PlayInfo;
 osudroid.PlayerInfo = PlayerInfo;
+osudroid.ReplayAnalyzer = ReplayAnalyzer;
 osudroid.object_types = object_types;
 osudroid.MapInfo = MapInfo;
 osudroid.mods = mods;
@@ -2354,6 +2566,6 @@ osudroid.StandardDiff = StandardDiff;
 osudroid.MapStars = MapStars;
 osudroid.Accuracy = Accuracy;
 osudroid.MapPP = MapPP;
-osudroid.ppv2 = ppv2
+osudroid.ppv2 = ppv2;
 
 })();
