@@ -13,12 +13,11 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 }
 
 async function retrievePlay(uid) {
-    new osudroid.PlayerInfo().get({uid: uid}, player => {
-        return player.recent_plays
-    })
+    const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+    return player.recent_plays;
 }
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (args[0] !== "about" && message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
 
@@ -377,7 +376,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         // views match information
         case "info": {
-            multi.findOne(query, (err, res) => {
+            multi.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -413,22 +412,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 player_string = player_string.trimRight().split(" ").join(", ");
 
-                new osudroid.MapInfo().get({beatmap_id: beatmap_id}, mapinfo => {
-                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
-                    if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id}).catch(console.error);
+                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
+                if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 
-                    embed.setTitle("Match Information")
-                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setDescription(`**Name**: ${name}\n**Host**: <@${host}>\n**Players**: ${players.length}/${max_players}\n**Date created**: ${date.toUTCString()}`)
-                        .addField(`**Beatmap Information**`, `**[${mapinfo.showStatistics(mod, 0)}](https://osu.ppy.sh/b/${mapinfo.beatmap_id})**\n${mapinfo.showStatistics(mod, 1)}\n\n${mapinfo.showStatistics(mod, 2)}\n${mapinfo.showStatistics(mod, 3)}\n${mapinfo.showStatistics(mod, 4)}\n${mapinfo.showStatistics(mod, 5)}\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`)
-                        .addField("**Match Settings**", `**Mods**: ${capitalizeString(mod)}\n**Win Condition**: ${capitalizeString(win_condition)}\n**Team Mode**: ${team_mode}`)
-                        .addField("**Players**", player_string);
+                embed.setTitle("Match Information")
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setDescription(`**Name**: ${name}\n**Host**: <@${host}>\n**Players**: ${players.length}/${max_players}\n**Date created**: ${date.toUTCString()}`)
+                    .addField(`**Beatmap Information**`, `**[${mapinfo.showStatistics(mod, 0)}](https://osu.ppy.sh/b/${mapinfo.beatmap_id})**\n${mapinfo.showStatistics(mod, 1)}\n\n${mapinfo.showStatistics(mod, 2)}\n${mapinfo.showStatistics(mod, 3)}\n${mapinfo.showStatistics(mod, 4)}\n${mapinfo.showStatistics(mod, 5)}\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`)
+                    .addField("**Match Settings**", `**Mods**: ${capitalizeString(mod)}\n**Win Condition**: ${capitalizeString(win_condition)}\n**Team Mode**: ${team_mode}`)
+                    .addField("**Players**", player_string);
 
-                    message.channel.send({embed: embed})
-                })
+                message.channel.send({embed: embed})
             });
             break
         }
@@ -955,56 +953,55 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
             if (isNaN(map)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**")
 
-            new osudroid.MapInfo().get({beatmap_id: map}, mapinfo => {
-                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
-                if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map}).catch(console.error);
+            if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+            if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
+            if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 
-                multi.findOne(query, (err, res) => {
+            multi.findOne(query, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
+                let host = res.host;
+                if (host !== message.author.id) return message.channel.send("❎ **| I'm sorry, you're not the host of this multiplayer game!**");
+                if (res.isOngoing) return message.channel.send("❎ **| Hey, a match is currently ongoing!**");
+
+                let match_settings = res.match_settings;
+                let mod = match_settings.mods;
+                let beatmap = match_settings.beatmap.id;
+                if (beatmap === mapinfo.beatmap_id) return message.channel.send("❎ **| Hey, the beatmap specified is the same as current beatmap!**")
+
+                if (mod === 'FreeMod') mod = '';
+
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+
+                embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setColor(mapinfo.statusColor(mapinfo.approved))
+                    .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+                    .setTitle(mapinfo.showStatistics(mod, 0))
+                    .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+                    .setDescription(mapinfo.showStatistics(mod, 1))
+                    .addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
+                    .addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
+                    .addField("**Star Rating**", `${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} **${parseFloat(star.droid_stars).toFixed(2)} droid stars**\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} **${parseFloat(star.pc_stars).toFixed(2)} PC stars**`);
+
+                match_settings.beatmap.id = mapinfo.beatmap_id;
+                match_settings.beatmap.hash = mapinfo.hash;
+
+                updateVal = {
+                    $set: {
+                        match_settings: match_settings
+                    }
+                };
+
+                multi.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
-                    let host = res.host;
-                    if (host !== message.author.id) return message.channel.send("❎ **| I'm sorry, you're not the host of this multiplayer game!**");
-                    if (res.isOngoing) return message.channel.send("❎ **| Hey, a match is currently ongoing!**");
-
-                    let match_settings = res.match_settings;
-                    let mod = match_settings.mods;
-                    let beatmap = match_settings.beatmap.id;
-                    if (beatmap === mapinfo.beatmap_id) return message.channel.send("❎ **| Hey, the beatmap specified is the same as current beatmap!**")
-
-                    if (mod === 'FreeMod') mod = '';
-
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-
-                    embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setColor(mapinfo.statusColor(mapinfo.approved))
-                        .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-                        .setTitle(mapinfo.showStatistics(mod, 0))
-                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-                        .setDescription(mapinfo.showStatistics(mod, 1))
-                        .addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
-                        .addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
-                        .addField("**Star Rating**", `${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} **${parseFloat(star.droid_stars).toFixed(2)} droid stars**\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} **${parseFloat(star.pc_stars).toFixed(2)} PC stars**`);
-
-                    match_settings.beatmap.id = mapinfo.beatmap_id;
-                    match_settings.beatmap.hash = mapinfo.hash;
-
-                    updateVal = {
-                        $set: {
-                            match_settings: match_settings
-                        }
-                    };
-
-                    multi.updateOne(query, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        message.channel.send(`✅ **| ${message.author}, successfully set beatmap for multiplayer game.**`, {embed: embed})
-                    })
+                    message.channel.send(`✅ **| ${message.author}, successfully set beatmap for multiplayer game.**`, {embed: embed})
                 })
             });
             break
@@ -1141,7 +1138,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         // start match
         case 'start': {
-            multi.findOne(query, (err, res) => {
+            multi.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -1157,142 +1154,141 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                 let beatmap_id = res.match_settings.beatmap.id;
 
-                new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}, mapinfo => {
-                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}).catch(console.error);
+                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 
-                    let length = mapinfo.total_length;
+                let length = mapinfo.total_length;
 
-                    let last_activity = res.last_activity + length + 90;
+                let last_activity = res.last_activity + length + 90;
 
-                    updateVal = {
-                        $set: {
-                            last_activity: last_activity,
-                            isOngoing: true
-                        }
-                    };
+                updateVal = {
+                    $set: {
+                        last_activity: last_activity,
+                        isOngoing: true
+                    }
+                };
 
-                    multi.updateOne(query, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        let date = new Date(last_activity * 1000);
-                        message.channel.send(`✅ **| ${message.author}, successfully initiated match. Match will be started in 10 seconds.**`);
+                multi.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    let date = new Date(last_activity * 1000);
+                    message.channel.send(`✅ **| ${message.author}, successfully initiated match. Match will be started in 10 seconds.**`);
+                    setTimeout(() => {
+                        message.channel.send(`❗**| The match has started! Players will have to submit their play before \`${date.toUTCString()}\`!**`);
+
                         setTimeout(() => {
-                            message.channel.send(`❗**| The match has started! Players will have to submit their play before \`${date.toUTCString()}\`!**`);
+                            message.channel.send("❗**| The map has finished! Players have 1 minute to submit their play!**");
 
                             setTimeout(() => {
-                                message.channel.send("❗**| The map has finished! Players have 1 minute to submit their play!**");
+                                message.channel.send("❗**| Players have 30 seconds left to submit their play!**");
 
                                 setTimeout(() => {
-                                    message.channel.send("❗**| Players have 30 seconds left to submit their play!**");
+                                    message.channel.send("❗**| Players have  seconds left to submit their play!**");
 
                                     setTimeout(() => {
-                                        message.channel.send("❗**| Players have  seconds left to submit their play!**");
+                                        message.channel.send("❗**| Score submission closed! The game host has 30 seconds to remove invalid scores!**");
 
                                         setTimeout(() => {
-                                            message.channel.send("❗**| Score submission closed! The game host has 30 seconds to remove invalid scores!**");
+                                            multi.findOne(query, (err, mres) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                                }
+                                                if (!mres) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
 
-                                            setTimeout(() => {
-                                                multi.findOne(query, (err, mres) => {
+                                                let temp_scores = mres.temporary_scores;
+                                                let match_settings = mres.match_settings;
+                                                let condition = match_settings.win_condition;
+                                                let mode = match_settings.team_mode;
+                                                let teams = match_settings.teams;
+                                                let mod = match_settings.mods;
+                                                if (mod === 'FM') mod = '';
+                                                let winner = temp_scores.filter(entry => entry.value === temp_scores[0].value);
+
+                                                if (winner.length > 1 && (condition === 'acc' || condition === 'combo')) {
+                                                    temp_scores.sort((a, b) => {return b.score - a.score});
+                                                    winner = temp_scores.filter(entry => entry.score === temp_scores[0].score);
+                                                }
+
+                                                embed.setTitle("Match Result")
+                                                    .setDescription(mapinfo.showStatistics(mod, 0) + "\n\n" + mapinfo.showStatistics(mod, 1))
+                                                    .addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
+                                                    .addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
+                                                    .setColor(mapinfo.statusColor(mapinfo.approved))
+                                                    .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+                                                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+
+                                                if (winner.length > 1) {
+                                                    let winners = '';
+                                                    winner.forEach(w => {
+                                                        let player_index = players.findIndex((player) => player.discordid === w.discordid);
+                                                        ++players[player_index].score;
+                                                        winners += `${w.username} - ${w.value.toLocaleString()}\n`
+                                                    });
+
+                                                    embed.addField("**Winners**", winners)
+                                                } else {
+                                                    if (mode === 'teamvs') {
+                                                        let winner_team = winner.team;
+                                                        for (let i = 0; i < teams[winner_team].length; i++) {
+                                                            let team_member = teams[winner_team][i];
+                                                            let player_index = players.findIndex((player) => player.discordid === team_member.discordid);
+                                                            ++players[player_index].score
+                                                        }
+                                                        embed.addField("**Winner**", `${winner_team} Team - ${winner.value.toLocaleString()}`)
+                                                    } else {
+                                                        let player_index = players.findIndex((player) => player.discordid === winner.discordid);
+                                                        ++players[player_index].score;
+                                                        embed.addField("**Winner**", `${winner.username} - ${winner.value.toLocaleString()}`)
+                                                    }
+                                                }
+
+                                                players.map((player) => {
+                                                    player.isReady = player.hasSubmitted = false
+                                                });
+
+                                                let rank_string = '';
+                                                for (let i = 0; i < temp_scores.length; i++) {
+                                                    switch (mode) {
+                                                        case 'hth':
+                                                            rank_string += `#${i+1}: <@${temp_scores[i].discordid}> (${temp_scores[i].username}) - **${temp_scores[i].value.toLocaleString()}**\n`;
+                                                            break;
+                                                        case 'teamvs':
+                                                            rank_string += `#${i+1}: ${temp_scores[i].team} Team - **${temp_scores[i].value.toLocaleString()}**\n`
+                                                    }
+                                                }
+
+                                                embed.addField("**Player Ranking**", rank_string);
+
+                                                updateVal = {
+                                                    $set: {
+                                                        temporary_scores: [],
+                                                        players: players
+                                                    }
+                                                };
+
+                                                multi.updateOne(query, updateVal, err => {
                                                     if (err) {
                                                         console.log(err);
                                                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                                     }
-                                                    if (!mres) return message.channel.send("❎ **| I'm sorry, there is no ongoing multiplayer game in this channel!**");
-
-                                                    let temp_scores = mres.temporary_scores;
-                                                    let match_settings = mres.match_settings;
-                                                    let condition = match_settings.win_condition;
-                                                    let mode = match_settings.team_mode;
-                                                    let teams = match_settings.teams;
-                                                    let mod = match_settings.mods;
-                                                    if (mod === 'FM') mod = '';
-                                                    let winner = temp_scores.filter(entry => entry.value === temp_scores[0].value);
-
-                                                    if (winner.length > 1 && (condition === 'acc' || condition === 'combo')) {
-                                                        temp_scores.sort((a, b) => {return b.score - a.score});
-                                                        winner = temp_scores.filter(entry => entry.score === temp_scores[0].score);
-                                                    }
-
-                                                    embed.setTitle("Match Result")
-                                                        .setDescription(mapinfo.showStatistics(mod, 0) + "\n\n" + mapinfo.showStatistics(mod, 1))
-                                                        .addField(mapinfo.showStatistics(mod, 2), mapinfo.showStatistics(mod, 3))
-                                                        .addField(mapinfo.showStatistics(mod, 4), mapinfo.showStatistics(mod, 5))
-                                                        .setColor(mapinfo.statusColor(mapinfo.approved))
-                                                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-                                                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-
-                                                    if (winner.length > 1) {
-                                                        let winners = '';
-                                                        winner.forEach(w => {
-                                                            let player_index = players.findIndex((player) => player.discordid === w.discordid);
-                                                            ++players[player_index].score;
-                                                            winners += `${w.username} - ${w.value.toLocaleString()}\n`
-                                                        });
-
-                                                        embed.addField("**Winners**", winners)
-                                                    } else {
-                                                        if (mode === 'teamvs') {
-                                                            let winner_team = winner.team;
-                                                            for (let i = 0; i < teams[winner_team].length; i++) {
-                                                                let team_member = teams[winner_team][i];
-                                                                let player_index = players.findIndex((player) => player.discordid === team_member.discordid);
-                                                                ++players[player_index].score
-                                                            }
-                                                            embed.addField("**Winner**", `${winner_team} Team - ${winner.value.toLocaleString()}`)
-                                                        } else {
-                                                            let player_index = players.findIndex((player) => player.discordid === winner.discordid);
-                                                            ++players[player_index].score;
-                                                            embed.addField("**Winner**", `${winner.username} - ${winner.value.toLocaleString()}`)
-                                                        }
-                                                    }
-
-                                                    players.map((player) => {
-                                                        player.isReady = player.hasSubmitted = false
-                                                    });
-
-                                                    let rank_string = '';
-                                                    for (let i = 0; i < temp_scores.length; i++) {
-                                                        switch (mode) {
-                                                            case 'hth':
-                                                                rank_string += `#${i+1}: <@${temp_scores[i].discordid}> (${temp_scores[i].username}) - **${temp_scores[i].value.toLocaleString()}**\n`;
-                                                                break;
-                                                            case 'teamvs':
-                                                                rank_string += `#${i+1}: ${temp_scores[i].team} Team - **${temp_scores[i].value.toLocaleString()}**\n`
-                                                        }
-                                                    }
-
-                                                    embed.addField("**Player Ranking**", rank_string);
-
-                                                    updateVal = {
-                                                        $set: {
-                                                            temporary_scores: [],
-                                                            players: players
-                                                        }
-                                                    };
-
-                                                    multi.updateOne(query, updateVal, err => {
-                                                        if (err) {
-                                                            console.log(err);
-                                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                        }
-                                                        message.channel.send("✅ **| Match has been decided!**", {embed: embed})
-                                                    })
+                                                    message.channel.send("✅ **| Match has been decided!**", {embed: embed})
                                                 })
-                                            }, 30000);
+                                            })
+                                        }, 30000);
 
-                                        }, 15000);
+                                    }, 15000);
 
-                                    },  15000);
+                                },  15000);
 
-                                }, 30000);
+                            }, 30000);
 
-                            }, length * 1000);
+                        }, length * 1000);
 
-                        }, 10000)
-                    })
+                    }, 10000)
                 })
             });
             break
@@ -1557,85 +1553,84 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                 }
 
-                new osudroid.MapInfo().get({hash: hash, file: false}, mapinfo => {
-                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
+                const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false}).catch(console.error);
+                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 
-                    if (mapinfo.max_combo < combo) combo = mapinfo.max_combo;
+                if (mapinfo.max_combo < combo) combo = mapinfo.max_combo;
 
-                    let max_score = mapinfo.max_score(mods);
+                let max_score = mapinfo.max_score(mods);
 
-                    let props = {
-                        discordid: player.discordid,
-                        username: player.username
-                    };
+                let props = {
+                    discordid: player.discordid,
+                    username: player.username
+                };
 
-                    switch (condition) {
-                        case 'score':
-                            props.value = props.score = score;
-                            break;
-                        case 'combo':
-                            props.value = combo;
-                            props.score = score;
-                            break;
-                        case 'acc':
-                            props.value = acc;
-                            props.score = score;
-                            break;
-                        case 'scorev2':
-                            props.value = scoreCalc(score, max_score, acc, miss)
-                    }
+                switch (condition) {
+                    case 'score':
+                        props.value = props.score = score;
+                        break;
+                    case 'combo':
+                        props.value = combo;
+                        props.score = score;
+                        break;
+                    case 'acc':
+                        props.value = acc;
+                        props.score = score;
+                        break;
+                    case 'scorev2':
+                        props.value = scoreCalc(score, max_score, acc, miss)
+                }
 
-                    if (mode === 'hth') temp_scores.push(props);
-                    else {
-                        let red_team = teams.red;
-                        let blue_team = teams.blue;
-                        let red_team_index = red_team.findIndex((player) => player.discordid === message.author.id);
-                        let blue_team_index = blue_team.findIndex((player) => player.discordid === message.author.id);
-                        let team;
+                if (mode === 'hth') temp_scores.push(props);
+                else {
+                    let red_team = teams.red;
+                    let blue_team = teams.blue;
+                    let red_team_index = red_team.findIndex((player) => player.discordid === message.author.id);
+                    let blue_team_index = blue_team.findIndex((player) => player.discordid === message.author.id);
+                    let team;
 
-                        if (red_team_index !== -1) team = 'red';
-                        if (blue_team_index !== -1) team = 'blue';
-                        if (!team) return message.channel.send("❎ **| I'm sorry, you are not in a team!**");
+                    if (red_team_index !== -1) team = 'red';
+                    if (blue_team_index !== -1) team = 'blue';
+                    if (!team) return message.channel.send("❎ **| I'm sorry, you are not in a team!**");
 
-                        let team_index = temp_scores.findIndex(team => team.team === team);
-                        if (team_index !== -1) {
-                            if (condition === 'acc') {
-                                temp_scores[team_index].value *= temp_scores[team_index].submitted_scores;
-                                temp_scores[team_index].value += props.value;
-                                ++temp_scores[team_index].submitted_scores;
-                                temp_scores[team_index].value /= temp_scores[team_index].submitted_scores;
-                            } else {
-                                temp_scores[team_index].value += props.value;
-                                ++temp_scores[team_index].submitted_scores
-                            }
-                            temp_scores.submitters.push(props)
-                        } else temp_scores.push({
-                            submitted_scores: 1,
-                            team: team,
-                            value: props.value,
-                            submitters: [props]
-                        })
-                    }
-
-                    temp_scores.sort((a, b) => {return b.value - a.value});
-                    player.hasSubmitted = true;
-                    players[player_index] = player;
-
-                    updateVal = {
-                        $set: {
-                            players: players,
-                            temporary_scores: temp_scores
+                    let team_index = temp_scores.findIndex(team => team.team === team);
+                    if (team_index !== -1) {
+                        if (condition === 'acc') {
+                            temp_scores[team_index].value *= temp_scores[team_index].submitted_scores;
+                            temp_scores[team_index].value += props.value;
+                            ++temp_scores[team_index].submitted_scores;
+                            temp_scores[team_index].value /= temp_scores[team_index].submitted_scores;
+                        } else {
+                            temp_scores[team_index].value += props.value;
+                            ++temp_scores[team_index].submitted_scores
                         }
-                    };
-
-                    multi.updateOne(query, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        message.channel.send(`✅ **| ${message.author}, successfully submitted your score.**`)
+                        temp_scores.submitters.push(props)
+                    } else temp_scores.push({
+                        submitted_scores: 1,
+                        team: team,
+                        value: props.value,
+                        submitters: [props]
                     })
+                }
+
+                temp_scores.sort((a, b) => {return b.value - a.value});
+                player.hasSubmitted = true;
+                players[player_index] = player;
+
+                updateVal = {
+                    $set: {
+                        players: players,
+                        temporary_scores: temp_scores
+                    }
+                };
+
+                multi.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    message.channel.send(`✅ **| ${message.author}, successfully submitted your score.**`)
                 })
             });
             break

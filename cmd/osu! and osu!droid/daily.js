@@ -413,7 +413,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // to see upcoming/past challenges
             if (args[1] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) query = {challengeid: args[1]};
             else query = {status: "ongoing"};
-            dailydb.find(query).toArray((err, dailyres) => {
+            dailydb.find(query).toArray(async (err, dailyres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -426,25 +426,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmapid = dailyres[0].beatmapid;
                 let featured = dailyres[0].featured;
                 if (!featured) featured = "386742340968120321";
-                new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
-                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-                    let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
-                    let requirements = challengeRequirements(challengeid, pass, bonus);
-                    let pass_string = requirements[0];
-                    let bonus_string = requirements[1];
-                    let constrain_string = constrain.length > 0 ? `**${constrain}** only` : "Any rankable mod except EZ, NF, and HT is allowed";
-                    embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
-                        .setColor(mapinfo.statusColor())
-                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
-                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
-                        .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                        .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
+                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                let requirements = challengeRequirements(challengeid, pass, bonus);
+                let pass_string = requirements[0];
+                let bonus_string = requirements[1];
+                let constrain_string = constrain.length > 0 ? `**${constrain}** only` : "Any rankable mod except EZ, NF, and HT is allowed";
+                embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                    .setColor(mapinfo.statusColor())
+                    .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
+                    .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                    message.channel.send({embed: embed}).catch(console.error)
-                });
+                message.channel.send({embed: embed}).catch(console.error);
                 cd.add(message.author.id);
                 setTimeout(() => {
                     cd.delete(message.author.id)
@@ -461,7 +460,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (args[1] == "check") {
                 if (args[2] && (message.author.id == '386742340968120321' || message.author.id == '132783516176875520')) query = {challengeid: args[2]};
                 else query = {status: "w-ongoing"};
-                dailydb.find(query).toArray((err, dailyres) => {
+                dailydb.find(query).toArray(async (err, dailyres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -474,25 +473,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres[0].beatmapid;
                     let featured = dailyres[0].featured;
                     if (!featured) featured = "386742340968120321";
-                    new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                        if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
-                        if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-                        let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
-                        let requirements = challengeRequirements(challengeid, pass, bonus);
-                        let pass_string = requirements[0];
-                        let bonus_string = requirements[1];
-                        let constrain_string = constrain.length > 0 ? `**${constrain}** only` : "Any rankable mod except EZ, NF, and HT is allowed";
-                        embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
-                            .setColor(mapinfo.statusColor())
-                            .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
-                            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                            .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
-                            .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
+                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                    let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                    let requirements = challengeRequirements(challengeid, pass, bonus);
+                    let pass_string = requirements[0];
+                    let bonus_string = requirements[1];
+                    let constrain_string = constrain.length > 0 ? `**${constrain}** only` : "Any rankable mod except EZ, NF, and HT is allowed";
+                    embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                        .setColor(mapinfo.statusColor())
+                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
+                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                        .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
+                        .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
+                        .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                        message.channel.send({embed: embed}).catch(console.error)
-                    });
+                    message.channel.send({embed: embed}).catch(console.error);
                     cd.add(message.author.id);
                     setTimeout(() => {
                         cd.delete(message.author.id)
@@ -501,7 +499,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return
             }
             query = {discordid: message.author.id};
-            binddb.find(query).toArray((err, userres) => {
+            binddb.find(query).toArray(async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -510,246 +508,244 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres[0].uid;
                 let username = userres[0].username;
                 let clan = userres[0].clan;
-                new osudroid.PlayerInfo().get({uid: uid}, player => {
-                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
-                    if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-                    let rplay = player.recent_plays;
-                    query = {status: "w-ongoing"};
-                    dailydb.find(query).toArray((err, dailyres) => {
+                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
+                if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                let rplay = player.recent_plays;
+                query = {status: "w-ongoing"};
+                dailydb.find(query).toArray(async (err, dailyres) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
+                    let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                    if (timelimit < 0) return message.channel.send("❎ **| I'm sorry, this challenge is over! Please wait for the next one to start!**");
+                    let challengeid = dailyres[0].challengeid;
+                    let beatmapid = dailyres[0].beatmapid;
+                    let constrain = dailyres[0].constrain.toUpperCase();
+                    let hash = dailyres[0].hash;
+                    let found = false;
+                    let score;
+                    let acc;
+                    let mod;
+                    let miss;
+                    let combo;
+                    let rank;
+                    for (let i = 0; i < rplay.length; i++) {
+                        if (rplay[i].hash == hash) {
+                            score = rplay[i].score;
+                            acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
+                            mod = rplay[i].mode;
+                            miss = rplay[i].miss;
+                            combo = rplay[i].combo;
+                            rank = rplay[i].mark;
+                            found = true;
+                            break
+                        }
+                    }
+                        if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
+                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                    let npp = osudroid.ppv2({
+                        stars: star.droid_stars,
+                        combo: combo,
+                        acc_percent: acc,
+                        miss: miss,
+                        mode: "droid"
+                    });
+                    let pcpp = osudroid.ppv2({
+                        stars: star.pc_stars,
+                        combo: combo,
+                        acc_percent: acc,
+                        miss: miss,
+                        mode: "osu"
+                    });
+                    let dpp = parseFloat(npp.toString().split(" ")[0]);
+                    let pp = parseFloat(pcpp.toString().split(" ")[0]);
+                    let passreq = dailyres[0].pass;
+                    let pass = false;
+                    switch (passreq[0]) {
+                        case "score": {
+                            if (score >= passreq[1]) pass = true;
+                            break
+                        }
+                        case "acc": {
+                            if (acc >= parseFloat(passreq[1])) pass = true;
+                            break
+                        }
+                        case "miss": {
+                            if (miss < passreq[1] || !miss) pass = true;
+                            break
+                        }
+                        case "combo": {
+                            if (combo >= passreq[1]) pass = true;
+                            break
+                        }
+                        case "scorev2": {
+                            if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
+                            break
+                        }
+                        case "rank": {
+                            if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
+                            break
+                        }
+                        case "dpp": {
+                            if (dpp >= parseFloat(passreq[1])) pass = true;
+                            break
+                        }
+                        case "pp": {
+                            if (pp >= parseFloat(passreq[1])) pass = true;
+                            break
+                        }
+                        default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
+                    }
+                    if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                    let points = 0;
+                    let bonus = dailyres[0].bonus;
+                    switch (bonus[0]) {
+                        case "score": {
+                            if (score >= bonus[1]) points += bonus[2];
+                            break
+                        }
+                        case "acc": {
+                            if (acc >= bonus[1]) points += bonus[2];
+                            break
+                        }
+                        case "miss": {
+                            if (miss < bonus[1] || !miss) points += bonus[2];
+                            break
+                        }
+                        case "combo": {
+                            if (combo >= bonus[1]) points += bonus[2];
+                            break
+                        }
+                        case "scorev2": {
+                            if (scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
+                            break
+                        }
+                        case "mod": {
+                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
+                            break
+                        }
+                        case "rank": {
+                            if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
+                            break
+                        }
+                        case "dpp": {
+                            if (dpp >= bonus[1]) points += bonus[2];
+                            break
+                        }
+                        case "pp": {
+                            if (pp >= bonus[1]) points += bonus[2];
+                        }
+                    }
+                    let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
+                    pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
-                        let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
-                        if (timelimit < 0) return message.channel.send("❎ **| I'm sorry, this challenge is over! Please wait for the next one to start!**");
-                        let challengeid = dailyres[0].challengeid;
-                        let beatmapid = dailyres[0].beatmapid;
-                        let constrain = dailyres[0].constrain.toUpperCase();
-                        let hash = dailyres[0].hash;
-                        let found = false;
-                        let score;
-                        let acc;
-                        let mod;
-                        let miss;
-                        let combo;
-                        let rank;
-                        for (let i = 0; i < rplay.length; i++) {
-                            if (rplay[i].hash == hash) {
-                                score = rplay[i].score;
-                                acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
-                                mod = rplay[i].mode;
-                                miss = rplay[i].miss;
-                                combo = rplay[i].combo;
-                                rank = rplay[i].mark;
-                                found = true;
-                                break
-                            }
-                        }
-                        if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                        new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                            if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
-                            if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-                            let npp = osudroid.ppv2({
-                                stars: star.droid_stars,
-                                combo: combo,
-                                acc_percent: acc,
-                                miss: miss,
-                                mode: "droid"
-                            });
-                            let pcpp = osudroid.ppv2({
-                                stars: star.pc_stars,
-                                combo: combo,
-                                acc_percent: acc,
-                                miss: miss,
-                                mode: "osu"
-                            });
-                            let dpp = parseFloat(npp.toString().split(" ")[0]);
-                            let pp = parseFloat(pcpp.toString().split(" ")[0]);
-                            let passreq = dailyres[0].pass;
-                            let pass = false;
-                            switch (passreq[0]) {
-                                case "score": {
-                                    if (score >= passreq[1]) pass = true;
+                        if (playerres[0]) {
+                            let challengelist = playerres[0].challenges;
+                            found = false;
+                            let bonuscheck = false;
+                            for (let i = 0; i < challengelist.length; i++) {
+                                if (challengelist[i][0] == challengeid) {
+                                    bonuscheck = challengelist[i][1];
+                                    challengelist[i][1] = bonuscomplete;
+                                    found = true;
                                     break
-                                }
-                                case "acc": {
-                                    if (acc >= parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < passreq[1] || !miss) pass = true;
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo >= passreq[1]) pass = true;
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
-                                    break
-                                }
-                                case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "dpp": {
-                                    if (dpp >= parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                case "pp": {
-                                    if (pp >= parseFloat(passreq[1])) pass = true;
-                                    break
-                                }
-                                default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
-                            }
-                            if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                            let points = 0;
-                            let bonus = dailyres[0].bonus;
-                            switch (bonus[0]) {
-                                case "score": {
-                                    if (score >= bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "acc": {
-                                    if (acc >= bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "miss": {
-                                    if (miss < bonus[1] || !miss) points += bonus[2];
-                                    break
-                                }
-                                case "combo": {
-                                    if (combo >= bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "scorev2": {
-                                    if (scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
-                                    break
-                                }
-                                case "mod": {
-                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
-                                    break
-                                }
-                                case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
-                                    break
-                                }
-                                case "dpp": {
-                                    if (dpp >= bonus[1]) points += bonus[2];
-                                    break
-                                }
-                                case "pp": {
-                                    if (pp >= bonus[1]) points += bonus[2];
                                 }
                             }
-                            let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
-                            pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
+                            if (!bonuscheck && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                            if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                            if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
+                            if (!found) {
+                                points += dailyres[0].points;
+                                challengelist.push([challengeid, bonuscomplete])
+                            }
+                            let totalpoint = playerres[0].points + points;
+                            let alicecoins = playerres[0].alicecoins + points * 2;
+                            message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete?` and its bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                            let updateVal = {
+                                $set: {
+                                    username: username,
+                                    uid: uid,
+                                    challenges: challengelist,
+                                    points: totalpoint,
+                                    alicecoins: alicecoins
+                                }
+                            };
+                            pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
-                                if (playerres[0]) {
-                                    let challengelist = playerres[0].challenges;
-                                    found = false;
-                                    let bonuscheck = false;
-                                    for (let i = 0; i < challengelist.length; i++) {
-                                        if (challengelist[i][0] == challengeid) {
-                                            bonuscheck = challengelist[i][1];
-                                            challengelist[i][1] = bonuscomplete;
-                                            found = true;
-                                            break
+                                console.log("Player points updated")
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    updateVal = {
+                                        $set: {
+                                            power: clanres[0].power + points
                                         }
+                                    };
+                                    clandb.updateOne({name: clan}, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        }
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
+                        } else {
+                            points += dailyres[0].points;
+                            message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
+                            let insertVal = {
+                                username: username,
+                                uid: uid,
+                                discordid: message.author.id,
+                                challenges: [[challengeid, bonuscomplete]],
+                                points: points,
+                                dailycooldown: 0,
+                                alicecoins: points * 2
+                            };
+                            pointdb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Player points added")
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                     }
-                                    if (!bonuscheck && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
-                                    if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
-                                    if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
-                                    if (!found) {
-                                        points += dailyres[0].points;
-                                        challengelist.push([challengeid, bonuscomplete])
-                                    }
-                                    let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 2;
-                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete?` and its bonus`:""}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                                     let updateVal = {
                                         $set: {
-                                            username: username,
-                                            uid: uid,
-                                            challenges: challengelist,
-                                            points: totalpoint,
-                                            alicecoins: alicecoins
+                                            power: clanres[0].power + points
                                         }
                                     };
-                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                    clandb.updateOne({name: clan}, updateVal, err => {
                                         if (err) {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        console.log("Player points updated")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
-                                    }
-                                } else {
-                                    points += dailyres[0].points;
-                                    message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
-                                    let insertVal = {
-                                        username: username,
-                                        uid: uid,
-                                        discordid: message.author.id,
-                                        challenges: [[challengeid, bonuscomplete]],
-                                        points: points,
-                                        dailycooldown: 0,
-                                        alicecoins: points * 2
-                                    };
-                                    pointdb.insertOne(insertVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                        }
-                                        console.log("Player points added")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            let updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
-                                    }
-                                }
-                            })
-                        })
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
+                        }
                     })
                 });
                 cd.add(message.author.id);
@@ -768,7 +764,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!challengeid) return message.channel.send("❎ **| Hey, I don't know which challenge to start!**");
 
             query = {challengeid: challengeid};
-            dailydb.find(query).toArray((err, dailyres) => {
+            dailydb.find(query).toArray(async (err, dailyres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -782,58 +778,57 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmapid = dailyres[0].beatmapid;
                 let featured = dailyres[0].featured;
                 if (!featured) featured = "386742340968120321";
-                new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
-                    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-                    let requirements = challengeRequirements(challengeid, pass, bonus);
-                    let pass_string = requirements[0];
-                    let bonus_string = requirements[1];
-                    let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
-                    embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
-                        .setColor(mapinfo.statusColor())
-                        .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
-                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
-                        .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                        .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
+                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                let requirements = challengeRequirements(challengeid, pass, bonus);
+                let pass_string = requirements[0];
+                let bonus_string = requirements[1];
+                let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
+                embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                    .setColor(mapinfo.statusColor())
+                    .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]}) - [OneDrive](${dailyres[0].link[1]})`)
+                    .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
-                    message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
-                    client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
+                message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
+                client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
-                    let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) - 1);
-                    updateVal = {
-                        $set: {
-                            status: "finished"
-                        }
-                    };
-                    dailydb.updateOne({challengeid: previous_challenge}, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        console.log("Challenge data updated")
-                    });
+                let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) - 1);
+                updateVal = {
+                    $set: {
+                        status: "finished"
+                    }
+                };
+                dailydb.updateOne({challengeid: previous_challenge}, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    console.log("Challenge data updated")
+                });
 
-                    if (challengeid.includes("w")) updateVal = {
-                        $set: {
-                            status: "w-ongoing",
-                            timelimit: timelimit
-                        }
-                    };
-                    else updateVal = {
-                        $set: {
-                            status: "ongoing",
-                            timelimit: timelimit
-                        }
-                    };
-                    dailydb.updateOne(query, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        console.log("Challenge started")
-                    })
+                if (challengeid.includes("w")) updateVal = {
+                    $set: {
+                        status: "w-ongoing",
+                        timelimit: timelimit
+                    }
+                };
+                else updateVal = {
+                    $set: {
+                        status: "ongoing",
+                        timelimit: timelimit
+                    }
+                };
+                dailydb.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    console.log("Challenge started")
                 })
             });
             break
@@ -1028,7 +1023,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // if args[0] is not defined, will
             // submit the message author's play
             query = {discordid: message.author.id};
-            binddb.find(query).toArray((err, userres) => {
+            binddb.find(query).toArray(async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -1037,289 +1032,288 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres[0].uid;
                 let username = userres[0].username;
                 let clan = userres[0].clan;
-                new osudroid.PlayerInfo().get({uid: uid}, player => {
-                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
-                    if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-                    let rplay = player.recent_plays;
-                    query = {status: "ongoing"};
-                    dailydb.find(query).toArray((err, dailyres) => {
+                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
+                if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                let rplay = player.recent_plays;
+                query = {status: "ongoing"};
+                dailydb.find(query).toArray((err, dailyres) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
+                    let challengeid = dailyres[0].challengeid;
+                    let beatmapid = dailyres[0].beatmapid;
+                    let constrain = dailyres[0].constrain.toUpperCase();
+                    let hash = dailyres[0].hash;
+                    let found = false;
+                    let score;
+                    let acc;
+                    let mod;
+                    let miss;
+                    let combo;
+                    let rank;
+                    for (let i = 0; i < rplay.length; i++) {
+                        if (rplay[i].hash == hash) {
+                            score = rplay[i].score;
+                            acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
+                            mod = rplay[i].mode;
+                            miss = rplay[i].miss;
+                            combo = rplay[i].combo;
+                            rank = rplay[i].mark;
+                            found = true;
+                            break
+                        }
+                    }
+                    if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    pointdb.find({discordid: message.author.id}).toArray(async (err, playerres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!dailyres[0]) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
-                        let challengeid = dailyres[0].challengeid;
-                        let beatmapid = dailyres[0].beatmapid;
-                        let constrain = dailyres[0].constrain.toUpperCase();
-                        let hash = dailyres[0].hash;
-                        let found = false;
-                        let score;
-                        let acc;
-                        let mod;
-                        let miss;
-                        let combo;
-                        let rank;
-                        for (let i = 0; i < rplay.length; i++) {
-                            if (rplay[i].hash == hash) {
-                                score = rplay[i].score;
-                                acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
-                                mod = rplay[i].mode;
-                                miss = rplay[i].miss;
-                                combo = rplay[i].combo;
-                                rank = rplay[i].mark;
-                                found = true;
-                                break
+                        found = false;
+                        let bonuslist = [challengeid, false, false, false, false];
+                        let challengelist = [];
+                        let k = 0;
+                        if (playerres[0]) {
+                            challengelist = playerres[0].challenges;
+                            for (k; k < challengelist.length; k++) {
+                                if (challengelist[k][0] == challengeid) {
+                                    bonuslist = challengelist[k];
+                                    found = true;
+                                    break
+                                }
                             }
                         }
-                        if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                        pointdb.find({discordid: message.author.id}).toArray((err, playerres) => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                            found = false;
-                            let bonuslist = [challengeid, false, false, false, false];
-                            let challengelist = [];
-                            let k = 0;
-                            if (playerres[0]) {
-                                challengelist = playerres[0].challenges;
-                                for (k; k < challengelist.length; k++) {
-                                    if (challengelist[k][0] == challengeid) {
-                                        bonuslist = challengelist[k];
-                                        found = true;
-                                        break
-                                    }
-                                }
-                            }
-                            new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-                                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-                                let npp = osudroid.ppv2({
-                                    stars: star.droid_stars,
-                                    combo: combo,
-                                    miss: miss,
-                                    acc_percent: acc,
-                                    mode: "droid"
-                                });
-                                let pcpp = osudroid.ppv2({
-                                    stars: star.pc_stars,
-                                    combo: combo,
-                                    miss: miss,
-                                    acc_percent: acc,
-                                    mode: "osu"
-                                });
-                                let dpp = parseFloat(npp.toString().split(" ")[0]);
-                                let pp = parseFloat(pcpp.toString().split(" ")[0]);
+                        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                        let npp = osudroid.ppv2({
+                            stars: star.droid_stars,
+                            combo: combo,
+                            miss: miss,
+                            acc_percent: acc,
+                            mode: "droid"
+                        });
+                        let pcpp = osudroid.ppv2({
+                            stars: star.pc_stars,
+                            combo: combo,
+                            miss: miss,
+                            acc_percent: acc,
+                            mode: "osu"
+                        });
+                        let dpp = parseFloat(npp.toString().split(" ")[0]);
+                        let pp = parseFloat(pcpp.toString().split(" ")[0]);
 
-                                let points = 0;
-                                let passreq = dailyres[0].pass;
-                                let pass = false;
-                                switch (passreq[0]) {
-                                    case "score": {
-                                        if (score >= passreq[1]) pass = true;
-                                        break
-                                    }
-                                    case "acc": {
-                                        if (acc >= parseFloat(passreq[1])) pass = true;
-                                        break
-                                    }
-                                    case "miss": {
-                                        if (miss < passreq[1] || !miss) pass = true;
-                                        break
-                                    }
-                                    case "combo": {
-                                        if (combo >= passreq[1]) pass = true;
-                                        break
-                                    }
-                                    case "scorev2": {
-                                        if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
-                                        break
-                                    }
-                                    case "rank": {
-                                        if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                                        break
-                                    }
-                                    case "dpp": {
-                                        if (dpp >= parseFloat(passreq[1])) pass = true;
-                                        break
-                                    }
-                                    case "pp": {
-                                        if (pp >= parseFloat(passreq[1])) pass = true;
-                                        break
-                                    }
-                                    default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
-                                }
-                                if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                                if (!found && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
-                                if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
-                                if (!found) points += dailyres[0].points;
+                        let points = 0;
+                        let passreq = dailyres[0].pass;
+                        let pass = false;
+                        switch (passreq[0]) {
+                            case "score": {
+                                if (score >= passreq[1]) pass = true;
+                                break
+                            }
+                            case "acc": {
+                                if (acc >= parseFloat(passreq[1])) pass = true;
+                                break
+                            }
+                            case "miss": {
+                                if (miss < passreq[1] || !miss) pass = true;
+                                break
+                            }
+                            case "combo": {
+                                if (combo >= passreq[1]) pass = true;
+                                break
+                            }
+                            case "scorev2": {
+                                if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
+                                break
+                            }
+                            case "rank": {
+                                if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
+                                break
+                            }
+                            case "dpp": {
+                                if (dpp >= parseFloat(passreq[1])) pass = true;
+                                break
+                            }
+                            case "pp": {
+                                if (pp >= parseFloat(passreq[1])) pass = true;
+                                break
+                            }
+                            default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
+                        }
+                        if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
+                        if (!found && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                        if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
+                        if (!found) points += dailyres[0].points;
 
-                                let bonus = dailyres[0].bonus;
-                                let bonus_string = '';
-                                let mode = ['easy', 'normal', 'hard', 'insane'];
-                                for (let i = 0; i < bonus.length; i++) {
-                                    if (bonus[i][0] == 'none') bonuslist[i + 1] = true;
-                                    if (bonuslist[i + 1]) continue;
-                                    let complete = false;
-                                    switch (bonus[i][0]) {
-                                        case "score": {
-                                            if (score >= bonus[i][1]) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "scorev2": {
-                                            if (scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
-                                                points += bonus[i][3];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "mod": {
-                                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "acc": {
-                                            if (acc >= bonus[i][1]) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "combo": {
-                                            if (combo >= bonus[i][1]) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "miss": {
-                                            if (miss < bonus[i][1] || !miss) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "rank": {
-                                            if (rankConvert(rank) >= rankConvert(bonus[i][1])) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "dpp": {
-                                            if (dpp >= bonus[i][1]) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                            break
-                                        }
-                                        case "pp": {
-                                            if (pp >= bonus[i][1]) {
-                                                points += bonus[i][2];
-                                                bonuslist[i + 1] = true;
-                                                complete = true
-                                            }
-                                        }
+                        let bonus = dailyres[0].bonus;
+                        let bonus_string = '';
+                        let mode = ['easy', 'normal', 'hard', 'insane'];
+                        for (let i = 0; i < bonus.length; i++) {
+                            if (bonus[i][0] == 'none') bonuslist[i + 1] = true;
+                            if (bonuslist[i + 1]) continue;
+                            let complete = false;
+                            switch (bonus[i][0]) {
+                                case "score": {
+                                    if (score >= bonus[i][1]) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
                                     }
-                                    if (complete) bonus_string += `${mode[i]} `
+                                    break
                                 }
-                                if (bonus_string) bonus_string = ` and \`${bonus_string.trimRight().split(" ").join(", ")}\` bonus`;
-                                if (playerres[0]) {
-                                    if (found) challengelist[k] = bonuslist;
-                                    else challengelist.push(bonuslist);
-                                    let totalpoint = playerres[0].points + points;
-                                    let alicecoins = playerres[0].alicecoins + points * 2;
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                                case "scorev2": {
+                                    if (scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
+                                        points += bonus[i][3];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "mod": {
+                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "acc": {
+                                    if (acc >= bonus[i][1]) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "combo": {
+                                    if (combo >= bonus[i][1]) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "miss": {
+                                    if (miss < bonus[i][1] || !miss) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "rank": {
+                                    if (rankConvert(rank) >= rankConvert(bonus[i][1])) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "dpp": {
+                                    if (dpp >= bonus[i][1]) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                    break
+                                }
+                                case "pp": {
+                                    if (pp >= bonus[i][1]) {
+                                        points += bonus[i][2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true
+                                    }
+                                }
+                            }
+                            if (complete) bonus_string += `${mode[i]} `
+                        }
+                        if (bonus_string) bonus_string = ` and \`${bonus_string.trimRight().split(" ").join(", ")}\` bonus`;
+                        if (playerres[0]) {
+                            if (found) challengelist[k] = bonuslist;
+                            else challengelist.push(bonuslist);
+                            let totalpoint = playerres[0].points + points;
+                            let alicecoins = playerres[0].alicecoins + points * 2;
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
+                            updateVal = {
+                                $set: {
+                                    username: username,
+                                    uid: uid,
+                                    challenges: challengelist,
+                                    points: totalpoint,
+                                    alicecoins: alicecoins
+                                }
+                            };
+                            pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                console.log("Player points updated")
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
                                     updateVal = {
                                         $set: {
-                                            username: username,
-                                            uid: uid,
-                                            challenges: challengelist,
-                                            points: totalpoint,
-                                            alicecoins: alicecoins
+                                            power: clanres[0].power + points
                                         }
                                     };
-                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                    clandb.updateOne({name: clan}, updateVal, err => {
                                         if (err) {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        console.log("Player points updated")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
-                                    }
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
+                        }
+                        else {
+                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
+                            insertVal = {
+                                username: username,
+                                uid: uid,
+                                discordid: message.author.id,
+                                challenges: [bonuslist],
+                                points: points,
+                                dailycooldown: 0,
+                                alicecoins: points * 2
+                            };
+                            pointdb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
-                                else {
-                                    message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
-                                    insertVal = {
-                                        username: username,
-                                        uid: uid,
-                                        discordid: message.author.id,
-                                        challenges: [bonuslist],
-                                        points: points,
-                                        dailycooldown: 0,
-                                        alicecoins: points * 2
+                                console.log("Player points added")
+                            });
+                            if (clan) {
+                                clandb.find({name: clan}).toArray((err, clanres) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    }
+                                    updateVal = {
+                                        $set: {
+                                            power: clanres[0].power + points
+                                        }
                                     };
-                                    pointdb.insertOne(insertVal, err => {
+                                    clandb.updateOne({name: clan}, updateVal, err => {
                                         if (err) {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        console.log("Player points added")
-                                    });
-                                    if (clan) {
-                                        clandb.find({name: clan}).toArray((err, clanres) => {
-                                            if (err) {
-                                                console.log(err);
-                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                            }
-                                            updateVal = {
-                                                $set: {
-                                                    power: clanres[0].power + points
-                                                }
-                                            };
-                                            clandb.updateOne({name: clan}, updateVal, err => {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                                }
-                                                console.log("Clan power points updated")
-                                            })
-                                        })
-                                    }
-                                }
-                            })
-                        })
+                                        console.log("Clan power points updated")
+                                    })
+                                })
+                            }
+                        }
                     })
                 });
                 cd.add(message.author.id);

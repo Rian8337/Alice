@@ -56,13 +56,13 @@ function validation(dan, mod, acc, rank) {
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     let danchannel = message.guild.channels.cache.get('361785436982476800');
-    if (!danchannel || message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in osu!droid International Discord server.**");
+    if (!danchannel || message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in droid International Discord server.**");
     let objcount = {x: 0};
     let danlist = ["1st Dan", "2nd Dan", "3rd Dan", "4th Dan", "5th Dan", "6th Dan", "7th Dan", "8th Dan", "9th Dan", "Chuuden", "Kaiden", "Aleph-0 Dan"];
     let channel = message.guild.channels.cache.get("316545691545501706");
 
     if (args[0] == 'about') {
-        if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in osu!droid (International) Discord server!**");
+        if (!channel) return message.channel.send("❎ **| I'm sorry, this command is only executable in droid (International) Discord server!**");
         let footer = config.avatar_list;
         let helper = message.guild.roles.cache.get("369108742077284353");
         let mod = message.guild.roles.cache.get("595667274707370024");
@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
             rolecheck = "#000000"
         }
         let embed = new Discord.MessageEmbed()
-            .setTitle("osu!droid Daninintei Courses")
+            .setTitle("droid Daninintei Courses")
             .setThumbnail("https://cdn.discordapp.com/attachments/430939277720027136/623153414414532609/BG.png")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(rolecheck)
@@ -131,64 +131,63 @@ module.exports.run = (client, message, args, maindb) => {
         else {
             let binddb = maindb.collection("userbind");
             let query = {discordid: message.author.id};
-            binddb.find(query).toArray((err, res) => {
+            binddb.find(query).toArray(async (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = res[0].uid;
-                new osudroid.PlayerInfo().get({uid: uid}, player => {
-                    let play = player.recent_plays;
-                    let danentries = [];
-                    for (let i = 0; i < 5; i++) {
-                        if (!play[i]) break;
-                        let dan = danCheck(play[i].hash);
-                        if (dan) {
-                            let mods = play[i].mode;
-                            let acc = (parseInt(play[i].accuracy) / 1000).toFixed(2);
-                            let rank = play[i].mark;
-                            let danentry = {
-                                dan: dan[0],
-                                play: dan[1],
-                                mod: mods,
-                                acc: acc,
-                                rank: rank
-                            };
-                            danentries.push(danentry)
+                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                let play = player.recent_plays;
+                let danentries = [];
+                for (let i = 0; i < 5; i++) {
+                    if (!play[i]) break;
+                    let dan = danCheck(play[i].hash);
+                    if (dan) {
+                        let mods = play[i].mode;
+                        let acc = (parseInt(play[i].accuracy) / 1000).toFixed(2);
+                        let rank = play[i].mark;
+                        let danentry = {
+                            dan: dan[0],
+                            play: dan[1],
+                            mod: mods,
+                            acc: acc,
+                            rank: rank
+                        };
+                        danentries.push(danentry)
+                    }
+                }
+                if (danentries.length == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
+
+                danentries.forEach(x => {
+                    objcount.x++;
+                    let valid = validation(x.dan, x.mod, x.acc, x.rank);
+                    if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
+                    let danrole = x.play;
+                    let role = message.guild.roles.cache.find((r) => r.name === danrole);
+                    if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
+                    if (!message.member.roles.cache.has(role.id)) message.member.roles.add(role.id, "Successfully completed dan course").then(() => {
+                        message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
+                        if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
+                    }).catch(console.error);
+
+                    // Dan Course Master
+                    if (objcount.x == danentries.length) {
+                        danlist.pop();
+                        let count = 1;
+                        danlist.forEach(role => {
+                            if (message.member.roles.cache.find((r) => r.name === role)) count++
+                        });
+                        if (count == danlist.length) {
+                            let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
+                            if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
+                            if (!message.member.roles.cache.has(dcmrole.id)) message.member.roles.add(dcmrole.id, "Successfully completed required dan courses").then(() => {
+                                message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
+                                channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
+                            }).catch(console.error)
                         }
                     }
-                    if (danentries.length == 0) return message.channel.send("❎ **| I'm sorry, you haven't set any dan course play recently!**");
-
-                    danentries.forEach(x => {
-                        objcount.x++;
-                        let valid = validation(x.dan, x.mod, x.acc, x.rank);
-                        if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
-                        let danrole = x.play;
-                        let role = message.guild.roles.cache.find((r) => r.name === danrole);
-                        if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
-                        if (!message.member.roles.cache.has(role.id)) message.member.roles.add(role.id, "Successfully completed dan course").then(() => {
-                            message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
-                            if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
-                        }).catch(console.error);
-
-                        // Dan Course Master
-                        if (objcount.x == danentries.length) {
-                            danlist.pop();
-                            let count = 1;
-                            danlist.forEach(role => {
-                                if (message.member.roles.cache.find((r) => r.name === role)) count++
-                            });
-                            if (count == danlist.length) {
-                                let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
-                                if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
-                                if (!message.member.roles.cache.has(dcmrole.id)) message.member.roles.add(dcmrole.id, "Successfully completed required dan courses").then(() => {
-                                    message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
-                                    channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
-                                }).catch(console.error)
-                            }
-                        }
-                    })
                 })
             })
         }

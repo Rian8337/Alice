@@ -2806,7 +2806,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // for auction
 
             switch (args[1]) {
-                
+
                 case "bid": {
                     let name = args[2];
                     if (!name) return message.channel.send("❎ **| Hey, please enter a name of the auction!**");

@@ -12,7 +12,7 @@ function processEmbed(res, page, footer, index) {
     
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
+        embed.addField(`**${i+1}**. **${res[i].current_username} (${res.uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
     }
     
     return embed
@@ -106,8 +106,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return
                         }
 
-                        prev_names.push(old_name);
-                        
+                        prev_names.push(new_name);
+
                         updateVal = {
                             $set: {
                                 username: new_name
@@ -296,7 +296,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let username = res.username;
 
                 query = {uid: uid};
-                namedb.findOne(query, (err, nameres) => {
+                namedb.findOne(query, async (err, nameres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -308,52 +308,50 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (curtime < cooldown) return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You will be able to send a name change request in \`${new Date(cooldown * 1000).toUTCString()}\`.**`);
                     }
 
-                    new osudroid.PlayerInfo().get({uid: uid}, player => {
-                        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
-                        if (email !== player.email) return message.channel.send("❎ **| I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!**");
-                        if (username !== player.name) return message.channel.send("❎ **| I'm sorry, your username is not the same as the one stored in bot database! If you've requested a name change before, please rebind your account using `a!userbind <uid>` and then submit a request again!**");
+                    const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+                    if (email !== player.email) return message.channel.send("❎ **| I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!**");
+                    if (username !== player.name) return message.channel.send("❎ **| I'm sorry, your username is not the same as the one stored in bot database! If you've requested a name change before, please rebind your account using `a!userbind <uid>` and then submit a request again!**");
 
-                        new osudroid.PlayerInfo().get({username: new_name}, new_player => {
-                            if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
+                    const new_player = await new osudroid.PlayerInfo().get({username: new_name}).catch(console.error);
+                    if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
 
-                            name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\nUid: ${uid}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
-                                if (nameres) {
-                                    updateVal = {
-                                        $set: {
-                                            new_username: new_name,
-                                            cooldown: curtime + 86400 * 30,
-                                            attachment: msg.url,
-                                            isProcessed: false
-                                        }
-                                    };
-                                    namedb.updateOne(query, updateVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                        }
-                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
-                                    })
-                                } else {
-                                    insertVal = {
-                                        discordid: message.author.id,
-                                        current_username: username,
-                                        new_username: new_name,
-                                        uid: uid,
-                                        cooldown: curtime + 86400 * 30,
-                                        attachment: msg.url,
-                                        isProcessed: false,
-                                        previous_usernames: []
-                                    };
-                                    namedb.insertOne(insertVal, err => {
-                                        if (err) {
-                                            console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                        }
-                                        message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
-                                    })
+                    name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
+                        if (nameres) {
+                            updateVal = {
+                                $set: {
+                                    new_username: new_name,
+                                    cooldown: curtime + 86400 * 30,
+                                    attachment: msg.url,
+                                    isProcessed: false
                                 }
+                            };
+                            namedb.updateOne(query, updateVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
                             })
-                        })
+                        } else {
+                            insertVal = {
+                                discordid: message.author.id,
+                                current_username: username,
+                                new_username: new_name,
+                                uid: uid,
+                                cooldown: curtime + 86400 * 30,
+                                attachment: msg.url,
+                                isProcessed: false,
+                                previous_usernames: []
+                            };
+                            namedb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
+                            })
+                        }
                     })
                 })
             })

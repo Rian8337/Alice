@@ -48,7 +48,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 	return embed
 }
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
 	let uid = parseInt(args[0]);
@@ -56,71 +56,70 @@ module.exports.run = (client, message, args) => {
 	let page = 1;
 	if (args[1]) page = parseInt(args[1]);
 	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
-	new osudroid.PlayerInfo().get({uid: uid}, player => {
-		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
-		if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-		let name = player.name;
-		let rplay = player.recent_plays;
-		let rolecheck;
-		try {
-			rolecheck = message.member.roles.highest.hexColor
-		} catch (e) {
-			rolecheck = "#000000"
-		}
-		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+	if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+	let name = player.name;
+	let rplay = player.recent_plays;
+	let rolecheck;
+	try {
+		rolecheck = message.member.roles.highest.hexColor
+	} catch (e) {
+		rolecheck = "#000000"
+	}
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * footer.length);
+	let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 
-		message.channel.send({embed: embed}).then(msg => {
-			msg.react("⏮️").then(() => {
-				msg.react("⬅️").then(() => {
-					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(console.error)
-					})
+	message.channel.send({embed: embed}).then(msg => {
+		msg.react("⏮️").then(() => {
+			msg.react("⬅️").then(() => {
+				msg.react("➡️").then(() => {
+					msg.react("⏭️").catch(console.error)
 				})
-			});
-
-			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
-
-			backward.on('collect', () => {
-				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = 1;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
-			});
-
-			back.on('collect', () => {
-				if (page === 1) page = 10;
-				else page--;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
-			});
-
-			next.on('collect', () => {
-				if (page === 10) page = 1;
-				else page++;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
-			});
-
-			forward.on('collect', () => {
-				if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = 10;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
-			});
-
-			backward.on("end", () => {
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
 			})
+		});
+
+		let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+		let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+		let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+		let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+
+		backward.on('collect', () => {
+			if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			else page = 1;
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			msg.edit({embed: embed}).catch(console.error)
+		});
+
+		back.on('collect', () => {
+			if (page === 1) page = 10;
+			else page--;
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			msg.edit({embed: embed}).catch(console.error)
+		});
+
+		next.on('collect', () => {
+			if (page === 10) page = 1;
+			else page++;
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			msg.edit({embed: embed}).catch(console.error)
+		});
+
+		forward.on('collect', () => {
+			if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			else page = 10;
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			msg.edit({embed: embed}).catch(console.error)
+		});
+
+		backward.on("end", () => {
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
 		})
 	});
 	cd.add(message.author.id);
@@ -131,7 +130,7 @@ module.exports.run = (client, message, args) => {
 
 module.exports.config = {
 	name: "recent5",
-	description: "Retrieves an osu!droid account's recent plays based on uid.",
+	description: "Retrieves an droid account's recent plays based on uid.",
 	usage: "recent5 <uid> [page]",
 	detail: "`uid`: The uid to retrieve [Integer]\n`page`: The page to view from 1 to 10 [Integer]",
 	permission: "None"

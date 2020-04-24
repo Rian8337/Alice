@@ -99,71 +99,70 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let amount = parseInt(args[2]);
             if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, I need a valid amount to give!**");
             query = {discordid: message.author.id};
-            binddb.find(query).toArray((err, userres) => {
+            binddb.find(query).toArray(async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres[0].uid;
-                new osudroid.PlayerInfo().get({uid: uid}, player => {
-                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I can't find your profile!**");
-                    let rank = player.rank;
-                    let limit;
-                    if (rank < 10) limit = 500;
-                    else if (rank < 50) limit = 350;
-                    else if (rank < 100) limit = 250;
-                    else if (rank < 500) limit = 100;
-                    else limit = 50;
-                    if (amount > limit) return message.channel.send(`❎ **| I'm sorry, your ${coin}Alice coins transfer limit is \`${limit}\`!**`);
-                    pointdb.find(query).toArray((err, pointres) => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                        }
-                        if (!pointres[0]) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
-                        let alicecoins = pointres[0].alicecoins;
-                        if (alicecoins < amount) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
-                        message.channel.send(`❗**| Are you sure you want to transfer ${coin}\`${amount}\` Alice coins to ${totransfer}?**`).then(msg => {
-                            msg.react("✅").catch(console.error);
-                            let confirmation = false;
-                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
-                            confirm.on("collect", () => {
-                                confirmation = true;
-                                msg.delete();
-                                query = {discordid: totransfer.id};
-                                pointdb.find(query).toArray((err, giveres) => {
-                                    if (err) {
-                                        console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                    }
-                                    if (!giveres[0]) return message.channel.send("❎ **| I'm sorry, this user has not used any daily claims before!**");
-                                    let coins = giveres[0].alicecoins + amount;
-                                    message.channel.send(`✅ **| ${message.author}, successfully transferred ${coin}\`${amount}\` Alice coins to ${totransfer}. You now have ${coin}\`${alicecoins - amount}\` Alice coins.**`)
-                                    let updateVal = {
-                                        $set: {
-                                            alicecoins: coins
-                                        }
-                                    };
-                                    pointdb.updateOne({discordid: totransfer.id}, updateVal, err => {
-                                        if (err) return console.log(err);
-                                    });
-                                    updateVal = {
-                                        $set: {
-                                            alicecoins: pointres[0].alicecoins - amount
-                                        }
-                                    };
-                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                        if (err) return console.log(err)
-                                    })
-                                })
-                            });
-                            confirm.on("end", () => {
-                                if (!confirmation) {
-                                    msg.delete();
-                                    message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I can't find your profile!**");
+                let rank = player.rank;
+                let limit;
+                if (rank < 10) limit = 500;
+                else if (rank < 50) limit = 350;
+                else if (rank < 100) limit = 250;
+                else if (rank < 500) limit = 100;
+                else limit = 50;
+                if (amount > limit) return message.channel.send(`❎ **| I'm sorry, your ${coin}Alice coins transfer limit is \`${limit}\`!**`);
+                pointdb.find(query).toArray((err, pointres) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    if (!pointres[0]) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
+                    let alicecoins = pointres[0].alicecoins;
+                    if (alicecoins < amount) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
+                    message.channel.send(`❗**| Are you sure you want to transfer ${coin}\`${amount}\` Alice coins to ${totransfer}?**`).then(msg => {
+                        msg.react("✅").catch(console.error);
+                        let confirmation = false;
+                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                        confirm.on("collect", () => {
+                            confirmation = true;
+                            msg.delete();
+                            query = {discordid: totransfer.id};
+                            pointdb.find(query).toArray((err, giveres) => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
+                                if (!giveres[0]) return message.channel.send("❎ **| I'm sorry, this user has not used any daily claims before!**");
+                                let coins = giveres[0].alicecoins + amount;
+                                message.channel.send(`✅ **| ${message.author}, successfully transferred ${coin}\`${amount}\` Alice coins to ${totransfer}. You now have ${coin}\`${alicecoins - amount}\` Alice coins.**`)
+                                let updateVal = {
+                                    $set: {
+                                        alicecoins: coins
+                                    }
+                                };
+                                pointdb.updateOne({discordid: totransfer.id}, updateVal, err => {
+                                    if (err) return console.log(err);
+                                });
+                                updateVal = {
+                                    $set: {
+                                        alicecoins: pointres[0].alicecoins - amount
+                                    }
+                                };
+                                pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                    if (err) return console.log(err)
+                                })
                             })
+                        });
+                        confirm.on("end", () => {
+                            if (!confirmation) {
+                                msg.delete();
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                            }
                         })
                     })
                 })
