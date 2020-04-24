@@ -1,6 +1,6 @@
 const osudroid = require('../../modules/osu!droid');
 
-function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
+async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	if (i >= tlength) {
 		newtarget.sort(function(a, b) {return b[2] - a[2];});
 		let totalpp = 0;
@@ -32,40 +32,39 @@ function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	let guessing_mode = true;
 	let whitelistQuery = {hashid: target[i][0]};
 
-	whitelist.findOne(whitelistQuery, (err, wlres) => {
+	whitelist.findOne(whitelistQuery, async (err, wlres) => {
 		let query = {hash: target[i][0]};
 		if (err) return recalc(target, tlength, i, newtarget, binddb, uid, whitelist);
 		if (wlres) query = {beatmap_id: wlres.mapid};
-		new osudroid.MapInfo().get(query, mapinfo => {
-			if (!mapinfo.title) {
-				console.log("Map not found");
-				return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
-			}
-			if (mapinfo.objects == 0) {
-				console.log("0 object found");
-				return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
-			}
-			let acc_percent = 100;
-			if (target[i][4]) {
-				acc_percent = parseFloat(target[i][4]);
-				guessing_mode = false;
-			}
-			let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
-			let miss = target[i][5] ? parseInt(target[i][5]) : 0;
-			let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-			let npp = osudroid.ppv2({
-				stars: star.droid_stars,
-				combo: combo,
-				acc_percent: acc_percent,
-				miss: miss,
-				mode: "droid"
-			});
-			let pp = parseFloat(npp.toString().split(" ")[0]);
-			let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
-			console.log(`${target[i][2]} -> ${real_pp}`);
-			newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
-			recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
-		})
+		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
+		if (!mapinfo.title) {
+			console.log("Map not found");
+			return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
+		}
+		if (mapinfo.objects == 0) {
+			console.log("0 object found");
+			return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
+		}
+		let acc_percent = 100;
+		if (target[i][4]) {
+			acc_percent = parseFloat(target[i][4]);
+			guessing_mode = false;
+		}
+		let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
+		let miss = target[i][5] ? parseInt(target[i][5]) : 0;
+		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+		let npp = osudroid.ppv2({
+			stars: star.droid_stars,
+			combo: combo,
+			acc_percent: acc_percent,
+			miss: miss,
+			mode: "droid"
+		});
+		let pp = parseFloat(npp.toString().split(" ")[0]);
+		let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
+		console.log(`${target[i][2]} -> ${real_pp}`);
+		newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
+		await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 	})
 }
 
@@ -75,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
 	let newppentry = [];
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
-	binddb.findOne({uid: uid}, function(err, res) {
+	binddb.findOne({uid: uid}, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
@@ -83,7 +82,7 @@ module.exports.run = (client, message, args, maindb) => {
 		if (!res) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
 		let ppentry = res.pp;
 		console.log(ppentry[0]);
-		recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist)
+		await recalc(ppentry, ppentry.length, 0, newppentry, binddb, uid, whitelist)
 	})
 };
 
