@@ -69,7 +69,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    message.channel.send(`✅ **| ${message.author}, successfully set your birthday to \`${string}\` at UTC${timezone}.**`)
+                    message.channel.send(`✅ **| ${message.author}, successfully set your birthday to \`${string}\` at UTC${timezone >= 0 ? `+${timezone}` : timezone}.**`)
                 })
             });
             confirm.on("end", () => {
@@ -85,7 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "birthday",
     description: "Sets your birthday date. Get 1000 Alice coins and a happy birthday role in your birthday! Once set, a birthday date cannot be changed.\n\nIf someone's birthday is February 29, it will be celebrated in March 1 in nonleap years.",
-    usage: "birthday <month> <date> [timezone]",
+    usage: "birthday <month> <date> <timezone>",
     detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]\n`timezone`: Timezone of where you live [Integer]",
     permission: "None"
 };
