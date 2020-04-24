@@ -124,6 +124,7 @@ client.on("ready", () => {
 	}, 10000);
 	
 	setInterval(() => {
+		console.log("Utilities running");
 		if (!apidown) client.utils.get("trackfunc").run(client, "", [], maindb);
 		client.utils.get("dailytrack").run(client, "", [], maindb, alicedb);
 		client.utils.get("weeklytrack").run(client, "", [], maindb, alicedb);
