@@ -25,8 +25,8 @@ async function drawImage(properties, template = false) {
 
     // player flag
     c.globalAlpha = 1;
-    const flag = await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`);
-    c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+    let flag = properties.player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`) : undefined;
+    if (flag) c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
 
     // player rank
     c.globalAlpha = 0.9;
@@ -92,7 +92,7 @@ async function drawImage(properties, template = false) {
     c.fillText(`Play Count: ${properties.player.play_count.toLocaleString()}`, 169, 144);
     if (properties.res && properties.res.pptotal) c.fillText(`Droid pp: ${properties.res.pptotal.toFixed(2)}pp`, 169, 164);
     if (properties.res && properties.res.clan) c.fillText(`Clan: ${properties.res.clan}`, 169, 184);
-    c.fillText(properties.player.location, 451, flag.height + 20);
+    if (flag) c.fillText(properties.player.location, 451, flag.height + 20);
 
     // ranked level
     let textColor = properties.pictureConfig.textColor;

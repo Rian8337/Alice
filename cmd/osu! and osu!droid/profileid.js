@@ -63,8 +63,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// player flag
 				c.globalAlpha = 1;
-				const flag = await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`);
-				c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+				let flag = player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`) : undefined;
+				if (flag) c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
 
 				// player rank
 				c.globalAlpha = 0.9;
@@ -130,7 +130,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
 				if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
 				if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
-				c.fillText(player.location, 451, flag.height + 20);
+				if (flag) c.fillText(player.location, 451, flag.height + 20);
 
 				// ranked level
 				let textColor = pictureConfig.textColor;
