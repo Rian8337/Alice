@@ -45,6 +45,7 @@ class PlayInfo {
     //        converted to PC mods
     //  hash: MD5 hash of the play
     constructor(values = {}) {
+        this.player_uid = values.uid || 0;
         this.score_id = values.score_id || 0;
         this.player_name = values.player_name || '';
         this.player_uid = values.player_uid || 0;
@@ -66,7 +67,7 @@ class PlayInfo {
     //  hash: the beatmap's hash (required)
     //
     // outputs a promise of the play's information
-    getFromHash(params) {
+    getFromHash(params = {}) {
         return new Promise((resolve, reject) => {
             let uid = this.player_uid = this.player_uid || params.uid;
             let hash = this.hash = this.hash || params.hash;
@@ -95,9 +96,9 @@ class PlayInfo {
                 this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
                 this.miss = parseInt(play[8]);
                 let date = new Date(parseInt(play[9]) * 1000);
-                date.setUTCHours(date.getUTCHours() + 7);
+                date.setUTCHours(date.getUTCHours() + 6);
                 this.date = date.toUTCString();
-                this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, "");
+                this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
                 this.hash = play[11];
                 resolve(this)
             })
@@ -374,19 +375,21 @@ class ReplayAnalyzer {
         this.data = {}
     }
 
-    async analyze() {
-        this.odr = await this._decompress().catch(console.error);
-        if (!this.odr) {
-            return console.log("Unable to decompress replay data")
-        }
-        this._parseReplay()
+    analyze() {
+        return new Promise(async (resolve, reject) => {
+            this.odr = await this._decompress().catch(console.error);
+            if (!this.odr) {
+                reject("Unable to decompress replay data")
+            }
+            this._parseReplay()
+        })
     }
 
     _decompress() {
         return new Promise((resolve, reject) => {
             const data_array = [];
             const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
-            request(url)
+            request(url, {timeout: 10000})
                 .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
                 })
@@ -537,7 +540,6 @@ class ReplayAnalyzer {
         while (rep_mods.length) {
             for (let property in replay_mods) {
                 if (!replay_mods.hasOwnProperty(property)) continue;
-                console.log(rep_mods[0]);
                 if (!rep_mods[0].includes(property)) continue;
                 modbits |= replay_mods[property];
                 break
@@ -642,10 +644,10 @@ class MapInfo {
                     } catch (e) {
                         reject("Error parsing map info")
                     }
-                    if (!obj || !obj[0]) {
+                    let mapinfo = obj[0];
+                    if (!mapinfo) {
                         reject("Map not found")
                     }
-                    let mapinfo = obj[0];
                     if (mapinfo.mode != 0) {
                         reject("Mode not supported")
                     }
