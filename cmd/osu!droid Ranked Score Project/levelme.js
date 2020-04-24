@@ -17,17 +17,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let scoredb = alicedb.collection("playerscore");
     let query = {discordid: ufind};
-    binddb.find(query).toArray((err, userres) => {
+    binddb.findOne(query, (err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres[0].uid;
-        let username = userres[0].username;
+        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        let uid = userres.uid;
+        let username = userres.username;
 
         query = {uid: uid};
-        scoredb.find(query).toArray((err, res) => {
+        scoredb.findOne(query, async (err, res) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -35,32 +35,31 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let score = 0;
             let level = 1;
             let playc = 0;
-            if (res[0]) {
-                score = res[0].score;
-                level = res[0].level;
-                playc = res[0].playc
+            if (res) {
+                score = res.score;
+                level = res.level;
+                playc = res.playc
             }
             let levelremain = (level - Math.floor(level)) * 100;
-            new osudroid.PlayerInfo().get(query, player => {
-                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
-                let avalink = player.avatarURL;
-                let rolecheck;
-                try {
-                    rolecheck = message.member.roles.highest.hexColor
-                } catch (e) {
-                    rolecheck = "#000000"
-                }
-                let footer = config.avatar_list;
-                const index = Math.floor(Math.random() * footer.length);
-                let embed = new Discord.MessageEmbed()
-                    .setColor(rolecheck)
-                    .setThumbnail(avalink)
-                    .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
-                    .setFooter("Alice Synthesis Thirty", footer[index])
-                    .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
+            const player = await new osudroid.PlayerInfo().get(query).catch(console.error);
+            if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
+            let avalink = player.avatarURL;
+            let rolecheck;
+            try {
+                rolecheck = message.member.roles.highest.hexColor
+            } catch (e) {
+                rolecheck = "#000000"
+            }
+            let footer = config.avatar_list;
+            const index = Math.floor(Math.random() * footer.length);
+            let embed = new Discord.MessageEmbed()
+                .setColor(rolecheck)
+                .setThumbnail(avalink)
+                .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
+                .setFooter("Alice Synthesis Thirty", footer[index])
+                .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
 
-                message.channel.send({embed: embed}).catch(console.error)
-            })
+            message.channel.send({embed: embed}).catch(console.error)
         })
     })
 };
