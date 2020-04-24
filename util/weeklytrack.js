@@ -174,7 +174,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     };
                     pointdb.updateOne({uid: bonus_winner_uid}, updateVal, err => {
                         if (err) return console.log("Cannot access database");
-                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`)
+                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`)
                     })
                 } else {
                     let insertVal = {
