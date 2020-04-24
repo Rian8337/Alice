@@ -16,11 +16,13 @@
   "author": "Rian8337",
   "license": "MIT",
   "dependencies": {
+    "canvas": "^2.6.1",
     "discord.js": "^12.0.1",
     "dotenv": "^6.2.0",
+    "java-deserialization": "^0.1.0",
     "mongodb": "^3.5.4",
     "ojsama": "^1.2.5",
     "request": "^2.88.2",
-    "canvas": "^2.6.1"
+    "unzipper": "^0.10.10"
   }
 }
