@@ -644,15 +644,13 @@ class MapInfo {
                     } catch (e) {
                         reject("Error parsing map info")
                     }
-                    let mapinfo = obj[0];
-                    console.log(mapinfo);
-                    if (!mapinfo) {
+                    if (!obj || !obj[0]) {
                         reject("Map not found")
                     }
+                    let mapinfo = obj[0];
                     if (mapinfo.mode != 0) {
                         reject("Mode not supported")
                     }
-
                     this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
                     this.title = mapinfo.title;
                     this.artist = mapinfo.artist;
