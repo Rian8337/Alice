@@ -21,35 +21,34 @@ function test(uid, page, cb) {
     })
 }
 
-function calculatePP(ppentries, entry, cb) {
-    new osudroid.MapInfo().get({hash: entry[11]}, mapinfo => {
-        if (!mapinfo.osu_file) return cb(true);
-        if (!mapinfo.title) {
-            console.log("Map not found");
-            return cb()
-        }
-        if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
-            console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
-            return cb()
-        }
-        let mods = osudroid.mods.droid_to_PC(entry[6]);
-        let acc_percent = parseFloat(entry[7]) / 1000;
-        let combo = parseInt(entry[4]);
-        let miss = parseInt(entry[8]);
-        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-        let npp = osudroid.ppv2({
-            stars: star.droid_stars,
-            combo: combo,
-            acc_percent: acc_percent,
-            miss: miss,
-            mode: "droid"
-        });
-        let playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
-        let pp = parseFloat(npp.toString().split(" ")[0]);
-        let ppentry = [entry[11], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
-        if (!isNaN(pp)) ppentries.push(ppentry);
-        cb()
-    })
+async function calculatePP(ppentries, entry, cb) {
+    const mapinfo = new osudroid.MapInfo().get({hash: entry[11]})
+    if (!mapinfo.osu_file) return cb(true);
+    if (!mapinfo.title) {
+        console.log("Map not found");
+        return cb()
+    }
+    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
+        console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
+        return cb()
+    }
+    let mods = osudroid.mods.droid_to_PC(entry[6]);
+    let acc_percent = parseFloat(entry[7]) / 1000;
+    let combo = parseInt(entry[4]);
+    let miss = parseInt(entry[8]);
+    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+    let npp = osudroid.ppv2({
+        stars: star.droid_stars,
+        combo: combo,
+        acc_percent: acc_percent,
+        miss: miss,
+        mode: "droid"
+    });
+    let playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
+    let pp = parseFloat(npp.toString().split(" ")[0]);
+    let ppentry = [entry[11], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
+    if (!isNaN(pp)) ppentries.push(ppentry);
+    cb()
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -71,7 +70,7 @@ module.exports.run = (client, message, args, maindb) => {
         let playc = 0;
         let pptotal = 0;
 
-        test(uid, page, function testcb(entries, stopSign = false) {
+        test(uid, page, async function testcb(entries, stopSign = false) {
             if (stopSign) { 
                 console.log("COMPLETED!"); 
                 console.table(ppentries); 
@@ -110,20 +109,20 @@ module.exports.run = (client, message, args, maindb) => {
             }
             console.table(entries);
             let i = 0;
-            calculatePP(ppentries, entries[i], function cb(error = false, stopFlag = false) {
+            await calculatePP(ppentries, entries[i], async function cb(error = false, stopFlag = false) {
                 console.log(i);
                 if (!error) {
                     i++;
                     playc++
                 }
-                if (i < entries.length && !stopFlag) calculatePP(ppentries, entries[i], cb);
+                if (i < entries.length && !stopFlag) await calculatePP(ppentries, entries[i], await cb);
                 else {
                     console.log("done");
                     ppentries.sort(function(a, b) {return b[2] - a[2]});
                     if (ppentries.length > 75) ppentries.splice(75);
                     page++;
                     console.table(ppentries);
-                    test(uid, page, testcb)
+                    test(uid, page, await testcb)
                 }
             })
         })
