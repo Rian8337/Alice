@@ -67,7 +67,7 @@ class PlayInfo {
     //  hash: the beatmap's hash (required)
     //
     // outputs a promise of the play's information
-    async getFromHash(params = {}) {
+    getFromHash(params = {}) {
         return new Promise((resolve, reject) => {
             let uid = this.player_uid = this.player_uid || params.uid;
             let hash = this.hash = this.hash || params.hash;
@@ -133,7 +133,7 @@ class PlayerInfo {
     //  uid or username
     //
     // returns a promise of the player's statistics
-    async get(params) {
+    get(params) {
         return new Promise((resolve, reject) => {
             let uid = parseInt(params.uid);
             let username = params.username;
@@ -185,7 +185,7 @@ class PlayerInfo {
                     let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
                     request(avatar_page, (err, response, data) => {
                         if (err) {
-                            return this
+                            return reject("Unable to load site")
                         }
                         let b = data.split("\n");
                         let avalink = '';
@@ -205,7 +205,7 @@ class PlayerInfo {
                         }
                         this.avatarURL = avalink;
                         this.location = location;
-                        return this
+                        resolve(this)
                     })
                 })
             });
@@ -383,7 +383,7 @@ class ReplayAnalyzer {
         this._parseReplay()
     }
 
-    async _decompress() {
+    _decompress() {
         return new Promise((resolve, reject) => {
             const data_array = [];
             const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
@@ -606,7 +606,7 @@ class MapInfo {
     //  beatmap_id or hash (one is required), file = true
     //
     // returns a promise of the map's information
-    async get(params) {
+    get(params) {
         return new Promise((resolve, reject) => {
             let beatmapid = params.beatmap_id;
             let hash = params.hash;
