@@ -78,12 +78,12 @@ class PlayInfo {
             let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
             request(url, (err, response, data) => {
                 if (err || !data) {
-                    reject("API request failed (scoresearchv2)")
+                    return reject("API request failed (scoresearchv2)")
                 }
                 let entry = data.split("<br>");
                 entry.shift();
                 if (entry.length === 0) {
-                    reject("No play found")
+                    return reject("No play found")
                 }
                 let play = entry[0].split(" ");
                 this.score_id = parseInt(play[0]);
@@ -157,13 +157,13 @@ class PlayerInfo {
                     let resarr = content.split("<br>");
                     let headerres = resarr[0].split(" ");
                     if (headerres[0] == 'FAILED') {
-                        reject("Player not found")
+                        return reject("Player not found")
                     }
                     let obj;
                     try {
                         obj = JSON.parse(resarr[1])
                     } catch (e) {
-                        reject("Error parsing player info\n" + e)
+                        return reject("Error parsing player info\n" + e)
                     }
                     uid = headerres[1];
                     let name = headerres[2];
@@ -185,7 +185,7 @@ class PlayerInfo {
                     let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
                     request(avatar_page, (err, response, data) => {
                         if (err) {
-                            reject("Error fetching website")
+                            return reject("Error fetching website")
                         }
                         let b = data.split("\n");
                         let avalink = '';
@@ -642,15 +642,16 @@ class MapInfo {
                     try {
                         obj = JSON.parse(content)
                     } catch (e) {
-                        reject("Error parsing map info")
+                        return reject("Error parsing map info")
                     }
                     if (!obj || !obj[0]) {
-                        reject("Map not found")
+                        return reject("Map not found")
                     }
                     let mapinfo = obj[0];
                     if (mapinfo.mode != 0) {
-                        reject("Mode not supported")
+                        return reject("Mode not supported")
                     }
+
                     this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
                     this.title = mapinfo.title;
                     this.artist = mapinfo.artist;
@@ -681,12 +682,12 @@ class MapInfo {
                     this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
                     this.hash = mapinfo.file_md5;
                     if (!params.file) {
-                        resolve(this)
+                        return resolve(this)
                     }
                     let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
                     request(url, (err, response, data) => {
                         if (err || !data) {
-                            reject("Error downloading osu file");
+                            return reject("Error downloading osu file");
                         }
                         this.osu_file = data;
                         resolve(this)
@@ -899,7 +900,7 @@ class MapInfo {
     }
 }
 
-let rankImage = {
+const rankImage = {
     S: "http://ops.dgsrz.com/assets/images/ranking-S-small.png",
     A: "http://ops.dgsrz.com/assets/images/ranking-A-small.png",
     B: "http://ops.dgsrz.com/assets/images/ranking-B-small.png",
@@ -925,15 +926,15 @@ let rankImage = {
 
 // (internal)
 // osu!standard stats constants
-let OD0_MS = 80;
-let OD10_MS = 20;
-let AR0_MS = 1800.0;
-let AR5_MS = 1200.0;
-let AR10_MS = 450.0;
+const OD0_MS = 80;
+const OD10_MS = 20;
+const AR0_MS = 1800.0;
+const AR5_MS = 1200.0;
+const AR10_MS = 450.0;
 
-let OD_MS_STEP = (OD0_MS - OD10_MS) / 10.0;
-let AR_MS_STEP1 = (AR0_MS - AR5_MS) / 5.0;
-let AR_MS_STEP2 = (AR5_MS - AR10_MS) / 5.0;
+const OD_MS_STEP = (OD0_MS - OD10_MS) / 10.0;
+const AR_MS_STEP1 = (AR0_MS - AR5_MS) / 5.0;
+const AR_MS_STEP2 = (AR5_MS - AR10_MS) / 5.0;
 
 // (internal)
 // utility functions to apply speed and flat multipliers to
@@ -1595,36 +1596,36 @@ function vec_dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
 
 // (internal)
 // difficulty calculation constants
-let DIFF_SPEED = 0;
-let DIFF_AIM = 1;
-let SINGLE_SPACING = 125.0;
-let DECAY_BASE = [ 0.3, 0.15 ];
-let WEIGHT_SCALING = [ 1400.0, 26.25 ];
-let DECAY_WEIGHT = 0.9;
-let STRAIN_STEP = 400.0;
-let CIRCLESIZE_BUFF_THRESHOLD = 30.0;
-let STAR_SCALING_FACTOR = 0.0675;
-let PLAYFIELD_SIZE = [512.0, 384.0];
-let PLAYFIELD_CENTER = vec_mul(PLAYFIELD_SIZE, [0.5, 0.5]);
-let DROID_EXTREME_SCALING_FACTOR = 0.4;
-let EXTREME_SCALING_FACTOR = 0.5;
+const DIFF_SPEED = 0;
+const DIFF_AIM = 1;
+const SINGLE_SPACING = 125.0;
+const DECAY_BASE = [ 0.3, 0.15 ];
+const WEIGHT_SCALING = [ 1400.0, 26.25 ];
+const DECAY_WEIGHT = 0.9;
+const STRAIN_STEP = 400.0;
+const CIRCLESIZE_BUFF_THRESHOLD = 30.0;
+const STAR_SCALING_FACTOR = 0.0675;
+const PLAYFIELD_SIZE = [512.0, 384.0];
+const PLAYFIELD_CENTER = vec_mul(PLAYFIELD_SIZE, [0.5, 0.5]);
+const DROID_EXTREME_SCALING_FACTOR = 0.4;
+const EXTREME_SCALING_FACTOR = 0.5;
 
 // (internal)
 // spacing weight constants for each difficulty type
 
 // ~200BPM 1/4 streams
-let MIN_SPEED_BONUS = 75.0;
+const MIN_SPEED_BONUS = 75.0;
 
 // ~280BPM 1/4 streams - edit to fit droid
-let DROID_MAX_SPEED_BONUS = 53.0;
+const DROID_MAX_SPEED_BONUS = 53.0;
 
 // ~330BPM 1/4 streams
-let MAX_SPEED_BONUS = 45.0;
+const MAX_SPEED_BONUS = 45.0;
 
-let ANGLE_BONUS_SCALE = 90;
-let AIM_TIMING_THRESHOLD = 107;
-let SPEED_ANGLE_BONUS_BEGIN = 5 * Math.PI / 6;
-let AIM_ANGLE_BONUS_BEGIN = Math.PI / 3;
+const ANGLE_BONUS_SCALE = 90;
+const AIM_TIMING_THRESHOLD = 107;
+const SPEED_ANGLE_BONUS_BEGIN = 5 * Math.PI / 6;
+const AIM_ANGLE_BONUS_BEGIN = Math.PI / 3;
 
 // osu!standard difficulty calculator
 // ----------------------------------
