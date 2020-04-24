@@ -68,7 +68,7 @@ class PlayInfo {
     //
     // outputs a promise of the play's information
     getFromHash(params = {}) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             let uid = this.player_uid = this.player_uid || params.uid;
             let hash = this.hash = this.hash || params.hash;
             if (!uid || !hash) {
@@ -78,12 +78,14 @@ class PlayInfo {
             let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
             request(url, (err, response, data) => {
                 if (err || !data) {
-                    return reject("Error retrieving player data")
+                    console.log("Error retrieving player data");
+                    return resolve(this)
                 }
                 let entry = data.split("<br>");
                 entry.shift();
                 if (entry.length === 0) {
-                    return reject("No play found")
+                    console.log("No play found");
+                    return resolve(this)
                 }
                 let play = entry[0].split(" ");
                 this.score_id = parseInt(play[0]);
@@ -134,7 +136,7 @@ class PlayerInfo {
     //
     // returns a promise of the player's statistics
     get(params) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             let uid = parseInt(params.uid);
             let username = params.username;
             if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
@@ -151,19 +153,22 @@ class PlayerInfo {
                     content += chunk
                 });
                 res.on("error", err => {
-                    return reject(err)
+                    console.log(err);
+                    return resolve(this);
                 });
                 res.on("end", () => {
                     let resarr = content.split("<br>");
                     let headerres = resarr[0].split(" ");
                     if (headerres[0] == 'FAILED') {
-                        return reject("Player not found")
+                        console.log("Player not found");
+                        return resolve(this);
                     }
                     let obj;
                     try {
                         obj = JSON.parse(resarr[1])
                     } catch (e) {
-                        return reject("Error parsing player info")
+                        console.log("Error parsing player info");
+                        return resolve(this);
                     }
                     uid = headerres[1];
                     let name = headerres[2];
@@ -185,7 +190,8 @@ class PlayerInfo {
                     let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
                     request(avatar_page, (err, response, data) => {
                         if (err) {
-                            return reject("Unable to load site")
+                            console.log("Unable to load site");
+                            return resolve(this);
                         }
                         let b = data.split("\n");
                         let avalink = '';
@@ -607,7 +613,7 @@ class MapInfo {
     //
     // returns a promise of the map's information
     get(params) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             let beatmapid = params.beatmap_id;
             let hash = params.hash;
             if (params.file === undefined) {
@@ -633,21 +639,25 @@ class MapInfo {
                     content += chunk
                 });
                 res.on("error", err => {
-                    return reject("Error retrieving map info\n" + err)
+                    console.log("Error retrieving map info\n" + err);
+                    return resolve(this);
                 });
                 res.on("end", () => {
                     let obj;
                     try {
                         obj = JSON.parse(content)
                     } catch (e) {
-                        return reject("Error parsing map info")
+                        console.log("Error parsing map info");
+                        return resolve(this);
                     }
                     if (!obj || !obj[0]) {
-                        return reject("Map not found")
+                        console.log("Map not found");
+                        return resolve(this);
                     }
                     let mapinfo = obj[0];
                     if (mapinfo.mode != 0) {
-                        return reject("Mode not supported")
+                        console.log("Mode not supported");
+                        return resolve(this);
                     }
 
                     this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
@@ -685,7 +695,8 @@ class MapInfo {
                     let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
                     request(url, (err, response, data) => {
                         if (err || !data) {
-                            return reject("Error downloading osu file")
+                            console.log("Error downloading osu file");
+                            return resolve(this);
                         }
                         this.osu_file = data;
                         resolve(this)
