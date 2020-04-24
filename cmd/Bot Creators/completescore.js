@@ -59,20 +59,19 @@ function retrievePlay(uid, page, cb) {
     })
 }
 
-function scoreCheck(scoreentries, score, cb) {
-    new osudroid.MapInfo().get({hash: score[11], file: false}, mapinfo => {
-        if (!mapinfo.title) {
-            console.log("Map not found");
-            return cb()
-        }
-        if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
-            console.log("Map is not ranked, approved, or loved");
-            return cb()
-        }
-        let scoreentry = [parseInt(score[3]), score[11]];
-        scoreentries.push(scoreentry);
-        cb()
-    })
+async function scoreCheck(scoreentries, score, cb) {
+    const mapinfo = await new osudroid.MapInfo().get({hash: score[11], file: false});
+    if (!mapinfo.title) {
+        console.log("Map not found");
+        return cb()
+    }
+    if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
+        console.log("Map is not ranked, approved, or loved");
+        return cb()
+    }
+    let scoreentry = [parseInt(score[3]), score[11]];
+    scoreentries.push(scoreentry);
+    cb()
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -105,7 +104,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            retrievePlay(uid, page, function testcb(entries, stopSign) {
+            retrievePlay(uid, page, async function testcb(entries, stopSign) {
                 if (stopSign) {
                     console.log("COMPLETED!");
                     scoreentries.sort((a, b) => {
@@ -154,16 +153,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 console.table(entries);
                 let i = 0;
-                scoreCheck(scoreentries, entries[i], function cb(stopFlag = false) {
+                await scoreCheck(scoreentries, entries[i], async function cb(stopFlag = false) {
                     console.log(i);
                     i++;
                     playc++;
-                    if (i < entries.length && !stopFlag) scoreCheck(scoreentries, entries[i], cb);
+                    if (i < entries.length && !stopFlag) await scoreCheck(scoreentries, entries[i], await cb);
                     else {
                         console.log("Done");
                         scoreentries.sort((a, b) => {return b[0] - a[0]});
                         page++;
-                        retrievePlay(uid, page, testcb)
+                        retrievePlay(uid, page, await testcb)
                     }
                 })
             })
