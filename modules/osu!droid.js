@@ -645,6 +645,7 @@ class MapInfo {
                         reject("Error parsing map info")
                     }
                     let mapinfo = obj[0];
+                    console.log(mapinfo);
                     if (!mapinfo) {
                         reject("Map not found")
                     }
