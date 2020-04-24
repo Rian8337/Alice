@@ -54,19 +54,19 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 	let binddb = maindb.collection("userbind");
 	let query = { discordid: ufind };
-	binddb.find(query).toArray(function(err, res) {
+	binddb.findOne(query, function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!");
 		}
-		if (!res[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-		let uid = res[0].uid;
-		let username = res[0].username;
-		let discordid = res[0].discordid;
+		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		let uid = res.uid;
+		let username = res.username;
+		let discordid = res.discordid;
 		let pp = 0;
 		let ppentry = [];
-		if (res[0].pptotal) pp = res[0].pptotal.toFixed(2);
-		if (res[0].pp) ppentry = res[0].pp;
+		if (res.pptotal) pp = res.pptotal.toFixed(2);
+		if (res.pp) ppentry = res.pp;
 		let rolecheck;
 		try {
 			rolecheck = message.member.roles.highest.hexColor
