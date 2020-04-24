@@ -68,37 +68,40 @@ class PlayInfo {
     //
     // outputs a promise of the play's information
     async getFromHash(params = {}) {
-        let uid = this.player_uid = this.player_uid || params.uid;
-        let hash = this.hash = this.hash || params.hash;
-        if (!uid || !hash) {
-            throw new TypeError("Uid and hash must be specified");
-        }
+        return new Promise((resolve, reject) => {
+            let uid = this.player_uid = this.player_uid || params.uid;
+            let hash = this.hash = this.hash || params.hash;
+            if (!uid || !hash) {
+                throw new TypeError("Uid and hash must be specified");
+            }
 
-        let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
-        request(url, (err, response, data) => {
-            if (err || !data) {
-                return this
-            }
-            let entry = data.split("<br>");
-            entry.shift();
-            if (entry.length === 0) {
-                return reject("No play found")
-            }
-            let play = entry[0].split(" ");
-            this.score_id = parseInt(play[0]);
-            this.player_uid = parseInt(play[1]);
-            this.player_name = play[2];
-            this.score = parseInt(play[3]);
-            this.combo = parseInt(play[4]);
-            this.rank = play[5];
-            this.mods = mods.droid_to_PC(play[6]);
-            this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
-            this.miss = parseInt(play[8]);
-            let date = new Date(parseInt(play[9]) * 1000);
-            date.setUTCHours(date.getUTCHours() + 6);
-            this.date = date.toUTCString();
-            this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
-            this.hash = play[11];
+            let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
+            request(url, (err, response, data) => {
+                if (err || !data) {
+                    return reject("Error retrieving player data")
+                }
+                let entry = data.split("<br>");
+                entry.shift();
+                if (entry.length === 0) {
+                    return reject("No play found")
+                }
+                let play = entry[0].split(" ");
+                this.score_id = parseInt(play[0]);
+                this.player_uid = parseInt(play[1]);
+                this.player_name = play[2];
+                this.score = parseInt(play[3]);
+                this.combo = parseInt(play[4]);
+                this.rank = play[5];
+                this.mods = mods.droid_to_PC(play[6]);
+                this.accuracy = parseFloat((play[7] / 1000).toFixed(2));
+                this.miss = parseInt(play[8]);
+                let date = new Date(parseInt(play[9]) * 1000);
+                date.setUTCHours(date.getUTCHours() + 6);
+                this.date = date.toUTCString();
+                this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
+                this.hash = play[11];
+                resolve(this);
+            })
         })
     }
 
@@ -131,81 +134,83 @@ class PlayerInfo {
     //
     // returns a promise of the player's statistics
     async get(params) {
-        let uid = parseInt(params.uid);
-        let username = params.username;
-        if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
-        let options = {
-            host: "ops.dgsrz.com",
-            port: 80,
-            path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
-        };
-        let content = '';
-        let req = http.request(options, res => {
-            res.setTimeout(10000);
-            res.setEncoding("utf8");
-            res.on("data", chunk => {
-                content += chunk
-            });
-            res.on("error", err => {
-                reject("Error retrieving player info");
-            });
-            res.on("end", () => {
-                let resarr = content.split("<br>");
-                let headerres = resarr[0].split(" ");
-                if (headerres[0] == 'FAILED') {
-                    return this
-                }
-                let obj;
-                try {
-                    obj = JSON.parse(resarr[1])
-                } catch (e) {
-                    return this
-                }
-                uid = headerres[1];
-                let name = headerres[2];
-                let total_score = parseInt(headerres[3]);
-                let play_count = parseInt(headerres[4]);
-                let email = headerres[6];
-                let rank = obj.rank;
-                let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
-                let recent_plays = obj.recent ? obj.recent : [];
-                this.uid = uid;
-                this.name = name;
-                this.score = total_score;
-                this.email = email;
-                this.play_count = play_count;
-                this.accuracy = acc;
-                this.rank = rank;
-                this.recent_plays = recent_plays;
+        return new Promise((resolve, reject) => {
+            let uid = parseInt(params.uid);
+            let username = params.username;
+            if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
+            let options = {
+                host: "ops.dgsrz.com",
+                port: 80,
+                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
+            };
+            let content = '';
+            let req = http.request(options, res => {
+                res.setTimeout(10000);
+                res.setEncoding("utf8");
+                res.on("data", chunk => {
+                    content += chunk
+                });
+                res.on("error", err => {
+                    return reject(err)
+                });
+                res.on("end", () => {
+                    let resarr = content.split("<br>");
+                    let headerres = resarr[0].split(" ");
+                    if (headerres[0] == 'FAILED') {
+                        return reject("Player not found")
+                    }
+                    let obj;
+                    try {
+                        obj = JSON.parse(resarr[1])
+                    } catch (e) {
+                        return reject("Error parsing player info")
+                    }
+                    uid = headerres[1];
+                    let name = headerres[2];
+                    let total_score = parseInt(headerres[3]);
+                    let play_count = parseInt(headerres[4]);
+                    let email = headerres[6];
+                    let rank = obj.rank;
+                    let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
+                    let recent_plays = obj.recent ? obj.recent : [];
+                    this.uid = uid;
+                    this.name = name;
+                    this.score = total_score;
+                    this.email = email;
+                    this.play_count = play_count;
+                    this.accuracy = acc;
+                    this.rank = rank;
+                    this.recent_plays = recent_plays;
 
-                let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
-                request(avatar_page, (err, response, data) => {
-                    if (err) {
-                        return this
-                    }
-                    let b = data.split("\n");
-                    let avalink = '';
-                    let location = '';
-                    for (let x = 0; x < b.length; x++) {
-                        if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                            b[x-3]=b[x-3].replace('<img src="',"");
-                            b[x-3]=b[x-3].replace('" class="img-circle">',"");
-                            b[x-3]=b[x-3].trim();
-                            avalink = b[x-3];
-                            b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-                            b[x+1]=b[x+1].replace("<\/small>","");
-                            b[x+1]=b[x+1].trim();
-                            location=b[x+1];
-                            break
+                    let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
+                    request(avatar_page, (err, response, data) => {
+                        if (err) {
+                            return this
                         }
-                    }
-                    this.avatarURL = avalink;
-                    this.location = location;
-                    return this
+                        let b = data.split("\n");
+                        let avalink = '';
+                        let location = '';
+                        for (let x = 0; x < b.length; x++) {
+                            if (b[x].includes('h3 m-t-xs m-b-xs')) {
+                                b[x-3]=b[x-3].replace('<img src="',"");
+                                b[x-3]=b[x-3].replace('" class="img-circle">',"");
+                                b[x-3]=b[x-3].trim();
+                                avalink = b[x-3];
+                                b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
+                                b[x+1]=b[x+1].replace("<\/small>","");
+                                b[x+1]=b[x+1].trim();
+                                location=b[x+1];
+                                break
+                            }
+                        }
+                        this.avatarURL = avalink;
+                        this.location = location;
+                        return this
+                    })
                 })
-            })
-        });
-        req.end()
+            });
+            req.end()
+        })
     }
 
     toString() {
@@ -378,7 +383,7 @@ class ReplayAnalyzer {
         this._parseReplay()
     }
 
-    _decompress() {
+    async _decompress() {
         return new Promise((resolve, reject) => {
             const data_array = [];
             const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
@@ -602,91 +607,93 @@ class MapInfo {
     //
     // returns a promise of the map's information
     async get(params) {
-        let beatmapid = params.beatmap_id;
-        let hash = params.hash;
-        if (params.file === undefined) {
-            params.file = true;
-        }
+        return new Promise((resolve, reject) => {
+            let beatmapid = params.beatmap_id;
+            let hash = params.hash;
+            if (params.file === undefined) {
+                params.file = true;
+            }
 
-        let options;
-        if (beatmapid) {
-            options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
-        }
-        else if (hash) {
-            options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
-        }
-        else {
-            throw new TypeError("Beatmap ID or MD5 hash must be defined");
-        }
+            let options;
+            if (beatmapid) {
+                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
+            }
+            else if (hash) {
+                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
+            }
+            else {
+                throw new TypeError("Beatmap ID or MD5 hash must be defined");
+            }
 
-        let content = '';
-        let req = https.get(options, res => {
-            res.setTimeout(10000);
-            res.setEncoding("utf8");
-            res.on("data", chunk => {
-                content += chunk
-            });
-            res.on("error", err => {
-                reject("Error retrieving map info\n" + err)
-            });
-            res.on("end", () => {
-                let obj;
-                try {
-                    obj = JSON.parse(content)
-                } catch (e) {
-                    return this
-                }
-                if (!obj || !obj[0]) {
-                    return this
-                }
-                let mapinfo = obj[0];
-                if (mapinfo.mode != 0) {
-                    return this
-                }
-
-                this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
-                this.title = mapinfo.title;
-                this.artist = mapinfo.artist;
-                this.creator = mapinfo.creator;
-                this.version = mapinfo.version;
-                this.approved = parseInt(mapinfo.approved);
-                this.mode = parseInt(mapinfo.mode);
-                this.beatmap_id = parseInt(mapinfo.beatmap_id);
-                this.beatmapset_id = parseInt(mapinfo.beatmapset_id);
-                this.plays = parseInt(mapinfo.playcount);
-                this.favorites = parseInt(mapinfo.favourite_count);
-                this.last_update = mapinfo.last_update;
-                this.hit_length = parseInt(mapinfo.hit_length);
-                this.total_length = parseInt(mapinfo.total_length);
-                this.bpm = parseFloat(mapinfo.bpm);
-                this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
-                this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
-                this.spinners = mapinfo.count_slider ? parseInt(mapinfo.count_spinner) : 0;
-                this.objects = this.circles + this.sliders + this.spinners;
-                this.max_combo = parseInt(mapinfo.max_combo);
-                this.cs = parseFloat(mapinfo.diff_size);
-                this.ar = parseFloat(mapinfo.diff_approach);
-                this.od = parseFloat(mapinfo.diff_overall);
-                this.hp = parseFloat(mapinfo.diff_drain);
-                if (mapinfo.packs) this.packs = mapinfo.packs;
-                this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
-                this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
-                this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
-                this.hash = mapinfo.file_md5;
-                if (!params.file) {
-                    return this
-                }
-                let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
-                request(url, (err, response, data) => {
-                    if (err || !data) {
-                        return this
+            let content = '';
+            let req = https.get(options, res => {
+                res.setTimeout(10000);
+                res.setEncoding("utf8");
+                res.on("data", chunk => {
+                    content += chunk
+                });
+                res.on("error", err => {
+                    return reject("Error retrieving map info\n" + err)
+                });
+                res.on("end", () => {
+                    let obj;
+                    try {
+                        obj = JSON.parse(content)
+                    } catch (e) {
+                        return reject("Error parsing map info")
                     }
-                    this.osu_file = data;
-                    return this
+                    if (!obj || !obj[0]) {
+                        return reject("Map not found")
+                    }
+                    let mapinfo = obj[0];
+                    if (mapinfo.mode != 0) {
+                        return reject("Mode not supported")
+                    }
+
+                    this.full_title = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
+                    this.title = mapinfo.title;
+                    this.artist = mapinfo.artist;
+                    this.creator = mapinfo.creator;
+                    this.version = mapinfo.version;
+                    this.approved = parseInt(mapinfo.approved);
+                    this.mode = parseInt(mapinfo.mode);
+                    this.beatmap_id = parseInt(mapinfo.beatmap_id);
+                    this.beatmapset_id = parseInt(mapinfo.beatmapset_id);
+                    this.plays = parseInt(mapinfo.playcount);
+                    this.favorites = parseInt(mapinfo.favourite_count);
+                    this.last_update = mapinfo.last_update;
+                    this.hit_length = parseInt(mapinfo.hit_length);
+                    this.total_length = parseInt(mapinfo.total_length);
+                    this.bpm = parseFloat(mapinfo.bpm);
+                    this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
+                    this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
+                    this.spinners = mapinfo.count_slider ? parseInt(mapinfo.count_spinner) : 0;
+                    this.objects = this.circles + this.sliders + this.spinners;
+                    this.max_combo = parseInt(mapinfo.max_combo);
+                    this.cs = parseFloat(mapinfo.diff_size);
+                    this.ar = parseFloat(mapinfo.diff_approach);
+                    this.od = parseFloat(mapinfo.diff_overall);
+                    this.hp = parseFloat(mapinfo.diff_drain);
+                    if (mapinfo.packs) this.packs = mapinfo.packs;
+                    this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
+                    this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
+                    this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
+                    this.hash = mapinfo.file_md5;
+                    if (!params.file) {
+                        return resolve(this)
+                    }
+                    let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
+                    request(url, (err, response, data) => {
+                        if (err || !data) {
+                            return reject("Error downloading osu file")
+                        }
+                        this.osu_file = data;
+                        resolve(this)
+                    })
                 })
-            })
-        });
-        req.end()
+            });
+            req.end()
+        })
     }
 
     // (internal)
