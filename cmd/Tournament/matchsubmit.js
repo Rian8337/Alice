@@ -10,21 +10,20 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 
 function playValidation(mod, requirement) {
 	switch (requirement) {
-		case "nm": return mod == "-";
-		case "hd": return mod == "h";
-		case "hr": return mod == "r";
-		case "dt": return mod == 'd' || mod == 'hd';
+		case "nm": return mod === "-";
+		case "hd": return mod === "h";
+		case "hr": return mod === "r";
+		case "dt": return mod === 'd' || mod === 'hd';
 		case "fm": return (mod.includes("h") || mod.includes("r") || mod.includes("e")) && (!mod.includes("t") && !mod.includes("d") && !mod.includes("c"));
 		case "tb": return !mod.includes("d") && !mod.includes("c") && !mod.includes("t");
 		default: return true
 	}
 }
 
-function getPlay(i, uid, cb) {
-	new osudroid.PlayerInfo().get({uid: uid}, player => {
-		let play = player.recent_plays[0];
-		cb([i, play])
-	})
+async function getPlay(i, uid, cb) {
+	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+	let play = player.recent_plays[0];
+	cb([i, play])
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -34,136 +33,136 @@ module.exports.run = (client, message, args, maindb) => {
 	let matchdb = maindb.collection("matchinfo");
 	let mapdb = maindb.collection("mapinfo");
 	let query = {matchid: id};
-	matchdb.find(query).toArray(function (err, matchres) {
+	matchdb.findOne(query, function (err, matchres) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
-		if (!matchres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the match!**");
-		let players = matchres[0].player;
+		if (!matchres) return message.channel.send("❎ **| I'm sorry, I cannot find the match!**");
+		let players = matchres.player;
 		let play_list = [];
 		let min_time_diff = 0;
 		let hash = '';
 		let i = -1;
-		players.forEach(player => {
+		players.forEach(async player => {
 			i++;
-			getPlay(i, player[1], data => {
+			await getPlay(i, player[1], data => {
 				play_list.push(data);
 				if (min_time_diff < data[1].date) {
 					min_time_diff = data[1].date;
 					hash = data[1].hash
 				}
-				if (play_list.length == players.length) {
-					play_list.sort((a, b) => {return a[0] - b[0]});
-					query = {poolid: id.split(".")[0]};
-					mapdb.find(query).toArray(function (err, poolres) {
+				if (play_list.length !== players.length) return;
+				
+				play_list.sort((a, b) => {return a[0] - b[0]});
+				query = {poolid: id.split(".")[0]};
+				mapdb.findOne(query, function (err, poolres) {
+					if (err) {
+						console.log(err);
+						return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+					}
+					if (!poolres) return message.channel.send("❎ **| I'm sorry, I cannot find the map pool!**");
+					let max_score;
+					let requirement;
+					let title;
+					for (let i in poolres.map) {
+						if (hash === poolres.map[i][3]) {
+							requirement = poolres.map[i][0];
+							title = poolres.map[i][1];
+							max_score = parseInt(poolres.map[i][2]);
+							break
+						}
+					}
+					if (!max_score || !requirement || !title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+
+					let team_1_score = 0;
+					let team_2_score = 0;
+					let team_1_string = '';
+					let team_2_string = '';
+					let temp_score = 0;
+					let score_list = [];
+
+					for (let i in play_list) {
+						if (play_list[i][1].hash === hash && playValidation(play_list[i][1].mode, requirement)) {
+							temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy / 1000, play_list[i][1].miss);
+							if (play_list[i][1].mode === "hd") temp_score = Math.round(temp_score / 1.0625);
+						}
+						else temp_score = 0;
+						score_list.push(temp_score);
+
+						if (i % 2 === 0) {
+							team_1_score += temp_score;
+							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+							else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} (N/A): **0** - Failed\n`
+						}
+						else {
+							team_2_score += temp_score;
+							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+							else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} (N/A): **0** - Failed\n`
+						}
+					}
+
+					team_1_score = Math.round(team_1_score);
+					team_2_score = Math.round(team_2_score);
+
+					let description = '';
+					let color = 0;
+					if (team_1_score > team_2_score) {
+						description = `${matchres.team[0][0]} won by ${team_1_score - team_2_score}`;
+						color = 16711680
+					}
+					else if (team_1_score < team_2_score) {
+						description = `${matchres.team[1][0]} won by ${team_2_score - team_1_score}`;
+						color = 262399
+					}
+					else description = "It's a draw";
+
+					let footer = config.avatar_list;
+					const index = Math.floor(Math.random() * footer.length);
+					let embed = new Discord.MessageEmbed()
+						.setTitle(title)
+						.setColor(color)
+						.setFooter("Alice Synthesis Thirty", footer[index])
+						.setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
+						.setAuthor(matchres.name)
+						.addField(`${matchres.team[0][0]}: ${team_1_score}`, team_1_string)
+						.addField(`${matchres.team[1][0]}: ${team_2_score}`, team_2_string)
+						.addField("=================================", `**${description}**`);
+					message.channel.send({embed: embed}).catch(console.error);
+
+					let name = matchres.name;
+					let t1name = matchres.team[0][0];
+					let t2name = matchres.team[1][0];
+					let t1win = matchres.team[0][1] + (team_1_score > team_2_score);
+					let t2win = matchres.team[1][1] + (team_1_score < team_2_score);
+					matchres.team[0][1] = t1win;
+					matchres.team[1][1] = t2win;
+					let result = matchres.result;
+
+					embed = new Discord.MessageEmbed()
+						.setTitle(name)
+						.setColor(65280)
+						.setFooter("Alice Synthesis Thirty", footer[index])
+						.addField(t1name, `**${t1win}**`, true)
+						.addField(t2name, `**${t2win}**`, true);
+
+					message.channel.send({embed: embed}).catch(console.error);
+					for (let p in score_list) result[p].push(score_list[p]);
+					let updateVal = {
+						$set: {
+							status: "on-going",
+							team: matchres.team,
+							result: result
+						}
+					};
+					matchdb.updateOne({matchid: id}, updateVal, function(err) {
 						if (err) {
 							console.log(err);
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 						}
-						if (!poolres[0]) return message.channel.send("❎ **| I'm sorry, I cannot find the map pool!**");
-						let max_score;
-						let requirement;
-						let title;
-						for (let i in poolres[0].map) {
-							if (hash == poolres[0].map[i][3]) {
-								requirement = poolres[0].map[i][0];
-								title = poolres[0].map[i][1];
-								max_score = parseInt(poolres[0].map[i][2]);
-								break
-							}
-						}
-						if (!max_score || !requirement || !title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-
-						let team_1_score = 0;
-						let team_2_score = 0;
-						let team_1_string = '';
-						let team_2_string = '';
-						let temp_score = 0;
-						let score_list = [];
-
-						for (let i in play_list) {
-							if (play_list[i][1].hash == hash && playValidation(play_list[i][1].mode, requirement)) {
-								temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy / 1000, play_list[i][1].miss);
-								if (play_list[i][1].mode == "hd") temp_score = Math.round(temp_score / 1.0625);
-							}
-							else temp_score = 0;
-							score_list.push(temp_score);
-
-							if (i % 2 == 0) {
-								team_1_score += temp_score;
-								if (temp_score != 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[0][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
-								else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[0][0]} (N/A): **0** - Failed\n`
-							}
-							else {
-								team_2_score += temp_score;
-								if (temp_score != 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[1][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
-								else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres[0].team[1][0]} (N/A): **0** - Failed\n`
-							}
-						}
-
-						team_1_score = Math.round(team_1_score);
-						team_2_score = Math.round(team_2_score);
-
-						let description = '';
-						let color = 0;
-						if (team_1_score > team_2_score) {
-							description = `${matchres[0].team[0][0]} won by ${team_1_score - team_2_score}`;
-							color = 16711680
-						}
-						else if (team_1_score < team_2_score) {
-							description = `${matchres[0].team[1][0]} won by ${team_2_score - team_1_score}`;
-							color = 262399
-						}
-						else description = "It's a draw";
-
-						let footer = config.avatar_list;
-						const index = Math.floor(Math.random() * footer.length);
-						let embed = new Discord.MessageEmbed()
-							.setTitle(title)
-							.setColor(color)
-							.setFooter("Alice Synthesis Thirty", footer[index])
-							.setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
-							.setAuthor(matchres[0].name)
-							.addField(`${matchres[0].team[0][0]}: ${team_1_score}`, team_1_string)
-							.addField(`${matchres[0].team[1][0]}: ${team_2_score}`, team_2_string)
-							.addField("=================================", `**${description}**`);
-						message.channel.send({embed: embed}).catch(console.error);
-
-						let name = matchres[0].name;
-						let t1name = matchres[0].team[0][0];
-						let t2name = matchres[0].team[1][0];
-						let t1win = matchres[0].team[0][1] + (team_1_score > team_2_score);
-						let t2win = matchres[0].team[1][1] + (team_1_score < team_2_score);
-						matchres[0].team[0][1] = t1win;
-						matchres[0].team[1][1] = t2win;
-						let result = matchres[0].result;
-
-						embed = new Discord.MessageEmbed()
-							.setTitle(name)
-							.setColor(65280)
-							.setFooter("Alice Synthesis Thirty", footer[index])
-							.addField(t1name, `**${t1win}**`, true)
-							.addField(t2name, `**${t2win}**`, true);
-
-						message.channel.send({embed: embed}).catch(console.error);
-						for (let p in score_list) result[p].push(score_list[p]);
-						let updateVal = {
-							$set: {
-								status: "on-going",
-								team: matchres[0].team,
-								result: result
-							}
-						};
-						matchdb.updateOne({matchid: id}, updateVal, function(err) {
-							if (err) {
-								console.log(err);
-								return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-							}
-							console.log("Match info updated")
-						})
+						console.log("Match info updated")
 					})
-				}
+				})
 			})
 		})
 	})
