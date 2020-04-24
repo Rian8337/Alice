@@ -332,7 +332,7 @@ client.on("message", message => {
 		if (!mainbot) return;
 		let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
 		if (cmd && mainbot.user.presence.status == 'offline') {
-			if (maintenance) return message.channel.send(`❎ **| I'm sorry, bot is currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
+			if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
 				message.channel.stopTyping(true)
@@ -350,7 +350,7 @@ client.on("message", message => {
 	if (message.content.startsWith(config.prefix)) {
 		let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
 		if (cmd) {
-			if (maintenance) return message.channel.send(`❎ **| I'm sorry, bot is currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
+			if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
 			message.channel.startTyping().catch(console.error);
 			setTimeout(() => {
 				message.channel.stopTyping(true)
