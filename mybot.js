@@ -339,6 +339,7 @@ client.on("message", message => {
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
+			console.log(message.content);
 			cmd.run(client, message, args, maindb, alicedb, current_map);
 			//cd.add(message.author.id);
 			//setTimeout(() => {
@@ -357,6 +358,7 @@ client.on("message", message => {
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
+			console.log(message.content);
 			cmd.run(client, message, args, maindb, alicedb, current_map);
 			//cd.add(message.author.id);
 			//setTimeout(() => {
