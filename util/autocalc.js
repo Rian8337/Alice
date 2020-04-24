@@ -4,7 +4,7 @@ const apikey = process.env.OSU_API_KEY;
 const config = require('../config.json');
 const osudroid = require('../modules/osu!droid');
 
-module.exports.run = (client, message, args, current_map, mapset = false) => {
+module.exports.run = async (client, message, args, current_map, mapset = false) => {
 	let beatmapid;
 	let combo;
 	let acc = 100;
@@ -52,115 +52,114 @@ module.exports.run = (client, message, args, current_map, mapset = false) => {
 				let total_map = obj.length;
 				if (obj.length > 3) obj.splice(3);
 
-				obj.forEach(map => {
-					new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}, mapinfo => {
-						i++;
-						if (!mapinfo.osu_file) return;
-						let max_score = mapinfo.max_score(mod);
-						let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-						let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-						let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
-						let npp = osudroid.ppv2({
-							stars: star.droid_stars,
-							combo: combo,
-							miss: missc,
-							acc_percent: acc,
-							mode: "droid"
-						});
-						let pcpp = osudroid.ppv2({
-							stars: star.pc_stars,
-							combo: combo,
-							miss: missc,
-							acc_percent: acc,
-							mode: "osu"
-						});
-						let ppline = parseFloat(npp.toString().split(" ")[0]);
-						let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
-						let entry = [mapinfo, starsline, pcstarsline, max_score, ppline, pcppline];
-						map_entries.push(entry);
-						if (i === obj.length) {
-							map_entries.sort((a, b) => {return b[2] - a[2]});
-							let footer = config.avatar_list;
-							const index = Math.floor(Math.random() * footer.length);
-							let embed = new Discord.MessageEmbed()
-								.setFooter("Alice Synthesis Thirty", footer[index])
-								.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
-								.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-								.setColor(mapinfo.statusColor())
-								.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
-								.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
-								.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`);
+				obj.forEach(async map => {
+					const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}).catch(console.error);
+					i++;
+					if (!mapinfo.osu_file) return;
+					let max_score = mapinfo.max_score(mod);
+					let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+					let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
+					let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+					let npp = osudroid.ppv2({
+						stars: star.droid_stars,
+						combo: combo,
+						miss: missc,
+						acc_percent: acc,
+						mode: "droid"
+					});
+					let pcpp = osudroid.ppv2({
+						stars: star.pc_stars,
+						combo: combo,
+						miss: missc,
+						acc_percent: acc,
+						mode: "osu"
+					});
+					let ppline = parseFloat(npp.toString().split(" ")[0]);
+					let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+					let entry = [mapinfo, starsline, pcstarsline, max_score, ppline, pcppline];
+					map_entries.push(entry);
+					if (i === obj.length) {
+						map_entries.sort((a, b) => {return b[2] - a[2]});
+						let footer = config.avatar_list;
+						const index = Math.floor(Math.random() * footer.length);
+						let embed = new Discord.MessageEmbed()
+							.setFooter("Alice Synthesis Thirty", footer[index])
+							.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
+							.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+							.setColor(mapinfo.statusColor())
+							.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
+							.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+							.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`);
 
-							for (i = 0; i < map_entries.length; i++) {
-								let star_rating = map_entries[i][2];
-								let diff_icon = '';
-								switch (true) {
-									case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
-									case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
-									case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
-									case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
-									case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
-									default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
-								}
-								let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
-								embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
+						for (i = 0; i < map_entries.length; i++) {
+							let star_rating = map_entries[i][2];
+							let diff_icon = '';
+							switch (true) {
+								case star_rating < 2: diff_icon = client.emojis.cache.get("679325905365237791"); break; // Easy
+								case star_rating < 2.7: diff_icon = client.emojis.cache.get("679325905734205470"); break; // Normal
+								case star_rating < 4: diff_icon = client.emojis.cache.get("679325905658708010"); break; // Hard
+								case star_rating < 5.3: diff_icon = client.emojis.cache.get("679325905616896048"); break; // Insane
+								case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
+								default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
 							}
-
-							message.channel.send(total_map > 3 ? `✅ **| I found ${total_map} maps, but only displaying 3 due to my limitations.**` : "", {embed: embed})
+							let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+							embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description)
 						}
-					})
+
+						message.channel.send(total_map > 3 ? `✅ **| I found ${total_map} maps, but only displaying 3 due to my limitations.**` : "", {embed: embed})
+					}
 				})
 			})
 		});
 		return req.end()
 	}
-	new osudroid.MapInfo().get({beatmap_id: beatmapid}, mapinfo => {
-		if (!mapinfo.title || !mapinfo.objects || mapinfo.mode != 0 || !mapinfo.osu_file) return;
-		if (!combo) combo = mapinfo.max_combo;
-		let max_score = mapinfo.max_score(mod);
-		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-		let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-		let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
-		let npp = osudroid.ppv2({
-			stars: star.droid_stars,
-			combo: combo,
-			miss: missc,
-			acc_percent: acc,
-			mode: "droid"
-		});
-		let pcpp = osudroid.ppv2({
-			stars: star.pc_stars,
-			combo: combo,
-			miss: missc,
-			acc_percent: acc,
-			mode: "osu"
-		});
-		let ppline = parseFloat(npp.toString().split(" ")[0]);
-		let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
 
-		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = new Discord.MessageEmbed()
-			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-			.setColor(mapinfo.statusColor())
-			.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-			.setTitle(mapinfo.showStatistics(mod, 0))
-			.setDescription(mapinfo.showStatistics(mod, 1))
-			.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-			.addField(mapinfo.showStatistics(mod, 2), `${mapinfo.showStatistics(mod, 3)}\n**Max score**: ${max_score.toLocaleString()}`)
-			.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
-			.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
+	if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0 || !mapinfo.osu_file) return;
+	if (!combo) combo = mapinfo.max_combo;
+	let max_score = mapinfo.max_score(mod);
+	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+	let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
+	let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+	let npp = osudroid.ppv2({
+		stars: star.droid_stars,
+		combo: combo,
+		miss: missc,
+		acc_percent: acc,
+		mode: "droid"
+	});
+	let pcpp = osudroid.ppv2({
+		stars: star.pc_stars,
+		combo: combo,
+		miss: missc,
+		acc_percent: acc,
+		mode: "osu"
+	});
+	let ppline = parseFloat(npp.toString().split(" ")[0]);
+	let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-		let string = '';
-		if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
-		if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
-		message.channel.send(string, {embed: embed}).catch(console.error);
+	let footer = config.avatar_list;
+	const index = Math.floor(Math.random() * footer.length);
+	let embed = new Discord.MessageEmbed()
+		.setFooter("Alice Synthesis Thirty", footer[index])
+		.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+		.setColor(mapinfo.statusColor())
+		.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+		.setTitle(mapinfo.showStatistics(mod, 0))
+		.setDescription(mapinfo.showStatistics(mod, 1))
+		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+		.addField(mapinfo.showStatistics(mod, 2), `${mapinfo.showStatistics(mod, 3)}\n**Max score**: ${max_score.toLocaleString()}`)
+		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
+		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
-		let map_index = current_map.findIndex(map => map[0] === message.channel.id);
-		if (map_index === -1) current_map.push([message.channel.id, mapinfo.hash]);
-		else current_map[map_index][1] = mapinfo.hash;
-	})
+	let string = '';
+	if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
+	if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
+	message.channel.send(string, {embed: embed}).catch(console.error);
+
+	let map_index = current_map.findIndex(map => map[0] === message.channel.id);
+	if (map_index === -1) current_map.push([message.channel.id, mapinfo.hash]);
+	else current_map[map_index][1] = mapinfo.hash;
 };
 
 module.exports.config = {

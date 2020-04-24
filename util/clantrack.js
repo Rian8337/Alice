@@ -5,13 +5,12 @@ function retrieveClan(clans, i, cb) {
     cb(clans[i])
 }
 
-function getRank(memberlist, i, cb) {
+async function getRank(memberlist, i, cb) {
     if (!memberlist[i]) return cb(null, true);
     let uid = memberlist[i].uid;
-    new osudroid.PlayerInfo().get({uid: uid}, player => {
-        if (!player.name) return cb();
-        cb(player.rank)
-    })
+    const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+    if (!player.name) return cb();
+    cb(player.rank)
 }
 
 module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
@@ -26,7 +25,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         if (err) return console.log(err);
         if (clans.length === 0) return;
         let count = 0;
-        retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
+        retrieveClan(clans, count, async function checkClan(clan, stopSign = false) {
             if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
             ++count;
             let member_list = clan.member_list;
@@ -35,7 +34,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
 
             let i = 0;
             let rank_list = [];
-            getRank(member_list, i, function checkRank(player_rank, stopFlag = false) {
+            await getRank(member_list, i, async function checkRank(player_rank, stopFlag = false) {
                 if (stopFlag) {
                     let total_cost = 200;
                     for (let rank of rank_list) total_cost += 20 + Math.floor(480 - 34.74 * Math.log(rank));
@@ -131,12 +130,12 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                             })
                         }
                     });
-                    return retrieveClan(clans, count, checkClan)
+                    return retrieveClan(clans, count, await checkClan)
                 }
                 console.log(i);
                 rank_list.push(player_rank);
                 ++i;
-                getRank(member_list, i, checkRank)
+                await getRank(member_list, i, await checkRank)
             })
         })
     })
