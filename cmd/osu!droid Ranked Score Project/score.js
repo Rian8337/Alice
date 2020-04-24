@@ -171,11 +171,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let scorelist = [];
             let playc = 0;
             let currentlevel = 1;
-            if (res[0]) {
-                currentlevel = res[0].level;
-                prescore = res[0].score;
-                scorelist = res[0].scorelist;
-                playc = res[0].playc
+            if (res) {
+                currentlevel = res.level;
+                prescore = res.score;
+                scorelist = res.scorelist;
+                playc = res.playc
             }
             let score = 0;
             let i = 0;
