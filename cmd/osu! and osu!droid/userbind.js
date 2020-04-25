@@ -101,4 +101,10 @@ module.exports.run = async (client, message, args, maindb) => {
 	})
 };
 
-d
+module.exports.config = {
+	name: "userbind",
+	description: "Binds a Discord account to an osu!droid account. The account must have played the verification beatmap provided.",
+	usage: "userbind <uid>",
+	detail: "`uid`: The uid to bind [Integer]",
+	permission: "None"
+};
