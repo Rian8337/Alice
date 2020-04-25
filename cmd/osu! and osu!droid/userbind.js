@@ -1,7 +1,16 @@
 const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 
-
+/**
+ * Checks if a specific uid has played verification map.
+ *
+ * @param {number|string} uid The uid of the account
+ * @returns {Promise<boolean>}
+ */
+async function checkPlay(uid) {
+	const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
+	return !!play.title;
+}
 
 module.exports.run = async (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs!**");
@@ -14,68 +23,82 @@ module.exports.run = async (client, message, args, maindb) => {
 		else return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
 	}
 
-	let uid = args[0];
+	let uid = parseInt(args[0]);
 	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
 	if (isNaN(uid)) return message.channel.send("❎ **| Invalid uid.**");
+	uid = uid.toString();
+
 	let binddb = maindb.collection("userbind");
-	let query = {discordid: message.author.id};
 	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
-	let name = player.name;
 
-	binddb.findOne({uid: uid}, function (err, res) {
+	binddb.findOne({previous_bind: {$all: [uid]}}, async (err, res) => {
 		if (err) {
 			console.log(err);
-			return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
-		if (res && message.author.id !== res.discordid) return message.channel.send("❎ **| I'm sorry, this uid is already binded!**");
-		let bind = {
-			discordid: message.author.id,
-			uid: uid,
-			username: name,
-			pptotal: 0,
-			playc: 0,
-			pp: []
-		};
-		let updatebind = {
+		if (!res) {
+			const hasPlayed = await checkPlay(uid).catch(console.error);
+			if (!hasPlayed) return message.channel.send("❎ **| I'm sorry, the account hasn't played verification map yet! Please play this map before binding the account:\nhttps://drive.google.com/open?id=11lboYlvCv8rHfYOI3YvJEQXDUrzQirdr\n\nThis is a one-time verification and you will not be asked again in the future.**");
+			binddb.findOne({discordid: message.author.id}, (err, bindres) => {
+				if (err) {
+					console.log(err);
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+				}
+				if (bindres) {
+					let previous_bind = bindres.previous_bind;
+					previous_bind.push(uid);
+					let updateVal = {
+						$set: {
+							uid: uid,
+							previous_bind: previous_bind
+						}
+					};
+					binddb.updateOne({discordid: message.author.id}, updateVal, err => {
+						if (err) {
+							console.log(err);
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+						}
+						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
+					})
+				} else {
+					let insertVal = {
+						discordid: message.author.id,
+						uid: uid,
+						username: player.username,
+						pptotal: 0,
+						playc: 0,
+						pp: [],
+						previous_bind: [uid],
+						clan: ""
+					};
+					binddb.insertOne(insertVal, err => {
+						if (err) {
+							console.log(err);
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+						}
+						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
+					})
+				}
+			});
+			return
+		}
+
+		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
+		let updateVal = {
 			$set: {
-				discordid: message.author.id,
-				uid: uid,
-				username: name
+				uid: uid
 			}
 		};
-		binddb.findOne(query, function (err, res) {
+
+		binddb.updateOne({discordid: message.author.id}, updateVal, err => {
 			if (err) {
 				console.log(err);
-				return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 			}
-			if (!res) {
-				binddb.insertOne(bind, function (err) {
-					if (err) {
-						console.log(err);
-						return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
-					}
-					console.log("bind added");
-					message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
-				})
-			} else {
-				binddb.updateOne(query, updatebind, function (err) {
-					if (err) {
-						console.log(err);
-						return message.channel.send("❎ **| I'm sorry, I'm having trouble receivng response from database. Please try again!**")
-					}
-					console.log("bind updated");
-					message.channel.send("✅ **| Haii <3, binded <@" + message.author.id + "> to uid " + uid + ".**");
-				})
-			}
+			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
 		})
 	})
 };
 
-module.exports.config = {
-	name: "userbind",
-	description: "Binds a user to a specific uid.",
-	usage: "userbind <uid>",
-	detail: "`uid`: The uid to bind [Integer]",
-	permission: "None"
-};
+d
