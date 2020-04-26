@@ -141,7 +141,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let rplay = player.recent_plays;
         let playentry = [];
         let embed = new Discord.MessageEmbed()
-            .setTitle("PP submission info")
+            .setTitle("Score submission info")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(rolecheck);
 
