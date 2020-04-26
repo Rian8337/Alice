@@ -170,6 +170,7 @@ client.on("ready", () => {
 
 client.on("message", message => {
 	if (message.author.bot) return;
+	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	let msgArray = message.content.split(/\s+/g);
 	let command = msgArray[0];
 	let args = msgArray.slice(1);
