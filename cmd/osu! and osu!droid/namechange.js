@@ -35,7 +35,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
     switch (args[0]) {
         case 'accept': {
-            if (message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to do this.**");
+            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to do this.**");
             let uid = parseInt(args[1]);
             if (isNaN(uid)) return message.channel.send("❎ **| Hey, that's an invalid uid!**");
 
@@ -150,7 +150,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         case 'deny': {
-            if (message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to do this.**");
+            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to do this.**");
 
             let uid = parseInt(args[1]);
             if (isNaN(uid)) return message.channel.send("❎ **| Hey, that's an invalid uid!**");
