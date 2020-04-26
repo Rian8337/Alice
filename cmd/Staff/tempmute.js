@@ -44,8 +44,8 @@ module.exports.run = async (client, message, args) => {
     if (!mutetime) return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
     if (isNaN(mutetime)) return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
     if (mutetime < 1) return message.channel.send("❎ **| I'm sorry, you can only mute for at least 1 second.**");
-    if (mutetime == Infinity) return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
-    if (!message.author.bot && timeLimit != -1 && timeLimit < mutetime) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
+    if (mutetime === Infinity) return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
+    if (!message.author.bot && !message.isOwner && timeLimit !== -1 && timeLimit < mutetime) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
 
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
 
