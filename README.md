@@ -1,4 +1,4 @@
-# Alice
+# Alice v2.2.26
 A multipurpose Discord bot mainly made for osu!droid and Malody.
 
 Optimized for [osu!droid International Discord server](https://discord.gg/nyD92cE) usage.
