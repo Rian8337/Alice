@@ -7,7 +7,7 @@ module.exports.run = (client, message, args, maindb) => {
     if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
 
     const binddb = maindb.collection("userbind");
-    const query = {uid: uid.toString()};
+    const query = {previous_bind: {$all: [uid.toString()]}};
 
     //TODO rework for previous binds
     binddb.findOne(query, (err, res) => {
