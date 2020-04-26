@@ -1,15 +1,15 @@
 module.exports.run = (client, message, args, maindb) => {
-	if (message.member == null || message.member.roles == null || !message.member.roles.cache.get("325613708673810433")) return message.channel.send("❎ **| You don't have enough permission to use this.**");
+	if (!message.isOwner) return message.channel.send("❎ **| You don't have enough permission to use this.**");
 	let uid = args[0];
 	if (isNaN(parseInt(uid))) return message.channel.send("❎ **| I'm sorry, that uid is invalid!**");
 	let trackdb = maindb.collection("tracking");
 	let query = {uid: uid};
-	trackdb.find(query).toArray(function(err, res) {
+	trackdb.findOne(query, function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
-		if (res[0]) return message.channel.send("❎ **| I'm sorry, this uid is already being tracked!**");
+		if (res) return message.channel.send("❎ **| I'm sorry, this uid is already being tracked!**");
 		trackdb.insertOne(query, function(err) {
 			if (err) {
 				console.log(err);

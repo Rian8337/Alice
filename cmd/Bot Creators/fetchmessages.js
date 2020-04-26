@@ -2,10 +2,7 @@ const Discord = require('discord.js');
 
 function getLastMessage(channel_list, i, cb) {
     if (!channel_list[i]) return cb(0, true);
-    channel_list[i].messages.fetch({limit: 1}).then((messages) => {
-        if (messages.size === 0) cb(null)
-        else cb(messages.first().id)
-    })
+    channel_list[i].messages.fetch({limit: 1}).then((message) => cb(message.first().id))
 }
 
 function countAllMessage(channel, last_msg, date, daily_counter, cb) {
@@ -29,7 +26,7 @@ function countAllMessage(channel, last_msg, date, daily_counter, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (!['132783516176875520', '386742340968120321'].includes(message.author.id)) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
     if (args[0]) current_date.setUTCDate(current_date.getUTCDate() - 1);
@@ -84,15 +81,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             return
         }
-        if (!message_id) {
-            ++i;
-            return getLastMessage(channel_list, i, testChannel)
-        }
         countAllMessage(channel_list[i], message_id, current_date, daily_counter, function testResult(count, last_id, stopFlag = false) {
             if (stopFlag) {
                 daily_counter += count;
                 list.push([channel_list[i].id, daily_counter]);
-                ++i;
+                i++;
                 daily_counter = 0;
                 return getLastMessage(channel_list, i, testChannel)
             }

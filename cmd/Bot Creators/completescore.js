@@ -65,7 +65,7 @@ async function scoreCheck(scoreentries, score, cb) {
         console.log("Map not found");
         return cb()
     }
-    if (mapinfo.approved == 3 || mapinfo.approved <= 0) {
+    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
         console.log("Map is not ranked, approved, or loved");
         return cb()
     }
@@ -76,7 +76,7 @@ async function scoreCheck(scoreentries, score, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     if (!args[0]) return message.channel.send("❎ **| Hey, I don't know who to recalculate!**");
     let ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
@@ -87,15 +87,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
 
-    binddb.find(query).toArray((err, userres) => {
+    binddb.findOne(query, (err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she needs to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres[0].uid;
-        let username = userres[0].username;
-        let discordid = userres[0].discordid;
+        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she needs to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        let uid = userres.uid;
+        let username = userres.username;
+        let discordid = userres.discordid;
 
         let scoredb = alicedb.collection("playerscore");
         query = {uid: uid};

@@ -3,6 +3,13 @@ const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('../../modules/osu!droid');
 
+/**
+ * Retrieves plays from a specified uid of certain page.
+ *
+ * @param {number} uid The uid of the account
+ * @param {number} page Page number
+ * @param {function} cb Callback function
+ */
 function test(uid, page, cb) {
     console.log("Current page: " + page);
     let url = 'http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
@@ -21,6 +28,13 @@ function test(uid, page, cb) {
     })
 }
 
+/**
+ * Asynchronously calculates pp for an entry.
+ *
+ * @param {[[number|string]]} ppentries Current pp entries
+ * @param {[number|string]} entry The entry to calculate
+ * @param {function} cb Callback function
+ */
 async function calculatePP(ppentries, entry, cb) {
     const mapinfo = new osudroid.MapInfo().get({hash: entry[11]})
     if (!mapinfo.osu_file) return cb(true);
@@ -53,7 +67,7 @@ async function calculatePP(ppentries, entry, cb) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     let ppentries = [];
     let page = 0;
     let ufind = args[0];

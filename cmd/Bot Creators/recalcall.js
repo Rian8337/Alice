@@ -63,7 +63,7 @@ async function recalcPlay(target, i, newtarget, whitelist, cb) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
-    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     message.channel.send(`❗**| ${message.author}, are you sure you want to recalculate all players' dpp entry?**`).then(msg => {
         msg.react("✅").catch(console.error);
         let confirmation = false;
@@ -99,8 +99,8 @@ module.exports.run = (client, message, args, maindb) => {
                             newppentry.sort((a, b) => {return b[2] - a[2]});
                             let totalpp = 0;
                             let weight = 1;
-                            for (let x in newppentry) {
-                                totalpp += newppentry[x][2] * weight;
+                            for (let x of newppentry) {
+                                totalpp += x[2] * weight;
                                 weight *= 0.95
                             }
                             let updatedata = {

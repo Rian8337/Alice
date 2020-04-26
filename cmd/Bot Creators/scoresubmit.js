@@ -78,6 +78,8 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+
     // embed stuff
     let rolecheck;
     try {
@@ -102,14 +104,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (offset + start - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
     let binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
-    binddb.find(query).toArray(async (err, userres) => {
+    binddb.findOne(query, async (err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
-        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres[0].uid;
-        let username = userres[0].username;
+        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        let uid = userres.uid;
+        let username = userres.username;
         const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
 
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");

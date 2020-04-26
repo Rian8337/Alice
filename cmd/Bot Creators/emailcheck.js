@@ -3,7 +3,7 @@ const config = require('../../config.json');
 const osudroid = require('../../modules/osu!droid');
 
 module.exports.run = async (client, message, args) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
 	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);

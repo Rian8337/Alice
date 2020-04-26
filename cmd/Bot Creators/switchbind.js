@@ -1,5 +1,5 @@
 module.exports.run = (client, message, args, maindb) => {
-    if (message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     const uid = parseInt(args[0]);
     if (isNaN(uid)) return message.channel.send("❎ **| Hey, please mention a valid uid!**");
 
@@ -8,6 +8,8 @@ module.exports.run = (client, message, args, maindb) => {
 
     const binddb = maindb.collection("userbind");
     const query = {uid: uid.toString()};
+
+    //TODO rework for previous binds
     binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);

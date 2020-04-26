@@ -17,7 +17,7 @@ async function retrievePlay(play_list, i, cb) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
@@ -47,8 +47,8 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Check done");
                         let pptotal = 0;
                         let weight = 1;
-                        for (let i in play_list) {
-                            pptotal += weight * play_list[i][2];
+                        for (let i of play_list) {
+                            pptotal += weight * i[2];
                             weight *= 0.95;
                         }
                         console.log(prev_pptotal + " -> " + pptotal);

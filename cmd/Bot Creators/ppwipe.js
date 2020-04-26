@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
 	let guild = client.guilds.cache.get('528941000555757598');
 	let logchannel = guild.channels.cache.get('638671295470370827');
@@ -14,17 +14,17 @@ module.exports.run = (client, message, args, maindb) => {
 
 	let binddb = maindb.collection("userbind");
 	let query = {discordid: ufind};
-	binddb.find(query).toArray(function (err, userres) {
+	binddb.findOne(query, function (err, userres) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (!userres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-		let uid = userres[0].uid;
-		let discordid = userres[0].discordid;
-		let username = userres[0].username;
-		let pre_pptotal = userres[0].pptotal;
-		let playc = userres[0].playc;
+		if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		let uid = userres.uid;
+		let discordid = userres.discordid;
+		let username = userres.username;
+		let pre_pptotal = userres.pptotal;
+		let playc = userres.playc;
 
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);

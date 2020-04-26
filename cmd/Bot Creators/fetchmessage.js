@@ -34,7 +34,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let startid = args[0];
     if (isNaN(startid)) return message.channel.send("❎ **| Please enter valid message ID!**");

@@ -34,14 +34,14 @@ async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 
 	whitelist.findOne(whitelistQuery, async (err, wlres) => {
 		let query = {hash: target[i][0]};
-		if (err) return recalc(target, tlength, i, newtarget, binddb, uid, whitelist);
+		if (err) return await recalc(target, tlength, i, newtarget, binddb, uid, whitelist);
 		if (wlres) query = {beatmap_id: wlres.mapid};
 		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
 		if (!mapinfo.title) {
 			console.log("Map not found");
-			return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
+			return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 		}
-		if (mapinfo.objects == 0) {
+		if (mapinfo.objects === 0) {
 			console.log("0 object found");
 			return recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)
 		}
@@ -69,7 +69,7 @@ async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let uid = args[0];
 	let newppentry = [];
 	let binddb = maindb.collection("userbind");

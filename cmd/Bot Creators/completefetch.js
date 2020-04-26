@@ -1,5 +1,14 @@
 const Discord = require('discord.js');
 
+/**
+ * Fetches the last 100 messages from a given message ID of a channel.
+ *
+ * @param channel
+ * @param {string} last_msg The ID of last message
+ * @param {number} date Current time
+ * @param {number} daily_counter Counter for the message amount
+ * @param {function} cb Callback function
+ */
 function count_all_message(channel, last_msg, date, daily_counter, cb) {
     channel.messages.fetch({limit: 100, before: last_msg})
         .then(messages => {
@@ -20,7 +29,7 @@ function count_all_message(channel, last_msg, date, daily_counter, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (!['132783516176875520', '386742340968120321'].includes(message.author.id)) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
     let current_date = new Date();
     current_date.setUTCHours(0, 0, 0, 0);
     current_date = current_date.getTime();
@@ -29,7 +38,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         time_limit = new Date();
         time_limit.setUTCHours(0, 0, 0, 0);
         let entry = args[0].split("-");
-        if (entry.length != 3) return message.channel.send("❎ **| I'm sorry, that date format is invalid!**");
+        if (entry.length !== 3) return message.channel.send("❎ **| I'm sorry, that date format is invalid!**");
         let year = parseInt(entry[0]);
         let month = parseInt(entry[1]) - 1;
         let date = parseInt(entry[2]);

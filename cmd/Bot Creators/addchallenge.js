@@ -2,6 +2,18 @@ const Discord = require('discord.js');
 const osudroid = require('../../modules/osu!droid');
 const config = require('../../config.json');
 
+/**
+ * Processes entries for each challenge.
+ *
+ * @param message Discord.Message() instance
+ * @param {string} condition The condition of the bonus
+ * @param {number|string} value The value of the bonus
+ * @param mapinfo osudroid.MapInfo() instance
+ * @param {number} dpp Maximum droid pp of the map with constrain mods enabled
+ * @param {number} pp Maximum pp of the map with constrain mods enabled
+ * @param {number} max_score Maximum score of the map with constrain mods enabled
+ * @returns {number|string|*} The processed value
+ */
 function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
     let rank_constants = ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'];
     switch (condition) {
@@ -80,6 +92,16 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
     return value
 }
 
+/**
+ * Inserts a bonus to the challenge.
+ *
+ * @param {Object} entry The main entry object
+ * @param {string} condition The condition of the bonus
+ * @param {boolean} v2 Whether or not to use ScoreV2
+ * @param {number} value The value of the bonus
+ * @param {number} points The points of the bonus
+ * @param {number} max_score The maximum score of the map with constrain mods enabled
+ */
 function insertBonus(entry, condition, v2, value, points, max_score) {
     if (condition === 'none')
         entry.bonus.push([condition]);
@@ -90,7 +112,7 @@ function insertBonus(entry, condition, v2, value, points, max_score) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (!['386742340968120321', '132783516176875520'].includes(message.author.id)) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
 
     if (args.length < 10) return message.channel.send("❎ **| Hey, I need more input!**");
     

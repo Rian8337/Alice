@@ -14,10 +14,6 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		let query = {hash: play.hash};
 		if (wlres) query = {beatmap_id: wlres.mapid};
 		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
-		if (!mapinfo) {
-			message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-			return cb(false, false)
-		}
 		if (!mapinfo.osu_file) {
 			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 			return cb(false, false)
@@ -81,7 +77,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-	if (message.author.id != '132783516176875520' && message.author.id != '386742340968120321') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 
 	let ufind = args[0];
 	ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", " ");
