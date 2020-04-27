@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
@@ -168,7 +168,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         let uid = res.uid;
         let username = res.username;
         let pp = res.pptotal;
-        const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+        const player = await new osudroid.PlayerInfo().get({uid: uid});
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
         scoredb.findOne({discordid: message.author.id}, (err, playerres) => {
             if (err) {

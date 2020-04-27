@@ -2,10 +2,10 @@ const Discord = require('discord.js');
 const request = require('request');
 const apikey = process.env.DROID_API_KEY;
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const cd = new Set();
 
-async function fetchScores(hash, page) {
+function fetchScores(hash, page) {
     return new Promise(resolve => {
         let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${apikey}&hash=${hash}&page=${page}&order=score`;
         request(url, (err, response, data) => {
@@ -134,12 +134,12 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let page = parseInt(args[1]);
     if (!isFinite(page) || page < 1) page = 1;
 
-    const mapinfo = await new osudroid.MapInfo().get(params).catch(console.error);
+    const mapinfo = await new osudroid.MapInfo().get(params);
     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
-    if (mapinfo.objects.length === 0) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+    if (mapinfo.objects === 0) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     hash = mapinfo.hash;
-    let top = await fetchScores(hash, 0).catch();
+    let top = await fetchScores(hash, 0);
     if (!top) return message.channel.send("❎ **| I'm sorry, this map has no scores submitted yet!**");
     let cache = [
         {

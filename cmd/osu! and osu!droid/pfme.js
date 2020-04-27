@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 200);
 const c = canvas.getContext("2d");
@@ -23,7 +23,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = res.uid;
 		let pp = res.pptotal;
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.PlayerInfo().get({uid: uid});
+		console.log(player);
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user!**");
 		scoredb.findOne({uid: uid}, function(err, playerres) {
 			if (err) {

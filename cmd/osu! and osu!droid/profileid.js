@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
@@ -16,7 +16,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.PlayerInfo().get({uid: uid});
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 		scoredb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {

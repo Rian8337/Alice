@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config  = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function isEligible(member) {
     let res = 0;
@@ -138,7 +138,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = res[0].uid;
-                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                const player = await new osudroid.PlayerInfo().get({uid: uid});
                 let play = player.recent_plays;
                 let danentries = [];
                 for (let i = 0; i < 5; i++) {
@@ -146,8 +146,8 @@ module.exports.run = (client, message, args, maindb) => {
                     let dan = danCheck(play[i].hash);
                     if (dan) {
                         let mods = play[i].mode;
-                        let acc = (parseInt(play[i].accuracy) / 1000).toFixed(2);
-                        let rank = play[i].mark;
+                        let acc = play[i].accuracy;
+                        let rank = play[i].rank;
                         let danentry = {
                             dan: dan[0],
                             play: dan[1],

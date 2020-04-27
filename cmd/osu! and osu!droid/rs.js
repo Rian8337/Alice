@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     let ufind = message.author.id;
@@ -14,18 +14,17 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         }
         if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = res.uid;
-        const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+        const player = await new osudroid.PlayerInfo().get({uid: uid});
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
         let name = player.name;
         let play = player.recent_plays[0];
-        let title = play.filename;
+        let title = play.title;
         let score = play.score.toLocaleString();
         let combo = play.combo;
-        let rank = osudroid.rankImage.get(play.mark);
-        let ptime = new Date(play.date * 1000);
-        ptime.setUTCHours(ptime.getUTCHours() + 6);
-        let acc = parseFloat((play.accuracy / 1000).toFixed(2));
+        let rank = osudroid.rankImage.get(play.rank);
+        let ptime = play.date;
+        let acc = play.accuracy;
         let miss = play.miss;
         let mod = play.mode;
         let hash = play.hash;
@@ -42,7 +41,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         if (map_index === -1) current_map.push(entry);
         else current_map[map_index][1] = hash;
 
-        const mapinfo = await new osudroid.MapInfo().get({hash: hash}).catch(console.error);
+        const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
             embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.droid_to_PC(mod, true)}\`\nTime: \`${ptime.toUTCString()}\``);
             return message.channel.send({embed: embed}).catch(console.error)

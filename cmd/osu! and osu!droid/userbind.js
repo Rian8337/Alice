@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 /**
  * Checks if a specific uid has played verification map.
@@ -26,11 +26,12 @@ module.exports.run = async (client, message, args, maindb) => {
 	let uid = parseInt(args[0]);
 	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
 	if (isNaN(uid)) return message.channel.send("❎ **| Invalid uid.**");
-	uid = uid.toString();
 
 	let binddb = maindb.collection("userbind");
-	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+	const player = await new osudroid.PlayerInfo().get({uid: uid});
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
+
+	uid = uid.toString();
 
 	binddb.findOne({previous_bind: {$all: [uid]}}, async (err, res) => {
 		if (err) {
@@ -47,6 +48,8 @@ module.exports.run = async (client, message, args, maindb) => {
 				}
 				if (bindres) {
 					let previous_bind = bindres.previous_bind;
+					if (previous_bind.length === 2) return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+
 					previous_bind.push(uid);
 					let updateVal = {
 						$set: {
@@ -103,7 +106,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
 module.exports.config = {
 	name: "userbind",
-	description: "Binds a Discord account to an osu!droid account. The account must have played the verification beatmap provided.",
+	description: "Binds a Discord account to an osu!droid account. ",
 	usage: "userbind <uid>",
 	detail: "`uid`: The uid to bind [Integer]",
 	permission: "None"

@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const config = require('../../config.json');
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
@@ -19,20 +19,19 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		}
 		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 		let uid = res.uid;
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.PlayerInfo().get({uid: uid});
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 		if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 		let rplay = player.recent_plays[0];
 		let score = rplay.score.toLocaleString();
 		let name = player.name;
-		let title = rplay.filename;
-		let rank = osudroid.rankImage.get(rplay.mark);
+		let title = rplay.title;
+		let rank = osudroid.rankImage.get(rplay.rank);
 		let combo = rplay.combo;
-		let ptime = new Date(rplay.date * 1000);
-		ptime.setUTCHours(ptime.getUTCHours() + 7);
-		let acc = parseFloat((rplay.accuracy / 1000).toFixed(2));
+		let ptime = rplay.date;
+		let acc = rplay.accuracy;
 		let miss = rplay.miss;
-		let mod = rplay.mode;
+		let mod = rplay.mods;
 		let mod_string = osudroid.mods.droid_to_PC(mod, true);
 		let hash = rplay.hash;
 		let footer = config.avatar_list;
@@ -57,7 +56,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		if (map_index === -1) current_map.push(entry);
 		else current_map[map_index][1] = hash;
 
-		const mapinfo = await new osudroid.MapInfo().get({hash: hash}).catch(console.error);
+		const mapinfo = await new osudroid.MapInfo().get({hash: hash});
 		if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
 		mod = osudroid.mods.droid_to_PC(mod);
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});

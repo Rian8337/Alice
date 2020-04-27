@@ -1,9 +1,9 @@
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = async (client, message, args) => {
 	let username = args[0];
 	if (!username) return message.channel.send("❎ **| Hey, can you at least tell me what username I need to search for?**");
-	const player = await new osudroid.PlayerInfo().get({username: username}).catch(console.error);
+	const player = await new osudroid.PlayerInfo().get({username: username});
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user. Please make sure that the name is correct (including upper and lower case).**");
 	username = player.name;
 	let uid = player.uid;

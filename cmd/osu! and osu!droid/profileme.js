@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');

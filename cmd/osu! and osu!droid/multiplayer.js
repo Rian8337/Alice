@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const config = require('../../config.json');
 
 function capitalizeString(str = '') {
@@ -13,7 +13,7 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 }
 
 async function retrievePlay(uid) {
-    const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+    const player = await new osudroid.PlayerInfo().get({uid: uid});
     return player.recent_plays;
 }
 
@@ -412,7 +412,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 }
                 player_string = player_string.trimRight().split(" ").join(", ");
 
-                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id}).catch(console.error);
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id});
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
                 if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -953,7 +953,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
             if (isNaN(map)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**")
 
-            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map}).catch(console.error);
+            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map});
             if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
             if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
             if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -978,7 +978,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 
                 embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                    .setColor(mapinfo.statusColor(mapinfo.approved))
+                    .setColor(mapinfo.statusColor())
                     .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
                     .setTitle(mapinfo.showStatistics(mod, 0))
                     .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
@@ -1020,7 +1020,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             mod = osudroid.mods.modbits_from_string(mod);
             if (((mod & osudroid.mods.dt) !== 0 || (mod & osudroid.mods.nc) !== 0) && ((mod & osudroid.mods.ht) !== 0)) return message.channel.send("❎ **| I'm sorry, you cannot have DT, NC, and HT as mod requirement!**");
             if (((mod & osudroid.mods.ez) !== 0) && ((mod & osudroid.mods.hr) !== 0)) return message.channel.send("❎ **| I'm sorry, you cannot have both EZ and HR as mod requirement!**");
-            if (((mod & osudroid.mods.rx) !== 0) || ((mod & osudroid.mods.ap) !== 0)) return message.channel.send("❎ **| I'm sorry, you cannot use unranked mods as of now!**");
+            if (mod & osudroid.mods.unranked) return message.channel.send("❎ **| I'm sorry, you cannot use unranked mods as of now!**");
 
             if (!mod) mod = 'None';
             else mod = osudroid.mods.modbits_to_string(mod)
@@ -1154,7 +1154,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 let beatmap_id = res.match_settings.beatmap.id;
 
-                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false}).catch(console.error);
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 
@@ -1543,7 +1543,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                 }
 
-                if (!free_mod && mod !== mods) return message.channel.send("❎ **| I'm sorry, your recent play is deemed invalid as the mods you have used doesn't match with forced mods!**");
+                if (!free_mod && mod != mods) return message.channel.send("❎ **| I'm sorry, your recent play is deemed invalid as the mods you have used doesn't match with forced mods!**");
                 else {
                     const if_speed_up = (mods & osudroid.mods.dt) | (mods & osudroid.mods.nc) | (mods & osudroid.mods.ht);
                     if (if_speed_up) {
@@ -1553,13 +1553,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                 }
 
-                const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false}).catch(console.error);
+                const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 
                 if (mapinfo.max_combo < combo) combo = mapinfo.max_combo;
 
-                let max_score = mapinfo.max_score(mods);
+                let max_score = mapinfo.max_score(osudroid.mods.modbits_to_string(mods));
 
                 let props = {
                     discordid: player.discordid,

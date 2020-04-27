@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const cd = new Set();
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function modread(input) {
 	let res = '';
@@ -39,10 +39,9 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
-		let date = new Date(rplay[i].date*1000);
-		date.setUTCHours(date.getUTCHours() + 6);
-		let play = client.emojis.cache.get(rankEmote(rplay[i].mark)).toString() + " | " + rplay[i].filename + " " + modread(rplay[i].mode);
-		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + parseFloat(rplay[i].accuracy)/1000 + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+		let date = rplay.date;
+		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + " " + modread(rplay[i].mods);
+		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay.accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
 	}
 	return embed
@@ -75,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
 		}
 		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = res.uid;
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.PlayerInfo().get({uid: uid});
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
 		if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 		let name = player.name;

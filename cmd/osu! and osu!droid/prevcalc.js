@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const config = require('../../config.json');
 
 module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         if (args[i].startsWith("-p")) pcdetail = true
     }
 
-    const mapinfo = await new osudroid.MapInfo().get({hash: hash}).catch(console.error);
+    const mapinfo = await new osudroid.MapInfo().get({hash: hash});
     if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0) return;
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     if (!combo) combo = mapinfo.max_combo;

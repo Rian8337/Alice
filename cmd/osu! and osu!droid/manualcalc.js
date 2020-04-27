@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
 	let beatmapid;
@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		if (args[i].startsWith("-d")) ndetail = true;
 		if (args[i].startsWith("-p")) pcdetail = true
 	}
-	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
 	if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
 	if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
 	if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -52,7 +52,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	let embed = new Discord.MessageEmbed()
 		.setFooter("Alice Synthesis Thirty", footer[index])
 		.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-		.setColor(mapinfo.statusColor(mapinfo.approved))
+		.setColor(mapinfo.statusColor())
 		.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 		.setTitle(mapinfo.showStatistics(mod, 0))
 		.setDescription(mapinfo.showStatistics(mod, 1))
