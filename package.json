@@ -1,6 +1,6 @@
 {
   "name": "alice",
-  "version": "2.2.26",
+  "version": "2.3.0",
   "description": "A multipurpose Discord bot mainly made for osu!droid and Malody.",
   "main": "mybot.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "dotenv": "^6.2.0",
     "java-deserialization": "^0.1.0",
     "mongodb": "^3.5.4",
-    "ojsama": "^1.2.5",
+    "osu-droid": "file:modules/osu!droid",
     "request": "^2.88.2",
     "unzipper": "^0.10.10"
   }
