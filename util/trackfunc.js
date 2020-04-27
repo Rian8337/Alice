@@ -12,10 +12,10 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 		res.forEach(async function(player) {
 			const player_entry = await new osudroid.PlayerInfo().get({uid: player.uid});
 			let name = player_entry.name;
-			let curtime = Math.floor(Date.now() / 1000);
+			let curtime = Date.now();
 			for await (let play of player_entry.recent_plays) {
-				let timeDiff = curtime - (play.date + 3600 * 6); //server time is UTC-7, while curtime is in UTC
-				if (timeDiff > 600) break;
+				let timeDiff = curtime - play.date.getTime() ; //server time is UTC-7, while curtime is in UTC
+				if (timeDiff > 600000) break;
 				let title = play.title;
 				let score = play.score.toLocaleString();
 				let ptime = play.date;
