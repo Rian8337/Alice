@@ -25,6 +25,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let uid = res.uid;
 
         const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
+        if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**")
         const name = play.player_name;
         const score = play.score;
         const combo = play.combo;
@@ -46,7 +47,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects) {
-            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\`x)\nMod: \`${osudroid.mods.droid_to_PC(mod, true)}\`\nTime: \`${date.toUTCString()}\``);
+            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\`x)\nMod: \`${osudroid.mods.pc_to_detail(mod)}\`\nTime: \`${date.toUTCString()}\``);
             return message.channel.send({embed: embed}).catch(console.error)
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});

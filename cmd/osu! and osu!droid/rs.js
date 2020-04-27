@@ -43,7 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
-            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.droid_to_PC(mod, true)}\`\nTime: \`${ptime.toUTCString()}\``);
+            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.pc_to_detail(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
             return message.channel.send({embed: embed}).catch(console.error)
         }
         let mod_string = osudroid.mods.droid_to_PC(mod, true);

@@ -32,7 +32,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		let acc = rplay.accuracy;
 		let miss = rplay.miss;
 		let mod = rplay.mods;
-		let mod_string = osudroid.mods.droid_to_PC(mod, true);
+		let mod_string = osudroid.mods.pc_to_detail(mod);
 		let hash = rplay.hash;
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
@@ -82,7 +82,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		embed = new Discord.MessageEmbed()
 			.setFooter("Alice Synthesis Thirty", footer[index])
 			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-			.setColor(mapinfo.statusColor(mapinfo.approved))
+			.setColor(mapinfo.statusColor())
 			.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 			.setTitle(mapinfo.showStatistics(mod, 0))
 			.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
