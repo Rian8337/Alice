@@ -326,6 +326,7 @@ const LONG_LENGTH = 8;
  * @prop {number} unranked The bitwise enum of unranked mods combined (RX and AP).
  * @prop {function(string):number} droid_to_modbits Converts droid mod string to modbits.
  * @prop {function(string, boolean):string} droid_to_PC Converts droid mod string to PC mod string.
+ * @prop {function(string):string} pc_to_detail Converts PC mod string into detailed mod string.
  * @prop {function(string):number} modbits_from_string Construct the mods bitmask from a string such as "HDHR".
  * @prop {function(number):string} modbits_to_string Convert mods bitmask into a string, such as "HDHR".
  */
