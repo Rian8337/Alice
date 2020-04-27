@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
         if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**")
         const name = play.player_name;
-        const score = play.score;
+        const score = play.score.toLocaleString();
         const combo = play.combo;
         const rank = osudroid.rankImage.get(play.rank);
         const mod = play.mods;
