@@ -45,7 +45,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
 	const mapinfo = await new osudroid.MapInfo().get({hash: hash});
 	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
-	mod = osudroid.mods.droid_to_PC(mod);
 	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 	let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
 	let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);
