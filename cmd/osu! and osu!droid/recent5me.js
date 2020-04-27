@@ -39,7 +39,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
-		let date = rplay.date;
+		let date = rplay[i].date;
 		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + " " + modread(rplay[i].mods);
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay.accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
