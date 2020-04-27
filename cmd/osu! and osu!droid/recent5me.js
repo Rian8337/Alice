@@ -3,19 +3,6 @@ const cd = new Set();
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
-function modread(input) {
-	let res = '';
-	if (input.includes('n')) res += 'NF';
-	if (input.includes('e')) res += 'EZ';
-	if (input.includes('t')) res += 'HT';
-	if (input.includes('h')) res += 'HD';
-	if (input.includes('d')) res += 'DT';
-	if (input.includes('r')) res += 'HR';
-	if (input.includes('c')) res += 'NC';
-	if (res) res = '+' + res;
-	return res
-}
-
 function rankEmote(input) {
 	if (!input) return;
 	switch (input) {
@@ -40,7 +27,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
 		let date = rplay[i].date;
-		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + " " + modread(rplay[i].mods);
+		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		embed.addField(play, score)
 	}
