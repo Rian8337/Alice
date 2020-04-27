@@ -2,7 +2,7 @@
 // in commands, do note that even though this library is open
 // to public, you need an osu!droid API key to access player info
 
-// credits to ojsama for pp-related classes
+// credits to ojsama (https://github.com/Francesco149/ojsama) for pp-related classes
 
 // required dependencies
 const http = require('http');
@@ -234,7 +234,7 @@ class PlayerInfo {
                                 score: play.score,
                                 accuracy: parseFloat((play.accuracy / 1000).toFixed(2)),
                                 miss: play.miss,
-                                rank: play.rank,
+                                rank: play.mark,
                                 combo: play.combo,
                                 title: play.filename,
                                 date: (play.date + 86400 * 6) * 1000,
