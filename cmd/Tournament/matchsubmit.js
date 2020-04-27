@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function scoreCalc(score, maxscore, accuracy, misscount) {
 	let new_score = score / maxscore * 600000 + Math.pow(accuracy / 100, 4) * 400000;
@@ -9,19 +9,20 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 }
 
 function playValidation(mod, requirement) {
+	mod = mod.toLowerCase();
 	switch (requirement) {
-		case "nm": return mod === "-";
-		case "hd": return mod === "h";
-		case "hr": return mod === "r";
-		case "dt": return mod === 'd' || mod === 'hd';
-		case "fm": return (mod.includes("h") || mod.includes("r") || mod.includes("e")) && (!mod.includes("t") && !mod.includes("d") && !mod.includes("c"));
-		case "tb": return !mod.includes("d") && !mod.includes("c") && !mod.includes("t");
+		case "nm": return mod === "";
+		case "hd": return mod === "hd";
+		case "hr": return mod === "hr";
+		case "dt": return mod === 'dt' || mod === 'hddt';
+		case "fm": return (mod.includes("hd") || mod.includes("hr") || mod.includes("ez")) && (!mod.includes("ht") && !mod.includes("dt") && !mod.includes("nc"));
+		case "tb": return !mod.includes("dt") && !mod.includes("nc") && !mod.includes("ht");
 		default: return true
 	}
 }
 
 async function getPlay(i, uid, cb) {
-	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+	const player = await new osudroid.PlayerInfo().get({uid: uid});
 	let play = player.recent_plays[0];
 	cb([i, play])
 }
@@ -49,7 +50,7 @@ module.exports.run = (client, message, args, maindb) => {
 			await getPlay(i, player[1], data => {
 				play_list.push(data);
 				if (min_time_diff < data[1].date) {
-					min_time_diff = data[1].date;
+					min_time_diff = data[1].date.getTime();
 					hash = data[1].hash
 				}
 				if (play_list.length !== players.length) return;
@@ -83,8 +84,8 @@ module.exports.run = (client, message, args, maindb) => {
 					let score_list = [];
 
 					for (let i in play_list) {
-						if (play_list[i][1].hash === hash && playValidation(play_list[i][1].mode, requirement)) {
-							temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy / 1000, play_list[i][1].miss);
+						if (play_list[i][1].hash === hash && playValidation(play_list[i][1].mods, requirement)) {
+							temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy, play_list[i][1].miss);
 							if (play_list[i][1].mode === "hd") temp_score = Math.round(temp_score / 1.0625);
 						}
 						else temp_score = 0;
@@ -92,12 +93,12 @@ module.exports.run = (client, message, args, maindb) => {
 
 						if (i % 2 === 0) {
 							team_1_score += temp_score;
-							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.pc_to_detail(play_list[i][1].mods)}): **${Math.round(temp_score)}** - **${play_list[i][1].rank}** - ${play_list[i][1].accuracy}% - ${play_list[i][1].miss} ❌\n`;
 							else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} (N/A): **0** - Failed\n`
 						}
 						else {
 							team_2_score += temp_score;
-							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.droid_to_PC(play_list[i][1].mode, true)}): **${Math.round(temp_score)}** - **${play_list[i][1].mark}** - ${(play_list[i][1].accuracy / 1000).toFixed(2)}% - ${play_list[i][1].miss} ❌\n`;
+							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.pc_to_detail(play_list[i][1].mods)}): **${Math.round(temp_score)}** - **${play_list[i][1].rank}** - ${play_list[i][1].accuracy}% - ${play_list[i][1].miss} ❌\n`;
 							else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} (N/A): **0** - Failed\n`
 						}
 					}
