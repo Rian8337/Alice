@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 let cd = new Set();
 
 async function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
@@ -14,7 +14,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		}
 		let query = {hash: play.hash};
 		if (wlres) query = {beatmap_id: wlres.mapid};
-		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
+		const mapinfo = await new osudroid.MapInfo().get(query);
 		if (!mapinfo.osu_file) {
 			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 			return cb(false, false)
@@ -31,7 +31,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 			return cb(false, false)
 		}
-		let mod = osudroid.mods.droid_to_PC(play.mod);
+		let mod = play.mods;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let npp = osudroid.ppv2({
 			stars: star.droid_stars,
@@ -131,13 +131,13 @@ module.exports.run = (client, message, args, maindb) => {
 					beatmap = parseInt(a[a.length - 1]);
 					if (isNaN(beatmap)) return message.channel.send("❎ **| Hey, that beatmap ID is not valid!**")
 				}
-				const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap}).catch(console.error);
+				const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
 				if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
 				if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
 				if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 				let hash = mapinfo.hash;
 
-				const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash}).catch(console.error);
+				const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
 				if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map!**");
 				let combo = play.combo;
 				let acc = play.accuracy;
@@ -226,7 +226,7 @@ module.exports.run = (client, message, args, maindb) => {
 					cd.delete(message.author.id)
 				}, 1000 * offset);
 
-				const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+				const player = await new osudroid.PlayerInfo().get({uid: uid});
 				if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
 				if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
 				let rplay = player.recent_plays;
@@ -235,14 +235,13 @@ module.exports.run = (client, message, args, maindb) => {
 				for (let i = start - 1; i < start + offset - 1; i++) {
 					if (!rplay[i]) break;
 					let play = {
-						title: "", accuracy: "", miss: "", combo: "", mod: "", hash: ""
+						title: rplay[i].title,
+						accuracy: rplay[i].accuracy,
+						miss: rplay[i].miss,
+						combo: rplay[i].combo,
+						mod: rplay[i].mods,
+						hash: rplay[i].hash
 					};
-					play.title = rplay[i].filename;
-					play.accuracy = parseFloat((parseInt(rplay[i].accuracy) / 1000).toFixed(2));
-					play.miss = rplay[i].miss;
-					play.combo = rplay[i].combo;
-					play.mod = rplay[i].mode;
-					play.hash = rplay[i].hash;
 					playentry.push(play)
 				}
 				let i = 0;
