@@ -2,7 +2,7 @@
 // in commands, do note that even though this library is open
 // to public, you need an osu!droid API key to access player info
 
-// credits to ojsama (https://github.com/Francesco149/ojsama) for pp-related classes
+// credits to ojsama for pp-related classes
 
 // required dependencies
 const http = require('http');
@@ -15,14 +15,10 @@ const { Readable } = require('stream');
 const unzipper = require('unzipper')
 const javaDeserialization = require('java-deserialization');
 
-let osudroid = {};
-if (typeof exports !== "undefined") {
-    osudroid = exports
-}
+let osudroid = exports;
 
 (function() {
 
-let log = {warn: Function.prototype};
 /**
  * Represents a play in osu!droid.
  *
@@ -44,7 +40,6 @@ let log = {warn: Function.prototype};
  * @class
  */
 class PlayInfo {
-
     /**
      * @param {*} values
      * @param {number} [values.uid] The uid of the user.
@@ -1902,8 +1897,8 @@ class Parser {
      * @private
      */
     _warn() {
-        log.warn.apply(null, Array.prototype.slice.call(arguments));
-        log.warn(this.toString());
+        console.warn.apply(null, Array.prototype.slice.call(arguments));
+        console.warn(this.toString());
     }
 
     /**
