@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = (client, message = "", args = {}, maindb) => {
 	if (message.channel instanceof Discord.DMChannel || message.author != null) return;
@@ -10,20 +10,19 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		res.forEach(async function(player) {
-			const player_entry = await new osudroid.PlayerInfo().get({uid: player.uid}).catch(console.error);
+			const player_entry = await new osudroid.PlayerInfo().get({uid: player.uid});
 			let name = player_entry.name;
 			let curtime = Math.floor(Date.now() / 1000);
 			for await (let play of player_entry.recent_plays) {
 				let timeDiff = curtime - (play.date + 3600 * 6); //server time is UTC-7, while curtime is in UTC
 				if (timeDiff > 600) break;
-				let title = play.filename;
+				let title = play.title;
 				let score = play.score.toLocaleString();
-				let ptime = new Date(play.date * 1000);
-				ptime.setUTCHours(ptime.getUTCHours() + 6);
-				let acc = parseFloat((parseFloat(play.accuracy) / 1000).toFixed(2));
-				let mod = play.mode;
+				let ptime = play.date;
+				let acc = play.accuracy;
+				let mod = play.mods;
 				let miss = play.miss;
-				let rank = osudroid.rankImage.get(play.mark);
+				let rank = osudroid.rankImage.get(play.rank);
 				let combo = play.combo;
 				let hash = play.hash;
 
@@ -32,14 +31,13 @@ module.exports.run = (client, message = "", args = {}, maindb) => {
 					.setTitle(title)
 					.setColor(8311585);
 
-				const mapinfo = await new osudroid.MapInfo().get({hash: hash}).catch(console.error);
-				let mod_string = osudroid.mods.droid_to_PC(mod, true);
-				if (!mapinfo || !mapinfo.title || !mapinfo.objects) {
+				const mapinfo = await new osudroid.MapInfo().get({hash: hash});
+				let mod_string = osudroid.mods.pc_to_detail(mod, true);
+				if (!mapinfo.title || !mapinfo.objects) {
 					embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
 					return client.channels.cache.get("665106609382359041").send({embed: embed})
 				}
-				let mods = osudroid.mods.droid_to_PC(mod);
-				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 				let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
 				let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
 				let npp = osudroid.ppv2({

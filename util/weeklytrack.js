@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('../config.json');
 const request = require('request');
 const apikey = process.env.DROID_API_KEY;
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 async function fetchScores(hash, page) {
     return new Promise(resolve => {
@@ -16,7 +16,7 @@ async function fetchScores(hash, page) {
             let entries = [];
             let line = data.split('<br>');
             line.shift();
-            for (let i in line) entries.push(line[i]);
+            for (let i of line) entries.push(i);
             if (!line[0]) resolve(null);
             else resolve(entries)
         })
@@ -43,7 +43,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         let hash = dailyres.hash;
         if (!featured) featured = '386742340968120321';
 
-        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
         if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
         if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
@@ -138,7 +138,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres.link[0]}) - [OneDrive](${dailyres.link[1]})`)
             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars.toString())))} ${parseFloat(star.droid_stars.toString()).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars.toString())))} ${parseFloat(star.pc_stars.toString()).toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
         client.channels.cache.get("669221772083724318").send("✅ **| Weekly challenge ended!**", {embed: embed});
 
@@ -174,7 +174,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                     };
                     pointdb.updateOne({uid: bonus_winner_uid}, updateVal, err => {
                         if (err) return console.log("Cannot access database");
-                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`)
+                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`)
                     })
                 } else {
                     let insertVal = {

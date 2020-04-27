@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function timeConvert(num) {
     let sec = parseInt(num);
@@ -30,7 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let beatmapid = dailyres.beatmapid;
         let featured = dailyres.featured;
         if (!featured) featured = '386742340968120321';
-        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
         if (!mapinfo.title) return channel.send("❎ **| I'm sorry, I cannot find the daily challenge map!**");
         if (!mapinfo.objects) return channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
@@ -111,7 +111,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     break
                 }
                 case "pp": {
-                    bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+                    bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                     break
                 }
                 default:
@@ -127,39 +127,39 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         break
                     }
                     case "score": {
-                        bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "acc": {
-                        bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "scorev2": {
-                        bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
+                        bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "miss": {
-                        bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `${bonus[i][1] === 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "mod": {
-                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "combo": {
-                        bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "rank": {
-                        bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "dpp": {
-                        bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     case "pp": {
-                        bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                        bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
                         break
                     }
                     default:
@@ -179,7 +179,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres.link[0]}) - [OneDrive](${dailyres.link[1]})`)
             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${dailyres.points === 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points === 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars.toString())))} ${parseFloat(star.droid_stars.toString()).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars.toString())))} ${parseFloat(star.pc_stars.toString()).toFixed(2)} PC stars`, `**${dailyres.points === 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points === 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
         client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 

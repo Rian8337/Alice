@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const https = require('https');
 const apikey = process.env.OSU_API_KEY;
 const config = require('../config.json');
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = async (client, message, args, current_map, mapset = false) => {
 	let beatmapid;
@@ -53,7 +53,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 				if (obj.length > 3) obj.splice(3);
 
 				obj.forEach(async map => {
-					const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map.beatmap_id}).catch(console.error);
+					const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map.beatmap_id});
 					i++;
 					if (!mapinfo.osu_file) return;
 					let max_score = mapinfo.max_score(mod);
@@ -113,7 +113,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		});
 		return req.end()
 	}
-	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid}).catch(console.error);
+	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
 
 	if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0 || !mapinfo.osu_file) return;
 	if (!combo) combo = mapinfo.max_combo;

@@ -1,4 +1,4 @@
-const osudroid = require('../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function retrieveClan(clans, i, cb) {
     if (!clans[i]) cb(null, true);
@@ -8,7 +8,7 @@ function retrieveClan(clans, i, cb) {
 async function getRank(memberlist, i, cb) {
     if (!memberlist[i]) return cb(null, true);
     let uid = memberlist[i].uid;
-    const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+    const player = await new osudroid.PlayerInfo().get({uid: uid});
     if (!player.name) return cb();
     cb(player.rank)
 }
