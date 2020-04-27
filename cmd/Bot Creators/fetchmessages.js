@@ -2,7 +2,10 @@ const Discord = require('discord.js');
 
 function getLastMessage(channel_list, i, cb) {
     if (!channel_list[i]) return cb(0, true);
-    channel_list[i].messages.fetch({limit: 1}).then((message) => cb(message.first().id))
+    channel_list[i].messages.fetch({limit: 1}).then((message) => {
+        if (message.size) cb(message.first().id);
+        else cb(0)
+    })
 }
 
 function countAllMessage(channel, last_msg, date, daily_counter, cb) {
@@ -80,6 +83,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             });
             return
+        }
+        if (!message_id) {
+            i++;
+            return getLastMessage(channel_list, i, testChannel)
         }
         countAllMessage(channel_list[i], message_id, current_date, daily_counter, function testResult(count, last_id, stopFlag = false) {
             if (stopFlag) {
