@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const cd = new Set();
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function scoreRequirement(lvl) {
     let xp;
@@ -43,7 +43,7 @@ function calculateLevel(lvl, score, cb) {
 async function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, cb) {
     if (!playentry[i]) return cb(false, false, true);
     let play = playentry[i];
-    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false}).catch(console.error);
+    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false});
     if (!mapinfo.title) {
         message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
         return cb(false, false)
@@ -56,7 +56,7 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
         message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
         return cb(false, false)
     }
-    let mod = osudroid.mods.droid_to_PC(play.mod);
+    let mod = play.mods;
     let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
     let dup = false;
     let diff = 0;
@@ -135,7 +135,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let uid = userres.uid;
         let discordid = userres.discordid;
         let username = userres.username;
-        const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+        const player = await new osudroid.PlayerInfo().get({uid: uid});
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
         if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
         let rplay = player.recent_plays;
@@ -148,15 +148,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         for (let i = start - 1; i < start + offset - 1; i++) {
             if (!rplay[i]) break;
             let play = {
-                title: "", score: "", accuracy: "", miss: "", combo: "", mod: "", hash: ""
+                title: rplay[i].title,
+                accuracy: rplay[i].accuracy,
+                miss: rplay[i].miss,
+                combo: rplay[i].combo,
+                mod: rplay[i].mods,
+                hash: rplay[i].hash
             };
-            play.title = rplay[i].filename;
-            play.score = parseInt(rplay[i].score);
-            play.accuracy = parseFloat((parseInt(rplay[i].accuracy) / 1000).toFixed(2));
-            play.miss = rplay[i].miss;
-            play.combo = rplay[i].combo;
-            play.mod = rplay[i].mode;
-            play.hash = rplay[i].hash;
             playentry.push(play)
         }
 
@@ -186,9 +184,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     scorelist.sort((a, b) => {
                         return b[0] - a[0]
                     });
-                    for (i in scorelist) {
-                        score += scorelist[i][0]
-                    }
+                    for (i of scorelist) score += i[0];
                     let scorediff = score - prescore;
                     calculateLevel(Math.floor(currentlevel) - 1, score, level => {
                         let levelremain = (level - Math.floor(level)) * 100;
