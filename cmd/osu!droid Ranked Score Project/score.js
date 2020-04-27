@@ -56,7 +56,7 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
         message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
         return cb(false, false)
     }
-    let mod = play.mods;
+    let mod = play.mod;
     let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
     let dup = false;
     let diff = 0;
