@@ -31,7 +31,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 			return cb(false, false)
 		}
-		let mod = play.mods;
+		let mod = play.mod;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let npp = osudroid.ppv2({
 			stars: star.droid_stars,
