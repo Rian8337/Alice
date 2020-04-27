@@ -26,7 +26,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let ptime = play.date;
         let acc = play.accuracy;
         let miss = play.miss;
-        let mod = play.mode;
+        let mod = play.mods;
         let hash = play.hash;
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
@@ -46,8 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.pc_to_detail(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
             return message.channel.send({embed: embed}).catch(console.error)
         }
-        let mod_string = osudroid.mods.droid_to_PC(mod, true);
-        mod = osudroid.mods.droid_to_PC(mod);
+        let mod_string = osudroid.mods.pc_to_detail(mod);
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
         let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
         let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
