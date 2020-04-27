@@ -24,7 +24,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let uid = res.uid;
 		let pp = res.pptotal;
 		const player = await new osudroid.PlayerInfo().get({uid: uid});
-		console.log(player);
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user!**");
 		scoredb.findOne({uid: uid}, function(err, playerres) {
 			if (err) {
