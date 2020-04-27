@@ -554,7 +554,8 @@ class ReplayAnalyzer {
         if (!this.odr) {
             return this
         }
-        this._parseReplay()
+        this._parseReplay();
+        return this
     }
 
     /**
@@ -610,7 +611,7 @@ class ReplayAnalyzer {
         this.data.folder_name = raw_object[1];
         this.data.file_name = raw_object[2];
         this.data.hash = raw_object[3];
-        this.data.time = new Date(raw_object[4].readBigUInt64BE(0));
+        this.data.time = new Date(Number(raw_object[4].readBigUInt64BE(0)));
         this.data.hit300k = raw_object[4].readUInt32BE(8);
         this.data.hit300 =  raw_object[4].readInt32BE(12);
         this.data.hit100k = raw_object[4].readInt32BE(16);
@@ -624,43 +625,42 @@ class ReplayAnalyzer {
         this.data.player_name = raw_object[5];
         this.data.mods = this._convertMods(raw_object[6].elements);
 
-        let replay_data_buffer_array = []
-        for (let i = 7; i < raw_object.length; i++) {
-            replay_data_buffer_array.push(raw_object[i])
-        }
+        let replay_data_buffer_array = [];
+        for (let i = 7; i < raw_object.length; i++) replay_data_buffer_array.push(raw_object[i]);
+    
 
         //merge all buffer section into one for better control when parsing
-        let replay_data_buffer = Buffer.concat(replay_data_buffer_array)
+        let replay_data_buffer = Buffer.concat(replay_data_buffer_array);
         let buffer_counter = 0;
 
-        let size = replay_data_buffer.readInt32BE(buffer_counter)
+        let size = replay_data_buffer.readInt32BE(buffer_counter);
         buffer_counter += INT_LENGTH;
         let move_array_collection = [];
 
         //parse movement data
         for (let x = 0; x < size; x++) {
-            let move_size = replay_data_buffer.readInt32BE(buffer_counter)
-            buffer_counter += INT_LENGTH
+            let move_size = replay_data_buffer.readInt32BE(buffer_counter);
+            buffer_counter += INT_LENGTH;
             let move_array = {
                 size: move_size,
                 time: [],
                 x: [],
                 y: [],
                 id: []
-            }
+            };
             for (let i = 0; i < move_size; i++) {
-                move_array.time[i] = replay_data_buffer.readInt32BE(buffer_counter)
-                buffer_counter += INT_LENGTH
-                move_array.id[i] = move_array.time[i] & 3
+                move_array.time[i] = replay_data_buffer.readInt32BE(buffer_counter);
+                buffer_counter += INT_LENGTH;
+                move_array.id[i] = move_array.time[i] & 3;
                 move_array.time[i] >>= 2;
                 if (move_array.id[i] !== CURSOR_ID_UP) {
-                    move_array.x[i] = replay_data_buffer.readInt16BE(buffer_counter)
-                    buffer_counter += SHORT_LENGTH
-                    move_array.y[i] = replay_data_buffer.readInt16BE(buffer_counter)
+                    move_array.x[i] = replay_data_buffer.readInt16BE(buffer_counter);
+                    buffer_counter += SHORT_LENGTH;
+                    move_array.y[i] = replay_data_buffer.readInt16BE(buffer_counter);
                     buffer_counter += SHORT_LENGTH
                 }
                 else {
-                    move_array.x[i] = -1
+                    move_array.x[i] = -1;
                     move_array.y[i] = -1
                 }
             }
