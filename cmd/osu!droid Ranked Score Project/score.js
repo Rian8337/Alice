@@ -149,6 +149,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!rplay[i]) break;
             let play = {
                 title: rplay[i].title,
+                score: rplay[i].score,
                 accuracy: rplay[i].accuracy,
                 miss: rplay[i].miss,
                 combo: rplay[i].combo,
