@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 async function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, false, true);
@@ -13,7 +13,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		}
 		let query = {hash: play.hash};
 		if (wlres) query = {beatmap_id: wlres.mapid};
-		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
+		const mapinfo = await new osudroid.MapInfo().get(query);
 		if (!mapinfo.osu_file) {
 			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 			return cb(false, false)
@@ -30,7 +30,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 			return cb(false, false)
 		}
-		let mod = osudroid.mods.droid_to_PC(play.mod);
+		let mod = play.mods;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let npp = osudroid.ppv2({
 			stars: star.droid_stars,
@@ -69,7 +69,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 					break
 				}
 			}
-			if (x == pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+			if (x === pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
 		}
 		cb()
 	})
@@ -129,23 +129,22 @@ module.exports.run = (client, message, args, maindb) => {
 		for (let i = start - 1; i < start + offset - 1; i++) {
 			if (!rplay[i]) break;
 			let play = {
-				title: "", accuracy: "", miss: "", combo: "", mod: "", hash: ""
+				title: rplay[i].title,
+				accuracy: rplay[i].accuracy,
+				miss: rplay[i].miss,
+				combo: rplay[i].combo,
+				mod: rplay[i].mods,
+				hash: rplay[i].hash
 			};
-			play.title = rplay[i].filename;
-			play.accuracy = parseFloat((parseInt(rplay[i].accuracy) / 1000).toFixed(2));
-			play.miss = rplay[i].miss;
-			play.combo = rplay[i].combo;
-			play.mod = rplay[i].mode;
-			play.hash = rplay[i].hash;
 			playentry.push(play)
 		}
 		let i = 0;
 		await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, async function testResult(error = false, success = true, stopSign = false) {
 			if (stopSign) {
-				if (submitted == 1) return;
+				if (submitted === 1) return;
 				let weight = 1;
-				for (let i in pplist) {
-					pptotal += weight * pplist[i][2];
+				for (let i of pplist) {
+					pptotal += weight * i[2];
 					weight *= 0.95;
 				}
 				let diff = pptotal - pre_pptotal;

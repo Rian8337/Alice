@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 const config = require('../../config.json');
 
 /**
@@ -333,7 +333,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             }
 
-            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map}).catch(console.error);
+            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map});
             if (!mapinfo.title)
                 return message.channel.send("❎ **| I'm sorry, I cannot find the map you are looking for!**");
             if (!mapinfo.objects)

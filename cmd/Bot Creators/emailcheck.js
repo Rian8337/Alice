@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 module.exports.run = async (client, message, args) => {
 	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
-	const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+	const player = await new osudroid.PlayerInfo().get({uid: uid});
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
 	let name = player.name;
 	let email = player.email;

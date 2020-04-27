@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function retrieveList(res, i, cb) {
     if (!res[i]) return cb([], true);
@@ -29,7 +29,7 @@ async function recalcPlay(target, i, newtarget, whitelist, cb) {
             return cb(true)
         }
         if (wlres) query = {beatmap_id: wlres.mapid};
-        const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
+        const mapinfo = await new osudroid.MapInfo().get(query);
         if (!mapinfo.title) {
             console.log("Map not found");
             return cb()

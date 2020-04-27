@@ -1,12 +1,12 @@
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 	if (i >= tlength) {
 		newtarget.sort(function(a, b) {return b[2] - a[2];});
 		let totalpp = 0;
 		let weight = 1;
-		for (let x in newtarget) {
-			totalpp += newtarget[x][2] * weight;
+		for (let x of newtarget) {
+			totalpp += x[2] * weight;
 			weight *= 0.95;
 		}
 		console.log(totalpp.toFixed(2));
@@ -36,7 +36,7 @@ async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist) {
 		let query = {hash: target[i][0]};
 		if (err) return await recalc(target, tlength, i, newtarget, binddb, uid, whitelist);
 		if (wlres) query = {beatmap_id: wlres.mapid};
-		const mapinfo = await new osudroid.MapInfo().get(query).catch(console.error);
+		const mapinfo = await new osudroid.MapInfo().get(query);
 		if (!mapinfo.title) {
 			console.log("Map not found");
 			return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist)

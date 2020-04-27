@@ -1,15 +1,8 @@
 const Discord = require('discord.js');
 const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
-/**
- * Retrieves plays from a specified uid of certain page.
- *
- * @param {number} uid The uid of the account
- * @param {number} page Page number
- * @param {function} cb Callback function
- */
 function test(uid, page, cb) {
     console.log("Current page: " + page);
     let url = 'http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
@@ -21,22 +14,15 @@ function test(uid, page, cb) {
         }
         let entries = [];
         let line = data.split('<br>');
-        for (let i in line) entries.push(line[i].split(' '));
+        for (let i of line) entries.push(i.split(' '));
         entries.shift();
         if (!entries[0]) cb(entries, true);
         else cb(entries, false)
     })
 }
 
-/**
- * Asynchronously calculates pp for an entry.
- *
- * @param {[[number|string]]} ppentries Current pp entries
- * @param {[number|string]} entry The entry to calculate
- * @param {function} cb Callback function
- */
 async function calculatePP(ppentries, entry, cb) {
-    const mapinfo = new osudroid.MapInfo().get({hash: entry[11]})
+    const mapinfo = await new osudroid.MapInfo().get({hash: entry[11]});
     if (!mapinfo.osu_file) return cb(true);
     if (!mapinfo.title) {
         console.log("Map not found");
@@ -76,11 +62,11 @@ module.exports.run = (client, message, args, maindb) => {
 
     let binddb = maindb.collection("userbind");
     let query = { discordid: ufind };
-	binddb.find(query).toArray(function(err, userres) {
-        if (!userres[0]) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres[0].uid;
+	binddb.findOne(query, function(err, userres) {
+        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        let uid = userres.uid;
         let pplist = [];
-        if (userres[0].pp) pplist = userres[0].pp;
+        if (userres.pp) pplist = userres.pp;
         let playc = 0;
         let pptotal = 0;
 
@@ -91,7 +77,7 @@ module.exports.run = (client, message, args, maindb) => {
                 ppentries.forEach(ppentry => {
                     let dup = false;
                     for (let i in pplist) {
-                        if (ppentry[0].trim() == pplist[i][0].trim()) {
+                        if (ppentry[0].trim() === pplist[i][0].trim()) {
                             if(ppentry[2] >= pplist[i][2]) pplist[i] = ppentry; 
                             dup = true; playc++; break;
                         }
@@ -102,8 +88,8 @@ module.exports.run = (client, message, args, maindb) => {
                 if (pplist.length > 75) pplist.splice(75);
                 console.table(pplist);
                 let weight = 1;
-                for (let i in pplist) {
-                    pptotal += weight*pplist[i][2];
+                for (let i of pplist) {
+                    pptotal += weight * i[2];
                     weight *= 0.95;
                 }
                 message.channel.send('✅ **| <@' + message.author.id + '>, recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp.**');

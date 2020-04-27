@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function scoreRequirement(lvl) {
     let xp;
@@ -99,7 +99,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         let scoredb = alicedb.collection("playerscore");
         query = {uid: uid};
-        scoredb.find(query).toArray((err, res) => {
+        scoredb.findOne(query, (err, res) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -115,7 +115,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     calculateLevel(0, score, level => {
                         console.log(score.toLocaleString());
                         message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()} (level ${Math.floor(level)}).**`);
-                        if (res[0]) {
+                        if (res) {
                             let updateVal = {
                                 $set: {
                                     level: level,
