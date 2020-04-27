@@ -237,7 +237,7 @@ class PlayerInfo {
                                 rank: play.mark,
                                 combo: play.combo,
                                 title: play.filename,
-                                date: (play.date + 86400 * 6) * 1000,
+                                date: (play.date + 3600 * 6) * 1000,
                                 mods: play.mode,
                                 hash: play.hash
                             })
