@@ -10,10 +10,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(date) || date < 1 || date > 31) return message.channel.send("❎ **| Hey, that's an invalid date!**");
     --month;
     let timezone = parseInt(args[2]);
-    if (isNaN(timezone) || timezone < -12 || timezone > 12) return message.channel.send("❎ **| Hey, please enter a valid timezone!**");
+    if (isNaN(timezone) || timezone < -12 || timezone > 12) timezone = 0;
 
     let max_date;
-    if (month % 2 === 0) max_date = 31;
+    if (month % 2 === 0 || month === 7) max_date = 31;
     else if (month === 1) max_date = 29;
     else max_date = 30;
 
@@ -85,7 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "birthday",
     description: "Sets your birthday date. Get 1000 Alice coins and a happy birthday role in your birthday! Once set, a birthday date cannot be changed.\n\nIf someone's birthday is February 29, it will be celebrated in March 1 in nonleap years.",
-    usage: "birthday <month> <date> <timezone>",
-    detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]\n`timezone`: Timezone of where you live [Integer]",
+    usage: "birthday <month> <date> [timezone]",
+    detail: "`date`: Date of birthday [Integer]\n`month`: Month of birthday [Integer]\n`timezone`: Timezone of where you live. Defaults to 0 [Integer]",
     permission: "None"
 };
