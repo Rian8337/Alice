@@ -1,5 +1,6 @@
 const http = require('http');
 const request = require('request');
+const droidapikey = process.env.DROID_API_KEY;
 const PlayInfo = require('./PlayInfo');
 
 /**
