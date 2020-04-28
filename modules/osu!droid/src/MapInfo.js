@@ -2,6 +2,7 @@ const https = require('https');
 const request = require('request');
 const apikey = process.env.OSU_API_KEY;
 const mods = require('./mods');
+const object_types = require('./object_types');
 const MapStats = require('./MapStats');
 const Parser = require('./Parser');
 
