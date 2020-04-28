@@ -85,7 +85,7 @@ module.exports = {
     rankImage: require('./src/rankImage'),
 
     /**
-     * Analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
+     * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
      * 
      * Once analyzed, the result can be accessed via the `data` property.
      */
