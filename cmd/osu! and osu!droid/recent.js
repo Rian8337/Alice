@@ -78,7 +78,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
 	if (miss > 0 || combo < mapinfo.max_combo) {
 		let if_fc_acc = new osudroid.Accuracy({
-			n300: npp.computed_accuracy.n300,
+			n300: npp.computed_accuracy.n300 + miss,
 			n100: npp.computed_accuracy.n100,
 			n50: npp.computed_accuracy.n50,
 			nmiss: 0,
