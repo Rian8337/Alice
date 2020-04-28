@@ -1,6 +1,6 @@
 {
   "name": "osu-droid",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A module with various methods used for osu! and osu!droid.",
   "main": "index.js",
   "scripts": {
