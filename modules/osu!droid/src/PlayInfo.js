@@ -1,4 +1,5 @@
 const request = require('request');
+const droidapikey = process.env.DROID_API_KEY;
 const mods = require('./mods');
 
 class PlayInfo {
