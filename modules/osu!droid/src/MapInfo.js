@@ -1,6 +1,7 @@
 const https = require('https');
 const request = require('request');
 const apikey = process.env.OSU_API_KEY;
+const mods = require('./mods');
 const MapStats = require('./MapStats');
 
 class MapInfo {
