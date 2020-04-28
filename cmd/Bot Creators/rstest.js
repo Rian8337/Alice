@@ -2,6 +2,21 @@ const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const config = require('../../config.json');
 
+function rankEmote(input) {
+	if (!input) return;
+	switch (input) {
+		case 'A': return '611559473236148265';
+		case 'B': return '611559473169039413';
+		case 'C': return '611559473328422942';
+		case 'D': return '611559473122639884';
+		case 'S': return '611559473294606336';
+		case 'X': return '611559473492000769';
+		case 'SH': return '611559473361846274';
+		case 'XH': return '611559473479155713';
+		default : return
+	}
+}
+
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
@@ -23,10 +38,10 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         let name = player.name;
         let play = player.recent_plays[0];
-        let title = play.title;
+        let title = play.title + (play.mods ? ` +${play.mods}` : " +No Mod");
         let score = play.score.toLocaleString();
         let combo = play.combo;
-        let rank = osudroid.rankImage.get(play.rank);
+        let rank = client.emojis.cache.get(rankEmote(play.rank));
         let ptime = play.date;
         let acc = play.accuracy;
         let miss = play.miss;
@@ -41,29 +56,38 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const n50 = data.data.hit50;
         const nmiss = data.data.hit0;
 
+        let rolecheck;
+        try {
+            rolecheck = message.member.roles.highest.hexColor
+        } catch (e) {
+            rolecheck = 8311585
+        }
         let footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         let embed = new Discord.MessageEmbed()
-            .setAuthor(`Recent play for ${name}`, rank)
-            .setTitle(title)
-            .setFooter("Alice Synthesis Thirty", footer[index])
-            .setColor(8311585);
+            .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index])
+            .setColor(rolecheck);
 
         let entry = [message.channel.id, hash];
         let map_index = current_map.findIndex(map => map[0] === message.channel.id);
         if (map_index === -1) current_map.push(entry);
         else current_map[map_index][1] = hash;
-        let mod_string = osudroid.mods.pc_to_detail(mod);
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
-            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n\`(${n300}/${n100}/${n50}/${nmiss})\`\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
-            return message.channel.send({embed: embed}).catch(console.error)
+            embed.setAuthor(title, player.avatarURL)
+                .setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${nmiss}]`);
+            return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed}).catch(console.error)
         }
 
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
         let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
         let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+
+        title += ` [${starsline}★ | ${pcstarsline}★]`;
+        embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
+
         let npp = osudroid.ppv2({
             stars: star.droid_stars,
             combo: combo,
@@ -109,10 +133,10 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let dline = parseFloat(fc_dpp.toString().split(" ")[0]);
             let pline = parseFloat(fc_pp.toString().split(" ")[0]);
 
-            embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n\`(${n300}/${n100}/${n50}/${nmiss})\`\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\`\n\`If FC (${mapinfo.max_combo}x, ${fc_acc.toFixed(2)}%): ${dline} droid pp - ${pline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
-        } else embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n\`(${n300}/${n100}/${n50}/${nmiss})\`\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
+            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ [${n300}/${n100}/${n50}/${nmiss}]`);
+        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ [${n300}/${n100}/${n50}/${nmiss}]`);
 
-        message.channel.send({embed: embed}).catch(console.error)
+        message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed}).catch(console.error)
     })
 };
 
