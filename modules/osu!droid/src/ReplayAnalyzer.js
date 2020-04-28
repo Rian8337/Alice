@@ -29,7 +29,7 @@ const LONG_LENGTH = 8;
  */
 class ReplayAnalyzer {
     /**
-     * @param {number} [score_id] The score ID of the score to analyze.
+     * @param {number} score_id The score ID of the score to analyze.
      */
     constructor(score_id) {
         /**
