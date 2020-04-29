@@ -2,6 +2,21 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
+function rankEmote(input) {
+	if (!input) return;
+	switch (input) {
+		case 'A': return '611559473236148265';
+		case 'B': return '611559473169039413';
+		case 'C': return '611559473328422942';
+		case 'D': return '611559473122639884';
+		case 'S': return '611559473294606336';
+		case 'X': return '611559473492000769';
+		case 'SH': return '611559473361846274';
+		case 'XH': return '611559473479155713';
+		default : return
+	}
+}
+
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (message.channel instanceof Discord.DMChannel) return;
     let channel_index = current_map.findIndex(map => map[0] === message.channel.id);
@@ -29,7 +44,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const name = play.player_name;
         const score = play.score.toLocaleString();
         const combo = play.combo;
-        const rank = osudroid.rankImage.get(play.rank);
+        const rank = client.emojis.cache.get(rankEmote(play.rank));
         const mod = play.mods;
         const acc = play.accuracy;
         const miss = play.miss;
