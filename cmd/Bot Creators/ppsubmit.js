@@ -30,7 +30,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 			return cb(false, false)
 		}
-		let mod = play.mods;
+		let mod = play.mod;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let npp = osudroid.ppv2({
 			stars: star.droid_stars,
