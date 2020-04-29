@@ -77,6 +77,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const pcstarsline = parseFloat(star.pc_stars.toString());
 
         title = `${mapinfo.full_title} [${starsline}★ | ${pcstarsline}★] +${play.mods ? play.mods : "No Mod"}`;
+        embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
 
         const npp = osudroid.ppv2({
             stars: star.droid_stars,
