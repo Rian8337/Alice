@@ -237,7 +237,7 @@ client.on("message", message => {
 	if (message.content.toLowerCase().includes("woi") && message.author.id == '386742340968120321') message.channel.send("woi");
 	
 	// osu! automatic recognition
-	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
 		for (let i = 0; i < msgArray.length; i++) {
 			if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
 			let a = msgArray[i].split("/");
