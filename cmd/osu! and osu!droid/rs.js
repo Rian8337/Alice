@@ -69,7 +69,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
-            embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${nmiss}]` : ""}`);
+            embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${miss}]` : ""}`);
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -127,8 +127,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             const dline = parseFloat(fc_dpp.toString());
             const pline = parseFloat(fc_pp.toString());
 
-            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${nmiss}]` : ""}`);
-        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${nmiss}]` : ""}`);
+            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${miss}]` : ""}`);
+        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x${n300 ? ` ▸ [${n300}/${n100}/${n50}/${miss}]` : ""}`);
 
         message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
     })
