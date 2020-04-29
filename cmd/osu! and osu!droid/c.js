@@ -25,7 +25,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let uid = res.uid;
 
         const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
-        if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**")
+        if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
         const name = play.player_name;
         const score = play.score.toLocaleString();
         const combo = play.combo;
@@ -38,12 +38,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         let n300, n100, n50;
         if (message.isOwner) {
-            const score_data = await new osudroid.PlayInfo({uid: uid, hash: hash}).getFromHash();
-            const data = await new osudroid.ReplayAnalyzer(score_data.score_id).analyze();
+            const data = await new osudroid.ReplayAnalyzer(play.score_id).analyze();
             n300 = data.data.hit300;
             n100 = data.data.hit100;
             n50 = data.data.hit50;
         }
+        const player = await new osudroid.PlayerInfo().get({username: name});
 
         let rolecheck;
         try {
