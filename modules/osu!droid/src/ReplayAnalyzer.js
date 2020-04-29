@@ -3,6 +3,9 @@ const { Readable } = require('stream');
 const unzipper = require('unzipper');
 const javaDeserialization = require('java-deserialization');
 const request = require('request');
+const ReplayData = require('./ReplayData');
+const CursorData = require('./CursorData');
+const ReplayObjectData = require('./ReplayObjectData');
 
 // (internal)
 // constants for replay analyzer
@@ -20,13 +23,6 @@ const SHORT_LENGTH = 2;
 const INT_LENGTH = 4;
 const LONG_LENGTH = 8;
 
-/**
- * 
- * @prop {number} score_id - The score ID of the replay.
- * @prop {Buffer} odr - The odr file of the replay.
- * @prop {Object} data - An object containing the results of the analyzer.
- * @prop {function:Promise<ReplayAnalyzer>} analyze - Asynchronously analyzes a replay.
- */
 class ReplayAnalyzer {
     /**
      * @param {number} score_id The score ID of the score to analyze.
@@ -53,124 +49,10 @@ class ReplayAnalyzer {
         this.is3Finger = undefined;
 
         /**
-         * @type {Object}
-         * @description An object containing the results of the analyzer.
+         * @type {ReplayData|null}
+         * @description The results of the analyzer.
          */
-        this.data = {
-            /**
-             * @type {number}
-             * @description The version of the replay
-             */
-            replay_version: 0,
-
-            /**
-             * @type {string}
-             * @description The folder name containing the beatmap played.
-             */
-            folder_name: '',
-
-            /**
-             * @type {string}
-             * @description The file name of the beatmap played.
-             */
-            file_name: '',
-
-            /**
-             * @type {string}
-             * @description MD5 hash of the replay.
-             */
-            hash: '',
-
-            /**
-             * @type {Date}
-             * @description The date of which the play was set.
-             */
-            time: new Date(0),
-
-            /**
-             * @type {number}
-             * @description The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-             */
-            hit300k: 0,
-
-            /**
-             * @type {number}
-             * @description The amount of 300s achieved in the play.
-             */
-            hit300: 0,
-
-            /**
-             * @type {number}
-             * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-             */
-            hit100k: 0,
-
-            /**
-             * @type {number}
-             * @description The amount of 100s achieved in the play.
-             */
-            hit100: 0,
-
-            /**
-             * @type {number}
-             * @description The amount of 50s achieved in the play.
-             */
-            hit50: 0,
-
-            /**
-             * @type {number}
-             * @description The amount of misses achieved in the play.
-             */
-            hit0: 0,
-
-            /** 
-             * @type {number}
-             * @description The total score achieved in the play.
-             */
-            score: 0,
-
-            /**
-             * @type {number}
-             * @description The maximum combo achieved in the play.
-             */
-            max_combo: 0,
-
-            /**
-             * @type {number}
-             * @description The accuracy achieved in the play.
-             */
-            accuracy: 0,
-
-            /**
-             * @type {number}
-             * @description Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
-             */
-            is_full_combo: 0,
-
-            /**
-             * @type {number}
-             * @description The name of the player in the replay.
-             */
-            player_name: '',
-
-            /** 
-             * @type {string}
-             * @description Enabled modifications during the play.
-             */
-            mods: '',
-
-            /**
-             * @type { { size: number, time: number[], x: number[], y: number[], id: number[] }[] }
-             * @description The cursor movement data of the replay.
-             */
-            cursor_movement: [],
-
-            /**
-             * @type { { accuracy: number, tickset: number[], result: number }[] }
-             * @description The hit object data of the replay.
-             */
-            hit_object_data: []
-        }
+        this.data = null
     }
 
     /**
@@ -236,23 +118,27 @@ class ReplayAnalyzer {
         // the rest will be a buffer that we need to manually parse
         const raw_object = javaDeserialization.parse(this.odr);
 
-        this.data.replay_version = raw_object[0].version;
-        this.data.folder_name = raw_object[1];
-        this.data.file_name = raw_object[2];
-        this.data.hash = raw_object[3];
-        this.data.time = new Date(Number(raw_object[4].readBigUInt64BE(0)));
-        this.data.hit300k = raw_object[4].readUInt32BE(8);
-        this.data.hit300 =  raw_object[4].readInt32BE(12);
-        this.data.hit100k = raw_object[4].readInt32BE(16);
-        this.data.hit100 = raw_object[4].readInt32BE(20);
-        this.data.hit50 = raw_object[4].readInt32BE(24);
-        this.data.hit0 = raw_object[4].readInt32BE(28);
-        this.data.score = raw_object[4].readInt32BE(32);
-        this.data.max_combo = raw_object[4].readInt32BE(36);
-        this.data.accuracy = raw_object[4].readFloatBE(40) * 100;
-        this.data.is_full_combo = raw_object[4][44];
-        this.data.player_name = raw_object[5];
-        this.data.mods = this._convertMods(raw_object[6].elements);
+        const result_object = {
+            replay_version: raw_object[0].version,
+            folder_name: raw_object[1],
+            file_name: raw_object[2],
+            file_hash: raw_object[3],
+            time: new Date(Number(raw_object[4].readBigUInt64BE(0))),
+            hit300k: raw_object[4].readInt32BE(8),
+            hit300: raw_object[4].readInt32BE(12),
+            hit100k: raw_object[4].readInt32BE(16),
+            hit100: raw_object[4].readInt32BE(20),
+            hit50: raw_object[4].readInt32BE(24),
+            hit0: raw_object[4].readInt32BE(28),
+            score: raw_object[4].readInt32BE(32),
+            max_combo: raw_object[4].readInt32BE(36),
+            accuracy: raw_object[4].readFloatBE(40),
+            is_full_combo: raw_object[4][44],
+            player_name: raw_object[5],
+            play_mod: this._convertMods(raw_object[6].elements),
+            cursor_movement: [],
+            hit_object_data: [],
+        };
 
         let replay_data_buffer_array = [];
         for (let i = 7; i < raw_object.length; i++) replay_data_buffer_array.push(raw_object[i]);
@@ -263,7 +149,6 @@ class ReplayAnalyzer {
 
         let size = replay_data_buffer.readInt32BE(buffer_counter);
         buffer_counter += INT_LENGTH;
-        let move_array_collection = [];
 
         //parse movement data
         for (let x = 0; x < size; x++) {
@@ -292,10 +177,9 @@ class ReplayAnalyzer {
                     move_array.y[i] = -1
                 }
             }
-            move_array_collection.push(move_array)
+            result_object.cursor_movement.push(new CursorData(move_array))
         }
 
-        let replay_object_array = [];
         let replay_object_length = replay_data_buffer.readInt32BE(buffer_counter);
         buffer_counter += INT_LENGTH;
 
@@ -323,23 +207,22 @@ class ReplayAnalyzer {
                 for (let j = 0; j < len * 8; j++) replay_object_data.tickset[j] = (bytes[len - j / 8 - 1] & 1 << (j % 8)) !== 0
             }
 
-            if (this.data.replay_version >= 1) {
+            if (result_object.replay_version >= 1) {
                 replay_object_data.result = replay_data_buffer.readInt8(buffer_counter);
                 buffer_counter += BYTE_LENGTH
             }
 
-            replay_object_array.push(replay_object_data)
+            result_object.hit_object_data.push(new ReplayObjectData(replay_object_data))
         }
 
-        this.data.cursor_movement = move_array_collection;
-        this.data.hit_object_data = replay_object_array;
-        this.is3Finger = this.data.cursor_movement[3].size / this.data.cursor_movement[1].size > 0.01
+        this.is3Finger = result_object.cursor_movement[3].size / result_object.cursor_movement[1].size > 0.01;
+        this.data = new ReplayData(result_object)
     }
 
     /**
      * Converts replay mods to regular mod string.
      *
-     * @param {string[]} [replay_mods] The mod string to convert.
+     * @param {string[]} replay_mods The mod string to convert.
      * @returns {string} The converted mods.
      * @private
      */
