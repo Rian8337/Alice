@@ -42,7 +42,7 @@ function danCheck(hash) {
 
 function validation(dan, mod, acc, rank) {
     let res = 0;
-    if (mod.includes("n") || mod.includes("e") || mod.includes("t")) {
+    if (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT")) {
         res = 1;
         return res
     }
@@ -145,7 +145,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!play[i]) break;
                     let dan = danCheck(play[i].hash);
                     if (dan) {
-                        let mods = play[i].mode;
+                        let mods = play[i].mods;
                         let acc = play[i].accuracy;
                         let rank = play[i].rank;
                         let danentry = {
