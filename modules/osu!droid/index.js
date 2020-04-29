@@ -19,6 +19,15 @@ module.exports = {
     Circle: require('./src/Circle'),
 
     /**
+     * Represents a cursor in an osu!droid replay.
+     * 
+     * Stores cursor movement data such as x and y coordinates, movement size, etc.
+     * 
+     * This is used when analyzing replays using replay analyzer.
+     */
+    CursorData: require('./src/CursorData'),
+
+    /**
      * Represents a hitobject in a beatmap.
      *
      * The only common property is start time (in milliseconds).
@@ -90,6 +99,24 @@ module.exports = {
      * Once analyzed, the result can be accessed via the `data` property.
      */
     ReplayAnalyzer: require('./src/ReplayAnalyzer'),
+
+    /**
+     * Represents a replay data in an osu!droid replay.
+     * 
+     * Stores generic information about an osu!droid replay such as player name, MD5 hash, time set, etc.
+     * 
+     * This is used when analyzing replays using replay analyzer.
+     */
+    ReplayData: require('./src/ReplayData'),
+
+    /**
+     * Represents a hitobject in an osu!droid replay.
+     * 
+     * Stores information about hitobjects in an osu!droid replay such as hit offset, tickset, and hit result.
+     * 
+     * This is used when analyzing replays using replay analyzer.
+     */
+    ReplayObjectData: require('./src/ReplayObjectData'),
 
     /**
      * Represents a slider in a beatmap.
