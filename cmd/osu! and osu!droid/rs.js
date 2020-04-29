@@ -66,6 +66,11 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             .setAuthor(title, player.avatarURL)
             .setColor(rolecheck)
             .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
+		
+		let entry = [message.channel.id, hash];
+		let map_index = current_map.findIndex(map => map[0] === message.channel.id);
+		if (map_index === -1) current_map.push(entry);
+		else current_map[map_index][1] = hash;
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
