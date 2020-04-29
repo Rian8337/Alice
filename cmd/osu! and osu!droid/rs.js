@@ -46,8 +46,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let hash = play.hash;
 
         if (message.isOwner) {
-            let title = play.title + (play.mods ? ` +${play.mods}` : " +No Mod");
-            let rank = client.emojis.cache.get(rankEmote(play.rank));
+            title = play.title + (play.mods ? ` +${play.mods}` : " +No Mod");
+            rank = client.emojis.cache.get(rankEmote(play.rank));
     
             const score_data = await play.getFromHash({uid: player.uid, hash: hash});
             const data = await new osudroid.ReplayAnalyzer(score_data.score_id).analyze();
@@ -85,7 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
             let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
     
-            title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+            title = `${mapinfo.full_title} [${starsline}★ | ${pcstarsline}★] +${play.mods ? play.mods : "No Mod"}`;
             embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
                 .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
     
@@ -159,6 +159,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${osudroid.mods.pc_to_detail(mod)}\`\nTime: \`${ptime.toUTCString()}\``);
             return message.channel.send({embed: embed}).catch(console.error)
         }
+        embed.setTitle(mapinfo.full_title);
         let mod_string = osudroid.mods.pc_to_detail(mod);
         let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
         let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
