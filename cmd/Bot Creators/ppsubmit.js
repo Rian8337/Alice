@@ -14,10 +14,6 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		let query = {hash: play.hash};
 		if (wlres) query = {beatmap_id: wlres.mapid};
 		const mapinfo = await new osudroid.MapInfo().get(query);
-		if (!mapinfo.osu_file) {
-			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-			return cb(false, false)
-		}
 		if (!mapinfo.title) {
 			message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 			return cb(false, false)
@@ -30,7 +26,11 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 			return cb(false, false)
 		}
-		let mod = play.mod;
+		if (!mapinfo.osu_file) {
+			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+			return cb(false, false)
+		}
+		let mod = play.mods;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let npp = osudroid.ppv2({
 			stars: star.droid_stars,
@@ -46,7 +46,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 			message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
 			return cb()
 		}
-		playc++;
+		++playc;
 		let dup = false;
 		for (let i in pplist) {
 			if (ppentry[0] === pplist[i][0]) {
@@ -164,7 +164,7 @@ module.exports.run = (client, message, args, maindb) => {
 			}
 			if (!error) i++;
 			if (success) submitted++;
-			await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, await testResult)
+			await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
 		})
 	})
 };
