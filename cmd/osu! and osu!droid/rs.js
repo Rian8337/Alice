@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const starsline = parseFloat(star.droid_stars.toString());
         const pcstarsline = parseFloat(star.pc_stars.toString());
 
-        title = `${mapinfo.full_title} [${starsline}★ | ${pcstarsline}★] +${play.mods ? play.mods : "No Mod"}`;
+        title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
         embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
 
