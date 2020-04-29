@@ -34,7 +34,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const acc = play.accuracy;
         const miss = play.miss;
         const date = play.date;
-        const title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
+        let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
 
         let n300, n100, n50;
         if (message.isOwner) {
