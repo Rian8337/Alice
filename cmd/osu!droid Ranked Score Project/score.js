@@ -53,7 +53,7 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
         return cb(false, false)
     }
     if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-        message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+        message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved mapsets!**");
         return cb(false, false)
     }
     let mod = play.mod;
