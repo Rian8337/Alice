@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let mod = '';
     let ndetail = false;
     let pcdetail = false;
-    for (let i = 1; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
         if (args[i].endsWith("%")) acc = parseFloat(args[i]);
         if (args[i].endsWith("m")) missc = parseInt(args[i]);
         if (args[i].endsWith("x")) combo = parseInt(args[i]);
@@ -23,7 +23,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
 
     const mapinfo = await new osudroid.MapInfo().get({hash: hash});
-    if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0) return;
+    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
+	if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     if (!combo) combo = mapinfo.max_combo;
     let max_score = mapinfo.max_score(mod);
