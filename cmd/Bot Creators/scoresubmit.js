@@ -53,7 +53,7 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
         return cb(false, false)
     }
     if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-        message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+        message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved mapsets!**");
         return cb(false, false)
     }
     let playinfo = mapinfo.showStatistics(osudroid.mods.droid_to_PC(play.mod), 0);
@@ -112,10 +112,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let username = userres.username;
-        const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+        const player = await new osudroid.PlayerInfo().get({uid: uid});
 
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
-        if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");
+        if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");
         let rplay = player.recent_plays;
         let playentry = [];
         let embed = new Discord.MessageEmbed()
