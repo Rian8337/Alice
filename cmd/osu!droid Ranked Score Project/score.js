@@ -137,7 +137,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let username = userres.username;
         const player = await new osudroid.PlayerInfo().get({uid: uid});
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
-        if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+        if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
         let rplay = player.recent_plays;
         let playentry = [];
         let embed = new Discord.MessageEmbed()
