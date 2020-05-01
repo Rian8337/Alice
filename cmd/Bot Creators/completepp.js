@@ -23,7 +23,6 @@ function test(uid, page, cb) {
 
 async function calculatePP(ppentries, entry, cb) {
     const mapinfo = await new osudroid.MapInfo().get({hash: entry[11]});
-    if (!mapinfo.osu_file) return cb(true);
     if (!mapinfo.title) {
         console.log("Map not found");
         return cb()
@@ -31,6 +30,10 @@ async function calculatePP(ppentries, entry, cb) {
     if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
         console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
         return cb()
+    }
+    if (!mapinfo.osu_file) {
+        console.log("No osu file");
+        return cb(true)
     }
     let mods = osudroid.mods.droid_to_PC(entry[6]);
     let acc_percent = parseFloat(entry[7]) / 1000;
