@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args) => {
     //end of create role
 
     message.delete().catch(O_o=>{});
-    let string = `${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})\n=========================\nReason:\n${reason}`;
+    let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\n\n=========================\n\n**Reason**:\n${reason}`;
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
