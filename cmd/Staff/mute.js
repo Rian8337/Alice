@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args) => {
 
     let reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
-    if (reason.length > 1024) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1024 characters!**");
+    if (reason.length > 1800) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
 
     let channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!channel) return message.channel.send(`❎ **| I'm sorry, please ask server managers to create a mute log channel first!**`);
@@ -54,7 +54,7 @@ module.exports.run = async (client, message, args) => {
     //end of create role
 
     message.delete().catch(O_o=>{});
-    let string = `${tomute} in ${message.channel} permanently\n=========================\nReason: ${reason}`;
+    let string = `${tomute} in ${message.channel} permanently\n=========================\nReason:\n${reason}`;
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
