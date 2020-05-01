@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args) => {
     if (!message.author.bot && (isImmuned(tomute) || tomute.user.bot)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
-    if (reason.length > 1024) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1024 characters!**");
+    if (reason.length > 1800) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
 
     let mutetime = args[1];
     if (!mutetime) return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args) => {
     //end of create role
 
     message.delete().catch(O_o=>{});
-    let string = `${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})\n=========================\nReason: ${reason}`;
+    let string = `${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})\n=========================\nReason:\n${reason}`;
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
