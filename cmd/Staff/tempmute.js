@@ -71,6 +71,7 @@ module.exports.run = async (client, message, args) => {
     //end of create role
 
     message.delete().catch(O_o=>{});
+    let string = `${tomute} in ${message.channel} for ${timeconvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})\n=========================\nReason: ${reason}`;
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
@@ -81,9 +82,7 @@ module.exports.run = async (client, message, args) => {
         .setColor("#000000")
         .setTimestamp(new Date())
         .setFooter("User ID: " + tomute.id, footer[index])
-        .addField("Muted User: " + tomute.user.username, `Muted in: ${message.channel}`)
-        .addField("Length: " + timeConvert(mutetime), "=========================")
-        .addField("Reason: ", reason);
+        .setDescription(string);
 
     try{
         await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed})
