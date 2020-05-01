@@ -78,8 +78,7 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    //if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
-    if (args[0] !== "about" && message.author.id !== '386742340968120321' && message.author.id !== '132783516176875520') return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+    if (message.channel.parentID !== '696646649128288346') return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let binddb = maindb.collection("userbind");
     let clandb = maindb.collection("clandb");
