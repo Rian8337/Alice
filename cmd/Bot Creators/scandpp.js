@@ -59,7 +59,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 playc: playc
                             }
                         };
-                        binddb.updateOne({discordid: discordid}, updateVal, err => {
+                        binddb.updateOne({discordid: discordid}, updateVal, async err => {
                             if (err) {
                                 console.log(err);
                                 setTimeout(async () => {
@@ -68,7 +68,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 return
                             }
                             ++i;
-                            retrievePlayer(player_list, i, checkPlayer)
+                            retrievePlayer(player_list, i, await checkPlayer)
                         });
                         return;
                     }
