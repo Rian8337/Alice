@@ -6,6 +6,13 @@ function capitalizeString(string = "") {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+function hasUnicode(str = "") {
+    for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 127) return true
+    }
+    return false
+}
+
 function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
@@ -78,7 +85,7 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
-    if (message.channel.parentID !== '696646649128288346') return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
+    if (args[0] !== "about" && message.channel.parentID !== '696646649128288346') return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
@@ -634,6 +641,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let clanname = args.slice(1).join(" ");
             if (!clanname) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
             if (clanname.length > 30) return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
+            if (hasUnicode(clanname)) return message.channel.send("❎ **| I'm sorry, clan name must not contain any unicode characters!**");
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
