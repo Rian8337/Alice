@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb) => {
             }
             let i = 0;
             retrievePlayer(player_list, i, async function checkPlayer(player, stopSign = false) {
-                if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
+                if (stopSign) return await message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
                 console.log(i);
                 console.log("Uid:", player.uid);
                 let j = 0;
