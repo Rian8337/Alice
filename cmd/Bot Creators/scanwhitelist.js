@@ -18,7 +18,7 @@ module.exports.run = (client, message, args, maindb) => {
         }
         let i = 0;
         retrieveWhitelist(whitelist_list, i, async function whitelistCheck(whitelist, stopSign = false) {
-            if (stopSign) return message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
+            if (stopSign) return await message.channel.send(`✅ **| ${message.author}, whitelist entry scan complete!**`);
             console.log(i);
             let beatmap_id = whitelist.mapid;
             let hash = whitelist.hashid;
@@ -28,21 +28,21 @@ module.exports.run = (client, message, args, maindb) => {
                 whitelistdb.deleteOne({mapid: beatmap_id}, err => {
                     if (err) {
                         console.log(err);
-                        setTimeout(async () => {
-                            retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                        setTimeout(() => {
+                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
                         }, 50);
                         return
                     }
                     ++i;
-                    setTimeout(async () => {
-                        retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                    setTimeout(() => {
+                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
                     }, 50)
                 })
             }
             if (hash && mapinfo.hash === hash) {
                 ++i;
-                setTimeout(async () => {
-                    retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                setTimeout(() => {
+                    retrieveWhitelist(whitelist_list, i, whitelistCheck)
                 }, 50);
                 return
             }
@@ -55,14 +55,14 @@ module.exports.run = (client, message, args, maindb) => {
             whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
                 if (err) {
                     console.log(err);
-                    setTimeout(async () => {
-                        retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                    setTimeout(() => {
+                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
                     }, 50);
                     return
                 }
                 ++i;
-                setTimeout(async () => {
-                    retrieveWhitelist(whitelist_list, i, await whitelistCheck)
+                setTimeout(() => {
+                    retrieveWhitelist(whitelist_list, i, whitelistCheck)
                 }, 50)
             })
         })

@@ -9,7 +9,6 @@ function retrievePlayer(player_list, i, cb) {
 async function retrievePlay(play_list, i, cb) {
     if (!play_list[i]) return cb(null, null, true);
     let hash = play_list[i][0];
-    console.log(hash);
 
     const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
     cb(hash, mapinfo)
@@ -27,7 +26,7 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
-        whitelistdb.find({}).toArray((err, whitelist_list) => {
+        whitelistdb.find({}, {projection: {_id: 0, hashid: 1}}).toArray((err, whitelist_list) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("Error: Empty database response. Please try again!")
