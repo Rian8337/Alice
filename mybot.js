@@ -79,22 +79,6 @@ alcdb.connect((err, db) => {
 client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help");
-    /*let i = 0;
-    let activity_list = [
-		{
-			name: "a!help",
-			type: "PLAYING"
-		},
-		{
-			name: "Happy birthday to me!",
-			type: "PLAYING"
-		}
-	];
-    setInterval(() => {
-		if (i === 0) ++i;
-		else --i;
-		client.user.setActivity(activity_list[i]).catch(console.error)
-	}, 10000);*/
 	
     // API check and unverified prune
 	setInterval(() => {
@@ -185,18 +169,9 @@ client.on("message", message => {
 		const index = Math.floor(Math.random() * images.length);
 		message.channel.send({files: [images[index]]});
 	}
-
-	// #trash-talk spam reminder
-	if (message.content.startsWith(".")) {
-		if (message.guild.id != '316545691545501706') return;
-		if (message.channel.name != 'trash-talk') return;
-		args = command.slice(1);
-		if (!args) return;
-		message.channel.send("Hey, is that NSB command I'm seeing? Remember not to spam bots in here!")
-	}
 	
 	// picture detector in #cute-no-lewd
-	if (!(message.channel instanceof Discord.DMChannel) && message.channel.id === '686948895212961807') {
+	if (message.channel.id === '686948895212961807') {
 		if (message.attachments.size > 1) message.delete().catch(console.error);
 
 		let images = [];
@@ -226,15 +201,12 @@ client.on("message", message => {
 	}
 	
 	// 8ball
-	if ((message.content.startsWith("Alice, ") && message.content.endsWith("?")) || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, ") && message.content.endsWith("?"))) {
+	if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
 		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
 		let args = msgArray.slice(0);
 		let cmd = client.utils.get("response");
 		return cmd.run(client, message, args, maindb, alicedb)
 	}
-	
-	// woi
-	if (message.content.toLowerCase().includes("woi") && message.author.id == '386742340968120321') message.channel.send("woi");
 	
 	// osu! automatic recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
@@ -272,7 +244,7 @@ client.on("message", message => {
 	}
 	
 	// picture log
-	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id == '316545691545501706') {
+	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
 		let attachments = [];
 		for (const [, attachment] of message.attachments.entries()) {
 			let url = attachment.url;
@@ -406,14 +378,14 @@ client.on("typingStart", (channel, user) => {
 // member ban detection
 client.on("guildBanAdd", async (guild, user) => {
 	let banInfo = await guild.fetchBan(user.id);
-        let reason = banInfo.reason;
+	let reason = banInfo.reason;
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
 	let embed = new Discord.MessageEmbed()
 		.setTitle("Ban executed")
-                .setThumbnail(user.avatarURL({dynamic: true}))
+		.setThumbnail(user.avatarURL({dynamic: true}))
 		.setFooter("Alice Synthesis Thirty", footer[index])
-                .setTimestamp(new Date())
+		.setTimestamp(new Date())
 		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
 		.addField("=========================", `Reason: ${reason}`);
 	
@@ -425,12 +397,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
 	let role = newMember.roles.cache.find((r) => r.name === 'Lounge Pass');
 	if (!role) return;
-	alicedb.collection("loungelock").find({discordid: newMember.id}).toArray((err, res) => {
+	alicedb.collection("loungelock").findOne({discordid: newMember.id}, (err, res) => {
 		if (err) {
 			console.log(err);
 			console.log("Unable to retrieve ban data")
 		}
-		if (!res[0]) return;
+		if (!res) return;
 		newMember.roles.remove(role, "Locked from lounge channel").catch(console.error);
 		let embed = new Discord.MessageEmbed()
 			.setDescription(`${newMember} is locked from lounge channel!`)
