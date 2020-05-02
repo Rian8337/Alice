@@ -68,7 +68,7 @@ module.exports.run = async (client, message, args, maindb) => {
 					let insertVal = {
 						discordid: message.author.id,
 						uid: uid,
-						username: player.username,
+						username: player.name,
 						pptotal: 0,
 						playc: 0,
 						pp: [],
