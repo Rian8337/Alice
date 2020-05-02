@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
 
-    binddb.find({}, {projection: {_id: 0, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, player_list) => {
+    binddb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
