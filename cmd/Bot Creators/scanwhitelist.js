@@ -11,7 +11,7 @@ module.exports.run = (client, message, args, maindb) => {
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     let whitelistdb = maindb.collection("mapwhitelist");
 
-    whitelistdb.find({}).toArray((err, whitelist_list) => {
+    whitelistdb.find({}, {projection: {_id: 0, mapid: 1, hashid: 1}}).toArray((err, whitelist_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")

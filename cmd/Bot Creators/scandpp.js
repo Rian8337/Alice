@@ -22,7 +22,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let whitelistdb = maindb.collection("mapwhitelist");
 
-    binddb.find({}).sort({pptotal: -1}).toArray((err, player_list) => {
+    binddb.find({}, {projection: {_id: 0, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, player_list) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
@@ -59,7 +59,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 playc: playc
                             }
                         };
-                        binddb.updateOne({discordid: discordid}, updateVal, async err => {
+                        binddb.updateOne({discordid: discordid}, updateVal, err => {
                             if (err) {
                                 console.log(err);
                                 setTimeout(async () => {
@@ -68,7 +68,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 return
                             }
                             ++i;
-                            retrievePlayer(player_list, i, await checkPlayer)
+                            retrievePlayer(player_list, i, checkPlayer)
                         });
                         return;
                     }
