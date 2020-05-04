@@ -159,7 +159,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let reason = message.content.substring(cmd_length);
             if (!reason) return message.channel.send("❎ **| Hey, please enter a denial reason!**")
             
-            query = {uid: uid};
+            query = {uid: uid.toString()};
             namedb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
