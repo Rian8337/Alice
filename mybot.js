@@ -221,7 +221,7 @@ client.on("message", message => {
 	}
 	
 	// YouTube link detection
-	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
 		for (let i = 0; i < msgArray.length; i++) {
 			let msg = msgArray[i];
 			if (!msg.startsWith("https://youtu.be/") && !msg.startsWith("https://youtube.com/watch?v=") && !msg.startsWith("https://www.youtube.com/watch?v=")) continue;
