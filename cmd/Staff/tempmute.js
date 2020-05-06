@@ -36,7 +36,7 @@ module.exports.run = async (client, message, args) => {
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return message.channel.send("❎ **| Hey, please enter a valid user to mute!**");
-    if (!message.author.bot && (isImmuned(tomute) || tomute.user.bot)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
+    if (!message.author.bot && !message.isOwner && (isImmuned(tomute) || tomute.user.bot)) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(2).join(" ");
     if (reason.length > 1800) return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
