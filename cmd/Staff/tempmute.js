@@ -31,6 +31,7 @@ function timeConvert(num) {
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let timeLimit = isEligible(message.member);
+    if (message.isOwner) timeLimit = -1;
     if (!message.author.bot && !timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
