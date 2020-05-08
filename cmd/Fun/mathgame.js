@@ -131,7 +131,7 @@ function generateEquation(level, operator_amount, callback) {
             real_equation = '';
             operator_amount = prev_operator_amount
         }
-        +attempts
+        ++attempts
     }
 
     callback(real_equation, answer)
