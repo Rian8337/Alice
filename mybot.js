@@ -82,7 +82,7 @@ client.on("ready", () => {
 	
     // API check and unverified prune
 	setInterval(() => {
-		client.utils.get("unverified").run(client);
+		client.utils.get("unverified").run(client, alicedb);
 		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
 			res.setEncoding("utf8");
 			res.setTimeout(5000);
