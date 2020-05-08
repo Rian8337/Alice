@@ -57,10 +57,10 @@ function generateEquation(level, operator_amount, callback) {
     let answer = Number.NaN;
     let prime_count = 0;
     let last_operator = '';
-    let infinity_count = 0;
+    let attempts = 0;
 
     while (!Number.isInteger(answer)) {
-        if (infinity_count === 50) break;
+        if (attempts === 500) break;
 
         while (operator_amount > 0) {
             const index = Math.floor(Math.random() * operators.length);
@@ -68,7 +68,7 @@ function generateEquation(level, operator_amount, callback) {
             let number = generateNumber(level, operator);
             let mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
             if (mul_or_div) {
-                while ((!isPrime(number) && prime_count < Math.floor(level / 10)))
+                while (isPrime(number) && prime_count < Math.floor(level / 10))
                     number = generateNumber(level, operator);
                 ++prime_count
             }
@@ -98,7 +98,7 @@ function generateEquation(level, operator_amount, callback) {
         let number = generateNumber(level, last_operator);
         let mul_or_div = last_operator === '/' || last_operator === '*';
         if (mul_or_div)
-            while ((!isPrime(number) && prime_count < Math.floor(level / 5)))
+            while (!isPrime(number) && prime_count < Math.floor(level / 5))
                 number = generateNumber(level, last_operator);
 
         // use RNG to determine putting factorial
@@ -122,7 +122,6 @@ function generateEquation(level, operator_amount, callback) {
         const min_mul_div_threshold = Math.min(prev_operator_amount, Math.floor(level / 10));
         const max_mul_div_threshold = level / 5;
         const mul_div_amount = (equation.match(/\//g)||[]).length + (equation.match(/\*/g)||[]).length;
-        if (answer === Infinity || answer === -Infinity) ++infinity_count;
         if (
             !Number.isInteger(answer) ||
             (level >= 5 && mul_div_amount < min_mul_div_threshold && mul_div_amount > max_mul_div_threshold)
@@ -132,6 +131,7 @@ function generateEquation(level, operator_amount, callback) {
             real_equation = '';
             operator_amount = prev_operator_amount
         }
+        +attempts
     }
 
     callback(real_equation, answer)
@@ -159,8 +159,13 @@ module.exports.run = (client, message, args) => {
     let answer_list = [];
     let prev_equation_list = [];
     let total_answer = 0;
+    let fetch_attempt = 0;
 
     generateEquation(level, operator_amount, function createCollector(equation, answer) {
+        if (!equation) {
+            ++fetch_attempt;
+            return generateEquation(level, operator_amount, createCollector)
+        }
         if (prev_equation_list.includes(equation)) return generateEquation(level, operator_amount, createCollector);
         else prev_equation_list.push(equation);
 
