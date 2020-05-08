@@ -166,10 +166,35 @@ module.exports.run = (client, message, args) => {
             ++fetch_attempt;
             return generateEquation(level, operator_amount, createCollector)
         }
+        if (!equation && fetch_attempt > 5) {
+            let string = '✅ **| Unfortunately, the equation generator could not generate any equation after 2500 attempts! As a result, the game has ended!**';
+
+            let answer_string = '';
+            answer_list.sort((a, b) => {return b - a});
+            for (let i = 0; i < answer_list.length; i++) answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
+
+            let rolecheck;
+            try {
+                rolecheck = message.member.roles.highest.hexColor
+            } catch (e) {
+                rolecheck = "#000000"
+            }
+            let footer = config.avatar_list;
+            const index = Math.floor(Math.random() * footer.length);
+            let embed = new Discord.MessageEmbed()
+                .setTitle("Math Game Statistics")
+                .setFooter("Alice Synthesis Thirty", footer[index])
+                .setTimestamp(new Date())
+                .setColor(rolecheck)
+                .setDescription(`**Game starter**: ${message.author}\n**Time started**: ${message.createdAt.toUTCString()}\n**Duration**: ${timeConvert(Math.floor((Date.now() - message.createdTimestamp) / 1000))}\n**Level reached**: Operator count ${operator_amount}, level ${level}\n\n**Total correct answers**: ${total_answer} ${total_answer === 1 ? "answer" : "answers"}\n${answer_string}`);
+
+            return message.channel.send(string, {embed: embed});
+        }
         if (prev_equation_list.includes(equation)) return generateEquation(level, operator_amount, createCollector);
         else prev_equation_list.push(equation);
 
         let correct = false;
+        fetch_attempt = 0;
 
         let string = '❗**| ';
         if (mode === 'single') string += `${message.author}, solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
