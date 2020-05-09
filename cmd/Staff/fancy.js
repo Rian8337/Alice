@@ -99,7 +99,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
-    if (!message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
+    if (!message.isOwner && !message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
 
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
