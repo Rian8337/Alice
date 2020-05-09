@@ -4,6 +4,7 @@ const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
 
 async function memberValidation(message, user, role, time, userres, cb) {
+    if (message.isOwner) return cb(true);
     switch (role.toLowerCase()) {
         case "skilled": {
             if (time < 86400 * 120) {
