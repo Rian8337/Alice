@@ -22,7 +22,7 @@ function isImmuned(member) {
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
     let timeLimit = isEligible(message.member);
-    if (timeLimit != -1) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.isOwner && timeLimit != -1) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return message.channel.send("❎ **| Hey, please enter a valid user to mute!**");
