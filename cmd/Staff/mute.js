@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return message.channel.send("❎ **| Hey, please enter a valid user to mute!**");
-    if (isImmuned(tomute) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
+    if ((!message.isOwner && isImmuned(tomute)) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 
     let reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Hey, can you give me your reason for muting?**");
