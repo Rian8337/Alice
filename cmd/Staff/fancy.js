@@ -4,13 +4,14 @@ const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
 
 async function memberValidation(message, user, role, time, userres, cb) {
+    if (message.isOwner) return cb(true);
     switch (role.toLowerCase()) {
         case "skilled": {
             if (time < 86400 * 120) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                 return cb()
             }
-            let pp = userres[0].pptotal;
+            let pp = userres.pptotal;
             if (pp < 4500) {
                 message.channel.send("❎ **| I'm sorry, this user doesn't have 4000 dpp yet!**");
                 return cb()
@@ -23,7 +24,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 6 months!**");
                 return cb()
             }
-            let uid = userres[0].uid;
+            let uid = userres.uid;
             const player = await new osudroid.PlayerInfo().get({uid: uid});
             if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             let rank = player.rank;
