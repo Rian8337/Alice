@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 500);
@@ -12,6 +11,7 @@ async function drawImage(properties, template = false) {
     else backgroundImage = backgroundImage.id;
     const bg = await loadImage(`./img/${backgroundImage}.png`);
     c.drawImage(bg, 0, 0);
+    console.log(0);
 
     // player avatar
     const avatar = await loadImage(properties.player.avatarURL);
@@ -57,7 +57,7 @@ async function drawImage(properties, template = false) {
 
     // alice coins
     c.drawImage(properties.coinImage, 15, 255, 50, 50);
-    
+
     // text
     // player rank
     c.globalAlpha = 1;
@@ -198,6 +198,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         switch (args[1]) {
                             case "change": {
                                 let type = args.slice(2).join(" ");
+                                if (!type) return message.channel.send("❎ **| Hey, please enter a background name!**");
                                 let id = '';
                                 for (let i = 0; i < backgroundList.length; i++) {
                                     let bg = backgroundList[i];
@@ -289,9 +290,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 background_list = background_list.trimEnd();
                                 let owned = pictureConfig.backgrounds;
                                 if (!owned || owned.length === 0) return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
-                                for (let i = 0; i < owned.length; i++) owned_list += `\`${owned[i].name}\` `;
+                                for (let i = 0; i < owned.length; i++) {
+                                    owned_list += `\`${owned[i].name}\``;
+                                    if (i + 1 < owned.length) owned_list += ', '
+                                }
 
-                                message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length} backgrounds: ${owned_list}.**`);
+                                message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length + 1} backgrounds: ${owned_list}.**`);
                                 break
                             }
                             default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[1]}) is invalid! Accepted arguments are \`change\` and \`list\`.**`)
