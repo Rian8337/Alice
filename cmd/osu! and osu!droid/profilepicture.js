@@ -56,9 +56,8 @@ async function drawImage(properties, template = false) {
     if (progress > 0) c.fillRect(79, 208, progress, 26);
 
     // alice coins
-    let coinImage = await loadImage(properties.coinImage.url);
-    c.drawImage(coinImage, 15, 255, 50, 50);
-
+    c.drawImage(properties.coinImage, 15, 255, 50, 50);
+    
     // text
     // player rank
     c.globalAlpha = 1;
@@ -127,16 +126,14 @@ async function drawImage(properties, template = false) {
     } else {
         let badges = properties.pictureConfig.activeBadges;
         if (!badges) badges = [];
-        if (badges.length > 0) {
-            for (let i = 0; i < badges.length; i++) {
-                let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
-                if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
-                else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85)
-            }
+        for (let i = 0; i < badges.length; i++) {
+            let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
+            if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
+            else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85)
         }
     }
 
-    return new Discord.MessageAttachment(canvas.toBuffer())
+    return canvas.toBuffer()
 }
 
 module.exports.run = async (client, message, args, maindb, alicedb) => {
