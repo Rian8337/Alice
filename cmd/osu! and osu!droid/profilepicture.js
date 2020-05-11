@@ -11,7 +11,6 @@ async function drawImage(properties, template = false) {
     else backgroundImage = backgroundImage.id;
     const bg = await loadImage(`./img/${backgroundImage}.png`);
     c.drawImage(bg, 0, 0);
-    console.log(0);
 
     // player avatar
     const avatar = await loadImage(properties.player.avatarURL);
