@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const cd = new Set();
 
 function spaceFill(s, l) {
@@ -22,6 +23,7 @@ function editpp(res, page) {
 }
 
 module.exports.run = (client, message, args, maindb) => {
+    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
     let page = 0;
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
