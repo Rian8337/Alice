@@ -10,15 +10,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
     let binddb = maindb.collection("userbind");
     let scoredb = alicedb.collection("playerscore");
-    let pointdb = alicedb.collection("playerpoints");
-	binddb.findOne({uid: uid}, async function(err, res) {
+	let pointdb = alicedb.collection("playerpoints");
+	const query = {uid: uid.toString()};
+	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		const player = await new osudroid.PlayerInfo().get({uid: uid});
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
-		scoredb.findOne({uid: uid}, (err, playerres) => {
+		scoredb.findOne(query, (err, playerres) => {
 			if (err) {
 				console.log(err);
 				return message.channel.send("Error: Empty database response. Please try again!")
@@ -29,7 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				score = playerres.score;
 				level = playerres.level;
 			}
-			pointdb.findOne({uid: uid}, async (err, pointres) => {
+			pointdb.findOne(query, async (err, pointres) => {
 				if (err) {
 					console.log(err);
 					return message.channel.send("Error: Empty database response. Please try again!")
