@@ -9,9 +9,7 @@ const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env
 const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
 const droidapikey = process.env.DROID_API_KEY;
-const require_api = config.require_api;
 
-let apidown = false;
 let maintenance = false;
 let maintenance_reason = '';
 let current_map = [];
@@ -82,34 +80,12 @@ client.on("ready", () => {
 	
     // API check and unverified prune
 	setInterval(() => {
-		client.utils.get("unverified").run(client, alicedb);
-		http.request(`http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&uid=51076`, res => {
-			res.setEncoding("utf8");
-			res.setTimeout(5000);
-			let content = '';
-			res.on("data", chunk => {
-				content += chunk
-			});
-			res.on("error", err => {
-				console.log(err);
-				apidown = true
-			});
-			res.on("end", () => {
-				try {
-					JSON.parse(content.split("<br>")[1]);
-					if (apidown) console.log("API performance restored");
-					apidown = false
-				} catch (e) {
-					if (!apidown) console.log("API performance degraded");
-					apidown = true
-				}
-			})
-		}).end()
+		client.utils.get("unverified").run(client, alicedb)
 	}, 10000);
 	
 	setInterval(() => {
 		console.log("Utilities running");
-		if (!apidown) client.utils.get("trackfunc").run(client, "", [], maindb);
+		if (!maintenance) client.utils.get("trackfunc").run(client, "", [], maindb);
 		client.utils.get("dailytrack").run(client, "", [], maindb, alicedb);
 		client.utils.get("weeklytrack").run(client, "", [], maindb, alicedb);
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
@@ -281,6 +257,7 @@ client.on("message", message => {
 	// self-talking (for fun lol)
 	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
 	
+	// commands
 	if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
 		maintenance_reason = args.join(" ");
 		if (!maintenance_reason) maintenance_reason = 'Unknown';
@@ -288,12 +265,6 @@ client.on("message", message => {
 		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
 		if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
 		else client.user.setActivity("a!help").catch(console.error)
-	}
-	
-	// commands
-	if (message.author.id == '386742340968120321' && message.content == "a!apidown") {
-		apidown = !apidown;
-		return message.channel.send(`✅ **| API down mode has been set to \`${apidown}\`.**`)
 	}
 	
 	if (message.content.includes("m.mugzone.net/chart/")) {
@@ -312,7 +283,6 @@ client.on("message", message => {
 				message.channel.stopTyping(true)
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-			if (apidown && require_api.includes(cmd.config.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
 			else console.log(`${message.author.tag} (DM): ${message.content}`);
 			cmd.run(client, message, args, maindb, alicedb, current_map);
@@ -332,7 +302,6 @@ client.on("message", message => {
 				message.channel.stopTyping(true)
 			}, 5000);
 			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-			if (apidown && require_api.includes(cmd.help.name)) return message.channel.send("❎ **| I'm sorry, API is currently unstable or down, therefore you cannot use droid-related commands!**");
 			if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
 			else console.log(`${message.author.tag} (DM): ${message.content}`);
 			cmd.run(client, message, args, maindb, alicedb, current_map);
