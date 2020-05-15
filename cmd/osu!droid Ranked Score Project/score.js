@@ -136,7 +136,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let discordid = userres.discordid;
         let username = userres.username;
         const player = await new osudroid.PlayerInfo().get({uid: uid});
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
+        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
         let rplay = player.recent_plays;
         let playentry = [];
