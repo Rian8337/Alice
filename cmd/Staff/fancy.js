@@ -4,14 +4,13 @@ const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
 
 async function memberValidation(message, user, role, time, userres, cb) {
-    if (message.isOwner) return cb(true);
     switch (role.toLowerCase()) {
         case "skilled": {
             if (time < 86400 * 120) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                 return cb()
             }
-            let pp = userres.pptotal;
+            let pp = userres[0].pptotal;
             if (pp < 4500) {
                 message.channel.send("❎ **| I'm sorry, this user doesn't have 4000 dpp yet!**");
                 return cb()
@@ -24,7 +23,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 6 months!**");
                 return cb()
             }
-            let uid = userres.uid;
+            let uid = userres[0].uid;
             const player = await new osudroid.PlayerInfo().get({uid: uid});
             if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             let rank = player.rank;
@@ -53,7 +52,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                 return cb()
             }
-            let uid = userres.uid;
+            let uid = userres[0].uid;
             let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=0";
             request(url, async (err, response, data) => {
                 if (!data) {
@@ -75,7 +74,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                     return cb()
                 }
                 const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error)
-                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
+                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch the user's player info! Perhaps osu!droid server is down?**");
                 let rank = player.rank;
                 if (rank > 1000) {
                     message.channel.send("❎ **| I'm sorry, this user's rank is above 1000!**");
@@ -99,7 +98,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
-    if (!message.isOwner && !message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
+    if (!message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
 
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
