@@ -7,7 +7,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
     switch (role.toLowerCase()) {
         case "skilled": {
             if (time < 86400 * 120) {
-                message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
+                message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 4 months!**");
                 return cb()
             }
             let pp = userres[0].pptotal;
