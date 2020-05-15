@@ -43,7 +43,7 @@ module.exports.run = async (client, message, args) => {
 	if (args[1]) page = parseInt(args[1]);
 	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
 	const player = await new osudroid.PlayerInfo().get({uid: uid});
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch the player's profile! Perhaps osu!droid server is down?**");
 	if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 	let name = player.name;
 	let rplay = player.recent_plays;

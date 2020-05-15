@@ -140,7 +140,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     hash = mapinfo.hash;
     let top = await fetchScores(hash, 0);
-    if (!top) return message.channel.send("❎ **| I'm sorry, this map has no scores submitted yet!**");
+    if (!top) return message.channel.send("❎ **| I'm sorry, this map has no scores submitted yet! Perhaps osu!droid server is down?**");
     let cache = [
         {
             page: 0,

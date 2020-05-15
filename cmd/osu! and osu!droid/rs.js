@@ -30,7 +30,11 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = res.uid;
         const player = await new osudroid.PlayerInfo().get({uid: uid});
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+        if (!player.name) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I cannot fetch the user's profile! Perhaps osu!droid server is down?**");
+			else message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+			return
+		}
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 
         let name = player.name;
@@ -45,15 +49,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let mod = play.mods;
         let hash = play.hash;
 
-        let n300, n100, n50;
-        if (message.isOwner) {
-            const score_data = await new osudroid.PlayInfo({uid: uid, hash: hash}).getFromHash();
-            const data = await new osudroid.ReplayAnalyzer(score_data.score_id).analyze();
-            n300 = data.data.hit300;
-            n100 = data.data.hit100;
-            n50 = data.data.hit50;
-        }
-
         let rolecheck;
         try {
             rolecheck = message.member.roles.highest.hexColor
@@ -66,13 +61,22 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             .setAuthor(title, player.avatarURL)
             .setColor(rolecheck)
             .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
-		
-		let entry = [message.channel.id, hash];
-		let map_index = current_map.findIndex(map => map[0] === message.channel.id);
-		if (map_index === -1) current_map.push(entry);
-		else current_map[map_index][1] = hash;
+
+        let entry = [message.channel.id, hash];
+        let map_index = current_map.findIndex(map => map[0] === message.channel.id);
+        if (map_index === -1) current_map.push(entry);
+        else current_map[map_index][1] = hash;
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
+        let n300, n100, n50;
+        if (message.isOwner) {
+            const score_data = await play.getFromHash();
+            const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
+            n300 = data.data.hit300;
+            n100 = data.data.hit100;
+            n50 = data.data.hit50;
+        }
+        
         if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
             embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})

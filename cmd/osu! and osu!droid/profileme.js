@@ -24,7 +24,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let uid = res.uid;
 		let pp = res.pptotal;
 		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
-		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+		if (!player.name) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I cannot fetch the user's profile! Perhaps osu!droid server is down?**");
+			else message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+			return
+		}
 		scoredb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);

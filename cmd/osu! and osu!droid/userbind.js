@@ -29,7 +29,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
 	let binddb = maindb.collection("userbind");
 	const player = await new osudroid.PlayerInfo().get({uid: uid});
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like the user doesn't exist!**");
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid doesn't exist! Perhaps osu!droid server is down?**");
 
 	uid = uid.toString();
 
@@ -53,7 +53,6 @@ module.exports.run = async (client, message, args, maindb) => {
 					previous_bind.push(uid);
 					let updateVal = {
 						$set: {
-                                                        username: player.name,
 							uid: uid,
 							previous_bind: previous_bind
 						}
@@ -69,7 +68,7 @@ module.exports.run = async (client, message, args, maindb) => {
 					let insertVal = {
 						discordid: message.author.id,
 						uid: uid,
-						username: player.name,
+						username: player.username,
 						pptotal: 0,
 						playc: 0,
 						pp: [],
@@ -91,7 +90,6 @@ module.exports.run = async (client, message, args, maindb) => {
 		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
 		let updateVal = {
 			$set: {
-                                username: player.name,
 				uid: uid
 			}
 		};
