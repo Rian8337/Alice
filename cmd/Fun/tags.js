@@ -3,15 +3,15 @@ const config = require('../../config.json');
 
 function listTag(tags, page, footer, index, rolecheck) {
     let embed = new Discord.MessageEmbed()
-        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.floor(tags.length / 20)}`, footer[index])
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(tags.length / 10)}`, footer[index])
         .setColor(rolecheck);
 
     let list = '';
-    for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
+    for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!tags[i]) break;
-        list += `${i+1}. ${tags[i].name} (created at ${new Date(tags[i].date).toUTCString()})\n`
+        list += `${i+1}. ${tags[i].name}\n`
     }
-    embed.setDescription(`**Tags for <@${tags[0].author}>**\n**Total tags**: ${tags.length}\n${list}`);
+    embed.setDescription(`**Tags for <@${tags[0].author}>**\n**Total tags**: ${tags.length}\n\n${list}`);
     return embed
 }
 
@@ -64,8 +64,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 embed = listTag(tags_list, page, footer, index, rolecheck);
 
                 message.channel.send({embed: embed}).then(msg => {
-                    if (Math.floor(tags_list.length / 20) === 0)
+                    const page_length = Math.ceil(tags_list.length / 10);
+
+                    if (page_length <= 1)
                         return;
+
 
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
@@ -81,14 +84,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
                     backward.on('collect', () => {
-                        page = 1;
+                        page = Math.max(1, page - 10);
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
-                        if (page === 1) page = Math.floor(tags_list.length / 20);
+                        if (page === 1) page = page_length;
                         else page--;
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
@@ -96,7 +99,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     next.on('collect', () => {
-                        if (page * 20 >= tags_list.length) page = 1;
+                        if ((page - 1) * 10 >= tags_list.length) page = 1;
                         else page++;
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
@@ -104,7 +107,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     forward.on('collect', () => {
-                        page = Math.floor(tags_list.length / 20);
+                        page = Math.min(page + 10, page_length);
                         embed = listTag(tags_list, page, footer, index, rolecheck);
                         msg.edit({embed: embed}).catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
