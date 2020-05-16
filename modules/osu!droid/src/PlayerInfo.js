@@ -3,18 +3,6 @@ const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
 const PlayInfo = require('./PlayInfo');
 
-/**
- * Represents an osu!droid player.
- * @prop {number} rank - The current rank of the player.
- * @prop {number} score - The current total score of the player.
- * @prop {number} accuracy - The current accuracy of the player.
- * @prop {number} play_count - The play count of the player.
- * @prop {PlayInfo[]} recent_plays - Recent plays of the player.
- * @prop {function(Object):Promise<PlayerInfo>} get - Retrieves a player's info based on uid or username.
- * @prop {function:string} toString - Returns the string representative of the class.
- *
- * @class
- */
 class PlayerInfo {
     constructor() {
         /**
@@ -76,6 +64,12 @@ class PlayerInfo {
          * @description Recent plays of the player in `PlayInfo` instance.
          */
         this.recent_plays = [];
+
+        /**
+         * @type {boolean}
+         * @description Whether or not the fetch result from `get()` returns an error. This should be immediately checked after calling said method.
+         */
+        this.error = false;
     }
 
     /**
@@ -107,6 +101,7 @@ class PlayerInfo {
                 });
                 res.on("error", err => {
                     console.log(err);
+                    this.error = true;
                     return resolve(this);
                 });
                 res.on("end", () => {
@@ -114,6 +109,7 @@ class PlayerInfo {
                     let headerres = resarr[0].split(" ");
                     if (headerres[0] === 'FAILED') {
                         console.log("Player not found");
+                        this.error = true;
                         return resolve(this);
                     }
                     let obj;
@@ -121,6 +117,7 @@ class PlayerInfo {
                         obj = JSON.parse(resarr[1])
                     } catch (e) {
                         console.log("Error parsing player info");
+                        this.error = true;
                         return resolve(this);
                     }
                     uid = headerres[1];

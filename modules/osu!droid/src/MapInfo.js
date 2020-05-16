@@ -3,6 +3,7 @@ const request = require('request');
 const apikey = process.env.OSU_API_KEY;
 const mods = require('./mods');
 const object_types = require('./object_types');
+const Beatmap = require('./Beatmap');
 const MapStats = require('./MapStats');
 const Parser = require('./Parser');
 
@@ -186,7 +187,19 @@ class MapInfo {
          * @type {string}
          * @description The `.osu` file of the beatmap (required for some functions).
          */
-        this.osu_file = ''
+        this.osu_file = '';
+
+        /**
+         * @type {Beatmap|null}
+         * @description The parsed beatmap from beatmap parser.
+         */
+        this.map = null;
+
+        /**
+         * @type {boolean}
+         * @description Whether or not the fetch result from `get()` returns an error. This should be immediately checked after calling said method.
+         */
+        this.error = false;
     }
 
     /**
@@ -228,6 +241,7 @@ class MapInfo {
                 });
                 res.on("error", err => {
                     console.log("Error retrieving map info\n" + err);
+                    this.error = true;
                     return resolve(this);
                 });
                 res.on("end", () => {
@@ -236,6 +250,7 @@ class MapInfo {
                         obj = JSON.parse(content)
                     } catch (e) {
                         console.log("Error parsing map info");
+                        this.error = true;
                         return resolve(this);
                     }
                     if (!obj || !obj[0]) {
@@ -287,7 +302,11 @@ class MapInfo {
                             console.log("Error downloading osu file");
                             return resolve(this);
                         }
+                        let parser = new Parser();
+                        parser.parse(data);
+
                         this.osu_file = data;
+                        this.map = parser.map;
                         resolve(this)
                     })
                 })
@@ -436,7 +455,7 @@ class MapInfo {
      * @returns {number} The maximum score of the beatmap. If `file` property was set to `false`, returns `0`.
      */
     max_score(mod = '') {
-        if (!this.osu_file) {
+        if (!this.map) {
             return 0;
         }
         let stats = new MapStats(this).calculate({mode: "osu", mods: mod});
@@ -455,14 +474,7 @@ class MapInfo {
 
         if (modbits & mods.unranked) score_multiplier = 0;
 
-        let parser = new Parser();
-        try {
-            parser.parse(this.osu_file)
-        } catch (e) {
-            console.log("Invalid osu file");
-            return 0
-        }
-        let map = parser.map;
+        let map = this.map;
         let objects = map.objects;
         let combo = 0;
         let score = 0;

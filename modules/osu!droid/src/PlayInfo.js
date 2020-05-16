@@ -1,5 +1,5 @@
-const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
+const request = require('request');
 const mods = require('./mods');
 
 class PlayInfo {
@@ -90,14 +90,20 @@ class PlayInfo {
          * @description MD5 hash of the play.
          */
         this.hash = values.hash || '';
+
+        /**
+         * @type {boolean}
+         * @description Whether or not the fetch result from `getFromHash()` returns an error. This should be immediately checked after calling said method.
+         */
+        this.error = false;
     }
 
     /**
      * Retrieves play information.
      *
-     * @param {*} [params]
-     * @param {number} [params.uid] The uid to retrieve. If specified in the constructor, can be omitted.
-     * @param {string} [params.hash] The MD5 hash of the beatmap. If specified in the constructor, can be omitted.
+     * @param {Object} [params] An object containing the parameters.
+     * @param {number} params.uid The uid to retrieve. If specified in the constructor, can be omitted.
+     * @param {string} params.hash The MD5 hash of the beatmap. If specified in the constructor, can be omitted.
      * @returns {Promise<PlayInfo>} The current instance containing the play information.
      */
     getFromHash(params = {}) {
@@ -112,6 +118,7 @@ class PlayInfo {
             request(url, (err, response, data) => {
                 if (err || !data) {
                     console.log("Error retrieving player data");
+                    this.error = true;
                     return resolve(this)
                 }
                 let entry = data.split("<br>");
