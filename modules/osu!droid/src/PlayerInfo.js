@@ -108,7 +108,6 @@ class PlayerInfo {
                     let headerres = resarr[0].split(" ");
                     if (headerres[0] === 'FAILED') {
                         console.log("Player not found");
-                        this.error = true;
                         return resolve(this);
                     }
                     let obj;
