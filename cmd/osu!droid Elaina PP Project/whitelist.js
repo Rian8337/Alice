@@ -60,7 +60,7 @@ async function whitelistInfo(client, link_in, hash_in, message, callback) {
     if (hash_in) {hashid = hash_in; query = {hash: hashid}} //Override mode (use for fixed map)
 
     const mapinfo = await new osudroid.MapInfo().get(query);
-    if (!mapinfo.title || !mapinfo.objects) {
+    if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
         message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
         return callback(0)
     }
