@@ -11,6 +11,7 @@ async function retrievePlay(play_list, i, cb) {
     let hash = play_list[i][0];
 
     const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
+    if (mapinfo.error) return cb(null);
     cb(hash, mapinfo)
 }
 
@@ -37,11 +38,14 @@ module.exports.run = (client, message, args, maindb) => {
                 console.log(i);
                 console.log("Uid:", player.uid);
                 let j = 0;
+                let attempt = 0;
                 let prev_pptotal = player.pptotal;
                 let discordid = player.discordid;
                 let play_list = player.pp;
                 let playc = player.playc;
-                await retrievePlay(play_list, j, function validatePlay(hash, mapinfo, stopFlag = false) {
+                await retrievePlay(play_list, j, async function validatePlay(hash, mapinfo, stopFlag = false) {
+                    attempt++;
+                    if (hash === null && attempt < 3) return await retrievePlay(play_list, j, validatePlay)
                     if (stopFlag) {
                         console.log("Check done");
                         let pptotal = 0;
@@ -72,6 +76,7 @@ module.exports.run = (client, message, args, maindb) => {
                         return;
                     }
                     console.log(j);
+                    attempt = 0;
                     if (!mapinfo.title) {
                         console.log("Beatmap not found");
                         play_list.splice(j, 1);
