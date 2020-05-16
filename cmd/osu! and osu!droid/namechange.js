@@ -315,7 +315,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     const new_player = await new osudroid.PlayerInfo().get({username: new_name});
                     if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
-                    if (!new_player.email) return message.channel.send("❎ **| I'm sorry, I'm having trouble processing your request! Perhaps osu!droid server is down?**");
 
                     name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\n\nUid: ${uid}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
                         if (nameres) {
