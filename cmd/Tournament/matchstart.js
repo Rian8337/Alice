@@ -44,7 +44,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             }
             if (!mapfound) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-            if (map.includes("DT") && poolid == "t8q") timelimit = Math.ceil(timelimit / 1.5);
+            if (map.includes("DT")) timelimit = Math.ceil(timelimit / 1.5);
             let rolecheck;
             try {
                 rolecheck = message.member.roles.highest.hexColor
