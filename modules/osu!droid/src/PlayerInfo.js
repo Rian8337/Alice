@@ -90,8 +90,7 @@ class PlayerInfo {
             let options = {
                 host: "ops.dgsrz.com",
                 port: 80,
-                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`,
-                timeout: 10000
+                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
             };
             let content = '';
             let req = http.request(options, res => {
@@ -182,11 +181,6 @@ class PlayerInfo {
                         resolve(this)
                     })
                 })
-            });
-            req.on('timeout', () => {
-                req.abort();
-                this.error = true;
-                resolve(this)
             });
             req.end()
         })
