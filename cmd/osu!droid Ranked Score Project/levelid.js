@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('../../modules/osu!droid');
+const osudroid = require('osu-droid');
 
 function levelBar(levelprogress) {
     let barcount = 15;
@@ -37,7 +37,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 playc = res.playc
             }
             let levelremain = (level - Math.floor(level)) * 100;
-            const player = await new osudroid.PlayerInfo().get(query).catch(console.error);
+            const player = await new osudroid.PlayerInfo().get(query);
+            if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
             if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             let avalink = player.avatarURL;
             let rolecheck;
