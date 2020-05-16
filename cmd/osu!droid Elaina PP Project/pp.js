@@ -19,6 +19,10 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 	if (!playentry[i]) return cb(false, false, true);
 	let play = playentry[i];
 	const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
+	if (mapinfo.error) {
+		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
+		return cb(false, false)
+	}
 	if (!mapinfo.title) {
 		message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
 		return cb(false, false)
@@ -141,6 +145,7 @@ module.exports.run = (client, message, args, maindb) => {
 					if (isNaN(beatmap)) return message.channel.send("❎ **| Hey, that beatmap ID is not valid!**")
 				}
 				const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
+				
 				if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
 				if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
 				if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -232,7 +237,8 @@ module.exports.run = (client, message, args, maindb) => {
 					cd.delete(message.author.id)
 				}, 1000 * offset);
 				const player = await new osudroid.PlayerInfo().get({uid: uid});
-				if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+				if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+				if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 				if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
 				let rplay = player.recent_plays;
 				let playentry = [];
