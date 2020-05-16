@@ -46,7 +46,7 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
     const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false});
     if (mapinfo.error) {
 		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
-		return cb(false, false)
+		return cb(false, true)
 	}
     if (!mapinfo.title) {
         message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
@@ -184,6 +184,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let score = 0;
             let i = 0;
             let submitted = 1;
+            let attempt = 0;
             await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, async function testResult(error = false, success = true, stopSign = false) {
                 if (stopSign) {
                     if (submitted === 1) return;
@@ -232,9 +233,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     return
                 }
-                if (!error) i++;
+                attempt++;
+                if (!error && attempt < 3) i++;
                 if (success) submitted++;
-                await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, await testResult)
+                if (error) attempt++;
+                else attempt = 0;
+                await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, testResult)
             })
         })
     });
