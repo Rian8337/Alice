@@ -23,6 +23,10 @@ function test(uid, page, cb) {
 
 async function calculatePP(ppentries, entry, cb) {
     const mapinfo = await new osudroid.MapInfo().get({hash: entry[11]});
+    if (mapinfo.error) {
+        console.log("API fetch error");
+        return cb()
+    }
     if (!mapinfo.title) {
         console.log("Map not found");
         return cb()
@@ -112,20 +116,24 @@ module.exports.run = (client, message, args, maindb) => {
             }
             console.table(entries);
             let i = 0;
+            let attempt = 0;
             await calculatePP(ppentries, entries[i], async function cb(error = false, stopFlag = false) {
                 console.log(i);
+                attempt++;
+                if (attempt === 3 && error) i++;
                 if (!error) {
                     i++;
-                    playc++
+                    playc++;
+                    attempt = 0
                 }
-                if (i < entries.length && !stopFlag) await calculatePP(ppentries, entries[i], await cb);
+                if (i < entries.length && !stopFlag) await calculatePP(ppentries, entries[i], cb);
                 else {
                     console.log("done");
                     ppentries.sort(function(a, b) {return b[2] - a[2]});
                     if (ppentries.length > 75) ppentries.splice(75);
                     page++;
                     console.table(ppentries);
-                    test(uid, page, await testcb)
+                    test(uid, page, testcb)
                 }
             })
         })

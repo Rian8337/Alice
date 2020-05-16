@@ -2,77 +2,90 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
+function scanWhitelist(whitelist, hash) {
+	return new Promise(resolve => {
+		whitelist.findOne({hashid: hash}, (err, res) => {
+			if (err) {
+				console.log(err);
+				return resolve(null)
+			}
+			resolve(!!res)
+		})
+	})
+}
+
 async function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
 	if (!playentry[i]) return cb(false, false, true);
 	let play = playentry[i];
-	whitelist.findOne({hashid: play.hash}, async (err, wlres) => {
-		if (err) {
-			console.log(err);
-			message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's whitelist info!**");
-			return cb(true)
+	const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
+	if (mapinfo.error) {
+		message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
+		return cb()
+	}
+	if (!mapinfo.title) {
+		message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
+		return cb(false, false)
+	}
+	if (!mapinfo.objects) {
+		message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+		return cb(false, false)
+	}
+	if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
+		let isWhitelist = await scanWhitelist(whitelist, mapinfo.hash);
+		if (isWhitelist === null) {
+			message.channel.send("❎ **| I'm sorry, I'm having problem receiving response from database. Please try again!**");
+			return cb(true, false)
 		}
-		let query = {hash: play.hash};
-		if (wlres) query = {beatmap_id: wlres.mapid};
-		const mapinfo = await new osudroid.MapInfo().get(query);
-		if (!mapinfo.title) {
-			message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-			return cb(false, false)
-		}
-		if (!mapinfo.objects) {
-			message.channel.send("❎ **| I'm sorry, it seems like this map has 0 objects!**");
-			return cb(false, false)
-		}
-		if ((mapinfo.approved === 3 || mapinfo.approved <= 0) && !wlres) {
+		if (!isWhitelist) {
 			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
 			return cb(false, false)
+		}	
+	}
+	if (!mapinfo.osu_file) {
+		message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+		return cb(false, false)
+	}
+	let mod = play.mod;
+	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+	let npp = osudroid.ppv2({
+		stars: star.droid_stars,
+		combo: play.combo,
+		acc_percent: play.accuracy,
+		miss: play.miss,
+		mode: "droid"
+	});
+	let pp = parseFloat(npp.toString().split(" ")[0]);
+	let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
+	let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
+	if (isNaN(pp)) {
+		message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
+		return cb()
+	}
+	++playc;
+	let dup = false;
+	for (let i in pplist) {
+		if (ppentry[0] === pplist[i][0]) {
+			pplist[i] = ppentry;
+			dup = true;
+			break
 		}
-		if (!mapinfo.osu_file) {
-			message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-			return cb(false, false)
+	}
+	if (!dup) pplist.push(ppentry);
+	pplist.sort(function(a, b) {
+		return b[2] - a[2]
+	});
+	if (pplist.length > 75) pplist.splice(75);
+	if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+	else {
+		let x = 0;
+		for (x; x < pplist.length; x++) {
+			if (!pplist[x][1].includes(playinfo)) continue;
+			embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
+			break
 		}
-		let mod = play.mod;
-		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-		let npp = osudroid.ppv2({
-			stars: star.droid_stars,
-			combo: play.combo,
-			acc_percent: play.accuracy,
-			miss: play.miss,
-			mode: "droid"
-		});
-		let pp = parseFloat(npp.toString().split(" ")[0]);
-		let playinfo = mapinfo.showStatistics(mod, 0);
-		let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
-		if (isNaN(pp)) {
-			message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
-			return cb()
-		}
-		++playc;
-		let dup = false;
-		for (let i in pplist) {
-			if (ppentry[0] === pplist[i][0]) {
-				pplist[i] = ppentry;
-				dup = true;
-				break
-			}
-		}
-		if (!dup) pplist.push(ppentry);
-		pplist.sort(function (a, b) {
-			return b[2] - a[2]
-		});
-		if (pplist.length > 75) pplist.splice(75);
-		if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
-		else {
-			let x = 0;
-			for (x; x < pplist.length; x++) {
-				if (pplist[x][1].includes(playinfo)) {
-					embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
-					break
-				}
-			}
-			if (x === pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
-		}
-		cb()
-	})
+		if (x === pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
+	}
+	cb()
 }
 
 module.exports.run = (client, message, args, maindb) => {

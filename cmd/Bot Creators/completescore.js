@@ -60,7 +60,12 @@ function retrievePlay(uid, page, cb) {
 }
 
 async function scoreCheck(scoreentries, score, cb) {
+    if (!score) return cb(false, true);
     const mapinfo = await new osudroid.MapInfo().get({hash: score[11], file: false});
+    if (mapinfo.error) {
+        console.log("API fetch error");
+        return cb(true)
+    }
     if (!mapinfo.title) {
         console.log("Map not found");
         return cb()
@@ -153,16 +158,22 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 console.table(entries);
                 let i = 0;
-                await scoreCheck(scoreentries, entries[i], async function cb(stopFlag = false) {
+                let attempt = 0;
+                await scoreCheck(scoreentries, entries[i], async function cb(error = false, stopFlag = false) {
                     console.log(i);
-                    i++;
-                    playc++;
-                    if (i < entries.length && !stopFlag) await scoreCheck(scoreentries, entries[i], await cb);
+                    attempt++;
+                    if (attempt === 3 && error) i++;
+                    if (!error) {
+                        i++;
+                        playc++;
+                        attempt = 0
+                    }
+                    if (i < entries.length && !stopFlag) await scoreCheck(scoreentries, entries[i], cb);
                     else {
                         console.log("Done");
                         scoreentries.sort((a, b) => {return b[0] - a[0]});
                         page++;
-                        retrievePlay(uid, page, await testcb)
+                        retrievePlay(uid, page, testcb)
                     }
                 })
             })

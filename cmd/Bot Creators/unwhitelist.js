@@ -49,8 +49,12 @@ async function whitelistInfo(link_in, hash_in, message, callback) {
 
     const mapinfo = await new osudroid.MapInfo().get(query);
 
-    if (!mapinfo.title || !mapinfo.objects) {
+    if (mapinfo.error) {
         message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
+        return callback(0)
+    }
+    if (!mapinfo.title || !mapinfo.objects) {
+        message.channel.send("❎ **| I'm sorry, I couldn't find the beatmap!**");
         return callback(0)
     }
     beatmapid = mapinfo.beatmap_id;

@@ -334,6 +334,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
 
             const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map});
+            if (mapinfo.error)
+                return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
             if (!mapinfo.title)
                 return message.channel.send("❎ **| I'm sorry, I cannot find the map you are looking for!**");
             if (!mapinfo.objects)

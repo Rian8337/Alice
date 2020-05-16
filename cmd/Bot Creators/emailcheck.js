@@ -7,6 +7,7 @@ module.exports.run = async (client, message, args) => {
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
 	const player = await new osudroid.PlayerInfo().get({uid: uid});
+	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
 	let name = player.name;
 	let email = player.email;

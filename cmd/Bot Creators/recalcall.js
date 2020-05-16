@@ -10,6 +10,18 @@ function retrieveList(res, i, cb) {
     cb(list)
 }
 
+function scanWhitelist(whitelist, hash) {
+    return new Promise(resolve => {
+		whitelist.findOne({hashid: hash}, (err, res) => {
+			if (err) {
+				console.log(err);
+				return resolve(null)
+			}
+			resolve(!!res)
+		})
+	})
+}
+
 async function recalcPlay(target, i, newtarget, whitelist, cb) {
     if (!target[i]) return cb(false, true);
     let mods = '';
@@ -20,45 +32,50 @@ async function recalcPlay(target, i, newtarget, whitelist, cb) {
     }
 
     let guessing_mode = true;
-    let whitelistQuery = {hashid: target[i][0]};
-
-    whitelist.findOne(whitelistQuery, async (err, wlres) => {
-        let query = {hash: target[i][0]};
-        if (err) {
-            console.log("Whitelist find error");
+    const mapinfo = await new osudroid.MapInfo().get({hash: target[i][0]});
+    if (mapinfo.error) {
+		console.log("API fetch error");
+		return cb(false, true)
+	}
+    if (!mapinfo.title) {
+        console.log("Map not found");
+        return cb()
+    }
+    if (!mapinfo.objects) {
+        console.log("0 objects found");
+        return cb()
+    }
+    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
+        let isWhitelist = await scanWhitelist(whitelist, target[i][0]);
+        if (isWhitelist === null) {
+            console.log("Error retrieving whitelist info");
             return cb(true)
         }
-        if (wlres) query = {beatmap_id: wlres.mapid};
-        const mapinfo = await new osudroid.MapInfo().get(query);
-        if (!mapinfo.title) {
-            console.log("Map not found");
+        if (!isWhitelist) {
+            console.log("Map is not ranked, approved, loved, or whitelisted");
             return cb()
         }
-        if (!mapinfo.objects) {
-            console.log("0 objects found");
-            return cb()
-        }
-        let acc_percent = 100;
-        if (target[i][4]) {
-            acc_percent = parseFloat(target[i][4]);
-            guessing_mode = false;
-        }
-        let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
-        let miss = target[i][5] ? parseInt(target[i][5]) : 0;
-        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-        let npp = osudroid.ppv2({
-            stars: star.droid_stars,
-            combo: combo,
-            acc_percent: acc_percent,
-            miss: miss,
-            mode: "droid"
-        });
-        let pp = parseFloat(npp.toString().split(" ")[0]);
-        let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
-        console.log(`${target[i][2]} -> ${real_pp}`);
-        newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
-        cb()
-    })
+    }
+    let acc_percent = 100;
+    if (target[i][4]) {
+        acc_percent = parseFloat(target[i][4]);
+        guessing_mode = false;
+    }
+    let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
+    let miss = target[i][5] ? parseInt(target[i][5]) : 0;
+    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+    let npp = osudroid.ppv2({
+        stars: star.droid_stars,
+        combo: combo,
+        acc_percent: acc_percent,
+        miss: miss,
+        mode: "droid"
+    });
+    let pp = parseFloat(npp.toString().split(" ")[0]);
+    let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
+    console.log(`${target[i][2]} -> ${real_pp}`);
+    newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
+    cb()
 }
 
 module.exports.run = (client, message, args, maindb) => {
@@ -88,14 +105,16 @@ module.exports.run = (client, message, args, maindb) => {
                         let discordid = list[2];
                         let newppentry = [];
                         let count = 0;
+                        let attempt = 0;
                         console.log("Uid:", uid);
                         if (!ppentry) {
                             i++;
-                            return retrieveList(res, i, await testList)
+                            return retrieveList(res, i, testList)
                         }
                         await recalcPlay(ppentry, count, newppentry, whitelist, async function testPlay(error = false, stopFlag = false) {
-                            if (!error) count++;
-                            if (count < ppentry.length && !stopFlag) return await recalcPlay(ppentry, count, newppentry, whitelist, await testPlay);
+                            attempt++;
+                            if ((attempt === 3 && error) || !error) count++;
+                            if (count < ppentry.length && !stopFlag) return await recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
                             newppentry.sort((a, b) => {return b[2] - a[2]});
                             let totalpp = 0;
                             let weight = 1;
@@ -114,7 +133,7 @@ module.exports.run = (client, message, args, maindb) => {
                                     console.log("Error inserting data to database");
                                     console.log(err);
                                     if (!error) count--;
-                                    await testPlay;
+                                    testPlay;
                                     return
                                 }
                                 console.log(totalpp);
@@ -122,7 +141,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 i++;
                                 console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
                                 m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
-                                retrieveList(res, i, await testList)
+                                retrieveList(res, i, testList)
                             })
                         })
                     })

@@ -17,12 +17,24 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send("Error: Empty database response. Please try again!")
         }
         let i = 0;
+        let attempt = 0;
         retrieveWhitelist(whitelist_list, i, async function whitelistCheck(whitelist, stopSign = false) {
             if (stopSign) return await message.channel.send(`✅ **| ${message.author}, whitelist entry scan complete!**`);
-            console.log(i);
+            
             let beatmap_id = whitelist.mapid;
             let hash = whitelist.hashid;
             const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
+            attempt++;
+            if (mapinfo.error) {
+                console.log("API fetch error");
+                if (attempt === 3) {
+                    ++i;
+                    attempt = 0
+                }
+                return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+            }
+            console.log(i);
+            attempt = 0;
             if (!mapinfo.title) {
                 console.log("Whitelist entry not available");
                 whitelistdb.deleteOne({mapid: beatmap_id}, err => {
