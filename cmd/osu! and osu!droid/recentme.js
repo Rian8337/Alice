@@ -20,9 +20,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**")
 		let uid = res.uid;
 		const player = await new osudroid.PlayerInfo().get({uid: uid});
+		if (player.error) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			return
+		}
 		if (!player.name) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I cannot fetch the user's profile! Perhaps osu!droid server is down?**");
-			else message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 			return
 		}
 		if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
@@ -61,7 +66,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 		else current_map[map_index][1] = hash;
 
 		const mapinfo = await new osudroid.MapInfo().get({hash: hash});
-		if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
+		if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
 		let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
 		let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
 		let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);

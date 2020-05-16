@@ -29,7 +29,8 @@ module.exports.run = async (client, message, args, maindb) => {
 
 	let binddb = maindb.collection("userbind");
 	const player = await new osudroid.PlayerInfo().get({uid: uid});
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid doesn't exist! Perhaps osu!droid server is down?**");
+	if (player.error) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid doesn't exist!**");
 
 	uid = uid.toString();
 

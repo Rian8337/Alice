@@ -107,7 +107,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 const player = await new osudroid.PlayerInfo().get({uid: uid});
-                if (!player.name) return message.channel.send("❎ **| I'm sorry, I can't find your profile!**");
+                if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                 let rank = player.rank;
                 let limit;
                 if (rank < 10) limit = 500;

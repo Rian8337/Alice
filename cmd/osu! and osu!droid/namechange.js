@@ -309,11 +309,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
 
                     const player = await new osudroid.PlayerInfo().get({uid: uid});
-                    if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+                    if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                     if (email !== player.email) return message.channel.send("❎ **| I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!**");
                     if (username !== player.name) return message.channel.send("❎ **| I'm sorry, your username is not the same as the one stored in bot database! If you've requested a name change before, please rebind your account using `a!userbind <uid>` and then submit a request again!**");
 
                     const new_player = await new osudroid.PlayerInfo().get({username: new_name});
+                    if (new_player.error) return message.channel.send("❎ **| I'm sorry, I couldn't check for nickname availability! Perhaps osu!droid server is down?**");
                     if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
 
                     name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\n\nUid: ${uid}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {

@@ -18,7 +18,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
 		const player = await new osudroid.PlayerInfo().get(query);
-		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch the player's profile! Perhaps osu!droid server is down?**");
+		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+		if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		scoredb.findOne(query, function(err, playerres) {
 			if (err) {
 				console.log(err);

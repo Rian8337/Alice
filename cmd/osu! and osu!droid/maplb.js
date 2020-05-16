@@ -135,7 +135,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     if (!isFinite(page) || page < 1) page = 1;
 
     const mapinfo = await new osudroid.MapInfo().get(params);
-    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
+    if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info! Perhaps osu! API is down?**");
+    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I couldn't find the map that you are looking for!**");
     if (mapinfo.objects === 0) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     hash = mapinfo.hash;

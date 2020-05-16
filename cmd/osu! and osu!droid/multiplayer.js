@@ -413,6 +413,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 player_string = player_string.trimRight().split(" ").join(", ");
 
                 const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id});
+                if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
                 if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -954,6 +955,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             if (isNaN(map)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**")
 
             const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map});
+            if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
             if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
             if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
             if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -1155,6 +1157,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 let beatmap_id = res.match_settings.beatmap.id;
 
                 const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
+                if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 
@@ -1554,6 +1557,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 }
 
                 const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
+                if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map is invalid!**");
 

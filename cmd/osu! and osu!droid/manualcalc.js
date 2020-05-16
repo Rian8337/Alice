@@ -22,6 +22,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		if (args[i].startsWith("-p")) pcdetail = true
 	}
 	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+	if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
 	if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
 	if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
 	if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
@@ -61,10 +62,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
-	let string = '❗**| This command is deprecated and will be removed in the future! You can simply drop the beatmap link with the command parameters to calculate a map or use `a!prevcalc` with the same parameters to calculate a previously calculated map.**\n';
+	//let string = '❗**| This command is deprecated and will be removed in the future! You can simply drop the beatmap link with the command parameters to calculate a map or use `a!prevcalc` with the same parameters to calculate a previously calculated map.**\n';
 	if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
 	if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
-	message.channel.send(string, {embed: embed}).catch(console.error);
+	message.channel.send(/*string, */{embed: embed}).catch(console.error);
 
 	let map_index = current_map.findIndex(map => map[0] === message.channel.id);
 	if (map_index === -1) current_map.push([message.channel.id, mapinfo.hash]);

@@ -62,9 +62,14 @@ module.exports.run = (client, message, args, maindb) => {
 		if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = res.uid;
 		const player = await new osudroid.PlayerInfo().get({uid: uid});
+		if (player.error) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			return
+		}
 		if (!player.name) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I cannot fetch the user's profile! Perhaps osu!droid server is down?**");
-			else message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 			return
 		}
 		if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");

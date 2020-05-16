@@ -30,9 +30,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         if (!res) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = res.uid;
         const player = await new osudroid.PlayerInfo().get({uid: uid});
-        if (!player.name) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I cannot fetch the user's profile! Perhaps osu!droid server is down?**");
-			else message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+        if (player.error) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			return
+		}
+		if (!player.name) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 			return
 		}
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
@@ -77,7 +82,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             n50 = data.data.hit50;
         }
         
-        if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
+        if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
             embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
         }
