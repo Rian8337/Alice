@@ -54,6 +54,7 @@ module.exports.run = async (client, message, args, maindb) => {
 					previous_bind.push(uid);
 					let updateVal = {
 						$set: {
+                                                        username: player.name,
 							uid: uid,
 							previous_bind: previous_bind
 						}
@@ -91,6 +92,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
 		let updateVal = {
 			$set: {
+                                username: player.name,
 				uid: uid
 			}
 		};
