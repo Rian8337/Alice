@@ -44,6 +44,10 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
     if (!playentry[i]) return cb(false, false, true);
     let play = playentry[i];
     const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false});
+    if (mapinfo.error) {
+		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
+		return cb(false, false)
+	}
     if (!mapinfo.title) {
         message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
         return cb(false, false)
@@ -136,7 +140,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let discordid = userres.discordid;
         let username = userres.username;
         const player = await new osudroid.PlayerInfo().get({uid: uid});
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot fetch your profile! Perhaps osu!droid server is down?**");
+        if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
+        if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
         let rplay = player.recent_plays;
         let playentry = [];
