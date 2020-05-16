@@ -20,8 +20,8 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 	let play = playentry[i];
 	const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
 	if (mapinfo.error) {
-		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
-		return cb(false, false)
+		message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
+		return cb(false, true)
 	}
 	if (!mapinfo.title) {
 		message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
@@ -145,13 +145,14 @@ module.exports.run = (client, message, args, maindb) => {
 					if (isNaN(beatmap)) return message.channel.send("❎ **| Hey, that beatmap ID is not valid!**")
 				}
 				const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
-				
+				if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
 				if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
 				if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
 				if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 				let hash = mapinfo.hash;
 
 				const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
+				if (play.error) return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
 				if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map! Perhaps osu!droid server is down?**");
 				let combo = play.combo;
 				let acc = play.accuracy;
@@ -256,6 +257,7 @@ module.exports.run = (client, message, args, maindb) => {
 					playentry.push(play)
 				}
 				let i = 0;
+				let attempt = 0;
 				await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, async function testResult(error = false, success = true, stopSign = false) {
 					if (stopSign) {
 						if (submitted === 1) return;
@@ -279,9 +281,12 @@ module.exports.run = (client, message, args, maindb) => {
 						});
 						return
 					}
-					if (!error) i++;
+					attempt++;
+					if (!error && attempt < 3) i++;
 					if (success) submitted++;
-					await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, await testResult)
+					if (error) attempt++;
+					else attempt = 0;
+					await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
 				})
 			}
 		}
