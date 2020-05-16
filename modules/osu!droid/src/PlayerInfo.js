@@ -90,11 +90,11 @@ class PlayerInfo {
             let options = {
                 host: "ops.dgsrz.com",
                 port: 80,
-                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
+                path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`,
+                timeout: 10000
             };
             let content = '';
             let req = http.request(options, res => {
-                res.setTimeout(10000);
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
                     content += chunk
@@ -158,6 +158,7 @@ class PlayerInfo {
                     request(avatar_page, (err, response, data) => {
                         if (err) {
                             console.log("Unable to load site");
+                            this.error = true;
                             return resolve(this);
                         }
                         let b = data.split("\n");
@@ -181,6 +182,11 @@ class PlayerInfo {
                         resolve(this)
                     })
                 })
+            });
+            req.on('timeout', () => {
+                req.abort();
+                this.error = true;
+                resolve(this)
             });
             req.end()
         })

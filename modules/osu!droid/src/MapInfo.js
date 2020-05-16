@@ -221,12 +221,16 @@ class MapInfo {
                 params.file = true;
             }
 
-            let options;
+            let options = {
+                host: 'osu.ppy.sh',
+                port: 443,
+                timeout: 10000
+            };
             if (beatmapid) {
-                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapid}`);
+                options.path = `/api/get_beatmaps?k=${apikey}&b=${beatmapid}`;
             }
             else if (hash) {
-                options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&h=${hash}`);
+                options.path = `/api/get_beatmaps?k=${apikey}&h=${hash}`;
             }
             else {
                 throw new TypeError("Beatmap ID or MD5 hash must be defined");
@@ -234,7 +238,6 @@ class MapInfo {
 
             let content = '';
             let req = https.get(options, res => {
-                res.setTimeout(10000);
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
                     content += chunk
@@ -311,6 +314,11 @@ class MapInfo {
                     })
                 })
             });
+            req.on('timeout', () => {
+                req.abort();
+                this.error = true;
+                resolve(this)
+            })
             req.end()
         })
     }

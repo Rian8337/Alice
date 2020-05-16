@@ -114,8 +114,12 @@ class PlayInfo {
                 throw new TypeError("Uid and hash must be specified");
             }
 
-            let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
-            request(url, (err, response, data) => {
+            let options = {
+                url: `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`,
+                method: 'get',
+                timeout: 10000
+            };
+            request(options, (err, response, data) => {
                 if (err || !data) {
                     console.log("Error retrieving player data");
                     this.error = true;
