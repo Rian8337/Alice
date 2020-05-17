@@ -25,6 +25,7 @@ module.exports.run = (client, message, args, maindb) => {
             let hash = whitelist.hashid;
             const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
             attempt++;
+
             if (mapinfo.error) {
                 console.log("API fetch error");
                 if (attempt === 3) {
@@ -33,6 +34,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 return retrieveWhitelist(whitelist_list, i, whitelistCheck)
             }
+
             console.log(i);
             attempt = 0;
             if (!mapinfo.title) {
@@ -49,8 +51,10 @@ module.exports.run = (client, message, args, maindb) => {
                     setTimeout(() => {
                         retrieveWhitelist(whitelist_list, i, whitelistCheck)
                     }, 50)
-                })
+                });
+                return
             }
+
             if (hash && mapinfo.hash === hash) {
                 ++i;
                 setTimeout(() => {
@@ -58,6 +62,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }, 50);
                 return
             }
+            
             console.log("Whitelist entry outdated");
             let updateVal = {
                 $set: {
