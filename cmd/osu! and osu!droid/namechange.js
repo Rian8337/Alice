@@ -273,7 +273,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
             let new_name = args[1];
             if (!new_name) return message.channel.send("❎ **| Hey, please enter the desired new nickname that you want to use!**");
-            if (new_name.length < 2 || new_name > 20) return message.channel.send("❎ **| I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!**");
+            if (new_name.length < 2 || new_name.length > 20) return message.channel.send("❎ **| I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!**");
             if (new_name.includes('<:')) return message.channel.send("❎ **| I'm sorry, a username cannot contain emojis!**");
 
             if (message.attachments.size !== 1) return message.channel.send("❎ **| Hey, please only attach one screenshot of your osu!droid main menu with your account logged in!**");
