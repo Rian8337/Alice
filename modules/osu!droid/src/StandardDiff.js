@@ -251,7 +251,7 @@ class StandardDiff {
      * Calculate spacing weight for a difficulty type.
      *
      * @param {string} mode The mode to calculate for.
-     * @param {number} type The difficulty type to calculate. `0` is aim difficulty, `1` is speed difficulty.
+     * @param {number} type The difficulty type to calculate. `0` is speed difficulty, `1` is aim difficulty.
      * @param {number} distance The distance between current hit object and previous hit object.
      * @param {number} delta_time The time difference between current hit object and previous hit object.
      * @param {number} prev_distance The distance between previous hit object and the hit object before said hit object.
@@ -339,7 +339,7 @@ class StandardDiff {
      * Calculates a single strain and store it in the current hit object.
      *
      * @param {string} mode The mode to calculate strain for.
-     * @param {number} type The difficulty type to calculate. `0` is aim difficulty, `1` is speed difficulty.
+     * @param {number} type The difficulty type to calculate. `0` is speed difficulty, `1` is aim difficulty.
      * @param {StandardDiffHitObject} diffobj The current standard hit object.
      * @param {StandardDiffHitObject} prev_diffobj The previous standard hit object.
      * @param {number} speed_mul The speed multiplier (applied by speed-changing mods such as DT and HT).
@@ -389,7 +389,7 @@ class StandardDiff {
      * section which would otherwise be ignored.
      *
      * @param {string} mode The mode to calculate difficulty for.
-     * @param {number} type The type to calculate difficulty for. `0` is aim difficulty, `1` is speed difficulty.
+     * @param {number} type The type to calculate difficulty for. `0` is speed difficulty, `1` is aim difficulty.
      * @param {StandardDiffHitObject[]} diffobjs An array of standard hit objects.
      * @param {number} speed_mul The speed multiplier (applied by speed-changing mods such as DT and HT).
      * @returns {{difficulty: number, total: number}} The difficulty of the type.
