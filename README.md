@@ -7,4 +7,5 @@ Based on [Elaina](https://github.com/NeroYuki/Elaina) by [NeroYuki](https://gith
 
 osu!droid: http://ops.dgsrz.com/
 
-This code is open-source. However, some commands in the bot are hardcoded, therefore it is not advised for public usage. Feel free to look around for code examples, though.
+### Contribution
+Contributions are welcomed, however do note that this bot is intended for specific usage only; some bot features will not work in other servers. Therefore, self-hosting is not advised.
