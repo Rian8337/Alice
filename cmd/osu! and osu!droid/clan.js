@@ -60,8 +60,8 @@ function editLeaderboard(res, page) {
     let output = '#   | Clan Name            | Members | Power\n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
-            else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 21) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
+            if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 31) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
+            else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 31) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
         }
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 21) + ' | ' + spaceFill("-", 8) + ' | - \n';
     }
