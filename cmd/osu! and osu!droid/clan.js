@@ -57,13 +57,13 @@ function spaceFill(s, l) {
 }
 
 function editLeaderboard(res, page) {
-    let output = '#   | Clan Name            | Members | Power\n';
+    let output = '#   | Clan Name                 | Members | Power\n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 31) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
-            else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 31) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
+            if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 26) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
+            else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 26) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
         }
-        else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 21) + ' | ' + spaceFill("-", 8) + ' | - \n';
+        else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 26) + ' | ' + spaceFill("-", 8) + ' | - \n';
     }
     output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
     return output
@@ -278,10 +278,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         })
                     });
 
-                    let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-                    let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-                    let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-                    let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+                    const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+                    const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+                    const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+                    const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
                     backward.on('collect', () => {
                         page = Math.max(0, page - 10);
@@ -640,7 +640,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // as currency
             let clanname = args.slice(1).join(" ");
             if (!clanname) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
-            if (clanname.length > 30) return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
+            if (clanname.length > 25) return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
             if (hasUnicode(clanname)) return message.channel.send("❎ **| I'm sorry, clan name must not contain any unicode characters!**");
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
@@ -802,7 +802,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
                         let clan;
-                        if (perm && args[2]) clan = args[2];
+                        if (perm && args[2]) clan = args.slice(2).join(" ");
                         else {
                             if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                             if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
@@ -821,7 +821,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let member_index = memberlist.findIndex(member => member.id === message.author.id);
                             if (!perm && !memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
-                            message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${args[2]}\` clan's description` : "your clan's description"}?**`).then(msg => {
+                            message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${clan}\` clan's description` : "your clan's description"}?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
                                 let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
@@ -839,7 +839,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             console.log(err);
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
-                                        message.channel.send(`✅ **| ${message.author}, successfully cleared ${perm && args[2] ? `\`${args[2]}\` clan's description` : "your clan's description"}.**`)
+                                        message.channel.send(`✅ **| ${message.author}, successfully cleared ${perm && args[2] ? `\`${clan}\` clan's description` : "your clan's description"}.**`)
                                     })
                                 });
                                 confirm.on("end", () => {
@@ -1104,7 +1104,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 clanrole.delete("Clan disbanded").catch(console.error);
                                 let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                 clanres.member_list.forEach((member) => {
-                                    message.guild.members.cache.get(member.id).roles.remove(role, "Clan disbanded").catch(console.error)
+                                    message.guild.member(member.id).roles.remove(role, "Clan disbanded").catch(console.error)
                                 })
                             }
                             updateVal = {
@@ -2078,10 +2078,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             break
                                         }
                                         case "debuff": {
+                                            message.channel.send(`⬇️⬇️ **| \`${takeclan}\` has \`debuff\` powerup active!**`);
                                             givemultiplier /= 1.1;
                                             break
                                         }
                                         case "bomb": {
+                                            message.channel.send(`⬇️ **| \`${takeclan}\` has \`bomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
                                             if (!challengepass) givemultiplier /= 1.05;
                                             break
                                         }
@@ -2120,10 +2122,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                                 break
                                             }
                                             case "buff": {
+                                                message.channel.send(`⬆️⬆️ **| \`${giveclan}\` has \`buff\` powerup active!**`);
                                                 givemultiplier *= 1.2;
                                                 break
                                             }
                                             case "challenge": {
+                                                message.channel.send(`⬆️ **| \`${giveclan}\` has \`challenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
                                                 if (challengepass) givemultiplier *= 1.05;
                                                 break
                                             }
