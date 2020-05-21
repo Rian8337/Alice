@@ -206,7 +206,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     id = bg.id;
                                     break
                                 }
-                                if (!id) return message.channel.send("❎ **| I'm sorry, the background you have mentioned is invalid!**");
+                                if (!id) return message.channel.send(`❎ **| I'm sorry, the background you have mentioned (${type}) is invalid!**`);
                                 let owned_list = pictureConfig.backgrounds;
                                 if (!owned_list) owned_list = [];
                                 let owned = false;
@@ -298,7 +298,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length + 1} backgrounds: ${owned_list}.**`);
                                 break
                             }
-                            default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[1]}) is invalid! Accepted arguments are \`change\` and \`list\`.**`)
+                            default: return message.channel.send(`❎ **| I'm sorry, looks like your second argument (${args[1]}) is invalid! Accepted arguments are \`change\` and \`list\`.**`)
                         }
                         break
                     }
@@ -433,7 +433,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         });
                                         break
                                     }
-                                    default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[2]}) is invalid! Accepted arguments are \`change\` and \`view\`.**`)
+                                    default: return message.channel.send(`❎ **| I'm sorry, looks like your third argument (${args[2]}) is invalid! Accepted arguments are \`change\` and \`view\`.**`)
                                 }
                                 break
                             }
@@ -539,15 +539,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         });
                                         break
                                     }
-                                    default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[2]}) is invalid! Accepted arguments are \`change\` and \`view\`**`)
+                                    default: return message.channel.send(`❎ **| I'm sorry, looks like your third argument (${args[2]}) is invalid! Accepted arguments are \`change\` and \`view\`**`)
                                 }
                                 break
                             }
-                            default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[1]}) is invalid! Accepted arguments are \`bgcolor\` and \`textcolor\`.**`)
+                            default: return message.channel.send(`❎ **| I'm sorry, looks like your second argument (${args[1]}) is invalid! Accepted arguments are \`bgcolor\` and \`textcolor\`.**`)
                         }
                         break
                     }
-                    default: return message.channel.send(`❎ **| I'm sorry, looks like your argument (${args[0]}) is invalid! Accepted arguments are \`background\`, \`badges\`, and \`descriptionbox\`.**`)
+                    default: return message.channel.send(`❎ **| I'm sorry, looks like your first argument (${args[0]}) is invalid! Accepted arguments are \`background\`, \`badges\`, and \`descriptionbox\`.**`)
                 }
             })
         })
