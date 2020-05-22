@@ -129,188 +129,190 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-	if (message.author.bot) return;
-	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
-	let msgArray = message.content.split(/\s+/g);
-	let command = msgArray[0];
-	let args = msgArray.slice(1);
-	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
-		let images = [
-			"https://cdn.discordapp.com/attachments/440319362407333939/666825359198519326/unknown.gif",
-			"https://cdn.discordapp.com/attachments/316545691545501706/667287014152077322/unknown.gif",
-			"https://cdn.discordapp.com/attachments/635532651779981313/666825419298701325/unknown.gif",
-			"https://cdn.discordapp.com/attachments/635532651779981313/662844781327810560/unknown.gif",
-			"https://cdn.discordapp.com/attachments/635532651779981313/637868500580433921/unknown.gif"
-		];
-		const index = Math.floor(Math.random() * images.length);
-		message.channel.send({files: [images[index]]});
-	}
-	
-	// picture detector in #cute-no-lewd
-	if (message.channel.id === '686948895212961807') {
-		if (message.attachments.size > 1) message.delete().catch(console.error);
+	try {
+		if (message.author.bot) return;
+		message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
+		let msgArray = message.content.split(/\s+/g);
+		let command = msgArray[0];
+		let args = msgArray.slice(1);
+		if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
+			let images = [
+				"https://cdn.discordapp.com/attachments/440319362407333939/666825359198519326/unknown.gif",
+				"https://cdn.discordapp.com/attachments/316545691545501706/667287014152077322/unknown.gif",
+				"https://cdn.discordapp.com/attachments/635532651779981313/666825419298701325/unknown.gif",
+				"https://cdn.discordapp.com/attachments/635532651779981313/662844781327810560/unknown.gif",
+				"https://cdn.discordapp.com/attachments/635532651779981313/637868500580433921/unknown.gif"
+			];
+			const index = Math.floor(Math.random() * images.length);
+			message.channel.send({files: [images[index]]});
+		}
+		
+		// picture detector in #cute-no-lewd
+		if (message.channel.id === '686948895212961807') {
+			if (message.attachments.size > 1) message.delete().catch(console.error);
 
-		let images = [];
-		for (let i = 0; i < msgArray.length; i++) {
-			let part = msgArray[i];
-			let length = part.length;
-			if (!part.startsWith("http") && (part.indexOf("png", length - 3) === -1 && part.indexOf("jpg", length - 3) === -1 && part.indexOf("jpeg", length - 4) === -1 && part.indexOf("gif", length - 3) === -1)) continue;
-			try {
-				encodeURI(part)
-			} catch (e) {
-				continue
-			}
-			images.push(part)
-		}
-		if (images.length > 0 || message.attachments.size > 0) {
-			if (picture_cooldown.has(message.author.id)) {
-				client.commands.get("tempmute").run(client, message, [message.author.id, 600, `Please do not spam images in ${message.channel}!`])
-			}
-			else {
-				picture_cooldown.add(message.author.id);
-				setTimeout(() => {
-					picture_cooldown.delete(message.author.id)
-				}, 5000);
-			}
-			if (message.attachments.size <= 1) message.react("👍").then(() => message.react("👎").catch(console.error)).catch(console.error)
-		}
-	}
-	
-	// 8ball
-	if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
-		if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
-		let args = msgArray.slice(0);
-		let cmd = client.utils.get("response");
-		return cmd.run(client, message, args, maindb, alicedb)
-	}
-	
-	// osu! automatic recognition
-	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-		for (let i = 0; i < msgArray.length; i++) {
-			if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
-			let a = msgArray[i].split("/");
-			let id = parseInt(a[a.length - 1]);
-			if (isNaN(id)) continue;
-			if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map);
-			else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
-		}
-	}
-	
-	// YouTube link detection
-	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
-		for (let i = 0; i < msgArray.length; i++) {
-			let msg = msgArray[i];
-			if (!msg.startsWith("https://youtu.be/") && !msg.startsWith("https://youtube.com/watch?v=") && !msg.startsWith("https://www.youtube.com/watch?v=")) continue;
-			let video_id;
-			let a = msg.split("/");
-			if (msg.startsWith("https://youtu.be")) video_id = a[a.length - 1];
-			if (!video_id) {
-				let params = a[a.length - 1].split("?");
-				params = params[params.length - 1].split("&");
-				for (let i = 0; i < params.length; i++) {
-					let param = params[i];
-					if (!param.startsWith("v=")) continue;
-					video_id = param.slice(2);
-					break;
+			let images = [];
+			for (let i = 0; i < msgArray.length; i++) {
+				let part = msgArray[i];
+				let length = part.length;
+				if (!part.startsWith("http") && (part.indexOf("png", length - 3) === -1 && part.indexOf("jpg", length - 3) === -1 && part.indexOf("jpeg", length - 4) === -1 && part.indexOf("gif", length - 3) === -1)) continue;
+				try {
+					encodeURI(part)
+				} catch (e) {
+					continue
 				}
+				images.push(part)
 			}
-			if (!video_id) continue;
-			client.utils.get("youtube").run(client, message, video_id, current_map)
+			if (images.length > 0 || message.attachments.size > 0) {
+				if (picture_cooldown.has(message.author.id)) {
+					client.commands.get("tempmute").run(client, message, [message.author.id, 600, `Please do not spam images in ${message.channel}!`])
+				}
+				else {
+					picture_cooldown.add(message.author.id);
+					setTimeout(() => {
+						picture_cooldown.delete(message.author.id)
+					}, 5000);
+				}
+				if (message.attachments.size <= 1) message.react("👍").then(() => message.react("👎").catch(console.error)).catch(console.error)
+			}
 		}
-	}
-	
-	// picture log
-	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
-		let attachments = [];
-		for (const [, attachment] of message.attachments.entries()) {
-			let url = attachment.url;
-			let length = url.length;
-			if (url.indexOf("png", length - 3) === -1 && url.indexOf("jpg", length - 3) === -1 && url.indexOf("jpeg", length - 4) === -1 && url.indexOf("gif", length - 3) === -1) continue;
-			attachments.push(attachment)
+		
+		// 8ball
+		if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
+			if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
+			let args = msgArray.slice(0);
+			let cmd = client.utils.get("response");
+			return cmd.run(client, message, args, maindb, alicedb)
 		}
-		if (attachments.length === 0) return;
-		let embed = new Discord.MessageEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-			.setColor('#cb8900')
-			.setTimestamp(new Date())
-			.attachFiles(attachments)
-			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-			.addField("Channel", `${message.channel} | [Go to message](${message.url})`);
+		
+		// osu! automatic recognition
+		if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
+			for (let i = 0; i < msgArray.length; i++) {
+				if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
+				let a = msgArray[i].split("/");
+				let id = parseInt(a[a.length - 1]);
+				if (isNaN(id)) continue;
+				if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map);
+				else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
+			}
+		}
+		
+		// YouTube link detection
+		if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+			for (let i = 0; i < msgArray.length; i++) {
+				let msg = msgArray[i];
+				if (!msg.startsWith("https://youtu.be/") && !msg.startsWith("https://youtube.com/watch?v=") && !msg.startsWith("https://www.youtube.com/watch?v=")) continue;
+				let video_id;
+				let a = msg.split("/");
+				if (msg.startsWith("https://youtu.be")) video_id = a[a.length - 1];
+				if (!video_id) {
+					let params = a[a.length - 1].split("?");
+					params = params[params.length - 1].split("&");
+					for (let i = 0; i < params.length; i++) {
+						let param = params[i];
+						if (!param.startsWith("v=")) continue;
+						video_id = param.slice(2);
+						break;
+					}
+				}
+				if (!video_id) continue;
+				client.utils.get("youtube").run(client, message, video_id, current_map)
+			}
+		}
+		
+		// picture log
+		if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
+			let attachments = [];
+			for (const [, attachment] of message.attachments.entries()) {
+				let url = attachment.url;
+				let length = url.length;
+				if (url.indexOf("png", length - 3) === -1 && url.indexOf("jpg", length - 3) === -1 && url.indexOf("jpeg", length - 4) === -1 && url.indexOf("gif", length - 3) === -1) continue;
+				attachments.push(attachment)
+			}
+			if (attachments.length === 0) return;
+			let embed = new Discord.MessageEmbed()
+				.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
+				.setColor('#cb8900')
+				.setTimestamp(new Date())
+				.attachFiles(attachments)
+				.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+				.addField("Channel", `${message.channel} | [Go to message](${message.url})`);
 
-		if (message.content) embed.addField("Content", message.content);
-		client.channels.cache.get("684630015538626570").send({embed: embed});
-	}
-	
-	// mention log
-	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
-		let embed = new Discord.MessageEmbed()
-			.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-			.setColor("#00cb16")
-			.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-			.setTimestamp(new Date())
-			.addField("Channel", `${message.channel} | [Go to message](${message.url})`)
-			.addField("Content", message.content.substring(0, 1024));
+			if (message.content) embed.addField("Content", message.content);
+			client.channels.cache.get("684630015538626570").send({embed: embed});
+		}
+		
+		// mention log
+		if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
+			let embed = new Discord.MessageEmbed()
+				.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
+				.setColor("#00cb16")
+				.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
+				.setTimestamp(new Date())
+				.addField("Channel", `${message.channel} | [Go to message](${message.url})`)
+				.addField("Content", message.content.substring(0, 1024));
 
-		client.channels.cache.get("683504788272578577").send({embed: embed})
-	}
-	
-	// self-talking (for fun lol)
-	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
-	
-	// commands
-	if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
-		maintenance_reason = args.join(" ");
-		if (!maintenance_reason) maintenance_reason = 'Unknown';
-		maintenance = !maintenance;
-		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
-		if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
-		else client.user.setActivity("a!help").catch(console.error)
-	}
-	
-	if (message.content.includes("m.mugzone.net/chart/")) {
-		let cmd = client.commands.get("malodychart");
-		cmd.run(client, message, args)
-	}
-	
-	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
-		let mainbot = message.guild.members.cache.get("391268244796997643");
-		if (!mainbot) return;
-		let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
-		if (cmd && mainbot.user.presence.status == 'offline') {
-			if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
-			message.channel.startTyping().catch(console.error);
-			setTimeout(() => {
-				message.channel.stopTyping(true)
-			}, 5000);
-			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-			if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
-			else console.log(`${message.author.tag} (DM): ${message.content}`);
-			cmd.run(client, message, args, maindb, alicedb, current_map);
-			//cd.add(message.author.id);
-			//setTimeout(() => {
-			//	cd.delete(message.author.id)
-			//}, 5000)
+			client.channels.cache.get("683504788272578577").send({embed: embed})
 		}
-	}
-	
-	if (message.content.startsWith(config.prefix)) {
-		let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
-		if (cmd) {
-			if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
-			message.channel.startTyping().catch(console.error);
-			setTimeout(() => {
-				message.channel.stopTyping(true)
-			}, 5000);
-			//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-			if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
-			else console.log(`${message.author.tag} (DM): ${message.content}`);
-			cmd.run(client, message, args, maindb, alicedb, current_map);
-			//cd.add(message.author.id);
-			//setTimeout(() => {
-			//	cd.delete(message.author.id)
-			//}, 5000)
+		
+		// self-talking (for fun lol)
+		if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
+		
+		// commands
+		if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
+			maintenance_reason = args.join(" ");
+			if (!maintenance_reason) maintenance_reason = 'Unknown';
+			maintenance = !maintenance;
+			message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
+			if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
+			else client.user.setActivity("a!help").catch(console.error)
 		}
-	}
+		
+		if (message.content.includes("m.mugzone.net/chart/")) {
+			let cmd = client.commands.get("malodychart");
+			cmd.run(client, message, args)
+		}
+		
+		if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
+			let mainbot = message.guild.members.cache.get("391268244796997643");
+			if (!mainbot) return;
+			let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
+			if (cmd && mainbot.user.presence.status == 'offline') {
+				if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
+				message.channel.startTyping().catch(console.error);
+				setTimeout(() => {
+					message.channel.stopTyping(true)
+				}, 5000);
+				//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+				if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
+				else console.log(`${message.author.tag} (DM): ${message.content}`);
+				cmd.run(client, message, args, maindb, alicedb, current_map);
+				//cd.add(message.author.id);
+				//setTimeout(() => {
+				//	cd.delete(message.author.id)
+				//}, 5000)
+			}
+		}
+		
+		if (message.content.startsWith(config.prefix)) {
+			let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
+			if (cmd) {
+				if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
+				message.channel.startTyping().catch(console.error);
+				setTimeout(() => {
+					message.channel.stopTyping(true)
+				}, 5000);
+				//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+				if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
+				else console.log(`${message.author.tag} (DM): ${message.content}`);
+				cmd.run(client, message, args, maindb, alicedb, current_map);
+				//cd.add(message.author.id);
+				//setTimeout(() => {
+				//	cd.delete(message.author.id)
+				//}, 5000)
+			}
+		}
+	} catch (e) {}
 });
 
 // welcome message for international server
