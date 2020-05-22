@@ -423,7 +423,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 // message logging
 client.on("messageUpdate", (oldMessage, newMessage) => {
-	if (oldMessage.author.bot) return;
+	if (oldMessage.author.bot || oldMessage.channel instanceof Discord.DMChannel) return;
 	if (oldMessage.content == newMessage.content) return;
 	let logchannel = oldMessage.guild.channels.cache.find((c) => c.name === config.log_channel);
 	if (!logchannel) return;
@@ -440,7 +440,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 });
 
 client.on("messageDelete", message => {
-	if (message.author.bot) return;
+	if (message.author.bot || message.channel instanceof Discord.DMChannel) return;
 	let logchannel;
 	if (message.guild.id == '316545691545501706') {
 		if (message.attachments.size == 0) return;
