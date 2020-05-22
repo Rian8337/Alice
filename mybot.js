@@ -2,13 +2,11 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
 const fs = require("fs");
-const http = require("http");
 const mongodb = require('mongodb');
 require("dotenv").config();
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
-const droidapikey = process.env.DROID_API_KEY;
 
 let maintenance = false;
 let maintenance_reason = '';
