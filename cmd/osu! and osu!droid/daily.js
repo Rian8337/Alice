@@ -486,7 +486,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
                         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]})${dailyres[0].link[1] ? `- [OneDrive](${dailyres[0].link[1]})` : ""}`)
+                        .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres[0].link[0]})${dailyres[0].link[1] ? `- [OneDrive](${dailyres[0].link[1]})` : ""}`)
                         .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
                         .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars.toString())))} ${parseFloat(star.droid_stars.toString()).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars.toString())))} ${parseFloat(star.pc_stars.toString()).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
@@ -548,7 +548,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: osudroid.mods.droid_to_PC(mod)});
                     let npp = osudroid.ppv2({
                         stars: star.droid_stars,
                         combo: combo,
@@ -790,7 +790,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                    .setDescription(`****[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})****${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${dailyres[0].link[0]})${dailyres[0].link[1] ? `- [OneDrive](${dailyres[0].link[1]})` : ""}`)
+                    .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres[0].link[0]})${dailyres[0].link[1] ? `- [OneDrive](${dailyres[0].link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
                     .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars.toString())))} ${parseFloat(star.droid_stars.toString()).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars.toString())))} ${parseFloat(star.pc_stars.toString()).toFixed(2)} PC stars`, `**${dailyres[0].points == 1?"Point":"Points"}**: ${dailyres[0].points} ${dailyres[0].points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
@@ -1088,7 +1088,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         }
                         const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
-                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: osudroid.mods.droid_to_PC(mod)});
                         let npp = osudroid.ppv2({
                             stars: star.droid_stars,
                             combo: combo,
