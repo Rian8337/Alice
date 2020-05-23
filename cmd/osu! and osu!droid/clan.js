@@ -393,7 +393,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let time = timeConvert(oldcooldown);
                         return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                     }
-                    let uid = joinres.uid;
                     query = {name: userres.clan};
                     clandb.findOne(query, (err, clanres) => {
                         if (err) {
@@ -424,7 +423,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
                                 memberlist.push({
                                     id: toaccept.id,
-                                    uid: uid,
                                     hasPermission: false,
                                     battle_cooldown: curtime + 86400 * 4
                                 });
@@ -650,7 +648,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (userres.clan) return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
-                let uid = userres.uid;
                 pointdb.findOne(query, (err, pointres) => {
                     if (err) {
                         console.log(err);
@@ -758,7 +755,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     member_list: [
                                         {
                                             id: message.author.id,
-                                            uid: uid,
                                             hasPermission: true,
                                             battle_cooldown: 0
                                         }
