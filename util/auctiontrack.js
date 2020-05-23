@@ -5,7 +5,7 @@ function capitalizeString(string = "") {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-function retrieveAuction(res, current_time, i, cb) {
+function retrieveAuction(res, i, cb) {
     if (!res[i]) return cb(null, true);
     cb(res[i])
 }
@@ -40,7 +40,7 @@ module.exports.run = (client, maindb, alicedb) => {
         if (err) return console.log(err);
         if (auctionres.length === 0) return;
         let i = 0;
-        retrieveAuction(auctionres, curtime, i, function checkAuction(auction, stopSign = false) {
+        retrieveAuction(auctionres, i, function checkAuction(auction, stopSign = false) {
             if (stopSign || curtime < auction.expirydate) return;
             let powerup = auction.powerup;
             let amount = auction.amount;
@@ -52,11 +52,11 @@ module.exports.run = (client, maindb, alicedb) => {
                 clandb.findOne({name: auction.auctioneer}, (err, clanres) => {
                     if (err) {
                         console.log(err);
-                        return retrieveAuction(auctionres, curtime, i, checkAuction)
+                        return retrieveAuction(auctionres, i, checkAuction)
                     }
                     if (!clanres) {
                         ++i;
-                        return retrieveAuction(auctionres, curtime, i, checkAuction)
+                        return retrieveAuction(auctionres, i, checkAuction)
                     }
                     let powerups = clanres.powerups;
                     let powerup_index = powerups.findIndex(pow => pow.name === powerup);
@@ -65,7 +65,7 @@ module.exports.run = (client, maindb, alicedb) => {
                     auctiondb.deleteOne({auctioneer: auction.auctioneer}, err => {
                         if (err) {
                             console.log(err);
-                            return retrieveAuction(auctionres, curtime, i, checkAuction)
+                            return retrieveAuction(auctionres, i, checkAuction)
                         }
                     });
                     updateVal = {
@@ -76,7 +76,7 @@ module.exports.run = (client, maindb, alicedb) => {
                     clandb.updateOne({name: auction.auctioneer}, updateVal, err => {
                         if (err) {
                             console.log(err);
-                            return retrieveAuction(auctionres, curtime, i, checkAuction)
+                            return retrieveAuction(auctionres, i, checkAuction)
                         }
                         embed.setColor('#cb3438')
                             .setTitle("Auction Information")
@@ -85,7 +85,7 @@ module.exports.run = (client, maindb, alicedb) => {
 
                         auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are no bids put!**`, {embed: embed});
                         ++i;
-                        retrieveAuction(auctionres, curtime, i, checkAuction)
+                        retrieveAuction(auctionres, i, checkAuction)
                     })
                 });
                 return
@@ -129,7 +129,7 @@ module.exports.run = (client, maindb, alicedb) => {
                                 .addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are bids put, however all bidders were disbanded!**`, {embed: embed});
                             ++i;
-                            retrieveAuction(auctionres, curtime, i, checkAuction)
+                            retrieveAuction(auctionres, i, checkAuction)
                         })
                     });
                     return
@@ -171,7 +171,7 @@ module.exports.run = (client, maindb, alicedb) => {
 
                     auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
                     ++i;
-                    retrieveAuction(auctionres, curtime, i, checkAuction)
+                    retrieveAuction(auctionres, i, checkAuction)
                 })
             })
         })
