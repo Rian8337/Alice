@@ -23,8 +23,7 @@ async function fetchScores(hash, page) {
     })
 }
 
-module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.author != null) return;
+module.exports.run = (client, maindb, alicedb) => {
     let binddb = maindb.collection("userbind");
     let pointdb = alicedb.collection("playerpoints");
     let dailydb = alicedb.collection("dailychallenge");
@@ -165,6 +164,20 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             let username = userres.username;
             pointdb.findOne({uid: bonus_winner_uid}, (err, res) => {
                 if (err) return console.log("Cannot access database");
+                if (userres.clan) {
+                    clandb.findOne({name: userres.clan}, (err, clanres) => {
+                        if (err) return console.log(err);
+                        let updateVal = {
+                            $set: {
+                                power: 50 + clanres.power
+                            }
+                        };
+                        clandb.updateOne({name: userres.clan}, updateVal, err => {
+                            if (err) return console.log(err);
+                            console.log("Clan data updated")
+                        })
+                    })
+                }
                 if (res) {
                     let updateVal = {
                         $set: {

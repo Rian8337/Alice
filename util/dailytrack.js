@@ -23,11 +23,11 @@ async function fetchScores(hash, page) {
     })
 }
 
-module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
-    if (message.author != null || message.channel instanceof Discord.DMChannel) return;
-    let binddb = maindb.collection("userbind");
-    let dailydb = alicedb.collection("dailychallenge");
-    let pointdb = alicedb.collection("playerpoints");
+module.exports.run = (client, maindb, alicedb) => {
+    const clandb = maindb.collection("clandb");
+    const binddb = maindb.collection("userbind");
+    const dailydb = alicedb.collection("dailychallenge");
+    const pointdb = alicedb.collection("playerpoints");
     let query = {status: "ongoing"};
     dailydb.findOne(query, async (err, dailyres) => {
         if (err) return console.log("Cannot access database");
@@ -169,6 +169,20 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
             let username = userres.username;
             pointdb.findOne({uid: bonus_winner_uid}, (err, res) => {
                 if (err) return console.log("Cannot access database");
+                if (userres.clan) {
+                    clandb.findOne({name: userres.clan}, (err, clanres) => {
+                        if (err) return console.log(err);
+                        let updateVal = {
+                            $set: {
+                                power: 15 + clanres.power
+                            }
+                        };
+                        clandb.updateOne({name: userres.clan}, updateVal, err => {
+                            if (err) return console.log(err);
+                            console.log("Clan data updated")
+                        })
+                    })
+                }
                 if (res) {
                     let updateVal = {
                         $set: {
