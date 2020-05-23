@@ -1509,6 +1509,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         });
                                         updateVal = {
                                             $set: {
+                                                auctioneer: newname
+                                            }
+                                        };
+                                        auctiondb.updateMany({auctioneer: clan}, updateVal, err => {
+                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
+                                        });
+                                        updateVal = {
+                                            $set: {
                                                 alicecoins: alicecoins - 2500
                                             }
                                         };
