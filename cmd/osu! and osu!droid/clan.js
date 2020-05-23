@@ -93,7 +93,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const auctiondb = alicedb.collection("auction");
     const coin = client.emojis.cache.get("669532330980802561");
     const curtime = Math.floor(Date.now() / 1000);
-    const perm = isEligible(message.member) === -1;
+    const perm = message.isOwner || isEligible(message.member) === -1;
     let query = {};
     let updateVal;
     let insertVal;
