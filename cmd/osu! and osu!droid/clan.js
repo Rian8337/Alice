@@ -853,7 +853,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 
                 case "edit": {
-                    let new_desc = args.slice(2).join(" ");
+                    const cmd_length = message.content.split(" ").slice(0, 3).join(" ").length + 1;
+                    let new_desc = message.content.substring(cmd_length);
                     if (!new_desc) return message.channel.send("❎ **| Hey, please enter a new description!**");
 
                     query = {discordid: message.author.id};
