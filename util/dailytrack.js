@@ -156,7 +156,7 @@ module.exports.run = (client, maindb, alicedb) => {
             console.log("Challenge status updated")
         });
         let nextchallenge = "d" + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) + 1);
-        client.utils.get("dailyautostart").run(client, message, [nextchallenge], maindb, alicedb);
+        client.utils.get("dailyautostart").run(client, [nextchallenge], alicedb);
 
         let entries = await fetchScores(hash, 0);
         if (!entries) return;

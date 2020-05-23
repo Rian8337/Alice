@@ -10,8 +10,7 @@ function timeConvert(num) {
     return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
 }
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.author != null) return;
+module.exports.run = (client, args, alicedb) => {
     let channel = client.channels.cache.get("546135349533868072");
     let challengeid = args[0];
     if (!challengeid) return channel.send("❎ **| Hey, I don't know which daily challenge to start!**");
