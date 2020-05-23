@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 
-module.exports.run = (client, message = "", args = {}, maindb) => {
-	if (message.channel instanceof Discord.DMChannel || message.author != null) return;
+module.exports.run = (client, maindb) => {
 	let trackdb = maindb.collection("tracking");
 	trackdb.find({}).toArray(function(err, res) {
 		if (err) {
