@@ -5,16 +5,25 @@ function retrieveClan(clans, i, cb) {
     cb(clans[i])
 }
 
-async function getRank(memberlist, i, cb) {
+function getRank(binddb, memberlist, i, cb) {
     if (!memberlist[i]) return cb(null, true);
-    let uid = memberlist[i].uid;
-    const player = await new osudroid.PlayerInfo().get({uid: uid});
-    if (!player.name) return cb();
-    cb(player.rank)
+    let rank = Number.POSITIVE_INFINITY;
+    const id = memberlist[i].id;
+    binddb.findOne({discordid: id}, async (err, res) => {
+        if (err) {
+            console.log(err);
+            return cb(null)
+        }
+        const bind_pool = res.previous_bind;
+        for await (const uid of bind_pool) {
+            const player = await new osudroid.PlayerInfo().get({uid: uid});
+            rank = Math.min(rank, player.rank)
+        }
+        cb(rank)
+    })
 }
 
-module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.author != null) return;
+module.exports.run = (client, maindb, alicedb) => {
     console.log("Retrieving clan data");
     const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
@@ -25,7 +34,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
         if (err) return console.log(err);
         if (clans.length === 0) return;
         let count = 0;
-        retrieveClan(clans, count, async function checkClan(clan, stopSign = false) {
+        retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
             if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
             ++count;
             let member_list = clan.member_list;
@@ -34,7 +43,7 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
 
             let i = 0;
             let rank_list = [];
-            await getRank(member_list, i, async function checkRank(player_rank, stopFlag = false) {
+            getRank(binddb, member_list, i, function checkRank(player_rank, stopFlag = false) {
                 if (stopFlag) {
                     let total_cost = 200;
                     for (let rank of rank_list) total_cost += 20 + Math.floor(480 - 34.74 * Math.log(rank));
@@ -130,12 +139,12 @@ module.exports.run = (client, message = "", args = {}, maindb, alicedb) => {
                             })
                         }
                     });
-                    return retrieveClan(clans, count, await checkClan)
+                    return retrieveClan(clans, count, checkClan)
                 }
                 console.log(i);
                 rank_list.push(player_rank);
                 ++i;
-                await getRank(member_list, i, await checkRank)
+                getRank(binddb, member_list, i, checkRank)
             })
         })
     })
