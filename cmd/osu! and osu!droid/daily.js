@@ -508,7 +508,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres[0].uid;
                 let username = userres[0].username;
                 let clan = userres[0].clan;
-                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                const player = await new osudroid.PlayerInfo().get({uid: uid});
                 if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
                 if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 let rplay = player.recent_plays;
@@ -533,22 +533,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let combo;
                     let rank;
                     for (let i = 0; i < rplay.length; i++) {
-                        if (rplay[i].hash == hash) {
-                            score = rplay[i].score;
-                            acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
-                            mod = rplay[i].mode;
-                            miss = rplay[i].miss;
-                            combo = rplay[i].combo;
-                            rank = rplay[i].mark;
-                            found = true;
-                            break
-                        }
+                        if (rplay[i].hash !== hash) continue;
+                        score = rplay[i].score;
+                        acc = rplay[i].accuracy;
+                        mod = rplay[i].mods;
+                        miss = rplay[i].miss;
+                        combo = rplay[i].combo;
+                        rank = rplay[i].rank;
+                        found = true;
+                        break
                     }
-                        if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
-                        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+                    if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: osudroid.mods.droid_to_PC(mod)});
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                     let npp = osudroid.ppv2({
                         stars: star.droid_stars,
                         combo: combo,
@@ -627,7 +626,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "mod": {
-                            if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
+                            if (osudroid.mods.modbits_from_string(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
                             break
                         }
                         case "rank": {
@@ -660,7 +659,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                             }
-                            if (!bonuscheck && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                            if (!bonuscheck && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) != osudroid.mods.modbits_from_string(constrain)))) pass = false;
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                             if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
                             if (!found) {
@@ -1032,7 +1031,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres[0].uid;
                 let username = userres[0].username;
                 let clan = userres[0].clan;
-                const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+                const player = await new osudroid.PlayerInfo().get({uid: uid});
 
                 if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
                 if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
@@ -1056,16 +1055,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let combo;
                     let rank;
                     for (let i = 0; i < rplay.length; i++) {
-                        if (rplay[i].hash == hash) {
-                            score = rplay[i].score;
-                            acc = parseFloat((rplay[i].accuracy / 1000).toFixed(2));
-                            mod = rplay[i].mode;
-                            miss = rplay[i].miss;
-                            combo = rplay[i].combo;
-                            rank = rplay[i].mark;
-                            found = true;
-                            break
-                        }
+                        if (rplay[i].hash !== hash) continue;
+                        score = rplay[i].score;
+                        acc = rplay[i].accuracy;
+                        mod = rplay[i].mods;
+                        miss = rplay[i].miss;
+                        combo = rplay[i].combo;
+                        rank = rplay[i].rank;
+                        found = true;
+                        break
                     }
                     if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
                     pointdb.find({discordid: message.author.id}).toArray(async (err, playerres) => {
@@ -1088,7 +1086,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         }
                         const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
-                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: osudroid.mods.droid_to_PC(mod)});
+                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                         let npp = osudroid.ppv2({
                             stars: star.droid_stars,
                             combo: combo,
@@ -1145,7 +1143,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                         }
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                        if (!found && (mod.includes("n") || mod.includes("e") || mod.includes("t") || (constrain.length > 0 && osudroid.mods.droid_to_modbits(mod) - 4 != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                        if (!found && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) != osudroid.mods.modbits_from_string(constrain)))) pass = false;
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                         if (!found) points += dailyres[0].points;
 
@@ -1174,7 +1172,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "mod": {
-                                    if (osudroid.mods.droid_to_modbits(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
+                                    if (osudroid.mods.modbits_from_string(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
