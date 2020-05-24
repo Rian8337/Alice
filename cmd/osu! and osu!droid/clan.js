@@ -268,7 +268,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!clanres[page*20]) return message.channel.send("Nah we don't have that much clan :p");
+                if (!clanres[(page - 1)*20]) return message.channel.send("❎ **| Nah, we don't have that much clan :p**");
                 let output = editLeaderboard(clanres, page);
                 message.channel.send('```c\n' + output + '```').then(msg => {
                     msg.react("⏮️").then(() => {
