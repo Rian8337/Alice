@@ -14,8 +14,8 @@ module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, please specify a match ID!**");
-	let mapid = args[1];
-	if (!mapid) return message.channel.send("❎ **| Hey, please specify a map ID!**");
+	let mapid = parseInt(args[1]);
+	if (isNaN(mapid)) return message.channel.send("❎ **| Hey, please specify a valid map ID!**");
 	let matchdb = maindb.collection("matchinfo");
 	let mapdb = maindb.collection("mapinfo");
 	let query = { matchid: id };
