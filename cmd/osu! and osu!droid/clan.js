@@ -43,7 +43,7 @@ function editMember(clanres, page, rolecheck, footer, index) {
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
-        memberstring += `${i+1}. <@${list[i].id}> (${list[i].id}) - ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n`
+        memberstring += `**${i+1}. <@${list[i].id}> (#${list[i].rank})**\n**Discord ID**: ${list[i].id}\n**Uid**: ${list[i].uid}**\n**Role**: ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n\n`
     }
     embed.setDescription(memberstring);
     return embed
@@ -2646,7 +2646,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             });
 
                             back.on('collect', () => {
-                                if (page === 1) page = Math.floor(auctionres.length / 5);
+                                if (page === 1) page = Math.ceil(auctionres.length / 5);
                                 else --page;
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, rolecheck, footer, index);
@@ -2654,7 +2654,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             });
 
                             next.on('collect', () => {
-                                if (page === Math.floor(auctionres.length / 5)) page = 1;
+                                if (page === Math.ceil(auctionres.length / 5)) page = 1;
                                 else ++page;
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, rolecheck, footer, index);
@@ -2662,8 +2662,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             });
 
                             forward.on('collect', () => {
-                                if (page === Math.floor(auctionres.length / 5)) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                                else page = Math.min(page + 10, Math.floor(auctionres.length / 5));
+                                if (page === Math.ceil(auctionres.length / 5)) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                else page = Math.min(page + 10, Math.ceil(auctionres.length / 5));
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, rolecheck, footer, index);
                                 msg.edit({embed: embed}).catch(console.error)
