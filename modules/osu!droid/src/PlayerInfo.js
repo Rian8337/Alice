@@ -84,7 +84,7 @@ class PlayerInfo {
      */
     get(params = {}) {
         return new Promise(resolve => {
-            let uid = params.uid;
+            let uid = this.uid = parseInt(params.uid);
             let username = params.username;
             if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
             let options = {
@@ -118,7 +118,6 @@ class PlayerInfo {
                         this.error = true;
                         return resolve(this);
                     }
-                    uid = headerres[1];
                     let name = headerres[2];
                     let total_score = parseInt(headerres[3]);
                     let play_count = parseInt(headerres[4]);
