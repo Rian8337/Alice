@@ -182,8 +182,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (res) message.channel.send(`✅ **| ${message.author}, you have ${coin}\`${res.alicecoins}\` Alice coins.**`);
-                else message.channel.send(`✅ **| ${message.author}, you have ${coin}\`0\` Alice coins.**`)
+                if (res) message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`${res.alicecoins}\` Alice coins.**`);
+                else message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`0\` Alice coins.**`)
             });
             break
         }
