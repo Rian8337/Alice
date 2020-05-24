@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
+const osudroid = require('osu-droid');
 const cd = new Set();
 
 function capitalizeString(string = "") {
@@ -366,13 +367,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             query = {discordid: message.author.id};
-            binddb.findOne(query, (err, userres) => {
+            binddb.findOne(query, async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                const uid = userres.uid;
+                const player = await new osudroid.PlayerInfo().get({uid: uid});
                 query = {discordid: toaccept.id};
                 binddb.findOne(query, (err, joinres) => {
                     if (err) {
@@ -423,6 +426,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
                                 memberlist.push({
                                     id: toaccept.id,
+                                    uid: uid,
+                                    rank: player.rank,
                                     hasPermission: false,
                                     battle_cooldown: curtime + 86400 * 4
                                 });
@@ -641,13 +646,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (clanname.length > 25) return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
             if (hasUnicode(clanname)) return message.channel.send("❎ **| I'm sorry, clan name must not contain any unicode characters!**");
             query = {discordid: message.author.id};
-            binddb.findOne(query, (err, userres) => {
+            binddb.findOne(query, async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (userres.clan) return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
+                const uid = userres.uid;
+                const player = await new osudroid.PlayerInfo().get({uid: uid});
                 pointdb.findOne(query, (err, pointres) => {
                     if (err) {
                         console.log(err);
@@ -749,12 +756,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                             name: 'bomb',
                                             amount: 0
                                         }
-
                                     ],
                                     active_powerups: [],
                                     member_list: [
                                         {
                                             id: message.author.id,
+                                            uid: uid,
+                                            rank: player.rank,
                                             hasPermission: true,
                                             battle_cooldown: 0
                                         }
