@@ -43,7 +43,7 @@ function editMember(clanres, page, rolecheck, footer, index) {
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
-        memberstring += `**${i+1}. <@${list[i].id}> (#${list[i].rank})**\n**Discord ID**: ${list[i].id}\n**Uid**: ${list[i].uid}**\n**Role**: ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n\n`
+        memberstring += `**${i+1}. <@${list[i].id}> (#${list[i].rank})**\n**Discord ID**: ${list[i].id}\n**Uid**: ${list[i].uid}\n**Role**: ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n\n`
     }
     embed.setDescription(memberstring);
     return embed
