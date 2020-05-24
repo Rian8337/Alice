@@ -170,7 +170,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             break
         }
         case "view": {
-            query = {discordid: message.author.id};
+            let id = message.author.id;
+            if (args[1]) {
+                id = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
+                if (!id) return message.channel.send("❎ **| Hey, please enter a valid user to view!**");
+                id = id.id
+            }
+            query = {discordid: id};
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
@@ -188,7 +194,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "coins",
     description: "Main command for Alice coins.",
-    usage: "coins claim\ncoins transfer <user>\ncoins view",
-    detail: "`user`: User to transfer [UserResolvable (mention or user ID)]",
+    usage: "coins claim\ncoins transfer <user>\ncoins view [user]",
+    detail: "`user`: User to transfer or view [UserResolvable (mention or user ID)]",
     permission: "None"
 };
