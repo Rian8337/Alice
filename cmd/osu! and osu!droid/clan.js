@@ -33,7 +33,7 @@ function timeConvert(num) {
 
 function editMember(clanres, page, rolecheck, footer, index) {
     let embed = new Discord.MessageEmbed()
-        .setTitle(`${clanres.name} Members (Page ${page}/4)`)
+        .setTitle(`${clanres.name} Members (Page ${page}/5)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
     
@@ -65,7 +65,7 @@ function editLeaderboard(res, page) {
         }
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 26) + ' | ' + spaceFill("-", 8) + ' | - \n';
     }
-    output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
+    output += "Current page: " + (page + 1) + "/" + (Math.ceil(res.length / 20));
     return output
 }
 
@@ -217,7 +217,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         back.on('collect', () => {
-                            if (page === 1) page = 4;
+                            if (page === 1) page = 5;
                             else page--;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index);
@@ -225,7 +225,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         next.on('collect', () => {
-                            if (page === 4) page = 1;
+                            if (page === 5) page = 1;
                             else page++;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index);
@@ -233,8 +233,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
 
                         forward.on('collect', () => {
-                            if (page === 4) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            else page = 4;
+                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            else page = 5;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index);
                             msg.edit({embed: embed}).catch(console.error)
@@ -299,7 +299,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     next.on('collect', () => {
-                        if ((page + 1) * 20 >= clanres.length) page = 0;
+                        if (page * 20 >= clanres.length) page = 0;
                         else page++;
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
