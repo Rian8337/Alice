@@ -1622,6 +1622,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     // integer color format
                     let color = args[2];
                     if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
+                    // restrict reserved role color for admin/mod/helper/ref
+                    if (["#3498DB", "#9543BA", "#FFD78C", "#4C6876"].includes(color)) return message.channel.send("❎ **| I'm sorry, you cannot change your role color into the same role color as referees and staff members!**");
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
