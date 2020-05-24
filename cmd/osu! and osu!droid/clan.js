@@ -58,14 +58,14 @@ function spaceFill(s, l) {
 
 function editLeaderboard(res, page) {
     let output = '#   | Clan Name                 | Members | Power\n';
-    for (let i = page * 20; i < page * 20 + 20; i++) {
+    for (let i = 20 * (page - 1); i < (page - 1) * 20 + 20; i++) {
         if (res[i]) {
             if (res[i].power && res[i].name) output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 26) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
             else output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].name, 26) + ' | ' + spaceFill(res[i].member_list.length.toLocaleString(), 8) + ' | ' + res[i].power.toLocaleString() + '\n';
         }
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 26) + ' | ' + spaceFill("-", 8) + ' | - \n';
     }
-    output += "Current page: " + (page + 1) + "/" + (Math.ceil(res.length / 20));
+    output += "Current page: " + page + "/" + (Math.ceil(res.length / 20));
     return output
 }
 
@@ -284,14 +284,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
                     backward.on('collect', () => {
-                        page = Math.max(0, page - 10);
+                        page = Math.max(1, page - 10);
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
-                        if (page === 0) page = Math.floor(clanres.length / 20);
+                        if (page === 1) page = Math.ceil(clanres.length / 20);
                         else page--;
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
@@ -307,7 +307,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     forward.on('collect', () => {
-                        page = Math.min(page + 10, Math.floor(clanres.length / 20));
+                        page = Math.min(page + 10, Math.ceil(clanres.length / 20));
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
