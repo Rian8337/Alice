@@ -100,6 +100,10 @@ class MapStats {
                     stats.speed_multiplier = 1.39;
                 }
 
+                if (stats.mods.includes("RE")) {
+                    od_ar_hp_multiplier *= 0.5;
+                }
+
                 // CS and OD work differently in droid, therefore it
                 // needs to be computed regardless of map-changing mods
                 // and od_ar_hp_multiplier
@@ -137,7 +141,9 @@ class MapStats {
                         stats.droid_mods -= mods.e;
                         --stats.cs;
                     }
-                    stats.cs -= 4;
+                    if (!stats.mods.includes("SC")) {
+                        stats.cs -= 4;
+                    }
                     stats.cs = Math.min(10, stats.cs);
                 }
 
@@ -147,6 +153,13 @@ class MapStats {
                 }
 
                 if (stats.ar !== undefined) {
+                    if (stats.mods.includes("RE")) {
+                        if (stats.droid_mods & mods.d) {
+                            --stats.ar;
+                        } else {
+                            stats.ar -= 0.5;
+                        }
+                    }
                     stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
                 }
                 break
