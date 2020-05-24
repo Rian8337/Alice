@@ -118,20 +118,14 @@ class PlayerInfo {
                         this.error = true;
                         return resolve(this);
                     }
-                    let name = headerres[2];
-                    let total_score = parseInt(headerres[3]);
-                    let play_count = parseInt(headerres[4]);
-                    let email = headerres[6];
-                    let rank = obj.rank;
-                    let acc = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
+                    this.uid = parseInt(headerres[1]);
+                    this.name = headerres[2];
+                    this.score = parseInt(headerres[3]);
+                    this.play_count = parseInt(headerres[4]);
+                    this.email = headerres[6];
+                    this.rank = obj.rank;
+                    this.accuracy = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
                     let recent_plays = obj.recent ? obj.recent : [];
-                    this.uid = uid;
-                    this.name = name;
-                    this.score = total_score;
-                    this.email = email;
-                    this.play_count = play_count;
-                    this.accuracy = acc;
-                    this.rank = rank;
 
                     for (let play of recent_plays) {
                         this.recent_plays.push(
