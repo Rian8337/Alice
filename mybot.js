@@ -92,6 +92,10 @@ client.on("ready", () => {
 			client.utils.get("auctiontrack").run(client, maindb, alicedb)
 		}
 	}, 600000);
+	
+	setInterval(() => {
+		if (!maintenance) client.utils.get("clanrankupdate").run(maindb)
+	}, 1200000);
 
 	// Mudae role assignment reaction-based on droid cafe
 	let guild = client.guilds.cache.get("635532651029332000");
