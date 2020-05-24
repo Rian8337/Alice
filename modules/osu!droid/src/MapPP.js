@@ -260,13 +260,11 @@ class MapPP {
         let real_acc = accuracy;
         switch (score_version) {
             case 1:
-                let nspinners = nobjects - nsliders - ncircles;
-                real_acc = new Accuracy({
-                    n300: Math.max(0, n300 - nsliders - nspinners),
-                    n100: n100,
-                    n50: n50,
-                    nmiss: nmiss
-                }).value();
+                if (ncircles > 0) {
+                    real_acc = ((n300 - (nobjects - ncircles)) * 6 + n100 * 2 + n50) / (ncircles * 6);
+                } else {
+                    real_acc = 0;
+                }
                 real_acc = Math.max(0.0, real_acc);
                 break;
             case 2:
