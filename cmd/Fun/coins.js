@@ -35,7 +35,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     let streak = 1;
-                    let daily = 50;
+                    let daily = 100;
                     let streakcomplete = false;
                     if (dailyres) {
                         streak += dailyres.streak;
@@ -47,7 +47,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (timelimit <= -86400) streak = 1;
                         if (streak === 5) {
                             streakcomplete = true;
-                            daily += 100;
+                            daily += 200;
                             streak = 1
                         }
                         let totalcoins = dailyres.alicecoins + daily;
