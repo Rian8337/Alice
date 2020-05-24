@@ -1922,6 +1922,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                     break
                 }
+
+
+                case "special": {
+                    message.channel.send("❎ **| I'm sorry, there is no ongoing special event now! Please check back soon!**");
+                    break
+                }
                 default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `color`, `leader`, `powerup`, `rename`, `role`, and `special`.**")
             }
             cd.add(message.author.id);
