@@ -260,8 +260,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // views leaderboard of clans based on power points
             // ================================================
             // will be able to specify page
-            let page = 0;
-            if (parseInt(args[1]) > 0) page = parseInt(args[1]) - 1;
+            let page = 1;
+            if (parseInt(args[1]) > 0) page = parseInt(args[1]);
             clandb.find({}, {projection: {_id: 0, name: 1, member_list: 1, power: 1}}).sort({power: -1}).toArray((err, clanres) => {
                 if (err) {
                     console.log(err);
