@@ -259,6 +259,36 @@ client.on("message", message => {
 
 			client.channels.cache.get("683504788272578577").send({embed: embed})
 		}
+
+		// mute detection for lounge ban
+		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
+			const embed = message.embeds[0];
+			let muted = '';
+			let mutetime = 0;
+			for (const field of embed.fields) {
+				if (field.name.startsWith("Length")) mutetime = parseInt(field.name.substring("Length: ".length));
+				if (field.name.startsWith("Muted User: ")) muted = message.guild.members.cache.find(m => m.user.username === field.name.substring("Muted User: ".length))
+				if (muted && mutetime) break
+			}
+			if (mutetime > 21600) {
+				const loungedb = alicedb.collection("loungelock");
+				loungedb.findOne({discordid: muted.id}, (err, res) => {
+					if (err) {
+						console.log(err);
+						message.channel.send("❎ **| Unable to retrieve lounge lock data.**")
+					}
+					else if (!res) {
+						loungedb.insertOne({discordid: muted.id}, err => {
+							if (err) {
+								console.log(err);
+								message.channel.send("❎ **| Unable to insert lounge lock data.**")
+							}
+							else message.channel.send("✅ **| Successfully locked user from lounge.**")
+						})
+					}
+				})
+			}
+		}
 		
 		// self-talking (for fun lol)
 		if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
@@ -367,10 +397,37 @@ client.on("guildBanAdd", async (guild, user) => {
 		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
 		.addField("=========================", `Reason: ${reason}`);
 	
-	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed})
+	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed});
+
+	const loungedb = alicedb.collection("loungelock");
+	loungedb.findOne({discordid: user.id}, (err, res) => {
+		if (err) {
+			console.log(err);
+			console.log("Unable to retrieve lounge ban data")
+		}
+		if (res) return;
+		loungedb.insertOne({discordid: user.id}, err => {
+			if (err) {
+				console.log(err);
+				console.log("Unable to insert ban data")
+			}
+		})
+	})
 });
 
 // lounge ban detection
+client.on("guildMemberAdd", member => {
+	alicedb.collection("loungelock").findOne({discordid: member.id}, (err, res) => {
+		if (err) {
+			console.log(err);
+			console.log("Unable to retrieve lounge ban data")
+		}
+		if (!res) return;
+		const channel = client.channels.cache.get('667400988801368094');
+		channel.updateOverwrite(member.user, {"VIEW_CHANNEL": false}, 'Lounge ban').catch(console.error)
+	})
+});
+
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
 	let role = newMember.roles.cache.find((r) => r.name === 'Lounge Pass');
@@ -378,7 +435,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	alicedb.collection("loungelock").findOne({discordid: newMember.id}, (err, res) => {
 		if (err) {
 			console.log(err);
-			console.log("Unable to retrieve ban data")
+			console.log("Unable to retrieve lounge ban data")
 		}
 		if (!res) return;
 		newMember.roles.remove(role, "Locked from lounge channel").catch(console.error);
