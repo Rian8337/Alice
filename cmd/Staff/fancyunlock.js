@@ -20,6 +20,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!userres[0]) return message.channel.send("❎ **| I'm sorry, this user is not locked from the channel!**");
         message.channel.send("✅ **| User has been unlocked from <#667400988801368094>.**");
+        const lounge = message.guild.channels.cache.get("667400988801368094");
+        lounge.permissionOverwrites.find(o => o.id === user.id).delete("Lounge ban lifted").catch(console.error);
 
         let rolecheck;
         try {

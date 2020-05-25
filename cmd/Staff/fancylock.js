@@ -22,6 +22,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let role = message.member.roles.cache.find((r) => r.name === 'Lounge Pass');
         if (role) user.roles.remove(role, "Locked from lounge").catch(console.error);
         message.channel.send("✅ **| User has been locked from <#667400988801368094>.**");
+        message.guild.channels.cache.get("667400988801368094").updateOverwrite(user, {"VIEW_CHANNEL": false}, "Lounge ban").catch(console.error);
 
         let rolecheck;
         try {
