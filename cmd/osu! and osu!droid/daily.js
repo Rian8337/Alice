@@ -714,6 +714,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 discordid: message.author.id,
                                 challenges: [[challengeid, bonuscomplete]],
                                 points: points,
+                                transferred: 0,
                                 chatcooldown: Math.floor(Date.now() / 1000),
                                 dailycooldown: 0,
                                 alicecoins: points * 2
@@ -1283,6 +1284,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 discordid: message.author.id,
                                 challenges: [bonuslist],
                                 points: points,
+                                transferred: 0,
                                 chatcooldown: Math.floor(Date.now() / 1000),
                                 dailycooldown: 0,
                                 alicecoins: points * 2

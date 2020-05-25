@@ -12,9 +12,9 @@ function timeconvert (num) {
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000' && message.guild.id !== '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in droid (International) Discord server and droid café server!**");
-    let binddb = maindb.collection("userbind");
-    let pointdb = alicedb.collection("playerpoints");
-    let coin = client.emojis.cache.get("669532330980802561");
+    const binddb = maindb.collection("userbind");
+    const pointdb = alicedb.collection("playerpoints");
+    const coin = client.emojis.cache.get("669532330980802561");
     let curtime = Math.floor(Date.now() / 1000);
     if (curtime - (message.member.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, you haven't been in the server for a week!**");
     let query = {};
@@ -74,6 +74,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             discordid: message.author.id,
                             challenges: [],
                             points: 0,
+                            transferred: 0,
                             dailycooldown: curtime + 86400,
                             chatcooldown: Math.floor(Date.now() / 1000),
                             alicecoins: daily,
@@ -100,29 +101,42 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let amount = parseInt(args[2]);
             if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, I need a valid amount to give!**");
             query = {discordid: message.author.id};
-            binddb.findOne(query, async (err, userres) => {
+            binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                let uid = userres.uid;
-                const player = await new osudroid.PlayerInfo().get({uid: uid});
-                if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-                let rank = player.rank;
-                let limit;
-                if (rank < 10) limit = 500;
-                else if (rank < 50) limit = 350;
-                else if (rank < 100) limit = 250;
-                else if (rank < 500) limit = 100;
-                else limit = 50;
-                if (amount > limit) return message.channel.send(`❎ **| I'm sorry, your ${coin}Alice coins transfer limit is \`${limit}\`!**`);
-                pointdb.findOne(query, (err, pointres) => {
+                const uid = userres.uid;
+                pointdb.findOne(query, async (err, pointres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!pointres) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
+                    let transferred = pointres.transferred;
+                    if (!transferred) transferred = 0;
+                    if (transferred === amount) return message.channel.send("❎ **| I'm sorry, you have reached the transfer limit for today!**");
+                    const player = await new osudroid.PlayerInfo().get({uid: uid});
+                    if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+                    let limit = 0;
+                    switch (true) {
+                        case (player.rank < 10):
+                            limit = 2500;
+                            break;
+                        case (player.rank < 50):
+                            limit = 1750;
+                            break;
+                        case (player.rank < 100):
+                            limit = 1250;
+                            break;
+                        case (player.rank < 500):
+                            limit = 500;
+                            break;
+                        default: limit = 250
+                    }
+                    if (transferred + amount > limit) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is beyond your daily limit! You can only transfer ${coin}\`${limit - transferred}\` Alice coins for today!**`);
+
                     let alicecoins = pointres.alicecoins;
                     if (alicecoins < amount) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
                     message.channel.send(`❗**| Are you sure you want to transfer ${coin}\`${amount}\` Alice coins to ${totransfer}?**`).then(msg => {
@@ -151,7 +165,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 });
                                 updateVal = {
                                     $set: {
-                                        alicecoins: pointres.alicecoins - amount
+                                        alicecoins: pointres.alicecoins - amount,
+                                        transferred: transferred + amount
                                     }
                                 };
                                 pointdb.updateOne({discordid: message.author.id}, updateVal, err => {

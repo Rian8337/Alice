@@ -38,6 +38,7 @@ module.exports.run = (message, maindb, alicedb) => {
                     discordid: message.author.id,
                     challenges: [],
                     points: 0,
+                    transferred: 0,
                     chatcooldown: Math.floor(Date.now() / 1000),
                     dailycooldown: 0,
                     alicecoins: 1

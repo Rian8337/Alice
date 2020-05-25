@@ -196,6 +196,7 @@ module.exports.run = (client, maindb, alicedb) => {
                         discordid: message.author.id,
                         challenges: [],
                         points: 15,
+                        transferred: 0,
                         dailycooldown: 0,
                         alicecoins: 30
                     };
