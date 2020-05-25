@@ -75,6 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             challenges: [],
                             points: 0,
                             dailycooldown: curtime + 86400,
+                            chatcooldown: Math.floor(Date.now() / 1000),
                             alicecoins: daily,
                             streak: 1
                         };

@@ -102,7 +102,7 @@ module.exports.run = async (client, message, args, maindb) => {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 			}
-			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
+			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`)
 		})
 	})
 };

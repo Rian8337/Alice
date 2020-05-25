@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 /**
  * Fetches the last 100 messages from a given message ID of a channel.
  *
- * @param channel
+ * @param {Discord.TextChannel} channel
  * @param {string} last_msg The ID of last message
  * @param {number} date Current time
  * @param {number} daily_counter Counter for the message amount
