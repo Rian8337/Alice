@@ -28,7 +28,7 @@ function timeConvert(num) {
     return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
 }
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let timeLimit = isEligible(message.member);
     if (message.isOwner) timeLimit = -1;
@@ -89,6 +89,24 @@ module.exports.run = async (client, message, args) => {
         await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed})
     } catch (e) {
         message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`)
+    }
+
+    if (mutetime >= 180000) {
+        const loungedb = alicedb.collection("loungelock");
+        loungedb.findOne({discordid: tomute.id}, (err, res) => {
+            if (err) {
+                console.log(err);
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            }
+            if (!res) {
+                loungedb.insertOne({discordid: tomute.id}, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                })
+            }
+        })
     }
 
     channel.send({embed: muteembed}).then(msg => {

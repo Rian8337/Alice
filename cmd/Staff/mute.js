@@ -73,6 +73,22 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted permanently.**`)
     }
 
+    const loungedb = alicedb.collection("loungelock");
+    loungedb.findOne({discordid: tomute.id}, (err, res) => {
+        if (err) {
+            console.log(err);
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+        }
+        if (!res) {
+            loungedb.insertOne({discordid: tomute.id}, err => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+            })
+        }
+    });
+
     channel.send({embed: muteembed});
 
     tomute.roles.add(muterole.id)
