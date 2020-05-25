@@ -32,8 +32,8 @@ module.exports.run = (message, maindb, alicedb) => {
             binddb.findOne({discordid: message.author.id}, (err, userres) => {
                 if (err) return console.log(err);
                 let insertVal = {
-                    username: username,
-                    uid: uid,
+                    username: userres.username,
+                    uid: userres.uid,
                     discordid: message.author.id,
                     challenges: [],
                     points: 0,
