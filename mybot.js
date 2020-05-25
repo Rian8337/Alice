@@ -78,7 +78,8 @@ client.on("ready", () => {
 	
     // API check and unverified prune
 	setInterval(() => {
-		client.utils.get("unverified").run(client, alicedb)
+		client.utils.get("unverified").run(client, alicedb);
+		client.utils.get("coindailyreset").run(alicedb)
 	}, 10000);
 	
 	setInterval(() => {
