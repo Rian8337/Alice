@@ -151,12 +151,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) embed.setColor(clanrole.hexColor);
                     let upkeep = 200;
-                    for (const member in clanres.member_list) upkeep += 500 - 34.74 * Math.log(member.rank);
+                    for (const member of clanres.member_list) upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
                     embed.setTitle(clan)
                         .addField("Clan Leader", `<@${clanres.leader}>\n(${clanres.leader})`, true)
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", `${members}/25`, true)
-                        .addField("Created at", new Date(clandate).toUTCString())
+                        .addField("Created at", new Date(clandate).toUTCString(), true)
                         .addField("Upkeep", `${coin}${upkeep} Alice coins`);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
