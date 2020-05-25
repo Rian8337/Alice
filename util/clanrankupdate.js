@@ -25,10 +25,15 @@ module.exports.run = maindb => {
                     const user = res.find(u => u.discordid === member.id);
                     const previous_bind = user.previous_bind;
                     let rank = Number.POSITIVE_INFINITY;
+                    let fix_uid = 0;
                     for await (const uid of previous_bind) {
                         const player = await new osudroid.PlayerInfo().get({uid: uid});
-                        rank = Math.min(rank, player.rank)
+                        if (rank > player.rank) {
+                            rank = player.rank;
+                            fix_uid = parseInt(uid) 
+                        }
                     }
+                    member.uid = fix_uid;
                     member.rank = rank;
                     new_members.push(member)
                 }
