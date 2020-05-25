@@ -411,6 +411,7 @@ client.on("guildBanAdd", async (guild, user) => {
 				console.log(err);
 				console.log("Unable to insert ban data")
 			}
+			guild.channels.cache.find(c => c.name === config.management_channel).send("✅ **| Successfully locked user from lounge.**")
 		})
 	})
 });
