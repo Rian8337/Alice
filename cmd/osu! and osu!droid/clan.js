@@ -157,7 +157,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", `${members}/25`, true)
                         .addField("Created at", new Date(clandate).toUTCString(), true)
-                        .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`);
+                        .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`, true);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
                     message.channel.send({embed: embed}).catch(console.error);
@@ -1447,8 +1447,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         case "shop": {
             // main hub for clan shops
-            // ===========================================
-            // players can buy clan name change, custom role,
+            // =======================================================
+            // players can buy clan channel, name change, custom role,
             // clan color change, powerups, etc in here, specified by
             // args[1]. also uses alice coins as currency
             switch (args[1]) {
@@ -1499,8 +1499,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
-                                        let clanrole = message.guild.roles.cache.find(r => r.name === clan);
+                                        const clanrole = message.guild.roles.cache.find(r => r.name === clan);
                                         if (clanrole) clanrole.setName(newname, "Changed clan name").catch(console.error);
+                                        const channel = message.guild.channels.cache.find(c => c.name === clan);
+                                        if (channel) {
+                                            channel.setName(newname, "Clan leader bought clan rename").catch(console.error);
+                                            channel.setTopic(`Clan chat for ${newname} clan.`, "Clan leader bought clan rename").catch(console.error)
+                                        }
                                         updateVal = {
                                             $set: {
                                                 clan: newname
@@ -1569,6 +1574,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let c_role = message.guild.roles.cache.find((r) => r.name === clan);
                         if (c_role) return message.channel.send("❎ **| I'm sorry, your clan already has a clan role!**");
                         pointdb.findOne(query, (err, pointres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
                             if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
@@ -1925,11 +1934,98 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
 
 
+                case "channel": {
+                    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
+                    query = {discordid: message.author.id};
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        let clan = userres.clan;
+                        if (message.guild.channels.cache.find(c => c.name === clan)) return message.channel.send("❎ **| I'm sorry, your clan already has a clan channel!**")
+                        pointdb.findOne(query, (err, pointres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            let alicecoins = pointres.alicecoins;
+                            if (alicecoins < 50000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            query = {name: clan};
+                            clandb.findOne(query, (err, clanres) => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                }
+                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                if (clanres.power < 5000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 5000!**");
+                                const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                                if (!clanrole) return message.channel.send("❎ **| I'm sorry, your clan must have a clan role to create a clan channel!**");
+                                message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan channel for ${coin}\`50,000\` Alice coins?**`).then(msg => {
+                                    msg.react("✅").catch(console.error);
+                                    let confirmation = false;
+                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    confirm.on("collect", () => {
+                                        confirmation = true;
+                                        msg.delete();
+
+                                        const position = message.guild.channels.cache.get("696663321633357844").position;
+                                        const options = {
+                                            topic: `Clan chat for ${clan} clan.`,
+                                            parent: "696646649128288346",
+                                            permissionOverwrites: [
+                                                {
+                                                    id: clanrole,
+                                                    allow: ["VIEW_CHANNEL"]
+                                                },
+                                                {
+                                                    id: "353397345636974593",
+                                                    deny: ["VIEW_CHANNEL"]
+                                                },
+                                                {
+                                                    id: "369108742077284353",
+                                                    allow: ["VIEW_CHANNEL"]
+                                                }
+                                            ]
+                                        };
+                                        message.guild.channels.create(clan, options).then(c => c.setPosition(position));
+
+                                        updateVal = {
+                                            $set: {
+                                                alicecoins: alicecoins - 50000
+                                            }
+                                        };
+                                        pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                            if (err) {
+                                                console.log(err);
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            }
+                                            message.channel.send(`✅ **| ${message.author}, successfully created clan channel. You now have ${coin}\`${(alicecoins - 50000).toLocaleString()}\` Alice coins.**`)
+                                        })
+                                    });
+                                    confirm.on("end", () => {
+                                        if (!confirmation) {
+                                            msg.delete();
+                                            message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                        }
+                                    })
+                                })
+                            })
+                        })
+                    });
+                    break
+                }
+
+
                 case "special": {
                     message.channel.send("❎ **| I'm sorry, there is no ongoing special event now! Please check back soon!**");
                     break
                 }
-                default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `color`, `leader`, `powerup`, `rename`, `role`, and `special`.**")
+                default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `channel`, `color`, `leader`, `powerup`, `rename`, `role`, and `special`.**")
             }
             cd.add(message.author.id);
             setTimeout(() => {
@@ -1942,8 +2038,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         case "power": {
             // main hub for power points
-            // ==============================
-            // gives pp if match commence, also
+            // ==========================================
+            // gives power points if match commence, also
             // based on active powerups
             if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
