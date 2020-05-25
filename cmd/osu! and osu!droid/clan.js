@@ -157,7 +157,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", `${members}/25`, true)
                         .addField("Created at", new Date(clandate).toUTCString(), true)
-                        .addField("Upkeep", `${coin}${upkeep} Alice coins`);
+                        .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
                     message.channel.send({embed: embed}).catch(console.error);
@@ -356,7 +356,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let time = timeConvert(clanres.weeklyfee - curtime);
                     let upkeep = 200;
                     for (const member of clanres.member_list) upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
-                    message.channel.send(`✅ **| ${message.author}, your clan's weekly upkeep with a cost of ${coin}\`${upkeep}\` Alice coins will be picked up in ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                    message.channel.send(`✅ **| ${message.author}, your clan's weekly upkeep with an estimated cost of ${coin}\`${upkeep}\` Alice coins will be picked up in ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
                 })
             });
             cd.add(message.author.id);
@@ -431,7 +431,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
                                 memberlist.push({
                                     id: toaccept.id,
-                                    uid: uid,
                                     rank: player.rank,
                                     hasPermission: false,
                                     battle_cooldown: curtime + 86400 * 4
@@ -766,7 +765,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     member_list: [
                                         {
                                             id: message.author.id,
-                                            uid: uid,
                                             rank: player.rank,
                                             hasPermission: true,
                                             battle_cooldown: 0

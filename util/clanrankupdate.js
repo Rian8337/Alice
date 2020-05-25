@@ -7,34 +7,43 @@ function retrieveClan(res, i, cb) {
 
 module.exports.run = maindb => {
     console.log("Updating clan rank");
+    const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
 
-    clandb.find({}, {projection: {_id: 0, name: 1, member_list: 1}}).toArray(function(err, clans) {
+    binddb.find({}, {projection: {_id: 0, discordid: 1, previous_bind: 1}}).toArray(function(err, res) {
         if (err) throw err;
-        let i = 0;
-        
-        retrieveClan(clans, i, async function processClan(clan) {
-            if (!clan) return console.log("Process complete");
-            console.log(i);
-            const members = clan.member_list;
-            const new_members = [];
-            for await (const member of members) {
-                const uid = member.uid;
-                const player = await new osudroid.PlayerInfo().get({uid: uid});
-                member.rank = player.rank;
-                new_members.push(member)
-            }
-
-            const updateVal = {
-                $set: {
-                    member_list: new_members
+        clandb.find({}, {projection: {_id: 0, name: 1, member_list: 1}}).toArray(function(err, clans) {
+            if (err) throw err;
+            let i = 0;
+            
+            retrieveClan(clans, i, async function processClan(clan) {
+                if (!clan) return console.log("Process complete");
+                console.log(i);
+                const members = clan.member_list;
+                const new_members = [];
+                for (const member of members) {
+                    const user = res.find(u => u.discordid === member.id);
+                    const previous_bind = user.previous_bind;
+                    let rank = Number.POSITIVE_INFINITY;
+                    for await (const uid of previous_bind) {
+                        const player = await new osudroid.PlayerInfo().get({uid: uid});
+                        rank = Math.min(rank, player.rank)
+                    }
+                    member.rank = rank;
+                    new_members.push(member)
                 }
-            };
-
-            clandb.updateOne({name: clan.name}, updateVal, err => {
-                if (err) throw err;
-                ++i;
-                retrieveClan(clans, i, processClan)
+    
+                const updateVal = {
+                    $set: {
+                        member_list: new_members
+                    }
+                };
+    
+                clandb.updateOne({name: clan.name}, updateVal, err => {
+                    if (err) throw err;
+                    ++i;
+                    retrieveClan(clans, i, processClan)
+                })
             })
         })
     })
