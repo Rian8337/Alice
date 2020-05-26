@@ -363,7 +363,7 @@ client.on("guildMemberAdd", member => {
 client.on("guildMemberUpdate", (oldMember) => {
 	if (oldMember.user.bot) return;
 	let general = oldMember.guild.channels.cache.get("316545691545501706");
-	if (!general || oldMember.roles.cache.size > 0) return;
+	if (!general || oldMember.roles.cache.find(r => r.name === 'Member')) return;
 	fs.readFile("welcome.txt", 'utf8', (err, data) => {
 		if (err) return console.log(err);
 		let welcomeMessage = `Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`;
@@ -441,8 +441,11 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 		}
 		if (!res) return;
 		newMember.roles.remove(role, "Locked from lounge channel").catch(console.error);
+		const footer = config.avatar_list;
+		const index = Math.floor(Math.random() * footer.length);
 		let embed = new Discord.MessageEmbed()
 			.setDescription(`${newMember} is locked from lounge channel!`)
+			.setFooter(`User ID: ${newMember.id}`, footer[index])
 			.setColor("#b58d3c");
 		newMember.guild.channels.cache.find(c => c.name === config.management_channel).send({embed: embed})
 	})
