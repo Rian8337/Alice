@@ -363,7 +363,7 @@ client.on("guildMemberAdd", member => {
 client.on("guildMemberUpdate", (oldMember) => {
 	if (oldMember.user.bot) return;
 	let general = oldMember.guild.channels.cache.get("316545691545501706");
-	if (!general || oldMember.roles.cache.find(r => r.name === 'Member')) return;
+	if (!general || oldMember.roles.cache.find((r) => r.name === "Member") || oldMember.roles.cache.size == newMember.roles.cache.size) return;
 	fs.readFile("welcome.txt", 'utf8', (err, data) => {
 		if (err) return console.log(err);
 		let welcomeMessage = `Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`;
