@@ -1,5 +1,6 @@
 const Accuracy = require('./Accuracy');
 const MapStats = require('./MapStats');
+const StandardDiff = require('./StandardDiff');
 const mods = require('./mods');
 
 class MapPP {
