@@ -81,7 +81,7 @@ class ReplayAnalyzer {
         return new Promise((resolve, reject) => {
             const data_array = [];
             const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
-            request(url)
+            request(url, {timeout: 10000})
                 .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
                 })

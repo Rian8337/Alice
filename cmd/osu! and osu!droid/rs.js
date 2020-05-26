@@ -77,9 +77,11 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         if (message.isOwner) {
             const score_data = await play.getFromHash();
             const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
-            n300 = data.data.hit300;
-            n100 = data.data.hit100;
-            n50 = data.data.hit50;
+            if (data.odr) {
+                n300 = data.data.hit300;
+                n100 = data.data.hit100;
+                n50 = data.data.hit50
+            }
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
