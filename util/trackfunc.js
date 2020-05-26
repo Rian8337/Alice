@@ -2,6 +2,21 @@ const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const config = require('../config.json');
 
+function rankEmote(input) {
+	if (!input) return;
+	switch (input) {
+		case 'A': return '611559473236148265';
+		case 'B': return '611559473169039413';
+		case 'C': return '611559473328422942';
+		case 'D': return '611559473122639884';
+		case 'S': return '611559473294606336';
+		case 'X': return '611559473492000769';
+		case 'SH': return '611559473361846274';
+		case 'XH': return '611559473479155713';
+		default : return
+	}
+}
+
 module.exports.run = (client, maindb) => {
 	let trackdb = maindb.collection("tracking");
 	trackdb.find({}).toArray(function(err, res) {
@@ -24,7 +39,7 @@ module.exports.run = (client, maindb) => {
 				const acc = play.accuracy;
 				const mod = play.mods;
 				const miss = play.miss;
-				const rank = osudroid.rankImage.get(play.rank);
+				const rank = client.emojis.cache.get(rankEmote(play.rank));
 				const combo = play.combo;
 				const hash = play.hash;
 
