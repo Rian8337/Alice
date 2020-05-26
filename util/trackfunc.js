@@ -45,7 +45,7 @@ module.exports.run = (client, maindb) => {
 
 				const embed = new Discord.MessageEmbed()
 					.setAuthor(title, player_entry.avatarURL)
-					.setColor(rolecheck)
+					.setColor(8311585)
 					.setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
 				const mapinfo = await new osudroid.MapInfo().get({hash: hash});
