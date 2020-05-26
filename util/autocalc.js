@@ -58,8 +58,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					if (!mapinfo.osu_file) return;
 					let max_score = mapinfo.max_score(mod);
 					let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-					let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-					let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+					let starsline = parseFloat(star.droid_stars.total.toFixed(2));
+					let pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 					let npp = osudroid.ppv2({
 						stars: star.droid_stars,
 						combo: combo,
@@ -74,8 +74,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 						acc_percent: acc,
 						mode: "osu"
 					});
-					let ppline = parseFloat(npp.toString().split(" ")[0]);
-					let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+					let ppline = parseFloat(npp.total.toFixed(2));
+					let pcppline = parseFloat(pcpp.total.toFixed(2));
 					let entry = [mapinfo, starsline, pcstarsline, max_score, ppline, pcppline];
 					map_entries.push(entry);
 					if (i === obj.length) {
@@ -119,8 +119,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	if (!combo) combo = mapinfo.max_combo;
 	let max_score = mapinfo.max_score(mod);
 	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-	let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-	let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+	let starsline = parseFloat(star.droid_stars.total.toFixed(2));
+	let pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 	let npp = osudroid.ppv2({
 		stars: star.droid_stars,
 		combo: combo,
@@ -135,8 +135,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		acc_percent: acc,
 		mode: "osu"
 	});
-	let ppline = parseFloat(npp.toString().split(" ")[0]);
-	let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+	let ppline = parseFloat(npp.total.toFixed(2));
+	let pcppline = parseFloat(pcpp.total.toFixed(2));
 
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);

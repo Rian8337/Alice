@@ -30,8 +30,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     if (!combo) combo = mapinfo.max_combo;
     let max_score = mapinfo.max_score(mod);
     let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-    let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-    let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+    let starsline = parseFloat(star.droid_stars.total.toFixed(2));
+	let pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
     let npp = osudroid.ppv2({
         stars: star.droid_stars,
         combo: combo,
@@ -46,8 +46,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         acc_percent: acc,
         mode: "osu"
     });
-    let ppline = parseFloat(npp.toString().split(" ")[0]);
-    let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+    let ppline = parseFloat(npp.total.toFixed(2));
+	let pcppline = parseFloat(pcpp.total.toFixed(2));
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * (footer.length - 1) + 1);

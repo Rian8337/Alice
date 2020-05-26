@@ -55,7 +55,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		miss: play.miss,
 		mode: "droid"
 	});
-	let pp = parseFloat(npp.toString().split(" ")[0]);
+	let pp = parseFloat(npp.total.toFixed(2));
 	let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
 	let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
 	if (isNaN(pp)) {
@@ -171,7 +171,7 @@ module.exports.run = (client, message, args, maindb) => {
 					miss: miss,
 					mode: "droid"
 				});
-				let pp = parseFloat(npp.toString().split(" ")[0]);
+				let pp = parseFloat(npp.total.toFixed(2));
 				let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
 				let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
 				if (isNaN(pp)) message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");

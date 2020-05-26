@@ -7,7 +7,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
 	const player = await new osudroid.PlayerInfo().get({uid: uid});
 	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 	if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
 	let rplay = player.recent_plays[0];
 	let score = rplay.score.toLocaleString();
@@ -44,10 +44,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	else current_map[map_index][1] = hash;
 
 	const mapinfo = await new osudroid.MapInfo().get({hash: hash});
-	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
+	if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) return;
 	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-	let droid_stars = parseFloat(star.droid_stars.toString().split(" ")[0]);
-	let pc_stars = parseFloat(star.pc_stars.toString().split(" ")[0]);
+	let droid_stars = parseFloat(star.droid_stars.total.toFixed(2));
+	let pc_stars = parseFloat(star.pc_stars.total.toFixed(2));
 	let npp = osudroid.ppv2({
 		stars: star.droid_stars,
 		combo: combo,
@@ -62,8 +62,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		miss: miss,
 		mode: "osu"
 	});
-	let dpp = parseFloat(npp.toString().split(" ")[0]);
-	let pp = parseFloat(pcpp.toString().split(" ")[0]);
+	let dpp = parseFloat(npp.total.toFixed(2));
+	let pp = parseFloat(pcpp.total.toFixed(2));
 
 	embed = new Discord.MessageEmbed()
 		.setFooter("Alice Synthesis Thirty", footer[index])
@@ -98,8 +98,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 			miss: 0,
 			mode: "osu"
 		});
-		let dline = parseFloat(if_fc_dpp.toString().split(" ")[0]);
-		let pline = parseFloat(if_fc_pp.toString().split(" ")[0]);
+		let dline = parseFloat(if_fc_dpp.total.toFixed(2));
+		let pline = parseFloat(if_fc_pp.total.toFixed(2));
 		embed.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars\n**Droid pp (if FC)**: __${dline} pp__ **(${if_fc_acc.toFixed(2)}%)**`, `**PC pp**: ${pp} pp - ${pc_stars} stars\n**PC pp (if FC)**: ${pline} pp **(${if_fc_acc.toFixed(2)}%)**`)
 	} else embed.addField(`**Droid pp (Experimental)**: __${dpp} pp__ - ${droid_stars} stars`, `**PC pp**: ${pp} pp - ${pc_stars} stars`);
 

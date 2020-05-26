@@ -89,8 +89,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-        const starsline = parseFloat(star.droid_stars.toString());
-        const pcstarsline = parseFloat(star.pc_stars.toString());
+        const starsline = parseFloat(star.droid_stars.total.toFixed(2));
+        const pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 
         title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
         embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
@@ -112,8 +112,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             mode: "osu"
         });
 
-        const ppline = parseFloat(npp.toString());
-        const pcppline = parseFloat(pcpp.toString());
+        const ppline = parseFloat(npp.total.toFixed(2));
+        const pcppline = parseFloat(pcpp.total.toFixed(2));
 
         if (miss > 0 || combo < mapinfo.max_combo) {
             const fc_acc = new osudroid.Accuracy({
@@ -140,8 +140,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 mode: "osu"
             });
 
-            const dline = parseFloat(fc_dpp.toString());
-            const pline = parseFloat(fc_pp.toString());
+            const dline = parseFloat(fc_dpp.total.toFixed(2));
+            const pline = parseFloat(fc_pp.total.toFixed(2));
 
             embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
         } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);

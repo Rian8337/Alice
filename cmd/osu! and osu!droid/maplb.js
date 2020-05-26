@@ -63,8 +63,8 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
         }
         if (!Array.isArray(entries)) resolve(null);
 
-        let droid_stars = parseFloat(global_star.droid_stars.toString().split(" ")[0]);
-        let pc_stars = parseFloat(global_star.pc_stars.toString().split(" ")[0]);
+        let droid_stars = parseFloat(global_star.droid_stars.total.toFixed(2));
+        let pc_stars = parseFloat(global_star.pc_stars.total.toFixed(2));
         let embed = new Discord.MessageEmbed()
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
@@ -88,7 +88,7 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
             let rank = rankEmote(entry[5]);
             let accuracy = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
             let date = new Date(parseInt(entry[9]) * 1000);
-            date.setUTCHours(date.getUTCHours() + 7);
+            date.setUTCHours(date.getUTCHours() + 6);
             let miss = parseInt(entry[8]);
 
             let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -106,8 +106,8 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
                 miss: miss,
                 mode: "osu"
             });
-            let dpp = parseFloat(npp.toString().split(" ")[0]);
-            let pp = parseFloat(pcpp.toString().split(" ")[0]);
+            let dpp = parseFloat(npp.total.toFixed(2));
+            let pp = parseFloat(pcpp.total.toFixed(2));
 
             embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.cache.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
         }
@@ -137,7 +137,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const mapinfo = await new osudroid.MapInfo().get(params);
     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info! Perhaps osu! API is down?**");
     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I couldn't find the map that you are looking for!**");
-    if (mapinfo.objects === 0) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+    if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     hash = mapinfo.hash;
     let top = await fetchScores(hash, 0);
@@ -155,7 +155,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let top_rank = rankEmote(top[5]);
     let top_accuracy = parseFloat((parseInt(top[7]) / 1000).toFixed(2));
     let top_date = new Date(parseInt(top[9]) * 1000);
-    top_date.setUTCHours(top_date.getUTCHours() + 7);
+    top_date.setUTCHours(top_date.getUTCHours() + 6);
     let top_miss = parseInt(top[8]);
 
     let global_star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: ""});
@@ -175,8 +175,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         miss: top_miss,
         mode: "osu"
     });
-    let dpp = parseFloat(npp.toString().split(" ")[0]);
-    let pp = parseFloat(pcpp.toString().split(" ")[0]);
+    let dpp = parseFloat(npp.total.toFixed(2));
+    let pp = parseFloat(pcpp.total.toFixed(2));
 
     top = {
         name: top[2],

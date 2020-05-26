@@ -71,18 +71,20 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let n300, n100, n50;
         if (message.isOwner) {
             const data = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
-            n300 = data.data.hit300;
-            n100 = data.data.hit100;
-            n50 = data.data.hit50;
+            if (data.odr) {
+                n300 = data.data.hit300;
+                n100 = data.data.hit100;
+                n50 = data.data.hit50
+            }
         }
         
-        if (!mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
+        if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
             embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
             return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed})
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-        const starsline = parseFloat(star.droid_stars.toString());
-        const pcstarsline = parseFloat(star.pc_stars.toString());
+        const starsline = parseFloat(star.droid_stars.total.toFixed(2));
+        const pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 
         title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
         embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
@@ -104,8 +106,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             mode: "osu"
         });
 
-        const ppline = parseFloat(npp.toString());
-        const pcppline = parseFloat(pcpp.toString());
+        const ppline = parseFloat(npp.total.toFixed(2));
+        const pcppline = parseFloat(pcpp.total.toFixed(2));
 
         if (miss > 0 || combo < mapinfo.max_combo) {
             const fc_acc = new osudroid.Accuracy({
@@ -132,8 +134,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 mode: "osu"
             });
 
-            const dline = parseFloat(fc_dpp.toString());
-            const pline = parseFloat(fc_pp.toString());
+            const dline = parseFloat(fc_dpp.total.toFixed(2));
+            const pline = parseFloat(fc_pp.total.toFixed(2));
 
             embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
         } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);

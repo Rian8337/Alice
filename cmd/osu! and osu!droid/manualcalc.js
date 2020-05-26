@@ -29,8 +29,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	if (!combo) combo = mapinfo.max_combo;
 	let max_score = mapinfo.max_score(mod);
 	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-	let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-	let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
+	let starsline = parseFloat(star.droid_stars.total.toFixed(2));
+	let pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 	let npp = osudroid.ppv2({
 		stars: star.droid_stars,
 		combo: combo,
@@ -45,8 +45,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		acc_percent: acc,
 		mode: "osu"
 	});
-	let ppline = parseFloat(npp.toString().split(" ")[0]);
-	let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
+	let ppline = parseFloat(npp.total.toFixed(2));
+	let pcppline = parseFloat(pcpp.total.toFixed(2));
 
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
@@ -62,7 +62,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
-	//let string = '❗**| This command is deprecated and will be removed in the future! You can simply drop the beatmap link with the command parameters to calculate a map or use `a!prevcalc` with the same parameters to calculate a previously calculated map.**\n';
 	if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
 	if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
 	message.channel.send(/*string, */{embed: embed}).catch(console.error);
