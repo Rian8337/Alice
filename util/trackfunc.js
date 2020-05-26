@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
+const config = require('../config.json');
 
 module.exports.run = (client, maindb) => {
 	let trackdb = maindb.collection("tracking");
@@ -8,56 +9,94 @@ module.exports.run = (client, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
+		const footer = config.avatar_list;
+        const index = Math.floor(Math.random() * footer.length);
 		res.forEach(async function(player) {
 			const player_entry = await new osudroid.PlayerInfo().get({uid: player.uid});
-			let name = player_entry.name;
-			let curtime = Date.now();
-			for await (let play of player_entry.recent_plays) {
-				let timeDiff = curtime - play.date.getTime() ; //server time is UTC-7, while curtime is in UTC
+			const name = player_entry.name;
+			const curtime = Date.now();
+			for await (const play of player_entry.recent_plays) {
+				let timeDiff = curtime - play.date.getTime();
 				if (timeDiff > 600000) break;
 				let title = play.title;
-				let score = play.score.toLocaleString();
-				let ptime = play.date;
-				let acc = play.accuracy;
-				let mod = play.mods;
-				let miss = play.miss;
-				let rank = osudroid.rankImage.get(play.rank);
-				let combo = play.combo;
-				let hash = play.hash;
+				const score = play.score.toLocaleString();
+				const ptime = play.date;
+				const acc = play.accuracy;
+				const mod = play.mods;
+				const miss = play.miss;
+				const rank = osudroid.rankImage.get(play.rank);
+				const combo = play.combo;
+				const hash = play.hash;
 
-				let embed = new Discord.MessageEmbed()
-					.setAuthor(`Recent play for ${name}`, rank)
-					.setTitle(title)
-					.setColor(8311585);
+				const embed = new Discord.MessageEmbed()
+					.setAuthor(title, player_entry.avatarURL)
+					.setColor(rolecheck)
+					.setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
 				const mapinfo = await new osudroid.MapInfo().get({hash: hash});
-				let mod_string = osudroid.mods.pc_to_detail(mod, true);
-				if (!mapinfo.title || !mapinfo.objects) {
-					embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\` (\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\``);
-					return client.channels.cache.get("665106609382359041").send({embed: embed})
+				if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
+					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
+					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
 				}
-				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-				let starsline = parseFloat(star.droid_stars.toString().split(" ")[0]);
-				let pcstarsline = parseFloat(star.pc_stars.toString().split(" ")[0]);
-				let npp = osudroid.ppv2({
+				const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+				const starsline = parseFloat(star.droid_stars.toString());
+				const pcstarsline = parseFloat(star.pc_stars.toString());
+
+				title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+				embed.setAuthor(title, player_entry.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
+
+				const npp = osudroid.ppv2({
 					stars: star.droid_stars,
 					combo: combo,
 					acc_percent: acc,
 					miss: miss,
 					mode: "droid"
 				});
-				let pcpp = osudroid.ppv2({
+
+				const pcpp = osudroid.ppv2({
 					stars: star.pc_stars,
 					combo: combo,
 					acc_percent: acc,
 					miss: miss,
 					mode: "osu"
 				});
-				let ppline = parseFloat(npp.toString().split(" ")[0]);
-				let pcppline = parseFloat(pcpp.toString().split(" ")[0]);
 
-				embed.setDescription(`**Score**: \`${score}\` - Combo: \`${combo}x\` - Accuracy: \`${acc}%\`\n(\`${miss}\` x)\nMod: \`${mod_string}\`\nTime: \`${ptime.toUTCString()}\`\n\`${starsline} droid stars - ${pcstarsline} PC stars\`\n\`${ppline} droid pp - ${pcppline} PC pp\``).setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`).setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`);
-				client.channels.cache.get("665106609382359041").send(ppline >= 450 ? "<@119496080269377536>" : "", {embed: embed}).catch(console.error)
+				const ppline = parseFloat(npp.toString());
+				const pcppline = parseFloat(pcpp.toString());
+
+				if (miss > 0 || combo < mapinfo.max_combo) {
+					const fc_acc = new osudroid.Accuracy({
+						n300: npp.computed_accuracy.n300 + miss,
+						n100: npp.computed_accuracy.n100,
+						n50 : npp.computed_accuracy.n50,
+						nmiss: 0,
+						nobjects: mapinfo.objects
+					}).value() * 100;
+		
+					const fc_dpp = osudroid.ppv2({
+						stars: star.droid_stars,
+						combo: mapinfo.max_combo,
+						acc_percent: fc_acc,
+						miss: 0,
+						mode: "droid"
+					});
+		
+					const fc_pp = osudroid.ppv2({
+						stars: star.pc_stars,
+						combo: mapinfo.max_combo,
+						acc_percent: fc_acc,
+						miss: 0,
+						mode: "osu"
+					});
+		
+					const dline = parseFloat(fc_dpp.toString());
+					const pline = parseFloat(fc_pp.toString());
+		
+					embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
+				} else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
+
+				client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**\n${ppline >= 450 ? "<@119496080269377536>" : ""}`, {embed: embed}).catch(console.error)
 			}
 		})
 	})
