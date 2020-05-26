@@ -744,7 +744,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
                 client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
-                let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres[0].challengeid.match(/(\d+)$/)[0]) - 1);
+                let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) - 1);
                 updateVal = {
                     $set: {
                         status: "finished"
