@@ -62,9 +62,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
+	let string = '';
 	if (ndetail) string += `Raw droid pp: ${npp.toString()}\n`;
 	if (pcdetail) string += `Raw PC pp: ${pcpp.toString()}`;
-	message.channel.send(/*string, */{embed: embed}).catch(console.error);
+	message.channel.send(string, {embed: embed}).catch(console.error);
 
 	let map_index = current_map.findIndex(map => map[0] === message.channel.id);
 	if (map_index === -1) current_map.push([message.channel.id, mapinfo.hash]);
