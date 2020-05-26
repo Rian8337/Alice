@@ -360,7 +360,7 @@ client.on("guildMemberAdd", member => {
 });
 
 // introduction message
-client.on("guildMemberUpdate", (oldMember) => {
+client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.user.bot) return;
 	let general = oldMember.guild.channels.cache.get("316545691545501706");
 	if (!general || oldMember.roles.cache.find((r) => r.name === "Member") || oldMember.roles.cache.size == newMember.roles.cache.size) return;
