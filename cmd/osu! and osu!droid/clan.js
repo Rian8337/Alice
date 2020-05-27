@@ -2,6 +2,10 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 const cd = new Set();
+const {createCanvas, loadImage} = require('canvas');
+const canvas = createCanvas(900, 250);
+const c = canvas.getContext("2d");
+c.imageSmoothingQuality = "high";
 
 function capitalizeString(string = "") {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -84,7 +88,7 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
     return embed
 }
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (args[0] !== "about" && message.channel.parentID !== '696646649128288346') return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
@@ -139,7 +143,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
                 query = {name: clan};
-                clandb.findOne(query, (err, clanres) => {
+                clandb.findOne(query, async (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -160,6 +164,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`, true);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
+                    if (clanres.banner) {
+                        try {
+                            const image = await loadImage(clanres.banner);
+                            c.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, 900, 250);
+                            const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'banner.png');
+                            embed.attachFiles([attachment])
+                                .setImage("attachment://banner.png")
+                        } catch (e) {}
+                    }
                     message.channel.send({embed: embed}).catch(console.error);
                 })
             });
@@ -707,8 +720,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     leader: message.author.id,
                                     description: "",
                                     icon: "",
+                                    banner: "",
                                     iconcooldown: 0,
                                     namecooldown: 0,
+                                    bannercooldown: 0,
                                     weeklyfee: curtime + 86400 * 7,
                                     isMatch: false,
                                     powerups: [
@@ -927,6 +942,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `clear` and `edit`.**")
             }
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id)
+            }, 2000);
             break
         }
 
@@ -997,6 +1016,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     })
                 })
             });
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id)
+            }, 2000);
             break
         }
 
@@ -1067,6 +1090,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     })
                 })
             });
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id)
+            }, 2000);
             break
         }
 
@@ -1149,20 +1176,37 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 
 
-        case "icon": {
-            // main hub for clan icons
+        case "banner": {
+            // clan banner
             // ============================
-            // removal of icons is allowed
-            // for server mods to filter
-            // icons that are contradicting
-            // server rules
+            // mods are able to remove banners
+            // that contradict server rules
             switch (args[1]) {
 
                 case "set": {
-                    // set icon
-                    let icon = args[2];
-                    if (!icon) return message.channel.send("❎ **| Hey, I don't know what icon to set!**");
-                    if (!icon.includes("http")) return message.channel.send("❎ **| Hey, I think that icon link is invalid!**");
+                    // set banner
+                    let banner = args[2];
+                    if (!banner) {
+                        if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach an image or enter an image URL!**");
+                        if (message.attachments.size > 0) {
+                            const attachment = message.attachments.first();
+                            banner = attachment.url;
+                            const length = banner.length;
+                            if (
+                                banner.indexOf("png", length - 3) === -1 &&
+                                banner.indexOf("jpg", length - 3) === -1 &&
+                                banner.indexOf("jpeg", length - 4) === -1
+                            ) return message.channel.send("❎ **| Hey, please provide a valid image!**")
+                        }
+                    }
+                    if (!banner.startsWith("http")) return message.channel.send("❎ **| Hey, I think that banner link is invalid!**");
+                    let image;
+                    try {
+                        image = await loadImage(banner)
+                    } catch (e) {
+                        return message.channel.send("❎ **| I'm sorry, that banner link does not resolve to an image!**")
+                    }
+                    if (image.naturalWidth / image.naturalHeight !== 3.6) return message.channel.send("❎ **| I'm sorry, that image ratio is not properly set! I only accept 18:5 image ratio!**");
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
@@ -1179,7 +1223,162 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
                             if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            let hasPermission = memberlist[member_index].hasPermission;
+                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
+                            if (clanres.power < 500) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
+                            let cooldown = clanres.bannercooldown - curtime;
+                            if (cooldown > 0) {
+                                let time = timeConvert(cooldown);
+                                return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} day` : `${time[0]} days`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} hour` : `${time[1]} hours`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} minute` : `${time[2]} minutes`}`}${time[3] === 0 ? "" : `${time[2] === 0 ? "" : ", "}${time[3] === 1 ? `${time[3]} second` : `${time[3]} seconds`}`}.**`)
+                            }
+                            message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan banner? You wouldn't be able to change it for 10 minutes!**`).then(msg => {
+                                msg.react("✅").catch(console.error);
+                                let confirmation = false;
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                confirm.on("collect", () => {
+                                    confirmation = true;
+                                    msg.delete();
+                                    updateVal = {
+                                        $set: {
+                                            banner: banner,
+                                            bannercooldown: curtime + 600
+                                        }
+                                    };
+                                    clandb.updateOne(query, updateVal, err => {
+                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        message.channel.send(`✅ **| ${message.author}, successfully set your clan banner.**`);
+                                    })
+                                });
+                                confirm.on("end", () => {
+                                    if (!confirmation) {
+                                        msg.delete();
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                    }
+                                })
+                            })
+                        })
+                    });
+                    break
+                }
+
+
+                case "remove": {
+                    // remove banner
+                    query = {discordid: message.author.id};
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        let clan = '';
+                        if (perm) {
+                            if (args[2]) clan = args.slice(2).join(" ");
+                            else clan = userres.clan;
+                            if (!clan) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
+                        } else clan = userres.clan;
+
+                        query = {name: clan};
+                        clandb.findOne(query, (err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+
+                            let memberlist = clanres.member_list;
+                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!perm) {
+                                let hasPermission = memberlist[member_index].hasPermission;
+                                if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
+                            message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s banner?**`).then(msg => {
+                                msg.react("✅").catch(console.error);
+                                let confirmation = false;
+                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                confirm.on("collect", () => {
+                                    confirmation = true;
+                                    msg.delete();
+                                    updateVal = {
+                                        $set: {
+                                            banner: ""
+                                        }
+                                    };
+                                    clandb.updateOne(query, updateVal, err => {
+                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        message.channel.send(`✅ **| ${message.author}, successfully removed banner from ${perm && args[2]?`\`${clan}\``:"your clan"}.**`);
+                                    })
+                                });
+                                confirm.on("end", () => {
+                                    if (!confirmation) {
+                                        msg.delete();
+                                        message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                    }
+                                })
+                            })
+                        })
+                    });
+                    break
+                }
+
+                default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `remove` and `set`.**")
+            }
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id)
+            }, 2000);
+            break
+        }
+
+
+
+        case "icon": {
+            // main hub for clan icons
+            // ============================
+            // removal of icons is allowed
+            // for server mods to filter
+            // icons that are contradicting
+            // server rules
+            switch (args[1]) {
+
+                case "set": {
+                    // set icon
+                    let icon = args[2];
+                    if (!icon) {
+                        if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach an image or enter an image URL!**");
+                        if (message.attachments.size > 0) {
+                            const attachment = message.attachments.first();
+                            icon = attachment.url;
+                            const length = icon.length;
+                            if (
+                                icon.indexOf("png", length - 3) === -1 &&
+                                icon.indexOf("jpg", length - 3) === -1 &&
+                                icon.indexOf("jpeg", length - 4) === -1
+                            ) return message.channel.send("❎ **| Hey, please provide a valid image!**")
+                        }
+                    }
+                    if (!icon.startsWith("http")) return message.channel.send("❎ **| Hey, I think that icon link is invalid!**");
+                    query = {discordid: message.author.id};
+                    binddb.findOne(query, (err, userres) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        let clan = userres.clan;
+                        query = {name: clan};
+                        clandb.findOne(query, (err, clanres) => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            }
+                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
 
                             let memberlist = clanres.member_list;
                             let member_index = memberlist.findIndex(member => member.id === message.author.id);
@@ -2913,7 +3112,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             }
             break
         }
-        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `about`, `accept`, `auction`, `cooldown`, `create`, `demote`, `description`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, `promote`, and `shop`.**")
+        default: return message.channel.send("❎ **| I'm sorry, looks like your first argument is invalid! Accepted arguments are `about`, `accept`, `auction`, `banner`, `cooldown`, `create`, `demote`, `description`, `disband`, `lb`, `icon`, `info`, `kick`, `leave`, `match`, `members`, `power`, `powerup`, `promote`, and `shop`.**")
     }
 };
 
@@ -2922,5 +3121,5 @@ module.exports.config = {
     description: "Main command for clans.",
     usage: "clan about",
     detail: "Usage outputs the clans wiki which contains every information about clans.",
-    permission: "None / Clan Co-Leader / Clan Leader / Referee / Moderator"
+    permission: "None | Clan Co-Leader | Clan Leader | Referee | Helper | Moderator"
 };
