@@ -44,7 +44,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let embed = editEmbed(res, page, rolecheck, footer, index);
 
         message.channel.send({embed: embed}).then(msg => {
-            if (Math.ceil(res.previous_usernames.length / 10) === page) return;
+            const max_page = Math.ceil(res.previous_usernames.length / 10);
+            if (max_page === page) return;
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
@@ -67,24 +68,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
 
             back.on('collect', () => {
-                if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                --page;
+                if (page === 1) page = max_page;
+                else --page;
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 embed = editEmbed(res, page, rolecheck, footer, index);
                 msg.edit({embed: embed}).catch(console.error)
             });
 
             next.on('collect', () => {
-                if (page === Math.ceil(res.previous_usernames.length / 10)) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                ++page;
+                if (page === max_page) page = 1;
+                else ++page;
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 embed = editEmbed(res, page, rolecheck, footer, index);
                 msg.edit({embed: embed}).catch(console.error);
             });
 
             forward.on('collect', () => {
-                if (page === Math.ceil(res.previous_usernames.length / 10)) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                page = Math.min(page + 10, Math.ceil(res.previous_usernames.length / 10));
+                if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                page = Math.min(page + 10, max_page);
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                 embed = editEmbed(res, page, rolecheck, footer, index);
                 msg.edit({embed: embed}).catch(console.error)
