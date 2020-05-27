@@ -14,6 +14,7 @@ module.exports.run = alicedb => {
             if (err) return console.log(err);
             updateVal = {
                 $set: {
+                    hasSubmittedMapShare: false,
                     transferred: 0
                 }
             };
