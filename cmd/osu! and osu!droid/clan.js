@@ -41,6 +41,8 @@ function editMember(clanres, page, rolecheck, footer, index) {
         .setTitle(`${clanres.name} Members (Page ${page}/5)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
+
+    if (clanres.icon) embed.setThumbnail(clanres.icon);
     
     let list = clanres.member_list;
     let leader = clanres.leader;
