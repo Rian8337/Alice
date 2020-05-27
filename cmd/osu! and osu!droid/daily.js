@@ -592,7 +592,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             break
                         }
                         case "mod": {
-                            if (osudroid.mods.modbits_from_string(mod) & osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
+                            if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
                             break
                         }
                         case "rank": {
@@ -625,7 +625,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                             }
-                            if (!bonuscheck && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                            if (!bonuscheck && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                             if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
                             if (!found) {
@@ -1072,7 +1072,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
                         }
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                        if (!found && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) != osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                        if (!found && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                         if (!found) points += dailyres.points;
 
@@ -1101,7 +1101,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "mod": {
-                                    if (osudroid.mods.modbits_from_string(mod) & osudroid.mods.modbits_from_string(bonus[i][1])) {
+                                    if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[i][1])) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
