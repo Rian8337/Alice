@@ -25,5 +25,5 @@ module.exports.run = alicedb => {
 };
 
 module.exports.config = {
-    name: "coindailyreset"
+    name: "dailyreset"
 };
