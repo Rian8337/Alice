@@ -9,7 +9,6 @@ module.exports.run = (client, message, args, maindb) => {
     const binddb = maindb.collection("userbind");
     const query = {previous_bind: {$all: [uid.toString()]}};
 
-    //TODO rework for previous binds
     binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
