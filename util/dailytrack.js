@@ -23,8 +23,6 @@ async function fetchScores(hash, page) {
     })
 }
 
-
-
 module.exports.run = (client, maindb, alicedb) => {
     const clandb = maindb.collection("clandb");
     const binddb = maindb.collection("userbind");
@@ -35,7 +33,7 @@ module.exports.run = (client, maindb, alicedb) => {
         if (err) return console.log("Cannot access database");
         if (!dailyres) return client.users.fetch("386742340968120321").then((user) => user.send("Hey dear, I need you to start a daily challenge now!")).catch(console.error);
         let timelimit = dailyres.timelimit;
-        if (Math.floor(Date.now() / 1000) - timelimit < 0) return;
+        if (Math.floor(Date.now() / 1000) < timelimit) return;
         let pass = dailyres.pass;
         let bonus = dailyres.bonus;
         let challengeid = dailyres.challengeid;

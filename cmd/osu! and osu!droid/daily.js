@@ -442,7 +442,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
                     let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-                    let timelimit = Math.max(0, dailyres[0].timelimit - Math.floor(Date.now() / 1000));
+                    let timelimit = Math.max(0, dailyres.timelimit - Math.floor(Date.now() / 1000));
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
                     let bonus_string = requirements[1];
@@ -832,7 +832,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         case "insane": {
                             if (challengeid.includes("w")) bonus = dailyres.bonus;
-                            else bonus = dailyres[0].bonus[3];
+                            else bonus = dailyres.bonus[3];
                             if (challengeid.includes("d") && !bonus) return message.channel.send("❎ **| I'm sorry, `insane` bonus type is only available for weekly challenges!**");
                             if (challengeid.includes("d")) index = 4;
                             else index = 1;
@@ -872,8 +872,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 else bonuslist = [challengeid, bonuscomplete];
                                 challengelist.push(bonuslist)
                             }
-                            let totalpoint = playerres[0].points + points;
-                            let alicecoins = playerres[0].alicecoins + points * 2;
+                            let totalpoint = playerres.points + points;
+                            let alicecoins = playerres.alicecoins + points * 2;
                             message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1 ? "point" : "points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                             updateVal = {
                                 $set: {
