@@ -156,7 +156,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 if (!giveres) return message.channel.send("❎ **| I'm sorry, this user has not used any daily claims before!**");
                                 let coins = giveres.alicecoins + amount;
-                                message.channel.send(`✅ **| ${message.author}, successfully transferred ${coin}\`${amount}\` Alice coins to ${totransfer}. You now have ${coin}\`${alicecoins - amount}\` Alice coins.**`)
+                                message.channel.send(`✅ **| ${message.author}, successfully transferred ${coin}\`${amount}\` Alice coins to ${totransfer}. You can transfer ${coin}\`${limit - (amount + transferred)}\` Alice coins left today. You now have ${coin}\`${alicecoins - amount}\` Alice coins.**`)
                                 let updateVal = {
                                     $set: {
                                         alicecoins: coins
