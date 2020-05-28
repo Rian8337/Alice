@@ -21,9 +21,13 @@ function hasUnicode(str = "") {
 function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
-    eligibleRoleList.forEach((id) => {
-        if (member.roles.cache.has(id[0])) res = id[1]
-    });
+    for (const id of eligibleRoleList) {
+        if (res === -1) break;
+        if (member.roles.cache.has(id[0])) {
+            if (id[1] === -1) res = id[1];
+            else res = Math.max(res, id[1])
+        }
+    }
     return res
 }
 
@@ -391,7 +395,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             query = {discordid: message.author.id};
-            binddb.findOne(query, async (err, userres) => {
+            binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
@@ -399,7 +403,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 query = {discordid: toaccept.id};
-                binddb.findOne(query, (err, joinres) => {
+                binddb.findOne(query, async (err, joinres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
