@@ -446,6 +446,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
                                 memberlist.push({
                                     id: toaccept.id,
+                                    uid: player.uid,
                                     rank: player.rank,
                                     hasPermission: false,
                                     battle_cooldown: curtime + 86400 * 4
