@@ -37,15 +37,15 @@ function timeConvert(num) {
 }
 
 function editMember(clanres, page, rolecheck, footer, index, coin) {
+    let list = clanres.member_list;
+    let leader = clanres.leader;
     let embed = new Discord.MessageEmbed()
-        .setTitle(`${clanres.name} Members (Page ${page}/5)`)
+        .setTitle(`${clanres.name} Members (Page ${page}/${Math.ceil(list.length / 5)})`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(rolecheck);
 
     if (clanres.icon) embed.setThumbnail(clanres.icon);
-    
-    let list = clanres.member_list;
-    let leader = clanres.leader;
+
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
@@ -84,7 +84,7 @@ function editAuction(res, coin, page, rolecheck, footer, index) {
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}. ${res[i].name}**`, `**Auctioneer**: ${res[i].auctioneer}\n**Created at**: ${new Date(res[i].creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(res[i].expirydate * 1000).toUTCString()}\n\n**Powerup**: ${capitalizeString(res[i].powerup)}\n**Amount**: ${res[i].amount.toLocaleString()}\n**Minimum bid amount**: ${coin}**${res[i].min_price.toLocaleString()}** Alice coins\n**Bidders**: ${res[i].bids.length.toLocaleString()}`)
+        embed.addField(`**${i+1}. ${res[i].name}**`, `**Auctioneer**: ${res[i].auctioneer}\n**Creation Date**: ${new Date(res[i].creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(res[i].expirydate * 1000).toUTCString()}\n\n**Powerup**: ${capitalizeString(res[i].powerup)}\n**Amount**: ${res[i].amount.toLocaleString()}\n**Minimum bid amount**: ${coin}**${res[i].min_price.toLocaleString()}** Alice coins\n**Bidders**: ${res[i].bids.length.toLocaleString()}`)
     }
 
     return embed
@@ -162,7 +162,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         .addField("Clan Leader", `<@${clanres.leader}>\n(${clanres.leader})`, true)
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", `${members}/25`, true)
-                        .addField("Created at", new Date(clandate).toUTCString(), true)
+                        .addField("Creation Date", new Date(clandate).toUTCString(), true)
                         .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`, true);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
@@ -213,7 +213,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) rolecheck = clanrole.hexColor;
                     let embed = editMember(clanres, page, rolecheck, footer, index, coin);
+                    const max_page = Math.ceil(clanres.member_list.length / 5);
                     message.channel.send({embed: embed}).then(msg => {
+                        if (page === max_page) return;
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
                                 msg.react("➡️").then(() => {
@@ -236,7 +238,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         });
 
                         back.on('collect', () => {
-                            if (page === 1) page = 5;
+                            if (page === 1) page = max_page;
                             else page--;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index, coin);
@@ -244,7 +246,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         });
 
                         next.on('collect', () => {
-                            if (page === 5) page = 1;
+                            if (page === max_page) page = 1;
                             else page++;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index, coin);
@@ -252,8 +254,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         });
 
                         forward.on('collect', () => {
-                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            else page = 5;
+                            if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            else page = max_page;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editMember(clanres, page, rolecheck, footer, index, coin);
                             msg.edit({embed: embed}).catch(console.error)
@@ -289,6 +291,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 if (!clanres[(page - 1)*20]) return message.channel.send("❎ **| Nah, we don't have that much clan :p**");
                 let output = editLeaderboard(clanres, page);
                 message.channel.send('```c\n' + output + '```').then(msg => {
+                    const max_page = Math.ceil(clanres.length / 20);
+                    if (page === max_page) return;
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
@@ -310,7 +314,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     });
 
                     back.on('collect', () => {
-                        if (page === 1) page = Math.ceil(clanres.length / 20);
+                        if (page === 1) page = max_page;
                         else page--;
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
@@ -318,7 +322,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     });
 
                     next.on('collect', () => {
-                        if (page * 20 >= clanres.length) page = 0;
+                        if (page === max_page) page = 1;
                         else page++;
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
@@ -326,7 +330,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     });
 
                     forward.on('collect', () => {
-                        page = Math.min(page + 10, Math.ceil(clanres.length / 20));
+                        page = Math.min(page + 10, max_page);
                         output = editLeaderboard(clanres, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
@@ -1137,7 +1141,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
+                            const clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
                             if (clanrole) {
                                 clanrole.delete("Clan disbanded").catch(console.error);
                                 let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
@@ -1145,6 +1149,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     message.guild.member(member.id).roles.remove(role, "Clan disbanded").catch(console.error)
                                 })
                             }
+                            const channel = message.guild.channels.cache.find(c => c.name === clan);
+                            if (channel) channel.delete('Clan disbanded').catch(console.error);
+
                             updateVal = {
                                 $set: {
                                     clan: ""
