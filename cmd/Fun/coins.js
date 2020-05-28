@@ -75,6 +75,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             challenges: [],
                             points: 0,
                             transferred: 0,
+                            hasSubmittedMapShare: false,
+                            isBannedFromMapShare: false,
                             dailycooldown: curtime + 86400,
                             chatcooldown: Math.floor(Date.now() / 1000),
                             alicecoins: daily,

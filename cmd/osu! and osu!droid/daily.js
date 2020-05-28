@@ -661,6 +661,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challenges: [[challengeid, bonuscomplete]],
                                 points: points,
                                 transferred: 0,
+                                hasSubmittedMapShare: false,
+                                isBannedFromMapShare: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
                                 dailycooldown: 0,
                                 alicecoins: points * 2
@@ -906,9 +908,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 discordid: message.author.id,
                                 challenges: [bonuslist],
                                 points: points,
+                                transferred: 0,
+                                hasSubmittedMapShare: false,
+                                isBannedFromMapShare: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
                                 dailycooldown: 0,
-                                alicecoins: points * 2
+                                alicecoins: points * 2,
+                                streak: 0
                             };
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
@@ -1191,9 +1197,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 challenges: [bonuslist],
                                 points: points,
                                 transferred: 0,
+                                hasSubmittedMapShare: false,
+                                isBannedFromMapShare: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
                                 dailycooldown: 0,
-                                alicecoins: points * 2
+                                alicecoins: points * 2,
+                                streak: 0
                             };
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
