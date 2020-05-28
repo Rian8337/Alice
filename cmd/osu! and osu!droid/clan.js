@@ -36,7 +36,7 @@ function timeConvert(num) {
     return [days, hours, minutes, seconds]
 }
 
-function editMember(clanres, page, rolecheck, footer, index) {
+function editMember(clanres, page, rolecheck, footer, index, coin) {
     let embed = new Discord.MessageEmbed()
         .setTitle(`${clanres.name} Members (Page ${page}/5)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -49,7 +49,7 @@ function editMember(clanres, page, rolecheck, footer, index) {
     let memberstring = '';
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
         if (!list[i]) break;
-        memberstring += `**${i+1}. <@${list[i].id}> (#${list[i].rank})**\n**Discord ID**: ${list[i].id}\n**Uid**: ${list[i].uid}\n**Role**: ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n\n`
+        memberstring += `**${i+1}. <@${list[i].id}> (#${list[i].rank})**\n**Discord ID**: ${list[i].id}\n**Uid**: ${list[i].uid}\n**Role**: ${list[i].hasPermission ? `${list[i].id === leader ? "Leader" : "Co-Leader"}` : "Member"}\n**Upkeep Value**: ${coin}${(500 - Math.floor(34.74 * Math.log(list[i].rank))).toLocaleString()} Alice coins\n\n`
     }
     embed.setDescription(memberstring);
     return embed
@@ -212,7 +212,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
                     let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                     if (clanrole) rolecheck = clanrole.hexColor;
-                    let embed = editMember(clanres, page, rolecheck, footer, index);
+                    let embed = editMember(clanres, page, rolecheck, footer, index, coin);
                     message.channel.send({embed: embed}).then(msg => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
@@ -231,7 +231,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 1;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editMember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index, coin);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
@@ -239,7 +239,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (page === 1) page = 5;
                             else page--;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editMember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index, coin);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
@@ -247,7 +247,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (page === 5) page = 1;
                             else page++;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editMember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index, coin);
                             msg.edit({embed: embed}).catch(console.error);
                         });
 
@@ -255,7 +255,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             else page = 5;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                            embed = editMember(clanres, page, rolecheck, footer, index);
+                            embed = editMember(clanres, page, rolecheck, footer, index, coin);
                             msg.edit({embed: embed}).catch(console.error)
                         });
 
