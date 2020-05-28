@@ -398,8 +398,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                const uid = userres.uid;
-                const player = await new osudroid.PlayerInfo().get({uid: uid});
                 query = {discordid: toaccept.id};
                 binddb.findOne(query, (err, joinres) => {
                     if (err) {
@@ -408,6 +406,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                     if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
+                    const uid = joinres.uid;
+                    const player = await new osudroid.PlayerInfo().get({uid: uid});
                     if (!joinres.joincooldown) joinres.joincooldown = 0;
                     let cooldown = joinres.joincooldown - curtime;
                     if (cooldown > 0) {
