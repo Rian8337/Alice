@@ -270,12 +270,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let alicecoins = 0;
                     let points = 0;
                     let challenges = 0;
-                    let challengelist = '';
                     if (dailyres) {
                         alicecoins = dailyres.alicecoins;
                         points = dailyres.points;
                         challenges = dailyres.challenges.length;
-                        challengelist = dailyres.challenges
                     }
                     const player = await new osudroid.PlayerInfo().get({uid: uid});
                     let rolecheck;
@@ -288,7 +286,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .setThumbnail(player.avatarURL)
-                        .addField("Statistics", `**Points**: ${points}\n**Alice Coins**: ${coin}${alicecoins}\n**Challenges completed**: ${challengestring} (${challenges})`);
+                        .addField("Statistics", `**Points**: ${points}\n**Alice Coins**: ${coin}${alicecoins}\n**Challenges completed**: ${challenges}`);
 
                     message.channel.send({embed: embed}).catch(console.error);
                     cd.add(message.author.id);
