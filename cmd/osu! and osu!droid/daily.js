@@ -302,7 +302,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // alice coins leaderboard is
             // redundant as you can check
             // it using a!daily profile
-            let page = 0;
+            message.channel.send("❎ **| I'm sorry, leaderboards are disabled for now.**");
+            /*let page = 0;
             if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
             let pointsort = {points: -1};
             pointdb.find({}, {projection: {_id: 0, uid: 1, points: 1, username: 1, challenges: 1}}).sort(pointsort).toArray((err, res) => {
@@ -365,7 +366,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 setTimeout(() => {
                     cd.delete(message.author.id)
                 }, 10000)
-            });
+            });*/
             break
         }
         case "check": {
