@@ -350,7 +350,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     forward.on('collect', () => {
-                        page = Math.floor(res.length / 20);
+                        page = Math.floor(res.length / 20) - 1;
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
