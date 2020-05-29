@@ -204,12 +204,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.author.id != '386742340968120321' && message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     // declaration of variables used in switch cases
-    let binddb = maindb.collection("userbind");
-    let dailydb = alicedb.collection("dailychallenge");
-    let pointdb = alicedb.collection("playerpoints");
-    let clandb = maindb.collection("clandb");
-    let coin = client.emojis.cache.get("669532330980802561");
-    let footer = config.avatar_list;
+    const binddb = maindb.collection("userbind");
+    const dailydb = alicedb.collection("dailychallenge");
+    const pointdb = alicedb.collection("playerpoints");
+    const clandb = maindb.collection("clandb");
+    const coin = client.emojis.cache.get("669532330980802561");
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed();
     let query = {};
@@ -661,8 +661,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 transferred: 0,
                                 hasSubmittedMapShare: false,
                                 isBannedFromMapShare: false,
+                                hasClaimedDaily: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
-                                dailycooldown: 0,
                                 alicecoins: points * 2
                             };
                             pointdb.insertOne(insertVal, err => {
@@ -909,8 +909,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 transferred: 0,
                                 hasSubmittedMapShare: false,
                                 isBannedFromMapShare: false,
+                                hasClaimedDaily: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
-                                dailycooldown: 0,
                                 alicecoins: points * 2,
                                 streak: 0
                             };
@@ -1197,8 +1197,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 transferred: 0,
                                 hasSubmittedMapShare: false,
                                 isBannedFromMapShare: false,
+                                hasClaimedDaily: false,
                                 chatcooldown: Math.floor(Date.now() / 1000),
-                                dailycooldown: 0,
                                 alicecoins: points * 2,
                                 streak: 0
                             };

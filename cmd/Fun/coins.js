@@ -1,21 +1,13 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 
-function timeconvert (num) {
-    let sec = parseInt(num);
-    let hours = Math.floor(sec / 3600);
-    let minutes = Math.floor((sec - hours * 3600) / 60);
-    let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes, seconds]
-}
-
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000' && message.guild.id !== '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in droid (International) Discord server and droid café server!**");
     const binddb = maindb.collection("userbind");
     const pointdb = alicedb.collection("playerpoints");
     const coin = client.emojis.cache.get("669532330980802561");
-    let curtime = Math.floor(Date.now() / 1000);
+    const curtime = Math.floor(Date.now() / 1000);
     if (curtime - (message.member.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, you haven't been in the server for a week!**");
     let query = {};
     switch (args[0]) {
@@ -38,13 +30,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let daily = 100;
                     let streakcomplete = false;
                     if (dailyres) {
+                        if (dailyres.hasClaimedDaily) return message.channel.send(`❎ **| I'm sorry, you have claimed today's ${coin}Alice coins! Daily claim resets at 0:00 UTC each day.**`);
                         streak += dailyres.streak;
-                        let timelimit = dailyres.dailycooldown - curtime;
-                        if (timelimit > 0) {
-                            let time = timeconvert(timelimit);
-                            return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You can claim ${coin}Alice coins again in ${time[0] === 0 ? "" : `${time[0] === 1 ? `${time[0]} hour` : `${time[0]} hours`}`}${time[1] === 0 ? "" : `${time[0] === 0 ? "" : ", "}${time[1] === 1 ? `${time[1]} minute` : `${time[1]} minutes`}`}${time[2] === 0 ? "" : `${time[1] === 0 ? "" : ", "}${time[2] === 1 ? `${time[2]} second` : `${time[2]} seconds`}`}.**`)
-                        }
-                        if (timelimit <= -86400) streak = 1;
                         if (streak === 5) {
                             streakcomplete = true;
                             daily += 200;
@@ -54,7 +41,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
                         let updateVal = {
                             $set: {
-                                dailycooldown: curtime + 86400,
                                 alicecoins: totalcoins,
                                 streak: streak
                             }
@@ -77,7 +63,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             transferred: 0,
                             hasSubmittedMapShare: false,
                             isBannedFromMapShare: false,
-                            dailycooldown: curtime + 86400,
+                            hasClaimedDaily: true,
                             chatcooldown: Math.floor(Date.now() / 1000),
                             alicecoins: daily,
                             streak: 1
