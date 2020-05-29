@@ -41,6 +41,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
                         let updateVal = {
                             $set: {
+                                hasClaimedDaily: true,
                                 alicecoins: totalcoins,
                                 streak: streak
                             }
@@ -48,9 +49,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         pointdb.updateOne(query, updateVal, err => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            console.log("Alice coins updated")
                         })
                     } else {
                         message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`1\`. You now have ${coin}\`${daily}\` Alice coins.**`);
@@ -71,9 +71,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         pointdb.insertOne(insertVal, err => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            console.log("Alice coins updated")
                         })
                     }
                 })
