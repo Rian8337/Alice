@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const http = require('http');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 const cd = new Set();
@@ -951,6 +950,29 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
+        case "checksubmit": {
+            // allows users to see who has submitted plays for specific challenge.
+            // useful for clan leaders
+            const challengeid = args[1];
+            if (!challengeid) return message.channel.send("❎ **| Hey, please enter a challenge ID!**");
+            const uid = parseInt(args[2]);
+            if (isNaN(uid)) return message.channel.send("❎ **| Hey, please enter a valid uid!**");
+            query = {uid: uid.toString()};
+            pointdb.findOne(query, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!res) return message.channel.send(`❎ **| Uid ${uid} has never played any challenge before.**`);
+                const challenges = res.challenges;
+                for (const challenge of challenges) {
+                    if (challenge[0] !== challengeid) continue;
+                    return message.channel.send(`✅ **| Uid ${uid} has played challenge \`${challengeid}\`.**`)
+                }
+                message.channel.send(`❎ **| Uid ${uid} has not played challenge \`${challengeid}\` or a challenge with that challenge ID does not exist.**`)
+            });
+            break
+        }
         default: {
             // if args[0] is not defined, will
             // submit the message author's play
@@ -1244,7 +1266,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "daily",
     description: "Main command for daily challenges.",
-    usage: "daily\ndaily about\ndaily bounty [check [challenge ID]]\ndaily check [challenge ID]\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
-    detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane` [String]\n`challenge ID`: The ID of the challenge [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate [String]\n`page`: Page of leaderboard [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
+    usage: "daily\ndaily about\ndaily bounty [check [challenge ID]]\ndaily check [challenge ID]\ndaily checksubmit <challenge ID> <uid>\ndaily lb [page]\ndaily manual <user> <challenge ID> [bonus](Helper+)\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
+    detail: "`bonus`: Bonus type. If weekly challenge's bonus is fulfilled, use `insane`.\nAccepted arguments are `easy`, `normal`, `hard`, and `insane` [String]\n`challenge ID`: The ID of the challenge [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate [String]\n`page`: Page of leaderboard [Integer]\n`uid`: The uid to check submission for [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
     permission: "None | Helper | Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
