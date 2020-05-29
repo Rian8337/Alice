@@ -18,9 +18,25 @@ module.exports.run = alicedb => {
                     transferred: 0
                 }
             };
-            pointdb.updateMany({transferred: {$gt: 0}}, updateVal, err => {
-                if (err) return console.log(err)
-            })
+            pointdb.updateMany({}, updateVal, err => {
+                if (err) return console.log(err);
+                updateVal = {
+                    $set: {
+                        streak: 1
+                    }
+                };
+                pointdb.updateMany({hasClaimedDaily: false}, updateVal, err => {
+                    if (err) return console.log(err);
+                    updateVal = {
+                        $set: {
+                            hasClaimedDaily: false
+                        }
+                    };
+                    pointdb.updateMany({}, updateVal, err => {
+                        if (err) return console.log(err)
+                    })
+                })
+            });
         })
     })
 };
