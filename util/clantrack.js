@@ -49,7 +49,7 @@ module.exports.run = (client, maindb, alicedb) => {
             await getRank(binddb, member_list, i, async function checkRank(player_rank, stopFlag = false) {
                 if (stopFlag) {
                     let total_cost = 200;
-                    for (let rank of rank_list) total_cost += 500 + Math.floor(34.74 * Math.log(rank));
+                    for (let rank of rank_list) total_cost += 500 - Math.floor(34.74 * Math.log(rank));
                     console.log(clan.name, "total cost:", total_cost);
                     pointdb.findOne({discordid: leader}, (err, pointres) => {
                         if (err) return console.log(err);
