@@ -25,6 +25,8 @@ async function getRank(binddb, memberlist, i, cb) {
 
 module.exports.run = (client, maindb, alicedb) => {
     console.log("Retrieving clan data");
+    const guild = client.guilds.cache.get("316545691545501706");
+    const role = guild.roles.cache.find(r => r.name === 'Clans');
     const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
     const pointdb = alicedb.collection("playerpoints");
@@ -40,6 +42,7 @@ module.exports.run = (client, maindb, alicedb) => {
             let member_list = clan.member_list;
             let leader = clan.leader;
             let power = clan.power;
+            const clanrole = guild.roles.cache.find(r => r.name === clan.name);
 
             let i = 0;
             let rank_list = [];
@@ -62,6 +65,10 @@ module.exports.run = (client, maindb, alicedb) => {
                                 let kicked = member_list[index].id;
 
                                 member_list.splice(index, 1);
+                                if (clanrole) {
+                                    const member = guild.member(kicked);
+                                    if (member) member.roles.remove([role, clanrole], "Kicked from clan").catch(console.error)
+                                }
 
                                 client.users.fetch(leader).then((user) => user.send("❗**| I'm sorry, as you do not maintain enough Alice coins for your weekly upkeep, a clan member has been kicked!**").catch(console.error)).catch(console.error);
                                 client.users.fetch(kicked).then((user) => user.send("❗**| I'm sorry, as your clan leader does not maintain enough Alice coins for your weekly upkeep, you have been kicked from your previous clan!**").catch(console.error)).catch(console.error);
