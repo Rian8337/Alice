@@ -198,7 +198,7 @@ module.exports.run = (client, message, args) => {
 
         let string = '❗**| ';
         if (mode === 'single') string += `${message.author}, solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
-        else string += `Solve this equation within 30 seconds (level ${level}, ${operator_amount} operator(s))!\n\`${equation} = ...\``;
+        else string += `Solve this equation within 30 seconds (level ${level}, ${operator_amount} operator(s))!\n\`${equation} = ...\`**`;
 
         message.channel.send(string).then(msg => {
             let collector;
