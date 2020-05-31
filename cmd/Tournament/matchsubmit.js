@@ -42,14 +42,14 @@ module.exports.run = (client, message, args, maindb) => {
 		if (!matchres) return message.channel.send("❎ **| I'm sorry, I cannot find the match!**");
 		let players = matchres.player;
 		let play_list = [];
-		let min_time_diff = Number.POSITIVE_INFINITY;
+		let min_time_diff = Number.NEGATIVE_INFINITY;
 		let hash = '';
 		let i = -1;
 		players.forEach(async player => {
 			i++;
 			await getPlay(i, player[1], data => {
 				play_list.push(data);
-				if (min_time_diff > data[1].date) {
+				if (min_time_diff < data[1].date) {
 					min_time_diff = data[1].date.getTime();
 					hash = data[1].hash
 				}
