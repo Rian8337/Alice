@@ -242,7 +242,7 @@ module.exports.run = (client, message, args) => {
                     }
 
                     let answer_string = '';
-                    answer_list.sort((a, b) => {return b - a});
+                    answer_list.sort((a, b) => {return b.count - a.count});
                     for (let i = 0; i < answer_list.length; i++) answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
 
                     let rolecheck;
