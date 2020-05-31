@@ -26,16 +26,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    let streak = 1;
+                    let streak = 0;
                     let daily = 50;
                     let streakcomplete = false;
                     if (dailyres) {
                         if (dailyres.hasClaimedDaily) return message.channel.send(`❎ **| I'm sorry, you have claimed today's ${coin}Alice coins! Daily claim resets at 0:00 UTC each day.**`);
-                        streak += dailyres.streak;
+                        streak = dailyres.streak;
+                        ++streak;
                         if (streak === 5) {
                             streakcomplete = true;
                             daily += 100;
-                            streak = 1
+                            streak = 0
                         }
                         let totalcoins = dailyres.alicecoins + daily;
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
