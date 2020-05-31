@@ -5,9 +5,10 @@ module.exports.run = alicedb => {
         if (err) return console.log(err);
         const dailyreset = res.dailyreset;
         if (dailyreset > time) return;
+        console.log("Resetting daily claim");
         let updateVal = {
             $set: {
-                dailyreset: time + 86400
+                dailyreset: dailyreset + 86400
             }
         };
         pointdb.updateOne({discordid: "386742340968120321"}, updateVal, err => {
