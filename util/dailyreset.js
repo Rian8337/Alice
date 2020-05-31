@@ -23,7 +23,7 @@ module.exports.run = alicedb => {
                 if (err) return console.log(err);
                 updateVal = {
                     $set: {
-                        streak: 1
+                        streak: 0
                     }
                 };
                 pointdb.updateMany({hasClaimedDaily: false}, updateVal, err => {
