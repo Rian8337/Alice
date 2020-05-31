@@ -23,6 +23,10 @@ module.exports.run = maindb => {
                 const new_members = [];
                 for (const member of members) {
                     const user = res.find(u => u.discordid === member.id);
+                    if (!user) {
+                        console.log(`Couldn't find bind with Discord ID ${member.id}`);
+                        continue
+                    }
                     const previous_bind = user.previous_bind;
                     let rank = Number.POSITIVE_INFINITY;
                     let fix_uid = 0;
