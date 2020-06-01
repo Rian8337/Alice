@@ -50,14 +50,11 @@ function spaceFill(s, l) {
 
 function editPoint(res, page) {
     let output = '#   | Username         | UID    | Challenges | Points\n';
-    for (let i = page * 20; i < page * 20 + 20; i++) {
-        if (res[i]) {
-            if (res[i].points && res[i].challenges) output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].challenges.length.toString(), 11) + ' | ' + parseInt(res[i].points).toString() + '\n';
-            else {output += spaceFill((i+1).toString(), 4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 11) + ' | 0\n';}
-        }
-        else {output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 11) + ' | -\n';}
+    for (let i =  20 * (page - 1); i < 20 + 20 * (page - 1); i++) {
+        if (res[i]) output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].challenges.length.toString(), 11) + ' | ' + parseInt(res[i].points).toString() + '\n';
+        else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 11) + ' | -\n';
     }
-    output += "Current page: " + (page + 1) + "/" + (Math.floor(res.length / 20) + 1);
+    output += `Current Page: ${page}/${Math.ceil(res.length / 20)}`;
     return output
 }
 
@@ -302,18 +299,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // alice coins leaderboard is
             // redundant as you can check
             // it using a!daily profile
-            message.channel.send("❎ **| I'm sorry, leaderboards are disabled for now.**");
-            /*let page = 0;
-            if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
+            let page = 1;
+            if (parseInt(args[0]) > 1) page = parseInt(args[0]);
             let pointsort = {points: -1};
             pointdb.find({}, {projection: {_id: 0, uid: 1, points: 1, username: 1, challenges: 1}}).sort(pointsort).toArray((err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!res[page*20]) return message.channel.send("❎ **| Eh, we don't have that many players.**");
+                if (!res[(page-1)*20]) return message.channel.send("❎ **| Eh, we don't have that many players.**");
                 let output = editPoint(res, page);
-                message.channel.send('```c\n' + output + '```').then (msg => {
+                message.channel.send('```c\n' + output + '```').then(msg => {
+                    const max_page = Math.ceil(res.length / 20);
+                    if (page === max_page) return;
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
@@ -328,14 +326,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
                     backward.on('collect', () => {
-                        page = 0;
+                        page = Math.max(1, page - 10);
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
                     });
 
                     back.on('collect', () => {
-                        if (page === 0) page = Math.floor(res.length / 20);
+                        if (page === 1) page = max_page;
                         else page--;
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
@@ -343,7 +341,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     next.on('collect', () => {
-                        if ((page + 1) * 20 >= res.length) page = 0;
+                        if (page === max_page) page = 1;
                         else page++;
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
@@ -351,7 +349,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
 
                     forward.on('collect', () => {
-                        page = Math.floor(res.length / 20) - 1;
+                        page = Math.min(page + 10, max_page);
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
@@ -366,7 +364,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 setTimeout(() => {
                     cd.delete(message.author.id)
                 }, 10000)
-            });*/
+            });
             break
         }
         case "check": {
