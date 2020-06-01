@@ -85,7 +85,7 @@ class ReplayAnalyzer {
                 .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
                 })
-                .on('complete', async () => {
+                .on('complete', () => {
                     const result = Buffer.concat(data_array);
                     const stream = new Readable();
                     stream.push(result);
