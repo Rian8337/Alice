@@ -1,8 +1,8 @@
 const mods = require('./mods');
-const { Readable } = require('stream');
+const {Readable} = require('stream');
 const unzipper = require('unzipper');
 const javaDeserialization = require('java-deserialization');
-const request = require('request');
+const http = require('http');
 const ReplayData = require('./ReplayData');
 const CursorData = require('./CursorData');
 const ReplayObjectData = require('./ReplayObjectData');
@@ -79,13 +79,17 @@ class ReplayAnalyzer {
      */
     _decompress() {
         return new Promise((resolve, reject) => {
+            const options = {
+                host: "ops.dgsrz.com",
+                port: 80,
+                path: `/api/upload/${this.score_id}.odr`
+            };
             const data_array = [];
-            const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
-            request(url, {timeout: 10000})
-                .on('data', chunk => {
+            http.request(options, res => {
+                res.on("data", chunk => {
                     data_array.push(Buffer.from(chunk))
-                })
-                .on('complete', () => {
+                });
+                res.on("end", () => {
                     const result = Buffer.concat(data_array);
                     const stream = new Readable();
                     stream.push(result);
@@ -103,9 +107,7 @@ class ReplayAnalyzer {
                             setTimeout(() => reject(e), 2000)
                         })
                 })
-                .on('error', e => {
-                    reject(e)
-                })
+            }).end()
         })
     }
 
