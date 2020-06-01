@@ -174,7 +174,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                 updateVal = {
                     $set: {
-                        cooldown: cooldown - 86400 * 30
+                        cooldown: cooldown - 86400 * 30,
                         new_username: null,
                         attachment: null,
                         isProcessed: true
