@@ -135,6 +135,36 @@ client.on("ready", () => {
 
 client.on("message", message => {
 	try {
+		// mute detection for lounge ban
+		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
+			const embed = message.embeds[0];
+			let muted = '';
+			let mutetime = 0;
+			for (const field of embed.fields) {
+				if (field.name.startsWith("Length")) mutetime = parseInt(field.name.substring("Length: ".length));
+				if (field.name.startsWith("Muted User: ")) muted = message.guild.members.cache.find(m => m.user.username === field.name.substring("Muted User: ".length))
+				if (muted && mutetime) break
+			}
+			if (mutetime > 21600) {
+				const loungedb = alicedb.collection("loungelock");
+				loungedb.findOne({discordid: muted.id}, (err, res) => {
+					if (err) {
+						console.log(err);
+						message.channel.send("❎ **| Unable to retrieve lounge lock data.**")
+					}
+					else if (!res) {
+						loungedb.insertOne({discordid: muted.id}, err => {
+							if (err) {
+								console.log(err);
+								message.channel.send("❎ **| Unable to insert lounge lock data.**")
+							}
+							else message.channel.send("✅ **| Successfully locked user from lounge.**")
+						})
+					}
+				})
+			}
+		}
+		
 		if (message.author.bot) return;
 		message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 		client.utils.get("chatcoins").run(message, maindb, alicedb);
@@ -259,36 +289,6 @@ client.on("message", message => {
 				.addField("Content", message.content.substring(0, 1024));
 
 			client.channels.cache.get("683504788272578577").send({embed: embed})
-		}
-
-		// mute detection for lounge ban
-		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
-			const embed = message.embeds[0];
-			let muted = '';
-			let mutetime = 0;
-			for (const field of embed.fields) {
-				if (field.name.startsWith("Length")) mutetime = parseInt(field.name.substring("Length: ".length));
-				if (field.name.startsWith("Muted User: ")) muted = message.guild.members.cache.find(m => m.user.username === field.name.substring("Muted User: ".length))
-				if (muted && mutetime) break
-			}
-			if (mutetime > 21600) {
-				const loungedb = alicedb.collection("loungelock");
-				loungedb.findOne({discordid: muted.id}, (err, res) => {
-					if (err) {
-						console.log(err);
-						message.channel.send("❎ **| Unable to retrieve lounge lock data.**")
-					}
-					else if (!res) {
-						loungedb.insertOne({discordid: muted.id}, err => {
-							if (err) {
-								console.log(err);
-								message.channel.send("❎ **| Unable to insert lounge lock data.**")
-							}
-							else message.channel.send("✅ **| Successfully locked user from lounge.**")
-						})
-					}
-				})
-			}
 		}
 		
 		// self-talking (for fun lol)
