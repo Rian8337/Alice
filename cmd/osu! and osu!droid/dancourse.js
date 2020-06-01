@@ -74,7 +74,7 @@ module.exports.run = (client, message, args, maindb) => {
             rolecheck = "#000000"
         }
         let embed = new Discord.MessageEmbed()
-            .setTitle("droid Daninintei Courses")
+            .setTitle("osu!droid Daninintei Courses")
             .setThumbnail("https://cdn.discordapp.com/attachments/430939277720027136/623153414414532609/BG.png")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(rolecheck)
