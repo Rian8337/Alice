@@ -1,8 +1,8 @@
 const mods = require('./mods');
 const {Readable} = require('stream');
-const unzipper = require('unzipper');
+const {Parse} = require('unzipper');
 const javaDeserialization = require('java-deserialization');
-const http = require('http');
+const request = require('request');
 const ReplayData = require('./ReplayData');
 const CursorData = require('./CursorData');
 const ReplayObjectData = require('./ReplayObjectData');
@@ -79,22 +79,18 @@ class ReplayAnalyzer {
      */
     _decompress() {
         return new Promise((resolve, reject) => {
-            const options = {
-                host: "ops.dgsrz.com",
-                port: 80,
-                path: `/api/upload/${this.score_id}.odr`
-            };
             const data_array = [];
-            http.request(options, res => {
-                res.on("data", chunk => {
+            const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
+            request(url, {timeout: 10000})
+                .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
-                });
-                res.on("end", () => {
+                })
+                .on('complete', () => {
                     const result = Buffer.concat(data_array);
                     const stream = new Readable();
                     stream.push(result);
                     stream.push(null);
-                    stream.pipe(unzipper.Parse())
+                    stream.pipe(Parse())
                         .on('entry', async entry => {
                             const fileName = entry.path;
                             if (fileName === 'data') {
@@ -107,7 +103,9 @@ class ReplayAnalyzer {
                             setTimeout(() => reject(e), 2000)
                         })
                 })
-            }).end()
+                .on('error', e => {
+                    reject(e)
+                })
         })
     }
 
