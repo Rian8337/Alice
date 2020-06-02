@@ -21,7 +21,7 @@ function responseFactor(message, msg, like, hate, badword) {
     return res
 }
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = (message, args, alicedb) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the question! I need to rest too, you know.**");
     if (!args[0]) return;
     let filterdb = alicedb.collection("responsefilter");
