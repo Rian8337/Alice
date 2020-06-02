@@ -1,0 +1,11 @@
+module.exports.run = (oldMember, newMember, alicedb) => {
+    // Introduction message
+	client.subevents.get("introduction").run(oldMember, newMember);
+
+	// Lounge ban detection
+	client.subevents.get("roleaddloungebandetection").run(newMember, alicedb);
+};
+
+module.exports.config = {
+	name: "guildMemberUpdate"
+};

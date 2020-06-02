@@ -1,0 +1,8 @@
+module.exports.run = messages => {
+    // bulk message delete logging
+	client.subevents.get("bulkdeletelog").run(messages)
+};
+
+module.exports.config = {
+    name: "messageDeleteBulk"
+};
