@@ -9,6 +9,7 @@ const alicedbkey = process.env.ALICE_DB_KEY;
 
 client.commands = client.utils = client.aliases = client.events = client.subevents = new Discord.Collection();
 client.help = [];
+let maintenance = false;
 
 //Events loading
 fs.readdir('./events', (err, files) => {
@@ -96,11 +97,11 @@ alcdb.connect((err, db) => {
 
 // Client events
 client.on("ready", () => {
-	client.events.get("ready").run(client, maindb, alicedb)
+	client.events.get("ready").run(client, maindb, alicedb, maintenance)
 });
 
 client.on("message", message => {
-	client.events.get("message").run(client, message, maindb, alicedb)
+	client.events.get("message").run(client, message, maindb, alicedb, maintenance)
 });
 
 client.on("guildMemberAdd", member => {
