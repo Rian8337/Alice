@@ -1,12 +1,11 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
 
-let maintenance = false;
 let maintenance_reason = '';
 const current_map = [];
 let command_cooldown = 0;
 
-module.exports.run = (client, message, maindb, alicedb) => {
+module.exports.run = (client, message, maindb, alicedb, maintenance) => {
     message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	
 	// mute detection for lounge ban
