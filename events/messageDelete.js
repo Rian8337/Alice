@@ -1,4 +1,4 @@
-module.exports.run = (message, messageLog) => {
+module.exports.run = (client, message, messageLog) => {
     // Message delete logging
 	client.subevents.get("messagedeletelog").run(message, messageLog)
 };

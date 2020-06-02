@@ -1,4 +1,4 @@
-module.exports.run = messages => {
+module.exports.run = (client, messages) => {
     // bulk message delete logging
 	client.subevents.get("bulkdeletelog").run(messages)
 };

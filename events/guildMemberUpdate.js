@@ -1,4 +1,4 @@
-module.exports.run = (oldMember, newMember, alicedb) => {
+module.exports.run = (client, oldMember, newMember, alicedb) => {
     // Introduction message
 	client.subevents.get("introduction").run(oldMember, newMember);
 
