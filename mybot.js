@@ -64,22 +64,25 @@ let elainauri = 'mongodb://' + elainadbkey + '@elainadb-shard-00-00-r6qx3.mongod
 let maindb = '';
 let elainadb = new mongodb.MongoClient(elainauri, {useNewUrlParser: true, useUnifiedTopology: true});
 
-elainadb.connect( function(err, db) {
-	if (err) throw err;
-	//if (db)
-	maindb = db.db('ElainaDB');
-	console.log("Elaina DB connection established")
-});
-
 // Alice DB
 let aliceuri = 'mongodb+srv://' + alicedbkey + '@alicedb-hoexz.gcp.mongodb.net/test?retryWrites=true&w=majority';
 let alicedb = '';
 let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true, useUnifiedTopology: true});
 
+
+elainadb.connect( function(err, db) {
+	if (err) throw err;
+	//if (db)
+	maindb = db.db('ElainaDB');
+	console.log("Elaina DB connection established");
+	if (maindb && alicedb) client.login(process.env.BOT_TOKEN).catch(console.error)
+});
+
 alcdb.connect((err, db) => {
 	if (err) throw err;
 	alicedb = db.db("AliceDB");
-	console.log("Alice DB connection established")
+	console.log("Alice DB connection established");
+	if (maindb && alicedb) client.login(process.env.BOT_TOKEN).catch(console.error)
 });
 
 // Main client events
