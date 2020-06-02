@@ -69,7 +69,6 @@ let aliceuri = 'mongodb+srv://' + alicedbkey + '@alicedb-hoexz.gcp.mongodb.net/t
 let alicedb = '';
 let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true, useUnifiedTopology: true});
 
-
 elainadb.connect( function(err, db) {
 	if (err) throw err;
 	//if (db)
