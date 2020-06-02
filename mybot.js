@@ -10,16 +10,26 @@ const alicedbkey = process.env.ALICE_DB_KEY;
 
 let maintenance = false;
 let maintenance_reason = '';
-let current_map = [];
-let picture_cooldown = new Set();
-//let cd = new Set();
+const current_map = [];
+let command_cooldown = 0;
 
-client.commands = client.utils = client.aliases = new Discord.Collection();
+client.commands = client.utils = client.aliases = client.events = new Discord.Collection();
 client.help = [];
 
-console.log("Loading utilities and commands");
+//Events loading
+fs.readdir('./events', (err, files) => {
+	console.log("Loading events");
+	if (err) throw err;
+	files.forEach((file, i) => {
+		const props = require(`./events/${file}`);
+		console.log(`${i+1}. ${file} loaded`);
+		client.events.set(props.config.name, props)
+	})
+});
+
 // Utility loading
 fs.readdir("./util", (err, files) => {
+	console.log("Loading utilities");
 	if (err) throw err;
 	files.forEach((file, i) => {
 		let props = require(`./util/${file}`);
@@ -30,6 +40,7 @@ fs.readdir("./util", (err, files) => {
 
 // Command loading
 fs.readdir('./cmd', (err, folders) => {
+	console.log("Loading commands");
 	if (err) throw err;
 	folders.forEach((folder, i) => {
 		console.log(`${i+1}. Loading folder ${folder}`);
@@ -76,12 +87,13 @@ client.on("ready", () => {
     console.log("Alice Synthesis Thirty is up and running");
     client.user.setActivity("a!help");
 	
-    // API check and unverified prune
+    // Daily reset and unverified prune
 	setInterval(() => {
 		client.utils.get("unverified").run(client, alicedb);
 		client.utils.get("dailyreset").run(alicedb)
 	}, 10000);
 	
+	// Utilities
 	setInterval(() => {
 		console.log("Utilities running");
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
@@ -94,527 +106,158 @@ client.on("ready", () => {
 		}
 	}, 600000);
 	
+	// Clan rank update
 	setInterval(() => {
 		if (!maintenance) client.utils.get("clanrankupdate").run(maindb)
 	}, 1200000);
 
 	// Mudae role assignment reaction-based on droid cafe
-	let guild = client.guilds.cache.get("635532651029332000");
-	let channel = guild.channels.cache.get("640165306404438026");
-	channel.messages.fetch("657597328772956160").then(message => {
-		message.react('639481086425956382').catch(console.error);
-		let collector = message.createReactionCollector((reaction, user) => reaction.emoji.id === '639481086425956382' && user.id !== client.user.id);
-		collector.on("collect", () => {
-			message.reactions.cache.find((r) => r.emoji.id === '639481086425956382').users.fetch({limit: 10}).then(collection => {
-				let user = guild.member(collection.find((u) => u.id !== client.user.id).id);
-				let role = guild.roles.cache.get("640434406200180736");
-				if (!user.roles.cache.has(role.id)) user.roles.add(role, "Agreed to Mudae rules").catch(console.error);
-				else user.roles.remove(role, "Disagreed to Mudae rules").catch(console.error);
-				message.reactions.cache.forEach((reaction) => reaction.users.remove(user.id).catch(console.error))
-			})
-		})
-	}).catch(console.error);
+	client.events.get("mudaerolereaction").run(client)
 
 	// Challenge role assignment (reaction-based)
-	let interserver = client.guilds.cache.get("316545691545501706");
-	let interchannel = interserver.channels.cache.get("669221772083724318");
-	interchannel.messages.fetch("674626850164703232").then(message => {
-		message.react("✅").catch(console.error);
-		let collector = message.createReactionCollector((reaction, user) => reaction.emoji.name === "✅" && user.id !== client.user.id);
-		collector.on("collect", () => {
-			message.reactions.cache.find((r) => r.emoji.name === "✅").users.fetch({limit: 10}).then(collection => {
-				let user = interserver.member(collection.find((u) => u.id !== client.user.id).id);
-				let role = interserver.roles.cache.get("674918022116278282");
-				if (!user.roles.cache.has(role.id)) user.roles.add(role, "Automatic role assignment").catch(console.error);
-				else user.roles.remove(role, "Automatic role assignment").catch(console.error);
-				message.reactions.cache.forEach((reaction) => reaction.users.remove(user.id).catch(console.error))
-			})
-		})
-	}).catch(console.error)
+	client.events.get("challengerolereaction").run(client)
 });
 
 client.on("message", message => {
-	try {
-		// mute detection for lounge ban
-		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
-			const embed = message.embeds[0];
-			let muted = '';
-			let mutetime = 0;
-			for (const field of embed.fields) {
-				if (field.name.startsWith("Length")) mutetime = parseInt(field.name.substring("Length: ".length));
-				if (field.name.startsWith("Muted User: ")) muted = message.guild.members.cache.find(m => m.user.username === field.name.substring("Muted User: ".length))
-				if (muted && mutetime) break
-			}
-			if (mutetime > 21600) {
-				const loungedb = alicedb.collection("loungelock");
-				loungedb.findOne({discordid: muted.id}, (err, res) => {
-					if (err) {
-						console.log(err);
-						message.channel.send("❎ **| Unable to retrieve lounge lock data.**")
-					}
-					else if (!res) {
-						loungedb.insertOne({discordid: muted.id}, err => {
-							if (err) {
-								console.log(err);
-								message.channel.send("❎ **| Unable to insert lounge lock data.**")
-							}
-							else message.channel.send("✅ **| Successfully locked user from lounge.**")
-						})
-					}
-				})
-			}
-		}
-		
-		if (message.author.bot) return;
-		message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
-		client.utils.get("chatcoins").run(message, maindb, alicedb);
-		let msgArray = message.content.split(/\s+/g);
-		let command = msgArray[0];
-		let args = msgArray.slice(1);
-		if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
-			let images = [
-				"https://cdn.discordapp.com/attachments/440319362407333939/666825359198519326/unknown.gif",
-				"https://cdn.discordapp.com/attachments/316545691545501706/667287014152077322/unknown.gif",
-				"https://cdn.discordapp.com/attachments/635532651779981313/666825419298701325/unknown.gif",
-				"https://cdn.discordapp.com/attachments/635532651779981313/662844781327810560/unknown.gif",
-				"https://cdn.discordapp.com/attachments/635532651779981313/637868500580433921/unknown.gif"
-			];
-			const index = Math.floor(Math.random() * images.length);
-			message.channel.send({files: [images[index]]});
-		}
-		
-		// picture detector in #cute-no-lewd
-		if (message.channel.id === '686948895212961807') {
-			if (message.attachments.size > 1) message.delete().catch(console.error);
-
-			let images = [];
-			for (let i = 0; i < msgArray.length; i++) {
-				let part = msgArray[i];
-				let length = part.length;
-				if (!part.startsWith("http") && (part.indexOf("png", length - 3) === -1 && part.indexOf("jpg", length - 3) === -1 && part.indexOf("jpeg", length - 4) === -1 && part.indexOf("gif", length - 3) === -1)) continue;
-				try {
-					encodeURI(part)
-				} catch (e) {
-					continue
-				}
-				images.push(part)
-			}
-			if (images.length > 0 || message.attachments.size > 0) {
-				if (picture_cooldown.has(message.author.id)) {
-					client.commands.get("tempmute").run(client, message, [message.author.id, 600, `Please do not spam images in ${message.channel}!`])
-				}
-				else {
-					picture_cooldown.add(message.author.id);
-					setTimeout(() => {
-						picture_cooldown.delete(message.author.id)
-					}, 5000);
-				}
-				if (message.attachments.size <= 1) message.react("👍").then(() => message.react("👎").catch(console.error)).catch(console.error)
-			}
-		}
-		
-		// 8ball
-		if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
-			if (message.channel instanceof Discord.DMChannel) return message.channel.send("I do not want to respond in DMs!");
-			let args = msgArray.slice(0);
-			let cmd = client.utils.get("response");
-			return cmd.run(client, message, args, maindb, alicedb)
-		}
-		
-		// osu! automatic recognition
-		if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-			for (let i = 0; i < msgArray.length; i++) {
-				if (!msgArray[i].startsWith("https://osu.ppy.sh/") && !msgArray[i].startsWith("https://bloodcat.com/osu/s/")) continue;
-				let a = msgArray[i].split("/");
-				let id = parseInt(a[a.length - 1]);
-				if (isNaN(id)) continue;
-				if (msgArray[i].indexOf("#osu/") !== -1 || msgArray[i].indexOf("/b/") !== -1 || msgArray[i].indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map);
-				else if (msgArray[i].indexOf("/beatmapsets/") !== -1 || msgArray[i].indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, msgArray.slice(i), current_map, true)
-			}
-		}
-		
-		// YouTube link detection
-		if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
-			for (let i = 0; i < msgArray.length; i++) {
-				let msg = msgArray[i];
-				if (!msg.startsWith("https://youtu.be/") && !msg.startsWith("https://youtube.com/watch?v=") && !msg.startsWith("https://www.youtube.com/watch?v=")) continue;
-				let video_id;
-				let a = msg.split("/");
-				if (msg.startsWith("https://youtu.be")) video_id = a[a.length - 1];
-				if (!video_id) {
-					let params = a[a.length - 1].split("?");
-					params = params[params.length - 1].split("&");
-					for (let i = 0; i < params.length; i++) {
-						let param = params[i];
-						if (!param.startsWith("v=")) continue;
-						video_id = param.slice(2);
-						break;
-					}
-				}
-				if (!video_id) continue;
-				client.utils.get("youtube").run(client, message, video_id, current_map)
-			}
-		}
-		
-		// picture log
-		if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
-			let attachments = [];
-			for (const [, attachment] of message.attachments.entries()) {
-				let url = attachment.url;
-				let length = url.length;
-				if (url.indexOf("png", length - 3) === -1 && url.indexOf("jpg", length - 3) === -1 && url.indexOf("jpeg", length - 4) === -1 && url.indexOf("gif", length - 3) === -1) continue;
-				attachments.push(attachment)
-			}
-			if (attachments.length === 0) return;
-			let embed = new Discord.MessageEmbed()
-				.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-				.setColor('#cb8900')
-				.setTimestamp(new Date())
-				.attachFiles(attachments)
-				.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-				.addField("Channel", `${message.channel} | [Go to message](${message.url})`);
-
-			if (message.content) embed.addField("Content", message.content);
-			client.channels.cache.get("684630015538626570").send({embed: embed});
-		}
-		
-		// mention log
-		if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
-			let embed = new Discord.MessageEmbed()
-				.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-				.setColor("#00cb16")
-				.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-				.setTimestamp(new Date())
-				.addField("Channel", `${message.channel} | [Go to message](${message.url})`)
-				.addField("Content", message.content.substring(0, 1024));
-
-			client.channels.cache.get("683504788272578577").send({embed: embed})
-		}
-		
-		// self-talking (for fun lol)
-		if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') client.channels.cache.get("316545691545501706").send(message.content);
-		
-		// commands
-		if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
-			maintenance_reason = args.join(" ");
-			if (!maintenance_reason) maintenance_reason = 'Unknown';
-			maintenance = !maintenance;
-			message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
-			if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
-			else client.user.setActivity("a!help").catch(console.error)
-		}
-		
-		if (message.content.includes("m.mugzone.net/chart/")) {
-			let cmd = client.commands.get("malodychart");
-			cmd.run(client, message, args)
-		}
-		
-		if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
-			let mainbot = message.guild.members.cache.get("391268244796997643");
-			if (!mainbot) return;
-			let cmd = client.commands.get(command.slice(1)) || client.aliases.get(command.slice(1));
-			if (cmd && mainbot.user.presence.status == 'offline') {
-				if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
-				message.channel.startTyping().catch(console.error);
-				setTimeout(() => {
-					message.channel.stopTyping(true)
-				}, 5000);
-				//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-				if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
-				else console.log(`${message.author.tag} (DM): ${message.content}`);
-				cmd.run(client, message, args, maindb, alicedb, current_map);
-				//cd.add(message.author.id);
-				//setTimeout(() => {
-				//	cd.delete(message.author.id)
-				//}, 5000)
-			}
-		}
-		
-		if (message.content.startsWith(config.prefix)) {
-			let cmd = client.commands.get(command.slice(config.prefix.length)) || client.aliases.get(command.slice(config.prefix.length));
-			if (cmd) {
-				if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
-				message.channel.startTyping().catch(console.error);
-				setTimeout(() => {
-					message.channel.stopTyping(true)
-				}, 5000);
-				//if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-				if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
-				else console.log(`${message.author.tag} (DM): ${message.content}`);
-				cmd.run(client, message, args, maindb, alicedb, current_map);
-				//cd.add(message.author.id);
-				//setTimeout(() => {
-				//	cd.delete(message.author.id)
-				//}, 5000)
-			}
-		}
-	} catch (e) {}
-});
-
-// welcome message for international server
-client.on("guildMemberAdd", member => {
-	let channel = member.guild.channels.cache.get("360716684174032896");
-	if (!channel) return;
-	let joinMessage = `Welcome to ${member.guild.name}'s ${channel}, <@${member.id}>.\nTo verify yourself as someone who plays osu!droid or interested in the game and open the rest of the server, you can follow *any* of the following methods:\n\n- post your osu!droid screenshot (main menu if you are an online player or recent result (score) if you are an offline player). If you've just created an osu!droid account, please submit a score to the account before verifying\n\n- post your osu! profile (screenshot or link to profile) and reason why you join this server\n\nafter that, you can ping Moderator or Helper role and wait for one to come to verify you.\n\n**Do note that you have 1 day to verify, otherwise you will be automatically kicked.**`;
-	channel.send(joinMessage)
-});
-
-// introduction message
-client.on("guildMemberUpdate", (oldMember, newMember) => {
-	if (oldMember.user.bot) return;
-	let general = oldMember.guild.channels.cache.get("316545691545501706");
-	if (!general || oldMember.roles.cache.find((r) => r.name === "Member") || oldMember.roles.cache.size == newMember.roles.cache.size) return;
-	fs.readFile("welcome.txt", 'utf8', (err, data) => {
-		if (err) return console.log(err);
-		let welcomeMessage = `Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`;
-		setTimeout(() => {
-			oldMember.user.send(data).catch(console.error);
-			general.send(welcomeMessage, {files: ["https://i.imgur.com/LLzteLz.jpg"]})
-		}, 100)
-	})
-});
-
-// typing indicator
-client.on("typingStart", (channel, user) => {
-	if (channel.id != '683633835753472032' || user.id != '386742340968120321') return;
-	let general = client.channels.cache.get('316545691545501706');
-	general.startTyping().catch(console.error);
-	setTimeout(() => {
-		general.stopTyping(true)
-	}, 5000)
-});
-
-// member ban detection
-client.on("guildBanAdd", async (guild, user) => {
-	let banInfo = await guild.fetchBan(user.id);
-	let reason = banInfo.reason;
-	let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
-		.setTitle("Ban executed")
-		.setThumbnail(user.avatarURL({dynamic: true}))
-		.setFooter("Alice Synthesis Thirty", footer[index])
-		.setTimestamp(new Date())
-		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
-		.addField("=========================", `Reason: ${reason}`);
+	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	
-	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed});
+	// mute detection for lounge ban
+	if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
+		client.events.get("loungebanmutedetection").run(message, alicedb)
+	}
 
-	const loungedb = alicedb.collection("loungelock");
-	loungedb.findOne({discordid: user.id}, (err, res) => {
-		if (err) {
-			console.log(err);
-			console.log("Unable to retrieve lounge ban data")
-		}
-		if (res) return;
-		loungedb.insertOne({discordid: user.id}, err => {
-			if (err) {
-				console.log(err);
-				console.log("Unable to insert ban data")
-			}
-			guild.channels.cache.find(c => c.name === config.management_channel).send("✅ **| Successfully locked user from lounge.**")
-		})
-	})
+	if (message.author.bot) return;
+	client.utils.get("chatcoins").run(message, maindb, alicedb);
+	const msgArray = message.content.split(/\s+/g);
+	const command = msgArray[0];
+	const args = msgArray.slice(1);
+	
+	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
+		client.events.get("brbshower").run(messsage)
+	}
+	
+	// picture detector in #cute-no-lewd
+	if (message.channel.id === '686948895212961807') {
+		client.events.get("cutenolewd").run(client, message)
+	}
+	
+	// 8ball
+	if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
+		client.events.get("8ball").run(client, message, msgArray, alicedb)
+	}
+	
+	// osu! automatic recognition
+	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
+		client.events.get("osurecognition").run(client, message, current_map)
+	}
+	
+	// YouTube link detection
+	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+		client.events.get("youtube").run(client, message, current_map)
+	}
+	
+	// picture log
+	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
+		client.events.get("picturelog").run(client, message)
+	}
+	
+	// mention log
+	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
+		client.events.get("mentionlog").run(client, message)
+	}
+	
+	// self-talking (for fun lol)
+	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') {
+		client.channels.cache.get("316545691545501706").send(message.content)
+	}
+	
+	// commands
+	if (message.author.id === '386742340968120321' && command === 'a!maintenance') {
+		maintenance_reason = args.join(" ");
+		if (!maintenance_reason) maintenance_reason = 'Unknown';
+		maintenance = !maintenance;
+		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
+		if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
+		else client.user.setActivity("a!help").catch(console.error)
+	}
+
+	if (message.author.id === '386742340968120321' && command === 'a!cooldown') {
+		const seconds = parseFloat(args[0]);
+		if (isNaN(seconds) || seconds < 0) return message.channel.send("❎ **| Hey, please enter a valid cooldown period!**");
+		command_cooldown = seconds;
+		message.channel.send(`✅ **| Successfully set command cooldown to ${seconds} ${seconds === 1 ? "second" : "seconds"}.**`)
+	}
+	
+	if (message.content.includes("m.mugzone.net/chart/")) {
+		let cmd = client.commands.get("malodychart");
+		cmd.run(client, message, args)
+	}
+	
+	const obj = {
+		client: client,
+		message: message,
+		args: args,
+		maindb: maindb,
+		alicedb: alicedb,
+		command: command,
+		current_map: current_map,
+		command_cooldown: command_cooldown,
+		maintenance: maintenance,
+		maintenance_reason: maintenance_reason,
+		main_bot: true
+	};
+
+	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
+		let mainbot = message.guild.members.cache.get("391268244796997643");
+		if (!mainbot || mainbot.user.presence.status === 'offline') return;
+		obj.main_bot = false;
+		client.events.get("commandhandler").run(obj)
+	}
+	
+	if (message.content.startsWith(config.prefix)) {
+		client.events.get("commandhandler").run(obj)
+	}
 });
 
-// lounge ban detection
 client.on("guildMemberAdd", member => {
-	alicedb.collection("loungelock").findOne({discordid: member.id}, (err, res) => {
-		if (err) {
-			console.log(err);
-			console.log("Unable to retrieve lounge ban data")
-		}
-		if (!res) return;
-		const channel = client.channels.cache.get('667400988801368094');
-		channel.updateOverwrite(member.user, {"VIEW_CHANNEL": false}, 'Lounge ban').catch(console.error)
-	})
+	// welcome message for international server
+	client.events.get("joinmessage").run(member);
+
+	// lounge ban detection
+	client.events.get("newmemberloungeban").run(client, member, alicedb)
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-	if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
-	let role = newMember.roles.cache.find((r) => r.name === 'Lounge Pass');
-	if (!role) return;
-	alicedb.collection("loungelock").findOne({discordid: newMember.id}, (err, res) => {
-		if (err) {
-			console.log(err);
-			console.log("Unable to retrieve lounge ban data")
-		}
-		if (!res) return;
-		newMember.roles.remove(role, "Locked from lounge channel").catch(console.error);
-		const footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = new Discord.MessageEmbed()
-			.setDescription(`${newMember} is locked from lounge channel!`)
-			.setFooter(`User ID: ${newMember.id}`, footer[index])
-			.setColor("#b58d3c");
-		newMember.guild.channels.cache.find(c => c.name === config.management_channel).send({embed: embed})
-	})
+	// introduction message
+	client.events.get("introduction").run(oldMember, newMember);
+
+	// lounge ban detection
+	client.events.get("roleaddloungebandetection").run(newMember, alicedb);
 });
 
-// role logging
-client.on("guildMemberUpdate", (oldMember, newMember) => {
-	if (oldMember.guild.id != '316545691545501706') return;
-	if (oldMember.roles.cache.size == newMember.roles.cache.size) return;
-	let guild = client.guilds.cache.get('528941000555757598');
-	let logchannel = guild.channels.cache.get('655829748957577266');
-	let embed = new Discord.MessageEmbed()
-		.setTitle("Member role updated")
-		.setColor("#4c8fcb")
-		.setDescription(newMember.user.username);
-	let rolelist = '';
-	let count = 0;
-
-	if (oldMember.roles.cache.size > newMember.roles.cache.size) {
-		oldMember.roles.cache.forEach((role) => {
-			if (!newMember.roles.cache.get(role.id)) {
-				rolelist += role.name + " ";
-				count++
-			}
-		});
-		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
-		else rolelist = rolelist.trimRight();
-		embed.addField("Role removed", rolelist);
-		logchannel.send({embed: embed})
-	}
-	else {
-		newMember.roles.cache.forEach((role) => {
-			if (!oldMember.roles.cache.get(role.id)) {
-				rolelist += role.name + " ";
-				count++
-			}
-		});
-		if (count > 1) rolelist = rolelist.trimRight().split(" ").join(", ");
-		else rolelist = rolelist.trimRight();
-		embed.addField("Role added", rolelist);
-		logchannel.send({embed: embed})
-	}
+client.on("typingStart", (channel, user) => {
+	// typing indicator
+	client.events.get("typingindicator").run(channel, user)
 });
 
-// message logging
+client.on("guildBanAdd", async (guild, user) => {
+	// member ban detection
+	client.events.get("banneduserloungeban").run(guild, user, alicedb)
+});
+
 client.on("messageUpdate", (oldMessage, newMessage) => {
-	if (oldMessage.author.bot || oldMessage.channel instanceof Discord.DMChannel) return;
-	if (oldMessage.content == newMessage.content) return;
-	let logchannel = oldMessage.guild.channels.cache.find((c) => c.name === config.log_channel);
-	if (!logchannel) return;
-	const embed = new Discord.MessageEmbed()
-		.setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL({dynamic: true}))
-		.setFooter(`Author ID: ${oldMessage.author.id} | Message ID: ${oldMessage.id}`)
-		.setTimestamp(new Date())
-		.setColor("#00cb16")
-		.setTitle("Message edited")
-		.addField("Channel", `${oldMessage.channel} | [Go to message](${oldMessage.url})`)
-		.addField("Old Message", oldMessage.content.substring(0, 1024))
-		.addField("New Message", newMessage.content.substring(0, 1024));
-	logchannel.send({embed: embed})
+	// message update logging
+	client.events.get("messageupdatelog").run(oldMessage, newMessage)
 });
 
 client.on("messageDelete", message => {
-	if (message.author.bot || message.channel instanceof Discord.DMChannel) return;
-	let logchannel;
-	if (message.guild.id == '316545691545501706') {
-		if (message.attachments.size == 0) return;
-		logchannel = message.guild.channels.cache.find((c) => c.name === 'dyno-log');
-		if (!logchannel) return;
-		let attachments = [];
-		message.attachments.forEach((attachment) => {
-			attachments.push(attachment.proxyURL);
-			if (attachments.length == message.attachments.size) messageLog.send("Image attached", {files: attachments})
-		});
-		return
-	}
-	logchannel = message.guild.channels.cache.find((c) => c.name === config.log_channel);
-	if (!logchannel) return;
-	const embed = new Discord.MessageEmbed()
-		.setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
-		.setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
-		.setTimestamp(new Date())
-		.setColor("#cb8900")
-		.setTitle("Message deleted")
-		.addField("Channel", message.channel);
-
-	if (message.content) embed.addField("Content", message.content.substring(0, 1024));
-	logchannel.send({embed: embed});
-
-	if (message.attachments.size > 0) {
-		let attachments = [];
-		message.attachments.forEach((attachment) => {
-			attachments.push(attachment.proxyURL);
-			if (attachments.length == message.attachments.size) logchannel.send("Image attached", {files: attachments})
-		})
-	}
+	// message delete logging
+	client.events.get("messagedeletelog").run(message, messageLog)
 });
 
 client.on("messageDeleteBulk", messages => {
-	let message = messages.first();
-	let logchannel = message.guild.channels.cache.find((c) => c.name === config.log_channel);
-	if (!logchannel) return;
-	const embed = new Discord.MessageEmbed()
-		.setTitle("Bulk delete performed")
-		.setColor("#4354a3")
-		.setTimestamp(new Date())
-		.addField("Channel", message.channel)
-		.addField("Amount of messages", messages.size);
-	logchannel.send({embed: embed})
-});
-
-// role logging to keep watch on moderators in the server
-// role create
-client.on("roleCreate", role => {
-	if (role.guild.id != '316545691545501706') return;
-	let guild = client.guilds.cache.get('528941000555757598');
-	let logchannel = guild.channels.cache.get('655829748957577266');
-	if (!logchannel) return;
-	let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
-		.setTitle("Role created")
-		.setFooter("Alice Synthesis Thirty", footer[index])
-		.setTimestamp(new Date())
-		.setColor(role.hexColor)
-		.addField("Name: " + role.name, "Hoisted: " + role.hoist, true)
-		.addField("Mentionable: " + role.mentionable, "Position: " + role.position, true)
-		.addField("=================", "Permission bitwise: " + role.permissions);
-	logchannel.send({embed: embed})
-});
-
-// role update
-client.on("roleUpdate", (oldRole, newRole) => {
-	if (newRole.guild.id != '316545691545501706') return;
-	let guild = client.guilds.cache.get('528941000555757598');
-	let logchannel = guild.channels.cache.get('655829748957577266');
-	if (!logchannel) return;
-	let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
-		.setTitle("Role updated")
-		.setFooter("Alice Synthesis Thirty", footer[index])
-		.setTimestamp(new Date())
-		.setColor(newRole.hexColor)
-		.addField("Old name: " + oldRole.name, "New name: " + newRole.name, true)
-		.addField("Old hoisted: " + oldRole.hoist, "New hoisted: " + newRole.hoist,true)
-		.addField("Old mentionable: " + oldRole.mentionable, "New mentionable: " + newRole.hoist, true)
-		.addField("Old position: " + oldRole.position, "New position: " + newRole.position)
-		.addField("Old permission bitwise: " + oldRole.permissions, "New permission bitwise: " + newRole.permissions);
-	logchannel.send({embed: embed})
-});
-
-// role delete
-client.on("roleDelete", role => {
-	if (role.guild.id != '316545691545501706') return;
-	let guild = client.guilds.cache.get('528941000555757598');
-	let logchannel = guild.channels.cache.get('655829748957577266');
-	if (!logchannel) return;
-	let footer = config.avatar_list;
-	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
-		.setTitle("Role deleted")
-		.setFooter("Alice Synthesis Thirty", footer[index])
-		.setTimestamp(new Date())
-		.setColor(role.hexColor)
-		.addField("Name: " + role.name, "Hoisted: " + role.hoist, true)
-		.addField("Mentionable: " + role.mentionable, "Position: " + role.position, true)
-		.addField("=================", "Permission bitwise: " + role.permissions);
-	logchannel.send({embed: embed})
+	// bulk message delete logging
+	client.events.get("bulkdeletelog").run(messages)
 });
 
 client.login(process.env.BOT_TOKEN).catch(console.error);
