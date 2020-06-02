@@ -69,23 +69,29 @@ let aliceuri = 'mongodb+srv://' + alicedbkey + '@alicedb-hoexz.gcp.mongodb.net/t
 let alicedb = '';
 let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true, useUnifiedTopology: true});
 
-elainadb.connect( function(err, db) {
+elainadb.connect((err, db) => {
 	if (err) throw err;
 	maindb = db.db('ElainaDB');
 	console.log("Elaina DB connection established");
-	if (maindb && alicedb) client.login(process.env.BOT_TOKEN).catch(console.error)
+	if (maindb && alicedb) {
+		console.log("Connecting to Discord API");
+		client.login(process.env.BOT_TOKEN).catch(console.error)
+	}
 });
 
 alcdb.connect((err, db) => {
 	if (err) throw err;
 	alicedb = db.db("AliceDB");
 	console.log("Alice DB connection established");
-	if (maindb && alicedb) client.login(process.env.BOT_TOKEN).catch(console.error)
+	if (maindb && alicedb) {
+		console.log("Connecting to Discord API");
+		client.login(process.env.BOT_TOKEN).catch(console.error)
+	}
 });
 
 // Main client events
 client.on("ready", () => {
-    console.log("Alice Synthesis Thirty is up and running");
+    console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
     client.user.setActivity("a!help");
 	
     // Daily reset and unverified prune
