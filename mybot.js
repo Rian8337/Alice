@@ -71,7 +71,6 @@ let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true, useUnified
 
 elainadb.connect( function(err, db) {
 	if (err) throw err;
-	//if (db)
 	maindb = db.db('ElainaDB');
 	console.log("Elaina DB connection established");
 	if (maindb && alicedb) client.login(process.env.BOT_TOKEN).catch(console.error)
