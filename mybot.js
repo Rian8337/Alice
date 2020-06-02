@@ -108,25 +108,25 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-	client.events.get("guildMemberUpdate").run(oldMember, newMember, alicedb)
+	client.events.get("guildMemberUpdate").run(client, oldMember, newMember, alicedb)
 });
 
 client.on("typingStart", (channel, user) => {
-	client.events.get("typingStart").run(channel, user)
+	client.events.get("typingStart").run(client, channel, user)
 });
 
 client.on("guildBanAdd", (guild, user) => {
-	client.events.get("guildBanAdd").run(guild, user)
+	client.events.get("guildBanAdd").run(client, guild, user)
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
-	client.events.get("messageUpdate").run(oldMessage, newMessage)
+	client.events.get("messageUpdate").run(client, oldMessage, newMessage)
 });
 
 client.on("messageDelete", message => {
-	client.events.get("messageDelete").run(message, messageLog)
+	client.events.get("messageDelete").run(client, message, messageLog)
 });
 
 client.on("messageDeleteBulk", messages => {
-	client.events.get("messageDeleteBulk").run(messages)
+	client.events.get("messageDeleteBulk").run(client, messages)
 });
