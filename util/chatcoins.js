@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const cooldown_list = [];
 
 module.exports.run = (message, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel || message.channel.type !== 'text') return;
@@ -7,6 +8,9 @@ module.exports.run = (message, maindb, alicedb) => {
     if (['326152555392532481', '361785436982476800', '316863464888991745', '549109230284701718', '468042874202750976', '430002296160649229', '430939277720027136', '696663321633357844'].includes(message.channel.id)) return;
 
     const time = Math.floor(Date.now() / 1000);
+    const index = cooldown_list.findIndex(c => c.id === message.author.id);
+    if (index !== -1 && cooldown_list[index].time > time) return;
+
     const binddb = maindb.collection("userbind");
     const pointdb = alicedb.collection("playerpoints");
 
@@ -15,6 +19,9 @@ module.exports.run = (message, maindb, alicedb) => {
         let cooldown = res ? res.chatcooldown : undefined;
         if (!cooldown) cooldown = time;
         if (cooldown > time) return;
+        if (index === -1) cooldown_list.push({id: message.author.id, time: time + 600});
+        else cooldown_list[index].time = time + 600;
+
         if (res) {
             let alicecoins = res.alicecoins;
             ++alicecoins;
@@ -26,7 +33,7 @@ module.exports.run = (message, maindb, alicedb) => {
             };
 
             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                if (err) return console.log(err)
+                if (err) return console.log(err);
             })
         } else {
             binddb.findOne({discordid: message.author.id}, (err, userres) => {
@@ -39,7 +46,7 @@ module.exports.run = (message, maindb, alicedb) => {
                     challenges: [],
                     points: 0,
                     transferred: 0,
-                    chatcooldown: Math.floor(Date.now() / 1000),
+                    chatcooldown: time,
                     dailycooldown: 0,
                     alicecoins: 1
                 };
