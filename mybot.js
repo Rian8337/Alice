@@ -96,7 +96,7 @@ alcdb.connect((err, db) => {
 
 // Client events
 client.on("ready", () => {
-	client.events.get("ready").run(client)
+	client.events.get("ready").run(client, maindb, alicedb)
 });
 
 client.on("message", message => {

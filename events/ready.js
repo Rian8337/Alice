@@ -1,4 +1,4 @@
-module.exports.run = client => {
+module.exports.run = (client, maindb, alicedb) => {
     console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
     client.user.setActivity("a!help");
 	
