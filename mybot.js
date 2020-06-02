@@ -209,7 +209,7 @@ client.on("message", message => {
 
 	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
 		let mainbot = message.guild.members.cache.get("391268244796997643");
-		if (!mainbot || mainbot.user.presence.status === 'offline') return;
+		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
 		obj.main_bot = false;
 		client.events.get("commandhandler").run(obj)
 	}
