@@ -41,7 +41,7 @@ function timeConvert(num) {
 }
 
 function editMember(clanres, page, rolecheck, footer, index, coin) {
-    let list = clanres.member_list;
+    let list = clanres.member_list.sort((a, b) => {return b.hasPermission - a.hasPermission});
     let leader = clanres.leader;
     let embed = new Discord.MessageEmbed()
         .setTitle(`${clanres.name} Members (Page ${page}/${Math.ceil(list.length / 5)})`)
