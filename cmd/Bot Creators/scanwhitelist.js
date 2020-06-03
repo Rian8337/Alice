@@ -16,10 +16,12 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
+        let outdated_count = 0;
+        let not_available_count = 0;
         let i = 0;
         let attempt = 0;
         retrieveWhitelist(whitelist_list, i, async function whitelistCheck(whitelist, stopSign = false) {
-            if (stopSign) return await message.channel.send(`✅ **| ${message.author}, whitelist entry scan complete!**`);
+            if (stopSign) return await message.channel.send(`✅ **| ${message.author}, whitelist entry scan complete! A total of ${not_available_count} entries were not found in osu! map listing and ${outdated_count} entries were updated.**`);
             
             let beatmap_id = whitelist.mapid;
             let hash = whitelist.hashid;
@@ -39,6 +41,7 @@ module.exports.run = (client, message, args, maindb) => {
             attempt = 0;
             if (!mapinfo.title) {
                 console.log("Whitelist entry not available");
+                ++not_available_count;
                 whitelistdb.deleteOne({mapid: beatmap_id}, err => {
                     if (err) {
                         console.log(err);
@@ -64,6 +67,7 @@ module.exports.run = (client, message, args, maindb) => {
             }
             
             console.log("Whitelist entry outdated");
+            ++outdated_count;
             let updateVal = {
                 $set: {
                     hashid: mapinfo.hash
