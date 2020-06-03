@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
+const config = require('../../config.json');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 200);
 const c = canvas.getContext("2d");
@@ -8,9 +9,9 @@ c.imageSmoothingQuality = "high";
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let uid = parseInt(args[0]);
     if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
-    let binddb = maindb.collection("userbind");
-    let scoredb = alicedb.collection("playerscore");
-    let pointdb = alicedb.collection("playerpoints");
+    const binddb = maindb.collection("userbind");
+    const scoredb = alicedb.collection("playerscore");
+    const pointdb = alicedb.collection("playerpoints");
     const query = {uid: uid.toString()};
     binddb.findOne(query, async function(err, res) {
 		if (err) {
@@ -121,8 +122,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 321, 173);
 				c.fillText(`Lv${Math.floor(level)}`, 169, 173);
 
-				let attachment = new Discord.MessageAttachment(canvas.toBuffer());
-				message.channel.send(attachment)
+				const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'profile.png');
+
+				let rolecheck;
+				try {
+					rolecheck = message.member.roles.highest.hexColor
+				} catch (e) {
+					rolecheck = "#000000"
+				}
+				const footer = config.avatar_list;
+				const index = Math.floor(Math.random() * footer.length);
+				const embed = new Discord.MessageEmbed()
+					.setFooter("Alice Synthesis Thirty", footer[index])
+					.setColor(rolecheck)
+					.setAuthor(`osu!droid profile (click/tap here to view profile)`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${player.uid}`)
+					.setDescription(`${res ? `**User ID**: ${res.discordid} (<@${res.discordid}>)\n` : ""}**Uid**: ${player.uid}`)
+					.attachFiles([attachment])
+					.setImage("attachment://profile.png")
+
+				message.channel.send({embed: embed})
 			})
 		})
 	})
