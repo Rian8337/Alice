@@ -3,6 +3,7 @@ const picture_cooldown = new Set();
 module.exports.run = (client, message) => {
     if (message.attachments.size > 1) message.delete().catch(console.error);
 
+    const msgArray = message.content.split(/\s+/g);
     const images = [];
     for (let i = 0; i < msgArray.length; i++) {
         let part = msgArray[i];
