@@ -66,7 +66,8 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		maintenance = !maintenance;
 		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
 		if (maintenance) client.user.setActivity("Maintenance mode").catch(console.error);
-		else client.user.setActivity("a!help").catch(console.error)
+		else client.user.setActivity("a!help").catch(console.error);
+		module.exports.maintenance = maintenance
 	}
 
 	if (message.author.id === '386742340968120321' && command === 'a!cooldown') {
@@ -110,3 +111,5 @@ module.exports.run = (client, message, maindb, alicedb) => {
 module.exports.config = {
     name: "message"
 };
+
+module.exports.maintenance = maintenance;

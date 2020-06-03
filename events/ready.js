@@ -1,6 +1,7 @@
 module.exports.run = (client, maindb, alicedb) => {
     console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
-    client.user.setActivity("a!help");
+	client.user.setActivity("a!help");
+	let maintenance = require('./message').maintenance;
 	
     // Daily reset and unverified prune
 	setInterval(() => {
@@ -10,6 +11,7 @@ module.exports.run = (client, maindb, alicedb) => {
 	
 	// Utilities
 	setInterval(() => {
+		maintenance = require('./message').maintenance;
 		console.log("Utilities running");
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		if (!maintenance) {
