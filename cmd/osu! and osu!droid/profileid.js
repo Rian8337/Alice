@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
-const config = require('../../config.json');
 const {createCanvas, loadImage} = require('canvas');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
@@ -157,25 +156,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					}
 				}
 				
-				const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'profile.png');
-
-				let rolecheck;
-				try {
-					rolecheck = message.member.roles.highest.hexColor
-				} catch (e) {
-					rolecheck = "#000000"
-				}
-				const footer = config.avatar_list;
-				const index = Math.floor(Math.random() * footer.length);
-				const embed = new Discord.MessageEmbed()
-					.setFooter("Alice Synthesis Thirty", footer[index])
-					.setColor(rolecheck)
-					.setAuthor(`osu!droid profile (click/tap here to view profile)`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${player.uid}`)
-					.setDescription(`${res ? `**User ID**: ${res.discordid} (<@${res.discordid}>)\n` : ""}**Uid**: ${player.uid}`)
-					.attachFiles([attachment])
-					.setImage("attachment://profile.png");
-
-				message.channel.send({embed: embed})
+				const attachment = new Discord.MessageAttachment(canvas.toBuffer());
+				message.channel.send(`✅ **| osu!droid profile for ${player.name}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]})
 			})
 		})
 	})
