@@ -21,7 +21,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	const args = msgArray.slice(1);
 	
 	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
-		client.subevents.get("brbshower").run(messsage)
+		client.subevents.get("brbshower").run(message)
 	}
 	
 	// picture detector in #cute-no-lewd
