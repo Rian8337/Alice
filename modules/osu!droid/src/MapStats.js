@@ -120,9 +120,9 @@ class MapStats {
                     }
                     stats.od = 5 - (droid_to_MS - 50) / 6;
 
-                    // apply speed-changing mods to OD
+                    // apply speed-changing mods to OD if speed-changing mods are present
                     // use 1 as multiplier as it has been multiplied previously
-                    stats.od = modify_od(stats.od, stats.speed_multiplier, 1)
+                    if (stats.droid_mods & mods.speed_changing) stats.od = modify_od(stats.od, stats.speed_multiplier, 1)
                 }
 
                 // HR and EZ works differently in droid in terms of
@@ -137,7 +137,7 @@ class MapStats {
                         stats.droid_mods -= mods.r;
                         ++stats.cs;
                     }
-                    if (stats.droid_mods & mods.e) {
+                    if (stats.droid_mods & mods.e || stats.mods.includes("RE")) {
                         stats.droid_mods -= mods.e;
                         --stats.cs;
                     }
