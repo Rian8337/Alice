@@ -277,7 +277,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (new_name.length < 2 || new_name.length > 20) return message.channel.send("❎ **| I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!**");
             if (new_name.includes('<:')) return message.channel.send("❎ **| I'm sorry, a username cannot contain emojis!**");
 
-            if (message.attachments.size !== 1) return message.channel.send("❎ **| Hey, please only attach one screenshot of your osu!droid main menu with your account logged in!**");
+            if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach a screenshot of your osu!droid main menu with your account logged in!**");
+            if (message.attachments.size > 1) return message.channel.send("❎ **| Hey, please attach only one screenshot of your osu!droid main menu with your account logged in!**");
             let attachment = message.attachments.first();
             let url = attachment.url;
             let length = url.length;
