@@ -21,7 +21,7 @@ module.exports.run = maindb => {
                 console.log(i);
                 const members = clan.member_list;
                 const new_members = [];
-                for (const member of members) {
+                for await (const member of members) {
                     const user = res.find(u => u.discordid === member.id);
                     if (!user) {
                         console.log(`Couldn't find bind with Discord ID ${member.id}`);
