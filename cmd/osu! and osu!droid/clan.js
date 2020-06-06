@@ -394,7 +394,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         case "accept": {
             let toaccept = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
-            if (toaccept.joinedTimestamp == null || curtime - Math.floor(toaccept.joinedTimestamp / 1000) > 86400 * 7) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for a week!**");
+            if (toaccept.joinedTimestamp == null || curtime - Math.floor(toaccept.joinedTimestamp / 1000) < 86400 * 7) return message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for a week!**");
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
