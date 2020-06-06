@@ -42,6 +42,13 @@ class MapInfo {
         /**
          * @type {number}
          * @description The ranking status of the beatmap.
+         * - `-2`: Graveyard
+         * - `-1`: WIP
+         * - `0`: Pending
+         * - `1`: Ranked
+         * - `2`: Approved
+         * - `3`: Qualified
+         * - `4`: Loved
          */
         this.approved = 0;
 
@@ -77,7 +84,13 @@ class MapInfo {
 
         /**
          * @type {Date}
-         * @description The time of which the beatmap was last updated.
+         * @description The date of which the beatmap was submitted.
+         */
+        this.submit_date = new Date(0);
+
+        /**
+         * @type {Date}
+         * @description The date of which the beatmap was last updated.
          */
         this.last_update = new Date(0);
 
@@ -213,7 +226,7 @@ class MapInfo {
      * @param {boolean} [params.file=true] Whether or not to download the .osu file of the beatmap (required for beatmap parser utilities)
      * @returns {Promise<MapInfo>} The current class instance with the beatmap's information.
      */
-    get(params= {}) {
+    get(params = {}) {
         return new Promise(resolve => {
             let beatmapid = params.beatmap_id;
             let hash = params.hash;
@@ -275,6 +288,8 @@ class MapInfo {
                     this.favorites = parseInt(mapinfo.favourite_count);
                     let t = mapinfo.last_update.split(/[- :]/);
                     this.last_update = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+                    let s = mapinfo.submit_date.split(/[- :]/);
+                    this.submit_date = new Date(Date.UTC(s[0], s[1]-1, s[2], s[3], s[4], s[5]));
                     this.hit_length = parseInt(mapinfo.hit_length);
                     this.total_length = parseInt(mapinfo.total_length);
                     this.bpm = parseFloat(mapinfo.bpm);
@@ -299,6 +314,7 @@ class MapInfo {
                     request(url, (err, response, data) => {
                         if (err || !data) {
                             console.log("Error downloading osu file");
+                            this.error = true;
                             return resolve(this);
                         }
                         let parser = new Parser();
@@ -379,7 +395,7 @@ class MapInfo {
 
     /**
      * Shows the beatmap's statistics based on applied mods and option.
-     * <br>
+     * 
      * - Option `0`: return map title and mods used if defined
      * - Option `1`: return map download link to official web, bloodcat, and sayobot
      * - Option `2`: return CS, AR, OD, HP
@@ -387,12 +403,11 @@ class MapInfo {
      * - Option `4`: return last update date and map status
      * - Option `5`: return favorite count and play count
      *
-     * @param {string} [mods] The mod string applied.
+     * @param {string} mods The mod string applied.
      * @param {number} option The option to apply as described.
      * @returns {string} The statistics based on applied option.
      */
     showStatistics(mods = "", option) {
-        this.mods = mods;
         let mapstat = new MapStats(this).calculate({mods: mods, mode: 'osu'});
         mapstat.cs = parseFloat(mapstat.cs.toFixed(2));
         mapstat.ar = parseFloat(mapstat.ar.toFixed(2));
