@@ -24,9 +24,10 @@ async function fetchScores(hash, page) {
 }
 
 module.exports.run = (client, maindb, alicedb) => {
-    let binddb = maindb.collection("userbind");
-    let pointdb = alicedb.collection("playerpoints");
-    let dailydb = alicedb.collection("dailychallenge");
+    const binddb = maindb.collection("userbind");
+    const pointdb = alicedb.collection("playerpoints");
+    const dailydb = alicedb.collection("dailychallenge");
+    const clandb = maindb.collection("clandb");
     let query = {status: "w-ongoing"};
     dailydb.findOne(query, async (err, dailyres) => {
         if (err) return console.log("Cannot access database");
