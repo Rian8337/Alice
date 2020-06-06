@@ -39,7 +39,7 @@ module.exports.run = (client, maindb, alicedb) => {
         console.log(`Found ${clans.length} clans to be checked for weekly upkeep`);
         let count = 0;
         retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
-            if (stopSign) return console.log("Done checking clans");
+            if (stopSign || !clan) return console.log("Done checking clans");
             ++count;
             let member_list = clan.member_list;
             let leader = clan.leader;
