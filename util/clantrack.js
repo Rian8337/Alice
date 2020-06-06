@@ -9,7 +9,6 @@ function getRank(binddb, memberlist, i, cb) {
     if (!memberlist[i]) return cb(null, true);
     let rank = Number.POSITIVE_INFINITY;
     const id = memberlist[i].id;
-    console.log(id);
     binddb.findOne({discordid: id}, async (err, res) => {
         if (err) {
             console.log(err);
