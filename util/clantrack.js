@@ -5,16 +5,18 @@ function retrieveClan(clans, i, cb) {
     cb(clans[i])
 }
 
-async function getRank(binddb, memberlist, i, cb) {
+function getRank(binddb, memberlist, i, cb) {
     if (!memberlist[i]) return cb(null, true);
     let rank = Number.POSITIVE_INFINITY;
     const id = memberlist[i].id;
+    console.log(id);
     binddb.findOne({discordid: id}, async (err, res) => {
         if (err) {
             console.log(err);
             return cb(null)
         }
-        const bind_pool = res.previous_bind;
+        let bind_pool = res.previous_bind;
+        if (!bind_pool) bind_pool = [res.uid];
         for await (const uid of bind_pool) {
             const player = await new osudroid.PlayerInfo().get({uid: uid});
             rank = Math.min(rank, player.rank)
@@ -37,8 +39,8 @@ module.exports.run = (client, maindb, alicedb) => {
         if (clans.length === 0) return;
         console.log(`Found ${clans.length} clans to be checked for weekly upkeep`);
         let count = 0;
-        retrieveClan(clans, count, async function checkClan(clan, stopSign = false) {
-            if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
+        retrieveClan(clans, count, function checkClan(clan, stopSign = false) {
+            if (stopSign) return console.log("Done checking clans");
             ++count;
             let member_list = clan.member_list;
             let leader = clan.leader;
@@ -47,7 +49,7 @@ module.exports.run = (client, maindb, alicedb) => {
 
             let i = 0;
             let rank_list = [];
-            await getRank(binddb, member_list, i, async function checkRank(player_rank, stopFlag = false) {
+            getRank(binddb, member_list, i, function checkRank(player_rank, stopFlag = false) {
                 if (stopFlag) {
                     let total_cost = 200;
                     for (let rank of rank_list) total_cost += 500 - Math.floor(34.74 * Math.log(rank));
@@ -153,7 +155,7 @@ module.exports.run = (client, maindb, alicedb) => {
                 console.log(i);
                 rank_list.push(player_rank);
                 ++i;
-                await getRank(binddb, member_list, i, checkRank)
+                getRank(binddb, member_list, i, checkRank)
             })
         })
     })
