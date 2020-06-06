@@ -1817,7 +1817,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             name: clan,
                                             color: "DEFAULT",
                                             permissions: [],
-                                            position: clanrole.position - 1
+                                            position: clanrole.position
                                         }, reason: "Clan leader bought clan role"}).then(role => {
                                             memberlist.forEach((member) => {
                                                 message.guild.members.cache.get(member.id).roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error)
