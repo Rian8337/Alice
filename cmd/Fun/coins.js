@@ -26,17 +26,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    let streak = 0;
-                    let daily = 50;
+                    let streak = 1;
+                    let daily = 100;
                     let streakcomplete = false;
                     if (dailyres) {
                         if (dailyres.hasClaimedDaily) return message.channel.send(`❎ **| I'm sorry, you have claimed today's ${coin}Alice coins! Daily claim resets at 0:00 UTC each day.**`);
-                        streak = dailyres.streak;
-                        ++streak;
+                        streak += dailyres.streak;
                         if (streak === 5) {
                             streakcomplete = true;
-                            daily += 100;
-                            streak = 0
+                            daily += 200;
+                            streak = 1
                         }
                         let totalcoins = dailyres.alicecoins + daily;
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
@@ -191,6 +190,64 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             });
             break
         }
+        case "add": {
+            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            let toadd = args[1];
+            if (!toadd) return message.channel.send("❎ **| Hey, please enter a valid user to add coins to!**");
+            toadd = toadd.replace("<@!", "").replace("<@", "").replace(">", "");
+            const amount = parseInt(args[2]);
+            if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid amount to add!**");
+            query = {discordid: toadd};
+            pointdb.findOne(query, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
+                const updateVal = {
+                    $set: {
+                        alicecoins: res.alicecoins + amount
+                    }
+                };
+                pointdb.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    message.channel.send(`✅ **| Successfully added ${coin}\`${amount}\` Alice coins to user. The user now has ${coin}\`${(res.alicecoins + amount).toLocaleString()}\` Alice coins.****`);
+                })
+            });
+            break
+        }
+        case "remove": {
+            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            let toremove = args[1];
+            if (!toremove) return message.channel.send("❎ **| Hey, please enter a valid user to remove coins from!**");
+            const amount = parseInt(args[2]);
+            if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid amount to remove!**");
+            query = {discordid: toremove};
+            pointdb.findOne(query, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
+                if (res.alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is more than the user's Alice coins! The user has ${coin}\`${res.alicecoins.toLocaleString()}\` Alice coins.**`)
+                const updateVal = {
+                    $set: {
+                        alicecoins: res.alicecoins - amount
+                    }
+                };
+                pointdb.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    message.channel.send(`✅ **| Successfully removed ${coin}\`${amount}\` Alice coins from user. The user now has ${coin}\`${(res.alicecoins - amount).toLocaleString()}\` Alice coins.**`);
+                })
+            });
+            break
+        }
         default: return message.channel.send("❎ **| I'm sorry, it looks like your argument is invalid! Accepted arguments are `claim`, `transfer`, and `view`.**")
     }
 };
@@ -198,7 +255,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 module.exports.config = {
     name: "coins",
     description: "Main command for Alice coins.",
-    usage: "coins claim\ncoins transfer <user>\ncoins view [user]",
-    detail: "`user`: User to transfer or view [UserResolvable (mention or user ID)]",
-    permission: "None"
+    usage: "coins add <user> <amount>\ncoins claim\ncoins remove <user> <amount>\ncoins transfer <user>\ncoins view [user]",
+    detail: "`amount`: The amount of coins to add or remove [Integer]\n`user`: User to add, remove, transfer, or view [UserResolvable (mention or user ID)]",
+    permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
