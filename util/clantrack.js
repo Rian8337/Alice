@@ -133,7 +133,7 @@ module.exports.run = (client, maindb, alicedb) => {
                                     alicecoins: alicecoins - total_cost
                                 }
                             };
-                            client.users.fetch(leader).then((user) => user.send(`❗**| Hey, your clan upkeep for this week has been picked! Your next clan upkeep will be picked in ${new Date().toUTCString()}.**`).catch(console.error)).catch(console.error);
+                            client.users.fetch(leader).then((user) => user.send(`❗**| Hey, your clan upkeep for this week has been picked! Your next clan upkeep will be picked in ${new Date((curtime + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
                             pointdb.updateOne({discordid: leader}, updateVal, err => {
                                 if (err) return console.log(err);
                                 console.log("User coins data updated")
