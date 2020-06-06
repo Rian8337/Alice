@@ -4,7 +4,7 @@ const request = require('request');
 const apikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
 
-async function fetchScores(hash, page) {
+function fetchScores(hash, page) {
     return new Promise(resolve => {
         let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${apikey}&hash=${hash}&page=${page}&order=score`;
         request(url, (err, response, data) => {
