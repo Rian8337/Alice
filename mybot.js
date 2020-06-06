@@ -108,6 +108,10 @@ client.on("guildMemberAdd", member => {
 	client.events.get("guildMemberAdd").run(client, member, alicedb)
 });
 
+client.on("guildMemberRemove", member => {
+	client.events.get("guildMemberRemove").run(client, member, maindb)
+});
+
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	client.events.get("guildMemberUpdate").run(client, oldMember, newMember, alicedb)
 });
