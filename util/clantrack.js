@@ -35,6 +35,7 @@ module.exports.run = (client, maindb, alicedb) => {
     clandb.find({weeklyfee: {$lte: curtime}}).sort({weeklyfee: 1}).toArray((err, clans) => {
         if (err) return console.log(err);
         if (clans.length === 0) return;
+        console.log(`Found ${clans.length} clans to be checked for weekly upkeep`);
         let count = 0;
         retrieveClan(clans, count, async function checkClan(clan, stopSign = false) {
             if (stopSign || clan.weeklyfee > curtime) return console.log("Done checking clans");
