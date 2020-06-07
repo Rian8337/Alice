@@ -1,3 +1,4 @@
+const Beatmap = require('./Beatmap');
 const Accuracy = require('./Accuracy');
 const MapStats = require('./MapStats');
 const StandardDiff = require('./StandardDiff');
