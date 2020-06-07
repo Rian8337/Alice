@@ -57,7 +57,7 @@ module.exports.run = (client, maindb) => {
 				const starsline = parseFloat(star.droid_stars.total.toFixed(2));
 				const pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
 
-				title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+				title = `${mapinfo.full_title} +${mod ? mod : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
 				embed.setAuthor(title, player_entry.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
 					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
 					.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`);
@@ -109,8 +109,8 @@ module.exports.run = (client, maindb) => {
 					const dline = parseFloat(fc_dpp.total.toFixed(2));
 					const pline = parseFloat(fc_pp.total.toFixed(2));
 		
-					embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
-				} else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
+					embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
+				} else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${miss} miss(es)`);
 
 				client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**\n${ppline >= 450 ? "<@119496080269377536>" : ""}`, {embed: embed}).catch(console.error)
 			}
