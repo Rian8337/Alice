@@ -22,10 +22,10 @@ module.exports.run = (client, maindb, alicedb) => {
             const hour = d.getUTCHours();
 
             // detect if it's leap year and if it is detect if current date is 29 Feb
-            const isLeapYear = year % 4 === 0;
-            if (isLeapYear && month === 1 && date === 29) {
+            if (year % 4 === 0 && month === 1 && date === 29) {
                 date = 1;
-                month = 2
+                month = 2;
+                d.setUTCMonth(month, date)
             }
 
             const entries = res.filter((entry) => entry.timezone === timezone);
@@ -38,6 +38,7 @@ module.exports.run = (client, maindb, alicedb) => {
                 current_birthday.push(entry)
             }
         }
+        if (current_birthday.length > 0) console.log(`Found ${current_birthday.length} valid birthday entry`);
 
         role.members.forEach((member) => {
             let index = current_birthday.findIndex((entry) => entry.discordid = member.id);
