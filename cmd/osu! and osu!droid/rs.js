@@ -63,7 +63,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const embed = new Discord.MessageEmbed()
-            .setAuthor(title, player.avatarURL)
+            .setAuthor(`${title} +${mod ? mod : "No Mod"}`, player.avatarURL)
             .setColor(rolecheck)
             .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
@@ -85,7 +85,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
-            embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+            embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -144,8 +144,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             const dline = parseFloat(fc_dpp.total.toFixed(2));
             const pline = parseFloat(fc_pp.total.toFixed(2));
 
-            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
-        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n‣ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
 
         message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
     })
