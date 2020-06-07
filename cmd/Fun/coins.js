@@ -27,14 +27,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     let streak = 1;
-                    let daily = 100;
+                    let daily = 50;
                     let streakcomplete = false;
                     if (dailyres) {
                         if (dailyres.hasClaimedDaily) return message.channel.send(`❎ **| I'm sorry, you have claimed today's ${coin}Alice coins! Daily claim resets at 0:00 UTC each day.**`);
                         streak += dailyres.streak;
                         if (streak === 5) {
                             streakcomplete = true;
-                            daily += 200;
+                            daily += 100;
                             streak = 1
                         }
                         let totalcoins = dailyres.alicecoins + daily;
