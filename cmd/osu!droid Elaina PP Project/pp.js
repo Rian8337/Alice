@@ -267,7 +267,7 @@ module.exports.run = (client, message, args, maindb) => {
 							weight *= 0.95;
 						}
 						let diff = pptotal - pre_pptotal;
-						embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res ? "\nHey, looks like you are new to the system! You can ask <@386742340968120321> to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
+						embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res.pptotal ? "\nHey, looks like you are new to the system! You can ask <@386742340968120321> to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
 						message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
 						let updateVal = {
 							$set: {
