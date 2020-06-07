@@ -44,13 +44,13 @@ module.exports.run = (client, maindb) => {
 				const hash = play.hash;
 
 				const embed = new Discord.MessageEmbed()
-					.setAuthor(title, player_entry.avatarURL)
+					.setAuthor(`${title} +${mod ? mod : "No Mod"}`, player_entry.avatarURL)
 					.setColor(8311585)
 					.setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
 				const mapinfo = await new osudroid.MapInfo().get({hash: hash});
 				if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
-					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
+					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
 					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
 				}
 				const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
