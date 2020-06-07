@@ -63,7 +63,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const embed = new Discord.MessageEmbed()
-            .setAuthor(`${title} +${mod ? mod : "No Mod"}`, player.avatarURL)
+            .setAuthor(title, player.avatarURL)
             .setColor(rolecheck)
             .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
