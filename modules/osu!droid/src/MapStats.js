@@ -68,7 +68,7 @@ class MapStats {
     /**
      * Calculates map statistics with mods applied.
      *
-     * @param {Object} params
+     * @param {Object} params An object containing the parameters.
      * @param {string} [params.mode=osu] Whether to convert for droid statistics or PC statistics.
      * @param {string} [params.mods] Applied modifications in osu!standard string. Can be omitted if ths has been applied in the constructor.
      * @returns {MapStats} A new MapStats instance containing calculated map statistics.
@@ -118,11 +118,20 @@ class MapStats {
                     if (stats.mods.includes("PR")) {
                         droid_to_MS = 55 + 6 * (5 - stats.od)
                     }
-                    stats.od = 5 - (droid_to_MS - 50) / 6;
 
-                    // apply speed-changing mods to OD if speed-changing mods are present
-                    // use 1 as multiplier as it has been multiplied previously
-                    if (stats.droid_mods & mods.speed_changing) stats.od = modify_od(stats.od, stats.speed_multiplier, 1)
+                    // separate handling for speed-changing OD due to
+                    // bug in modify_od function and the way droid OD
+                    // works
+                    if (stats.droid_mods & mods.d) {
+                        droid_to_MS /= 1.5;
+                    }
+                    if (stats.droid_mods & mods.c) {
+                        droid_to_MS /= 1.39;
+                    }
+                    if (stats.droid_mods & mods.t) {
+                        droid_to_MS /= 0.75;
+                    }
+                    stats.od = 5 - (droid_to_MS - 50) / 6;
                 }
 
                 // HR and EZ works differently in droid in terms of
