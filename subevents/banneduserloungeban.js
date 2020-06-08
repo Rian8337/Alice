@@ -3,7 +3,7 @@ const config = require('../config.json');
 
 module.exports.run = async (guild, user, alicedb) => {
     let banInfo = await guild.fetchBan(user.id);
-	let reason = banInfo.reason;
+	let reason = banInfo.reason ? banInfo.reason : "Not specified";
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
 	let embed = new Discord.MessageEmbed()
