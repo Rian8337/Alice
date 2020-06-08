@@ -163,7 +163,7 @@ class MapStats {
 
                 if (stats.ar !== undefined) {
                     if (stats.mods.includes("RE")) {
-                        od_ar_hp_multiplier /= 2;
+                        od_ar_hp_multiplier *= 2;
                         if (stats.droid_mods & mods.d) {
                             --stats.ar;
                         } else {
