@@ -47,7 +47,7 @@ function rankEmote(input) {
     }
 }
 
-async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, footer, index, global_star) {
+function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, footer, index, global_star) {
     return new Promise(async resolve => {
         let page_limit = Math.floor((page - 1) / 20);
         let entries = null;
@@ -207,7 +207,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
 
-    let entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
+    entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
     if (!entry) return message.channel.send("❎ **| I'm sorry, looks like the map doesn't have that many scores!**");
     cache = entry[0];
     let embed = entry[1];
