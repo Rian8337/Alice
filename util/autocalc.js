@@ -87,6 +87,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 							.setTitle(`${mapinfo.artist} - ${mapinfo.title} by ${mapinfo.creator}`)
 							.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
 							.setColor(mapinfo.statusColor())
+                                                        .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
 							.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapset_id}`)
 							.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
 							.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`);
