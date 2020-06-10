@@ -1,7 +1,27 @@
 module.exports.run = (client, maindb, alicedb) => {
     console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
-	client.user.setActivity("a!help");
 	let maintenance = require('./message').maintenance;
+	
+	const activity_list = [
+		["Underworld Console", "PLAYING"],
+		["Rulid Village", "WATCHING"],
+		["a!help", "LISTENING"],
+		["Dark Territory", "WATCHNG"],
+		["in Axiom church", "PLAYING"],
+		["with Integrity Knights", "PLAYING"],
+		["flowers from my beloved Fragnant Olive", "WATCHING"],
+		["Uncle Bercoulli's orders", "LISTENING"],
+		["Centoria", "WATCHING"],
+		["Human Empire", "WATCHING"]
+	];
+
+	// Custom activity
+	setInterval(() => {
+		maintenance = require('./message').maintenance;
+		if (maintenance) return;
+		const index = Math.floor(Math.random() * activity_list.length);
+		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
+	}, 10000);
 	
     // Daily reset and unverified prune
 	setInterval(() => {
