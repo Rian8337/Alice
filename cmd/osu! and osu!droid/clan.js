@@ -1042,6 +1042,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             const cmd_length = message.content.split(" ").slice(0, 2).join(" ").length + 1;
             let announcement_message = message.content.substring(cmd_length);
             if (!announcement_message) return message.channel.send("❎ **| Hey, please enter an announcement message!**");
+            if (announcement_message.length > 1750) return message.channel.send("❎ **| I'm sorry, your announcement message is too long! Announcement limit is 1750 characters.**")
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
