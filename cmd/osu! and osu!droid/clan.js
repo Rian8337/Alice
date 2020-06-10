@@ -1036,6 +1036,64 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         }
 
 
+        case "announce": {
+            // used to announce something to clan members for clan co-leaders and leader
+            // requires clan role to work
+            const cmd_length = message.content.split(" ").slice(0, 2).join(" ").length + 1;
+            let announcement_message = message.content.substring(cmd_length);
+            if (!announcement_message) return message.channel.send("❎ **| Hey, please enter an announcement message!**");
+            query = {discordid: message.author.id};
+            binddb.findOne(query, (err, userres) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                let clan = userres.clan;
+                query = {name: clan};
+                clandb.findOne(query, (err, clanres) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+
+                    let memberlist = clanres.member_list;
+                    let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                    let hasPermission = memberlist[member_index].hasPermission;
+                    if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+
+                    let string = '';
+                    const clanrole = message.guild.roles.cache.find(r => r.name === clan);
+                    if (clanrole) string += `${clanrole}`;
+                    else for (const member of memberlist) string += `<@${member.id}>`;
+                    string += `\n\n${announcement_message}\n\n- ${message.author}`;
+                    message.channel.send(`❗**| ${message.author}, are you sure you want to send an announcement for your clan?**`).then(msg => {
+                        msg.react("✅").catch(console.error);
+                        let confirmation = false;
+                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        confirm.on("collect", () => {
+                            confirmation = true;
+                            msg.delete();
+                            message.channel.send(string)
+                        });
+                        confirm.on("end", () => {
+                            if (!confirmation) {
+                                msg.delete();
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                            }
+                        })
+                    })
+                })
+            });
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id)
+            }, 2000);
+            break
+        }
+
 
         case "demote": {
             // demotes a clan member to normal member
