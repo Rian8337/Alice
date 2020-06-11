@@ -18,15 +18,15 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	for (let i = 1; i < args.length; i++) {
 		if (args[i].endsWith("%")) {
                         const new_acc = parseFloat(args[i]);
-                        if (isNaN(new_acc)) acc = Math.max(0, Math.min(new_acc, 100))
+                        if (!isNaN(new_acc)) acc = Math.max(0, Math.min(new_acc, 100))
                 }
 		if (args[i].endsWith("m")) {
                         const new_missc = parseInt(args[i]);
-                        if (isNaN(new_missc)) missc = Math.max(0, new_missc)
+                        if (!isNaN(new_missc)) missc = Math.max(0, new_missc)
                 }
 		if (args[i].endsWith("x")) {
                         const new_combo = parseInt(args[i]);
-                        if (isNaN(new_combo)) combo = Math.max(0, new_combo)
+                        if (!isNaN(new_combo)) combo = Math.max(0, new_combo)
                 }
 		if (args[i].startsWith("+")) mod = args[i].replace("+", "").toUpperCase();
 		if (args[i].startsWith("-d")) ndetail = true;
