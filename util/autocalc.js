@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	beatmapid = a[a.length-1];
 	for (let i = 1; i < args.length; i++) {
 		if (args[i].endsWith("%")) acc = parseFloat(args[i]);
-		if (args[i].endsWith("m")) missc = parseInt(args[i]);
+		if (args[i].endsWith("m")) missc = Math.max(0, parseInt(args[i]));
 		if (args[i].endsWith("x")) combo = parseInt(args[i]);
 		if (args[i].startsWith("+")) mod = args[i].replace("+", "").toUpperCase();
 		if (args[i].startsWith("-d")) ndetail = true;
@@ -56,10 +56,10 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map.beatmap_id});
 					i++;
 					if (!mapinfo.osu_file) return;
-                                        if (!combo) combo = mapinfo.max_combo - missc;
+                                        if (!combo || combo <= 0) combo = mapinfo.max_combo - missc;
                                         combo = Math.min(combo, mapinfo.max_combo);
                                         let acc_estimation = false;
-                                        if (acc === 100 && missc > 0) {
+                                        if (acc <= 0 || (acc === 100 && missc > 0)) {
                                                 acc_estimation = true;
                                                 const real_acc = new osudroid.Accuracy({
                                                         n300: mapinfo.objects - missc,
@@ -131,10 +131,10 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
 
 	if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0 || !mapinfo.osu_file) return;
-	if (!combo) combo = mapinfo.max_combo - missc;
+	if (!combo || combo <= 0) combo = mapinfo.max_combo - missc;
         combo = Math.min(combo, mapinfo.max_combo);
         let acc_estimation = false;
-        if (acc === 100 && missc > 0) {
+        if (acc <= 0 || (acc === 100 && missc > 0)) {
             acc_estimation = true;
             const real_acc = new osudroid.Accuracy({
                 n300: mapinfo.objects - missc,
