@@ -27,7 +27,18 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
 	if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
     if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-    if (!combo) combo = mapinfo.max_combo;
+    if (!combo) combo = mapinfo.max_combo - missc;
+    combo = Math.min(combo, mapinfo.max_combo);
+    if (acc === 100 && missc > 0) {
+        const real_acc = new osudroid.Accuracy({
+            n300: mapinfo.objects - missc,
+            n100: 0,
+            n50: 0,
+            nmiss: missc
+        }).value() * 100;
+        acc = parseFloat(real_acc.toFixed(2))
+    }
+
     let max_score = mapinfo.max_score(mod);
     let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
     let starsline = parseFloat(star.droid_stars.total.toFixed(2));
