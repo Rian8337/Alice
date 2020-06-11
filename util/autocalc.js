@@ -75,7 +75,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
                                                         n300: mapinfo.objects - missc,
                                                         n100: 0,
                                                         n50: 0,
-                                                        nmiss: missc
+                                                        nmiss: missc,
+                                                        nobjects: mapinfo.objects
                                                 }).value() * 100;
                                                 acc = parseFloat(real_acc.toFixed(2))
                                         }
@@ -151,7 +152,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
                         n300: mapinfo.objects - missc,
                         n100: 0,
                         n50: 0,
-                        nmiss: missc
+                        nmiss: missc,
+                        nobjects: mapinfo.objects
                 }).value() * 100;
                 acc = parseFloat(real_acc.toFixed(2))
         }
