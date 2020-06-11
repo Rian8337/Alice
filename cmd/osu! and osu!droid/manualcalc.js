@@ -28,7 +28,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 	if (!combo) combo = mapinfo.max_combo - missc;
         combo = Math.min(combo, mapinfo.max_combo);
+        let acc_estimation = false;
         if (acc === 100 && missc > 0) {
+                acc_estimation = true;
                 const real_acc = new osudroid.Accuracy({
                         n300: mapinfo.objects - missc,
                         n100: 0,
@@ -71,7 +73,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.setDescription(mapinfo.showStatistics(mod, 1))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
 		.addField(mapinfo.showStatistics(mod, 2), `${mapinfo.showStatistics(mod, 3)}\n**Max score**: ${max_score.toLocaleString()}`)
-		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}% / ${missc} miss(es)`)
+		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.max_combo}x / ${acc}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
 	let string = '';
