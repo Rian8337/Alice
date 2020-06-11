@@ -7,7 +7,7 @@ module.exports.run = (message, alicedb) => {
         if (field.name.startsWith("Muted User: ")) muted = message.guild.members.cache.find(m => m.user.username === field.name.substring("Muted User: ".length))
         if (muted && mutetime) break
     }
-    if (mutetime > 21600) {
+    if (mutetime >= 21600) {
         const loungedb = alicedb.collection("loungelock");
         loungedb.findOne({discordid: muted.id}, (err, res) => {
             if (err) {
