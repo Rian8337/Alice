@@ -16,9 +16,18 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	let a = args[0].split("/");
 	beatmapid = a[a.length-1];
 	for (let i = 1; i < args.length; i++) {
-		if (args[i].endsWith("%")) acc = parseFloat(args[i]);
-		if (args[i].endsWith("m")) missc = Math.max(0, parseInt(args[i]));
-		if (args[i].endsWith("x")) combo = parseInt(args[i]);
+		if (args[i].endsWith("%")) {
+                        const new_acc = parseFloat(args[i]);
+                        if (isNaN(new_acc)) acc = Math.max(0, Math.min(new_acc, 100))
+                }
+		if (args[i].endsWith("m")) {
+                        const new_missc = parseInt(args[i]);
+                        if (isNaN(new_missc)) missc = Math.max(0, new_missc)
+                }
+		if (args[i].endsWith("x")) {
+                        const new_combo = parseInt(args[i]);
+                        if (isNaN(new_combo)) combo = Math.max(0, new_combo)
+                }
 		if (args[i].startsWith("+")) mod = args[i].replace("+", "").toUpperCase();
 		if (args[i].startsWith("-d")) ndetail = true;
 		if (args[i].startsWith("-p")) pcdetail = true
@@ -57,9 +66,10 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					i++;
 					if (!mapinfo.osu_file) return;
                                         if (!combo || combo <= 0) combo = mapinfo.max_combo - missc;
+                                        if (mapinfo.max_combo <= missc) return;
                                         combo = Math.min(combo, mapinfo.max_combo);
                                         let acc_estimation = false;
-                                        if (acc <= 0 || (acc === 100 && missc > 0)) {
+                                        if (acc === 100 && missc > 0) {
                                                 acc_estimation = true;
                                                 const real_acc = new osudroid.Accuracy({
                                                         n300: mapinfo.objects - missc,
@@ -131,18 +141,19 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
 
 	if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0 || !mapinfo.osu_file) return;
-	if (!combo || combo <= 0) combo = mapinfo.max_combo - missc;
+	if (!combo) combo = mapinfo.max_combo - missc;
+        if (mapinfo.max_combo <= missc) return;
         combo = Math.min(combo, mapinfo.max_combo);
         let acc_estimation = false;
-        if (acc <= 0 || (acc === 100 && missc > 0)) {
-            acc_estimation = true;
-            const real_acc = new osudroid.Accuracy({
-                n300: mapinfo.objects - missc,
-                n100: 0,
-                n50: 0,
-                nmiss: missc
-            }).value() * 100;
-            acc = parseFloat(real_acc.toFixed(2))
+        if (acc === 100 && missc > 0) {
+                acc_estimation = true;
+                const real_acc = new osudroid.Accuracy({
+                        n300: mapinfo.objects - missc,
+                        n100: 0,
+                        n50: 0,
+                        nmiss: missc
+                }).value() * 100;
+                acc = parseFloat(real_acc.toFixed(2))
         }
 
 	let max_score = mapinfo.max_score(mod);
