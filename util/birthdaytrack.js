@@ -47,6 +47,8 @@ module.exports.run = (client, maindb, alicedb) => {
 
         current_birthday.forEach((entry) => {
             let user = guild.member(entry.discordid);
+            if (!user) return;
+            console.log(user.user.username);
             let roles = user.roles;
             let birthday_role = roles.cache.get(role.id);
             if (birthday_role) return;
