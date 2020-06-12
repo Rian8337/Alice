@@ -14,15 +14,15 @@ module.exports.run = (client, message, args, maindb) => {
         }
         if (!res) return message.channel.send("❎ **| I'm sorry, this uid has not been binded!**");
         let previous_bind = res.previous_bind;
-        const index = previous_bind.findIndex(u => u === uid);
-        previous_bind.splice(index, 1);
-        const updateVal = {
-            $set: {
-                previous_bind: previous_bind
-            }
-        };
-        if (res.uid === uid) updateVal.$set.uid = previous_bind[Math.floor(Math.random() * previous_bind.length)];
-        if (previous_bind.length > 0) {
+        if (previous_bind.length > 1) {
+            const index = previous_bind.findIndex(u => u === uid);
+            previous_bind.splice(index, 1);
+            const updateVal = {
+                $set: {
+                    previous_bind: previous_bind
+                }
+            };
+            if (res.uid === uid) updateVal.$set.uid = previous_bind[Math.floor(Math.random() * previous_bind.length)];
             binddb.updateOne({discordid: res.discordid}, updateVal, err => {
                 if (err) {
                     console.log(err);
