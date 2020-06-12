@@ -1,6 +1,7 @@
 module.exports.run = (client, maindb, alicedb) => {
     let d = new Date();
     let date = d.getUTCDate();
+    let month = d.getUTCMonth();
 
     let guild = client.guilds.cache.get('316545691545501706');
     let role = guild.roles.cache.get("695201338182860860");
@@ -10,26 +11,31 @@ module.exports.run = (client, maindb, alicedb) => {
     let birthday = alicedb.collection("birthday");
     let points = alicedb.collection("playerpoints");
 
-    birthday.find({date: {$gte: date - 1, $lte: date + 1}}).toArray((err, res) => {
+    const query = {
+        $and: [
+            {date: {$gte: date - 1, $lte: date + 1}},
+            {month: {$gte: month - 1, $lte: date + 1}}
+        ]
+    };
+
+    birthday.find(query).toArray((err, res) => {
         if (err) return console.log(err);
         let current_birthday = [];
 
         for (let timezone = -12; timezone < 13; ++timezone) {
             d = new Date();
             date = d.getUTCDate();
-            let month = d.getUTCMonth();
-            let year = d.getUTCFullYear();
-            const hour = d.getUTCHours();
+            month = d.getUTCMonth();
 
             // detect if it's leap year and if it is detect if current date is 29 Feb
-            if (year % 4 === 0 && month === 1 && date === 29) {
+            if (d.getUTCFullYear() % 4 === 0 && month === 1 && date === 29) {
                 date = 1;
                 month = 2;
                 d.setUTCMonth(month, date)
             }
 
             const entries = res.filter((entry) => entry.timezone === timezone);
-            d.setUTCHours(hour + timezone);
+            d.setUTCHours(d.getUTCHours() + timezone);
             date = d.getUTCDate();
             month = d.getUTCMonth();
             for (let i = 0; i < entries.length; ++i) {
