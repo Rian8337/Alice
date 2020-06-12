@@ -49,12 +49,11 @@ module.exports.run = (client, maindb, alicedb) => {
             let user = guild.member(entry.discordid);
             let roles = user.roles;
             let birthday_role = roles.cache.get(role.id);
-            if (birthday_role) return console.log(`${user.user.username} already has birthday role`);
 
             roles.add(role, "Happy birthday!").catch(console.error);
             if (user.user.bot) return;
             user.send("🎂 **| Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.**").catch(console.error);
-            console.log("Added 1000 coins");
+            console.log(`Added 1000 coins to ${user} as birthday prize`);
 
             points.findOne({discordid: entry.discordid}, (err, userres) => {
                 if (err) return console.log(err);
