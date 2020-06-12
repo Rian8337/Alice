@@ -15,25 +15,21 @@ module.exports.run = (client, maindb, alicedb) => {
 		["Human Empire", "WATCHING"]
 	];
 
-	// Custom activity
+	// Custom activity, daily reset, and unverified prune
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
+		client.utils.get("unverified").run(client, alicedb);
+		client.utils.get("dailyreset").run(alicedb)
 		if (maintenance) return;
 		const index = Math.floor(Math.random() * activity_list.length);
 		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
-	}, 10000);
-	
-    // Daily reset, unverified prune, birthday tracking
-	setInterval(() => {
-		client.utils.get("unverified").run(client, alicedb);
-		client.utils.get("dailyreset").run(alicedb);
-                client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 	}, 10000);
 	
 	// Utilities
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
 		console.log("Utilities running");
+		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		if (!maintenance) {
 			client.utils.get("trackfunc").run(client, maindb);
 			client.utils.get("clantrack").run(client, maindb, alicedb);
