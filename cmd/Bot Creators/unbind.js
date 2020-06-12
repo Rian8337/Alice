@@ -22,13 +22,23 @@ module.exports.run = (client, message, args, maindb) => {
             }
         };
         if (res.uid === uid) updateVal.$set.uid = previous_bind[Math.floor(Math.random() * previous_bind.length)];
-        binddb.updateOne({discordid: res.discordid}, updateVal, err => {
-            if (err) {
-                console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-            }
-            message.channel.send(`✅ **| Successfully unbinded uid ${uid}.**`)
-        })
+        if (previous_bind.length > 0) {
+            binddb.updateOne({discordid: res.discordid}, updateVal, err => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                message.channel.send(`✅ **| Successfully unbinded uid ${uid}.**`)
+            })
+        } else {
+            binddb.deleteOne({discordid: res.discordid}, err => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                }
+                message.channel.send(`✅ **| Successfully unbinded uid ${uid}.**`)
+            })
+        }
     })
 };
 
