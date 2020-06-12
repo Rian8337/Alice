@@ -53,6 +53,7 @@ module.exports.run = (client, maindb, alicedb) => {
 
             roles.add(role, "Happy birthday!").catch(console.error);
             if (user.user.bot) return;
+            user.send("🎂 **| Hey, I want to wish you a happy birthday! Hopefully you have a happy day with your family, friends, and relatives. Please accept this gift of `1,000` Alice coins and a temporary birthday role from me.**").catch(console.error);
 
             points.findOne({discordid: entry.discordid}, (err, userres) => {
                 if (err) return console.log(err);
