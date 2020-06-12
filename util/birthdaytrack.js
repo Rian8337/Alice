@@ -41,7 +41,7 @@ module.exports.run = (client, maindb, alicedb) => {
         if (current_birthday.length > 0) console.log(`Found ${current_birthday.length} valid birthday entry`);
 
         role.members.forEach((member) => {
-            let index = current_birthday.findIndex((entry) => entry.discordid = member.id);
+            let index = current_birthday.findIndex((entry) => entry.discordid === member.id);
             if (index === -1) member.roles.remove(role, "Not birthday anymore").catch(console.error);
         });
 
