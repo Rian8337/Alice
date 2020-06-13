@@ -80,13 +80,9 @@ class ReplayAnalyzer {
     _decompress() {
         return new Promise((resolve, reject) => {
             const data_array = [];
-            const options = {
-                host: "ops.dgsrz.com",
-                port: 80,
-                path: encodeURIComponent(`/api/upload/${this.score_id}.odr`)
-            };
+            const url = new URL(`http://ops.dgsrz.com/api/upload/${this.score_id}.odr`);
             console.log("Downloading replay");
-            http.request(options, res => {
+            http.request(url, res => {
                 res.on('data', chunk => {
                     console.log(chunk);
                     data_array.push(Buffer.from(chunk))
