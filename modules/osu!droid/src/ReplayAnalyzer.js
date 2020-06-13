@@ -106,7 +106,7 @@ class ReplayAnalyzer {
                             setTimeout(() => reject(e), 5000)
                         })
                 })
-            })
+            }).end()
         })
     }
     
