@@ -108,7 +108,7 @@ class ReplayAnalyzer {
                 })
         })
     }
-
+    
     /**
      * Parses a replay after being downloaded and converted to a buffer.
      * @private
@@ -122,8 +122,8 @@ class ReplayAnalyzer {
             replay_version: raw_object[0].version,
             folder_name: raw_object[1],
             file_name: raw_object[2],
-            file_hash: raw_object[3],
-            time: new Date(Number(raw_object[4].readBigUInt64BE(0))),
+            hash: raw_object[3],
+            time: Number(raw_object[4].readBigUInt64BE(0)),
             hit300k: raw_object[4].readInt32BE(8),
             hit300: raw_object[4].readInt32BE(12),
             hit100k: raw_object[4].readInt32BE(16),
@@ -135,9 +135,11 @@ class ReplayAnalyzer {
             accuracy: raw_object[4].readFloatBE(40),
             is_full_combo: raw_object[4][44],
             player_name: raw_object[5],
-            play_mod: this._convertMods(raw_object[6].elements),
+            raw_mods: raw_object[6].elements,
+            droid_mods: this._convertDroidMods(raw_object[6].elements),
+            converted_mods: this._convertMods(raw_object[6].elements),
             cursor_movement: [],
-            hit_object_data: [],
+            hit_object_data: []
         };
 
         let replay_data_buffer_array = [];
@@ -238,17 +240,48 @@ class ReplayAnalyzer {
         };
 
         let modbits = 0;
-        while (replay_mods.length) {
+        for (const mod of replay_mods) {
             for (let property in replay_mods_bitmask) {
                 if (!replay_mods_bitmask.hasOwnProperty(property)) continue;
-                if (!replay_mods[0].includes(property)) continue;
+                if (!mod.includes(property)) continue;
                 modbits |= replay_mods_bitmask[property];
                 break
             }
-            replay_mods.shift()
         }
 
         return mods.modbits_to_string(modbits)
+    }
+
+    /**
+     * Converts replay mods to droid mod string.
+     *
+     * @param {string[]} replay_mods The mod string to convert.
+     * @returns {string} The converted mods.
+     * @private
+     */
+    _convertDroidMods(replay_mods) {
+        const replay_mods_constants = {
+            "NOFAIL": "n",
+            "EASY": "e",
+            "HIDDEN": "h",
+            "HARDROCK": "r",
+            "DOUBLETIME": "d",
+            "HALFTIME": "t",
+            "NIGHTCORE": "c"
+        }
+
+        let mod_string = '';
+        for (const mod of replay_mods) {
+            for (let property in replay_mods_constants) {
+                if (!replay_mods_constants.hasOwnProperty(property)) continue;
+                if (!mod.includes(property)) continue;
+                mod_string += replay_mods_constants[property];
+                break
+            }
+        }
+            
+
+        return mod_string
     }
 }
 

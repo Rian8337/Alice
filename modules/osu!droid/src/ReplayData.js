@@ -20,7 +20,9 @@ class ReplayData {
      * @param {number} values.accuracy The accuracy achieved in the play.
      * @param {number} values.is_full_combo Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
      * @param {string} values.player_name The name of the player in the replay.
-     * @param {string} values.mods Enabled modifications in the replay.
+     * @param {string} values.raw_mods Enabled modifications in the replay in raw form.
+     * @param {string} values.droid_mods Enabled modifications in the replay in osu!droid form.
+     * @param {string} values.converted_mods Enabled modifications in the replay in osu!standard form.
      * @param {CursorData[]} values.cursor_movement The cursor movement data of the replay.
      * @param {ReplayObjectData[]} values.hit_object_data The hitobject data of the replay.
      */
@@ -123,9 +125,21 @@ class ReplayData {
 
         /** 
          * @type {string}
-         * @description Enabled modifications during the play.
+         * @description Enabled modifications during the play in raw form.
          */
-        this.mods = values.mods;
+        this.raw_mods = values.raw_mods;
+
+        /**
+         * @type {string}
+         * @description Enabled modifications during the play in osu!droid form.
+         */
+        this.droid_mods = values.droid_mods;
+
+        /**
+         * @type {string}
+         * @description Enabled modifications during the play in osu!standard form.
+         */
+        this.converted_mods = values.converted_mods;
 
         /**
          * @type {CursorData[]}
