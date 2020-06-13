@@ -17,7 +17,7 @@ module.exports.run = obj => {
 
     let cmd = client.commands.get(command.slice(main_bot ? config.prefix.length : 1)) || client.aliases.get(command.slice(main_bot ? config.prefix.length : 1));
     if (cmd) {
-        if (maintenance) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
+        if (maintenance && !message.isOwner) return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
         message.channel.startTyping().catch(console.error);
         setTimeout(() => {
             message.channel.stopTyping(true)
