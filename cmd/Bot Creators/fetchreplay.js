@@ -62,7 +62,7 @@ module.exports.run = async (client, message, args, maindb) => {
             h300: data.hit300,
             h100k: data.hit100k,
             h100: data.hit100,
-            h50: data.h50,
+            h50: data.hit50,
             misses: data.hit0,
             accuracy: data.accuracy,
             time: Math.floor(data.time.getTime() / 1000),
