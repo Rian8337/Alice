@@ -84,6 +84,7 @@ class ReplayAnalyzer {
             console.log("Downloading replay");
             request(url, {timeout: 10000})
                 .on('data', chunk => {
+                    console.log(chunk);
                     data_array.push(Buffer.from(chunk))
                 })
                 .on('complete', () => {
