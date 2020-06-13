@@ -83,7 +83,7 @@ class ReplayAnalyzer {
             const options = {
                 host: "ops.dgsrz.com",
                 port: 80,
-                path: `/api/upload/${this.score_id}.odr`
+                path: encodeURIComponent(`/api/upload/${this.score_id}.odr`)
             };
             console.log("Downloading replay");
             http.request(options, res => {
