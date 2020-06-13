@@ -81,11 +81,13 @@ class ReplayAnalyzer {
         return new Promise((resolve, reject) => {
             const data_array = [];
             const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
+            console.log("Downloading replay");
             request(url, {timeout: 10000})
                 .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
                 })
                 .on('complete', () => {
+                    console.log("Download complete");
                     const result = Buffer.concat(data_array);
                     const stream = new Readable();
                     stream.push(result);
