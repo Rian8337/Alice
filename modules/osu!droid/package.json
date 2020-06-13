@@ -9,5 +9,8 @@
   "keywords": ["osu!", "osu!droid"],
   "author": "Rian8337",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "java-deserialization": "^0.1.0",
+    "unzipper": "^0.10.11"
+  }
 }
