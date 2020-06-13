@@ -84,7 +84,6 @@ function deductPower(clandb, query, updateVal) {
 }
 
 module.exports.run = (client, maindb, alicedb) => {
-    console.log("Retrieving clan data");
     const guild = client.guilds.cache.get("316545691545501706");
     const role = guild.roles.cache.find(r => r.name === 'Clans');
     const binddb = maindb.collection("userbind");
