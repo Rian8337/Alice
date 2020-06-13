@@ -13,6 +13,6 @@
     "dotenv": "^8.2.0",
     "java-deserialization": "^0.1.0",
     "request": "^2.88.2",
-    "unzipper": "0.10.10"
+    "unzipper": "^0.10.11"
   }
 }
