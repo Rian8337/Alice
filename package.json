@@ -24,6 +24,6 @@
     "mongodb": "^3.5.4",
     "osu-droid": "file:modules/osu!droid",
     "request": "^2.88.2",
-    "unzipper": "0.10.10"
+    "unzipper": "^0.10.11"
   }
 }
