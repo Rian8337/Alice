@@ -32,7 +32,7 @@ module.exports.run = (client, maindb, alicedb) => {
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		if (!maintenance) {
 			client.utils.get("trackfunc").run(client, maindb);
-			client.utils.get("clantrack").run(client, maindb, alicedb);
+			// client.utils.get("clantrack").run(client, maindb, alicedb);
 			client.utils.get("dailytrack").run(client, maindb, alicedb);
 			client.utils.get("weeklytrack").run(client, maindb, alicedb);
 			client.utils.get("auctiontrack").run(client, maindb, alicedb)
