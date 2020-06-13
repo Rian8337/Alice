@@ -65,7 +65,7 @@ module.exports.run = async (client, message, args, maindb) => {
             h50: data.hit50,
             misses: data.hit0,
             accuracy: data.accuracy,
-            time: Math.floor(data.time.getTime() / 1000),
+            time: data.time.getTime(),
             perfect: data.is_full_combo
         }
     };
