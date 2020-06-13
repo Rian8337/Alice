@@ -83,6 +83,7 @@ class ReplayAnalyzer {
             const url = new URL(`http://ops.dgsrz.com/api/upload/${this.score_id}.odr`);
             console.log("Downloading replay");
             http.request(url, res => {
+                res.setEncoding("utf8")
                 res.on('data', chunk => {
                     console.log(chunk);
                     data_array.push(Buffer.from(chunk))
