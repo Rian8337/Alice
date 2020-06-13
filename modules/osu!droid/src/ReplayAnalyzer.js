@@ -1,8 +1,8 @@
 const mods = require('./mods');
-const {Readable} = require('stream');
+const {Readable}  = require('stream');
 const {Parse} = require('unzipper');
 const javaDeserialization = require('java-deserialization');
-const http = require('http');
+const request = require('request');
 const ReplayData = require('./ReplayData');
 const CursorData = require('./CursorData');
 const ReplayObjectData = require('./ReplayObjectData');
@@ -25,14 +25,15 @@ const LONG_LENGTH = 8;
 
 class ReplayAnalyzer {
     /**
-     * @param {number} score_id The score ID of the score to analyze.
+     * @param {Object} values An object containing the parameters.
+     * @param {number} values.score_id The score ID of the score to analyze.
      */
-    constructor(score_id) {
+    constructor(values = {}) {
         /**
          * @type {number}
          * @description The score ID of the replay.
          */
-        this.score_id = score_id;
+        this.score_id = values.score_id;
         if (!this.score_id) {
             throw new TypeError("Please specify a score ID")
         }
@@ -50,9 +51,9 @@ class ReplayAnalyzer {
 
         /**
          * @type {ReplayData|null}
-         * @description The results of the analyzer.
+         * @description The results of the analyzer. `null` when initialized.
          */
-        this.data = null
+        this.data = null;
     }
 
     /**
@@ -80,17 +81,12 @@ class ReplayAnalyzer {
     _decompress() {
         return new Promise((resolve, reject) => {
             const data_array = [];
-            const url = new URL(`http://ops.dgsrz.com/api/upload/${this.score_id}.odr`);
-            console.log(url);
-            console.log("Downloading replay");
-            http.request(url, res => {
-                res.setEncoding("utf8")
-                res.on('data', chunk => {
-                    console.log(chunk);
+            const url = `http://ops.dgsrz.com/api/upload/${this.score_id}.odr`;
+            request(url, {timeout: 10000})
+                .on('data', chunk => {
                     data_array.push(Buffer.from(chunk))
-                });
-                res.on("end", () => {
-                    console.log("Download complete");
+                })
+                .on('complete', () => {
                     const result = Buffer.concat(data_array);
                     const stream = new Readable();
                     stream.push(result);
@@ -105,13 +101,15 @@ class ReplayAnalyzer {
                             }
                         })
                         .on('error', e => {
-                            setTimeout(() => reject(e), 5000)
+                            setTimeout(() => reject(e), 2000)
                         })
                 })
-            }).end()
+                .on('error', e => {
+                    reject(e)
+                })
         })
     }
-    
+
     /**
      * Parses a replay after being downloaded and converted to a buffer.
      * @private
@@ -281,8 +279,7 @@ class ReplayAnalyzer {
                 mod_string += replay_mods_constants[property];
                 break
             }
-        }
-            
+        } 
 
         return mod_string
     }
