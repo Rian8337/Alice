@@ -180,7 +180,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         .addField("Power", power.toLocaleString(), true)
                         .addField("Members", `${members}/25`, true)
                         .addField("Created at", new Date(clandate).toUTCString(), true)
-                        .addField("Upkeep Estimation", `${coin}${upkeep} Alice coins`, true);
+                        .addField("Total Upkeep Estimation", `${coin}${upkeep.toLocaleString()} Alice coins`, true);
                     if (clanres.icon) embed.setThumbnail(clanres.icon);
                     if (clanres.description) embed.setDescription(clanres.description);
                     if (clanres.banner) {
@@ -386,9 +386,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
                     let time = timeConvert(clanres.weeklyfee - curtime);
-                    let upkeep = 200;
-                    for (const member of clanres.member_list) upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
-                    message.channel.send(`✅ **| ${message.author}, your clan's weekly upkeep with an estimated cost of ${coin}\`${upkeep}\` Alice coins will be picked up in ${time}.**`)
+                    let member_list = clanres.member_list;
+                    let member = member_list.find(m => m.id === message.author.id);
+                    let upkeep = 500 - Math.floor(34.74 * Math.log(member.rank));
+                    let total_upkeep = 200;
+                    const equal_distribution = Math.floor(total_upkeep / clanres.member_list.length);
+                    const mod = total_upkeep % clanres.member_list.length;
+                    for (const member of clanres.member_list) total_upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
+                    message.channel.send(`✅ **| ${message.author}, your upkeep cost is ${mod ? `somewhere between ${coin}\`${upkeep.toLocaleString()}-${(upkeep + 1).toLocaleString()}\`` : `${coin}\`${upkeep.toLocaleString()}\``} Alice coins, which will be taken from you in ${time}. Your clan's estimated total weekly upkeep is ${coin}\`${total_upkeep.toLocaleString()}\` Alice coins.**`)
                 })
             });
             cd.add(message.author.id);
@@ -698,7 +703,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                     let alicecoins = pointres.alicecoins;
-                    if (alicecoins < 7500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                    if (alicecoins < 7500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                     query = {name: clanname};
                     clandb.findOne(query, (err, clanres) => {
                         if (err) {
@@ -1857,7 +1862,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
@@ -1935,7 +1940,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         pointdb.findOne(query, (err, pointres) => {
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to change your clan's custom role color! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
@@ -1993,7 +1998,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 100) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 100) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
@@ -2152,7 +2157,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
                             if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
                             let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins}\` Alice coins.**`);
+                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
