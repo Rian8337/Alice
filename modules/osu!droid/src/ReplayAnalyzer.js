@@ -100,7 +100,7 @@ class ReplayAnalyzer {
                             }
                         })
                         .on('error', e => {
-                            setTimeout(() => reject(e), 2000)
+                            setTimeout(() => reject(e), 5000)
                         })
                 })
                 .on('error', e => {
