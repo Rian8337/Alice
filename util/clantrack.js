@@ -109,6 +109,7 @@ module.exports.run = (client, maindb, alicedb) => {
             const members_points = await fetchMembers(pointdb, query);
 
             for await (const member of member_list) {
+                console.log(member);
                 if (!member_list.find(m => m.id === member.id)) continue;
                 const bind_pool = await fetchBindPool(binddb, {discordid: member.id});
                 let rank = Number.POSITIVE_INFINITY;
