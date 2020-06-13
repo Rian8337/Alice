@@ -15,6 +15,7 @@ function fetchUid(binddb, query) {
 
 module.exports.run = async (client, message, args, maindb) => {
     if (message.channel.type !== 'text') return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, you're still in cooldown! Please wait for a minute or two before using this command again!**");
     let uid, beatmap;
     if (args[1]) {
@@ -119,5 +120,5 @@ module.exports.config = {
     description: "Fetches replay from a player or yourself on a beatmap.\n\nIf the second argument is omitted, your binded uid will be taken as the uid to fetch the replay from.",
 	usage: "fetchreplay [beatmap/uid] [beatmap]",
 	detail: "`beatmap`: The beatmap link or ID [Integer/String]\n`uid`: The uid of the player [Integer]",
-	permission: "None"
+	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
