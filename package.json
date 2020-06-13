@@ -20,8 +20,10 @@
     "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
+    "java-deserialization": "^0.1.0",
     "mongodb": "^3.5.4",
     "osu-droid": "file:modules/osu!droid",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "unzipper": "0.10.10"
   }
 }
