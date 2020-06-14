@@ -39,9 +39,15 @@ class ReplayAnalyzer {
         }
         /**
          * @type {Buffer|undefined}
-         * @description The odr file of the replay.
+         * @description The original odr file of the replay.
          */
-        this.odr = undefined;
+        this.original_odr = undefined;
+
+        /**
+         * @type {Buffer|undefined}
+         * @description The fixed odr file of the replay. This is used to parse the replay.
+         */
+        this.fixed_odr = undefined;
 
         /**
          * @type {boolean|undefined}
@@ -62,8 +68,8 @@ class ReplayAnalyzer {
      * @returns {Promise<ReplayAnalyzer>} The current instance containing analyzed replay data in the `data` property.
      */
     async analyze() {
-        this.odr = await this._decompress().catch(console.error);
-        if (!this.odr) {
+        this.fixed_odr = await this._decompress().catch(console.error);
+        if (!this.fixed_odr) {
             return this
         }
         this._parseReplay();
@@ -88,6 +94,7 @@ class ReplayAnalyzer {
                 })
                 .on('complete', () => {
                     const result = Buffer.concat(data_array);
+                    this.original_odr = result;
                     const stream = new Readable();
                     stream.push(result);
                     stream.push(null);
@@ -117,7 +124,7 @@ class ReplayAnalyzer {
     _parseReplay() {
         // javaDeserialization can only somewhat parse some string field
         // the rest will be a buffer that we need to manually parse
-        const raw_object = javaDeserialization.parse(this.odr);
+        const raw_object = javaDeserialization.parse(this.fixed_odr);
 
         const result_object = {
             replay_version: raw_object[0].version,
