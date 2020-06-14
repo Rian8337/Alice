@@ -84,7 +84,6 @@ function updateClanDB(clandb, query, updateVal) {
 }
 
 module.exports.run = (client, maindb, alicedb) => {
-    console.log("Retrieving clan data");
     const guild = client.guilds.cache.get("316545691545501706");
     const role = guild.roles.cache.find(r => r.name === 'Clans');
     const binddb = maindb.collection("userbind");
@@ -111,6 +110,7 @@ module.exports.run = (client, maindb, alicedb) => {
             const members_points = await fetchMembers(pointdb, query);
 
             for await (const member of member_list) {
+                console.log(member);
                 if (!member_list.find(m => m.id === member.id)) continue;
                 console.log("Fetching bind pool of uid", member.uid);
                 const bind_pool = await fetchBindPool(binddb, {discordid: member.id});

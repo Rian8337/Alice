@@ -62,10 +62,10 @@ module.exports.run = async (client, message, args, maindb) => {
             h300: data.hit300,
             h100k: data.hit100k,
             h100: data.hit100,
-            h50: data.h50,
+            h50: data.hit50,
             misses: data.hit0,
             accuracy: data.accuracy,
-            time: Math.floor(data.time.getTime() / 1000),
+            time: data.time.getTime(),
             perfect: data.is_full_combo
         }
     };
@@ -104,7 +104,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
         .addField(mapinfo.showStatistics(data.converted_mods, 2), `${mapinfo.showStatistics(data.converted_mods, 3)}\n**Max score**: ${mapinfo.max_score(data.converted_mods).toLocaleString()}`)
-        .addField(mapinfo.showStatistics(data.converted_mods, 4), `${mapinfo.showStatistics(data.converted_mods, 5)}\n**Result**: ${play.combo}/${mapinfo.max_combo}x / ${play.accuracy}% / ${play.miss} miss(es)`)
+        .addField(mapinfo.showStatistics(data.converted_mods, 4), `${mapinfo.showStatistics(data.converted_mods, 5)}\n**Result**: ${play.combo}/${mapinfo.max_combo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]`)
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
     message.channel.send({embed: embed});
