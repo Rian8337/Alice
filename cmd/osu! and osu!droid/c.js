@@ -71,7 +71,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let n300, n100, n50;
         if (message.isOwner) {
             const data = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
-            if (data.odr) {
+            if (data.fixed_odr) {
                 n300 = data.data.hit300;
                 n100 = data.data.hit100;
                 n50 = data.data.hit50
