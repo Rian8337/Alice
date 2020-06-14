@@ -47,7 +47,7 @@ module.exports.run = async (client, message, args, maindb) => {
     const replay = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
     const data = replay.data;
     const zip = new AdmZip();
-    zip.addFile(`${play.score_id}.odr`, replay.odr);
+    zip.addFile(`${play.score_id}.odr`, replay.original_odr);
     const object = {
         version: 1,
         replaydata: {
