@@ -45,6 +45,7 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!message.isOwner) cd.add(message.author.id);
     
     const replay = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
+    if (!replay.fixed_odr) return message.channel.send("❎ **| I'm sorry, I couldn't retrieve your replay file!**");
     const data = replay.data;
     const zip = new AdmZip();
     zip.addFile(`${play.score_id}.odr`, replay.original_odr);
