@@ -117,7 +117,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
     let channels = config.pp_channel;
     let channel_index = channels.findIndex(id => message.channel.id === id);
-    if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+    if (!message.isOwner && channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 
     let ufind = message.author.id;
     let offset = 1;
