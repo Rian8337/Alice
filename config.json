@@ -39,12 +39,6 @@
   "management_channel": "server-management",
   "log_channel": "bills",
   "report_channel": "reports",
-  "activity_list": [
-    ["LiSA - unlasting with Rian8337", "LISTENING"],
-    ["SAO Alicization: War of Underworld Episode ", "WATCHING"],
-    ["a!help | a!modhelp", "PLAYING"],
-    ["Rian8337 develop me!", "WATCHING"]
-  ],
   "avatar_list": [
     "https://i.imgur.com/FAWi2Yl.png",
     "https://i.imgur.com/Fspbt08.png",
