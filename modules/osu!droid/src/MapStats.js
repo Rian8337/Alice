@@ -68,7 +68,7 @@ class MapStats {
     /**
      * Calculates map statistics with mods applied.
      *
-     * @param {Object} params An object containing the parameters.
+     * @param {Object} params
      * @param {string} [params.mode=osu] Whether to convert for droid statistics or PC statistics.
      * @param {string} [params.mods] Applied modifications in osu!standard string. Can be omitted if ths has been applied in the constructor.
      * @returns {MapStats} A new MapStats instance containing calculated map statistics.
@@ -85,6 +85,9 @@ class MapStats {
         }
         if ((stats.droid_mods & mods.t) | (stats.pc_mods & mods.ht)) {
             stats.speed_multiplier *= 0.75;
+        }
+        if (stats.mods.includes("SU")) {
+            stats.speed_multiplier = 1.25;
         }
         if ((stats.droid_mods & mods.r) | (stats.pc_mods & mods.hr)) {
             od_ar_hp_multiplier = 1.4;
@@ -116,21 +119,13 @@ class MapStats {
                     // convert original OD to droid OD
                     let droid_to_MS = 75 + 5 * (5 - stats.od);
                     if (stats.mods.includes("PR")) {
-                        droid_to_MS = 55 + 6 * (5 - stats.od)
+                        droid_to_MS = 55 + 6 * (5 - stats.od);
                     }
 
                     // separate handling for speed-changing OD due to
                     // bug in modify_od function and the way droid OD
                     // works
-                    if (stats.droid_mods & mods.d) {
-                        droid_to_MS /= 1.5;
-                    }
-                    if (stats.droid_mods & mods.c) {
-                        droid_to_MS /= 1.39;
-                    }
-                    if (stats.droid_mods & mods.t) {
-                        droid_to_MS /= 0.75;
-                    }
+                    droid_to_MS /= stats.speed_multiplier;
                     stats.od = 5 - (droid_to_MS - 50) / 6;
                 }
 
@@ -150,9 +145,7 @@ class MapStats {
                         stats.droid_mods -= mods.e;
                         --stats.cs;
                     }
-                    if (!stats.mods.includes("SC")) {
-                        stats.cs -= 4;
-                    }
+                    if (!stats.mods.includes("SC")) stats.cs -= 4;
                     stats.cs = Math.min(10, stats.cs);
                 }
 
@@ -163,11 +156,10 @@ class MapStats {
 
                 if (stats.ar !== undefined) {
                     if (stats.mods.includes("RE")) {
-                        od_ar_hp_multiplier *= 2;
                         if (stats.droid_mods & mods.d) {
                             --stats.ar;
                         } else {
-                            stats.ar -= 0.5;
+                            stats.ar -= 0.5   
                         }
                     }
                     stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
@@ -176,7 +168,7 @@ class MapStats {
             }
             case "osu!":
             case "osu": {
-                if (!(stats.pc_mods & mods.map_changing)) {
+                if (!(stats.pc_mods & mods.map_changing) && !stats.mods.includes("SU")) {
                     return stats;
                 }
                 if (stats.pc_mods & mods.nc) {

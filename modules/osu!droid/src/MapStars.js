@@ -63,13 +63,14 @@ class MapStars {
         if (!(droid_mod & mods.td)) {
             droid_mod += mods.td
         }
-        if (droid_mod & mods.hr) {
-            droid_mod -= mods.hr
-        }
-        if (droid_mod & mods.ez) {
-            droid_mod -= mods.ez
+        droid_mod -= droid_mod & (mods.hr | mods.ez);
+        if (pmod.includes("SU")) {
+            droid_mod -= droid_mod & mods.speed_changing
         }
         droid_mod = mods.modbits_to_string(droid_mod);
+        if (pmod.includes("SU")) {
+            droid_mod += "SU"
+        }
 
         nmap.cs = stats.cs;
         nmap.ar = stats.ar;
