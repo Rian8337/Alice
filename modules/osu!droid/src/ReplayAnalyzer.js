@@ -94,6 +94,7 @@ class ReplayAnalyzer {
                 })
                 .on('complete', () => {
                     const result = Buffer.concat(data_array);
+                    if (result.toString("utf8").includes("404 Not Found")) return resolve(null);
                     this.original_odr = result;
                     const stream = new Readable();
                     stream.push(result);

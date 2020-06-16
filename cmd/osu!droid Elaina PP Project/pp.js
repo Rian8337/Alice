@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
-let cd = new Set();
+const cd = new Set();
 
 function scanWhitelist(whitelist, hash) {
 	return new Promise(resolve => {
@@ -94,7 +94,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let channels = config.pp_channel;
 	let channel_index = channels.findIndex(id => message.channel.id === id);
-	if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+	if (!message.isOwner && channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
 
 	let binddb = maindb.collection("userbind");
 	let whitelist = maindb.collection("mapwhitelist");
