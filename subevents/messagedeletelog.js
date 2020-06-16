@@ -38,5 +38,5 @@ module.exports.run = (message, messageLog) => {
 };
 
 module.exports.config = {
-    name: "messagedeletelog"
+    name: "messageDeleteLog"
 };

@@ -8,5 +8,5 @@ module.exports.run = (channel, user) => {
 };
 
 module.exports.config = {
-    name: "typingindicator"
+    name: "typingIndicator"
 };

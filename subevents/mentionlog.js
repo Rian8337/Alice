@@ -13,5 +13,5 @@ module.exports.run = (client, message) => {
 };
 
 module.exports.config = {
-    name: "mentionlog"
+    name: "mentionLog"
 };

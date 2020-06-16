@@ -31,5 +31,5 @@ module.exports.run = (client, message) => {
 };
 
 module.exports.config = {
-    name: "cutenolewd"
+    name: "cuteNoLewd"
 };

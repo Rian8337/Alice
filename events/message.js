@@ -11,7 +11,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	
 	// mute detection for lounge ban
 	if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
-		client.subevents.get("loungebanmutedetection").run(message, alicedb)
+		client.subevents.get("loungeBanMuteDetection").run(message, alicedb)
 	}
 
 	if (message.author.bot) return;
@@ -21,12 +21,12 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	const args = msgArray.slice(1);
 	
 	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
-		client.subevents.get("brbshower").run(message)
+		client.subevents.get("brbShower").run(message)
 	}
 	
 	// picture detector in #cute-no-lewd
 	if (message.channel.id === '686948895212961807') {
-		client.subevents.get("cutenolewd").run(client, message)
+		client.subevents.get("cuteNoLewd").run(client, message)
 	}
 	
 	// 8ball
@@ -36,22 +36,22 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	
 	// osu! automatic recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-		client.subevents.get("osurecognition").run(client, message, current_map)
+		client.subevents.get("osuRecognition").run(client, message, current_map)
 	}
 	
 	// YouTube link detection
 	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
-		client.subevents.get("youtube").run(client, message, current_map)
+		client.subevents.get("youtubeRecognition").run(client, message, current_map)
 	}
 	
 	// picture log
 	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
-		client.subevents.get("picturelog").run(client, message)
+		client.subevents.get("pictureLog").run(client, message)
 	}
 	
 	// mention log
 	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
-		client.subevents.get("mentionlog").run(client, message)
+		client.subevents.get("mentionLog").run(client, message)
 	}
 	
 	// self-talking (for fun lol)
@@ -100,11 +100,11 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		let mainbot = message.guild.members.cache.get("391268244796997643");
 		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
 		obj.main_bot = false;
-		client.subevents.get("commandhandler").run(obj)
+		client.subevents.get("commandHandler").run(obj)
 	}
 	
 	if (message.content.startsWith(config.prefix)) {
-		client.subevents.get("commandhandler").run(obj)
+		client.subevents.get("commandHandler").run(obj)
 	}
 };
 

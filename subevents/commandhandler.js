@@ -36,5 +36,5 @@ module.exports.run = obj => {
 };
 
 module.exports.config = {
-    name: "commandhandler"
+    name: "commandHandler"
 };

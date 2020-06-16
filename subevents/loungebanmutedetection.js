@@ -28,5 +28,5 @@ module.exports.run = (message, alicedb) => {
 };
 
 module.exports.config = {
-    name: "loungebanmutedetection"
+    name: "loungeBanMuteDetection"
 };

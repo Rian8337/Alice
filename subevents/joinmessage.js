@@ -6,5 +6,5 @@ module.exports.run = member => {
 };
 
 module.exports.config = {
-    name: "joinmessage"
+    name: "joinMessage"
 };

@@ -11,5 +11,5 @@ module.exports.run = (client, message, current_map) => {
 };
 
 module.exports.config = {
-    name: "osurecognition"
+    name: "osuRecognition"
 };

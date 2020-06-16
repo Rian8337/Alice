@@ -109,7 +109,7 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("guildMemberRemove", member => {
-	client.events.get("guildMemberRemove").run(client, member, maindb)
+	client.events.get("guildMemberRemove").run(client, member, maindb, alicedb)
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
@@ -121,7 +121,7 @@ client.on("typingStart", (channel, user) => {
 });
 
 client.on("guildBanAdd", (guild, user) => {
-	client.events.get("guildBanAdd").run(client, guild, user)
+	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb)
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {

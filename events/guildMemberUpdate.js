@@ -3,7 +3,7 @@ module.exports.run = (client, oldMember, newMember, alicedb) => {
 	client.subevents.get("introduction").run(oldMember, newMember);
 
 	// Lounge ban detection
-	client.subevents.get("roleaddloungebandetection").run(newMember, alicedb);
+	client.subevents.get("roleAddLoungeBanDetection").run(newMember, alicedb);
 };
 
 module.exports.config = {

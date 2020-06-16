@@ -11,5 +11,5 @@ module.exports.run = (client, member, alicedb) => {
 };
 
 module.exports.config = {
-    name: "newmemberloungeban"
+    name: "newMemberLoungeBan"
 };

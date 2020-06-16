@@ -45,10 +45,10 @@ module.exports.run = (client, maindb, alicedb) => {
 	}, 1200000);
 
 	// Mudae role assignment reaction-based on droid cafe
-	client.subevents.get("mudaerolereaction").run(client)
+	client.subevents.get("mudaeRoleReaction").run(client)
 
 	// Challenge role assignment (reaction-based)
-	client.subevents.get("challengerolereaction").run(client)
+	client.subevents.get("challengeRoleReaction").run(client)
 };
 
 module.exports.config = {

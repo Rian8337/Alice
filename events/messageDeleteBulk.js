@@ -1,6 +1,6 @@
 module.exports.run = (client, messages) => {
     // bulk message delete logging
-	client.subevents.get("messagebulkdeletelog").run(messages)
+	client.subevents.get("messageBulkDeleteLog").run(messages)
 };
 
 module.exports.config = {

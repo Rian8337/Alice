@@ -17,5 +17,5 @@ module.exports.run = client => {
 };
 
 module.exports.config = {
-	name: "mudaerolereaction"
+	name: "mudaeRoleReaction"
 };

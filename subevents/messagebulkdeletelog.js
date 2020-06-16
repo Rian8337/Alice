@@ -15,5 +15,5 @@ module.exports.run = messages => {
 };
 
 module.exports.config = {
-    name: "messagebulkdeletelog"
+    name: "messageBulkDeleteLog"
 };

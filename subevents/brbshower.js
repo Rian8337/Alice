@@ -11,5 +11,5 @@ module.exports.run = message => {
 };
 
 module.exports.config = {
-    name: "brbshower"
+    name: "brbShower"
 };

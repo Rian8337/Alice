@@ -22,5 +22,5 @@ module.exports.run = (client, message, current_map) => {
 };
 
 module.exports.config = {
-    name: "youtuberecognition"
+    name: "youtubeRecognition"
 };

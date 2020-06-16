@@ -22,5 +22,5 @@ module.exports.run = (client, message) => {
 };
 
 module.exports.config = {
-    name: "picturelog"
+    name: "pictureLog"
 };

@@ -19,5 +19,5 @@ module.exports.run = (oldMessage, newMessage) => {
 };
 
 module.exports.config = {
-    name: "messageupdatelog"
+    name: "messageUpdateLog"
 };

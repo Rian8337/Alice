@@ -34,5 +34,5 @@ module.exports.run = async (guild, user, alicedb) => {
 };
 
 module.exports.config = {
-	name: "banneduserloungeban"
+	name: "bannedUserLoungeBan"
 };

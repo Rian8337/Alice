@@ -23,5 +23,5 @@ module.exports.run = (newMember, alicedb) => {
 };
 
 module.exports.config = {
-    name: "roleaddloungebandetection"
+	name: "roleAddLoungeBanDetection"
 };

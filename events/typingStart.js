@@ -1,6 +1,6 @@
 module.exports.run = (client, channel, user) => {
     // Typing indicator
-	client.subevents.get("typingindicator").run(channel, user)
+	client.subevents.get("typingIndicator").run(channel, user)
 };
 
 module.exports.config = {

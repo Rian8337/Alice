@@ -42,5 +42,5 @@ module.exports.run = (client, member, maindb) => {
 };
 
 module.exports.config = {
-    name: "clancheck"
+    name: "clanCheck"
 };
