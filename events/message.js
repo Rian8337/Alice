@@ -34,9 +34,10 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		client.subevents.get("8ball").run(client, message, msgArray, alicedb)
 	}
 	
-	// osu! automatic recognition
+	// osu! beatmap link and osu!droid profile recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-		client.subevents.get("osuRecognition").run(client, message, current_map)
+		client.subevents.get("osuRecognition").run(client, message, current_map);
+		client.subevents.get("profileFetc").run(client, message, maindb, alicedb)
 	}
 	
 	// YouTube link detection
