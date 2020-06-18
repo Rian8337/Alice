@@ -221,7 +221,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
                         return
                     }
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file})
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file});
                     const embed = new Discord.MessageEmbed()
                         .setAuthor(`Submission by ${res.submitter}`)
                         .setTitle(mapinfo.showStatistics('', 0))
@@ -234,7 +234,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .addField("**Star Rating**", `${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`)
                         .addField("**Summary**", summary);
 
-                    if (submitter) embed.setAuthor(`Submission by ${submitter.user.tag}`, submitter.user.avatarURL({dynamic: true}));
+                    if (submitter) embed.setAuthor(`Submission by ${submitter.user.username}`, submitter.user.avatarURL({dynamic: true}));
                     
                     updateVal = {
                         $set: {

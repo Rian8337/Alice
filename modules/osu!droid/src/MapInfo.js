@@ -482,9 +482,12 @@ class MapInfo {
         if (modbits & mods.hr) score_multiplier *= 1.06;
         if (modbits & mods.dt) score_multiplier *= 1.12;
         if (modbits & mods.nc) score_multiplier *= 1.12;
+        if (modbits & mods.fl) score_multiplier *= 1.12;
         if (modbits & mods.nf) score_multiplier *= 0.5;
         if (modbits & mods.ez) score_multiplier *= 0.5;
         if (modbits & mods.ht) score_multiplier *= 0.3;
+        if (mod.includes("SU")) score_multiplier *= 1.06;
+        if (mod.includes("RE")) score_multiplier *= 0.4;
 
         if (modbits & mods.unranked) score_multiplier = 0;
 
