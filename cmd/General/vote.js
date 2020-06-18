@@ -99,30 +99,26 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, there is no ongoing vote in this channel!**");
-                let choice = parseInt(args[0]) - 1;
-                let choices = res.choices;
-                let xp_req = res.xp;
-                if (isNaN(choice) || choice < 0 || choice > choices.length) return message.channel.send("❎ **| I'm sorry, that vote option is invalid!**");
+                const choice = parseInt(args[0]) - 1;
+                const choices = res.choices;
+                const xp_req = res.xp;
+                if (isNaN(choice) || choice < 0 || choice >= choices.length) return message.channel.send("❎ **| I'm sorry, that vote option is invalid!**");
 
-                let url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${message.author.id}/stats`;
+                const url = `https://api.tatsumaki.xyz/guilds/${message.guild.id}/members/${message.author.id}/stats`;
                 request(url, {headers: {"Authorization": tatsukey}}, (err, response, data) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from Tatsumaki's API. Please try again!**");
                     }
-                    let user_stats = JSON.parse(data);
-                    let user_score = parseInt(user_stats.score);
+                    const user_stats = JSON.parse(data);
+                    const user_score = parseInt(user_stats.score);
                     if (user_score < xp_req && !isEligible(message.member)) return message.channel.send(`❎ **| I'm sorry, you are not eligible enough to vote! You need at least \`${xp_req}\` Tatsu server XP unless you're a staff member!**`);
 
-                    let i = 0;
-                    let found = false;
-                    for (i; i < choices.length; i++) {
-                        if (!choices[i][2].includes(message.author.id)) continue;
-                        if (i == choice) return message.channel.send("❎ **| I'm sorry, you've already voted for that option!**");
-                        choices[i][2] = choices[i][2].filter(entry => entry != message.author.id);
-                        --choices[i][1];
-                        found = true;
-                        break
+                    let choice_index = choices.findIndex(choice => choice[2].includes(message.author.id);
+                    if (choice_index !== -1) {
+                        --choices[choice_index][1];
+                        const user_index = choices[choice_index][2].findIndex(u => u === message.author.id);
+                        choices[choice_index][2].splice(user_index, 1)
                     }
                     ++choices[choice][1];
                     choices[choice][2].push(message.author.id);
