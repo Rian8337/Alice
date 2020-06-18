@@ -114,7 +114,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     const user_score = parseInt(user_stats.score);
                     if (user_score < xp_req && !isEligible(message.member)) return message.channel.send(`❎ **| I'm sorry, you are not eligible enough to vote! You need at least \`${xp_req}\` Tatsu server XP unless you're a staff member!**`);
 
-                    let choice_index = choices.findIndex(choice => choice[2].includes(message.author.id);
+                    let choice_index = choices.findIndex(choice => choice[2].includes(message.author.id));
                     if (choice_index !== -1) {
                         --choices[choice_index][1];
                         const user_index = choices[choice_index][2].findIndex(u => u === message.author.id);
