@@ -425,7 +425,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                     if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
                     if (!joinres.joincooldown) joinres.joincooldown = 0;
-                    const player = await new osudroid.PlayerInfo().get({uid: uid});
+                    const player = await new osudroid.PlayerInfo().get({uid: joinres.uid});
                     if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
                     if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
                     let cooldown = joinres.joincooldown - curtime;
