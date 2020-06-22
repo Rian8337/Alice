@@ -3,8 +3,8 @@ const config = require('../../config.json');
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
-    if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520') return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    if (message.guild.id !== '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in osu!droid (International) Discord server!**");
+    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
 
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
