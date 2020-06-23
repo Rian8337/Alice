@@ -21,7 +21,7 @@ function editpp(res, page) {
 
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (cd.has(message.author.id)) return message.channel.send("Please wait for a bit before using this command again!");
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let page = 0;
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
     let binddb = maindb.collection('userbind');
@@ -31,7 +31,7 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
         }
-        if (!(res[page*20])) return message.channel.send("Nah we don't have that much player :p");
+        if (!(res[page*20])) return message.channel.send("❎ **| Nah, we don't have that much player. :p**");
         let output = editpp(res, page);
         message.channel.send('```c\n' + output + '```').then((msg) => {
             msg.react("⏮️").then(() => {
