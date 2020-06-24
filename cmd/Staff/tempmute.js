@@ -95,7 +95,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`)
     }
 
-    if (mutetime >= 180000) {
+    if (mutetime >= 21600) {
         const loungedb = alicedb.collection("loungelock");
         loungedb.findOne({discordid: tomute.id}, (err, res) => {
             if (err) {
