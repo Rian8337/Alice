@@ -146,7 +146,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 };
 
 module.exports.config = {
-    name: "c",
+    name: "compare",
+    aliases: "c",
     description: "Compare your play amongst others.",
     usage: "c [user]",
     detail: "`user`: The user you want to compare [UserResolvable (mention or user ID)]",
