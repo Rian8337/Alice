@@ -1,6 +1,8 @@
 const osudroid = require('osu-droid');
+const Discord = require('discord.js');
+const config = require('../../config.json');
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, maindb) => {
 	let username = args[0];
 	if (!username) return message.channel.send("❎ **| Hey, can you at least tell me what username I need to search for?**");
 	const player = await new osudroid.PlayerInfo().get({username: username});
@@ -8,18 +10,36 @@ module.exports.run = async (client, message, args) => {
 	if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user with such username. Please make sure that the name is correct (including upper and lower case).**");
 	username = player.name;
 	let uid = player.uid;
-	let embed = {
-		"title": username + "'s uid is " + uid,
-		"color": 1900288,
-		"url": "http://ops.dgsrz.com/profile.php?uid=" + uid
-	};
-	message.channel.send({embed: embed}).catch(console.error)
+
+	maindb.collection("userbind").findOne({previous_bind: {$all: [uid.toString()]}}, (err, res) => {
+		if (err) {
+			console.log(err);
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+		}
+
+		const footer = config.avatar_list;
+		const index = Math.floor(Math.random() * footer.length);
+		let rolecheck;
+		try {
+			rolecheck = message.member.roles.color.hexColor
+		} catch (e) {
+			rolecheck = "#000000"
+		}
+		const embed = new Discord.MessageEmbed()
+			.setAuthor(`Player Information for ${username} (click to view profile)`, null, `http://ops.dgsrz.com/profile.php?uid=${uid}`)
+			.setThumbnail(player.avatarURL)
+			.setColor(rolecheck)
+			.setFooter("Alice Synthesis Thirty", footer[index])
+			.setDescription(`**Uid**: ${uid}\n**Rank**: ${player.rank.toLocaleString()}\n**Play Count**: ${player.play_count.toLocaleString()}\n\n**Bind Information**: ${res ? `Binded to <@${res.discordid}> (user ID: ${res.discordid})` : "Not binded"}`);
+
+		message.channel.send({embed: embed})
+	})
 };
 
 module.exports.config = {
 	name: "profilesearch",
 	description: "Searches for a user and retrieves the user's uid.",
-	usage: "profilesearch <user>",
-	detail: "`user`: The user to search, case sensitive [String]",
+	usage: "profilesearch <username>",
+	detail: "`username`: The username to search (case insensitive) [String]",
 	permission: "None"
 };
