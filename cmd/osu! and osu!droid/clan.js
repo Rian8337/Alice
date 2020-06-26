@@ -546,7 +546,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (!memberlist[perm_index].hasPermission && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                     let member_index = clanres.member_list.findIndex(member => member.id === tokick.id);
-                    if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
+                    if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!**");
                     if (memberlist[member_index].hasPermission && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user out from ${perm?`\`${clan}\``:"your"} clan?**`).then(msg => {
