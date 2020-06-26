@@ -27,7 +27,8 @@ module.exports.run = maindb => {
                         console.log(`Couldn't find bind with Discord ID ${member.id}`);
                         continue
                     }
-                    const previous_bind = user.previous_bind;
+                    let previous_bind = user.previous_bind;
+                    if (!previous_bind) previous_bind = [user.uid];
                     let rank = Number.POSITIVE_INFINITY;
                     let fix_uid = 0;
                     for await (const uid of previous_bind) {
