@@ -27,7 +27,7 @@ fs.readdir('./events/subevents', (err, files) => {
 	console.log("Loading subevents");
 	if (err) throw err;
 	files.forEach((file, i) => {
-		const props = require(`./subevents/${file}`);
+		const props = require(`.events/subevents/${file}`);
 		console.log(`${i+1}. ${file} loaded`);
 		client.subevents.set(props.config.name, props)
 	})
