@@ -4,8 +4,8 @@ const osudroid = require('osu-droid');
 /**
  * Checks if a specific uid has played verification map.
  *
- * @param {number|string} uid The uid of the account
- * @returns {Promise<boolean>}
+ * @param {number|string} uid The uid of the account.
+ * @returns {Promise<boolean>} Whether or not the player has played the mapp (`true` or `false`).
  */
 async function checkPlay(uid) {
 	const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
@@ -23,16 +23,18 @@ module.exports.run = async (client, message, args, maindb) => {
 		else return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
 	}
 
-	let uid = parseInt(args[0]);
-	if (!uid) return message.channel.send("❎ **| What am I supposed to bind? Give me a uid!**");
-	if (isNaN(uid)) return message.channel.send("❎ **| Invalid uid.**");
+	if (!args[0]) return message.channel.send("❎ **| Hey, what am I supposed to bind? Give me a username or uid!**");
 
-	let binddb = maindb.collection("userbind");
-	const player = await new osudroid.PlayerInfo().get({uid: uid});
+	let username, uid;
+	if (isNaN(args[0])) username = args[0];
+	else uid = parseInt(args[0]);
+
+	const binddb = maindb.collection("userbind");
+	const player = await new osudroid.PlayerInfo().get(uid ? {uid: uid} : {username: username});
 	if (player.error) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid doesn't exist!**");
+	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
 
-	uid = uid.toString();
+	uid = player.uid.toString();
 
 	binddb.findOne({previous_bind: {$all: [uid]}}, async (err, res) => {
 		if (err) {
@@ -48,9 +50,8 @@ module.exports.run = async (client, message, args, maindb) => {
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 				}
 				if (bindres) {
-					let previous_bind = [];
-					if (bindres.previous_bind) previous_bind = bindres.previous_bind;
-					if (previous_bind.length >= 2) return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+					let previous_bind = bindres.previous_bind;
+					if (previous_bind.length === 2) return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
 
 					previous_bind.push(uid);
 					let updateVal = {
@@ -103,15 +104,15 @@ module.exports.run = async (client, message, args, maindb) => {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 			}
-			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`)
+			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
 		})
 	})
 };
 
 module.exports.config = {
 	name: "userbind",
-	description: "Binds a Discord account to an osu!droid account. ",
-	usage: "userbind <uid>",
-	detail: "`uid`: The uid to bind [Integer]",
+	description: "Binds a Discord account to an osu!droid account.",
+	usage: "userbind <uid/username>",
+	detail: "`uid`: The uid to bind [Integer]\n`username`: The username to bind [String]",
 	permission: "None"
 };
