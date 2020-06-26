@@ -23,7 +23,7 @@ fs.readdir('./events', (err, files) => {
 });
 
 //Subevents loading
-fs.readdir('./subevents', (err, files) => {
+fs.readdir('./events/subevents', (err, files) => {
 	console.log("Loading subevents");
 	if (err) throw err;
 	files.forEach((file, i) => {
