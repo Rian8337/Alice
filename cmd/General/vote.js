@@ -134,7 +134,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        message.channel.send(`✅ **| ${message.author}, ${!found ? "your vote has been registered" : `your vote has been moved from option \`${i+1}\` to \`${choice+1}\``}!**\n${voteStringProcessing(res.topic, choices)}`)
+                        message.channel.send(`✅ **| ${message.author}, ${!choice_index === -1 ? "your vote has been registered" : `your vote has been moved from option \`${i+1}\` to \`${choice+1}\``}!**\n${voteStringProcessing(res.topic, choices)}`)
                     })
                 })
             })
