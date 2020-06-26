@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 module.exports.run = (message, messageLog) => {
     if (message.author.bot || message.channel instanceof Discord.DMChannel) return;

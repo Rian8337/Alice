@@ -1,4 +1,4 @@
-const config = require('../config.json');
+const config = require('../../config.json');
 
 module.exports.run = async (client, guild, user, maindb, alicedb) => {
     if (guild.id !== '316545691545501706') return;

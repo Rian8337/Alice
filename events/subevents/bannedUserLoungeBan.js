@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 module.exports.run = async (guild, user, alicedb) => {
     let banInfo = await guild.fetchBan(user.id);

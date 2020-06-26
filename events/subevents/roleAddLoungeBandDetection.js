@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 module.exports.run = (newMember, alicedb) => {
     if (newMember.guild.id != '316545691545501706' || newMember.roles == null) return;
