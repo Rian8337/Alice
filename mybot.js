@@ -16,9 +16,13 @@ fs.readdir('./events', (err, files) => {
 	console.log("Loading events");
 	if (err) throw err;
 	files.forEach((file, i) => {
-		const props = require(`./events/${file}`);
-		console.log(`${i+1}. ${file} loaded`);
-		client.events.set(props.config.name, props)
+		fs.lstat(`./events/${file}`, (err, stats) => {
+			if (err) throw err;
+			if (stats.isDirectory()) return;
+			const props = require(`./events/${file}`);
+			console.log(`${i+1}. ${file} loaded`);
+			client.events.set(props.config.name, props)
+		})
 	})
 });
 
