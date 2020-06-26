@@ -28,7 +28,7 @@ module.exports.run = (client, message, args) => {
 
     let rolecheck;
     try {
-        rolecheck = message.member.roles.highest.hexColor
+        rolecheck = message.member.roles.color.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }

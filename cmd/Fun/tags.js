@@ -24,7 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     let guild_id = message.guild.id;
     let rolecheck;
     try {
-        rolecheck = message.member.roles.highest.hexColor
+        rolecheck = message.member.roles.color.hexColor
     } catch (e) {
         rolecheck = '#000000'
     }

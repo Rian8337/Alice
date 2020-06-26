@@ -27,7 +27,7 @@ async function filterMessage(message, filter, i, count, embed, startid) {
             i = 1;
             embed = new Discord.MessageEmbed()
                 .setTitle("Users who sent `" + filter + "`:")
-                .setColor(message.member.roles.highest.hexColor)
+                .setColor(message.member.roles.color.hexColor)
         }
     });
     return filterMessage(message, filter, i, count, embed, lastid)
@@ -44,7 +44,7 @@ module.exports.run = async (client, message, args) => {
 
     let embed = new Discord.MessageEmbed()
         .setTitle("Users who sent `" + filter + "`:")
-        .setColor(message.member.roles.highest.hexColor);
+        .setColor(message.member.roles.color.hexColor);
 
     await filterMessage(message, filter, 1, 1, embed, startid);
 };

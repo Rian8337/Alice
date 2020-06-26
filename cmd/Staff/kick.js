@@ -20,7 +20,7 @@ module.exports.run = (client, message, args) => {
     tokick.kick(reason).then(() => {
         let embed = new Discord.MessageEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL())
-            .setColor(message.member.roles.highest.hexColor)
+            .setColor(message.member.roles.color.hexColor)
             .setTimestamp(new Date())
             .setTitle("Kick executed")
             .addField("Kicked user: " + tokick.user.username, "User ID: " + tokick.id)

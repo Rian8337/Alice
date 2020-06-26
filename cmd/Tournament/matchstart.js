@@ -47,7 +47,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (map.includes("DT")) timelimit = Math.ceil(timelimit / 1.5);
             let rolecheck;
             try {
-                rolecheck = message.member.roles.highest.hexColor
+                rolecheck = message.member.roles.color.hexColor
             } catch (e) {
                 rolecheck = "#000000"
             }

@@ -55,7 +55,7 @@ module.exports.run = (message, args, alicedb) => {
             const footerindex = Math.floor(Math.random() * footer.length);
             let rolecheck;
             try {
-                rolecheck = message.member.roles.highest.hexColor
+                rolecheck = message.member.roles.color.hexColor
             } catch (e) {
                 rolecheck = "#000000"
             }

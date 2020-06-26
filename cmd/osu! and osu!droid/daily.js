@@ -205,6 +205,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     const clandb = maindb.collection("clandb");
     const coin = client.emojis.cache.get("669532330980802561");
+
+    let rolecheck;
+    try {
+        rolecheck = message.member.roles.color.hexColor
+    } catch (e) {
+        rolecheck = "#000000"
+    }
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed();
@@ -217,12 +224,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // introduction to the daily challenge system
             // uses embed for a cleaner look and to override
             // Discord's message limit
-            let rolecheck;
-            try {
-                rolecheck = message.member.roles.highest.hexColor
-            } catch (e) {
-                rolecheck = "#000000"
-            }
             embed.setTitle("osu!droid Daily/Weekly Challenges")
                 .setThumbnail("https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setFooter("Alice Synthesis Thirty", footer[index])
@@ -272,12 +273,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         challenges = dailyres.challenges.length;
                     }
                     const player = await new osudroid.PlayerInfo().get({uid: uid});
-                    let rolecheck;
-                    try {
-                        rolecheck = message.member.roles.highest.hexColor
-                    } catch (e) {
-                        rolecheck = "#000000"
-                    }
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])

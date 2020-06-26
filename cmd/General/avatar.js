@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args) => {
     let user = message.author;
     let rolecheck;
     try {
-        rolecheck = message.member.roles.highest.hexColor
+        rolecheck = message.member.roles.color.hexColor
     } catch (e) {
         rolecheck = "#000000"
     }

@@ -102,7 +102,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!map_entries[(page - 1)*10]) return message.channel.send(`❎ **| Hey, we don't have that much submission for ${status} status!**`);
                     let rolecheck;
                     try {
-                        rolecheck = message.member.roles.highest.hexColor
+                        rolecheck = message.member.roles.color.hexColor
                     } catch (e) {
                         rolecheck = "#000000"
                     }
