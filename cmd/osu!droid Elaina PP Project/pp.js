@@ -106,7 +106,7 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = res.uid;
 		let pplist = [];
 		let pptotal = 0;

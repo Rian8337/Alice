@@ -70,7 +70,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let query = { discordid: ufind };
 	binddb.findOne(query, function(err, userres) {
-        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let pplist = [];
         if (userres.pp) pplist = userres.pp;

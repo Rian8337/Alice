@@ -157,7 +157,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) {
+                    if (args[1]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                    else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <<username>`.**");
+                    return
+                }
                 let clan = userres.clan;
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
@@ -216,7 +220,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let clan = userres.clan;
                 if (args[1]) clan = args.slice(1).join(" ");
                 if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
@@ -375,7 +379,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 let clan = userres.clan;
                 query = {name: clan};
@@ -414,7 +418,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 query = {discordid: toaccept.id};
                 binddb.findOne(query, async (err, joinres) => {
@@ -422,7 +426,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                    if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                     if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
                     if (!joinres.joincooldown) joinres.joincooldown = 0;
                     const player = await new osudroid.PlayerInfo().get({uid: joinres.uid});
@@ -529,7 +533,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!kickres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!kickres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!kickres.clan) return message.channel.send("❎ **| I'm sorry, this user is not in any clan!**");
                 let clan = kickres.clan;
                 query = {name: clan};
@@ -612,7 +616,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 let clan = userres.clan;
                 query = {name: clan};
@@ -694,7 +698,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (userres.clan) return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
                 const uid = userres.uid;
                 const player = await new osudroid.PlayerInfo().get({uid: uid});
@@ -852,7 +856,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         let clan;
                         if (perm && args[2]) clan = args.slice(2).join(" ");
                         else {
-                            if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                            if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                             if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                             clan = userres.clan
                         }
@@ -915,7 +919,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
 
@@ -993,7 +997,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 let clan = userres.clan;
 
@@ -1067,7 +1071,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she needs to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                 let clan = userres.clan;
 
@@ -1136,7 +1140,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 let clanname = '';
                 if (perm) {
@@ -1239,7 +1243,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -1300,7 +1304,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = '';
                         if (perm) {
@@ -1375,7 +1379,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                 let clan = userres.clan;
                 query = {name: clan};
@@ -1454,7 +1458,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -1516,7 +1520,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = '';
                         if (perm) {
@@ -1595,7 +1599,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -1624,7 +1628,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -1661,7 +1665,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -1750,7 +1754,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         pointdb.findOne(query, (err, pointres) => {
@@ -1852,7 +1856,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         let c_role = message.guild.roles.cache.find((r) => r.name === clan);
@@ -1934,7 +1938,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
@@ -1990,7 +1994,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         pointdb.findOne(query, (err, pointres) => {
@@ -2149,7 +2153,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         pointdb.findOne(query, (err, pointres) => {
@@ -2226,7 +2230,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         if (message.guild.channels.cache.find(c => c.name === clan)) return message.channel.send("❎ **| I'm sorry, your clan already has a clan channel!**")
@@ -2346,7 +2350,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -2390,7 +2394,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -2622,7 +2626,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -2664,7 +2668,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!clanres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!clanres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!clanres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                         let clan = clanres.clan;
                         updateVal = {
@@ -2710,7 +2714,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (userres.clan) return message.channel.send("❎ **| I'm sorry, this user is in a clan!**");
                         if (!userres.joincooldown) userres.joincooldown = 0;
                         let cooldown = Math.max(0, userres.joincooldown - curtime);
@@ -2751,7 +2755,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -2805,7 +2809,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         pointdb.findOne(query, (err, pointres) => {
@@ -2912,7 +2916,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};
@@ -3121,7 +3125,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                         if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         let clan = userres.clan;
                         query = {name: clan};

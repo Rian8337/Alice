@@ -105,7 +105,7 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (!res) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
+		if (!res) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 		let ppentry = res.pp;
 		let attempt = 0;
 		console.log(ppentry[0]);

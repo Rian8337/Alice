@@ -22,7 +22,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (!userres) {
+			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			return
+		}
         let uid = userres.uid;
         let username = userres.username;
 

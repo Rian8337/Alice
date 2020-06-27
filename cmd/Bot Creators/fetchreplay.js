@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, maindb) => {
         beatmap = args[1]
     } else {
         uid = await fetchUid(maindb.collection('userbind'), {discordid: message.author.id});
-        if (!uid) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (!uid) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         beatmap = args[0];
         if (!beatmap) return message.channel.send("❎ **| Hey, please enter a valid beatmap link/ID or a player's uid!**")
     }

@@ -19,7 +19,7 @@ module.exports.run = (client, message, args, maindb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
-		if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+		if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 		let uid = userres.uid;
 		let discordid = userres.discordid;
 		let username = userres.username;

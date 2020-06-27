@@ -120,7 +120,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. He/she/you must use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.");
+            if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.");
             await memberValidation(message, user, role, time, userres, (valid = false) => {
                 if (valid) {
                     let pass = message.guild.roles.cache.find((r) => r.name === 'Lounge Pass');
