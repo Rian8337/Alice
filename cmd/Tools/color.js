@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const {createCanvas} = require('canvas');
-const canvas = createCanvas(200, 200);
+const canvas = createCanvas(75, 75);
 const c = canvas.getContext('2d');
 c.imageSmoothingQuality = "high";
 
@@ -8,7 +8,7 @@ module.exports.run = (client, message, args) => {
     const color = args[0];
     if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, that doesn't look like a valid hex code color!**");
     c.fillStyle = color;
-    c.fillRect(0, 0, 200, 200);
+    c.fillRect(0, 0, 75, 75);
     const attachment = new Discord.MessageAttachment(canvas.toBuffer());
     message.channel.send(`✅ **| ${message.author}, showing color with hex code \`${color}\`:**`, {files: [attachment]})
 };
