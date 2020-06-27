@@ -43,7 +43,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		}
 		if (!res) {
 			const hasPlayed = await checkPlay(uid).catch(console.error);
-			if (!hasPlayed) return message.channel.send("❎ **| I'm sorry, the account hasn't played verification map yet! Please play this map before binding the account:\nhttps://drive.google.com/open?id=11lboYlvCv8rHfYOI3YvJEQXDUrzQirdr\n\nThis is a one-time verification and you will not be asked again in the future.**");
+			if (!hasPlayed) return message.channel.send("❎ **| I'm sorry, that account hasn't played verification map yet! Please play this map before binding the account:\nhttps://drive.google.com/open?id=11lboYlvCv8rHfYOI3YvJEQXDUrzQirdr\n\nThis is a one-time verification and you will not be asked again in the future.**");
 			binddb.findOne({discordid: message.author.id}, (err, bindres) => {
 				if (err) {
 					console.log(err);
@@ -91,7 +91,7 @@ module.exports.run = async (client, message, args, maindb) => {
 			return
 		}
 
-		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
+		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that account has been binded by someone else!**");
 		let updateVal = {
 			$set: {
 				username: player.name,
