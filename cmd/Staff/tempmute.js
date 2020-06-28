@@ -108,7 +108,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    message.channel.send("✅ **| Successfully locked user from lounge.**")
+                    channel.send("✅ **| Successfully locked user from lounge.**")
                 })
             }
         })
