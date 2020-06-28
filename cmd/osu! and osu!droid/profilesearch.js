@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args, maindb) => {
 			.setThumbnail(player.avatarURL)
 			.setColor(rolecheck)
 			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setDescription(`**Uid**: ${uid}\n**Rank**: ${player.rank.toLocaleString()}\n**Play Count**: ${player.play_count.toLocaleString()}\n\n**Bind Information**: ${res ? `Binded to <@${res.discordid}> (user ID: ${res.discordid})` : "Not binded"}`);
+			.setDescription(`**Uid**: ${uid}\n**Rank**: ${player.rank.toLocaleString()}\n**Play Count**: ${player.play_count.toLocaleString()}\n**Country**: ${player.location}\n\n**Bind Information**: ${res ? `Binded to <@${res.discordid}> (user ID: ${res.discordid})` : "Not binded"}`);
 
 		message.channel.send({embed: embed})
 	})
