@@ -14,7 +14,7 @@ function isEligible(member) {
 
 function voteStringProcessing(topic, choices) {
     let string = `**Topic: ${topic}**\n\n`;
-    for (let i = 0; i < choices.length; i++) string += `\`[${i+1}] ${choices[i].choice} - ${choices[i].count}\`\n\n`;
+    for (let i = 0; i < choices.length; i++) string += `\`[${i+1}] ${choices[i].choice} - ${choices[i].voters.length}\`\n\n`;
     return string
 }
 
@@ -42,7 +42,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!choices[i].trim()) continue;
                     choice_list.push({
                         choice: choices[i].trim(),
-                        count: 0,
                         voters: []
                     })
                 }
@@ -120,11 +119,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     const choice_index = choices.findIndex(choice => choice.voters.includes(message.author.id));
                     if (choice_index !== -1) {
-                        --choices[choice_index].count;
                         const user_index = choices[choice_index].voters.findIndex(u => u === message.author.id);
                         choices[choice_index].voters.splice(user_index, 1)
                     }
-                    ++choices[choice].count;
                     choices[choice].voters.push(message.author.id);
 
                     let updateVal = {
