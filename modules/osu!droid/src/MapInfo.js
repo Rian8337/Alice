@@ -339,10 +339,11 @@ class MapInfo {
      */
     _bpmConvert(mod = '') {
         let bpm = this.bpm;
-        if (mod && mod !== '-') {
-            if (mod.includes("d") || mod.includes("DT")) bpm *= 1.5;
-            if (mod.includes("c") || mod.includes("NC")) bpm *= 1.39;
-            if (mod.includes("t") || mod.includes("HT")) bpm *= 0.75
+        if (mod) {
+            if (mod.includes("DT")) bpm *= 1.5;
+            if (mod.includes("NC")) bpm *= 1.39;
+            if (mod.includes("HT")) bpm *= 0.75;
+            if (mod.includes("SU")) bpm *= 1.25
         }
         return `${this.bpm}${this.bpm === bpm ? "" : ` (${bpm.toFixed(2)})`}`
     }
