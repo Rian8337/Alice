@@ -5,10 +5,14 @@ const config = require('../../config.json');
 
 function isEligible(member) {
     let res = 0;
-    let eligibleRoleList = config.mute_perm;
-    eligibleRoleList.forEach((id) => {
-        if(member.roles.cache.has(id[0])) res = id[1]
-    });
+    let eligibleRoleList = config.mute_perm; //mute_permission
+    for (const id of eligibleRoleList) {
+        if (res === -1) break;
+        if (member.roles.cache.has(id[0])) {
+            if (id[1] === -1) res = id[1];
+            else res = Math.max(res, id[1])
+        }
+    }
     return res
 }
 
