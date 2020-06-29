@@ -376,18 +376,22 @@ class MapInfo {
     _timeConvert(mod = '') {
         let hitlength = this.hit_length;
         let maplength = this.total_length;
-        if (mod && mod !== '-') {
-            if (mod.includes("d") || mod.includes("DT")) {
+        if (mod) {
+            if (mod.includes("DT")) {
                 hitlength = Math.ceil(hitlength / 1.5);
                 maplength = Math.ceil(maplength / 1.5)
             }
-            if (mod.includes("c") || mod.includes("NC")) {
+            if (mod.includes("NC")) {
                 hitlength = Math.ceil(hitlength / 1.39);
                 maplength = Math.ceil(maplength / 1.39)
             }
-            if (mod.includes("t") || mod.includes("HT")) {
+            if (mod.includes("HT")) {
                 hitlength = Math.ceil(hitlength * 4/3);
                 maplength = Math.ceil(maplength * 4/3)
+            }
+            if (mod.includes("SU")) {
+                hitlength = Math.ceil(hitlength / 1.25);
+                maplength = Math.ceil(maplength / 1.25)
             }
         }
         return `${timeString(this.hit_length)}${this.hit_length === hitlength ? "" : ` (${timeString(hitlength)})`}/${timeString(this.total_length)}${this.total_length === maplength ? "" : ` (${timeString(maplength)})`}`
@@ -430,7 +434,7 @@ class MapInfo {
                 return string
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs == mapstat.cs ? "": ` (${mapstat.cs})`} - **AR**: ${this.ar}${this.ar == mapstat.ar ? "": ` (${mapstat.ar})`} - **OD**: ${this.od}${this.od == mapstat.od ? "": ` (${mapstat.od})`} - **HP**: ${this.hp}${this.hp == mapstat.hp ? "": ` (${mapstat.hp})`}`;
-            case 3: return `**BPM**: ${this._bpmConvert(this.mods)} - **Length**: ${this._timeConvert(this.mods)} - **Max Combo**: ${this.max_combo}x`;
+            case 3: return `**BPM**: ${this._bpmConvert(mods)} - **Length**: ${this._timeConvert(mods)} - **Max Combo**: ${this.max_combo}x`;
             case 4: return `**Last Update**: ${this.last_update.toUTCString()} | **${this._statusConvert()}**`;
             case 5: return `❤️ **${this.favorites.toLocaleString()}** - ▶️ **${this.plays.toLocaleString()}**`;
             default: throw {
