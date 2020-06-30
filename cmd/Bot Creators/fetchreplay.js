@@ -17,35 +17,40 @@ module.exports.run = async (client, message, args, maindb) => {
     if (message.channel.type !== 'text') return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, you're still in cooldown! Please wait for a minute or two before using this command again!**");
-    let uid, beatmap;
+    let uid, beatmap, hash;
     if (args[1]) {
         uid = parseInt(args[0]);
         if (isNaN(uid)) return message.channel.send("❎ **| Hey, please enter a valid uid!**");
-        beatmap = args[1]
+        if (args[1].startsWith("h:")) hash = args[1].split(":")[1];
+        else beatmap = args[1]
     } else {
         uid = await fetchUid(maindb.collection('userbind'), {discordid: message.author.id});
-        if (!uid) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-        beatmap = args[0];
-        if (!beatmap) return message.channel.send("❎ **| Hey, please enter a valid beatmap link/ID or a player's uid!**")
+        if (!uid) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (args[0].startsWith("h:")) hash = args[0].split(":")[1];
+        else beatmap = args[0];
+        if (!beatmap && !hash) return message.channel.send("❎ **| Hey, please enter a valid beatmap link/ID or hash!**")
     }
 
     if (typeof beatmap === 'string') {
         const a = beatmap.split("/");
         beatmap = a[a.length - 1]
     }
-    beatmap = parseInt(beatmap);
-    if (isNaN(beatmap)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
+    if (beatmap) beatmap = parseInt(beatmap);
+    if (isNaN(beatmap) && !hash) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
 
-    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
-    if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
-	if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the beatmap that you are looking for!**");
-	if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
-    const play = await new osudroid.PlayInfo({uid: uid, hash: mapinfo.hash}).getFromHash();
+    let mapinfo;
+    if (beatmap) {
+        mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
+        if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
+        if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the beatmap that you are looking for!**");
+        if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
+        hash = mapinfo.hash
+    }
+    const play = await new osudroid.PlayInfo({uid: uid, hash: hash}).getFromHash();
     if (!play.score_id) return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     if (!message.isOwner) cd.add(message.author.id);
     
     const replay = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
-    if (!replay.fixed_odr) return message.channel.send("❎ **| I'm sorry, I couldn't retrieve your replay file!**");
     const data = replay.data;
     const zip = new AdmZip();
     zip.addFile(`${play.score_id}.odr`, replay.original_odr);
@@ -71,7 +76,8 @@ module.exports.run = async (client, message, args, maindb) => {
         }
     };
     zip.addFile(`entry.json`, Buffer.from(JSON.stringify(object, null, 2)));
-    const attachment = new Discord.MessageAttachment(zip.toBuffer(), `${mapinfo.full_title} [${data.player_name}]-${object.replaydata.time}.edr`);
+    const attachment = new Discord.MessageAttachment(zip.toBuffer(), `${data.file_name.substring(0, data.file_name.length - 4)} [${data.player_name}]-${object.replaydata.time}.edr`);
+    if (!beatmap) return message.channel.send("✅ **| Successfully fetched replay.**", {files: [attachment]});
 
     const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: data.converted_mods});
 	let starsline = parseFloat(star.droid_stars.total.toFixed(2));
@@ -119,7 +125,7 @@ module.exports.run = async (client, message, args, maindb) => {
 module.exports.config = {
 	name: "fetchreplay",
     description: "Fetches replay from a player or yourself on a beatmap.\n\nIf the second argument is omitted, your binded uid will be taken as the uid to fetch the replay from.",
-	usage: "fetchreplay [beatmap/uid] [beatmap]",
-	detail: "`beatmap`: The beatmap link or ID [Integer/String]\n`uid`: The uid of the player [Integer]",
-	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+	usage: "fetchreplay <beatmap/uid> [beatmap]",
+	detail: "`beatmap`: The beatmap link, ID, or MD5 hash (prefix with `h:` if using hash) [Integer/String]\n`uid`: The uid of the player [Integer]",
+	permission: "None"
 };
