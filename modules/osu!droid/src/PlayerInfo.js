@@ -1,5 +1,5 @@
 const http = require('http');
-const request = require('request');
+const {MD5} = require('crypto-js');
 const droidapikey = process.env.DROID_API_KEY;
 const PlayInfo = require('./PlayInfo');
 
@@ -93,7 +93,8 @@ class PlayerInfo {
                 path: `/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username)}`}`
             };
             let content = '';
-            let req = http.request(options, res => {
+            
+            http.request(options, res => {
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
                     content += chunk
@@ -124,6 +125,8 @@ class PlayerInfo {
                     this.play_count = parseInt(headerres[4]);
                     this.accuracy = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
                     this.email = headerres[6];
+                    this.location = headerres[7];
+                    this.avatarURL = `https://secure.gravatar.com/avatar/${MD5(this.email.trim().toLowerCase()).toString()}?s=200`;
                     this.rank = obj.rank;
 
                     let recent_plays = obj.recent ? obj.recent : [];
@@ -144,37 +147,9 @@ class PlayerInfo {
                             })
                         )
                     }
-
-                    let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${this.uid}`;
-                    request(avatar_page, (err, response, data) => {
-                        if (err) {
-                            console.log("Unable to load site");
-                            this.error = true;
-                            return resolve(this);
-                        }
-                        let b = data.split("\n");
-                        let avalink = '';
-                        let location = '';
-                        for (let x = 0; x < b.length; x++) {
-                            if (b[x].includes('h3 m-t-xs m-b-xs')) {
-                                b[x-3]=b[x-3].replace('<img src="',"");
-                                b[x-3]=b[x-3].replace('" class="img-circle">',"");
-                                b[x-3]=b[x-3].trim();
-                                avalink = b[x-3];
-                                b[x+1]=b[x+1].replace('<small class="text-muted"><i class="fa fa-map-marker"><\/i>',"");
-                                b[x+1]=b[x+1].replace("<\/small>","");
-                                b[x+1]=b[x+1].trim();
-                                location=b[x+1];
-                                break
-                            }
-                        }
-                        this.avatarURL = avalink;
-                        this.location = location;
-                        resolve(this)
-                    })
+                    resolve(this)
                 })
-            });
-            req.end()
+            }).end()
         })
     }
 
