@@ -84,7 +84,7 @@ class PlayerInfo {
      */
     get(params = {}) {
         return new Promise(resolve => {
-            let uid = this.uid = parseInt(params.uid);
+            let uid = parseInt(params.uid);
             let username = params.username;
             if (isNaN(uid) && !username) throw new TypeError("Uid must be integer or enter username");
             let options = {
@@ -122,12 +122,12 @@ class PlayerInfo {
                     this.name = headerres[2];
                     this.score = parseInt(headerres[3]);
                     this.play_count = parseInt(headerres[4]);
+                    this.accuracy = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
                     this.email = headerres[6];
                     this.rank = obj.rank;
-                    this.accuracy = parseFloat((parseFloat(headerres[5]) * 100).toFixed(2));
-                    let recent_plays = obj.recent ? obj.recent : [];
 
-                    for (let play of recent_plays) {
+                    let recent_plays = obj.recent ? obj.recent : [];
+                    for (const play of recent_plays) {
                         this.recent_plays.push(
                             new PlayInfo({
                                 uid: this.uid,
@@ -145,7 +145,7 @@ class PlayerInfo {
                         )
                     }
 
-                    let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${uid}`;
+                    let avatar_page = `http://ops.dgsrz.com/profile.php?uid=${this.uid}`;
                     request(avatar_page, (err, response, data) => {
                         if (err) {
                             console.log("Unable to load site");
