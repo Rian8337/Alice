@@ -52,7 +52,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                 message.channel.send("❎ **| I'm sorry, this user hasn't been in the server for 3 months!**");
                 return cb()
             }
-            let uid = userres[0].uid;
+            let uid = userres.uid;
             let url = "http://ops.dgsrz.com/api/scoresearch.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=0";
             request(url, async (err, response, data) => {
                 if (!data) {
