@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const cd = new Set();
+const cd = {};
 
 module.exports.run = obj => {
     const client = obj.client;
@@ -22,15 +22,19 @@ module.exports.run = obj => {
         setTimeout(() => {
             message.channel.stopTyping(true)
         }, 5000);
-        if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+        if (cd.hasOwnProperty(message.author.id)) return message.channel.send(`❎ **| Hey, calm down with the command (${cd[message.author.id]} ${cd[message.author.id] === 1 ? "second" : "seconds"})! I need to rest too, you know.**`);
         if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
         else console.log(`${message.author.tag} (DM): ${message.content}`);
         cmd.run(client, message, args, maindb, alicedb, current_map);
-        if (command_cooldown) {
-            cd.add(message.author.id);
-            setTimeout(() => {
-                cd.delete(message.author.id)
-            }, command_cooldown * 1000)
+        if (command_cooldown && !message.isOwner) {
+            cd[message.author.id] = command_cooldown;
+            const interval = setInterval(() => {
+                if (cd[message.author.id] === 0) {
+                    delete cd[message.author.id];
+                    clearInterval(interval)
+                }
+                --cd[message.author.id]
+            }, 1000)
         }
     }
 };
