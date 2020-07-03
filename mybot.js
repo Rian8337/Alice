@@ -128,6 +128,10 @@ client.on("guildBanAdd", (guild, user) => {
 	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb)
 });
 
+client.on("guildBanRemove", (guild, user) => {
+	client.events.get("guildBanRemove").run(client, guild, user)
+});
+
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	client.events.get("messageUpdate").run(client, oldMessage, newMessage)
 });

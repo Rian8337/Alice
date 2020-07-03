@@ -149,7 +149,9 @@ module.exports.run = (client, maindb, alicedb) => {
                         else await updateClanDB(clandb, {name: clan}, {$inc: {power: -100}})
                     }
                     else {
-                        if (clanrole) guild.member(member.id).roles.remove([role, clanrole], "Clan disbanded")
+                        if (clanrole) guild.member(member.id).roles.remove([role, clanrole], "Clan disbanded");
+                        const member_index = member_list.findIndex(m => m.id === member.id);
+                        member_list.splice(member_index, 1);
                         await kickMember(binddb, clandb, {name: clan}, {discordid: member.id}, {$set: {member_list: member_list}});
                     }
                 }
