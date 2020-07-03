@@ -36,7 +36,7 @@ module.exports.run = obj => {
                 const index = cd.findIndex(c => c.id === message.author.id);
                 if (cd[index].time === 0) {
                     cd.splice(index, 1);
-                    clearInterval(interval)
+                    return clearInterval(interval)
                 }
                 --cd[index].time
             }, 1000);
