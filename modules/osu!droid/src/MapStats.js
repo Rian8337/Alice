@@ -156,13 +156,17 @@ class MapStats {
 
                 if (stats.ar !== undefined) {
                     if (stats.mods.includes("RE")) {
-                        if (stats.droid_mods & mods.d) {
+                        if (stats.droid_mods & (mods.d | mods.c)) {
                             --stats.ar;
+                        } else if (stats.mods.includes("SU")) {
+                            stats.ar -= 0.75;
                         } else {
-                            stats.ar -= 0.5   
+                            stats.ar -= 0.5;
                         }
+                        stats.ar = modify_ar(stats.ar, stats.speed_multiplier, 1);
+                    } else {
+                        stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
                     }
-                    stats.ar = modify_ar(stats.ar, stats.speed_multiplier, od_ar_hp_multiplier);
                 }
                 break
             }
