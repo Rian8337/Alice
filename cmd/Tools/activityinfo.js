@@ -1,92 +1,62 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 
-function listEntries(mode, res, time_limit) {
-    let list = [];
-    let limit = 1;
-    if (mode == "weekly") limit = 7;
-    if (mode == "monthly") limit = 30;
-    for (let i = 0; i < res.length; i++) {
-        if (res[i].timestamp == time_limit) {
-            res = res.slice(i, Math.min(i + limit, res.length + 1));
-            break
-        }
-    }
-
-    for (let i = 0; i < res.length; i++) {
-        let channels = res[i].channels;
-        for (let j = 0; j < channels.length; j++) {
-            let found = false;
-            for (let k = 0; k < list.length; k++) {
-                if (list[k][0] == channels[j][0]) {
-                    list[k][1] += channels[j][1];
-                    found = true;
-                    break
-                }
-            }
-            if (!found) list.push(channels[j])
-        }
-    }
-    return list
-}
-
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.guild.id != '316545691545501706') return;
+    if (message.channel instanceof Discord.DMChannel || message.guild.id !== '316545691545501706') return;
     let date = new Date();
     if (args[1]) {
         let entry = args[1].split("-");
-        if (entry.length != 3) return;
+        if (entry.length !== 3) return;
         date.setUTCFullYear(parseInt(entry[0]), parseInt(entry[1]) - 1, parseInt(entry[2]))
     }
     date.setUTCHours(0, 0, 0, 0);
     if (date.getTime() < message.guild.createdTimestamp) return message.channel.send("❎ **| Hey, the server didn't exist back then!**");
     if (date.getTime() > Date.now()) return message.channel.send("❎ **| You're in the future already, are you? Unfortunately I'm not.**");
-    let general = message.guild.channels.cache.get("316545691545501706");
-    let parent = general.parentID;
+    const general_parent = "360714965814083586";
+    const clans_parent = "696646649128288346";
+    const query = {
+        timestamp: {
+            $gte: 0,
+            $lte: date.getTime()
+        }
+    };
     
-    let channeldb = alicedb.collection("channeldata");
-    channeldb.find({}).sort({timestamp: -1}).toArray((err, res) => {
+    let type = "Overall";
+    if (args[0]) {
+        switch (args[0].toLowerCase()) {
+            case "weekly": {
+                type = "Weekly";
+                query.timestamp.$gte = date.getTime() - 24 * 3.6e6 * date.getUTCDay();
+                query.timestamp.$lte = query.timestamp.$gte + 24 * 3.6e6 * 6;
+                break
+            }
+            case "monthly": {
+                type = "Monthly";
+                date.setUTCDate(1);
+                query.timestamp.$gte = date.getTime();
+                query.timestamp.$lte = date.getTime() + 24 * 3.6e6 * 30;
+                break
+            }
+            case "daily": {
+                type = "Daily";
+                date.setUTCDate(date.getUTCDate() - 1);
+                query.timestamp.$gte = date.getTime();
+                query.timestamp.$lte = date.getTime() + 24 * 3.6e6
+            }
+            default: return message.channel.send("❎ **| Invalid mode! Accepted modes are `daily`, `monthly`, and `weekly`.**")
+        }
+    }
+    console.log(query);
+    const channeldb = alicedb.collection("channeldata");
+    channeldb.find(query).sort({timestamp: -1}).toArray((err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        let entries;
-        let type;
-        switch (args[0]) {
-            case "weekly": {
-                let time_limit = date.getTime();
-                switch (date.toUTCString().substr(0, 3)) {
-                    case "Mon": time_limit -= 24 * 3.6e6; break;
-                    case "Tue": time_limit -= 24 * 3.6e6 * 2; break;
-                    case "Wed": time_limit -= 24 * 3.6e6 * 3; break;
-                    case "Thu": time_limit -= 24 * 3.6e6 * 4; break;
-                    case "Fri": time_limit -= 24 * 3.6e6 * 5; break;
-                    case "Sat": time_limit -= 24 * 3.6e6 * 6
-                }
-                type = 'Weekly';
-                entries = listEntries(args[0], res, time_limit);
-                break
-            }
-            case "monthly": {
-                date.setUTCDate(1);
-                type = 'Monthly';
-                entries = listEntries(args[0], res, date.getTime());
-                break
-            }
-            case "daily": {
-                date.setUTCDate(date.getUTCDate() - 1);
-                type = "Daily";
-                entries = listEntries('daily', res, date.getTime());
-                break
-            }
-            default: {
-                type = 'Overall';
-                entries = listEntries(null, res, null)
-            }
-        }
-        entries.sort((a, b) => {return b[1] - a[1]});
-        if (entries.length == 0) return message.channel.send("❎ **| I'm sorry, there are no message data on this date!**");
+        if (res.length === 0) return message.channel.send("❎ **| I'm sorry, there are no message data on this date!**");
+        console.log(res);
         let general_description = '';
+        let clans_description = '';
         let language_description = '';
         let description = `**${type} channel activity per ${date.getUTCDate()} `;
         switch (date.getUTCMonth()) {
@@ -105,21 +75,82 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         description += `${date.getUTCFullYear()}**\n\n`;
 
-        for (let i = 0; i < entries.length; i++) {
-            let channel = message.guild.channels.resolve(entries[i][0]);
-            if (channel.parentID === parent) general_description += `${channel}: **${entries[i][1].toLocaleString()}** messages\n`;
-            else language_description += `${channel}: **${entries[i][1].toLocaleString()}** messages\n`
+        const channel_array = [];
+        for (const entry of res) {
+            const channels = entry.channels;
+            for (const channel of channels) {
+                const index = channel_array.findIndex(c => c[0] === channel[0]);
+                if (index === -1) channel_array.push(channel);
+                else channel_array[index][1] += channel[1]
+            }
         }
 
-        let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * footer.length);
-        let embed = new Discord.MessageEmbed()
-            .setColor("#b58d3c")
-            .setFooter("Alice Synthesis Thirty", footer[index])
-            .setDescription(description)
-            .addFields([{name: "General Channels", value: general_description}, {name: "Language Channels", value: language_description}]);
+        channel_array.sort((a, b) => {return b[1] - a[1]});
 
-        message.channel.send({embed: embed}).catch(console.error)
+        for (const channel_entry of channel_array) {
+            const channel = message.guild.channels.cache.get(channel_entry[0]);
+            const msg = `${channel}: ${channel_entry[1].toLocaleString()} messages\n`;
+            if (channel.parentID === general_parent) general_description += msg;
+            else if (channel.parentID === clans_parent) clans_description += msg;
+            else language_description += msg
+        }
+
+        let page = 1;
+        const description_list = [
+            {
+                category: "General Channels",
+                description: general_description,
+            },
+            {
+                category: "Language Channels",
+                description: language_description
+            },
+            {
+                category: "Clan Channels",
+                description: clans_description
+            }
+        ];
+        const max_page = description_list.length;
+
+        const footer = config.avatar_list;
+        const index = Math.floor(Math.random() * footer.length);
+        const embed = new Discord.MessageEmbed()
+            .setColor("#b58d3c")
+            .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index])
+            .setTitle(description)
+            .setDescription(`__**${description_list[(page - 1)].category}**__\n\n${description_list[(page - 1)].description}`)
+
+        message.channel.send({embed: embed}).then(msg => {
+            msg.react("⬅️").then(() => {
+                msg.react("➡️")
+            });
+
+            const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+            const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
+
+            back.on("collect", () => {
+                if (page === 1) page = max_page;
+                else --page;
+                embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
+                    .setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
+                msg.edit({embed: embed}).catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+            });
+
+            next.on("collect", () => {
+                if (page === max_page) page = 1;
+                else ++page;
+                embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
+                    .setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
+                msg.edit({embed: embed}).catch(console.error);
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+            });
+
+            back.on("end", () => {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
+            })
+        })
     })
 };
 
