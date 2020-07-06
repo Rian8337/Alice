@@ -132,7 +132,7 @@ class StandardDiff {
     }
 
     /**
-     * Calculates the length bonus of an aspect in a beatmap.
+     * Calculates the length bonus of a difficulty aspect in a beatmap.
      * @param {number} stars The stars difficulty of the aspect of the beatmap.
      * @param {number} difficulty The general difficulty of the aspect of the beatmap.
      * @returns {number} The length bonus.
