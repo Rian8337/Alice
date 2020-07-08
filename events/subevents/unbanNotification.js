@@ -14,7 +14,7 @@ module.exports.run = async (guild, user) => {
         .setThumbnail(user.avatarURL({dynamic: true}))
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setTimestamp(new Date())
-        .addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
+        .addField(`Unbanned user: ${user.tag}`, `User ID: ${user.id}`)
         .addField("=========================", `Reason: ${reason}`);
         
     guild.channels.cache.find(c => c.name === config.management_channel).send({embed: embed})
