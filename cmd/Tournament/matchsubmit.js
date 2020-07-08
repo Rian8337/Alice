@@ -22,17 +22,18 @@ function playValidation(mod, requirement) {
 }
 
 async function getPlay(i, uid, cb) {
-	const player = await new osudroid.PlayerInfo().get({uid: uid});
-	let play = player.recent_plays[0];
-	cb([i, play])
+	const player = await new osudroid.Player().get({uid: uid});
+	cb([i, player])
 }
 
-module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+module.exports.run = (client, message, args, maindb, alicedb) => {
+	if (message.channel instanceof Discord.DMChannel || message.member.roles === null || !message.member.roles.cache.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, I need a match ID!**");
 	let matchdb = maindb.collection("matchinfo");
 	let mapdb = maindb.collection("mapinfo");
+	let resultdb = alicedb.collection("matchdata");
+	let lengthdb = alicedb.collection("mapinfolength");
 	let query = {matchid: id};
 	matchdb.findOne(query, function (err, matchres) {
 		if (err) {
@@ -42,13 +43,15 @@ module.exports.run = (client, message, args, maindb) => {
 		if (!matchres) return message.channel.send("❎ **| I'm sorry, I cannot find the match!**");
 		let players = matchres.player;
 		let play_list = [];
-		let min_time_diff = Number.NEGATIVE_INFINITY;
+		let min_time_diff = 0;
 		let hash = '';
 		let i = -1;
+		const score_info = []; // array of PlayerInfo
 		players.forEach(async player => {
 			i++;
 			await getPlay(i, player[1], data => {
-				play_list.push(data);
+				score_info.push(data[1]);
+				play_list.push([data[0], data[1].recent_plays[0]]);
 				if (min_time_diff < data[1].date) {
 					min_time_diff = data[1].date.getTime();
 					hash = data[1].hash
@@ -66,7 +69,8 @@ module.exports.run = (client, message, args, maindb) => {
 					let max_score;
 					let requirement;
 					let title;
-					for (let i in poolres.map) {
+					let i = 0;
+					for (i; i < poolres.map.length; ++i) {
 						if (hash === poolres.map[i][3]) {
 							requirement = poolres.map[i][0];
 							title = poolres.map[i][1];
@@ -83,22 +87,22 @@ module.exports.run = (client, message, args, maindb) => {
 					let temp_score = 0;
 					let score_list = [];
 
-					for (let i in play_list) {
-						if (play_list[i][1].hash === hash && playValidation(play_list[i][1].mods, requirement)) {
-							temp_score = scoreCalc(play_list[i][1].score, max_score, play_list[i][1].accuracy, play_list[i][1].miss);
-							if (play_list[i][1].mode === "hd") temp_score = Math.round(temp_score / 1.0625);
+					for (const play of play_list) {
+						if (play[1].hash === hash && playValidation(play[1].mods, requirement)) {
+							temp_score = scoreCalc(play[1].score, max_score, play[1].accuracy, play[1].miss);
+							if (play[1].mods === "HDDT") temp_score = Math.round(temp_score / 1.0625);
 						}
 						else temp_score = 0;
 						score_list.push(temp_score);
 
 						if (i % 2 === 0) {
 							team_1_score += temp_score;
-							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.pc_to_detail(play_list[i][1].mods)}): **${Math.round(temp_score)}** - **${play_list[i][1].rank}** - ${play_list[i][1].accuracy}% - ${play_list[i][1].miss} ❌\n`;
+							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
 							else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} (N/A): **0** - Failed\n`
 						}
 						else {
 							team_2_score += temp_score;
-							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.pc_to_detail(play_list[i][1].mods)}): **${Math.round(temp_score)}** - **${play_list[i][1].rank}** - ${play_list[i][1].accuracy}% - ${play_list[i][1].miss} ❌\n`;
+							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
 							else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} (N/A): **0** - Failed\n`
 						}
 					}
@@ -161,7 +165,80 @@ module.exports.run = (client, message, args, maindb) => {
 							console.log(err);
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 						}
-						console.log("Match info updated")
+						console.log("Match info updated");
+						lengthdb.findOne({matchid: id}, (err, mapinfolength) => {
+							if (err) return console.log(err);
+							const pick = mapinfolength.map[i][0];
+
+							resultdb.findOne({matchid: id}, (err, result_res) => {
+								if (err) return console.log(err);
+
+								const score_object = {
+									pick: pick,
+									scores: []
+								}
+								for (const p of score_info) {
+									const recent_play = p.recent_plays[0];
+									if (recent_play.hash === hash) {
+										let scorev2 = scoreCalc(recent_play.score, max_score, recent_play.accuracy, recent_play.miss);
+										if (recent_play.mods === "HDDT") scorev2 = Math.round(scorev2 / 1.0625);
+										score_object.scores.push({
+											player: p.name,
+											scorev1: recent_play.score,
+											accuracy: recent_play.accuracy,
+											mods: recent_play.mods,
+											miss: recent_play.miss,
+											scorev2: scorev2
+										})
+									} else {
+										score_object.scores.push({
+											player: p.name,
+											scorev1: 0,
+											accuracy: 0,
+											mods: "",
+											miss: 0,
+											scorev2: 0
+										})
+									}
+								}
+
+								if (result_res) {
+									const scores_list = result_res.scores;
+
+									scores_list.push(score_object);
+									updateVal = {
+										$set: {
+											scores: scores_list
+										}
+									};
+									resultdb.updateOne({matcid: id}, updateVal, err => {
+										if (err) return console.log(err);
+										console.log("Result added to database")
+									})
+								} else {
+									const insertVal = {
+										matchid: id,
+										players: [],
+										bans: [],
+										result: [],
+										scores: [score_object]
+									};
+									const teams = matchres.team;
+									if (players.length > 2) for (const p of players) insertVal.players.push(p[0]);
+									else for (const p of teams) insertVal.players.push(p[0]);
+
+									for (const p_name of insertVal.players) insertVal.result.push({
+										player: p_name,
+										points: 0
+									});
+
+									resultdb.insertOne(insertVal, err => {
+										if (err) return console.log(err);
+										console.log("Match added to database")
+									})
+								}
+							})
+						})
 					})
 				})
 			})
