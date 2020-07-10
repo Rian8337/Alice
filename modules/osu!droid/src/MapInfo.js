@@ -412,7 +412,7 @@ class MapInfo {
      * @param {number} option The option to apply as described.
      * @returns {string} The statistics based on applied option.
      */
-    showStatistics(mods = "", option) {
+    showStatistics(mods, option) {
         let mapstat = new MapStats(this).calculate({mods: mods, mode: 'osu'});
         mapstat.cs = parseFloat(mapstat.cs.toFixed(2));
         mapstat.ar = parseFloat(mapstat.ar.toFixed(2));
@@ -477,9 +477,8 @@ class MapInfo {
         if (!this.map) {
             return 0;
         }
-        let stats = new MapStats(this).calculate({mode: "osu", mods: mod});
         const modbits = mods.modbits_from_string(mod);
-        let diff_multiplier = 1 + stats.od / 10 + stats.hp / 10 + (stats.cs - 3) / 4;
+        let diff_multiplier = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
 
         // score multiplier
         let score_multiplier = 1;
