@@ -1,3 +1,6 @@
+/**
+ * Bitmask constant of object types. This is needed as osu! uses bits to determine object types.
+ */
 const object_types = {
     /**
      * @type {number}

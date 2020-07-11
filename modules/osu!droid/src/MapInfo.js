@@ -7,6 +7,9 @@ const Beatmap = require('./Beatmap');
 const MapStats = require('./MapStats');
 const Parser = require('./Parser');
 
+/**
+ * Represents a beatmap with general information.
+ */
 class MapInfo {
     constructor() {
         /**

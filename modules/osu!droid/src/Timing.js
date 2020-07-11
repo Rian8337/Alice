@@ -1,3 +1,13 @@
+/**
+ * Represents a timing point in a beatmap.
+ * 
+ * Defines parameters such as timing and sampleset for an interval.
+ * For pp calculation we only need `time` and `ms_per_beat`.
+ * 
+ * It can inherit from its preceeding point by having
+ * `change = false` and setting `ms_per_beat` to a negative value which
+ * represents the BPM multiplier as `-100 * bpm_multiplier`.
+ */
 class Timing {
     /**
      * @param {Object} values An object containing the parameters.

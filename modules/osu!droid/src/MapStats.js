@@ -1,5 +1,8 @@
 const mods = require('./mods');
 
+/**
+ * Holds general beatmap statistics for further modifications. 
+ */
 class MapStats {
     /**
      * @param {Object} values An object containing the parameters.

@@ -2,6 +2,13 @@ const Circle = require('./Circle');
 const Slider = require('./Slider');
 const object_types = require('./object_types');
 
+/**
+ * Represents a hitobject in a beatmap.
+ *
+ * The only common property is start time (in milliseconds).
+ * Object-specific properties are stored in `data`, which can be
+ * an instance of `Circle`, `Slider`, or `null`.
+ */
 class HitObject {
     /**
      * Represents a hitobject in a beatmap.

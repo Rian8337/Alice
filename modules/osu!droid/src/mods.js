@@ -1,3 +1,6 @@
+/**
+ * An object containing bitwise constant of mods in both osu!droid and osu!standard as well as conversion methods.
+ */
 const mods = {
     /**
      * @type {number}

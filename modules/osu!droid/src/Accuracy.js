@@ -1,3 +1,6 @@
+/**
+ * An accuracy calculator that calculates accuracy based on given parameters.
+ */
 class Accuracy {
     /**
      * Calculates accuracy based on given parameters.

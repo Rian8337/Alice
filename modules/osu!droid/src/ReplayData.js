@@ -1,6 +1,13 @@
 const CursorData = require('./CursorData');
 const ReplayObjectData = require('./ReplayObjectData');
 
+/**
+ * Represents a replay data in an osu!droid replay.
+ * 
+ * Stores generic information about an osu!droid replay such as player name, MD5 hash, time set, etc.
+ * 
+ * This is used when analyzing replays using replay analyzer.
+ */
 class ReplayData {
     /**
      * @param {Object} values An object containing the parameters.

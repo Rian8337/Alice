@@ -1,3 +1,10 @@
+/**
+ * Represents a hitobject in an osu!droid replay.
+ * 
+ * Stores information about hitobjects in an osu!droid replay such as hit offset, tickset, and hit result.
+ * 
+ * This is used when analyzing replays using replay analyzer.
+ */
 class ReplayObjectData {
     /**
      * @param {Object} values An object containing the parameters.

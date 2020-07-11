@@ -23,6 +23,11 @@ const SHORT_LENGTH = 2;
 const INT_LENGTH = 4;
 const LONG_LENGTH = 8;
 
+/**
+ * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
+ * 
+ * Once analyzed, the result can be accessed via the `data` property.
+ */
 class ReplayAnalyzer {
     /**
      * @param {Object} values An object containing the parameters.

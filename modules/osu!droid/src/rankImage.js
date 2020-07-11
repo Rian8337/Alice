@@ -1,3 +1,6 @@
+/**
+ * An object containing links of rank images and a method to return them.
+ */
 const rankImage = {
     /**
      * @type {string}

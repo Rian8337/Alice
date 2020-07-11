@@ -4,6 +4,9 @@ const MapStats = require('./MapStats');
 const StandardDiff = require('./StandardDiff');
 const mods = require('./mods');
 
+/**
+ * A performance points calculator that calculates performance points for osu!standard gamemode.
+ */
 class MapPP {
     constructor() {
         /**

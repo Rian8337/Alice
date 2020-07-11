@@ -1,5 +1,8 @@
 const HitObject = require('./HitObject');
 
+/**
+ * Represents an osu!standard hit object with difficulty calculation values.
+ */
 class StandardDiffHitObject {
     /**
      * @param {HitObject} obj The underlying hitobject.

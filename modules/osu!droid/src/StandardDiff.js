@@ -44,6 +44,11 @@ const AIM_TIMING_THRESHOLD = 107;
 const SPEED_ANGLE_BONUS_BEGIN = 5 * Math.PI / 6;
 const AIM_ANGLE_BONUS_BEGIN = Math.PI / 3;
 
+/**
+ * An osu!standard difficulty calculator.
+ *
+ * Does not account for sliders because slider calculations are expensive and not worth the small accuracy increase.
+ */
 class StandardDiff {
     constructor() {
         /**

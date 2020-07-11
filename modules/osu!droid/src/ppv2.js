@@ -3,6 +3,10 @@ const MapStars = require('./MapStars');
 const StandardDiff = require('./StandardDiff');
 
 /**
+ * Calculates the performance points of given mode and play result.
+ * 
+ * If `stars` is not defined, `file` (which is the `.osu` file of the beatmap) must be specified to compute star rating on fly.
+ *
  * @param {Object} params An object containing the parameters.
  * @param {StandardDiff} [params.stars] The star rating instance of the beatmap.
  * @param {string} [params.mode] The mode to calculate performance points for.

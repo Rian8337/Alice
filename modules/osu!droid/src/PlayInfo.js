@@ -2,6 +2,9 @@ const droidapikey = process.env.DROID_API_KEY;
 const request = require('request');
 const mods = require('./mods');
 
+/**
+ * Represents a play in osu!droid.
+ */
 class PlayInfo {
     /**
      * @param {Object} values An object containing the parameters.

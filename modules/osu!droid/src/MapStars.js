@@ -3,6 +3,9 @@ const Parser = require('./Parser');
 const StandardDiff = require('./StandardDiff');
 const mods = require('./mods');
 
+/**
+ * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
+ */
 class MapStars {
     constructor() {
         /**

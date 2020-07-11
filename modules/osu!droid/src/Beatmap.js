@@ -2,6 +2,9 @@ const HitObject = require('./HitObject');
 const Timing = require('./Timing');
 const object_types = require('./object_types');
 
+/**
+ * Represents a beatmap with advanced information.
+ */
 class Beatmap {
     constructor() {
         this.reset()

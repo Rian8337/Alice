@@ -3,6 +3,9 @@ const {MD5} = require('crypto-js');
 const droidapikey = process.env.DROID_API_KEY;
 const PlayInfo = require('./PlayInfo');
 
+/**
+ * Represents an osu!droid player.
+ */
 class PlayerInfo {
     constructor() {
         /**

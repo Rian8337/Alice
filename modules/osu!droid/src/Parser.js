@@ -5,6 +5,9 @@ const Circle = require('./Circle');
 const Slider = require('./Slider');
 const object_types = require('./object_types');
 
+/**
+ * A beatmap parser with just enough data for pp calculation.
+ */
 class Parser {
     constructor() {
         /**

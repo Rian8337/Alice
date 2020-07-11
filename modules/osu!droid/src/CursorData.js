@@ -1,3 +1,10 @@
+/**
+ * Represents a cursor in an osu!droid replay.
+ * 
+ * Stores cursor movement data such as x and y coordinates, movement size, etc.
+ * 
+ * This is used when analyzing replays using replay analyzer.
+ */
 class CursorData {
     /**
      * @param {Object} values An object containing the parameters.
