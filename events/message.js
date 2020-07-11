@@ -9,6 +9,17 @@ let command_cooldown = 0;
 module.exports.run = (client, message, maindb, alicedb) => {
     message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	
+	if (message.embeds.length > 0) {
+		// mute detection for lounge ban
+		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592') {
+			client.subevents.get("loungeBanMuteDetection").run(message, alicedb);
+		}
+
+		// owo bot support
+		if (message.author.id === "289066747443675143") {
+			client.subevents.get("updateMap").run(message, current_map)
+		}
+	}
 	// mute detection for lounge ban
 	if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
 		client.subevents.get("loungeBanMuteDetection").run(message, alicedb)
