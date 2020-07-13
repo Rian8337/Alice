@@ -2223,7 +2223,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
 
                 case "channel": {
-                    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, this command is still in testing!**");
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
@@ -2268,15 +2267,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             permissionOverwrites: [
                                                 {
                                                     id: clanrole,
-                                                    allow: ["VIEW_CHANNEL"]
+                                                    allow: ["VIEW_CHANNEL"],
+                                                    type: 'role'
                                                 },
                                                 {
                                                     id: "353397345636974593",
-                                                    deny: ["VIEW_CHANNEL"]
+                                                    deny: ["VIEW_CHANNEL"],
+                                                    type: 'role'
                                                 },
                                                 {
                                                     id: "369108742077284353",
-                                                    allow: ["VIEW_CHANNEL"]
+                                                    allow: ["VIEW_CHANNEL"],
+                                                    type: 'role'
                                                 }
                                             ]
                                         };
