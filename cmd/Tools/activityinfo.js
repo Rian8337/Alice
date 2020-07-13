@@ -12,8 +12,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     date.setUTCHours(0, 0, 0, 0);
     if (date.getTime() < message.guild.createdTimestamp) return message.channel.send("❎ **| Hey, the server didn't exist back then!**");
     if (date.getTime() > Date.now()) return message.channel.send("❎ **| You're in the future already, are you? Unfortunately I'm not.**");
+    
+    const droid_parent = "360715107220717568";
     const general_parent = "360714965814083586";
     const clans_parent = "696646649128288346";
+
     const query = {
         timestamp: {
             $gte: 0,
@@ -46,7 +49,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             default: return message.channel.send("❎ **| Invalid mode! Accepted modes are `daily`, `monthly`, and `weekly`.**")
         }
     }
-    console.log(query);
+
     const channeldb = alicedb.collection("channeldata");
     channeldb.find(query).sort({timestamp: -1}).toArray((err, res) => {
         if (err) {
@@ -54,7 +57,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
         if (res.length === 0) return message.channel.send("❎ **| I'm sorry, there are no message data on this date!**");
-        console.log(res);
+        
         let general_description = '';
         let clans_description = '';
         let language_description = '';
@@ -90,7 +93,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         for (const channel_entry of channel_array) {
             const channel = message.guild.channels.cache.get(channel_entry[0]);
             const msg = `${channel}: ${channel_entry[1].toLocaleString()} messages\n`;
-            if (channel.parentID === general_parent) general_description += msg;
+            if ([general_parent, droid_parent].includes(channel.parentID)) general_description += msg;
             else if (channel.parentID === clans_parent) clans_description += msg;
             else language_description += msg
         }
@@ -118,13 +121,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .setColor("#b58d3c")
             .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index])
             .setTitle(description)
-            .setDescription(`__**${description_list[(page - 1)].category}**__\n\n${description_list[(page - 1)].description}`)
+            .setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
 
         message.channel.send({embed: embed}).then(msg => {
             msg.react("⬅️").then(() => {
                 msg.react("➡️")
             });
-
+            
             const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
             const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
 
@@ -132,7 +135,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (page === 1) page = max_page;
                 else --page;
                 embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
-                    .setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
+                    .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index]);
                 msg.edit({embed: embed}).catch(console.error);
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
@@ -141,7 +144,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (page === max_page) page = 1;
                 else ++page;
                 embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
-                    .setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
+                    .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index]);
                 msg.edit({embed: embed}).catch(console.error);
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
             });
