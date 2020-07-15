@@ -395,6 +395,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     let upkeep = 500 - Math.floor(34.74 * Math.log(member.rank));
                     let total_upkeep = 200;
                     const equal_distribution = Math.floor(total_upkeep / clanres.member_list.length);
+                    total_upkeep += equal_distribution;
                     const mod = total_upkeep % clanres.member_list.length;
                     for (const member of clanres.member_list) total_upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
                     message.channel.send(`✅ **| ${message.author}, your upkeep cost is ${mod ? `somewhere between ${coin}\`${upkeep.toLocaleString()}-${(upkeep + 1).toLocaleString()}\`` : `${coin}\`${upkeep.toLocaleString()}\``} Alice coins, which will be taken from you in ${time}. Your clan's estimated total weekly upkeep is ${coin}\`${total_upkeep.toLocaleString()}\` Alice coins.**`)
