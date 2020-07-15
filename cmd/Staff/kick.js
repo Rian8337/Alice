@@ -17,16 +17,33 @@ module.exports.run = (client, message, args) => {
     let reason = args.slice(1).join(" ");
     if (!reason) reason = 'Not specified.';
 
-    tokick.kick(reason).then(() => {
-        let embed = new Discord.MessageEmbed()
-            .setAuthor(message.author.tag, message.author.avatarURL())
-            .setColor(message.member.roles.color.hexColor)
-            .setTimestamp(new Date())
-            .setTitle("Kick executed")
-            .addField("Kicked user: " + tokick.user.username, "User ID: " + tokick.id)
-            .addField("=========================", "Reason:\n" + reason);
+    message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user?**`).then(msg => {
+        msg.react("✅").catch(console.error);
+        let confirmation = false;
+        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === toaccept.id, {time: 20000});
 
-        logchannel.send({embed: embed})
+        confirm.on("collect", () => {
+            confirmation = true;
+            msg.delete();
+            tokick.kick(reason).then(() => {
+                let embed = new Discord.MessageEmbed()
+                    .setAuthor(message.author.tag, message.author.avatarURL())
+                    .setColor(message.member.roles.color.hexColor)
+                    .setTimestamp(new Date())
+                    .setTitle("Kick executed")
+                    .addField("Kicked user: " + tokick.user.username, "User ID: " + tokick.id)
+                    .addField("=========================", "Reason:\n" + reason);
+        
+                logchannel.send({embed: embed})
+            })
+        });
+
+        confirm.on("end", () => {
+            if (!confirmation) {
+                msg.delete();
+                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+            }
+        })
     })
 };
 
