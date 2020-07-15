@@ -1887,8 +1887,4 @@ declare module "osu-droid" {
          */
         toString(): string;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 891e11cfcc388c0774ff440ccd6d44eab52105b0
