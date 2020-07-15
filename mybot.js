@@ -11,7 +11,7 @@ client.commands = client.utils = client.aliases = client.events = client.subeven
 client.help = [];
 let maintenance = false;
 
-//Events loading
+// Events loading
 fs.readdir('./events', (err, files) => {
 	console.log("Loading events");
 	if (err) throw err;
@@ -26,7 +26,7 @@ fs.readdir('./events', (err, files) => {
 	})
 });
 
-//Subevents loading
+// Subevents loading
 fs.readdir('./events/subevents', (err, files) => {
 	console.log("Loading subevents");
 	if (err) throw err;
