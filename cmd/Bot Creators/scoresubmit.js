@@ -116,7 +116,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let username = userres.username;
-        const player = await new osudroid.PlayerInfo().get({uid: uid});
+        const player = await new osudroid.Player().get({uid: uid});
 
         if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
         if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");

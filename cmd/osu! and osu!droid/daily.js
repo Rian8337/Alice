@@ -276,7 +276,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         points = dailyres.points;
                         challenges = dailyres.challenges.length;
                     }
-                    const player = await new osudroid.PlayerInfo().get({uid: uid});
+                    const player = await new osudroid.Player().get({uid: uid});
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -468,7 +468,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
-                const player = await new osudroid.PlayerInfo().get({uid: uid});
+                const player = await new osudroid.Player().get({uid: uid});
                 if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
                 if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 let rplay = player.recent_plays;
@@ -984,7 +984,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
-                const player = await new osudroid.PlayerInfo().get({uid: uid});
+                const player = await new osudroid.Player().get({uid: uid});
 
                 if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
                 if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");

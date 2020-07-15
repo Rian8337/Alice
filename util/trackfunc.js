@@ -27,7 +27,7 @@ module.exports.run = (client, maindb) => {
 		const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
 		res.forEach(async function(player) {
-			const player_entry = await new osudroid.PlayerInfo().get({uid: player.uid});
+			const player_entry = await new osudroid.Player().get({uid: player.uid});
 			const name = player_entry.name;
 			const curtime = Date.now();
 			for await (const play of player_entry.recent_plays) {

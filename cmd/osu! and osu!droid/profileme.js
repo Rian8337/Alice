@@ -27,7 +27,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		}
 		let uid = res.uid;
 		let pp = res.pptotal;
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.Player().get({uid: uid}).catch(console.error);
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");

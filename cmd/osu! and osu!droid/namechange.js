@@ -310,12 +310,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (curtime < cooldown) return message.channel.send(`❎ **| I'm sorry, you're still in cooldown! You will be able to send a name change request in \`${new Date(cooldown * 1000).toUTCString()}\`.**`);
                     }
 
-                    const player = await new osudroid.PlayerInfo().get({uid: uid});
+                    const player = await new osudroid.Player().get({uid: uid});
                     if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                     if (email !== player.email) return message.channel.send("❎ **| I'm sorry, the email you have provided is not the same as the email registered to your binded osu!droid account!**");
                     if (username !== player.name) return message.channel.send("❎ **| I'm sorry, your username is not the same as the one stored in bot database! If you've requested a name change before, please rebind your account using `a!userbind <uid>` and then submit a request again!**");
 
-                    const new_player = await new osudroid.PlayerInfo().get({username: new_name});
+                    const new_player = await new osudroid.Player().get({username: new_name});
                     if (new_player.error) return message.channel.send("❎ **| I'm sorry, I couldn't check for nickname availability! Perhaps osu!droid server is down?**");
                     if (new_player.name) return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
 

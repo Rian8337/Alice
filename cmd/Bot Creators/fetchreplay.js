@@ -46,7 +46,7 @@ module.exports.run = async (client, message, args, maindb) => {
         if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
         hash = mapinfo.hash
     }
-    const play = await new osudroid.PlayInfo({uid: uid, hash: hash}).getFromHash();
+    const play = await new osudroid.Score({uid: uid, hash: hash}).getFromHash();
     if (!play.score_id) return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     if (!message.isOwner) cd.add(message.author.id);
     

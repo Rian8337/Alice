@@ -120,7 +120,7 @@ module.exports.run = (client, message, args, maindb) => {
 		if (userres.pp) pplist = userres.pp;
 		if (userres.pptotal) pre_pptotal = userres.pptotal;
 		if (userres.playc) playc = userres.playc;
-		const player = await new osudroid.PlayerInfo().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.Player().get({uid: uid}).catch(console.error);
 
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find your profile!**");
 		if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");

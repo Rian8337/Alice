@@ -16,5 +16,6 @@
     "crypto-js": "4.0.0",
     "java-deserialization": "^0.1.0",
     "unzipper": "^0.10.11"
-  }
+  },
+  "typings": "./typings/index.d.ts"
 }

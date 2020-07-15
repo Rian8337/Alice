@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 playc = res.playc
             }
             let levelremain = (level - Math.floor(level)) * 100;
-            const player = await new osudroid.PlayerInfo().get({uid: uid});
+            const player = await new osudroid.Player().get({uid: uid});
             if (player.error) {
                 if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
                 else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");

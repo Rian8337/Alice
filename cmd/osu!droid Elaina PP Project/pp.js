@@ -151,7 +151,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 				let hash = mapinfo.hash;
 
-				const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
+				const play = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
 				if (play.error) return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
 				if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map! Perhaps osu!droid server is down?**");
 				let combo = play.combo;
@@ -237,7 +237,7 @@ module.exports.run = (client, message, args, maindb) => {
 				setTimeout(() => {
 					cd.delete(message.author.id)
 				}, 1000 * offset);
-				const player = await new osudroid.PlayerInfo().get({uid: uid});
+				const player = await new osudroid.Player().get({uid: uid});
 				if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
 				if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 				if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");

@@ -13,7 +13,7 @@ function scoreCalc(score, maxscore, accuracy, misscount) {
 }
 
 async function retrievePlay(uid) {
-    const player = await new osudroid.PlayerInfo().get({uid: uid});
+    const player = await new osudroid.Player().get({uid: uid});
     return player.recent_plays;
 }
 

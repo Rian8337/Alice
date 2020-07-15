@@ -32,7 +32,7 @@ module.exports.run = maindb => {
                     let rank = Number.POSITIVE_INFINITY;
                     let fix_uid = 0;
                     for await (const uid of previous_bind) {
-                        const player = await new osudroid.PlayerInfo().get({uid: uid});
+                        const player = await new osudroid.Player().get({uid: uid});
                         if (rank > player.rank) {
                             rank = player.rank;
                             fix_uid = parseInt(uid) 

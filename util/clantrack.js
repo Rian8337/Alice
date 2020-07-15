@@ -118,7 +118,7 @@ module.exports.run = (client, maindb, alicedb) => {
                 
                 console.log("Retrieving rank from bind pool");
                 for await (const uid of bind_pool) {
-                    const player = await new osudroid.PlayerInfo().get({uid: uid});
+                    const player = await new osudroid.Player().get({uid: uid});
                     rank = Math.min(rank, player.rank)
                 }
 

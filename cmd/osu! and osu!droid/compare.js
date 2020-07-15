@@ -43,7 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         }
         let uid = res.uid;
 
-        const play = await new osudroid.PlayInfo().getFromHash({uid: uid, hash: hash});
+        const play = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
         if (play.error) return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
         if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
         const name = play.player_name;
@@ -55,7 +55,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const miss = play.miss;
         const date = play.date;
         let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
-        const player = await new osudroid.PlayerInfo().get({username: name});
+        const player = await new osudroid.Player().get({username: name});
         if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
 
         let rolecheck;
