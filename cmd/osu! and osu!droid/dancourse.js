@@ -164,7 +164,7 @@ module.exports.run = (client, message, args, maindb) => {
                 danentries.forEach(x => {
                     objcount.x++;
                     let valid = validation(x.dan, x.mod, x.acc, x.rank);
-                    if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.droid_to_PC(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
+                    if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.pc_to_detail(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
                     let danrole = x.play;
                     let role = message.guild.roles.cache.find((r) => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
