@@ -4,6 +4,13 @@ const osudroid = require('osu-droid');
 const droidapikey = process.env.DROID_API_KEY;
 const config = require('../../config.json');
 
+function hasUnicode(str = "") {
+    for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 127) return true
+    }
+    return false
+}
+
 function processEmbed(res, page, footer, index) {
     const embed = new Discord.MessageEmbed()
         .setTitle("Name Change Request List")
@@ -275,6 +282,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let new_name = args[1];
             if (!new_name) return message.channel.send("❎ **| Hey, please enter the desired new nickname that you want to use!**");
             if (new_name.length < 2 || new_name.length > 20) return message.channel.send("❎ **| I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!**");
+            if (hasUnicode(new_name) || /^[a-zA-Z0-9_]+$/.test(new_name)) return message.channel.send("❎ **| I'm sorry, usernames can only contain letters, numbers, and underscores!**");
             if (new_name.includes('<:')) return message.channel.send("❎ **| I'm sorry, a username cannot contain emojis!**");
 
             if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach a screenshot of your osu!droid main menu with your account logged in!**");
