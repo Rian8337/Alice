@@ -77,19 +77,31 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         else current_map[map_index][1] = hash;
 
         const mapinfo = await new osudroid.MapInfo().get({hash: hash});
-        let n300, n100, n50;
+        let n300 = 0, n100 = 0, n50 = 0, unstable_rate = 0;
         if (message.isOwner) {
             const score_data = await play.getFromHash();
             const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
             if (data.fixed_odr) {
                 n300 = data.data.hit300;
                 n100 = data.data.hit100;
-                n50 = data.data.hit50
+                n50 = data.data.hit50;
+
+                const hit_object_data = data.data.hit_object_data;
+                let hit_error_total = 0;
+                for (const hit_object of hit_object_data)
+                    if (hit_object.result !== 1) hit_error_total += hit_object.accuracy;
+                
+                const mean = hit_error_total / hit_object_data.length;
+
+                let std_deviation = 0;
+                for (const hit_object of hit_object_data)
+                    if (hit_object.result !== 1) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+                unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
             }
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
-            embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+            embed.setDescription(`▸ ${rank} ▸ ${acc}%${unstable_rate ? ` ▸ ${unstable_rate.toFixed(2)} UR` : ""}\n▸ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
             return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
@@ -148,8 +160,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             const dline = parseFloat(fc_dpp.total.toFixed(2));
             const pline = parseFloat(fc_pp.total.toFixed(2));
 
-            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
-        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+            embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%${unstable_rate ? ` ▸ ${unstable_rate.toFixed(2)} UR` : ""}\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
+        } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%${unstable_rate ? ` ▸ ${unstable_rate.toFixed(2)} UR` : ""}\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}`);
 
         message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
     })

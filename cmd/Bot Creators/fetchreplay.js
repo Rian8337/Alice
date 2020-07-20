@@ -76,8 +76,20 @@ module.exports.run = async (client, message, args, maindb) => {
         }
     };
     zip.addFile(`entry.json`, Buffer.from(JSON.stringify(object, null, 2)));
+
+    const hit_object_data = data.hit_object_data;
+    let hit_error_total = 0;
+    for (const hit_object of hit_object_data) 
+        if (hit_object.result !== 1) hit_error_total += hit_object.accuracy;
+    const mean = hit_error_total / hit_object_data.length;
+
+    let std_deviation = 0;
+    for (const hit_object of hit_object_data)
+        if (hit_object.result !== 1) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+    let unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+
     const attachment = new Discord.MessageAttachment(zip.toBuffer(), `${data.file_name.substring(0, data.file_name.length - 4)} [${data.player_name}]-${object.replaydata.time}.edr`);
-    if (!beatmap) return message.channel.send("✅ **| Successfully fetched replay.**", {files: [attachment]});
+    if (!beatmap) return message.channel.send(`✅ **| Successfully fetched replay.\n\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
 
     const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: data.converted_mods});
 	let starsline = parseFloat(star.droid_stars.total.toFixed(2));
@@ -111,7 +123,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
         .addField(mapinfo.showStatistics(data.converted_mods, 2), `${mapinfo.showStatistics(data.converted_mods, 3)}\n**Max score**: ${mapinfo.max_score(data.converted_mods).toLocaleString()}`)
-        .addField(mapinfo.showStatistics(data.converted_mods, 4), `${mapinfo.showStatistics(data.converted_mods, 5)}\n**Result**: ${play.combo}/${mapinfo.max_combo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]`)
+        .addField(mapinfo.showStatistics(data.converted_mods, 4), `${mapinfo.showStatistics(data.converted_mods, 5)}\n**Result**: ${play.combo}/${mapinfo.max_combo}x / ${play.accuracy}% / ${unstable_rate.toFixed(2)} UR / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]`)
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
     message.channel.send({embed: embed});
