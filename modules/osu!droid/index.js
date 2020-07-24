@@ -21,5 +21,11 @@ module.exports = {
     Slider: require('./src/Slider'),
     StandardDiff: require('./src/StandardDiff'),
     StandardDiffHitObject: require('./src/StandardDiffHitObject'),
-    Timing: require('./src/Timing')
+    Timing: require('./src/Timing'),
+
+    gamemode: require('./src/constants/gamemode'),
+    hitResult: require('./src/constants/hitResult'),
+    modes: require('./src/constants/modes'),
+    movementType: require('./src/constants/movementType'),
+    rankedStatus: require('./src/constants/rankedStatus'),
 };
