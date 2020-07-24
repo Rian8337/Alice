@@ -17,6 +17,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!")
 		}
+		let weighted_accuracy = 0;
+		let weight = 0;
+		if (res) {
+			let pp_entries = res.pp;
+			for (let i = 0; i < pp_entries.length; ++i) {
+				let acc = pp_entries[i][4];
+				if (!acc) acc = 100;
+				weighted_accuracy += parseFloat(acc) * Math.pow(0.95, i);
+				weight += Math.pow(0.95, i);
+			}
+			if (weighted_accuracy) weighted_accuracy /= weight;
+		}
 		const player = await new osudroid.Player().get({uid: uid});
 		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
 		if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
@@ -128,7 +140,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.font = '18px Exo';
 				c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
-				c.fillText(`Accuracy: ${player.accuracy}%`, 169, 124);
+				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
 				c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
 				if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
 				if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
