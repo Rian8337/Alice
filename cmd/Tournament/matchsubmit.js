@@ -46,7 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let min_time_diff = 0;
 		let hash = '';
 		let i = -1;
-		const score_info = []; // array of PlayerInfo
+		const score_info = []; // array of Player instance
 		players.forEach(async player => {
 			i++;
 			await getPlay(i, player[1], data => {
@@ -176,7 +176,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 								const score_object = {
 									pick: pick,
 									scores: []
-								}
+								};
+
 								for (const p of score_info) {
 									const recent_play = p.recent_plays[0];
 									if (recent_play.hash === hash) {
@@ -204,10 +205,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 								if (result_res) {
 									const scores_list = result_res.scores;
+									const m_result = result_res.result;
+
+									for (let i = 0; i < players.length; ++i) m_result[i].points += i % 2 === 0 ? (t1score > t2score) : (t2score > t1score);
 
 									scores_list.push(score_object);
 									updateVal = {
 										$set: {
+											result: m_result,
 											scores: scores_list
 										}
 									};
@@ -231,6 +236,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 										player: p_name,
 										points: 0
 									});
+
+									for (let i = 0; i < players.length; ++i) insertVal.result[i].points += i % 2 === 0 ? (team_1_score > team_2_score) : (team_2_score > team_1_score);
 
 									resultdb.insertOne(insertVal, err => {
 										if (err) return console.log(err);
