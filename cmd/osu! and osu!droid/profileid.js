@@ -21,6 +21,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let weight = 0;
 		if (res) {
 			let pp_entries = res.pp;
+                        if (!pp_entries) pp_entries = [];
 			for (let i = 0; i < pp_entries.length; ++i) {
 				let acc = pp_entries[i][4];
 				if (!acc) acc = 100;
