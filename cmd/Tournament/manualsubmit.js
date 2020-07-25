@@ -32,13 +32,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 		}
 		if (!res) return message.channel.send("❎ **| I'm sorry, I can't find the match!**");
+		if (args.length - 2 < (res.result.length) * 3) return message.channel.send("❎ **| Hey, I need more data!**");
 		lengthdb.findOne(poolquery, function(err, mres) {
 			if (err) {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 			}
 			if (!mres) return message.channel.send("❎ **| I'm sorry, I cannot find the pool!**");
-			const pick = mres.map[mapid - 1][0];
 			mapdb.findOne(poolquery, function(err, poolres) {
 				if (err) {
 					console.log(err);
@@ -46,7 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 				if (!poolres) return message.channel.send("❎ **| I'm sorry, I can't find the pool!**");
 				if (mapid > poolres.map.length || mapid < 0) return message.channel.send("❎ **| I'm sorry, I can't find the map!**");
-				if (args.length - 2 < (res.result.length) * 3) return message.channel.send("❎ **| Hey, I need more data!**");
+				const pick = mres.map[mapid - 1][0];
 				const players = res.player;
 
 				const score_object = {
