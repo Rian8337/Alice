@@ -69,7 +69,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             setTimeout(() => {
                 message.channel.send("✅ **| Round ended!**");
                 let cmd = client.commands.get("matchsubmit");
-                cmd.run(client, message, [matchid], maindb)
+                cmd.run(client, message, [matchid], maindb, alicedb);
             }, (timelimit + 30) * 1000)
         })
     })
