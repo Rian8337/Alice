@@ -6,7 +6,8 @@ function scoreCalc(mode, score, maxscore, accuracy, misscount) {
 	if (mode == 'dt' && score.includes("h")) hddt = true;
 	let newscore = parseInt(score)/maxscore*600000 + (Math.pow((accuracy/100), 4)*400000);
 	newscore -= misscount * 0.003 * newscore;
-	return Math.round(hddt ? newscore / 1.0625 : newscore);
+	if (!hddt) return Math.round(newscore);
+	else return Math.round(newscore/1.0625);
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -53,7 +54,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					scores: []
 				};
 				for (let i = 0; i < players.length; i++) {
-					const scorev2 = scoreCalc(poolres.map[mapid-1][0], args[2+i*3], parseInt(poolres.map[mapid-1][2]), parseFloat(args[2+i*3+1]), parseInt(args[2+i*3+2]));
+					const scorev2 = scoreCalc(poolres.map[mapid-1][0], args[2 + i * 3], parseInt(poolres.map[mapid - 1][2]), parseFloat(args[2 + i * 3 + 1]), parseInt(args[2 + i * 3 + 2]));
 					score_object.scores.push({
 						player: '',
 						scorev1: parseInt(args[2 + i * 3]),
@@ -66,16 +67,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 	
 				for (let k in pscore) {
-					score_object.scores[k].player = pscore.length > 2 ? res.player[k][0] : res.team[k][0];
+					score_object.scores[k].player = players[k][0] === "Score" ? res.team[k][0] : res.player[k][0];
 					if (k % 2 == 0) {
 						t1score += pscore[k];
-						if (pscore[k] == 0) displayRes1 += `${pscore.length > 2 ? res.player[k][0] : res.team[k][0]} (N/A): **0** - Failed\n`;
-						else displayRes1 += `${pscore.length > 2 ? res.player[k][0] : res.team[k][0]} (N/A): **${Math.round(pscore[k])}** - ${args[2+k*3+1]} - ${args[2+k*3+2]} miss\n`
+						if (pscore[k] == 0) displayRes1 += `${players[k][0] === "Score" ? res.team[k][0] : players[k][0]} (N/A): **0** - Failed\n`;
+						else displayRes1 += `${players[k][0] === "Score" ? res.team[k][0] : players[k][0]} (N/A): **${Math.round(pscore[k])}** - ${args[2+k*3+1]} - ${args[2+k*3+2]} miss\n`
 					}
 					else {
 						t2score += pscore[k];
-						if (pscore[k] == 0) displayRes2 += `${pscore.length > 2 ? res.player[k][0] : res.team[k][0]} (N/A): **0** - Failed\n`;
-						else displayRes2 += `${pscore.length > 2 ? res.player[k][0] : res.team[k][0]} (N/A): **${Math.round(pscore[k])}** - ${args[2+k*3+1]} - ${args[2+k*3+2]} miss\n`
+						if (pscore[k] == 0) displayRes2 += `${players[k][0] === "Score" ? res.team[k][0] : players[k][0]} (N/A): **0** - Failed\n`;
+						else displayRes2 += `${players[k][0] === "Score" ? res.team[k][0] : players[k][0]} (N/A): **${Math.round(pscore[k])}** - ${args[2+k*3+1]} - ${args[2+k*3+2]} miss\n`
 					}
 				}
 				t1score = Math.round(t1score);

@@ -50,11 +50,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		players.forEach(async player => {
 			i++;
 			await getPlay(i, player[1], data => {
+				const recent_play = data[1].recent_plays[0];
 				score_info.push(data[1]);
-				play_list.push([data[0], data[1].recent_plays[0]]);
-				if (min_time_diff < data[1].date) {
-					min_time_diff = data[1].date.getTime();
-					hash = data[1].hash
+				play_list.push([data[0], recent_play]);
+				if (min_time_diff < recent_play.date.getTime()) {
+					min_time_diff = recent_play.date.getTime();
+					hash = recent_play.hash;
 				}
 				if (play_list.length !== players.length) return;
 				
@@ -86,6 +87,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					let team_2_string = '';
 					let temp_score = 0;
 					let score_list = [];
+					let j = 0;
 
 					for (const play of play_list) {
 						if (play[1].hash === hash && playValidation(play[1].mods, requirement)) {
@@ -95,16 +97,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 						else temp_score = 0;
 						score_list.push(temp_score);
 
-						if (i % 2 === 0) {
+						if (j % 2 === 0) {
 							team_1_score += temp_score;
-							if (temp_score !== 0) team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
-							else team_1_string += `${play_list.length > 2 ? players[i][0] : matchres.team[0][0]} (N/A): **0** - Failed\n`
+							if (temp_score !== 0) team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
+							else team_1_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`
 						}
 						else {
 							team_2_score += temp_score;
-							if (temp_score !== 0) team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
-							else team_2_string += `${play_list.length > 2 ? players[i][0] : matchres.team[1][0]} (N/A): **0** - Failed\n`
+							if (temp_score !== 0) team_2_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
+							else team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`
 						}
+						++j;
 					}
 
 					team_1_score = Math.round(team_1_score);
@@ -128,7 +131,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 						.setTitle(title)
 						.setColor(color)
 						.setFooter("Alice Synthesis Thirty", footer[index])
-						.setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
 						.setAuthor(matchres.name)
 						.addField(`${matchres.team[0][0]}: ${team_1_score}`, team_1_string)
 						.addField(`${matchres.team[1][0]}: ${team_2_score}`, team_2_string)
@@ -166,7 +168,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 						}
 						console.log("Match info updated");
-						lengthdb.findOne({matchid: id}, (err, mapinfolength) => {
+						lengthdb.findOne({poolid: id.split(".")[0]}, (err, mapinfolength) => {
 							if (err) return console.log(err);
 							const pick = mapinfolength.map[i][0];
 
@@ -180,11 +182,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 								for (const p of score_info) {
 									const recent_play = p.recent_plays[0];
+									let player_name = '';
+									if (players[0][0] !== "Score") player_name = players.find(e => e[0].includes(p.name))[0];
+									else player_name = matchres.team.find(e => e[0].includes(p.name))[0];
 									if (recent_play.hash === hash) {
 										let scorev2 = scoreCalc(recent_play.score, max_score, recent_play.accuracy, recent_play.miss);
-										if (recent_play.mods === "HDDT") scorev2 = Math.round(scorev2 / 1.0625);
+										if (recent_play.mods === "HDDT") scorev2 /= 1.0625;
+										scorev2 = Math.round(scorev2);
 										score_object.scores.push({
-											player: p.name,
+											player: player_name,
 											scorev1: recent_play.score,
 											accuracy: recent_play.accuracy,
 											mods: recent_play.mods,
@@ -193,7 +199,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 										})
 									} else {
 										score_object.scores.push({
-											player: p.name,
+											player: player_name,
 											scorev1: 0,
 											accuracy: 0,
 											mods: "",
@@ -207,7 +213,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 									const scores_list = result_res.scores;
 									const m_result = result_res.result;
 
-									for (let i = 0; i < players.length; ++i) m_result[i].points += i % 2 === 0 ? (t1score > t2score) : (t2score > t1score);
+									for (let i = 0; i < players.length; ++i) m_result[i].points += i % 2 === 0 ? (team_1_score > team_2_score) : (team_2_score > team_1_score);
 
 									scores_list.push(score_object);
 									updateVal = {
@@ -216,7 +222,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 											scores: scores_list
 										}
 									};
-									resultdb.updateOne({matcid: id}, updateVal, err => {
+									resultdb.updateOne({matchid: id}, updateVal, err => {
 										if (err) return console.log(err);
 										console.log("Result added to database")
 									})
@@ -229,7 +235,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 										scores: [score_object]
 									};
 									const teams = matchres.team;
-									if (players.length > 2) for (const p of players) insertVal.players.push(p[0]);
+									if (players[0][0] !== "Score") for (const p of players) insertVal.players.push(p[0]);
 									else for (const p of teams) insertVal.players.push(p[0]);
 
 									for (const p_name of insertVal.players) insertVal.result.push({
