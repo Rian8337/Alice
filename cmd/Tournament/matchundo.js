@@ -44,7 +44,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				scores.pop();
 				const match_result = r_res.result;
 				match_result[0].points -= (t1score > t2score);
-				match_result[1].points -= (t2score > t1score);
+				if (match_result[1]) match_result[1].points -= (t2score > t1score);
 
 				update = {
 					$set: {

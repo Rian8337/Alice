@@ -183,7 +183,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 								for (const p of score_info) {
 									const recent_play = p.recent_plays[0];
 									let player_name = '';
-									if (players[0][0] !== "Score") player_name = players.find(e => e[0].includes(p.name))[0];
+									if (players[0][0] !== "Score") {
+										const player_entry = players.find(e => e[0].includes(p.name));
+										player_name = player_entry ? player_entry[0] : p.name;
+									}
 									else player_name = matchres.team.find(e => e[0].includes(p.name))[0];
 									if (recent_play.hash === hash) {
 										let scorev2 = scoreCalc(recent_play.score, max_score, recent_play.accuracy, recent_play.miss);
