@@ -28,6 +28,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let uid = res.uid;
 		let pp = res.pptotal;
 		let pp_entries = res.pp;
+                if (!pp_entries) pp_entries = [];
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
