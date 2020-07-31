@@ -20,7 +20,7 @@ module.exports.run = (client, message, args) => {
     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user?**`).then(msg => {
         msg.react("✅").catch(console.error);
         let confirmation = false;
-        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === toaccept.id, {time: 20000});
+        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
         confirm.on("collect", () => {
             confirmation = true;
