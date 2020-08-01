@@ -187,7 +187,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 										const player_entry = players.find(e => e[0].includes(p.name));
 										player_name = player_entry ? player_entry[0] : p.name;
 									}
-									else player_name = matchres.team.find(e => e[0].includes(p.name))[0];
+									else {
+										const player_entry = matchres.team.find(e => e[0].includes(p.name));
+										player_name = player_entry ? player_entry[0] : p.name;
+									}
 									if (recent_play.hash === hash) {
 										let scorev2 = scoreCalc(recent_play.score, max_score, recent_play.accuracy, recent_play.miss);
 										if (recent_play.mods === "HDDT") scorev2 /= 1.0625;
