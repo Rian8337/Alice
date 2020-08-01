@@ -100,11 +100,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 						if (j % 2 === 0) {
 							team_1_score += temp_score;
 							if (temp_score !== 0) team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
-							else team_1_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`
+							else team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} (N/A): **0** - Failed\n`
 						}
 						else {
 							team_2_score += temp_score;
-							if (temp_score !== 0) team_2_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
+							if (temp_score !== 0) team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
 							else team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`
 						}
 						++j;
