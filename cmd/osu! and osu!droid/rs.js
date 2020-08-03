@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const cd = new Set();
 
 function rankEmote(input) {
 	if (!input) return;
@@ -18,6 +19,7 @@ function rankEmote(input) {
 }
 
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
+    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     let ufind = message.author.id;
     if (args[0]) ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
     let binddb = maindb.collection("userbind");
@@ -84,44 +86,49 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let min_error = 0;
         let max_error = 0;
 
-        if (message.isOwner) {
-            const score_data = await play.getFromHash();
-            const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
-            if (data.fixed_odr) {
-                n300 = data.data.hit300;
-                n100 = data.data.hit100;
-                n50 = data.data.hit50;
+        const score_data = await play.getFromHash();
+        const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
+        if (data.fixed_odr) {
+            n300 = data.data.hit300;
+            n100 = data.data.hit100;
+            n50 = data.data.hit50;
 
-                const hit_object_data = data.data.hit_object_data;
-                let hit_error_total = 0;
-                let total = 0;
-                let _total = 0;
-                let count = 0;
-                let _count = 0;
+            const hit_object_data = data.data.hit_object_data;
+            let hit_error_total = 0;
+            let total = 0;
+            let _total = 0;
+            let count = 0;
+            let _count = 0;
 
-                for (const hit_object of hit_object_data) {
-                    if (hit_object.result === 1) continue;
-                    const accuracy = hit_object.accuracy;
-                    hit_error_total += accuracy;
-                    if (accuracy >= 0) {
-                        total += accuracy;
-                        ++count;
-                    } else {
-                        _total += accuracy;
-                        ++_count;
-                    }
+            for (const hit_object of hit_object_data) {
+                if (hit_object.result === 1) continue;
+                const accuracy = hit_object.accuracy;
+                hit_error_total += accuracy;
+                if (accuracy >= 0) {
+                    total += accuracy;
+                    ++count;
+                } else {
+                    _total += accuracy;
+                    ++_count;
                 }
-                
-                const mean = hit_error_total / hit_object_data.length;
-
-                let std_deviation = 0;
-                for (const hit_object of hit_object_data)
-                    if (hit_object.result !== 1) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
-
-                unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
-                max_error = count ? total / count : 0;
-                min_error = _count ? _total / _count : 0;
             }
+            
+            const mean = hit_error_total / hit_object_data.length;
+
+            let std_deviation = 0;
+            for (const hit_object of hit_object_data)
+                if (hit_object.result !== 1) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+
+            unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+            max_error = count ? total / count : 0;
+            min_error = _count ? _total / _count : 0;
+        }
+
+        if (!message.isOwner) {
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id);
+            }, 5000);
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
