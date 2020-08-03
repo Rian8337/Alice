@@ -128,7 +128,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             cd.add(message.author.id);
             setTimeout(() => {
                 cd.delete(message.author.id);
-            }, 5000);
+            }, 7500);
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
