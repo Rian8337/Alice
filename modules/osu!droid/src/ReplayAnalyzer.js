@@ -132,29 +132,34 @@ class ReplayAnalyzer {
         // the rest will be a buffer that we need to manually parse
         const raw_object = javaDeserialization.parse(this.fixed_odr);
 
-        const result_object = {
-            replay_version: raw_object[0].version,
-            folder_name: raw_object[1],
-            file_name: raw_object[2],
-            hash: raw_object[3],
-            time: Number(raw_object[4].readBigUInt64BE(0)),
-            hit300k: raw_object[4].readInt32BE(8),
-            hit300: raw_object[4].readInt32BE(12),
-            hit100k: raw_object[4].readInt32BE(16),
-            hit100: raw_object[4].readInt32BE(20),
-            hit50: raw_object[4].readInt32BE(24),
-            hit0: raw_object[4].readInt32BE(28),
-            score: raw_object[4].readInt32BE(32),
-            max_combo: raw_object[4].readInt32BE(36),
-            accuracy: raw_object[4].readFloatBE(40),
-            is_full_combo: raw_object[4][44],
-            player_name: raw_object[5],
-            raw_mods: raw_object[6].elements,
-            droid_mods: this._convertDroidMods(raw_object[6].elements),
-            converted_mods: this._convertMods(raw_object[6].elements),
-            cursor_movement: [],
-            hit_object_data: []
-        };
+        let result_object;
+        try {
+            const result_object = {
+                replay_version: raw_object[0].version,
+                folder_name: raw_object[1],
+                file_name: raw_object[2],
+                hash: raw_object[3],
+                time: Number(raw_object[4].readBigUInt64BE(0)),
+                hit300k: raw_object[4].readInt32BE(8),
+                hit300: raw_object[4].readInt32BE(12),
+                hit100k: raw_object[4].readInt32BE(16),
+                hit100: raw_object[4].readInt32BE(20),
+                hit50: raw_object[4].readInt32BE(24),
+                hit0: raw_object[4].readInt32BE(28),
+                score: raw_object[4].readInt32BE(32),
+                max_combo: raw_object[4].readInt32BE(36),
+                accuracy: raw_object[4].readFloatBE(40),
+                is_full_combo: raw_object[4][44],
+                player_name: raw_object[5],
+                raw_mods: raw_object[6].elements,
+                droid_mods: this._convertDroidMods(raw_object[6].elements),
+                converted_mods: this._convertMods(raw_object[6].elements),
+                cursor_movement: [],
+                hit_object_data: []
+            };
+        } catch (e) {
+            return this;
+        }
 
         let replay_data_buffer_array = [];
         for (let i = 7; i < raw_object.length; i++) replay_data_buffer_array.push(raw_object[i]);
