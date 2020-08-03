@@ -134,7 +134,7 @@ class ReplayAnalyzer {
 
         let result_object;
         try {
-            const result_object = {
+            result_object = {
                 replay_version: raw_object[0].version,
                 folder_name: raw_object[1],
                 file_name: raw_object[2],
