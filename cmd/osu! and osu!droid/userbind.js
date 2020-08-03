@@ -51,6 +51,7 @@ module.exports.run = async (client, message, args, maindb) => {
 				}
 				if (bindres) {
 					let previous_bind = bindres.previous_bind;
+					if (!previous_bind) previous_bind = [];
 					if (previous_bind.length === 2) return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
 
 					previous_bind.push(uid);
