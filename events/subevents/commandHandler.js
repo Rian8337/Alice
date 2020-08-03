@@ -22,24 +22,17 @@ module.exports.run = obj => {
         setTimeout(() => {
             message.channel.stopTyping(true)
         }, 5000);
-        const cd_entry = cd.find(e => e.id === message.author.id);
-        if (cd_entry) return message.channel.send(`❎ **| Hey, calm down with the command (${cd_entry.time} ${cd_entry.time === 1 ? "second" : "seconds"})! I need to rest too, you know.**`);
+        const cd_entry = cd.find(e => e === message.author.id);
+        if (cd_entry) return message.channel.send(`❎ **| Hey, calm down with the command! I need to rest too, you know.**`);
         if (!(message.channel instanceof Discord.DMChannel)) console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
         else console.log(`${message.author.tag} (DM): ${message.content}`);
         cmd.run(client, message, args, maindb, alicedb, current_map);
         if (command_cooldown && !message.isOwner) {
-            cd.push({
-                id: message.author.id,
-                time: command_cooldown
-            });
-            const interval = setInterval(() => {
-                const index = cd.findIndex(c => c.id === message.author.id);
-                if (cd[index].time === 0) {
-                    cd.splice(index, 1);
-                    return clearInterval(interval)
-                }
-                --cd[index].time
-            }, 1000);
+            cd.push(message.author.id);
+            setInterval(() => {
+                const index = cd.findIndex(c => c === message.author.id);
+                cd.splice(index, 1);
+            })
         }
     }
 };
