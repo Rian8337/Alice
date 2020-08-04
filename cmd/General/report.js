@@ -14,7 +14,7 @@ module.exports.run = (client, message, args) => {
 
     let toreport = message.guild.member(message.mentions.users.first() || message.guild.members.resolve(args[0]));
     if (!toreport) return message.channel.send("❎ **| Hey, please enter a valid user to report!**");
-    //if (toreport.hasPermission("ADMINISTRATOR", {checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you cannot report this user!**");
+    if (toreport.hasPermission("ADMINISTRATOR", {checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you cannot report this user!**");
     if (toreport.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot report yourself!**");
 
     const reason_index = message.content.split(/\s/g).slice(0, 2).join(" ").length + 1;
@@ -34,9 +34,21 @@ module.exports.run = (client, message, args) => {
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setDescription(`**Offender**: ${toreport} (${toreport.id})\n**Channel**: ${message.channel}\n**Reason**: ${reason}`);
 
+    if (message.attachments.first()) {
+        const attachment = message.attachments.first();
+        const url = attachment.url;
+        const length = url.length;
+        if (
+            url.indexOf("png", length - 3) === -1 &&
+            url.indexOf("jpg", length - 3) === -1 &&
+            url.indexOf("jpeg", length - 4) === -1
+        ) return message.channel.send("❎ **| Hey, please provide a valid screenshot!**");
+        report_embed.attachFiles([attachment]);
+    }
+
     let server_channel = message.guild.channels.cache.find(c => c.name === config.report_channel);
-    server_channel.send("", {embed: report_embed});
-    // <@&369108742077284353> <@&595667274707370024>
+    server_channel.send("<@&369108742077284353> <@&595667274707370024>", {embed: report_embed});
+
     const reply_embed = new MessageEmbed()
         .setAuthor("Report Summary")
         .setColor("#527ea3")
