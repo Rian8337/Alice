@@ -1,7 +1,7 @@
 /**
  * The result of a hit in an osu!droid replay.
  */
-const hitResult = {
+const hitResult = Object.freeze({
     /**
      * Miss (0).
      */
@@ -21,6 +21,6 @@ const hitResult = {
      * Good (300).
      */
     RESULT_300: 4
-};
+});
 
 module.exports = hitResult;
