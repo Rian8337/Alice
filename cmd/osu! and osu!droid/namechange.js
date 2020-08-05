@@ -3,6 +3,7 @@ const http = require('http');
 const osudroid = require('osu-droid');
 const droidapikey = process.env.DROID_API_KEY;
 const config = require('../../config.json');
+const {Db} = require('mongodb');
 
 function hasUnicode(str = "") {
     for (let i = 0; i < str.length; i++) {
@@ -25,6 +26,13 @@ function processEmbed(res, page, footer, index) {
     return embed
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const namedb = alicedb.collection("namechange");
@@ -275,6 +283,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 message.delete({reason: "Prevent email leak"}).catch(console.error);
                 return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**")
             }
+
+            if (args.length !== 2) return message.channel.send("❎ **| Hey, spaces in nicknames are not allowed!**");
 
             let email = args[0];
             if (!email) return message.channel.send("❎ **| Hey, please enter your email address!**");
