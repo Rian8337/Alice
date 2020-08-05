@@ -72,7 +72,17 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
         if (!res) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-        if (res.hasAskedForRecalc) return message.channel.send("❎ **| I'm sorry, this user has requested a recalculation before!**");
+        const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
+        if (hasRequestedIndex) return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
+        if (res.hasAskedForRecalc) {
+            queue.shift();
+            message.channel.send(`❎ **| ${message.author}, <@${ufind}> has requested a recalculation before!**`);
+            if (queue.length > 0) {
+                const nextQueue = queue[0];
+                client.commands.get("completecalc").run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
+            }
+            return;
+        }
         if (!repeated) {
             queue.push({
                 client: client,
@@ -86,6 +96,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         const uid = res.uid;
         const pplist = res.pp ? res.pp : [];
         const ppentries = [];
+        const score_list = [];
         let pptotal = 0;
         let playc = 0;
         let page = 0;
@@ -98,7 +109,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            let score_list = [];
 
             retrievePlays(page, uid, async function checkPlays(entries, error, stopSign) {
                 if (error && attempts < 3) return retrievePlays(page, uid, checkPlays);
