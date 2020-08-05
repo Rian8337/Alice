@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 const cd = new Set();
 
 function rankEmote(input) {
@@ -18,6 +19,14 @@ function rankEmote(input) {
 	}
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ * @param {[string, string][]} current_map 
+ */
 module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**")
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
@@ -134,8 +143,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         title = `${mapinfo.full_title} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
         embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-            .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`);
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`);
 
         const npp = osudroid.ppv2({
             stars: star.droid_stars,
@@ -187,7 +195,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]\n▸ ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : `${miss} miss(es)`}`);
         } else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.max_combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]\n▸ ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : `${miss} miss(es)`}`);
 
-        message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed})
+        message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     })
 };
 
