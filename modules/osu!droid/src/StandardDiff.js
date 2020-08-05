@@ -2,6 +2,7 @@ const Beatmap = require('./Beatmap');
 const StandardDiffHitObject = require('./StandardDiffHitObject');
 const MapStats = require('./MapStats');
 const mods = require('./mods');
+const modes = require('./constants/modes');
 const object_types = require('./object_types');
 
 // (internal)
@@ -166,7 +167,7 @@ class StandardDiff {
         let singletap_threshold = this.singletap_threshold
             = params.singletap_threshold || this.singletap_threshold;
 
-        let mode = params.mode || "osu";
+        let mode = params.mode || modes.osu;
 
         // apply mods to the beatmap's stats
 
@@ -178,13 +179,11 @@ class StandardDiff {
         // variable
         let cs;
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 cs = map.cs;
                 break;
-            case "osu!":
-            case "osu":
-                cs = stats.cs
+            case modes.osu:
+                cs = stats.cs;
         }
 
         this._init_objects(this.objects, map, cs);
@@ -211,12 +210,10 @@ class StandardDiff {
         // total stars mixes speed and aim in such a way that
         // heavily aim or speed focused maps get a bonus
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 this.total += Math.abs(this.speed - this.aim) * DROID_EXTREME_SCALING_FACTOR;
                 break;
-            case "osu!":
-            case "osu":
+            case modes.osu:
                 this.total += Math.abs(this.speed - this.aim) * EXTREME_SCALING_FACTOR
         }
 
@@ -291,23 +288,19 @@ class StandardDiff {
             case DIFF_SPEED: {
                 distance = Math.min(distance, SINGLE_SPACING);
                 switch (mode) {
-                    case "osu!droid":
-                    case "droid":
+                    case modes.droid:
                         delta_time = Math.max(delta_time, DROID_MAX_SPEED_BONUS);
                         break;
-                    case "osu!":
-                    case "osu":
+                    case modes.osu:
                         delta_time = Math.max(delta_time, MAX_SPEED_BONUS)
                 }
                 let speed_bonus = 1.0;
                 if (delta_time < MIN_SPEED_BONUS) {
                     switch (mode) {
-                        case "osu!droid":
-                        case "droid":
+                        case modes.droid:
                             speed_bonus += Math.pow((MIN_SPEED_BONUS - delta_time) / 50.0, 2);
                             break;
-                        case "osu!":
-                        case "osu":
+                        case modes.osu:
                             speed_bonus += Math.pow((MIN_SPEED_BONUS - delta_time) / 40.0, 2);
                     }
                 }

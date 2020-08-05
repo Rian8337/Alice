@@ -2,6 +2,7 @@ const MapStats = require('./MapStats');
 const Parser = require('./Parser');
 const StandardDiff = require('./StandardDiff');
 const mods = require('./mods');
+const modes = require('./constants/modes');
 
 /**
  * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
@@ -60,7 +61,7 @@ class MapStars {
             od: nmap.od,
             hp: nmap.hp,
             mods: pmod
-        }).calculate({mode: "droid"});
+        }).calculate({mode: modes.droid});
 
         let droid_mod = mods.modbits_from_string(pmod);
         if (!(droid_mod & mods.td)) {
@@ -79,8 +80,8 @@ class MapStars {
         nmap.ar = stats.ar;
         nmap.od = stats.od;
 
-        this.droid_stars.calculate({mode: "droid", map: nmap, mods: droid_mod});
-        this.pc_stars.calculate({mode: "osu", map: pcmap, mods: pmod});
+        this.droid_stars.calculate({mode: modes.droid, map: nmap, mods: droid_mod});
+        this.pc_stars.calculate({mode: modes.osu, map: pcmap, mods: pmod});
 
         return this
     }
