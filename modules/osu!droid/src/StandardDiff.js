@@ -2,6 +2,7 @@ const Beatmap = require('./Beatmap');
 const StandardDiffHitObject = require('./StandardDiffHitObject');
 const MapStats = require('./MapStats');
 const mods = require('./mods');
+const modes = require('./constants/modes');
 const object_types = require('./object_types');
 
 // (internal)
@@ -166,7 +167,7 @@ class StandardDiff {
         let singletap_threshold = this.singletap_threshold
             = params.singletap_threshold || this.singletap_threshold;
 
-        let mode = params.mode || "osu";
+        let mode = params.mode || modes.osu;
 
         // apply mods to the beatmap's stats
 
@@ -178,13 +179,11 @@ class StandardDiff {
         // variable
         let cs;
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 cs = map.cs;
                 break;
-            case "osu!":
-            case "osu":
-                cs = stats.cs
+            case modes.osu:
+                cs = stats.cs;
         }
 
         this._init_objects(this.objects, map, cs);

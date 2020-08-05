@@ -2,6 +2,7 @@ const https = require('https');
 const request = require('request');
 const apikey = process.env.OSU_API_KEY;
 const mods = require('./mods');
+const modes = require('./constants/modes');
 const object_types = require('./object_types');
 const Beatmap = require('./Beatmap');
 const MapStats = require('./MapStats');
@@ -416,7 +417,7 @@ class MapInfo {
      * @returns {string} The statistics based on applied option.
      */
     showStatistics(mods, option) {
-        let mapstat = new MapStats(this).calculate({mods: mods, mode: 'osu'});
+        let mapstat = new MapStats(this).calculate({mods: mods, mode: modes.osu});
         mapstat.cs = parseFloat(mapstat.cs.toFixed(2));
         mapstat.ar = parseFloat(mapstat.ar.toFixed(2));
         mapstat.od = parseFloat(mapstat.od.toFixed(2));

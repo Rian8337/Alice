@@ -1,4 +1,5 @@
 const mods = require('./mods');
+const modes = require('./constants/modes');
 
 /**
  * Holds general beatmap statistics for further modifications. 
@@ -80,7 +81,7 @@ class MapStats {
         if (params.mods) {
             this.mods = params.mods;
         }
-        let mode = params.mode || "osu";
+        let mode = params.mode || modes.osu;
         let stats = new MapStats(this);
         let od_ar_hp_multiplier = 1;
         if ((stats.droid_mods & mods.d) | (stats.pc_mods & mods.dt)) {
@@ -99,8 +100,7 @@ class MapStats {
             od_ar_hp_multiplier *= 0.5;
         }
         switch (mode) {
-            case "osu!droid":
-            case "droid": {
+            case modes.droid: {
                 // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
                 if (stats.droid_mods & mods.c) {
                     stats.speed_multiplier = 1.39;
@@ -173,8 +173,7 @@ class MapStats {
                 }
                 break
             }
-            case "osu!":
-            case "osu": {
+            case modes.osu: {
                 if (!(stats.pc_mods & mods.map_changing) && !stats.mods.includes("SU")) {
                     return stats;
                 }
