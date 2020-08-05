@@ -34,20 +34,24 @@ module.exports.run = (client, message, args) => {
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setDescription(`**Offender**: ${toreport} (${toreport.id})\n**Channel**: ${message.channel}\n**Reason**: ${reason}`);
 
-    if (message.attachments.first()) {
-        const attachment = message.attachments.first();
-        const url = attachment.url;
-        const length = url.length;
-        if (
-            url.indexOf("png", length - 3) === -1 &&
-            url.indexOf("jpg", length - 3) === -1 &&
-            url.indexOf("jpeg", length - 4) === -1
-        ) return message.channel.send("❎ **| Hey, please provide a valid screenshot!**");
-        report_embed.attachFiles([attachment]);
+    if (message.attachments.size > 0) {
+        const attachments = [];
+        for (const [, attachment] of message.attachments.entries()) {
+            const url = attachment.url;
+            const length = url.length;
+            if (
+                url.indexOf("png", length - 3) === -1 &&
+                url.indexOf("jpg", length - 3) === -1 &&
+                url.indexOf("jpeg", length - 4) === -1
+            ) return message.channel.send("❎ **| Hey, please provide a valid screenshot!**");
+            attachments.push(attachment);
+            if (attachments.length === 3) break;
+        }
+        report_embed.attachFiles(attachments);
     }
 
     let server_channel = message.guild.channels.cache.find(c => c.name === config.report_channel);
-    server_channel.send("<@&369108742077284353> <@&595667274707370024>", {embed: report_embed});
+    server_channel.send("", {embed: report_embed});
 
     const reply_embed = new MessageEmbed()
         .setAuthor("Report Summary")
@@ -63,7 +67,7 @@ module.exports.run = (client, message, args) => {
 
 module.exports.config = {
     name: "report",
-    description: "Reports a user for breaking rules.",
+    description: "Reports a user for breaking rules.\n\nYou can attach up to 3 screenshots as proof if needed.",
     usage: "report <user> <reason>",
     detail: "`user`: The user to report [UserResolvable (mention or user ID)]\n`reason`: Reason for reporting [String]",
     permission: "None"
