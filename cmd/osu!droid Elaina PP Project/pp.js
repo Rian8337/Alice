@@ -53,7 +53,7 @@ async function calculatePP(message, whitelist, embed, i, submitted, pplist, play
 		combo: play.combo,
 		acc_percent: play.accuracy,
 		miss: play.miss,
-		mode: "droid"
+		mode: osudroid.modes.droid
 	});
 	let pp = parseFloat(npp.total.toFixed(2));
 	let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;

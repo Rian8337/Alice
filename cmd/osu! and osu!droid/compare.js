@@ -142,7 +142,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             combo: combo,
             acc_percent: acc,
             miss: miss,
-            mode: "droid"
+            mode: osudroid.modes.droid
         });
 
         const pcpp = osudroid.ppv2({
@@ -150,7 +150,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             combo: combo,
             acc_percent: acc,
             miss: miss,
-            mode: "osu"
+            mode: osudroid.modes.osu
         });
 
         const ppline = parseFloat(npp.total.toFixed(2));

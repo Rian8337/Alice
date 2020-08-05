@@ -98,14 +98,14 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
                 combo: combo,
                 acc_percent: accuracy,
                 miss: miss,
-                mode: "droid"
+                mode: osudroid.modes.droid
             });
             let pcpp = osudroid.ppv2({
                 stars: star.pc_stars,
                 combo: combo,
                 acc_percent: accuracy,
                 miss: miss,
-                mode: "osu"
+                mode: osudroid.modes.osu
             });
             let dpp = parseFloat(npp.total.toFixed(2));
             let pp = parseFloat(pcpp.total.toFixed(2));
@@ -173,14 +173,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         combo: top_combo,
         acc_percent: top_accuracy,
         miss: top_miss,
-        mode: "droid"
+        mode: osudroid.modes.droid
     });
     let pcpp = osudroid.ppv2({
         stars: top_star.pc_stars,
         combo: top_combo,
         acc_percent: top_accuracy,
         miss: top_miss,
-        mode: "osu"
+        mode: osudroid.modes.osu
     });
     let dpp = parseFloat(npp.total.toFixed(2));
     let pp = parseFloat(pcpp.total.toFixed(2));

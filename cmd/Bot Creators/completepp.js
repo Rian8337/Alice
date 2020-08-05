@@ -49,7 +49,7 @@ async function calculatePP(ppentries, entry, cb) {
         combo: combo,
         acc_percent: acc_percent,
         miss: miss,
-        mode: "droid"
+        mode: osudroid.modes.droid
     });
     let playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
     let pp = parseFloat(npp.toString().split(" ")[0]);

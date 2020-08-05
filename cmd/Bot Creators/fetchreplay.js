@@ -86,7 +86,7 @@ module.exports.run = async (client, message, args, maindb) => {
     let _total = 0;
 
     for (const hit_object of hit_object_data) {
-        if (hit_object.result === 1) continue;
+        if (hit_object.result === osudroid.hitResult.RESULT_0) continue;
         const accuracy = hit_object.accuracy;
         hit_error_total += accuracy;
         if (accuracy >= 0) {
@@ -101,11 +101,11 @@ module.exports.run = async (client, message, args, maindb) => {
 
     let std_deviation = 0;
     for (const hit_object of hit_object_data)
-        if (hit_object.result !== 1) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+        if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
     
-    let unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
-    let max_error = count ? total / count : 0;
-    let min_error = _count ? _total / _count : 0;
+    const unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+    const max_error = count ? total / count : 0;
+    const min_error = _count ? _total / _count : 0;
 
     if (!beatmap) return message.channel.send(`✅ **| Successfully fetched replay.\n\nError: ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
 
@@ -117,14 +117,14 @@ module.exports.run = async (client, message, args, maindb) => {
 		combo: play.combo,
 		miss: play.miss,
 		acc_percent: play.accuracy,
-		mode: "droid"
+		mode: osudroid.modes.droid
 	});
 	let pcpp = osudroid.ppv2({
 		stars: star.pc_stars,
 		combo: play.combo,
 		miss: play.miss,
 		acc_percent: play.accuracy,
-		mode: "osu"
+		mode: osudroid.modes.osu
 	});
 	let ppline = parseFloat(npp.total.toFixed(2));
 	let pcppline = parseFloat(pcpp.total.toFixed(2));

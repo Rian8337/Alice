@@ -60,14 +60,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		combo: combo,
 		miss: missc,
 		acc_percent: acc,
-		mode: "droid"
+		mode: osudroid.modes.droid
 	});
 	let pcpp = osudroid.ppv2({
 		stars: star.pc_stars,
 		combo: combo,
 		miss: missc,
 		acc_percent: acc,
-		mode: "osu"
+		mode: osudroid.modes.osu
 	});
 	let ppline = parseFloat(npp.total.toFixed(2));
 	let pcppline = parseFloat(pcpp.total.toFixed(2));

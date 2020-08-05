@@ -514,14 +514,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: "droid"
+                        mode: osudroid.modes.droid
                     });
                     let pcpp = osudroid.ppv2({
                         stars: star.pc_stars,
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: "osu"
+                        mode: osudroid.modes.osu
                     });
                     let dpp = parseFloat(npp.total.toFixed(2));
                     let pp = parseFloat(pcpp.total.toFixed(2));
@@ -1045,14 +1045,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: "droid"
+                            mode: osudroid.modes.droid
                         });
                         let pcpp = osudroid.ppv2({
                             stars: star.pc_stars,
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: "osu"
+                            mode: osudroid.modes.osu
                         });
                         let dpp = parseFloat(npp.total.toFixed(2));
                         let pp = parseFloat(pcpp.total.toFixed(2));

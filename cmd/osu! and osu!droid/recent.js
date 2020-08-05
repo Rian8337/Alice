@@ -53,14 +53,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		combo: combo,
 		acc_percent: acc,
 		miss: miss,
-		mode: "droid"
+		mode: osudroid.modes.droid
 	});
 	let pcpp = osudroid.ppv2({
 		stars: star.pc_stars,
 		combo: combo,
 		acc_percent: acc,
 		miss: miss,
-		mode: "osu"
+		mode: osudroid.modes.osu
 	});
 	let dpp = parseFloat(npp.total.toFixed(2));
 	let pp = parseFloat(pcpp.total.toFixed(2));
@@ -90,14 +90,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 			combo: mapinfo.max_combo,
 			acc_percent: if_fc_acc,
 			miss: 0,
-			mode: "droid"
+			mode: osudroid.modes.droid
 		});
 		let if_fc_pp = osudroid.ppv2({
 			stars: star.pc_stars,
 			combo: mapinfo.max_combo,
 			acc_percent: if_fc_acc,
 			miss: 0,
-			mode: "osu"
+			mode: osudroid.modes.osu
 		});
 		let dline = parseFloat(if_fc_dpp.total.toFixed(2));
 		let pline = parseFloat(if_fc_pp.total.toFixed(2));
