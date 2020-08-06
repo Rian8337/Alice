@@ -61,10 +61,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res || res.isProcessed) return message.channel.send("❎ **| I'm sorry, this user does not have an active name change request!**");
+                let cooldown = res.cooldown;
+                let old_name = res.current_username;
+                let new_name = res.new_username;
+                let prev_names = res.previous_usernames;
                 let user = guild.member(res.discordid);
                 if (!user) {
                     updateVal = {
                         $set: {
+                            cooldown: cooldown - 86400 * 30,
                             new_username: null,
                             attachment: null,
                             isProcessed: true
@@ -80,11 +85,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     })
                     return
                 }
-
-                let cooldown = res.cooldown;
-                let old_name = res.current_username;
-                let new_name = res.new_username;
-                let prev_names = res.previous_usernames;
 
                 let url = encodeURI(`http://ops.dgsrz.com/api/rename.php?apiKey=${droidapikey}&username=${old_name}&newname=${new_name}`);
                 let content = '';
