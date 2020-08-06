@@ -20,7 +20,7 @@ function processEmbed(res, page, footer, index) {
     
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@386742340968120321>)`)
+        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation Date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@132783516176875520> and <@386742340968120321>)`)
     }
     
     return embed
@@ -114,7 +114,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 embed.setTitle("Request Details")
                                     .setColor(16711711)
-                                    .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
+                                    .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
 
                                 user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error)
                             });
@@ -154,7 +154,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             embed.setTitle("Request Details")
                                 .setColor(2483712)
-                                .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
+                                .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
 
                             user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error)
                         })
@@ -206,7 +206,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                     embed.setTitle("Request Details")
                         .setColor(16711711)
-                        .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: ${reason}`);
+                        .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: ${reason}`);
 
                     user.send(`❎ **| Hey, I would like to inform you that your name change request was denied due to \`${reason}\`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**`, {embed: embed}).catch(console.error)
                 })
@@ -297,9 +297,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
             if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach a screenshot of your osu!droid main menu with your account logged in!**");
             if (message.attachments.size > 1) return message.channel.send("❎ **| Hey, please attach only one screenshot of your osu!droid main menu with your account logged in!**");
-            let attachment = message.attachments.first();
-            let url = attachment.url;
-            let length = url.length;
+            const attachment = message.attachments.first();
+            const url = attachment.url;
+            const length = url.length;
             if (
                 url.indexOf("png", length - 3) === -1 &&
                 url.indexOf("jpg", length - 3) === -1 &&
@@ -312,8 +312,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                let uid = res.uid;
-                let username = res.username;
+                const uid = res.uid;
+                const username = res.username;
 
                 query = {uid: uid};
                 namedb.findOne(query, async (err, nameres) => {
