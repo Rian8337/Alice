@@ -33,7 +33,7 @@ class Slider {
          * @type {number}
          * @description The repetition amount of the slider. Note that 1 repetition means no repeats (1 loop).
          */
-        this.repetitions = values.repetitions || 1
+        this.repetitions = values.repetitions || 1;
     }
 
     /**

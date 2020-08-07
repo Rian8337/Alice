@@ -3,6 +3,7 @@ const Accuracy = require('./Accuracy');
 const MapStats = require('./MapStats');
 const StandardDiff = require('./StandardDiff');
 const mods = require('./mods');
+const modes = require('./constants/modes');
 
 /**
  * A performance points calculator that calculates performance points for osu!standard gamemode.
@@ -86,7 +87,7 @@ class MapPP {
         let max_combo, nsliders, ncircles, nobjects, base_ar, base_od;
         let mod;
         let aim_stars, speed_stars;
-        let mode = params.mode || "osu";
+        let mode = params.mode || modes.osu;
 
         if (stars) {
             map = stars.map;
@@ -161,14 +162,12 @@ class MapPP {
         let nobjects_over_2k = nobjects / 2000.0;
         let length_bonus = 0.95 + 0.4 * Math.min(1.0, nobjects_over_2k);
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 length_bonus = 1.650668 +
                     (0.4845796 - 1.650668) /
                     (1 + Math.pow(nobjects / 817.9306, 1.147469));
                 break;
-            case "osu!":
-            case "osu":
+            case modes.osu:
                 if (nobjects > 2000) {
                     length_bonus += Math.log10(nobjects_over_2k) * 0.5;
                 }
@@ -183,7 +182,7 @@ class MapPP {
         });
 
         // droid's map stats are pre-calculated so there is no need to calculate again
-        if (mode === "osu!" || mode === "osu") mapstats = mapstats.calculate({mode: mode});
+        if (mode === modes.osu) mapstats = mapstats.calculate({mode: mode});
         mod = mods.modbits_from_string(mod);
 
         this.computed_accuracy = new Accuracy({
@@ -284,8 +283,7 @@ class MapPP {
 
         let acc;
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 // drastically change acc calculation to fit droid meta
                 acc = (
                     Math.pow(1.4, mapstats.od) *
@@ -293,12 +291,11 @@ class MapPP {
                     Math.pow(real_acc, 12.0) * 10
                 );
                 break;
-            case "osu!":
-            case "osu":
+            case modes.osu:
                 acc = (
                     Math.pow(1.52163, mapstats.od) *
                     Math.pow(real_acc, 24.0) * 2.83
-                )
+                );
         }
 
         acc *= Math.min(1.15, Math.pow(ncircles / 1000.0, 0.3));
@@ -314,14 +311,12 @@ class MapPP {
         // total pp
         let final_multiplier;
         switch (mode) {
-            case "osu!droid":
-            case "droid":
+            case modes.droid:
                 // slight buff to final value
                 final_multiplier = 1.15;
                 break;
-            case "osu!":
-            case "osu":
-                final_multiplier = 1.12
+            case modes.osu:
+                final_multiplier = 1.12;
         }
         if (mod & mods.nf) final_multiplier *= 0.90;
         if (mod & mods.so) final_multiplier *= 0.95;
@@ -348,7 +343,7 @@ class MapPP {
             1.0 / 1.1
         ) * final_multiplier;
 
-        if (mode === "osu!droid" || mode === "droid") {
+        if (mode === modes.droid) {
             this.total *= extreme_penalty;
         }
 

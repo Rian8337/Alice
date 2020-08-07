@@ -12,6 +12,7 @@ class CursorData {
      * @param {number[]} values.time The time during which the cursor is active in milliseconds.
      * @param {number[]} values.x The x coordinate of the cursor in osupixels.
      * @param {number[]} values.y The y coordinate of the cursor in osupixels.
+     * @param {number[]} values.id The movement bitwise type of the cursor instance.
      */
     constructor(values = {}) {
         /**
@@ -37,6 +38,12 @@ class CursorData {
          * @description The y coordinate of the cursor in osupixels.
          */
         this.y = values.y;
+
+        /**
+         * @type {number[]}
+         * @description The movement bitwise type of the cursor instance.
+         */
+        this.id = values.id;
     }
 }
 

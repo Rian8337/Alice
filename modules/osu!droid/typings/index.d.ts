@@ -312,7 +312,7 @@ declare module "osu-droid" {
          * @param {number[]} values.time The time during which the cursor is active in milliseconds.
          * @param {number[]} values.x The x coordinate of the cursor in osupixels.
          * @param {number[]} values.y The y coordinate of the cursor in osupixels.
-         * @param {movementType[]} values.id The movement bitwise type of the cursor instance
+         * @param {movementType[]} values.id The movement bitwise type of the cursor instance.
          */
         constructor(values: {
             size: number,

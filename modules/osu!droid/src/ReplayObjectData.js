@@ -29,7 +29,7 @@ class ReplayObjectData {
          * @type {number}
          * @description The bitwise result of the hitobject (`4` is 300, `3` is 100, `2` is 50, `1` is miss).
          */
-        this.result = values.result
+        this.result = values.result;
     }
 }
 

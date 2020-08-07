@@ -246,7 +246,7 @@ class StandardDiff {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
             " aim, " + this.speed.toFixed(2) + " speed)"
-        )
+        );
     }
 
     /**

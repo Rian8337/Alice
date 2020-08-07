@@ -158,7 +158,7 @@ class ReplayData {
          * @type {ReplayObjectData[]}
          * @description The hit object data of the replay.
          */
-        this.hit_object_data = values.hit_object_data
+        this.hit_object_data = values.hit_object_data;
     }
 }
 

@@ -1,6 +1,7 @@
 const MapPP = require('./MapPP');
 const MapStars = require('./MapStars');
 const StandardDiff = require('./StandardDiff');
+const modes = require('./constants/modes');
 
 /**
  * Calculates the performance points of given mode and play result.
@@ -26,10 +27,12 @@ function ppv2(params) {
     if (!params.stars) {
         let star = new MapStars().calculate(params);
         switch (params.mode) {
-            case "osu!droid":
-            case "droid": params.stars = star.droid_stars; break;
-            case "osu!":
-            case "osu": params.stars = star.pc_stars; break;
+            case modes.droid:
+                params.stars = star.droid_stars;
+                break;
+            case modes.osu:
+                params.stars = star.pc_stars;
+                break;
             default: throw new TypeError("Mode is not supported")
         }
     }

@@ -13,7 +13,7 @@ class StandardDiffHitObject {
          * @description The underlying hitobject.
          */
         this.obj = obj;
-        this.reset()
+        this.reset();
     }
 
     /**
@@ -63,7 +63,7 @@ class StandardDiffHitObject {
      * @returns {string} The string representation of the class.
      */
     toString() {
-        return `Strains: [${this.strains[0].toFixed(2)}, ${this.strains[1].toFixed(2)}], normpos: [${this.normpos[0].toFixed(2)}, ${this.normpos[1].toFixed(2)}], is_single: ${this.is_single}`
+        return `Strains: [${this.strains[0].toFixed(2)}, ${this.strains[1].toFixed(2)}], normpos: [${this.normpos[0].toFixed(2)}, ${this.normpos[1].toFixed(2)}], is_single: ${this.is_single}`;
     }
 }
 
