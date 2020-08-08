@@ -1,4 +1,6 @@
 const osudroid = require('osu-droid');
+const { Client } = require('discord.js');
+const { Db } = require('mongodb');
 
 function equalDistribution(num) {
     const dist_list = [];
@@ -12,66 +14,10 @@ function equalDistribution(num) {
         let index = Math.floor(Math.random() * dist_list.length);
         while (index_list.includes(index)) index = Math.floor(Math.random() * dist_list.length);
         index_list.push(index);
-        ++dist_list[index]
+        ++dist_list[index];
     }
 
-    return dist_list
-}
-
-function fetchMembers(pointdb, query) {
-    return new Promise(resolve => {
-        pointdb.find(query, {projection: {_id: 0, discordid: 1, alicecoins: 1}}).toArray((err, res) => {
-            if (err) return resolve(null);
-            resolve(res)
-        })
-    })
-}
-
-function fetchBindPool(binddb, query) {
-    return new Promise(resolve => {
-        binddb.findOne(query, (err, res) => {
-            if (err) return resolve(null);
-            resolve(res.previous_bind ? res.previous_bind : [res.uid])
-        })
-    })
-}
-
-function kickMember(binddb, clandb, clanquery, bindquery, clanupdateVal) {
-    return new Promise(resolve => {
-        const curtime = Math.floor(Date.now() / 1000);
-        clandb.updateOne(clanquery, clanupdateVal, err => {
-            if (err) return resolve(null);
-            const updateVal = {
-                $set: {
-                    clan: "",
-                    joincooldown: curtime + 86400 * 3,
-                    oldjoincooldown: curtime + 86400 * 14
-                }
-            };
-            binddb.updateOne(bindquery, updateVal, err => {
-                if (err) return resolve(null);
-                resolve(true)
-            })
-        })
-    })
-}
-
-function deductCoins(pointdb, query, updateVal) {
-    return new Promise(resolve => {
-        pointdb.updateOne(query, updateVal, err => {
-            if (err) return resolve(null);
-            resolve(true)
-        })
-    })
-}
-
-function disbandClan(clandb, query) {
-    return new Promise(resolve => {
-        clandb.deleteOne(query, err => {
-            if (err) return resolve(null);
-            resolve(true)
-        })
-    })
+    return dist_list;
 }
 
 function updateClanDB(clandb, query, updateVal) {
@@ -83,6 +29,11 @@ function updateClanDB(clandb, query, updateVal) {
     })
 }
 
+/**
+ * @param {Client} client 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, maindb, alicedb) => {
     const guild = client.guilds.cache.get("316545691545501706");
     const role = guild.roles.cache.find(r => r.name === 'Clans');
@@ -107,13 +58,13 @@ module.exports.run = (client, maindb, alicedb) => {
 
             for (const member of member_list) query.discordid.$in.push(member.id);
             console.log("Fetching clan members coins entry");
-            const members_points = await fetchMembers(pointdb, query);
+            const members_points = await pointdb.find(query, {projection: {_id: 0, discordid: 1, alicecoins: 1}}).toArray();
 
             for await (const member of member_list) {
                 console.log(member);
                 if (!member_list.find(m => m.id === member.id)) continue;
                 console.log("Fetching bind pool of uid", member.uid);
-                const bind_pool = await fetchBindPool(binddb, {discordid: member.id});
+                const bind_pool = await binddb.findOne({discordid: member.id});
                 let rank = Number.POSITIVE_INFINITY;
                 
                 console.log("Retrieving rank from bind pool");
@@ -137,35 +88,46 @@ module.exports.run = (client, maindb, alicedb) => {
                         let member_index = Math.floor(Math.random() * member_list.length);
                         while (member_list[member_index].id === leader) member_index = Math.floor(Math.random() * member_list.length);
                         const kicked = member_list[member_index];
-                        if (clanrole) guild.member(kicked.id).roles.remove([role, clanrole], "Clan disbanded")
+                        if (clanrole) guild.member(kicked.id).roles.remove([role, clanrole], "Clan disbanded");
                         member_list.splice(member_index, 1);
-                        await kickMember(binddb, clandb, {name: clan.name}, {discordid: kicked.id}, {$set: {member_list: member_list}});
+                        await clandb.updateOne({name: clan.name}, {$set: {member_list: member_list}});
+                        await binddb.updateOne({discordid: kicked.id}, {$set: {
+                            clan: "",
+                            joincooldown: curtime + 86400 * 3,
+                            oldjoincooldown: curtime + 86400 * 14
+                        }});
                     }
                     // if the clan only consists of the leader himself
                     else if (member_list.length === 1) {
                         // if clan power is less than 50, disband the clan
-                        if (clan.power < 100) await disbandClan(clandb, {name: clan});
+                        if (clan.power < 100) await clandb.deleteOne({name: clan.name});
                         // otherwise deduct clan's power by 100
-                        else await updateClanDB(clandb, {name: clan}, {$inc: {power: -100}})
+                        else await clandb.updateOne({name: clan}, {$inc: {power: -100}});
                     }
+                    // if there are other members
                     else {
                         if (clanrole) guild.member(member.id).roles.remove([role, clanrole], "Clan disbanded");
                         const member_index = member_list.findIndex(m => m.id === member.id);
                         member_list.splice(member_index, 1);
-                        await kickMember(binddb, clandb, {name: clan}, {discordid: member.id}, {$set: {member_list: member_list}});
+                        await clandb.updateOne({name: clan.name}, {$set: {member_list: member_list}});
+                        await binddb.updateOne({discordid: member.id}, {$set: {
+                            clan: "",
+                            joincooldown: curtime + 86400 * 3,
+                            oldjoincooldown: curtime + 86400 * 14
+                        }});
                     }
                 }
                 // clan member can pay upkeep
                else {
                     console.log(`Uid ${member.uid} can pay upkeep`);
                     ++paid_count;
-                    await deductCoins(pointdb, {discordid: member.id}, {$inc: {alicecoins: -upkeep}});
-                    console.log(`Successfully deducted user's coins. The user now has ${(point_entry.alicecoins - upkeep).toLocaleString()} Alice coins`)
+                    await pointdb.updateOne({discordid: member.id}, {$inc: {alicecoins: -upkeep}});
+                    console.log(`Successfully deducted user's coins. The user now has ${(point_entry.alicecoins - upkeep).toLocaleString()} Alice coins`);
                }
             }
-            await updateClanDB(clandb, {name: clan.name}, {$inc: {weeklyfee: 86400 * 7}});
+            await clandb.updateOne({name: clan.name}, {$inc: {weeklyfee: 86400 * 7}});
             client.users.fetch(leader).then(u => u.send(`❗**| Hey, your clan upkeep has been picked up from your members! ${paid_count} member(s) have successfully paid their upkeep. A total of ${kicked_count} member(s) were kicked. Your next clan upkeep will be picked in ${new Date((clan.weeklyfee + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
-            console.log(`Done checking ${clan.name} clan`)
+            console.log(`Done checking ${clan.name} clan`);
         }
         console.log("Done checking clans")
     })
