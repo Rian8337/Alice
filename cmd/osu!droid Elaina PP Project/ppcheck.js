@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const cd = new Set();
 const config = require('../../config.json');
+const { Db } = require('mongodb');
 
 function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
 	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
@@ -35,25 +36,44 @@ function editpp(page, pp, ppentry, discordid, uid, username, footer, index, role
 	return embed
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	let ufind = message.author.id;
 	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	let page = 1;
+	let uid = 0;
+	let query = {discordid: ufind};
+
 	if (args[0]) {
-		if (isNaN(args[0]) || parseInt(args[0]) > 15) ufind = args[0];
-		else if (parseInt(args[0]) <= 0) page = 1;
-		else page = parseInt(args[0]);
-		ufind = ufind.replace('<@!', '');
-		ufind = ufind.replace('<@', '');
-		ufind = ufind.replace('>', '');
+		if (!isNaN(args[0])) {
+			if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) page = parseInt(args[0]);
+			else {
+				if (args[0].length !== 18) {
+					uid = parseInt(args[0]);
+					if (uid >= 500000) return message.channel.send("❎ **| Hey, that uid is too big!**");
+					query = {previous_bind: {$all: [uid.toString()]}};
+				}
+				else {
+					ufind = args[0].replace(/[<@!>]/g, "");
+					if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+					query = {discordid: ufind};
+				}
+			}
+		}
 	}
+
 	if (args[1]) {
 		if (isNaN(args[1]) || parseInt(args[1]) > 15 || parseInt(args[1]) <= 0) page = 1;
 		else page = parseInt(args[1]);
 	}
-	let binddb = maindb.collection("userbind");
-	let query = { discordid: ufind };
+
+	const binddb = maindb.collection("userbind");
 	binddb.findOne(query, function(err, res) {
 		if (err) {
 			console.log(err);
@@ -62,22 +82,17 @@ module.exports.run = (client, message, args, maindb) => {
 		if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-			return
+			return;
 		}
-		let uid = res.uid;
+		uid = res.uid;
 		let username = res.username;
 		let discordid = res.discordid;
 		let pp = 0;
 		let ppentry = [];
 		if (res.pptotal) pp = res.pptotal.toFixed(2);
 		if (res.pp) ppentry = res.pp;
-		let rolecheck;
-		try {
-			rolecheck = message.member.roles.color.hexColor
-		} catch (e) {
-			rolecheck = "#000000"
-		}
-		let footer = config.avatar_list;
+		let rolecheck = message.member.roles ? message.member.roles.color.hexColor : "#000000";
+		const footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
 		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
 
@@ -143,7 +158,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
 	name: "ppcheck",
 	description: "Checks a user's droid pp profile.",
-	usage: "ppcheck [page/user] [page]",
-	detail: "`user`: The user to check [UserResolvable (mention or user ID)]\n`page`: Page to check from 1 to 15. If specified, the first argument will be treated as `user` [Integer]",
+	usage: "ppcheck [page/user/uid] [page]",
+	detail: "`page`: Page to check from 1 to 15. If the second argument is specified, the first argument will be treated as `user` or `uid` [Integer]\n`uid`: The uid to check [Integer]\n`user`: The user to check [UserResolvable (mention or user ID)]",
 	permission: "None"
 };
