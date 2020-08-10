@@ -60,7 +60,7 @@ module.exports.run = (client, message, args, maindb) => {
 					query = {previous_bind: {$all: [uid.toString()]}};
 				}
 				else {
-					ufind = args[0].replace(/[<@!>]/g, "");
+					ufind = args[0].replace("<@!", "").replace("<@", "").replace(">");
 					if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
 					query = {discordid: ufind};
 				}
