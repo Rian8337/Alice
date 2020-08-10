@@ -64,7 +64,8 @@ module.exports.run = (client, maindb, alicedb) => {
                 console.log(member);
                 if (!member_list.find(m => m.id === member.id)) continue;
                 console.log("Fetching bind pool of uid", member.uid);
-                const bind_pool = await binddb.findOne({discordid: member.id});
+                const bind_fetch = await binddb.findOne({discordid: member.id});
+                const bind_pool = bind_fetch.previous_bind ? bind_fetch.previous_bind : [bind_fetch.uid];
                 let rank = Number.POSITIVE_INFINITY;
                 
                 console.log("Retrieving rank from bind pool");
@@ -129,7 +130,7 @@ module.exports.run = (client, maindb, alicedb) => {
             client.users.fetch(leader).then(u => u.send(`❗**| Hey, your clan upkeep has been picked up from your members! ${paid_count} member(s) have successfully paid their upkeep. A total of ${kicked_count} member(s) were kicked. Your next clan upkeep will be picked in ${new Date((clan.weeklyfee + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
             console.log(`Done checking ${clan.name} clan`);
         }
-        console.log("Done checking clans")
+        console.log("Done checking clans");
     })
 };
 
