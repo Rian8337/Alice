@@ -91,7 +91,7 @@ module.exports.run = (client, message, args, maindb) => {
 		let ppentry = [];
 		if (res.pptotal) pp = res.pptotal.toFixed(2);
 		if (res.pp) ppentry = res.pp;
-		let rolecheck = message.member.roles ? message.member.roles.color.hexColor : "#000000";
+		let rolecheck = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
 		const footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
 		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
