@@ -1,6 +1,11 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
     let user = message.author;
     let rolecheck;
@@ -21,7 +26,7 @@ module.exports.run = async (client, message, args) => {
         user = await client.users.fetch(user);
         if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**")
     }
-    embed.setDescription(`**${user.tag}**`).setImage(user.avatarURL({dynamic: true}));
+    embed.setDescription(`**${user.tag}**`).setImage(user.avatarURL({dynamic: true, size: 512}));
 
     await message.channel.send({embed: embed})
 };
