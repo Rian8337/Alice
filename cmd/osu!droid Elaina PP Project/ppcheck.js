@@ -51,19 +51,17 @@ module.exports.run = (client, message, args, maindb) => {
 	let query = {discordid: ufind};
 
 	if (args[0]) {
-		if (!isNaN(args[0])) {
-			if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) page = parseInt(args[0]);
+		if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) page = parseInt(args[0]);
+		else {
+			if (args[0].length < 18) {
+				uid = parseInt(args[0]);
+				if (uid >= 500000) return message.channel.send("❎ **| Hey, that uid is too big!**");
+				query = {previous_bind: {$all: [uid.toString()]}};
+			}
 			else {
-				if (args[0].length !== 18) {
-					uid = parseInt(args[0]);
-					if (uid >= 500000) return message.channel.send("❎ **| Hey, that uid is too big!**");
-					query = {previous_bind: {$all: [uid.toString()]}};
-				}
-				else {
-					ufind = args[0].replace("<@!", "").replace("<@", "").replace(">");
-					if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
-					query = {discordid: ufind};
-				}
+				ufind = args[0].replace(/[<@!>]/g, "");
+				if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+				query = {discordid: ufind};
 			}
 		}
 	}
@@ -91,7 +89,7 @@ module.exports.run = (client, message, args, maindb) => {
 		let ppentry = [];
 		if (res.pptotal) pp = res.pptotal.toFixed(2);
 		if (res.pp) ppentry = res.pp;
-		const rolecheck = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
+		let rolecheck = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
 		const footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
 		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
