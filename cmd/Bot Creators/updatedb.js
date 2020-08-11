@@ -14,7 +14,7 @@ function sleep(seconds) {
 
 function fetchLeaderboard(hash) {
     return new Promise(resolve => {
-        const url = `http://ops.dgsrz.com/api/scoresearchv2?apiKey=${droidapikey}&hash=${hash}&page=0&order=score`;
+        const url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&hash=${hash}&page=0&order=score`;
         request(url, (err, response, data) => {
             if (err || !data) {
                 console.log("No map found");
