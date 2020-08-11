@@ -1,39 +1,26 @@
-const Discord = require('discord.js');
-const cd = new Set();
+const Discord = require("discord.js");
 const config = require('../../config.json');
-const { Db } = require('mongodb');
+const { Db } = require("mongodb");
+const cd = new Set();
 
-function editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck) {
-	let site = "[PP Profile](https://ppboard.herokuapp.com/profile?uid=" + uid + ")";
-	let mirror = "[Mirror](https://droidpp.glitch.me/profile?uid=" + uid + ")";
-	let embed = new Discord.MessageEmbed()
-		.setDescription('**PP Profile for <@' + discordid + '> (' + username + ') [Page ' + page + '/15]**\nTotal PP: **' + pp + " pp**\n" + site + " - " + mirror)
-		.setColor(rolecheck)
-		.setFooter("Alice Synthesis Thirty", footer[index]);
+function generateEmbed(res, page, footer, index, color) {
+    const ppentry = res.pp ? res.pp : [];
+    const pptotal = res.pptotal ? res.pptotal : 0;
+    const embed = new Discord.MessageEmbed()
+        .setColor(color)
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(pp.length / 20)}`, footer[index])
+        .setDescription(`PP Profile for <@${res.discordid}> (${res.username})\nTotal PP: **${pptotal} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidpp.glitch.me/profile?uid=${res.uid})`);
 
-	for (let x = 5 * (page - 1); x < 5 + 5 * (page - 1); x++) {
-		if (ppentry[x]) {
-			let combo = ppentry[x][3];
-			if (!combo) combo = '0x';
-			combo = combo.toString();
-			if (combo.indexOf("x") == -1) combo = combo + "x";
-			else if (combo.indexOf(" ") != -1) combo = combo.replace(" ", "");
+    for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
+        const pp = ppentry[i];
+        if (pp) {
+            embed.addField(`${i+1}. ${pp.title}${pp.mods ? ` +${pp.mods}` : ""}`, `${pp.combo}x | ${pp.accuracy}% | ${pp.miss}❌ | __${pp.pp} pp__ (Net pp: ${pp.pp * Math.pow(0.95, i)} pp)`);
+        } else {
+            embed.addField(`${i+1}. -`, "-");
+        }
+    }
 
-			let acc = ppentry[x][4];
-			if (!acc) acc = '100.00%';
-			acc = acc.toString();
-			if (acc.indexOf('\r') != -1) acc = acc.replace(" ", "").replace("\r", "");
-			else if (acc.indexOf("%") != -1) acc = parseFloat(acc.trimRight()).toFixed(2) + "%";
-			else acc = acc + "%";
-
-			let miss = ppentry[x][5];
-			if (!miss) miss = '0 ❌';
-			else miss = miss.toString() + " ❌";
-			embed.addField((x+1) + '. ' + ppentry[x][1], combo + ' | ' + acc + " | " + miss + " | __" + ppentry[x][2] + ' pp__ (Net pp: ' + (ppentry[x][2] * Math.pow(0.95, x)).toFixed(2) + ' pp)')
-		}
-		else embed.addField((x+1) + '. -', '-')
-	}
-	return embed
+    return embed;
 }
 
 /**
@@ -43,14 +30,19 @@ function editpp(page, pp, ppentry, discordid, uid, username, footer, index, role
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-	let page = 1;
-	let uid = 0;
-	let query = {discordid: ufind};
+    if (message.channel.type !== "text") {
+        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    }
 
-	if (args[0]) {
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    }
+
+    let page = 1;
+    let uid = 0;
+    let query = {discordid: message.author.id};
+
+    if (args[0]) {
 		if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) page = parseInt(args[0]);
 		else {
 			if (args[0].length < 18) {
@@ -59,98 +51,91 @@ module.exports.run = (client, message, args, maindb) => {
 				query = {previous_bind: {$all: [uid.toString()]}};
 			}
 			else {
-				ufind = args[0].replace(/[<@!>]/g, "");
+				const ufind = args[0].replace(/[<@!>]/g, "");
 				if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
 				query = {discordid: ufind};
 			}
 		}
-	}
-
-	if (args[1]) {
+    }
+    
+    if (args[1]) {
 		if (isNaN(args[1]) || parseInt(args[1]) > 15 || parseInt(args[1]) <= 0) page = 1;
 		else page = parseInt(args[1]);
 	}
 
-	const binddb = maindb.collection("userbind");
-	binddb.findOne(query, function(err, res) {
-		if (err) {
+    const binddb = maindb.collection("userbind");
+    binddb.findOne(query, (err, res) => {
+        if (err) {
 			console.log(err);
 			return message.channel.send("Error: Empty database response. Please try again!");
-		}
-		if (!res) {
+        }
+        if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 			return;
-		}
-		uid = res.uid;
-		let username = res.username;
-		let discordid = res.discordid;
-		let pp = 0;
-		let ppentry = [];
-		if (res.pptotal) pp = res.pptotal.toFixed(2);
-		if (res.pp) ppentry = res.pp;
-		let rolecheck = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
-		const footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
+        } 
+        const footer = config.avatar_list;
+        const index = Math.floor(Math.random() * footer.length);
+        const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
 
-		message.channel.send({embed: embed}).then(msg => {
-			msg.react("⏮️").then(() => {
+        let embed = generateEmbed(res, page, footer, index, color);
+        const max_page = Math.ceil(res.pp.length / 5);
+        message.channel.send({embed: embed}).then(msg => {
+            msg.react("⏮️").then(() => {
 				msg.react("⬅️").then(() => {
 					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(console.error)
-					})
-				})
-			});
-
-			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+						msg.react("⏭️").catch(console.error);
+					});
+				});
+            });
+            
+            let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
 			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
 			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
-
-			backward.on('collect', () => {
+            let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+            
+            backward.on('collect', () => {
 				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 1;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				embed = generateEmbed(res, page, footer, index, color);
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			back.on('collect', () => {
-				if (page === 1) page = 15;
+				if (page === 1) page = max_page;
 				else page--;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				embed = generateEmbed(res, page, footer, index, color);
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			next.on('collect', () => {
-				if (page === 15) page = 1;
+				if (page === max_page) page = 1;
 				else page++;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				embed = generateEmbed(res, page, footer, index, color);
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			forward.on('collect', () => {
-				if (page === 15) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = 15;
+				if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				else page = max_page;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(page, pp, ppentry, discordid, uid, username, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				embed = generateEmbed(res, page, footer, index, color);
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			backward.on("end", () => {
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-			})
-		});
-		cd.add(message.author.id);
-		setTimeout(() => {
-			cd.delete(message.author.id)
-		}, 10000)
-
-	})
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+            });
+        });
+        cd.add(message.author.id);
+        setTimeout(() => {
+            cd.delete(message.author.id)
+        }, 10000);
+    });
 };
 
 module.exports.config = {
