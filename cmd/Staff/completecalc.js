@@ -213,7 +213,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         continue;
                     }
                     const mods = osudroid.mods.droid_to_PC(entry[6]);
-                    const playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
                     const acc_percent = parseFloat(entry[7]) / 1000;
                     const combo = parseInt(entry[4]);
                     const miss = parseInt(entry[8]);
@@ -226,14 +225,16 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
-                    if (!isNaN(pp)) ppentries.push([
-                        entry[11],
-                        playinfo,
-                        pp,
-                        `${combo}x`,
-                        `${acc_percent}%`,
-                        miss.toString()
-                    ]);
+                    if (!isNaN(pp)) ppentries.push({
+                        hash: entry[11],
+                        title: mapinfo.full_title,
+                        mods: mods,
+                        pp: pp,
+                        combo: combo,
+                        accuracy: acc_percent,
+                        miss: miss,
+                        scoreID: parseInt(entry[0])
+                    });
                     ++playc;
                 }
 

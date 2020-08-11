@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const request = require('request');
 const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function test(uid, page, cb) {
     console.log("Current page: " + page);
@@ -31,7 +32,7 @@ async function calculatePP(ppentries, entry, cb) {
         console.log("Map not found");
         return cb()
     }
-    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
+    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
         console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
         return cb()
     }
@@ -49,15 +50,30 @@ async function calculatePP(ppentries, entry, cb) {
         combo: combo,
         acc_percent: acc_percent,
         miss: miss,
-        mode: osudroid.modes.droid
+        mode: "droid"
     });
-    let playinfo = `${mapinfo.full_title}${mods ? ` +${mods}` : ""}`;
+    
     let pp = parseFloat(npp.toString().split(" ")[0]);
-    let ppentry = [entry[11], playinfo, pp, combo.toString() + "x", acc_percent.toString() + "%", miss.toString()];
+    let ppentry = {
+        hash: entry[11],
+        title: mapinfo.full_title,
+        pp: pp,
+        mods: mods,
+        accuracy: acc_percent,
+        combo: combo,
+        miss: miss,
+        score_id: parseInt(entry[0])
+    };
     if (!isNaN(pp)) ppentries.push(ppentry);
     cb()
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
@@ -70,7 +86,7 @@ module.exports.run = (client, message, args, maindb) => {
     let binddb = maindb.collection("userbind");
     let query = { discordid: ufind };
 	binddb.findOne(query, function(err, userres) {
-        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let pplist = [];
         if (userres.pp) pplist = userres.pp;

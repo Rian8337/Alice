@@ -1,218 +1,171 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 const cd = new Set();
 
-function scanWhitelist(whitelist, hash) {
-	return new Promise(resolve => {
-		whitelist.findOne({hashid: hash}, (err, res) => {
-			if (err) {
-				console.log(err);
-				return resolve(null)
-			}
-			resolve(!!res)
-		})
-	})
-}
-
-async function calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, cb) {
-	if (!playentry[i]) return cb(false, false, true);
-	let play = playentry[i];
-	const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
-	if (mapinfo.error) {
-		message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
-		return cb(false, true)
-	}
-	if (!mapinfo.title) {
-		message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-		return cb(false, false)
-	}
-	if (!mapinfo.objects) {
-		message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-		return cb(false, false)
-	}
-	if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-		let isWhitelist = await scanWhitelist(whitelist, mapinfo.hash);
-		if (isWhitelist === null) {
-			message.channel.send("❎ **| I'm sorry, I'm having problem receiving response from database. Please try again!**");
-			return cb(true, false)
-		}
-		if (!isWhitelist) {
-			message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
-			return cb(false, false)
-		}	
-	}
-	if (!mapinfo.osu_file) {
-		message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-		return cb(false, false)
-	}
-	let mod = play.mod;
-	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-	let npp = osudroid.ppv2({
-		stars: star.droid_stars,
-		combo: play.combo,
-		acc_percent: play.accuracy,
-		miss: play.miss,
-		mode: osudroid.modes.droid
-	});
-	let pp = parseFloat(npp.total.toFixed(2));
-	let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
-	let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
-	if (isNaN(pp)) {
-		message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
-		return cb()
-	}
-	++playc;
-	let dup = false;
-	for (let i in pplist) {
-		if (ppentry[0] === pplist[i][0]) {
-			pplist[i] = ppentry;
-			dup = true;
-			break
-		}
-	}
-	if (!dup) pplist.push(ppentry);
-	pplist.sort(function(a, b) {
-		return b[2] - a[2]
-	});
-	if (pplist.length > 75) pplist.splice(75);
-	if (dup) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
-	else {
-		let x = 0;
-		for (x; x < pplist.length; x++) {
-			if (!pplist[x][1].includes(playinfo)) continue;
-			embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
-			break
-		}
-		if (x === pplist.length) embed.addField(`${submitted}. ${playinfo}`, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
-	}
-	cb()
-}
-
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-	let channels = config.pp_channel;
-	let channel_index = channels.findIndex(id => message.channel.id === id);
-	if (!message.isOwner && channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+    if (message.channel.type !== "text") {
+        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    }
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    }
+    if (!config.pp_channel.find(id => message.channel.id === id)) {
+        return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+    }
 
-	let binddb = maindb.collection("userbind");
-	let whitelist = maindb.collection("mapwhitelist");
+    const binddb = maindb.collection("userbind");
+    const whitelistdb = maindb.collection("mapwhitelist");
 
-	let ufind = message.author.id;
-	let query = {discordid: ufind};
-	binddb.findOne(query, async (err, res) => {
-		if (err) {
+    const query = {discordid: message.author.id};
+    binddb.findOne(query, async (err, res) => {
+        if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
-		}
-		if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-		let uid = res.uid;
-		let pplist = [];
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+        }
+        if (!res) {
+            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
+        const uid = res.uid;
+        let pplist = [];
 		let pptotal = 0;
 		let pre_pptotal = 0;
-		let submitted = 1;
+		let submitted = 0;
 		let playc = 0;
 		if (res) {
 			pplist = res.pp;
 			pre_pptotal = res.pptotal;
-			playc = res.playc
-		}
-		let footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let rolecheck;
-		try {
-			rolecheck = message.member.roles.color.hexColor
-		} catch (e) {
-			rolecheck = "#000000"
-		}
-		let embed = new Discord.MessageEmbed()
-			.setTitle("PP submission info")
-			.setFooter("Alice Synthesis Thirty", footer[index])
-			.setColor(rolecheck);
+			playc = res.playc;
+        }
+        const footer = config.avatar_list;
+        const index = Math.floor(Math.random() * footer.length);
+        const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
+        const embed = new Discord.MessageEmbed()
+            .setTitle("PP submission info")
+            .setFooter("Alice Synthesis Thirty", footer[index])
+            .setColor(color);
 
-		switch (args[0]) {
-			case "past": {
-				cd.add(message.author.id);
-				setTimeout(() => {
-					cd.delete(message.author.id)
-				}, 2000);
-				let beatmap = args[1];
-				if (!beatmap) return message.channel.send("❎ **| Hey, please give me a beatmap to submit!**");
-				if (typeof beatmap !== "number") {
+        switch (args[0]) {
+            case "past": {
+                let beatmap = args[1];
+				if (!beatmap) {
+                    return message.channel.send("❎ **| Hey, please give me a beatmap to submit!**");
+                }
+				if (isNaN(beatmap)) {
 					let a = beatmap.split("/");
 					beatmap = parseInt(a[a.length - 1]);
-					if (isNaN(beatmap)) return message.channel.send("❎ **| Hey, that beatmap ID is not valid!**")
-				}
-				const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
-				if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
-				if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
-				if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-				if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-				let hash = mapinfo.hash;
+					if (isNaN(beatmap)) {
+                        return message.channel.send("❎ **| Hey, that beatmap ID is not valid!**");
+                    }
+                }
+                
+                cd.add(message.author.id);
+                setTimeout(() => {
+                    cd.delete(message.author.id)
+                }, 2000);
 
-				const play = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
-				if (play.error) return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
-				if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map! Perhaps osu!droid server is down?**");
-				let combo = play.combo;
-				let acc = play.accuracy;
-				let mod = play.mods;
-				let miss = play.miss;
+                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
+                if (mapinfo.error) {
+                    return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
+                }
+				if (!mapinfo.title) {
+                    return message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
+                }
+				if (!mapinfo.objects) {
+                    return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+                }
+                if (!mapinfo.osu_file) {
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+                }
+                const hash = mapinfo.hash;
+                if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                    const isWhitelist = await whitelistdb.findOne({hashid: hash});
+                    if (!isWhitelist) {
+                        return message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+                    }
+                }
 
-				if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-					let isWhitelist = await scanWhitelist(whitelist, hash);
-					if (!isWhitelist) return message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
-				}
-				let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-				let npp = osudroid.ppv2({
-					stars: star.droid_stars,
-					combo: combo,
-					acc_percent: acc,
-					miss: miss,
-					mode: "droid"
-				});
-				let pp = parseFloat(npp.total.toFixed(2));
-				let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
-				let ppentry = [play.hash, playinfo, pp, play.combo, play.accuracy, play.miss];
-				if (isNaN(pp)) message.channel.send("❎ **| I'm sorry, I'm having trouble on retrieving the map's pp data!**");
+                const score = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
+                if (score.error) {
+                    return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
+                }
+                if (!score.title) {
+                    return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map! Perhaps osu!droid server is down?**");
+                }
+                const mods = score.mods;
+                const acc = score.accuracy;
+                const combo = score.combo;
+                const miss = score.miss;
 
-				playc++;
-				let dup = false;
-				for (let i in pplist) {
-					if (ppentry[0] === pplist[i][0]) {
-						pplist[i] = ppentry;
-						dup = true;
-						break
-					}
-				}
-				if (!dup) pplist.push(ppentry);
+                const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+                const npp = osudroid.ppv2({
+                    stars: star.droid_stars,
+                    combo: combo,
+                    acc_percent: acc,
+                    miss: miss,
+                    mode: osudroid.modes.droid
+                });
+                const pp = parseFloat(npp.total.toFixed(2));
+                const pp_object = {
+                    hash: hash,
+                    title: mapinfo.full_title,
+                    pp: pp,
+                    mods: mods,
+                    accuracy: acc,
+                    combo: combo,
+                    miss: miss,
+                    scoreID: score.score_id
+                };
+                playc++;
+                let duplicate = false;
+                for (let i in pplist) {
+                    if (pp_object.hash === pplist[i].hash) {
+                        duplicate = true;
+                        pplist[i] = pp_object;
+                        break;
+                    }
+                }
+                if (!duplicate) {
+                    pplist.push(pp_object);
+                }
 
-				pplist.sort(function (a, b) {
-					return b[2] - a[2]
-				});
-				if (pplist.length > 75) pplist.splice(75);
-				if (dup) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Duplicate**`);
+                pplist.sort((a, b) => {
+                    return b.pp - a.pp;
+                });
+
+                if (pplist.length > 75) {
+                    pplist.splice(75);
+                }
+
+                if (duplicate) embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
 				else {
-					let x = 0;
-					for (x; x < pplist.length; x++) {
-						if (pplist[x][1].includes(playinfo)) {
-							embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp`);
-							break
-						}
-					}
-					if (x === pplist.length) embed.addField(playinfo, `${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | ${pp}pp | **Worth no pp**`);
-				}
+                    const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
+                    if (dup_index !== -1) {
+                        embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
+                    }
+                    else {
+                        embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+                    }
+                }
+                
+                let weight = 1;
+                for (const entry of pplist) {
+                    pptotal += weight * entry.pp;
+                    weight *= 0.95;
+                }
 
-				let pptotal = 0;
-				let weight = 1;
-				for (let i of pplist) {
-					pptotal += weight * i[2];
-					weight *= 0.95;
-				}
-				let diff = pptotal - pre_pptotal;
-				embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res ? "\nHey, looks like you are new to the system! You can ask <@386742340968120321> to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
-				message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
-				let updateVal = {
+                const diff = pptotal - pre_pptotal;
+                embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
+                message.channel.send(`✅ **| ${message.author}, successfully submitted your play. More info in embed.**`, {embed: embed});
+
+                let updateVal = {
 					$set: {
 						pptotal: pptotal,
 						pp: pplist,
@@ -220,77 +173,166 @@ module.exports.run = (client, message, args, maindb) => {
 					}
 				};
 				binddb.updateOne({discordid: message.author.id}, updateVal, function (err) {
-					if (err) throw err
+					if (err) throw err;
 				});
-				break
-			}
-			default: {
-				let offset = 1;
-				let start = 1;
-				if (args[0]) offset = parseInt(args[0]);
-				if (args[1]) start = parseInt(args[1]);
-				if (isNaN(offset)) offset = 1;
-				if (isNaN(start)) start = 1;
-				if (offset > 5 || offset < 1) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
-				if (start + offset - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
-				cd.add(message.author.id);
-				setTimeout(() => {
-					cd.delete(message.author.id)
-				}, 1000 * offset);
-				const player = await new osudroid.Player().get({uid: uid});
-				if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-				if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-				if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-				let rplay = player.recent_plays;
-				let playentry = [];
+				break;
+            }
+            default: {
+                let offset = 1;
+                let start = 1;
+                
+				if (args[0]) {
+                    offset = parseInt(args[0]);
+                }
+				if (args[1]) {
+                    start = parseInt(args[1]);
+                }
+				if (isNaN(offset)) {
+                    offset = 1;
+                }
+				if (isNaN(start)) {
+                    start = 1;
+                }
+                if (offset > 5 || offset < 1) {
+                    return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
+                }
+				if (start + offset - 1 > 50) {
+                    return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
+                }
 
-				for (let i = start - 1; i < start + offset - 1; i++) {
-					if (!rplay[i]) break;
-					let play = {
-						title: rplay[i].title,
-						accuracy: rplay[i].accuracy,
-						miss: rplay[i].miss,
-						combo: rplay[i].combo,
-						mod: rplay[i].mods,
-						hash: rplay[i].hash
-					};
-					playentry.push(play)
-				}
-				let i = 0;
-				let attempt = 0;
-				await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, async function testResult(error = false, success = true, stopSign = false) {
-					if (stopSign) {
-						if (submitted === 1) return;
-						let weight = 1;
-						for (let i of pplist) {
-							pptotal += weight * i[2];
-							weight *= 0.95;
-						}
-						let diff = pptotal - pre_pptotal;
-						embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res.pptotal ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
-						message.channel.send(`✅ **| ${message.author}, successfully submitted your play(s). More info in embed.**`, {embed: embed});
-						let updateVal = {
-							$set: {
-								pptotal: pptotal,
-								pp: pplist,
-								playc: playc
-							}
-						};
-						binddb.updateOne(query, updateVal, function (err) {
-							if (err) throw err
-						});
-						return
+                cd.add(message.author.id);
+                setTimeout(() => {
+                    cd.delete(message.author.id);
+                }, 1000 * offset);
+
+                const player = await new osudroid.Player().get({uid: uid});
+                if (player.error) {
+                    return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+                }
+				if (!player.name) {
+                    return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+                }
+                const recent_plays = player.recent_plays;
+				if (recent_plays.length === 0) {
+                    return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                }
+
+                let plays = [];
+                for (let i = start - 1; i < start + offset + 1; ++i) {
+                    if (!recent_plays[i]) {
+                        break;
+                    }
+                    plays.push(recent_plays[i]);
+                }
+                
+                for await (const play of plays) {
+                    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
+                    if (mapinfo.error) {
+                        message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
+                        continue;
+                    }
+                    if (!mapinfo.title) {
+                        message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
+                        continue;
+                    }
+                    if (!mapinfo.objects) {
+                        message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+                        continue;
+                    }
+                    if (!mapinfo.osu_file) {
+                        message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+                        continue;
+                    }
+
+                    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                        const isWhitelist = await whitelistdb.findOne({hashid: play.hash});
+                        if (!isWhitelist) {
+                            message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
+                            continue;
+                        }
+                    }
+
+                    const combo = play.combo;
+                    const mods = play.mods;
+                    const acc = play.accuracy;
+                    const miss = play.miss;
+
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
+                    const npp = osudroid.ppv2({
+                        stars: star.droid_stars,
+                        combo: combo,
+                        acc_percent: acc,
+                        miss: miss,
+                        mode: osudroid.modes.droid
+                    });
+                    const pp = parseFloat(npp.total.toFixed(2));
+
+                    const pp_object = {
+                        hash: play.hash,
+                        title: mapinfo.title,
+                        pp: pp,
+                        mods: mods,
+                        accuracy: acc,
+                        combo: combo,
+                        miss: miss,
+                        scoreID: play.score_id
+                    };
+
+                    ++submitted;
+                    ++playc;
+                    let duplicate = false;
+                    for (let i in pplist) {
+                        if (pp_object.hash === pplist[i].hash) {
+                            duplicate = true;
+                            pplist[i] = pp_object;
+                            break;
+                        }
+                    }
+                    if (!duplicate) {
+                        pplist.push(pp_object);
+                    }
+
+                    if (duplicate) embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
+				    else {
+                        const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
+                        if (dup_index !== -1) {
+                            embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
+                        }
+                        else {
+                            embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+                        }
+                    }
+                }
+                if (!submitted) {
+                    return;
+                }
+
+                pplist.sort((a, b) => {
+                    return b.pp - a.pp;
+                });
+
+                let weight = 1;
+                for (const entry of pplist) {
+                    pptotal += weight * entry.pp;
+                    weight *= 0.95;
+                }
+                const diff = pptotal - pre_pptotal;
+                embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
+                message.channel.send(`✅ **| ${message.author}, successfully submitted your ${submitted === 1 ? "play" : "plays"}. More info in embed.**`, {embed: embed});
+
+                let updateVal = {
+					$set: {
+						pptotal: pptotal,
+						pp: pplist,
+						playc: playc
 					}
-					attempt++;
-					if (!error && attempt < 3) i++;
-					if (success) submitted++;
-					if (error) attempt++;
-					else attempt = 0;
-					await calculatePP(message, whitelist, embed, i, submitted, pplist, playc, playentry, testResult)
-				})
-			}
-		}
-	})
+				};
+				binddb.updateOne({discordid: message.author.id}, updateVal, function (err) {
+					if (err) throw err;
+				});
+            }
+        }
+    });
 };
 
 module.exports.config = {
