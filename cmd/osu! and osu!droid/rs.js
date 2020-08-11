@@ -15,7 +15,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return
+		default : return;
 	}
 }
 
@@ -95,8 +95,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let min_error = 0;
         let max_error = 0;
 
-        const score_data = await play.getFromHash();
-        const data = await new osudroid.ReplayAnalyzer({score_id: score_data.score_id}).analyze();
+        const data = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
         if (data.fixed_odr) {
             n300 = data.data.hit300;
             n100 = data.data.hit100;
@@ -185,7 +184,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 combo: mapinfo.max_combo,
                 acc_percent: fc_acc,
                 miss: 0,
-                mode: "droid"
+                mode: osudroid.modes.droid
             });
 
             const fc_pp = osudroid.ppv2({
@@ -193,7 +192,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
                 combo: mapinfo.max_combo,
                 acc_percent: fc_acc,
                 miss: 0,
-                mode: "osu"
+                mode: osudroid.modes.osu
             });
 
             const dline = parseFloat(fc_dpp.total.toFixed(2));
