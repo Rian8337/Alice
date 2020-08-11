@@ -146,9 +146,10 @@ class Player {
                                 title: play.filename,
                                 date: (play.date + 3600 * 6) * 1000,
                                 mods: play.mode,
-                                hash: play.hash
+                                hash: play.hash,
+                                score_id: play.scoreid
                             })
-                        )
+                        );
                     }
                     resolve(this)
                 })
