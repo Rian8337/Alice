@@ -47,7 +47,12 @@ module.exports.run = (client, message, args, maindb) => {
         console.log(`Modifying ${entries.length} user entries`);
         for await (const entry of entries) {
             const discordid = entry.discordid;
-            const pp_entries = entry.pp;
+            const pp_entries = entry.pp ? entry.pp : [];
+            if (!Array.isArray(pp_entries[0])) {
+                ++count;
+                console.log(`${count}/${entries.length} updated (${(count * 100 / entries.length).toFixed(2)}%)`);
+                continue;
+            }
             const bind_pool = entry.previous_bind ? entry.previous_bind : [entry.uid];
             const new_pp = [];
 
