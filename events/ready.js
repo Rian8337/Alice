@@ -19,8 +19,8 @@ module.exports.run = (client, maindb, alicedb) => {
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
 		client.utils.get("unverified").run(client, alicedb);
-		client.utils.get("dailyreset").run(alicedb)
 		if (maintenance) return;
+		client.utils.get("dailyreset").run(alicedb);
 		const index = Math.floor(Math.random() * activity_list.length);
 		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
 	}, 10000);
