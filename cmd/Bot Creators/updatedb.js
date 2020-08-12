@@ -38,7 +38,7 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have enough permission to use this.**");
     }
     const binddb = maindb.collection("userbind");
-    binddb.find({}, {projcetion: {_id: 0, discordid: 1, pp: 1, previous_bind: 1}}).toArray(async (err, entries) => {
+    binddb.find({}, {projection: {_id: 0, discordid: 1, pp: 1, previous_bind: 1}}).toArray(async (err, entries) => {
         if (err) throw err;
 
         let count = 0;
