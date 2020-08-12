@@ -6,9 +6,7 @@ const { Db } = require("mongodb");
 
 function sleep(seconds) {
     return new Promise(resolve => {
-        setTimeout(() => {
-            resolve(true);
-        }, 1000 * seconds);
+        setTimeout(resolve, 1000 * seconds);
     });
 }
 
@@ -18,7 +16,7 @@ function fetchLeaderboard(hash) {
         request(url, (err, response, data) => {
             if (err || !data) {
                 console.log("No map found");
-                return resolve(0);
+                return resolve([]);
             }
             const entries = [];
             const lines = data.split("<br>");
@@ -146,7 +144,6 @@ module.exports.run = (client, message, args, maindb) => {
             }
 
             await binddb.updateOne({discordid: discordid}, {$set: {pp: new_pp, previous_bind: bind_pool}});
-            await sleep(1);
             ++count;
             console.log(`${count}/${entries.length} updated (${(count * 100 / entries.length).toFixed(2)}%)`);
         }
