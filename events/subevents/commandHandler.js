@@ -46,9 +46,8 @@ module.exports.run = obj => {
         setTimeout(() => {
             message.channel.stopTyping(true);
         }, 5000);
-        const cd_index = cd.findIndex(c => c.id === message.author.id);
-        if (cd_index !== -1) {
-            return message.channel.send(`❎ **| Hey, calm down with the command (${(cd[cd_index].time).toFixed(1)} ${cd[cd_index].time === 1 ? "second" : "seconds"})! I need to rest too, you know.**`);
+        if (cd.find(c => c === message.author.id)) {
+            return message.channel.send(`❎ **| Hey, calm down with the command! I need to rest too, you know.**`);
         }
         if (message.channel.type === "text") {
             console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
@@ -57,18 +56,12 @@ module.exports.run = obj => {
             console.log(`${message.author.tag} (DM): ${message.content}`);
         }
         cmd.run(client, message, args, maindb, alicedb, current_map);
-        if (command_cooldown && !message.isOwner) {
-            const index = cd.push({
-                id: message.author.id,
-                time: command_cooldown
-            }) - 1;
-            const interval = setInterval(() => {
-                cd[index].time -= 0.1;
-                if (cd[index].time <= 0) {
-                    clearInterval(interval);
-                    cd.splice(index, 1);
-                }
-            }, 100);
+        if (command_cooldown) {
+            cd.push(message.author.id);
+            setTimeout(() => {
+                const index = cd.findIndex(c => c === message.author.id);
+                cd.splice(index, 1);
+            }, 1000 * command_cooldown);
         }
     }
 };
