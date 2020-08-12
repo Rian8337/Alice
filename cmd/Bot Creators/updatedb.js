@@ -57,7 +57,7 @@ module.exports.run = (client, message, args, maindb) => {
             let entry_count = 0;
             console.log(`Updating ${pp_entries.length} pp entries from uid ${entry.uid}`);
             for await (const pp_entry of pp_entries) {
-                await sleep(2);
+                await sleep(1);
                 let mods = '';
                 let title = pp_entry[1];
                 if (title.includes("+")) {
