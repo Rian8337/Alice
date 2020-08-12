@@ -1,3 +1,12 @@
+const {Client} = require('discord.js')
+const config = require('../config.json');
+const { Db } = require('mongodb');
+
+/**
+ * @param {Client} client 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, maindb, alicedb) => {
     console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
 	let maintenance = require('./message').maintenance;
@@ -5,7 +14,7 @@ module.exports.run = (client, maindb, alicedb) => {
 	const activity_list = [
 		["Underworld Console", "PLAYING"],
 		["Rulid Village", "WATCHING"],
-		["a!help", "LISTENING"],
+		[config.prefix + "help", "LISTENING"],
 		["Dark Territory", "WATCHNG"],
 		["in Axiom church", "PLAYING"],
 		["with Integrity Knights", "PLAYING"],
@@ -19,7 +28,9 @@ module.exports.run = (client, maindb, alicedb) => {
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
 		client.utils.get("unverified").run(client, alicedb);
-		if (maintenance) return;
+		if (maintenance) {
+			return;
+		}
 		client.utils.get("dailyreset").run(alicedb);
 		const index = Math.floor(Math.random() * activity_list.length);
 		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
