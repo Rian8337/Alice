@@ -1,10 +1,18 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
+const { Db } = require('mongodb');
 const canvas = createCanvas(500, 200);
 const c = canvas.getContext("2d");
 c.imageSmoothingQuality = "high";
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let uid = parseInt(args[0]);
     if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
@@ -20,11 +28,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let weighted_accuracy = 0;
 		let weight = 0;
 		if (res) {
-			let pp_entries = res.pp;
-                        if (!pp_entries) pp_entries = [];
+			let pp_entries = res.pp ? res.pp : [];
 			for (let i = 0; i < pp_entries.length; ++i) {
-				let acc = pp_entries[i][4];
-				if (!acc) acc = 100;
+				let acc = pp_entries[i].accuracy ? pp_entries[i].accuracy : 100;
 				weighted_accuracy += parseFloat(acc) * Math.pow(0.95, i);
 				weight += Math.pow(0.95, i);
 			}

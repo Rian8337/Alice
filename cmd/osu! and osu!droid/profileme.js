@@ -1,10 +1,18 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
+const { Db } = require('mongodb');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
 c.imageSmoothingQuality = "high";
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
 	let ufind = message.author.id;
 	if (args[0]) {
@@ -18,22 +26,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
+			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-			return
+			return;
 		}
 		let uid = res.uid;
 		let pp = res.pptotal;
-		let pp_entries = res.pp;
-                if (!pp_entries) pp_entries = [];
+		let pp_entries = res.pp ? res.pp : [];
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
-			let acc = pp_entries[i][4];
-			if (!acc) acc = 100;
+			let acc = pp_entries[i].accuracy ? pp_entries[i].accuracy : 100;
 			weighted_accuracy += parseFloat(acc) * Math.pow(0.95, i);
 			weight += Math.pow(0.95, i);
 		}
@@ -42,12 +48,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-			return
+			return;
 		}
 		if (!player.name) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-			return
+			return;
 		}
 		scoredb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
