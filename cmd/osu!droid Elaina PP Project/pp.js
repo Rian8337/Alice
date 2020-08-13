@@ -287,10 +287,6 @@ module.exports.run = (client, message, args, maindb) => {
                         pplist.push(pp_object);
                     }
 
-                    if (pplist.length > 75) {
-                        pplist.splice(75);
-                    }
-
                     if (duplicate) embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
 				    else {
                         const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
@@ -309,6 +305,10 @@ module.exports.run = (client, message, args, maindb) => {
                 pplist.sort((a, b) => {
                     return b.pp - a.pp;
                 });
+
+                if (pplist.length > 75) {
+                    pplist.splice(75);
+                }
 
                 let weight = 1;
                 for (const entry of pplist) {
