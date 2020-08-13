@@ -117,8 +117,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     ppentries.forEach(ppentry => {
                         let dup = false;
                         for (let i in pplist) {
-                            if (ppentry[0].trim() === pplist[i][0].trim()) {
-                                if (ppentry[2] >= pplist[i][2]) pplist[i] = ppentry;
+                            if (ppentry.title === pplist[i].title) {
+                                if (ppentry.pp >= pplist[i].pp) pplist[i] = ppentry;
                                 dup = true;
                                 break;
                             }
@@ -127,7 +127,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     });
 
                     pplist.sort((a, b) => {
-                        return b[2] - a[2];
+                        return b.pp - a.pp;
                     });
                     score_list.sort((a, b) => {
                         return b[0] - a[0];
@@ -136,10 +136,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     if (pplist.length > 75) pplist.splice(75);
                     console.table(pplist);
 
-                    let weight = 1;
-                    for (const pp of pplist) {
-                        pptotal += pp[2] * weight;
-                        weight *= 0.95;
+                    for (let i in pplist) {
+                        pptotal += pp[i].pp * Math.pow(0.95, i);
                     }
 
                     const level = calculateLevel(score);
