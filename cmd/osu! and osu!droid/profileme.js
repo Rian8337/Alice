@@ -39,8 +39,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
-			let acc = pp_entries[i].accuracy ? pp_entries[i].accuracy : 100;
-			weighted_accuracy += parseFloat(acc) * Math.pow(0.95, i);
+			weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 			weight += Math.pow(0.95, i);
 		}
 		if (weighted_accuracy) weighted_accuracy /= weight;
