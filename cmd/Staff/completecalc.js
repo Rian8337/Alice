@@ -137,7 +137,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     console.table(pplist);
 
                     for (let i in pplist) {
-                        pptotal += pp[i].pp * Math.pow(0.95, i);
+                        pptotal += pplist[i].pp * Math.pow(0.95, i);
                     }
 
                     const level = calculateLevel(score);
