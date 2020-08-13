@@ -8,18 +8,17 @@ function generateEmbed(res, page, footer, index, color) {
     const pptotal = res.pptotal ? res.pptotal : 0;
     const embed = new Discord.MessageEmbed()
         .setColor(color)
-        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(pp.length / 20)}`, footer[index])
-        .setDescription(`PP Profile for <@${res.discordid}> (${res.username})\nTotal PP: **${pptotal} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidpp.glitch.me/profile?uid=${res.uid})`);
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
+        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidpp.glitch.me/profile?uid=${res.uid})`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
         const pp = ppentry[i];
         if (pp) {
-            embed.addField(`${i+1}. ${pp.title}${pp.mods ? ` +${pp.mods}` : ""}`, `${pp.combo}x | ${pp.accuracy}% | ${pp.miss}❌ | __${pp.pp} pp__ (Net pp: ${pp.pp * Math.pow(0.95, i)} pp)`);
+            embed.addField(`${i+1}. ${pp.title}${pp.mods ? ` +${pp.mods}` : ""}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss}❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
         } else {
             embed.addField(`${i+1}. -`, "-");
         }
     }
-
     return embed;
 }
 
@@ -133,7 +132,7 @@ module.exports.run = (client, message, args, maindb) => {
         });
         cd.add(message.author.id);
         setTimeout(() => {
-            cd.delete(message.author.id)
+            cd.delete(message.author.id);
         }, 10000);
     });
 };

@@ -17,7 +17,7 @@ module.exports.run = (client, message, args, maindb) => {
     if (cd.has(message.author.id)) {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     }
-    if (!config.pp_channel.find(id => message.channel.id === id)) {
+    if (!message.isOwner && !config.pp_channel.find(id => message.channel.id === id)) {
         return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
     }
 
@@ -34,16 +34,11 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         }
         const uid = res.uid;
-        let pplist = [];
+        let pplist = res.pp ? res.pp : [];
 		let pptotal = 0;
-		let pre_pptotal = 0;
+		let pre_pptotal = res.pptotal ? res.pptotal : 0;
 		let submitted = 0;
-		let playc = 0;
-		if (res) {
-			pplist = res.pp;
-			pre_pptotal = res.pptotal;
-			playc = res.playc;
-        }
+		let playc = res.playc ? res.playc : 0;
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
@@ -68,7 +63,7 @@ module.exports.run = (client, message, args, maindb) => {
                 
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
+                    cd.delete(message.author.id);
                 }, 2000);
 
                 const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
@@ -144,14 +139,14 @@ module.exports.run = (client, message, args, maindb) => {
                     pplist.splice(75);
                 }
 
-                if (duplicate) embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
+                if (duplicate) embed.addField(`${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
 				else {
                     const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
                     if (dup_index !== -1) {
-                        embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
+                        embed.addField(`${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
                     }
                     else {
-                        embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+                        embed.addField(`${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
                     }
                 }
                 
@@ -217,8 +212,8 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 }
 
-                let plays = [];
-                for (let i = start - 1; i < start + offset + 1; ++i) {
+                const plays = [];
+                for (let i = start - 1; i < start + offset - 1; ++i) {
                     if (!recent_plays[i]) {
                         break;
                     }
@@ -269,7 +264,7 @@ module.exports.run = (client, message, args, maindb) => {
 
                     const pp_object = {
                         hash: play.hash,
-                        title: mapinfo.title,
+                        title: mapinfo.full_title,
                         pp: pp,
                         mods: mods,
                         accuracy: acc,
@@ -292,14 +287,14 @@ module.exports.run = (client, message, args, maindb) => {
                         pplist.push(pp_object);
                     }
 
-                    if (duplicate) embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
+                    if (duplicate) embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
 				    else {
                         const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
                         if (dup_index !== -1) {
-                            embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
+                            embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
                         }
                         else {
-                            embed.addField(pp_object.title, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+                            embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
                         }
                     }
                 }
