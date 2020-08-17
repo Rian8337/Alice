@@ -215,6 +215,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const coin = client.emojis.cache.get("669532330980802561");
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
+    let rolecheck;
+    try {
+        rolecheck = message.member.roles.color.hexColor;
+    } catch (e) {
+        rolecheck = "#000000";
+    }
     let embed = new Discord.MessageEmbed();
     let query = {};
     let updateVal = {};
@@ -225,12 +231,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // introduction to the daily challenge system
             // uses embed for a cleaner look and to override
             // Discord's message limit
-            let rolecheck;
-            try {
-                rolecheck = message.member.roles.color.hexColor
-            } catch (e) {
-                rolecheck = "#000000"
-            }
             embed.setTitle("osu!droid Daily/Weekly Challenges")
                 .setThumbnail("https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setFooter("Alice Synthesis Thirty", footer[index])
@@ -247,7 +247,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             setTimeout(() => {
                 cd.delete(message.author.id)
             }, 5000);
-            break
+            break;
         }
         case "profile": {
             // checks for a user's profile
@@ -263,7 +263,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded yet. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) {
+                    if (args[1]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");	
+                    else message.channel.send("❎ **| I'm sorry, your account is not binded yet. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");	
+                    return;
+                }
                 let uid = userres.uid;
                 let username = userres.username;
                 pointdb.findOne(query, async (err, dailyres) => {
@@ -280,12 +284,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         challenges = dailyres.challenges.length;
                     }
                     const player = await new osudroid.Player().get({uid: uid});
-                    let rolecheck;
-                    try {
-                        rolecheck = message.member.roles.color.hexColor
-                    } catch (e) {
-                        rolecheck = "#000000"
-                    }
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -296,10 +294,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     cd.add(message.author.id);
                     setTimeout(() => {
                         cd.delete(message.author.id)
-                    }, 2000)
-                })
+                    }, 2000);
+                });
             });
-            break
+            break;
         }
         case "lb": {
             // views leaderboard for points
@@ -324,8 +322,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
                                 msg.react("⏭️").catch(console.error)
-                            })
-                        })
+                            });
+                        });
                     });
 
                     let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
@@ -371,9 +369,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 cd.add(message.author.id);
                 setTimeout(() => {
                     cd.delete(message.author.id)
-                }, 10000)
+                }, 10000);
             });
-            break
+            break;
         }
         case "check": {
             // checks current ongoing daily challenge
@@ -416,9 +414,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 cd.add(message.author.id);
                 setTimeout(() => {
                     cd.delete(message.author.id)
-                }, 2500)
+                }, 2500);
             });
-            break
+            break;
         }
         case "bounty": {
             // main starting point for weekly bounty challenges
@@ -463,7 +461,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     cd.add(message.author.id);
                     setTimeout(() => {
                         cd.delete(message.author.id)
-                    }, 2500)
+                    }, 2500);
                 });
                 return
             }
@@ -473,7 +471,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -510,7 +508,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         combo = rplay[i].combo;
                         rank = rplay[i].rank;
                         found = true;
-                        break
+                        break;
                     }
                     if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
                     const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
@@ -523,14 +521,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: "droid"
+                        mode: osudroid.modes.droid
                     });
                     let pcpp = osudroid.ppv2({
                         stars: star.pc_stars,
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: "osu"
+                        mode: osudroid.modes.osu
                     });
                     let dpp = parseFloat(npp.total.toFixed(2));
                     let pp = parseFloat(pcpp.total.toFixed(2));
@@ -803,7 +801,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -989,7 +987,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -1054,14 +1052,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: "droid"
+                            mode: osudroid.modes.droid
                         });
                         let pcpp = osudroid.ppv2({
                             stars: star.pc_stars,
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: "osu"
+                            mode: osudroid.modes.osu
                         });
                         let dpp = parseFloat(npp.total.toFixed(2));
                         let pp = parseFloat(pcpp.total.toFixed(2));
