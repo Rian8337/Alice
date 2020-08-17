@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 const cd = new Set();
 
 function isEligible(member) {
@@ -195,6 +196,13 @@ function challengeRequirements(challengeid, pass, bonus) {
     return [pass_string, bonus_string]
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.author.id != '386742340968120321' && message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
@@ -205,13 +213,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     const clandb = maindb.collection("clandb");
     const coin = client.emojis.cache.get("669532330980802561");
-
-    let rolecheck;
-    try {
-        rolecheck = message.member.roles.color.hexColor
-    } catch (e) {
-        rolecheck = "#000000"
-    }
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed();
@@ -224,6 +225,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // introduction to the daily challenge system
             // uses embed for a cleaner look and to override
             // Discord's message limit
+            let rolecheck;
+            try {
+                rolecheck = message.member.roles.color.hexColor
+            } catch (e) {
+                rolecheck = "#000000"
+            }
             embed.setTitle("osu!droid Daily/Weekly Challenges")
                 .setThumbnail("https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setFooter("Alice Synthesis Thirty", footer[index])
@@ -256,11 +263,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) {
-                    if (args[1]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                    else message.channel.send("❎ **| I'm sorry, your account is not binded yet. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                    return
-                }
+                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded yet. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 pointdb.findOne(query, async (err, dailyres) => {
@@ -277,6 +280,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         challenges = dailyres.challenges.length;
                     }
                     const player = await new osudroid.Player().get({uid: uid});
+                    let rolecheck;
+                    try {
+                        rolecheck = message.member.roles.color.hexColor
+                    } catch (e) {
+                        rolecheck = "#000000"
+                    }
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -464,7 +473,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -514,14 +523,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: osudroid.modes.droid
+                        mode: "droid"
                     });
                     let pcpp = osudroid.ppv2({
                         stars: star.pc_stars,
                         combo: combo,
                         acc_percent: acc,
                         miss: miss,
-                        mode: osudroid.modes.osu
+                        mode: "osu"
                     });
                     let dpp = parseFloat(npp.total.toFixed(2));
                     let pp = parseFloat(pcpp.total.toFixed(2));
@@ -794,7 +803,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -980,7 +989,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
@@ -1045,14 +1054,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: osudroid.modes.droid
+                            mode: "droid"
                         });
                         let pcpp = osudroid.ppv2({
                             stars: star.pc_stars,
                             combo: combo,
                             miss: miss,
                             acc_percent: acc,
-                            mode: osudroid.modes.osu
+                            mode: "osu"
                         });
                         let dpp = parseFloat(npp.total.toFixed(2));
                         let pp = parseFloat(pcpp.total.toFixed(2));
@@ -1107,9 +1116,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (bonus[i][0] == 'none') bonuslist[i + 1] = true;
                             if (bonuslist[i + 1]) continue;
                             let complete = false;
+                            const modFulfilled = !(mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
                             switch (bonus[i][0]) {
                                 case "score": {
-                                    if (score >= bonus[i][1]) {
+                                    if (modFulfilled && score >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1117,7 +1127,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "scorev2": {
-                                    if (scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
+                                    if (modFulfilled && scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
                                         points += bonus[i][3];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1133,7 +1143,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "acc": {
-                                    if (acc >= bonus[i][1]) {
+                                    if (modFulfilled && acc >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1141,7 +1151,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "combo": {
-                                    if (combo >= bonus[i][1]) {
+                                    if (modFulfilled && combo >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1149,7 +1159,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "miss": {
-                                    if (miss < bonus[i][1] || !miss) {
+                                    if (modFulfilled && miss < bonus[i][1] || !miss) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1157,7 +1167,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "rank": {
-                                    if (rankConvert(rank) >= rankConvert(bonus[i][1])) {
+                                    if (modFulfilled && rankConvert(rank) >= rankConvert(bonus[i][1])) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1165,7 +1175,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "dpp": {
-                                    if (dpp >= bonus[i][1]) {
+                                    if (modFulfilled && dpp >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
@@ -1173,7 +1183,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break
                                 }
                                 case "pp": {
-                                    if (pp >= bonus[i][1]) {
+                                    if (modFulfilled && pp >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
                                         complete = true
