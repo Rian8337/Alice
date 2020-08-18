@@ -61,7 +61,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
     if (message.channel.type !== "text") return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (!isEligible(message.member) && !message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
     if (!args[0]) return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
-    let ufind = args[0].replace(/[<@>]/g, "");
+    let ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
 
     let query = {discordid: ufind};
     const binddb = maindb.collection("userbind");
