@@ -6,23 +6,19 @@ const Discord = require('discord.js');
  */
 module.exports.run = (client, message) => {
     const mentions = message.mentions;
-    let mentionString = '';
+    let userMentionString = '';
+    let roleMentionString = '';
     if (mentions.users.size > 0) {
-        mentionString += 'Mentioned users: ';
         for (const [, user] of mentions.users.entries()) {
-            mentionString += `${user.tag}, `;
+            userMentionString += `${user.tag}, `;
         }
-        mentionString = mentionString.substring(0, mentionString.length - 2);
+        userMentionString = userMentionString.substring(0, userMentionString.length - 2);
     }
     if (mentions.roles.size > 0) {
-        if (mentions.users.size > 0) {
-            mentionString += `\n`;
-        }
-        mentionString += 'Mentioned roles: ';
         for (const [, role] of mentions.roles.entries()) {
-            mentionString += `${role.name}, `;
+            roleMentionString += `${role.name}, `;
         }
-        mentionString = mentionString.substring(0, mentionString.length - 2);
+        roleMentionString = roleMentionString.substring(0, roleMentionString.length - 2);
     }
 
     const embed = new Discord.MessageEmbed()
@@ -30,9 +26,15 @@ module.exports.run = (client, message) => {
         .setColor("#00cb16")
         .setFooter(`Author ID: ${message.author.id} | Message ID: ${message.id}`)
         .setTimestamp(new Date())
-        .addField("Mentions", mentionString)
-        .addField("Channel", `${message.channel} | [Go to message](${message.url})`)
-        .addField("Content", message.content.substring(0, 1024));
+        .addField("Channel", `${message.channel} | [Go to message](${message.url})`);
+
+    if (userMentionString) {
+        embed.addField("Mentioned Users", userMentionString);
+    }
+    if (roleMentionString) {
+        embed.addField("Mentioned Roles", roleMentionString);
+    }
+    embed.addField("Content", message.content.substring(0, 1024));
 
     client.channels.cache.get("683504788272578577").send({embed: embed});
 };
