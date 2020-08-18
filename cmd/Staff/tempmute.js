@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const config = require("../../config.json");
+const { Db } = require("mongodb");
 
 function isEligible(member) {
     let res = 0;
@@ -32,11 +33,18 @@ function timeConvert(num) {
     return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (message.channel.type !== "text") return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     let timeLimit = isEligible(message.member);
-    if (message.isOwner) timeLimit = -1;
-    if (!message.author.bot && !timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (message.isOwner || message.author.bot) timeLimit = -1;
+    if (!timeLimit) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
     if (!tomute) return message.channel.send("❎ **| Hey, please enter a valid user to mute!**");
@@ -63,10 +71,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         try {
             muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
             message.guild.channels.cache.forEach((channel) => {
-                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error)
+                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error);
             })
         } catch(e) {
-            console.log(e.stack)
+            console.log(e.stack);
         }
     } else {
         message.guild.channels.cache.forEach((channel) => {
@@ -76,7 +84,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     //end of create role
 
     message.delete().catch(O_o=>{});
-    let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\n\n=========================\n\n**Reason**:\n${reason}`;
+
+    let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\nUser ID: ${tomute.id}\n\n=========================\n\n**Reason**:\n${reason}`;
 
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
@@ -121,8 +130,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         setTimeout(() => {
             tomute.roles.remove(muterole.id);
             muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
-            msg.edit({embed: muteembed})
-        }, mutetime * 1000)
+            msg.edit({embed: muteembed});
+        }, mutetime * 1000);
     })
 };
 
