@@ -9,10 +9,10 @@ function isEligible(member) {
         if (res === -1) break;
         if (member.roles.cache.has(id[0])) {
             if (id[1] === -1) res = id[1];
-            else res = Math.max(res, id[1])
+            else res = Math.max(res, id[1]);
         }
     }
-    return res
+    return res;
 }
 
 function isImmuned(member) {
@@ -20,9 +20,9 @@ function isImmuned(member) {
     let immunedRoleList = config.mute_immune;
     for (const id of immunedRoleList) {
         if (member.roles.cache.has(id)) res = 1;
-        break
+        break;
     }
-    return res
+    return res;
 }
 
 function timeConvert(num) {
