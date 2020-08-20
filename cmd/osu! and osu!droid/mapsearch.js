@@ -13,7 +13,7 @@ async function createEmbed(content, page, footer, index, color) {
     const resultCount = content.result_count;
     const embed = new Discord.MessageEmbed()
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(beatmaps.length / 2)}`, footer[index])
-        .setDescription("**Beatmaps Found**: " + resultCount)
+        .setDescription("**Beatmaps Found**: " + resultCount.toLocaleString())
         .setColor(color);
 
     let convertIndex = 2 * (page - 1);
@@ -24,7 +24,6 @@ async function createEmbed(content, page, footer, index, color) {
             break;
         }
         if (!(beatmaps[convertIndex] instanceof osudroid.MapInfo)) {
-            console.log(beatmaps[convertIndex].beatmap_id);
             const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmaps[convertIndex].beatmap_id, file: false});
             if (mapinfo.title) {
                 beatmaps[convertIndex] = mapinfo;
@@ -664,6 +663,6 @@ module.exports.config = {
     name: "mapsearch",
     description: "Searches for beatmaps.\n\nIn artist, title, creator, difficulty name, or source parameter, replace spaces with `%20` and separate multiple genres, languages, and ranking status with commas.",
     usage: "mapsearch [artist=<artist> title=<title> creator=<creator> diffname=<diff name> genre=<genre> language=<language> status=<status> startdate=<start date> enddate=<end date> minbpm=<min bpm> maxbpm=<max bpm> minlength=<min length> maxlength=<max length> maxfav=<max fav> minpc=<min pc> maxpc=<max pc> sr=<min sr>-<max sr> ar=<min ar>-<max ar> od=<min od>-<max od> hp=<min hp>-<max hp> cs=<min cs>-<max cs> order=<order>]",
-    detail: "`artist`: Song artist [String]\n`creator`: Beatmap creator [String]\n`diff name`: Difficulty name [String]\n`genre`: Song genre. Accepted genres are \`Anime\`, \`VideoGame\`, \`Novelty\`, \`Electronic\`, \`Pop\`, \`Rock\`, \`HipHop\`, \`Other\`, and \`Any\` (case insensitive) [String]\n`language`: Language to search. Accepted languages are \`JP\`, \`Ins\` (Instrumental), \`ENG\`, \`KR\`, \`CN\`, \`DE\`, \`ES\`, \`IT\`, \`FR\`, \`Other\`, and \`Any\` (case insensitive) [String]\n`max/min ar`: Maximum/minimum AR [Float]\n`max/min bpm`: Maximum/minimum BPM [Float]\n`max/min cs`: Maximum/minimum CS [Float]\n`max/min fav`: Maximum/minimum favorite count [Integer]\n`max/min hp`: Maximum/minimum HP [Float]\n`max/min length`: Maximum/minimum map length in seconds [Integer]\n`max/min pc`: Maximum/minimum play count [Integer]\n`max/min sr`: Maximum/minimum star rating [Float]\n`order`: Order to sort search result. Put `-` in front of argument for ascending sort, such as `-date`. Accepted orders are \`date\`, \`sr\` (star rating), \`favorite\`, \`pc\` (play count), \`ar\`, \`od\`, \`cs\`, \`hp\`, and \`bpm\` (case-insensitive) [String]\n`end/start date`: Maximum/minimum date in `YYYY-MM-DD` format [String]\n`status`: Ranking status to search. Accepted ranking statuses are \`R\` (Ranked), \`Q\` (Qualified), \`L\` (Loved), and \`U\` (Unranked) [String]\n`title`: Song title [String]",
+    detail: "`artist`: Song artist [String]\n`creator`: Beatmap creator [String]\n`diff name`: Difficulty name [String]\n`genre`: Song genre. Accepted: \`Anime\`, \`VideoGame\`, \`Novelty\`, \`Electronic\`, \`Pop\`, \`Rock\`, \`HipHop\`, \`Other\`, and \`Any\` (case insensitive) [String]\n`language`: Language to search. Accepted: \`JP\`, \`Ins\` (Instrumental), \`ENG\`, \`KR\`, \`CN\`, \`DE\`, \`ES\`, \`IT\`, \`FR\`, \`Other\`, and \`Any\` (case insensitive) [String]\n`max/min ar`: Maximum/minimum AR [Float]\n`max/min bpm`: Maximum/minimum BPM [Float]\n`max/min cs`: Maximum/minimum CS [Float]\n`max/min fav`: Maximum/minimum favorite count [Integer]\n`max/min hp`: Maximum/minimum HP [Float]\n`max/min length`: Maximum/minimum map length in seconds [Integer]\n`max/min od`: Maximum/minimum OD [Float]\n`max/min pc`: Maximum/minimum play count [Integer]\n`max/min sr`: Maximum/minimum star rating [Float]\n`order`: Order to sort search result. Put `-` in front of argument for ascending sort, such as `-date`. Accepted: \`date\`, \`sr\` (star rating), \`favorite\`, \`pc\` (play count), \`ar\`, \`od\`, \`cs\`, \`hp\`, and \`bpm\` (case-insensitive) [String]\n`end/start date`: Maximum/minimum date in `YYYY-MM-DD` format [String]\n`status`: Ranking status to search. Accepted: \`R\` (Ranked), \`Q\` (Qualified), \`L\` (Loved), and \`U\` (Unranked) [String]\n`title`: Song title [String]",
     permission: "None"
 };
