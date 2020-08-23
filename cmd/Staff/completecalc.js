@@ -44,7 +44,7 @@ function calculateLevel(score) {
 
     let level = 1;
     while (scoreRequirement(level + 1) <= score) ++level;
-    let nextLevelReq = scoreRequirement(level + 1) - score;
+    let nextLevelReq = scoreRequirement(level + 1) - scoreRequirement(level);
     let curLevelReq = score - scoreRequirement(level);
     level += curLevelReq / nextLevelReq;
     return level;
