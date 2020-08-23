@@ -535,6 +535,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let dpp = parseFloat(npp.total.toFixed(2));
                     let pp = parseFloat(pcpp.total.toFixed(2));
                     let passreq = dailyres.pass;
+                    let bonus = dailyres.bonus;
+                    
                     let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
                     let unstableRate = 0;
                     if (["m300", "m100", "m50", "ur"].some(value => value === passreq[1] || value === bonus[0])) {
@@ -613,7 +615,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
                     let points = 0;
-                    let bonus = dailyres.bonus;
                     const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
                     switch (bonus[0]) {
                         case "score":
@@ -1108,6 +1109,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                         let points = 0;
                         let passreq = dailyres.pass;
+                        let bonus = dailyres.bonus;
+
                         let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
                         let unstableRate = 0;
                         if (["m300", "m100", "m50", "ur"].some(value => value === passreq[1] || bonus.some(b => value === b[0]))) {
@@ -1196,7 +1199,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                         if (!found) points += dailyres.points;
 
-                        let bonus = dailyres.bonus;
                         let bonus_string = '';
                         let mode = ['easy', 'normal', 'hard', 'insane'];
                         const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
