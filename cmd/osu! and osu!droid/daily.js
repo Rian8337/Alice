@@ -6,11 +6,15 @@ const cd = new Set();
 
 function isEligible(member) {
     let res = 0;
-    let eligibleRoleList = config.mute_perm; //mute_permission but used for this command, practically the same
-    eligibleRoleList.forEach((id) => {
-        if (member.roles.cache.has(id[0])) res = id[1]
-    });
-    return res
+    let eligibleRoleList = config.mute_perm; //mute_permission
+    for (const id of eligibleRoleList) {
+        if (res === -1) break;
+        if (member.roles.cache.has(id[0])) {
+            if (id[1] === -1) res = id[1];
+            else res = Math.max(res, id[1]);
+        }
+    }
+    return res;
 }
 
 function timeConvert(num) {
@@ -18,7 +22,7 @@ function timeConvert(num) {
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
     let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":");
 }
 
 function scoreCalc(score, maxscore, accuracy, misscount) {
@@ -46,7 +50,7 @@ function spaceFill(s, l) {
     for (let i = 1; i < l-a; i++) {
         s += ' ';
     }
-    return s
+    return s;
 }
 
 function editPoint(res, page) {
@@ -56,7 +60,7 @@ function editPoint(res, page) {
         else output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 11) + ' | -\n';
     }
     output += `Current Page: ${page}/${Math.ceil(res.length / 20)}`;
-    return output
+    return output;
 }
 
 function challengeRequirements(challengeid, pass, bonus) {
@@ -65,81 +69,81 @@ function challengeRequirements(challengeid, pass, bonus) {
     switch (pass[0]) {
         case "score": {
             pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
-            break
+            break;
         }
         case "acc": {
             pass_string = `Accuracy at least **${pass[1]}%**`;
-            break
+            break;
         }
         case "scorev2": {
             pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
-            break
+            break;
         }
         case "miss": {
             pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
-            break
+            break;
         }
         case "combo": {
             pass_string = `Combo above **${pass[1]}**`;
-            break
+            break;
         }
         case "rank": {
             pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-            break
+            break;
         }
         case "dpp": {
             pass_string = `**${pass[1]}** dpp or more`;
-            break
+            break;
         }
         case "pp": {
             pass_string = `*${pass[1]}** pp or more`;
-            break
+            break;
         }
-        default: pass_string = 'No pass condition'
+        default: pass_string = 'No pass condition';
     }
     if (challengeid.includes("w")) {
         switch (bonus[0]) {
             case "none": {
                 bonus_string += "None";
-                break
+                break;
             }
             case "score": {
                 bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                break
+                break;
             }
             case "acc": {
                 bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                break
+                break;
             }
             case "scorev2": {
                 bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
-                break
+                break;
             }
             case "miss": {
                 bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                break
+                break;
             }
             case "mod": {
                 bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
-                break
+                break;
             }
             case "combo": {
                 bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                break
+                break;
             }
             case "rank": {
                 bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                break
+                break;
             }
             case "dpp": {
                 bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                break
+                break;
             }
             case "pp": {
                 bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
-                break
+                break;
             }
-            default: bonus_string += "No bonuses available"
+            default: bonus_string += "No bonuses available";
         }
     }
     else {
@@ -149,51 +153,51 @@ function challengeRequirements(challengeid, pass, bonus) {
             switch (bonus[i][0]) {
                 case "none": {
                     bonus_string += "None";
-                    break
+                    break;
                 }
                 case "score": {
                     bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "acc": {
                     bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "scorev2": {
                     bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "miss": {
                     bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "mod": {
                     bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "combo": {
                     bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "rank": {
                     bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "dpp": {
                     bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 case "pp": {
                     bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
-                    break
+                    break;
                 }
                 default:
-                    bonus_string += "No bonuses available"
+                    bonus_string += "No bonuses available";
             }
-            bonus_string += '\n'
+            bonus_string += '\n';
         }
     }
-    return [pass_string, bonus_string]
+    return [pass_string, bonus_string];
 }
 
 /**
@@ -204,8 +208,8 @@ function challengeRequirements(challengeid, pass, bonus) {
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel) return;
-    if (message.author.id != '386742340968120321' && message.guild.id != '316545691545501706' && message.guild.id != '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
+    if (message.channel.type !== "text") return;
+    if (!message.isOwner && message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000') return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     // declaration of variables used in switch cases
     const binddb = maindb.collection("userbind");
@@ -245,7 +249,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             message.channel.send({embed: embed}).catch(console.error);
             cd.add(message.author.id);
             setTimeout(() => {
-                cd.delete(message.author.id)
+                cd.delete(message.author.id);
             }, 5000);
             break;
         }
@@ -261,7 +265,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) {
                     if (args[1]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");	
@@ -273,7 +277,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 pointdb.findOne(query, async (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     let alicecoins = 0;
                     let points = 0;
@@ -293,7 +297,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send({embed: embed}).catch(console.error);
                     cd.add(message.author.id);
                     setTimeout(() => {
-                        cd.delete(message.author.id)
+                        cd.delete(message.author.id);
                     }, 2000);
                 });
             });
@@ -311,7 +315,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             pointdb.find({}, {projection: {_id: 0, uid: 1, points: 1, username: 1, challenges: 1}}).sort(pointsort).toArray((err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res[(page-1)*20]) return message.channel.send("❎ **| Eh, we don't have that many players.**");
                 let output = editPoint(res, page);
@@ -321,7 +325,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
-                                msg.react("⏭️").catch(console.error)
+                                msg.react("⏭️").catch(console.error);
                             });
                         });
                     });
@@ -335,7 +339,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         page = Math.max(1, page - 10);
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     });
 
                     back.on('collect', () => {
@@ -343,7 +347,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         else page--;
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     });
 
                     next.on('collect', () => {
@@ -351,24 +355,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         else page++;
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     });
 
                     forward.on('collect', () => {
                         page = Math.min(page + 10, max_page);
                         output = editPoint(res, page);
                         msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     });
 
                     backward.on("end", () => {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-                    })
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                    });
                 });
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
+                    cd.delete(message.author.id);
                 }, 10000);
             });
             break;
@@ -383,7 +387,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             dailydb.findOne(query, async (err, dailyres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!dailyres) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
                 let pass = dailyres.pass;
@@ -413,7 +417,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 message.channel.send({embed: embed}).catch(console.error);
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
+                    cd.delete(message.author.id);
                 }, 2500);
             });
             break;
@@ -430,7 +434,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.findOne(query, async (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!dailyres) return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
                     let pass = dailyres.pass;
@@ -460,16 +464,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     message.channel.send({embed: embed}).catch(console.error);
                     cd.add(message.author.id);
                     setTimeout(() => {
-                        cd.delete(message.author.id)
+                        cd.delete(message.author.id);
                     }, 2500);
                 });
-                return
+                return;
             }
             query = {discordid: message.author.id};
             binddb.findOne(query, async (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
@@ -483,7 +487,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.findOne(query, async (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!dailyres) return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
                     let timelimit = Math.max(0, dailyres.timelimit - Math.floor(Date.now() / 1000));
@@ -537,37 +541,37 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     switch (passreq[0]) {
                         case "score": {
                             if (score >= passreq[1]) pass = true;
-                            break
+                            break;
                         }
                         case "acc": {
                             if (acc >= parseFloat(passreq[1])) pass = true;
-                            break
+                            break;
                         }
                         case "miss": {
                             if (miss < passreq[1] || !miss) pass = true;
-                            break
+                            break;
                         }
                         case "combo": {
                             if (combo >= passreq[1]) pass = true;
-                            break
+                            break;
                         }
                         case "scorev2": {
                             if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
-                            break
+                            break;
                         }
                         case "rank": {
                             if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                            break
+                            break;
                         }
                         case "dpp": {
                             if (dpp >= parseFloat(passreq[1])) pass = true;
-                            break
+                            break;
                         }
                         case "pp": {
                             if (pp >= parseFloat(passreq[1])) pass = true;
-                            break
+                            break;
                         }
-                        default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
+                        default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**");
                     }
                     if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
                     let points = 0;
@@ -575,35 +579,35 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     switch (bonus[0]) {
                         case "score": {
                             if (score >= bonus[1]) points += bonus[2];
-                            break
+                            break;
                         }
                         case "acc": {
                             if (acc >= bonus[1]) points += bonus[2];
-                            break
+                            break;
                         }
                         case "miss": {
                             if (miss < bonus[1] || !miss) points += bonus[2];
-                            break
+                            break;
                         }
                         case "combo": {
                             if (combo >= bonus[1]) points += bonus[2];
-                            break
+                            break;
                         }
                         case "scorev2": {
                             if (scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
-                            break
+                            break;
                         }
                         case "mod": {
                             if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
-                            break
+                            break;
                         }
                         case "rank": {
                             if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
-                            break
+                            break;
                         }
                         case "dpp": {
                             if (dpp >= bonus[1]) points += bonus[2];
-                            break
+                            break;
                         }
                         case "pp": {
                             if (pp >= bonus[1]) points += bonus[2];
@@ -613,7 +617,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     pointdb.findOne({discordid: message.author.id}, (err, playerres) => {
                         if (err) {
                             console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         if (playerres) {
                             let challengelist = playerres.challenges;
@@ -624,7 +628,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     bonuscheck = challengelist[i][1];
                                     challengelist[i][1] = bonuscomplete;
                                     found = true;
-                                    break
+                                    break;
                                 }
                             }
                             if (!bonuscheck && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
@@ -649,9 +653,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Player points updated")
+                                console.log("Player points updated");
                             })
                         } else {
                             points += dailyres.points;
@@ -674,7 +678,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
-                                console.log("Player points added")
+                                console.log("Player points added");
                             })
                         }
                         if (clan) {
@@ -693,24 +697,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         console.log(err);
                                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                     }
-                                    console.log("Clan power points updated")
-                                })
-                            })
+                                    console.log("Clan power points updated");
+                                });
+                            });
                         }
-                    })
+                    });
                 });
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
-                }, 5000)
+                    cd.delete(message.author.id);
+                }, 5000);
             });
-            break
+            break;
         }
         case "start": {
             // starts a challenge, useful if bot somehow
             // fails to start one. Restricted to specific
             // people only
-            if (message.author.id != '386742340968120321' && message.author.id != '132783516176875520' && !message.author.bot) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+            if (!message.isOwner && !message.author.bot) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
             let challengeid = args[1];
             if (!challengeid) return message.channel.send("❎ **| Hey, I don't know which challenge to start!**");
 
@@ -718,7 +722,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             dailydb.findOne(query, async (err, dailyres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!dailyres) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge!**");
                 if (dailyres.status != 'scheduled') return message.channel.send("❎ **| I'm sorry, this challenge is ongoing or has been finished!**");
@@ -757,9 +761,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.updateOne({challengeid: previous_challenge}, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    console.log("Challenge data updated")
+                    console.log("Challenge data updated");
                 });
 
                 if (challengeid.includes("w")) updateVal = {
@@ -777,12 +781,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    console.log("Challenge started")
-                })
+                    console.log("Challenge started");
+                });
             });
-            break
+            break;
         }
         case "manual": {
             // manual submission in case submission
@@ -799,7 +803,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
@@ -809,7 +813,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.findOne(query, (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!dailyres) return message.channel.send("❎ **| I'm sorry, that challenge doesn't exist!**");
                     if (!dailyres.status.includes("ongoing")) return message.channel.send("❎ **| I'm sorry, that challenge is not ongoing now!**");
@@ -822,25 +826,29 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         case "easy": {
                             bonus = dailyres.bonus[0];
                             index = 1;
-                            break
+                            break;
                         }
                         case "normal": {
                             bonus = dailyres.bonus[1];
                             index = 2;
-                            break
+                            break;
                         }
                         case "hard": {
                             bonus = dailyres.bonus[2];
                             index = 3;
-                            break
+                            break;
                         }
                         case "insane": {
                             if (challengeid.includes("w")) bonus = dailyres.bonus;
                             else bonus = dailyres.bonus[3];
-                            if (challengeid.includes("d") && !bonus) return message.channel.send("❎ **| I'm sorry, `insane` bonus type is only available for weekly challenges!**");
-                            if (challengeid.includes("d")) index = 4;
+                            if (challengeid.includes("d")) {
+                                if (!bonus) {
+                                    return message.channel.send("❎ **| I'm sorry, `insane` bonus type is only available for weekly challenges!**");
+                                }
+                                index = 4;
+                            }
                             else index = 1;
-                            break
+                            break;
                         }
                     }
                     let points = 0;
@@ -851,7 +859,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     pointdb.findOne({discordid: user.id}, (err, playerres) => {
                         if (err) {
                             console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         let bonuslist;
                         if (playerres) {
@@ -859,22 +867,25 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             let found = false;
                             let bonuscheck = false;
                             for (let i = 0; i < challengelist.length; i++) {
-                                if (challengelist[i][0] == challengeid) {
+                                if (challengelist[i][0] === challengeid) {
                                     bonuscheck = challengelist[i][index];
                                     challengelist[i][index] = bonuscomplete;
                                     found = true;
-                                    break
+                                    break;
                                 }
                             }
                             if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, that user has completed this challenge or bonus type! Please wait for the next one to start or submit another bonus type!**");
                             if (!found) {
                                 points += dailyres.points;
                                 if (!challengeid.includes("w")) {
-                                    bonuslist = [challengeid, false, false, false];
-                                    bonuslist[index] = bonuscomplete
+                                    bonuslist = [challengeid];
+                                    for (let i = 0; i < dailyres.bonus.length; i++) {
+                                        bonuslist.push(false);
+                                    }
+                                    bonuslist[index] = bonuscomplete;
                                 }
                                 else bonuslist = [challengeid, bonuscomplete];
-                                challengelist.push(bonuslist)
+                                challengelist.push(bonuslist);
                             }
                             let totalpoint = playerres.points + points;
                             let alicecoins = playerres.alicecoins + points * 2;
@@ -891,16 +902,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.updateOne({discordid: user.id}, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Player points updated")
+                                console.log("Player points updated");
                             })
                         }
                         else {
                             points += dailyres.points;
                             if (!challengeid.includes("w")) {
-                                bonuslist = [challengeid, false, false, false];
-                                bonuslist[index] = bonuscomplete
+                                bonuslist = [challengeid];
+                                for (let i = 0; i < dailyres.bonus.length; i++) {
+                                    bonuslist.push(false);
+                                }
+                                bonuslist[index] = bonuscomplete;
                             }
                             else bonuslist = [challengeid, bonuscomplete];
                             message.channel.send(`✅ **| ${user}, congratulations! You have completed challenge \`${challengeid}\`${bonuscomplete ? ` and \`${mode}\` bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
@@ -921,16 +935,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Player points added")
+                                console.log("Player points added");
                             })
                         }
                         if (clan) {
                             clandb.findOne({name: clan}, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 updateVal = {
                                     $set: {
@@ -940,20 +954,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 clandb.updateOne({name: clan}, updateVal, err => {
                                     if (err) {
                                         console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
-                                    console.log("Clan power points updated")
-                                })
-                            })
+                                    console.log("Clan power points updated");
+                                });
+                            });
                         }
-                    })
+                    });
                 });
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
-                }, 2500)
+                    cd.delete(message.author.id);
+                }, 2500);
             });
-            break
+            break;
         }
         case "checksubmit": {
             // allows users to see who has submitted plays for specific challenge.
@@ -966,17 +980,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res) return message.channel.send(`❎ **| Uid ${uid} has never played any challenge before.**`);
                 const challenges = res.challenges;
                 for (const challenge of challenges) {
                     if (challenge[0] !== challengeid) continue;
-                    return message.channel.send(`✅ **| Uid ${uid} has played challenge \`${challengeid}\`.**`)
+                    return message.channel.send(`✅ **| Uid ${uid} has played challenge \`${challengeid}\`.**`);
                 }
-                message.channel.send(`❎ **| Uid ${uid} has not played challenge \`${challengeid}\` or a challenge with that challenge ID does not exist.**`)
+                message.channel.send(`❎ **| Uid ${uid} has not played challenge \`${challengeid}\` or a challenge with that challenge ID does not exist.**`);
             });
-            break
+            break;
         }
         default: {
             // if args[0] is not defined, will
@@ -985,7 +999,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             binddb.findOne(query, async (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
@@ -1000,7 +1014,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 dailydb.findOne(query, (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!dailyres) return message.channel.send("❎ **| I'm sorry, there is no ongoing challenge now!**");
                     let challengeid = dailyres.challengeid;
@@ -1029,7 +1043,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     pointdb.findOne({discordid: message.author.id}, async (err, playerres) => {
                         if (err) {
                             console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         found = false;
                         let bonuslist = [challengeid, false, false, false, false];
@@ -1041,7 +1055,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (challengelist[k][0] == challengeid) {
                                     bonuslist = challengelist[k];
                                     found = true;
-                                    break
+                                    break;
                                 }
                             }
                         }
@@ -1070,37 +1084,37 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         switch (passreq[0]) {
                             case "score": {
                                 if (score >= passreq[1]) pass = true;
-                                break
+                                break;
                             }
                             case "acc": {
                                 if (acc >= parseFloat(passreq[1])) pass = true;
-                                break
+                                break;
                             }
                             case "miss": {
                                 if (miss < passreq[1] || !miss) pass = true;
-                                break
+                                break;
                             }
                             case "combo": {
                                 if (combo >= passreq[1]) pass = true;
-                                break
+                                break;
                             }
                             case "scorev2": {
                                 if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
-                                break
+                                break;
                             }
                             case "rank": {
                                 if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
-                                break
+                                break;
                             }
                             case "dpp": {
                                 if (dpp >= parseFloat(passreq[1])) pass = true;
-                                break
+                                break;
                             }
                             case "pp": {
                                 if (pp >= parseFloat(passreq[1])) pass = true;
-                                break
+                                break;
                             }
-                            default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**")
+                            default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**");
                         }
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
                         if (!found && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
@@ -1120,75 +1134,75 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     if (modFulfilled && score >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "scorev2": {
                                     if (modFulfilled && scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
                                         points += bonus[i][3];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "mod": {
                                     if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[i][1])) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "acc": {
                                     if (modFulfilled && acc >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "combo": {
                                     if (modFulfilled && combo >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "miss": {
                                     if (modFulfilled && miss < bonus[i][1] || !miss) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "rank": {
                                     if (modFulfilled && rankConvert(rank) >= rankConvert(bonus[i][1])) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "dpp": {
                                     if (modFulfilled && dpp >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
-                                    break
+                                    break;
                                 }
                                 case "pp": {
                                     if (modFulfilled && pp >= bonus[i][1]) {
                                         points += bonus[i][2];
                                         bonuslist[i + 1] = true;
-                                        complete = true
+                                        complete = true;
                                     }
                                 }
                             }
-                            if (complete) bonus_string += `${mode[i]} `
+                            if (complete) bonus_string += `${mode[i]} `;
                         }
                         if (bonus_string) bonus_string = ` and \`${bonus_string.trimRight().split(" ").join(", ")}\` bonus`;
                         if (playerres) {
@@ -1209,9 +1223,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Player points updated")
+                                console.log("Player points updated");
                             })
                         }
                         else {
@@ -1233,16 +1247,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Player points added")
+                                console.log("Player points added");
                             })
                         }
                         if (clan) {
                             clandb.findOne({name: clan}, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 updateVal = {
                                     $set: {
@@ -1252,19 +1266,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 clandb.updateOne({name: clan}, updateVal, err => {
                                     if (err) {
                                         console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
-                                    console.log("Clan power points updated")
-                                })
-                            })
+                                    console.log("Clan power points updated");
+                                });
+                            });
                         }
-                    })
+                    });
                 });
                 cd.add(message.author.id);
                 setTimeout(() => {
-                    cd.delete(message.author.id)
-                }, 5000)
-            })
+                    cd.delete(message.author.id);
+                }, 5000);
+            });
         }
     }
 };
