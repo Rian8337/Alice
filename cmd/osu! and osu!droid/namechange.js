@@ -20,10 +20,10 @@ function processEmbed(res, page, footer, index) {
     
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); i++) {
         if (!res[i]) break;
-        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation Date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@132783516176875520> and <@386742340968120321>)`)
+        embed.addField(`**${i+1}**. **${res[i].current_username} (${res[i].uid})**`, `**Discord Account**: <@${res[i].discordid}> (${res[i].discordid})\n**Username requested:** ${res[i].new_username}\n**Creation Date**: ${new Date((res[i].cooldown - 86400 * 30) * 1000).toUTCString()}\n[Screenshot Attachment](${res[i].attachment}) (only viewable to <@132783516176875520> and <@386742340968120321>)`);
     }
     
-    return embed
+    return embed;
 }
 
 /**
@@ -58,7 +58,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             namedb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res || res.isProcessed) return message.channel.send("❎ **| I'm sorry, this user does not have an active name change request!**");
                 let cooldown = res.cooldown;
@@ -79,11 +79,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     namedb.updateOne(query, updateVal, err => {
                         if (err) {
                             console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         message.channel.send("❎ **| I'm sorry, this user is not in the server!**");
                     })
-                    return
+                    return;
                 }
 
                 let url = encodeURI(`http://ops.dgsrz.com/api/rename.php?apiKey=${droidapikey}&username=${old_name}&newname=${new_name}`);
@@ -116,9 +116,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     .setColor(16711711)
                                     .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
 
-                                user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error)
+                                user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error);
                             });
-                            return
+                            return;
                         }
 
                         prev_names.push(old_name);
@@ -132,7 +132,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         binddb.updateOne(query, updateVal, err => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
                         });
 
@@ -156,13 +156,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 .setColor(2483712)
                                 .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
 
-                            user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error)
-                        })
-                    })
+                            user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error);
+                        });
+                    });
                 });
-                req.end()
+                req.end();
             });
-            break
+            break;
         }
         case 'deny': {
             if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to do this.**");
@@ -178,7 +178,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             namedb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res || res.isProcessed) return message.channel.send("❎ **| I'm sorry, this user does not have an active name change request!**");
 
@@ -199,7 +199,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 namedb.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!user) return message.channel.send(`✅ **| Successfully denied request with reason \`${reason}\`, however this user is not in the server!**`);
                     message.channel.send(`✅ **| Successfully denied request with reason \`${reason}\`.**`);
@@ -208,16 +208,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setColor(16711711)
                         .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: ${reason}`);
 
-                    user.send(`❎ **| Hey, I would like to inform you that your name change request was denied due to \`${reason}\`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**`, {embed: embed}).catch(console.error)
-                })
+                    user.send(`❎ **| Hey, I would like to inform you that your name change request was denied due to \`${reason}\`. You are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**`, {embed: embed}).catch(console.error);
+                });
             });
-            break
+            break;
         }
         case 'list': {
             namedb.find({isProcessed: false}).sort({cooldown: 1}).toArray((err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (res.length === 0) return message.channel.send("❎ **| I'm sorry, there is no active name change request now!**");
                 
@@ -228,22 +228,22 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
-                                msg.react("⏭️").catch(console.error)
-                            })
-                        })
+                                msg.react("⏭️").catch(console.error);
+                            });
+                        });
                     });
 
-                    let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
-                    let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
-                    let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
-                    let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
+                    const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
+                    const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+                    const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
+                    const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
 
                     backward.on('collect', () => {
                         if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                         page = Math.max(1, page - 10);
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                         embed = processEmbed(res, page, footer, index);
-                        msg.edit({embed: embed}).catch(console.error)
+                        msg.edit({embed: embed}).catch(console.error);
                     });
 
                     back.on('collect', () => {
@@ -251,7 +251,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         --page;
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                         embed = processEmbed(res, page, footer, index);
-                        msg.edit({embed: embed}).catch(console.error)
+                        msg.edit({embed: embed}).catch(console.error);
                     });
 
                     next.on('collect', () => {
@@ -267,29 +267,29 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         page = Math.min(page + 10, Math.ceil(res.length / 10));
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                         embed = processEmbed(res, page, footer, index);
-                        msg.edit({embed: embed}).catch(console.error)
+                        msg.edit({embed: embed}).catch(console.error);
                     });
 
                     backward.on("end", () => {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-                    })
-                })
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                    });
+                });
             });
-            break
+            break;
         }
         default: {
-            if (!(message.channel instanceof Discord.DMChannel)) {
+            if (!(message.channel.type !== "text")) {
                 message.delete({reason: "Prevent email leak"}).catch(console.error);
-                return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**")
+                return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**");
             }
 
             if (args.length !== 2) return message.channel.send("❎ **| Hey, spaces in nicknames are not allowed!**");
 
-            let email = args[0];
+            const email = args[0];
             if (!email) return message.channel.send("❎ **| Hey, please enter your email address!**");
 
-            let new_name = args[1];
+            const new_name = args[1];
             if (!new_name) return message.channel.send("❎ **| Hey, please enter the desired new nickname that you want to use!**");
             if (new_name.length < 2 || new_name.length > 20) return message.channel.send("❎ **| I'm sorry, a username must be at least 2 characters and doesn't exceed 20 characters!**");
             if (hasUnicode(new_name) || !(/^[a-zA-Z0-9_]+$/.test(new_name))) return message.channel.send("❎ **| I'm sorry, usernames can only contain letters, numbers, and underscores!**");
@@ -305,11 +305,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 url.indexOf("jpg", length - 3) === -1 &&
                 url.indexOf("jpeg", length - 4) === -1
             ) return message.channel.send("❎ **| Hey, please provide a valid screenshot!**");
+            if (attachment.size >= 8e6) {
+                return message.channel.send("❎ **| I'm sorry, your screenshot's size is above 8 MB! Please upload a screenshot with smaller size!**");
+            }
 
             binddb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 const uid = res.uid;
@@ -319,7 +322,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 namedb.findOne(query, async (err, nameres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     let cooldown = 0;
                     if (nameres) {
@@ -350,10 +353,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             namedb.updateOne(query, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
-                            })
+                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**");
+                            });
                         } else {
                             insertVal = {
                                 discordid: message.author.id,
@@ -368,14 +371,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             namedb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**")
-                            })
+                                message.channel.send("✅ **| Successfully requested name change. Please wait for it to get reviewed!\n\nRemember to not disable your DMs or else you won't get notified of your name change request status!**");
+                            });
                         }
-                    })
-                })
-            })
+                    });
+                });
+            });
         }
     }
 };
