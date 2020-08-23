@@ -41,7 +41,7 @@ function rankConvert(rank) {
         case "X": return 6;
         case "SH": return 7;
         case "XH": return 8;
-        default: return 0
+        default: return 0;
     }
 }
 
@@ -67,130 +67,139 @@ function challengeRequirements(challengeid, pass, bonus) {
     let pass_string = '';
     let bonus_string = '';
     switch (pass[0]) {
-        case "score": {
+        case "score": 
             pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
             break;
-        }
-        case "acc": {
+        case "acc": 
             pass_string = `Accuracy at least **${pass[1]}%**`;
             break;
-        }
-        case "scorev2": {
-            pass_string = `Score V2 above **${pass[1].toLocaleString()}**`;
+        case "scorev2": 
+            pass_string = `Score V2 at least **${pass[1].toLocaleString()}**`;
             break;
-        }
-        case "miss": {
-            pass_string = pass[1] == 0?"No misses":`Miss count below **${pass[1]}**`;
+        case "miss": 
+            pass_string = pass[1] === 0?"No misses":`Miss count below **${pass[1]}**`;
             break;
-        }
-        case "combo": {
-            pass_string = `Combo above **${pass[1]}**`;
+        case "combo": 
+            pass_string = `Combo at least **${pass[1]}**`;
             break;
-        }
-        case "rank": {
+        case "rank": 
             pass_string = `**${pass[1].toUpperCase()}** rank or above`;
             break;
-        }
-        case "dpp": {
+        case "dpp": 
             pass_string = `**${pass[1]}** dpp or more`;
             break;
-        }
-        case "pp": {
-            pass_string = `*${pass[1]}** pp or more`;
+        case "pp": 
+            pass_string = `**${pass[1]}** pp or more`;
             break;
-        }
+        case "m300": 
+            pass_string = `300 hit results (both normal and geki/katu) at least **${pass[1]}**`;
+            break;
+        case "m100":
+            pass_string = `100 hit results (both normal and katu) less than or equal to **${pass[1]}**`;
+            break;
+        case "m50":
+            pass_string = `50 hit results less than or equal to **${pass[1]}**`;
+            break;
+        case "ur":
+            pass_string = `UR (unstable rate) below or equal to **${pass[1]}**`;
+            break;
         default: pass_string = 'No pass condition';
     }
     if (challengeid.includes("w")) {
         switch (bonus[0]) {
-            case "none": {
+            case "none":
                 bonus_string += "None";
                 break;
-            }
-            case "score": {
-                bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+            case "score":
+                bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
                 break;
-            }
-            case "acc": {
-                bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+            case "acc":
+                bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
                 break;
-            }
-            case "scorev2": {
-                bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] == 1?"point":"points"})`;
+            case "scorev2":
+                bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] === 1?"point":"points"})`;
                 break;
-            }
-            case "miss": {
-                bonus_string += `${bonus[1] == 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+            case "miss":
+                bonus_string += `${bonus[1] === 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
                 break;
-            }
-            case "mod": {
-                bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] == 1?"point":"points"})`;
+            case "mod":
+                bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
                 break;
-            }
-            case "combo": {
-                bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+            case "combo":
+                bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
-            }
-            case "rank": {
-                bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+            case "rank":
+                bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
-            }
-            case "dpp": {
-                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+            case "dpp":
+                bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
-            }
-            case "pp": {
-                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] == 1 ? "point" : "points"})`;
+            case "pp":
+                bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
-            }
+            case "m300": 
+                bonus_string += `300 hit results (both normal and geki/katu) at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "m100":
+                bonus_string += `100 hit results (both normal and katu) less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "m50":
+                bonus_string += `50 hit results less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "ur":
+                bonus_string += `UR (unstable rate) below or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
             default: bonus_string += "No bonuses available";
         }
     }
     else {
         let difflist = ["Easy", "Normal", "Hard", "Insane"];
         for (let i = 0; i < bonus.length; i++) {
+            const bonusEntry = bonus[i];
             bonus_string += `${difflist[i]}: `;
-            switch (bonus[i][0]) {
-                case "none": {
+            switch (bonusEntry[0]) {
+                case "none":
                     bonus_string += "None";
                     break;
-                }
-                case "score": {
-                    bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "score":
+                    bonus_string += `Score V1 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "acc": {
-                    bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "acc":
+                    bonus_string += `Accuracy at least **${parseFloat(bonusEntry[1]).toFixed(2)}%** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "scorev2": {
-                    bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] == 1 ? "point" : "points"})`;
+                case "scorev2":
+                    bonus_string += `Score V2 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[3]}__ ${bonusEntry[3] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "miss": {
-                    bonus_string += `${bonus[i][1] == 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "miss":
+                    bonus_string += `${bonusEntry[1] === 0 ? "No misses" : `Miss count below **${bonusEntry[1]}**`} (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "mod": {
-                    bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "mod":
+                    bonus_string += `Usage of **${bonusEntry[1].toUpperCase()}** mod only (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "combo": {
-                    bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "combo":
+                    bonus_string += `Combo at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "rank": {
-                    bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "rank":
+                    bonus_string += `**${bonusEntry[1].toUpperCase()}** rank or above (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "dpp": {
-                    bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "dpp":
+                    bonus_string += `**${bonusEntry[1]}** dpp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
-                case "pp": {
-                    bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] == 1 ? "point" : "points"})`;
+                case "pp":
+                    bonus_string += `**${bonusEntry[1]}** pp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
-                }
+                case "m300": 
+                    bonus_string += `300 hit results (both normal and geki/katu) at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "m100":
+                    bonus_string += `100 hit results (both normal and katu) less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "m50":
+                    bonus_string += `50 hit results less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "ur":
+                    bonus_string += `UR (unstable rate) below or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    break;
                 default:
                     bonus_string += "No bonuses available";
             }
@@ -496,25 +505,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres.beatmapid;
                     let constrain = dailyres.constrain.toUpperCase();
                     let hash = dailyres.hash;
-                    let found = false;
-                    let score;
-                    let acc;
-                    let mod;
-                    let miss;
-                    let combo;
-                    let rank;
-                    for (let i = 0; i < rplay.length; i++) {
-                        if (rplay[i].hash !== hash) continue;
-                        score = rplay[i].score;
-                        acc = rplay[i].accuracy;
-                        mod = rplay[i].mods;
-                        miss = rplay[i].miss;
-                        combo = rplay[i].combo;
-                        rank = rplay[i].rank;
-                        found = true;
-                        break;
-                    }
-                    if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    const scoreInfo = rplay.find(play => play.hash === hash);
+                    if (!scoreInfo) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    const score = scoreInfo.score;
+                    const acc = scoreInfo.accuracy;
+                    const combo = scoreInfo.combo;
+                    const miss = scoreInfo.miss;
+                    const mod = scoreInfo.mods;
+                    const rank = scoreInfo.rank;
                     const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch challenge beatmap info! Perhaps osu! API is down?**");
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
@@ -522,98 +520,142 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                     let npp = osudroid.ppv2({
                         stars: star.droid_stars,
-                        combo: combo,
-                        acc_percent: acc,
-                        miss: miss,
+                        combo: scoreInfo.combo,
+                        acc_percent: scoreInfo.accuracy,
+                        miss: scoreInfo.miss,
                         mode: osudroid.modes.droid
                     });
                     let pcpp = osudroid.ppv2({
                         stars: star.pc_stars,
-                        combo: combo,
-                        acc_percent: acc,
-                        miss: miss,
+                        combo: scoreInfo.combo,
+                        acc_percent: scoreInfo.acc,
+                        miss: scoreInfo.miss,
                         mode: osudroid.modes.osu
                     });
                     let dpp = parseFloat(npp.total.toFixed(2));
                     let pp = parseFloat(pcpp.total.toFixed(2));
                     let passreq = dailyres.pass;
+                    let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
+                    let unstableRate = 0;
+                    if (["m300", "m100", "m50", "ur"].some(value => value === passreq[1] || value === bonus[0])) {
+                        data = await data.analyze();
+                        if (!data.fixed_odr) {
+                            return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
+                        }
+                        if (passreq[1] === "ur" || bonus[0] === "ur") {
+                            const hit_object_data = data.data.hit_object_data;
+                            let hit_error_total = 0;
+
+                            for (const hit_object of hit_object_data) {
+                                if (hit_object.result === osudroid.hitResult.RESULT_0) continue;
+                                hit_error_total = hit_object.accuracy;
+                            }
+                            
+                            const mean = hit_error_total / hit_object_data.length;
+
+                            let std_deviation = 0;
+                            for (const hit_object of hit_object_data)
+                                if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+
+                            unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+                        }
+                        if (data.penalty > 1) {
+                            npp = osudroid.ppv2({
+                                stars: star.droid_stars,
+                                combo: scoreInfo.combo,
+                                acc_percent: scoreInfo.accuracy,
+                                miss: scoreInfo.miss,
+                                mode: osudroid.modes.droid,
+                                speed_penalty: data.penalty
+                            });
+                            dpp = parseFloat(npp.total.toFixed(2));
+                        }
+                    }
                     let pass = false;
                     switch (passreq[0]) {
-                        case "score": {
+                        case "score":
                             if (score >= passreq[1]) pass = true;
                             break;
-                        }
-                        case "acc": {
+                        case "acc":
                             if (acc >= parseFloat(passreq[1])) pass = true;
                             break;
-                        }
-                        case "miss": {
+                        case "miss":
                             if (miss < passreq[1] || !miss) pass = true;
                             break;
-                        }
-                        case "combo": {
+                        case "combo":
                             if (combo >= passreq[1]) pass = true;
                             break;
-                        }
-                        case "scorev2": {
+                        case "scorev2":
                             if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
                             break;
-                        }
-                        case "rank": {
+                        case "rank":
                             if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
                             break;
-                        }
-                        case "dpp": {
+                        case "dpp":
                             if (dpp >= parseFloat(passreq[1])) pass = true;
                             break;
-                        }
-                        case "pp": {
+                        case "pp":
                             if (pp >= parseFloat(passreq[1])) pass = true;
                             break;
-                        }
+                        case "m300":
+                            if (data.data.hit300 + data.data.hit300k >= parseInt(passreq[1])) pass = true;
+                            break;
+                        case "m100":
+                            if (data.data.hit100 + data.data.hit100k <= parseInt(passreq[1])) pass = true;
+                            break;
+                        case "m50":
+                            if (data.data.hit50 <= parseInt(passreq[1])) pass = true;
+                            break;
+                        case "ur":
+                            if (unstableRate <= parseFloat(passreq[1])) pass = true;
+                            break;
                         default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**");
                     }
                     if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
                     let points = 0;
                     let bonus = dailyres.bonus;
+                    const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
                     switch (bonus[0]) {
-                        case "score": {
-                            if (score >= bonus[1]) points += bonus[2];
+                        case "score":
+                            if (modFulfilled && score >= bonus[1]) points += bonus[2];
                             break;
-                        }
-                        case "acc": {
-                            if (acc >= bonus[1]) points += bonus[2];
+                        case "acc":
+                            if (modFulfilled && acc >= bonus[1]) points += bonus[2];
                             break;
-                        }
-                        case "miss": {
-                            if (miss < bonus[1] || !miss) points += bonus[2];
+                        case "miss":
+                            if (modFulfilled && miss < bonus[1] || !miss) points += bonus[2];
                             break;
-                        }
-                        case "combo": {
-                            if (combo >= bonus[1]) points += bonus[2];
+                        case "combo":
+                            if (modFulfilled && combo >= bonus[1]) points += bonus[2];
                             break;
-                        }
-                        case "scorev2": {
-                            if (scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
+                        case "scorev2":
+                            if (modFulfilled && scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
                             break;
-                        }
-                        case "mod": {
+                        case "mod":
                             if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
                             break;
-                        }
-                        case "rank": {
-                            if (rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
+                        case "rank":
+                            if (modFulfilled && rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
                             break;
-                        }
-                        case "dpp": {
-                            if (dpp >= bonus[1]) points += bonus[2];
+                        case "dpp":
+                            if (modFulfilled && dpp >= bonus[1]) points += bonus[2];
                             break;
-                        }
-                        case "pp": {
-                            if (pp >= bonus[1]) points += bonus[2];
-                        }
+                        case "pp":
+                            if (modFulfilled && pp >= bonus[1]) points += bonus[2];
+                        case "m300":
+                            if (data.data.hit300 + data.data.hit300k >= parseInt(bonus[1])) points += bonus[2];
+                            break;
+                        case "m100":
+                            if (data.data.hit100 + data.data.hit100k <= parseInt(bonus[1])) points += bonus[2];
+                            break;
+                        case "m50":
+                            if (data.data.hit50 <= parseInt(bonus[1])) points += bonus[2];
+                            break;
+                        case "ur":
+                            if (unstableRate <= parseFloat(bonus[1])) points += bonus[2];
+                            break;
                     }
-                    let bonuscomplete = points != 0 || bonus[0].toLowerCase() == 'none';
+                    let bonuscomplete = points !== 0 || bonus[0].toLowerCase() === 'none';
                     pointdb.findOne({discordid: message.author.id}, (err, playerres) => {
                         if (err) {
                             console.log(err);
@@ -621,7 +663,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
                         if (playerres) {
                             let challengelist = playerres.challenges;
-                            found = false;
+                            let found = false;
                             let bonuscheck = false;
                             for (let i = 0; i < challengelist.length; i++) {
                                 if (challengelist[i][0] == challengeid) {
@@ -631,7 +673,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break;
                                 }
                             }
-                            if (!bonuscheck && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                            if (!bonuscheck && ((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                             if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
                             if (!found) {
@@ -679,7 +721,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
                                 console.log("Player points added");
-                            })
+                            });
                         }
                         if (clan) {
                             clandb.findOne({name: clan}, (err, clanres) => {
@@ -823,22 +865,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let mode = args[3];
                     if (mode) mode.toLowerCase();
                     switch (mode) {
-                        case "easy": {
+                        case "easy":
                             bonus = dailyres.bonus[0];
                             index = 1;
                             break;
-                        }
-                        case "normal": {
+                        case "normal":
                             bonus = dailyres.bonus[1];
                             index = 2;
                             break;
-                        }
-                        case "hard": {
+                        case "hard":
                             bonus = dailyres.bonus[2];
                             index = 3;
                             break;
-                        }
-                        case "insane": {
+                        case "insane":
                             if (challengeid.includes("w")) bonus = dailyres.bonus;
                             else bonus = dailyres.bonus[3];
                             if (challengeid.includes("d")) {
@@ -849,13 +888,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             else index = 1;
                             break;
-                        }
                     }
                     let points = 0;
                     if (!bonus) points = 0;
-                    else if (bonus[0] == 'scorev2') points += bonus[3];
+                    else if (bonus[0] === 'scorev2') points += bonus[3];
                     else points += bonus[2];
-                    let bonuscomplete = points != 0;
+                    let bonuscomplete = points !== 0;
                     pointdb.findOne({discordid: user.id}, (err, playerres) => {
                         if (err) {
                             console.log(err);
@@ -938,7 +976,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 console.log("Player points added");
-                            })
+                            });
                         }
                         if (clan) {
                             clandb.findOne({name: clan}, (err, clanres) => {
@@ -1021,31 +1059,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres.beatmapid;
                     let constrain = dailyres.constrain.toUpperCase();
                     let hash = dailyres.hash;
-                    let found = false;
-                    let score;
-                    let acc;
-                    let mod;
-                    let miss;
-                    let combo;
-                    let rank;
-                    for (let i = 0; i < rplay.length; i++) {
-                        if (rplay[i].hash !== hash) continue;
-                        score = rplay[i].score;
-                        acc = rplay[i].accuracy;
-                        mod = rplay[i].mods;
-                        miss = rplay[i].miss;
-                        combo = rplay[i].combo;
-                        rank = rplay[i].rank;
-                        found = true;
-                        break
-                    }
-                    if (!found) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    const scoreInfo = rplay.find(play => play.hash === hash);
+                    if (!scoreInfo) return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
+                    const score = scoreInfo.score;
+                    const acc = scoreInfo.accuracy;
+                    const combo = scoreInfo.combo;
+                    const miss = scoreInfo.miss;
+                    const mod = scoreInfo.mods;
+                    const rank = scoreInfo.rank;
+                    
                     pointdb.findOne({discordid: message.author.id}, async (err, playerres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        found = false;
+                        let found = false;
                         let bonuslist = [challengeid, false, false, false, false];
                         let challengelist = [];
                         let k = 0;
@@ -1060,7 +1088,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                         }
                         const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
-                        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
+                        const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
                         let npp = osudroid.ppv2({
                             stars: star.droid_stars,
                             combo: combo,
@@ -1080,127 +1108,196 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                         let points = 0;
                         let passreq = dailyres.pass;
+                        let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
+                        let unstableRate = 0;
+                        if (["m300", "m100", "m50", "ur"].some(value => value === passreq[1] || bonus.some(b => value === b[0]))) {
+                            data = await data.analyze();
+                            if (!data.fixed_odr) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
+                            }
+                            if (passreq[1] === "ur" || bonus.some(b => b[0] === "ur")) {
+                                const hit_object_data = data.data.hit_object_data;
+                                let hit_error_total = 0;
+
+                                for (const hit_object of hit_object_data) {
+                                    if (hit_object.result === osudroid.hitResult.RESULT_0) continue;
+                                    hit_error_total = hit_object.accuracy;
+                                }
+                                
+                                const mean = hit_error_total / hit_object_data.length;
+
+                                let std_deviation = 0;
+                                for (const hit_object of hit_object_data)
+                                    if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+
+                                unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+                            }
+                            if (data.penalty > 1) {
+                                npp = osudroid.ppv2({
+                                    stars: star.droid_stars,
+                                    combo: scoreInfo.combo,
+                                    acc_percent: scoreInfo.accuracy,
+                                    miss: scoreInfo.miss,
+                                    mode: osudroid.modes.droid,
+                                    speed_penalty: data.penalty
+                                });
+                                dpp = parseFloat(npp.total.toFixed(2));
+                            }
+                        }
+
                         let pass = false;
                         switch (passreq[0]) {
-                            case "score": {
+                            case "score":
                                 if (score >= passreq[1]) pass = true;
                                 break;
-                            }
-                            case "acc": {
+                            case "acc":
                                 if (acc >= parseFloat(passreq[1])) pass = true;
                                 break;
-                            }
-                            case "miss": {
+                            case "miss":
                                 if (miss < passreq[1] || !miss) pass = true;
                                 break;
-                            }
-                            case "combo": {
+                            case "combo":
                                 if (combo >= passreq[1]) pass = true;
                                 break;
-                            }
-                            case "scorev2": {
+                            case "scorev2":
                                 if (scoreCalc(score, passreq[2], acc, miss) >= passreq[1]) pass = true;
                                 break;
-                            }
-                            case "rank": {
+                            case "rank":
                                 if (rankConvert(rank) >= rankConvert(passreq[1])) pass = true;
                                 break;
-                            }
-                            case "dpp": {
+                            case "dpp":
                                 if (dpp >= parseFloat(passreq[1])) pass = true;
                                 break;
-                            }
-                            case "pp": {
+                            case "pp":
                                 if (pp >= parseFloat(passreq[1])) pass = true;
                                 break;
-                            }
+                            case "m300":
+                                if (data.data.hit300 + data.data.hit300k >= parseInt(passreq[1])) pass = true;
+                                break;
+                            case "m100":
+                                if (data.data.hit100 + data.data.hit100k <= parseInt(passreq[1])) pass = true;
+                                break;
+                            case "m50":
+                                if (data.data.hit50 <= parseInt(passreq[1])) pass = true;
+                                break;
+                            case "ur":
+                                if (unstableRate <= parseFloat(passreq[1])) pass = true;
+                                break;
                             default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**");
                         }
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                        if (!found && (mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                        if (
+                            !found && 
+                            (
+                                (osudroid.mods.modbits_from_string(mod) & (osudroid.mods.nf | osudroid.mods.ez | osudroid.mods.ht)) ||
+                                (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain))
+                            )
+                        ) pass = false;
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                         if (!found) points += dailyres.points;
 
                         let bonus = dailyres.bonus;
                         let bonus_string = '';
                         let mode = ['easy', 'normal', 'hard', 'insane'];
+                        const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
                         for (let i = 0; i < bonus.length; i++) {
-                            if (bonus[i][0] == 'none') bonuslist[i + 1] = true;
+                            const bonusEntry = bonus[i];
+                            if (bonusEntry[0] === 'none') bonuslist[i + 1] = true;
                             if (bonuslist[i + 1]) continue;
                             let complete = false;
-                            const modFulfilled = !(mod.includes("NF") || mod.includes("EZ") || mod.includes("HT") || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
-                            switch (bonus[i][0]) {
-                                case "score": {
-                                    if (modFulfilled && score >= bonus[i][1]) {
-                                        points += bonus[i][2];
+                            switch (bonusEntry[0]) {
+                                case "score":
+                                    if (modFulfilled && score >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "scorev2": {
-                                    if (modFulfilled && scoreCalc(score, bonus[i][2], acc, miss) >= bonus[i][1]) {
-                                        points += bonus[i][3];
+                                case "scorev2":
+                                    if (modFulfilled && scoreCalc(score, bonusEntry[2], acc, miss) >= bonusEntry[1]) {
+                                        points += bonusEntry[3];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "mod": {
-                                    if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[i][1])) {
-                                        points += bonus[i][2];
+                                case "mod":
+                                    if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonusEntry[1])) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "acc": {
-                                    if (modFulfilled && acc >= bonus[i][1]) {
-                                        points += bonus[i][2];
+                                case "acc":
+                                    if (modFulfilled && acc >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "combo": {
-                                    if (modFulfilled && combo >= bonus[i][1]) {
-                                        points += bonus[i][2];
+                                case "combo":
+                                    if (modFulfilled && combo >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "miss": {
-                                    if (modFulfilled && miss < bonus[i][1] || !miss) {
-                                        points += bonus[i][2];
+                                case "miss":
+                                    if (modFulfilled && miss < bonusEntry[1] || !miss) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "rank": {
-                                    if (modFulfilled && rankConvert(rank) >= rankConvert(bonus[i][1])) {
-                                        points += bonus[i][2];
+                                case "rank":
+                                    if (modFulfilled && rankConvert(rank) >= rankConvert(bonusEntry[1])) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "dpp": {
-                                    if (modFulfilled && dpp >= bonus[i][1]) {
-                                        points += bonus[i][2];
+                                case "dpp":
+                                    if (modFulfilled && dpp >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
-                                }
-                                case "pp": {
-                                    if (modFulfilled && pp >= bonus[i][1]) {
-                                        points += bonus[i][2];
+                                case "pp":
+                                    if (modFulfilled && pp >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
                                         complete = true;
                                     }
-                                }
+                                    break;
+                                case "m300":
+                                    if (modFulfilled && data.data.hit300 + data.data.hit300k >= bonusEntry[1]) {
+                                        points += bonusEntry[2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true;
+                                    }
+                                    break;
+                                case "m100":
+                                    if (modFulfilled && data.data.hit100 + data.data.hit100k <= bonusEntry[1]) {
+                                        points += bonusEntry[2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true;
+                                    }
+                                    break;
+                                case "m50":
+                                    if (modFulfilled && data.data.hit50 <= bonusEntry[1]) {
+                                        points += bonusEntry[2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true;
+                                    }
+                                    break;
+                                case "mur":
+                                    if (modFulfilled && unstableRate <= bonusEntry[1]) {
+                                        points += bonusEntry[2];
+                                        bonuslist[i + 1] = true;
+                                        complete = true;
+                                    }
+                                    break;
+                                
                             }
                             if (complete) bonus_string += `${mode[i]} `;
                         }
