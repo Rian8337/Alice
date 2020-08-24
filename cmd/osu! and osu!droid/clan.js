@@ -820,6 +820,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         {
                                             id: message.author.id,
                                             rank: player.rank,
+                                            uid: player.uid,
                                             hasPermission: true,
                                             battle_cooldown: 0
                                         }
