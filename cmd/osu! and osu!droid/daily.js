@@ -550,7 +550,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             for (const hit_object of hit_object_data) {
                                 if (hit_object.result === osudroid.hitResult.RESULT_0) continue;
-                                hit_error_total = hit_object.accuracy;
+                                hit_error_total += hit_object.accuracy;
                             }
                             
                             const mean = hit_error_total / hit_object_data.length;
@@ -1124,7 +1124,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 for (const hit_object of hit_object_data) {
                                     if (hit_object.result === osudroid.hitResult.RESULT_0) continue;
-                                    hit_error_total = hit_object.accuracy;
+                                    hit_error_total += hit_object.accuracy;
                                 }
                                 
                                 const mean = hit_error_total / hit_object_data.length;
@@ -1147,6 +1147,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 dpp = parseFloat(npp.total.toFixed(2));
                             }
                         }
+                        console.log(unstableRate);
 
                         let pass = false;
                         switch (passreq[0]) {
@@ -1211,97 +1212,87 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 case "score":
                                     if (modFulfilled && score >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "scorev2":
                                     if (modFulfilled && scoreCalc(score, bonusEntry[2], acc, miss) >= bonusEntry[1]) {
                                         points += bonusEntry[3];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "mod":
                                     if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonusEntry[1])) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "acc":
                                     if (modFulfilled && acc >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "combo":
                                     if (modFulfilled && combo >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "miss":
                                     if (modFulfilled && miss < bonusEntry[1] || !miss) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "rank":
                                     if (modFulfilled && rankConvert(rank) >= rankConvert(bonusEntry[1])) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "dpp":
                                     if (modFulfilled && dpp >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "pp":
                                     if (modFulfilled && pp >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "m300":
                                     if (modFulfilled && data.data.hit300 + data.data.hit300k >= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "m100":
                                     if (modFulfilled && data.data.hit100 + data.data.hit100k <= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "m50":
                                     if (modFulfilled && data.data.hit50 <= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 case "ur":
                                     if (modFulfilled && unstableRate <= bonusEntry[1]) {
                                         points += bonusEntry[2];
-                                        bonuslist[i + 1] = true;
                                         complete = true;
                                     }
                                     break;
                                 
                             }
-                            if (complete) bonus_string += `${mode[i]} `;
+                            if (complete) {
+                                bonuslist[i + 1] = true;
+                                bonus_string += `${mode[i]} `;
+                            }
                         }
                         if (bonus_string) bonus_string = ` and \`${bonus_string.trimRight().split(" ").join(", ")}\` bonus`;
                         if (playerres) {
