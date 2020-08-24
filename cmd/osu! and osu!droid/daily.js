@@ -1292,7 +1292,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         complete = true;
                                     }
                                     break;
-                                case "mur":
+                                case "ur":
                                     if (modFulfilled && unstableRate <= bonusEntry[1]) {
                                         points += bonusEntry[2];
                                         bonuslist[i + 1] = true;
