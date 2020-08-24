@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
         user = await client.users.fetch(user);
         if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**")
     }
-    embed.setAuthor(`**${user.tag}**`)
+    embed.setAuthor(user.tag)
         .setDescription(`[Avatar Link](${user.avatarURL({dynamic: true, size: 1024})})`)
         .setImage(user.avatarURL({dynamic: true, size: 1024}));
 
