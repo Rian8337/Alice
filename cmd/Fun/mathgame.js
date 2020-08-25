@@ -7,33 +7,35 @@ function timeConvert(num) {
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
     let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":");
 }
 
 function createRandomNumber(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function isPrime(num) {
-    if (num < 2)
+    if (num < 2) {
         return false;
+    }
 
     let sqrt_num = Math.floor(Math.sqrt(num));
-    for (let i = 2; i < sqrt_num; i++)
+    for (let i = 2; i < sqrt_num; i++) {
         if (num % i === 0) return false;
+    }
 
-    return true
+    return true;
 }
 
 function calculateFactorial(num) {
     let result = num;
     while (num > 1) {
         --num;
-        result *= num
+        result *= num;
     }
-    return result
+    return result;
 }
 
 function generateNumber(level, operator) {
@@ -50,72 +52,81 @@ function generateNumber(level, operator) {
 }
 
 function generateEquation(level, operator_amount, callback) {
+    const operators = ['/', '*', '+', '-'];
     let prev_operator_amount = operator_amount;
-    let operators = ['/', '*', '+', '-'];
     let equation = '';
     let real_equation = '';
     let answer = Number.NaN;
     let prime_count = 0;
     let last_operator = '';
     let attempts = 0;
+    const maxThreshold = 10 * level * operator_amount;
+    const minThreshold = maxThreshold / 2;
 
     while (!Number.isInteger(answer)) {
-        if (attempts === 500) break;
+        if (attempts === 500) {
+            break;
+        }
 
         while (operator_amount > 0) {
             const index = Math.floor(Math.random() * operators.length);
-            let operator = operators[index];
+            const operator = operators[index];
             let number = generateNumber(level, operator);
-            let mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
+            const mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
             if (mul_or_div) {
-                while (isPrime(number) && prime_count < Math.floor(level / 10))
+                while (!isPrime(number) && prime_count < Math.floor(level / 10)) {
                     number = generateNumber(level, operator);
-                ++prime_count
+                }
+                ++prime_count;
             }
 
             // use RNG to determine putting factorial
-            let factorial = level > 10 && level + Math.random() * level >= 20;
+            const factorial = level >= 11 && level + Math.random() * level >= 20;
             if (factorial) {
                 // nerf number for factorials
                 number = generateNumber(level, "!");
-                while (number < 2 || number > 4)
-                    number = generateNumber(level, "!")
+                while (number < 2 || number > 4) {
+                    number = generateNumber(level, "!");
+                }
             }
 
             last_operator = operator;
 
             if (factorial) {
                 equation += `${calculateFactorial(number)} ${operator} `;
-                real_equation += `${number}! ${operator} `
+                real_equation += `${number}! ${operator} `;
             } else {
                 equation += `${number} ${operator} `;
-                real_equation += `${number} ${operator} `
+                real_equation += `${number} ${operator} `;
             }
 
-            --operator_amount
+            --operator_amount;
         }
 
         let number = generateNumber(level, last_operator);
-        let mul_or_div = last_operator === '/' || last_operator === '*';
-        if (mul_or_div)
-            while (!isPrime(number) && prime_count < Math.floor(level / 5))
+        const mul_or_div = last_operator === '/' || last_operator === '*';
+        if (mul_or_div) {
+            while (!isPrime(number) && prime_count < Math.floor(level / 5)) {
                 number = generateNumber(level, last_operator);
+            }
+        }
 
         // use RNG to determine putting factorial
-        let factorial = level > 10 && Math.random() >= 1 - level / 25;
+        const factorial = level >= 11 && Math.random() >= 1 - level / 25;
         if (factorial) {
             // nerf number for factorials
             number = generateNumber(level, "!");
-            while (number < 2 || number > 4)
-                number = generateNumber(level, "!")
+            while (number < 2 || number > 4) {
+                number = generateNumber(level, "!");
+            }
         }
 
         if (factorial) {
             equation += calculateFactorial(number);
-            real_equation += `${number}!`
+            real_equation += `${number}!`;
         } else {
             equation += number;
-            real_equation += number
+            real_equation += number;
         }
         answer = eval(equation);
 
@@ -124,23 +135,31 @@ function generateEquation(level, operator_amount, callback) {
         const mul_div_amount = (equation.match(/\//g)||[]).length + (equation.match(/\*/g)||[]).length;
         if (
             !Number.isInteger(answer) ||
-            (level >= 5 && mul_div_amount < min_mul_div_threshold && mul_div_amount > max_mul_div_threshold)
+            // checks if there multiplication or division amount is within threshold range
+            (level >= 5 && mul_div_amount < min_mul_div_threshold && mul_div_amount > max_mul_div_threshold) ||
+            // checks if min < answer < max for positive value
+            (answer > 0 && (answer > maxThreshold || answer < minThreshold)) ||
+            // checks if -max < answer < -min for negative value
+            (answer < 0 && (answer < -maxThreshold || answer > -minThreshold))
         ) {
             answer = Number.NaN;
             equation = '';
             real_equation = '';
-            operator_amount = prev_operator_amount
+            operator_amount = prev_operator_amount;
         }
-        ++attempts
+        ++attempts;
     }
 
-    callback(real_equation, answer)
+    callback(real_equation, answer);
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = (client, message, args) => {
-    let mode = args[0];
-    if (!mode) mode = 'single';
-    mode = mode.toLowerCase();
+    const mode = args[0] && message.channel.type === "text" ? args[0].toLowerCase() : 'single';
 
     switch (mode) {
         case "single":
@@ -151,37 +170,41 @@ module.exports.run = (client, message, args) => {
             if (cd.has(message.channel.id)) return message.channel.send("❎ **| Hey, there is a game ongoing in this channel! Play that one instead!**");
             cd.add(message.channel.id);
             break;
-        default: return message.channel.send("❎ **| I'm sorry, that mode is invalid! Accepted modes are \`single\` and \`multi\`.**")
+        default: return message.channel.send("❎ **| I'm sorry, that mode is invalid! Accepted modes are \`single\` and \`multi\`.**");
     }
 
     let operator_amount = 1;
     let level = 1;
-    let answer_list = [];
-    let prev_equation_list = [];
+    const answer_list = [];
+    const prev_equation_list = [];
     let total_answer = 0;
     let fetch_attempt = 0;
 
     generateEquation(level, operator_amount, function createCollector(equation, answer) {
         if (!equation) {
             ++fetch_attempt;
-            return generateEquation(level, operator_amount, createCollector)
+            return generateEquation(level, operator_amount, createCollector);
         }
         if (!equation && fetch_attempt > 5) {
-            let string = '✅ **| Unfortunately, the equation generator could not generate any equation after 2500 attempts! As a result, the game has ended!**';
+            const string = '✅ **| Unfortunately, the equation generator could not generate any equation after 2500 attempts! As a result, the game has ended!**';
 
             let answer_string = '';
-            answer_list.sort((a, b) => {return b - a});
-            for (let i = 0; i < answer_list.length; i++) answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
+            answer_list.sort((a, b) => {
+                return b - a;
+            });
+            for (let i = 0; i < answer_list.length; i++) {
+                answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
+            }
 
             let rolecheck;
             try {
-                rolecheck = message.member.roles.color.hexColor
+                rolecheck = message.member.roles.color.hexColor;
             } catch (e) {
-                rolecheck = "#000000"
+                rolecheck = "#000000";
             }
-            let footer = config.avatar_list;
+            const footer = config.avatar_list;
             const index = Math.floor(Math.random() * footer.length);
-            let embed = new Discord.MessageEmbed()
+            const embed = new Discord.MessageEmbed()
                 .setTitle("Math Game Statistics")
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setTimestamp(new Date())
@@ -190,32 +213,34 @@ module.exports.run = (client, message, args) => {
 
             return message.channel.send(string, {embed: embed});
         }
-        if (prev_equation_list.includes(equation)) return generateEquation(level, operator_amount, createCollector);
-        else prev_equation_list.push(equation);
+        if (prev_equation_list.includes(equation)) {
+            return generateEquation(level, operator_amount, createCollector);
+        } else {
+            prev_equation_list.push(equation);
+        }
 
         let correct = false;
         fetch_attempt = 0;
 
         let string = '❗**| ';
-        if (mode === 'single') string += `${message.author}, solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
-        else string += `Solve this equation within 30 seconds (level ${level}, ${operator_amount} operator(s))!\n\`${equation} = ...\`**`;
+        if (mode === 'single') {
+            string += `${message.author}, solve this equation within 30 seconds!\n\`Operator count ${operator_amount}, level ${level}\`\n\`${equation} = ...\`**`;
+        } else {
+            string += `Solve this equation within 30 seconds (level ${level}, ${operator_amount} operator(s))!\n\`${equation} = ...\``;
+        }
 
         message.channel.send(string).then(msg => {
-            let collector;
-            switch (mode) {
-                case "single":
-                    collector = message.channel.createMessageCollector(m => parseFloat(m.content) === answer && m.author.id === message.author.id, {time: 30000, max: 1});
-                    break;
-                case "multi":
-                    collector = message.channel.createMessageCollector(m => parseFloat(m.content) === answer, {time: 30000, max: 1})
-            }
+            const collector = mode === "single" ? 
+                message.channel.createMessageCollector(m => parseFloat(m.content) === answer && m.author.id === message.author.id, {time: 30000, max: 1})
+                :
+                message.channel.createMessageCollector(m => parseFloat(m.content) === answer, {time: 30000, max: 1});
 
             collector.on('collect', m => {
                 msg.delete().catch(console.error);
                 correct = true;
-                let timeDiff = Date.now() - msg.createdTimestamp;
+                const timeDiff = Date.now() - msg.createdTimestamp;
 
-                let user_index = answer_list.findIndex(answer => answer.id === m.author.id);
+                const user_index = answer_list.findIndex(answer => answer.id === m.author.id);
                 if (user_index !== -1) {
                     ++answer_list[user_index].count;
                 } else {
@@ -223,37 +248,32 @@ module.exports.run = (client, message, args) => {
                 }
                 ++total_answer;
 
-                if (mode === 'multi') message.channel.send(`✅ **| ${m.author.username} got the correct answer! That took ${timeDiff / 1000}s.\n\`${equation} = ${answer}\`**`);
-                else message.channel.send(`✅ **| ${m.author.username}, you got the correct answer! That took ${timeDiff / 1000}s.\n\`${equation} = ${answer}\`**`);
-                collector.stop()
+                message.channel.send(`✅ **| ${m.author.username} ${mode === "multi" ? "you ": ""}got the correct answer! That took ${timeDiff / 1000}s.\n\`${equation} = ${answer}\`**`);
+                collector.stop();
             });
+
             collector.on('end', () => {
                 if (!correct) {
                     msg.delete().catch(console.error);
-                    let string = '✅ **| ';
-                    switch (mode) {
-                        case 'single':
-                            string += `${message.author}, game ended! The correct answer is:\n\`\`\`fix\n${equation} = ${answer}\`\`\`Game statistics can be found in embed.**`;
-                            cd.delete(message.author.id);
-                            break;
-                        case 'multi':
-                            string += `Game ended! The correct answer is:\n\`\`\`fix\n${equation} = ${answer}\`\`\`Game statistics can be found in embed.**`;
-                            cd.delete(message.channel.id)
-                    }
+                    const string = `✅ **| ${mode === "multi" ? "Game ended!" : `${message.author}, game ended!`} The correct answer is:\n\`\`\`fix\n${equation} = ${answer}\`\`\`Game statistics can be found in embed.**`;
 
                     let answer_string = '';
-                    answer_list.sort((a, b) => {return b.count - a.count});
-                    for (let i = 0; i < answer_list.length; i++) answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
+                    answer_list.sort((a, b) => {
+                        return b - a;
+                    });
+                    for (let i = 0; i < answer_list.length; i++) {
+                        answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
+                    }
 
                     let rolecheck;
                     try {
-                        rolecheck = message.member.roles.color.hexColor
+                        rolecheck = message.member.roles.color.hexColor;
                     } catch (e) {
-                        rolecheck = "#000000"
+                        rolecheck = "#000000";
                     }
-                    let footer = config.avatar_list;
+                    const footer = config.avatar_list;
                     const index = Math.floor(Math.random() * footer.length);
-                    let embed = new Discord.MessageEmbed()
+                    const embed = new Discord.MessageEmbed()
                         .setTitle("Math Game Statistics")
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .setTimestamp(new Date())
@@ -264,17 +284,17 @@ module.exports.run = (client, message, args) => {
                 } else {
                     if (level === 20) {
                         ++operator_amount;
-                        level = 1
+                        level = 1;
                     } else {
-                        ++level
+                        ++level;
                     }
                     setTimeout(() => {
-                        generateEquation(level, operator_amount, createCollector)
-                    }, 500)
+                        generateEquation(level, operator_amount, createCollector);
+                    }, 500);
                 }
-            })
-        })
-    })
+            });
+        });
+    });
 };
 
 module.exports.config = {

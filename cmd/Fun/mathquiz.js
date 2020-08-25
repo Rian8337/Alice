@@ -1,36 +1,39 @@
+const { Client, Message } = require('discord.js');
 let cd = new Set();
 
 function createRandomNumber(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.max(1, Math.floor(Math.random() * (max - min + 1)) + min)
+    return Math.max(1, Math.floor(Math.random() * (max - min + 1)) + min);
 }
 
 function isPrime(num) {
-    if (num < 2)
+    if (num < 2) {
         return false;
+    }
 
     let sqrt_num = Math.floor(Math.sqrt(num));
-    for (let i = 2; i < sqrt_num; i++)
+    for (let i = 2; i < sqrt_num; i++) {
         if (num % i === 0) return false;
-
-    return true
+    }
+    
+    return true;
 }
 
 function calculateFactorial(num) {
     let result = num;
     while (num > 1) {
         --num;
-        result *= num
+        result *= num;
     }
-    return result
+    return result;
 }
 
 function generateNumber(level, operator) {
     switch (operator) {
         case "+":
         case "-":
-            return createRandomNumber(Math.random() * 5 * level / 2, Math.max(5 * level / 2, Math.random() * 15 * level / 2));
+            return createRandomNumber(Math.random() * 2.5 * level, Math.max(2.5 * level, Math.random() * 7.5 * level));
         case "/":
         case "*":
             return createRandomNumber(Math.random() * 5 * Math.max(1, Math.random() * level / 2), Math.random() * 10 * Math.max(1, Math.random() * level / 2));
@@ -40,7 +43,7 @@ function generateNumber(level, operator) {
 }
 
 async function generateEquation(level, operator_amount) {
-    let operators = ['/', '*', '+', '-'];
+    const operators = ['/', '*', '+', '-'];
     let prev_operator_amount = operator_amount;
     let equation = '';
     let real_equation = '';
@@ -48,64 +51,73 @@ async function generateEquation(level, operator_amount) {
     let prime_count = 0;
     let last_operator = '';
     let attempts = 0;
+    const maxThreshold = 10 * level * operator_amount;
+    const minThreshold = maxThreshold / 2;
 
     while (!Number.isInteger(answer)) {
-        if (attempts === 500) break;
+        if (attempts === 500) {
+            break;
+        }
 
         while (operator_amount > 0) {
             const index = Math.floor(Math.random() * operators.length);
-            let operator = operators[index];
+            const operator = operators[index];
             let number = generateNumber(level, operator);
-            let mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
+            const mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
             if (mul_or_div) {
-                while (!isPrime(number) && prime_count < Math.floor(level / 10))
+                while (!isPrime(number) && prime_count < Math.floor(level / 10)) {
                     number = generateNumber(level, operator);
-                ++prime_count
+                }
+                ++prime_count;
             }
 
             // use RNG to determine putting factorial
-            let factorial = level >= 11 && level + Math.random() * level >= 20;
+            const factorial = level >= 11 && level + Math.random() * level >= 20;
             if (factorial) {
                 // nerf number for factorials
                 number = generateNumber(level, "!");
-                while (number < 2 || number > 4)
-                    number = generateNumber(level, "!")
+                while (number < 2 || number > 4) {
+                    number = generateNumber(level, "!");
+                }
             }
 
             last_operator = operator;
 
             if (factorial) {
                 equation += `${calculateFactorial(number)} ${operator} `;
-                real_equation += `${number}! ${operator} `
+                real_equation += `${number}! ${operator} `;
             } else {
                 equation += `${number} ${operator} `;
-                real_equation += `${number} ${operator} `
+                real_equation += `${number} ${operator} `;
             }
 
-            --operator_amount
+            --operator_amount;
         }
 
         let number = generateNumber(level, last_operator);
-        let mul_or_div = last_operator === '/' || last_operator === '*';
-        if (mul_or_div)
-            while (!isPrime(number) && prime_count < Math.floor(level / 5))
+        const mul_or_div = last_operator === '/' || last_operator === '*';
+        if (mul_or_div) {
+            while (!isPrime(number) && prime_count < Math.floor(level / 5)) {
                 number = generateNumber(level, last_operator);
+            }
+        }
 
         // use RNG to determine putting factorial
-        let factorial = level >= 10 && Math.random() >= 1 - level / 25;
+        const factorial = level >= 11 && Math.random() >= 1 - level / 25;
         if (factorial) {
             // nerf number for factorials
             number = generateNumber(level, "!");
-            while (number < 2 || number > 4)
-                number = generateNumber(level, "!")
+            while (number < 2 || number > 4) {
+                number = generateNumber(level, "!");
+            }
         }
 
         if (factorial) {
             equation += calculateFactorial(number);
-            real_equation += `${number}!`
+            real_equation += `${number}!`;
         } else {
             equation += number;
-            real_equation += number
+            real_equation += number;
         }
         answer = eval(equation);
 
@@ -114,37 +126,43 @@ async function generateEquation(level, operator_amount) {
         const mul_div_amount = (equation.match(/\//g)||[]).length + (equation.match(/\*/g)||[]).length;
         if (
             !Number.isInteger(answer) ||
-            (level >= 5 && mul_div_amount < min_mul_div_threshold && mul_div_amount > max_mul_div_threshold)
+            // checks if there multiplication or division amount is within threshold range
+            (level >= 5 && mul_div_amount < min_mul_div_threshold && mul_div_amount > max_mul_div_threshold) ||
+            // checks if min < answer < max for positive value
+            (answer > 0 && (answer > maxThreshold || answer < minThreshold)) ||
+            // checks if -max < answer < -min for negative value
+            (answer < 0 && (answer < -maxThreshold || answer > -minThreshold))
         ) {
             answer = Number.NaN;
             equation = '';
             real_equation = '';
             operator_amount = prev_operator_amount;
         }
-        ++attempts
+        ++attempts;
     }
 
-    return [real_equation, answer]
+    return [real_equation, answer];
 }
 
+/**
+ * @param {Client} client 
+ * @param {Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
     if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, you still have an equation to solve! Please solve that one first before creating another equation!**");
-    let level = args[0];
-    if (!level) level = 1;
+    const level = args[0] ? parseInt(args[0]) : 1;
     if (isNaN(level)) return message.channel.send("❎ **| I'm sorry, that's an invalid level!**");
     if (level <= 0 || level > 20) return message.channel.send("❎ **| I'm sorry, level range is from 1-20!**");
-    level = parseInt(level);
 
-    let operator_amount = args[1];
-    if (!operator_amount) operator_amount = 4;
+    const operator_amount = args[1] ? parseInt(args[1]) : 4;
     if (isNaN(operator_amount)) return message.channel.send("❎ **| I'm sorry, that's an invalid operator amount!**");
     if (operator_amount < 1 || operator_amount > 10) return message.channel.send("❎ **| I'm sorry, operator amount range is from 1-10!**");
-    operator_amount = parseInt(operator_amount);
 
-    let val = await generateEquation(level, operator_amount);
-    let equation = val[0];
+    const val = await generateEquation(level, operator_amount);
+    const equation = val[0];
     if (!equation) return message.channel.send("❎ **| I'm sorry, the equation generator had problems generating your equation, please try again!**");
-    let answer = val[1];
+    const answer = val[1];
 
     message.channel.send(`❗**| ${message.author}, here is your equation:\n\`Operator count ${operator_amount}, level ${level}\`\n\`\`\`fix\n${equation} = ...\`\`\`You have 30 seconds to solve it.**`).then(msg => {
         cd.add(message.author.id);
@@ -155,16 +173,16 @@ module.exports.run = async (client, message, args) => {
             correct = true;
             let timeDiff = Date.now() - msg.createdTimestamp;
             message.channel.send(`✅ **| ${message.author}, your answer is correct! It took you ${timeDiff / 1000}s!\n\`\`\`fix\n${equation} = ${answer}\`\`\`**`);
-            cd.delete(message.author.id)
+            cd.delete(message.author.id);
         });
         collector.on('end', () => {
             if (!correct) {
                 msg.delete().catch(console.error);
                 message.channel.send(`❎ **| ${message.author}, timed out. The correct answer is:\n\`\`\`fix\n${equation} = ${answer}\`\`\`**`);
-                cd.delete(message.author.id)
+                cd.delete(message.author.id);
             }
-        })
-    })
+        });
+    });
 };
 
 module.exports.config = {
