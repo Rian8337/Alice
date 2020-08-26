@@ -92,13 +92,13 @@ function challengeRequirements(challengeid, pass, bonus) {
             pass_string = `**${pass[1]}** pp or more`;
             break;
         case "m300": 
-            pass_string = `300 hit results (both normal and geki/katu) at least **${pass[1]}**`;
+            pass_string = `300 hit result at least **${pass[1]}**`;
             break;
         case "m100":
-            pass_string = `100 hit results (both normal and katu) less than or equal to **${pass[1]}**`;
+            pass_string = `100 hit result less than or equal to **${pass[1]}**`;
             break;
         case "m50":
-            pass_string = `50 hit results less than or equal to **${pass[1]}**`;
+            pass_string = `50 hit result less than or equal to **${pass[1]}**`;
             break;
         case "ur":
             pass_string = `UR (unstable rate) below or equal to **${pass[1]}**`;
@@ -138,13 +138,13 @@ function challengeRequirements(challengeid, pass, bonus) {
                 bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
             case "m300": 
-                bonus_string += `300 hit results (both normal and geki/katu) at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                bonus_string += `300 hit result at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
             case "m100":
-                bonus_string += `100 hit results (both normal and katu) less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                bonus_string += `100 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
             case "m50":
-                bonus_string += `50 hit results less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                bonus_string += `50 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
                 break;
             case "ur":
                 bonus_string += `UR (unstable rate) below or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
@@ -189,13 +189,13 @@ function challengeRequirements(challengeid, pass, bonus) {
                     bonus_string += `**${bonusEntry[1]}** pp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
                 case "m300": 
-                    bonus_string += `300 hit results (both normal and geki/katu) at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    bonus_string += `300 hit result at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
                 case "m100":
-                    bonus_string += `100 hit results (both normal and katu) less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    bonus_string += `100 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
                 case "m50":
-                    bonus_string += `50 hit results less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                    bonus_string += `50 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
                     break;
                 case "ur":
                     bonus_string += `UR (unstable rate) below or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
@@ -600,10 +600,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (pp >= parseFloat(passreq[1])) pass = true;
                             break;
                         case "m300":
-                            if (data.data.hit300 + data.data.hit300k >= parseInt(passreq[1])) pass = true;
+                            if (data.data.hit300 >= parseInt(passreq[1])) pass = true;
                             break;
                         case "m100":
-                            if (data.data.hit100 + data.data.hit100k <= parseInt(passreq[1])) pass = true;
+                            if (data.data.hit100 <= parseInt(passreq[1])) pass = true;
                             break;
                         case "m50":
                             if (data.data.hit50 <= parseInt(passreq[1])) pass = true;
@@ -644,10 +644,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         case "pp":
                             if (modFulfilled && pp >= bonus[1]) points += bonus[2];
                         case "m300":
-                            if (data.data.hit300 + data.data.hit300k >= parseInt(bonus[1])) points += bonus[2];
+                            if (data.data.hit300 >= parseInt(bonus[1])) points += bonus[2];
                             break;
                         case "m100":
-                            if (data.data.hit100 + data.data.hit100k <= parseInt(bonus[1])) points += bonus[2];
+                            if (data.data.hit100 <= parseInt(bonus[1])) points += bonus[2];
                             break;
                         case "m50":
                             if (data.data.hit50 <= parseInt(bonus[1])) points += bonus[2];
@@ -1176,10 +1176,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 if (pp >= parseFloat(passreq[1])) pass = true;
                                 break;
                             case "m300":
-                                if (data.data.hit300 + data.data.hit300k >= parseInt(passreq[1])) pass = true;
+                                if (data.data.hit300 >= parseInt(passreq[1])) pass = true;
                                 break;
                             case "m100":
-                                if (data.data.hit100 + data.data.hit100k <= parseInt(passreq[1])) pass = true;
+                                if (data.data.hit100 <= parseInt(passreq[1])) pass = true;
                                 break;
                             case "m50":
                                 if (data.data.hit50 <= parseInt(passreq[1])) pass = true;
@@ -1264,13 +1264,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     break;
                                 case "m300":
-                                    if (modFulfilled && data.data.hit300 + data.data.hit300k >= bonusEntry[1]) {
+                                    if (modFulfilled && data.data.hit300 >= bonusEntry[1]) {
                                         points += bonusEntry[2];
                                         complete = true;
                                     }
                                     break;
                                 case "m100":
-                                    if (modFulfilled && data.data.hit100 + data.data.hit100k <= bonusEntry[1]) {
+                                    if (modFulfilled && data.data.hit100 <= bonusEntry[1]) {
                                         points += bonusEntry[2];
                                         complete = true;
                                     }
