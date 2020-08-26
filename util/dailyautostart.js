@@ -1,15 +1,21 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor((sec - hours * 3600) / 60);
     let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":");
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {string[]} args 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, args, alicedb) => {
     let channel = client.channels.cache.get("546135349533868072");
     let challengeid = args[0];
@@ -20,7 +26,7 @@ module.exports.run = (client, args, alicedb) => {
     dailydb.findOne(query, async (err, dailyres) => {
         if (err) {
             console.log(err);
-            return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!dailyres) return channel.send("❎ **| I'm sorry, I cannot find the challenge!**");
         let pass = dailyres.pass;
@@ -36,135 +42,143 @@ module.exports.run = (client, args, alicedb) => {
         let pass_string = '';
         let bonus_string = '';
         switch (pass[0]) {
-            case "score": {
+            case "score": 
                 pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
-                break
-            }
-            case "acc": {
+                break;
+            case "acc": 
                 pass_string = `Accuracy at least **${pass[1]}%**`;
-                break
-            }
-            case "scorev2": {
+                break;
+            case "scorev2": 
                 pass_string = `Score V2 at least **${pass[1].toLocaleString()}**`;
-                break
-            }
-            case "miss": {
-                pass_string = pass[1] === 0 ? "No misses" : `Miss count below **${pass[1]}**`;
-                break
-            }
-            case "combo": {
+                break;
+            case "miss": 
+                pass_string = pass[1] === 0?"No misses":`Miss count below **${pass[1]}**`;
+                break;
+            case "combo": 
                 pass_string = `Combo at least **${pass[1]}**`;
-                break
-            }
-            case "rank": {
+                break;
+            case "rank": 
                 pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                break
-            }
-            case "dpp": {
+                break;
+            case "dpp": 
                 pass_string = `**${pass[1]}** dpp or more`;
-                break
-            }
-            case "pp": {
+                break;
+            case "pp": 
                 pass_string = `**${pass[1]}** pp or more`;
-                break
-            }
-            default:
-                pass_string = 'No pass condition'
+                break;
+            case "m300": 
+                pass_string = `300 hit result at least **${pass[1]}**`;
+                break;
+            case "m100":
+                pass_string = `100 hit result less than or equal to **${pass[1]}**`;
+                break;
+            case "m50":
+                pass_string = `50 hit result less than or equal to **${pass[1]}**`;
+                break;
+            case "ur":
+                pass_string = `UR (unstable rate) below or equal to **${pass[1]}**`;
+                break;
+            default: pass_string = 'No pass condition';
         }
         if (challengeid.includes("w")) {
             switch (bonus[0]) {
-                case "none": {
+                case "none":
                     bonus_string += "None";
-                    break
-                }
-                case "score": {
-                    bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "acc": {
-                    bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "scorev2": {
-                    bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "miss": {
-                    bonus_string += `${bonus[1] === 0 ? "No misses" : `Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "mod": {
-                    bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "combo": {
+                    break;
+                case "score":
+                    bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
+                    break;
+                case "acc":
+                    bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
+                    break;
+                case "scorev2":
+                    bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] === 1?"point":"points"})`;
+                    break;
+                case "miss":
+                    bonus_string += `${bonus[1] === 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
+                    break;
+                case "mod":
+                    bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
+                    break;
+                case "combo":
                     bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "rank": {
+                    break;
+                case "rank":
                     bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "dpp": {
+                    break;
+                case "dpp":
                     bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                case "pp": {
+                    break;
+                case "pp":
                     bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                    break
-                }
-                default:
-                    bonus_string += "No bonuses available"
+                    break;
+                case "m300": 
+                    bonus_string += `300 hit result at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "m100":
+                    bonus_string += `100 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "m50":
+                    bonus_string += `50 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                    break;
+                case "ur":
+                    bonus_string += `UR (unstable rate) below or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                    break;
+                default: bonus_string += "No bonuses available";
             }
-        } else {
+        }
+        else {
             let difflist = ["Easy", "Normal", "Hard", "Insane"];
             for (let i = 0; i < bonus.length; i++) {
+                const bonusEntry = bonus[i];
                 bonus_string += `${difflist[i]}: `;
-                switch (bonus[i][0]) {
-                    case "none": {
+                switch (bonusEntry[0]) {
+                    case "none":
                         bonus_string += "None";
-                        break
-                    }
-                    case "score": {
-                        bonus_string += `Score V1 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "acc": {
-                        bonus_string += `Accuracy at least **${parseFloat(bonus[i][1]).toFixed(2)}%** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "scorev2": {
-                        bonus_string += `Score V2 at least **${bonus[i][1].toLocaleString()}** (__${bonus[i][3]}__ ${bonus[i][3] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "miss": {
-                        bonus_string += `${bonus[i][1] === 0 ? "No misses" : `Miss count below **${bonus[i][1]}**`} (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "mod": {
-                        bonus_string += `Usage of **${bonus[i][1].toUpperCase()}** mod only (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "combo": {
-                        bonus_string += `Combo at least **${bonus[i][1]}** (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "rank": {
-                        bonus_string += `**${bonus[i][1].toUpperCase()}** rank or above (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "dpp": {
-                        bonus_string += `**${bonus[i][1]}** dpp or more (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
-                    case "pp": {
-                        bonus_string += `**${bonus[i][1]}** pp or more (__${bonus[i][2]}__ ${bonus[i][2] === 1 ? "point" : "points"})`;
-                        break
-                    }
+                        break;
+                    case "score":
+                        bonus_string += `Score V1 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "acc":
+                        bonus_string += `Accuracy at least **${parseFloat(bonusEntry[1]).toFixed(2)}%** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "scorev2":
+                        bonus_string += `Score V2 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[3]}__ ${bonusEntry[3] === 1 ? "point" : "points"})`;
+                        break;
+                    case "miss":
+                        bonus_string += `${bonusEntry[1] === 0 ? "No misses" : `Miss count below **${bonusEntry[1]}**`} (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "mod":
+                        bonus_string += `Usage of **${bonusEntry[1].toUpperCase()}** mod only (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "combo":
+                        bonus_string += `Combo at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "rank":
+                        bonus_string += `**${bonusEntry[1].toUpperCase()}** rank or above (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "dpp":
+                        bonus_string += `**${bonusEntry[1]}** dpp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "pp":
+                        bonus_string += `**${bonusEntry[1]}** pp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "m300": 
+                        bonus_string += `300 hit result at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "m100":
+                        bonus_string += `100 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "m50":
+                        bonus_string += `50 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
+                    case "ur":
+                        bonus_string += `UR (unstable rate) below or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
+                        break;
                     default:
-                        bonus_string += "No bonuses available"
+                        bonus_string += "No bonuses available";
                 }
-                bonus_string += '\n'
+                bonus_string += '\n';
             }
         }
         const curtime = Math.floor(Date.now() / 1000);
@@ -199,11 +213,11 @@ module.exports.run = (client, args, alicedb) => {
         dailydb.updateOne(query, updateVal, err => {
             if (err) {
                 console.log(err);
-                return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                return channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            console.log("Challenge started")
-        })
-    })
+            console.log("Challenge started");
+        });
+    });
 };
 
 module.exports.config = {

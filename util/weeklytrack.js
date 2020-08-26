@@ -3,6 +3,7 @@ const config = require('../config.json');
 const request = require('request');
 const apikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
+const {Db} = require('mongodb');
 
 function fetchScores(hash, page) {
     return new Promise(resolve => {
@@ -11,18 +12,23 @@ function fetchScores(hash, page) {
             if (err || !data) {
                 console.log("Empty response from droid API");
                 page--;
-                resolve(null)
+                resolve(null);
             }
             let entries = [];
             let line = data.split('<br>');
             line.shift();
             for (let i of line) entries.push(i);
             if (!line[0]) resolve(null);
-            else resolve(entries)
-        })
-    })
+            else resolve(entries);
+        });
+    });
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const pointdb = alicedb.collection("playerpoints");
@@ -50,82 +56,88 @@ module.exports.run = (client, maindb, alicedb) => {
         let pass_string = '';
         let bonus_string = '';
         switch (pass[0]) {
-            case "score": {
+            case "score": 
                 pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
-                break
-            }
-            case "acc": {
+                break;
+            case "acc": 
                 pass_string = `Accuracy at least **${pass[1]}%**`;
-                break
-            }
-            case "scorev2": {
+                break;
+            case "scorev2": 
                 pass_string = `Score V2 at least **${pass[1].toLocaleString()}**`;
-                break
-            }
-            case "miss": {
-                pass_string = pass[1] === 0 ? "No misses" : `Miss count below **${pass[1]}**`;
-                break
-            }
-            case "combo": {
+                break;
+            case "miss": 
+                pass_string = pass[1] === 0?"No misses":`Miss count below **${pass[1]}**`;
+                break;
+            case "combo": 
                 pass_string = `Combo at least **${pass[1]}**`;
-                break
-            }
-            case "rank": {
+                break;
+            case "rank": 
                 pass_string = `**${pass[1].toUpperCase()}** rank or above`;
-                break
-            }
-            case "dpp": {
+                break;
+            case "dpp": 
                 pass_string = `**${pass[1]}** dpp or more`;
-                break
-            }
-            case "pp": {
-                pass_string = `*${pass[1]}** pp or more`;
-                break
-            }
-            default: pass_string = 'No pass condition'
+                break;
+            case "pp": 
+                pass_string = `**${pass[1]}** pp or more`;
+                break;
+            case "m300": 
+                pass_string = `300 hit result at least **${pass[1]}**`;
+                break;
+            case "m100":
+                pass_string = `100 hit result less than or equal to **${pass[1]}**`;
+                break;
+            case "m50":
+                pass_string = `50 hit result less than or equal to **${pass[1]}**`;
+                break;
+            case "ur":
+                pass_string = `UR (unstable rate) below or equal to **${pass[1]}**`;
+                break;
+            default: pass_string = 'No pass condition';
         }
         switch (bonus[0]) {
-            case "none": {
+            case "none":
                 bonus_string += "None";
-                break
-            }
-            case "score": {
+                break;
+            case "score":
                 bonus_string += `Score V1 at least **${bonus[1].toLocaleString()}** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
-                break
-            }
-            case "acc": {
+                break;
+            case "acc":
                 bonus_string += `Accuracy at least **${parseFloat(bonus[1]).toFixed(2)}%** (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
-                break
-            }
-            case "scorev2": {
+                break;
+            case "scorev2":
                 bonus_string += `Score V2 at least **${bonus[1].toLocaleString()}** (__${bonus[3]}__ ${bonus[3] === 1?"point":"points"})`;
-                break
-            }
-            case "miss": {
-                bonus_string += `${bonus[1] === 0 ? "No misses" : `Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
-                break
-            }
-            case "mod": {
+                break;
+            case "miss":
+                bonus_string += `${bonus[1] === 0?"No misses":`Miss count below **${bonus[1]}**`} (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
+                break;
+            case "mod":
                 bonus_string += `Usage of **${bonus[1].toUpperCase()}** mod only (__${bonus[2]}__ ${bonus[2] === 1?"point":"points"})`;
-                break
-            }
-            case "combo": {
+                break;
+            case "combo":
                 bonus_string += `Combo at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                break
-            }
-            case "rank": {
+                break;
+            case "rank":
                 bonus_string += `**${bonus[1].toUpperCase()}** rank or above (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                break
-            }
-            case "dpp": {
+                break;
+            case "dpp":
                 bonus_string += `**${bonus[1]}** dpp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                break
-            }
-            case "pp": {
+                break;
+            case "pp":
                 bonus_string += `**${bonus[1]}** pp or more (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
-                break
-            }
-            default: bonus_string += "No bonuses available"
+                break;
+            case "m300": 
+                bonus_string += `300 hit result at least **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "m100":
+                bonus_string += `100 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "m50":
+                bonus_string += `50 hit result less than or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            case "ur":
+                bonus_string += `UR (unstable rate) below or equal to **${bonus[1]}** (__${bonus[2]}__ ${bonus[2] === 1 ? "point" : "points"})`;
+                break;
+            default: bonus_string += "No bonuses available";
         }
         let constrain_string = constrain.length === 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
 
@@ -149,7 +161,7 @@ module.exports.run = (client, maindb, alicedb) => {
         };
         dailydb.updateOne(query, updateVal, err => {
             if (err) return console.log("Cannot update challenge status");
-            console.log("Challenge status updated")
+            console.log("Challenge status updated");
         });
         let nextchallenge = "w" + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) + 1);
         client.utils.get("dailyautostart").run(client, [nextchallenge], alicedb);
@@ -166,30 +178,27 @@ module.exports.run = (client, maindb, alicedb) => {
             pointdb.findOne({uid: bonus_winner_uid}, (err, res) => {
                 if (err) return console.log("Cannot access database");
                 if (userres.clan) {
-                    clandb.findOne({name: userres.clan}, (err, clanres) => {
+                    let updateVal = {
+                        $inc: {
+                            power: 50
+                        }
+                    };
+                    clandb.updateOne({name: userres.clan}, updateVal, err => {
                         if (err) return console.log(err);
-                        let updateVal = {
-                            $set: {
-                                power: 50 + clanres.power
-                            }
-                        };
-                        clandb.updateOne({name: userres.clan}, updateVal, err => {
-                            if (err) return console.log(err);
-                            console.log("Clan data updated")
-                        })
-                    })
+                        console.log("Clan data updated");
+                    });
                 }
                 if (res) {
                     let updateVal = {
-                        $set: {
-                            points: res.points + 15,
-                            alicecoins: res.alicecoins + 30
+                        $inc: {
+                            points: 15,
+                            alicecoins: 30
                         }
                     };
                     pointdb.updateOne({uid: bonus_winner_uid}, updateVal, err => {
                         if (err) return console.log("Cannot access database");
-                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`)
-                    })
+                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`);
+                    });
                 } else {
                     let insertVal = {
                         username: username,
@@ -203,12 +212,12 @@ module.exports.run = (client, maindb, alicedb) => {
                     };
                     pointdb.insertOne(insertVal, err => {
                         if (err) return console.log("Cannot access database");
-                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`)
-                    })
+                        client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`15\` points and ${coin} \`30\` Alice coins!**`);
+                    });
                 }
-            })
-        })
-    })
+            });
+        });
+    });
 };
 
 module.exports.config = {
