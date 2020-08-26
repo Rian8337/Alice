@@ -1,22 +1,15 @@
 const mods = require('./mods');
-const {Readable}  = require('stream');
+const {Readable} = require('stream');
 const {Parse} = require('unzipper');
 const javaDeserialization = require('java-deserialization');
 const request = require('request');
 const ReplayData = require('./ReplayData');
 const CursorData = require('./CursorData');
 const ReplayObjectData = require('./ReplayObjectData');
+const movementType = require('./constants/movementType');
 
 // (internal)
 // constants for replay analyzer
-const CURSOR_ID_DOWN = 0;
-const CURSOR_ID_MOVE = 1;
-const CURSOR_ID_UP = 2;
-
-const RESULT_0 = 1;
-const RESULT_50 = 2;
-const RESULT_100 = 3;
-const RESULT_300 = 4;
 
 const BYTE_LENGTH = 1;
 const SHORT_LENGTH = 2;
@@ -78,7 +71,7 @@ class ReplayAnalyzer {
             return this
         }
         this._parseReplay();
-        return this
+        return this;
     }
 
     /**
