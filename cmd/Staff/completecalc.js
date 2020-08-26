@@ -91,7 +91,10 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 maindb: maindb,
                 alicedb: alicedb
             });
-            if (queue.length > 1) return message.channel.send(`✅ **| ${message.author}, successfully queued <@${ufind}> for calculation. There are currently ${queue.length} ${queue.length === 1 ? "user" : "users"} awaiting for calculation.**`);
+            if (queue.length > 1) {
+                return message.channel.send(`✅ **| ${message.author}, successfully queued <@${ufind}> for calculation. There are currently ${queue.length} ${queue.length === 1 ? "user" : "users"} awaiting for calculation.**`);
+            }
+            message.channel.send(`✅ **| Calculating <@${ufind}>'s account...**`);
         }
         const uid = res.uid;
         const pplist = res.pp ? res.pp : [];
