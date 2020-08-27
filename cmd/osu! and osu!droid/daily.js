@@ -944,7 +944,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 console.log("Player points updated");
-                            })
+                            });
                         }
                         else {
                             points += dailyres.points;
@@ -1239,7 +1239,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     break;
                                 case "miss":
-                                    if (modFulfilled && miss < bonusEntry[1] || !miss) {
+                                    if (modFulfilled && (miss < bonusEntry[1] || !miss)) {
                                         points += bonusEntry[2];
                                         complete = true;
                                     }

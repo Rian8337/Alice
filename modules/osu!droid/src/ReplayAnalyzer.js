@@ -10,7 +10,6 @@ const movementType = require('./constants/movementType');
 
 // (internal)
 // constants for replay analyzer
-
 const BYTE_LENGTH = 1;
 const SHORT_LENGTH = 2;
 const INT_LENGTH = 4;
@@ -68,7 +67,7 @@ class ReplayAnalyzer {
     async analyze() {
         this.fixed_odr = await this._decompress().catch(console.error);
         if (!this.fixed_odr) {
-            return this
+            return this;
         }
         this._parseReplay();
         return this;
@@ -92,7 +91,10 @@ class ReplayAnalyzer {
                 })
                 .on('complete', () => {
                     const result = Buffer.concat(data_array);
-                    if (result.toString("utf8").includes("404 Not Found")) return resolve(null);
+                    if (result.toString("utf8").includes("404 Not Found")) {
+                        console.log("Replay not found");
+                        return resolve(null);
+                    }
                     this.original_odr = result;
                     const stream = new Readable();
                     stream.push(result);
