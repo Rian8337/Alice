@@ -1147,7 +1147,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 dpp = parseFloat(npp.total.toFixed(2));
                             }
                         }
-                        console.log(unstableRate);
 
                         let pass = false;
                         switch (passreq[0]) {
