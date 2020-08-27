@@ -25,7 +25,7 @@ class CursorData {
          * @type {number[]}
          * @description The time during which the cursor is active in milliseconds.
          */
-        this.time = [];
+        this.time = values.time;
 
         /**
          * @type {number[]}
@@ -40,8 +40,8 @@ class CursorData {
         this.y = values.y;
 
         /**
-         * @type {number[]}
-         * @description The movement bitwise type of the cursor instance.
+         * @type {number}
+         * @description The hit result ID.
          */
         this.id = values.id;
     }

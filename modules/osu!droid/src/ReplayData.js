@@ -15,21 +15,21 @@ class ReplayData {
      * @param {string} values.folder_name The folder name containing the beatmap played.
      * @param {string} values.file_name The file name of the beatmap played.
      * @param {string} values.hash MD5 hash of the replay.
-     * @param {number} values.date The epoch date of which the play was set in milliseconds. This will be automatically converted into a `Date` object.
-     * @param {number} values.hit300k The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     * @param {number} values.hit300 The amount of 300s achieved in the play.
-     * @param {number} values.hit100k The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     * @param {number} values.hit100 The amount of 100s achieved in the play.
-     * @param {number} values.hit50 The amount of 50s achieved in the play.
-     * @param {number} values.hit0 The amount of misses achieved in the play.
-     * @param {number} values.score The total score achieved in the play.
-     * @param {number} values.max_combo The maximum combo achieved in the play.
-     * @param {number} values.accuracy The accuracy achieved in the play.
-     * @param {number} values.is_full_combo Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
-     * @param {string} values.player_name The name of the player in the replay.
-     * @param {string} values.raw_mods Enabled modifications in the replay in raw form.
-     * @param {string} values.droid_mods Enabled modifications in the replay in osu!droid form.
-     * @param {string} values.converted_mods Enabled modifications in the replay in osu!standard form.
+     * @param {number} [values.date] The epoch date of which the play was set in milliseconds. This will be automatically converted into a `Date` object.
+     * @param {number} [values.hit300k] The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
+     * @param {number} [values.hit300] The amount of 300s achieved in the play.
+     * @param {number} [values.hit100k] The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
+     * @param {number} [values.hit100] The amount of 100s achieved in the play.
+     * @param {number} [values.hit50] The amount of 50s achieved in the play.
+     * @param {number} [values.hit0] The amount of misses achieved in the play.
+     * @param {number} [values.score] The total score achieved in the play.
+     * @param {number} [values.max_combo] The maximum combo achieved in the play.
+     * @param {number} [values.accuracy] The accuracy achieved in the play.
+     * @param {number} [values.is_full_combo] Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
+     * @param {string} [values.player_name] The name of the player in the replay.
+     * @param {string} [values.raw_mods] Enabled modifications in the replay in raw form.
+     * @param {string} [values.droid_mods] Enabled modifications in the replay in osu!droid form.
+     * @param {string} [values.converted_mods] Enabled modifications in the replay in osu!standard form.
      * @param {CursorData[]} values.cursor_movement The cursor movement data of the replay.
      * @param {ReplayObjectData[]} values.hit_object_data The hitobject data of the replay.
      */
@@ -62,91 +62,91 @@ class ReplayData {
          * @type {Date}
          * @description The date of which the play was set.
          */
-        this.time = new Date(values.time);
+        this.time = new Date(values.time || 0);
 
         /**
          * @type {number}
          * @description The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
          */
-        this.hit300k = values.hit300k;
+        this.hit300k = values.hit300k || 0;
 
         /**
          * @type {number}
          * @description The amount of 300s achieved in the play.
          */
-        this.hit300 = values.hit300;
+        this.hit300 = values.hit300 || 0;
 
         /**
          * @type {number}
          * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
          */
-        this.hit100k = values.hit100k;
+        this.hit100k = values.hit100k || 0;
 
         /**
          * @type {number}
          * @description The amount of 100s achieved in the play.
          */
-        this.hit100 = values.hit100;
+        this.hit100 = values.hit100 || 0;
 
         /**
          * @type {number}
          * @description The amount of 50s achieved in the play.
          */
-        this.hit50 = values.hit50;
+        this.hit50 = values.hit50 || 0;
 
         /**
          * @type {number}
          * @description The amount of misses achieved in the play.
          */
-        this.hit0 = values.hit0;
+        this.hit0 = values.hit0 || 0;
 
         /** 
          * @type {number}
          * @description The total score achieved in the play.
          */
-        this.score = values.score;
+        this.score = values.score || 0;
 
         /**
          * @type {number}
          * @description The maximum combo achieved in the play.
          */
-        this.max_combo = values.max_combo;
+        this.max_combo = values.max_combo || 0;
 
         /**
          * @type {number}
          * @description The accuracy achieved in the play.
          */
-        this.accuracy = values.accuracy;
+        this.accuracy = values.accuracy || 0;
 
         /**
          * @type {number}
          * @description Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
          */
-        this.is_full_combo = values.is_full_combo;
+        this.is_full_combo = values.is_full_combo || 0;
 
         /**
          * @type {number}
          * @description The name of the player in the replay.
          */
-        this.player_name = values.player_name;
+        this.player_name = values.player_name || "";
 
         /** 
          * @type {string}
          * @description Enabled modifications during the play in raw form.
          */
-        this.raw_mods = values.raw_mods;
+        this.raw_mods = values.raw_mods || "";
 
         /**
          * @type {string}
          * @description Enabled modifications during the play in osu!droid form.
          */
-        this.droid_mods = values.droid_mods;
+        this.droid_mods = values.droid_mods || "";
 
         /**
          * @type {string}
          * @description Enabled modifications during the play in osu!standard form.
          */
-        this.converted_mods = values.converted_mods;
+        this.converted_mods = values.converted_mods || "";
 
         /**
          * @type {CursorData[]}
