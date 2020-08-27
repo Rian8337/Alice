@@ -1114,6 +1114,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
                         let unstableRate = 0;
                         if (["m300", "m100", "m50", "ur"].some(value => value === passreq[1] || bonus.some(b => value === b[0]))) {
+                            console.log("Downloading replay");
                             data = await data.analyze();
                             if (!data.fixed_odr) {
                                 return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
