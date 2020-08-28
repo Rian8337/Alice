@@ -3,7 +3,9 @@ const Timing = require('./Timing');
 const HitObject = require('./HitObject');
 const Circle = require('./Circle');
 const Slider = require('./Slider');
-const object_types = require('./object_types');
+const Spinner = require('./Spinner');
+const BreakPoint = require('./BreakPoint');
+const objectTypes = require('./constants/objectTypes');
 
 /**
  * A beatmap parser with just enough data for pp calculation.
@@ -60,9 +62,9 @@ class Parser {
     parse(str) {
         let lines = str.split("\n");
         for (let i = 0; i < lines.length; ++i) {
-            this._process_line(lines[i])
+            this._process_line(lines[i]);
         }
-        return this
+        return this;
     }
 
     /**
@@ -98,7 +100,7 @@ class Parser {
                 this.map.ar = this.map.od
             }
             this.section = line.substring(1, line.length - 1);
-            return this
+            return this;
         }
 
         if (!line) {
@@ -109,6 +111,7 @@ class Parser {
             case "Metadata": this._metadata(); break;
             case "General": this._general(); break;
             case "Difficulty": this._difficulty(); break;
+            case "Events": this._events(); break;
             case "TimingPoints": this._timing_points(); break;
             case "HitObjects": this._objects(); break;
             default:
@@ -195,7 +198,20 @@ class Parser {
         if (p[0] !== "Mode") {
             return;
         }
-        this.map.mode = parseInt(this._setpos(p[1]))
+        this.map.mode = parseInt(this._setpos(p[1]));
+    }
+
+    /**
+     * Processes the events section of a beatmap.
+     * @private
+     */
+    _events() {
+        let s = this.current_line.split(",");
+        if (s[0] !== "2" || s[0] !== "Break") return;
+        this.map.breaks.push(new BreakPoint({
+            startTime: parseInt(this._setpos(s[1])),
+            endTime: parseInt(this._setpos(s[2]))
+        }));
     }
 
     /**
@@ -221,7 +237,7 @@ class Parser {
                 this.map.sv = parseFloat(this._setpos(p[1]));
                 break;
             case "SliderTickRate":
-                this.map.tick_rate = parseFloat(this._setpos(p[1]))
+                this.map.tick_rate = parseFloat(this._setpos(p[1]));
         }
     }
 
@@ -256,16 +272,16 @@ class Parser {
         if (s.length > 11) {
             this._warn("object with trailing values");
         } else if (s.length < 4) {
-            return this._warn("ignoring malformed hitobject")
+            return this._warn("ignoring malformed hitobject");
         }
         let obj = new HitObject({
             time: parseFloat(this._setpos(s[2])),
             type: parseInt(this._setpos(s[3]))
         });
         if (isNaN(obj.time) || isNaN(obj.type)) {
-            return this._warn("ignoring malformed hitobject")
+            return this._warn("ignoring malformed hitobject");
         }
-        if (obj.type & object_types.circle) {
+        if (obj.type & objectTypes.circle) {
             ++this.map.circles;
             d = obj.data = new Circle({
                 pos: [
@@ -274,10 +290,10 @@ class Parser {
                 ]
             });
             if (isNaN(d.pos[0]) || isNaN(d.pos[1])) {
-                return this._warn("ignoring malformed circle")
+                return this._warn("ignoring malformed circle");
             }
         }
-        else if (obj.type & object_types.slider) {
+        else if (obj.type & objectTypes.slider) {
             if (s.length < 8) {
                 return this._warn("ignoring malformed slider");
             }
@@ -294,10 +310,15 @@ class Parser {
                 return this._warn("ignoring malformed slider");
             }
         }
-        else if (obj.type & object_types.spinner) {
-            ++this.map.spinners
+        else if (obj.type & objectTypes.spinner) {
+            ++this.map.spinners;
+            d = obj.data = new Spinner(parseInt(s[5]) - parseInt(s[2]));
+            this._setpos(s[5]);
+            if (isNaN(d.duration)) {
+                return this._warn("ignoring malformed spinner");
+            }
         }
-        this.map.objects.push(obj)
+        this.map.objects.push(obj);
     }
 
     /**
