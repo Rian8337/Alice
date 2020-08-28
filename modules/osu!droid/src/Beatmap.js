@@ -1,6 +1,6 @@
 const HitObject = require('./HitObject');
 const Timing = require('./Timing');
-const object_types = require('./object_types');
+const objectTypes = require('./constants/objectTypes');
 
 /**
  * Represents a beatmap with advanced information.
@@ -159,7 +159,7 @@ class Beatmap {
 
         for (let i = 0; i < this.objects.length; ++i) {
             let obj = this.objects[i];
-            if (!(obj.type & object_types.slider)) {
+            if (!(obj.type & objectTypes.slider)) {
                 continue;
             }
 
