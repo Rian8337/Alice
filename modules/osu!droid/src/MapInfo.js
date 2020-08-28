@@ -253,7 +253,7 @@ class MapInfo {
             let req = https.get(options, res => {
                 res.setEncoding("utf8");
                 res.on("data", chunk => {
-                    content += chunk
+                    content += chunk;
                 });
                 res.on("error", err => {
                     console.log("Error retrieving map info\n" + err);
@@ -263,7 +263,7 @@ class MapInfo {
                 res.on("end", () => {
                     let obj;
                     try {
-                        obj = JSON.parse(content)
+                        obj = JSON.parse(content);
                     } catch (e) {
                         console.log("Error parsing map info");
                         this.error = true;
@@ -312,7 +312,7 @@ class MapInfo {
                     this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
                     this.hash = mapinfo.file_md5;
                     if (!params.file) {
-                        return resolve(this)
+                        return resolve(this);
                     }
                     let url = `https://osu.ppy.sh/osu/${this.beatmap_id}`;
                     request(url, (err, response, data) => {
@@ -326,12 +326,12 @@ class MapInfo {
 
                         this.osu_file = data;
                         this.map = parser.map;
-                        resolve(this)
-                    })
-                })
+                        resolve(this);
+                    });
+                });
             });
-            req.end()
-        })
+            req.end();
+        });
     }
 
     /**
@@ -347,9 +347,9 @@ class MapInfo {
             if (mod.includes("DT")) bpm *= 1.5;
             if (mod.includes("NC")) bpm *= 1.39;
             if (mod.includes("HT")) bpm *= 0.75;
-            if (mod.includes("SU")) bpm *= 1.25
+            if (mod.includes("SU")) bpm *= 1.25;
         }
-        return `${this.bpm}${this.bpm === bpm ? "" : ` (${bpm.toFixed(2)})`}`
+        return `${this.bpm}${this.bpm === bpm ? "" : ` (${bpm.toFixed(2)})`}`;
     }
 
     /**
@@ -367,7 +367,7 @@ class MapInfo {
             case 2: return "Approved";
             case 3: return "Qualified";
             case 4: return "Loved";
-            default: return "Unspecified"
+            default: return "Unspecified";
         }
     }
 
@@ -384,22 +384,22 @@ class MapInfo {
         if (mod) {
             if (mod.includes("DT")) {
                 hitlength = Math.ceil(hitlength / 1.5);
-                maplength = Math.ceil(maplength / 1.5)
+                maplength = Math.ceil(maplength / 1.5);
             }
             if (mod.includes("NC")) {
                 hitlength = Math.ceil(hitlength / 1.39);
-                maplength = Math.ceil(maplength / 1.39)
+                maplength = Math.ceil(maplength / 1.39);
             }
             if (mod.includes("HT")) {
                 hitlength = Math.ceil(hitlength * 4/3);
-                maplength = Math.ceil(maplength * 4/3)
+                maplength = Math.ceil(maplength * 4/3);
             }
             if (mod.includes("SU")) {
                 hitlength = Math.ceil(hitlength / 1.25);
-                maplength = Math.ceil(maplength / 1.25)
+                maplength = Math.ceil(maplength / 1.25);
             }
         }
-        return `${timeString(this.hit_length)}${this.hit_length === hitlength ? "" : ` (${timeString(hitlength)})`}/${timeString(this.total_length)}${this.total_length === maplength ? "" : ` (${timeString(maplength)})`}`
+        return `${timeString(this.hit_length)}${this.hit_length === hitlength ? "" : ` (${timeString(hitlength)})`}/${timeString(this.total_length)}${this.total_length === maplength ? "" : ` (${timeString(maplength)})`}`;
     }
 
     /**
@@ -433,10 +433,10 @@ class MapInfo {
                     else string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < pack_list.length; i++) {
                         string += `[${pack_list[i]}](https://osu.ppy.sh/beatmaps/packs/${pack_list[i]})`;
-                        if (i + 1 < pack_list.length) string += ' - '
+                        if (i + 1 < pack_list.length) string += ' - ';
                     }
                 }
-                return string
+                return string;
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs == mapstat.cs ? "": ` (${mapstat.cs})`} - **AR**: ${this.ar}${this.ar == mapstat.ar ? "": ` (${mapstat.ar})`} - **OD**: ${this.od}${this.od == mapstat.od ? "": ` (${mapstat.od})`} - **HP**: ${this.hp}${this.hp == mapstat.hp ? "": ` (${mapstat.hp})`}`;
             case 3: return `**BPM**: ${this._bpmConvert(mods)} - **Length**: ${this._timeConvert(mods)} - **Max Combo**: ${this.max_combo}x`;
@@ -445,7 +445,7 @@ class MapInfo {
             default: throw {
                 name: "NotSupportedError",
                 message: `This mode (${option}) is not supported`
-            }
+            };
         }
     }
 
@@ -465,7 +465,7 @@ class MapInfo {
             case 2: return 16741376; // Approved: tosca
             case 3: return 5301186; // Qualified: light blue
             case 4: return 16711796; // Loved: pink
-            default: return 0
+            default: return 0;
         }
     }
 
@@ -512,7 +512,7 @@ class MapInfo {
             if (!(object.type & object_types.slider)) {
                 score += Math.floor(300 + 300 * combo * diff_multiplier * score_multiplier / 25);
                 ++combo;
-                continue
+                continue;
             }
             while (object.time >= tnext) {
                 ++tindex;
@@ -545,13 +545,13 @@ class MapInfo {
 
             combo += tick_count + data.repetitions;
             score += Math.floor(300 + 300 * combo * diff_multiplier * score_multiplier / 25);
-            ++combo
+            ++combo;
         }
-        return score
+        return score;
     }
 
     toString() {
-        return `${this.full_title}\nCS: ${this.cs} - AR: ${this.ar} - OD: ${this.od} - HP: ${this.hp}\nBPM: ${this.bpm} - Length: ${this.hit_length}/${this.total_length} - Max Combo: ${this.max_combo}\nLast Update: ${this.last_update}`
+        return `${this.full_title}\nCS: ${this.cs} - AR: ${this.ar} - OD: ${this.od} - HP: ${this.hp}\nBPM: ${this.bpm} - Length: ${this.hit_length}/${this.total_length} - Max Combo: ${this.max_combo}\nLast Update: ${this.last_update}`;
     }
 }
 
@@ -564,7 +564,7 @@ class MapInfo {
  * @returns {string} The parsed time string in `HH:MM:SS` format.
  */
 function timeString(second) {
-    return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":")
+    return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":");
 }
 
 module.exports = MapInfo;
