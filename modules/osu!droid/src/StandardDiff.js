@@ -3,7 +3,7 @@ const StandardDiffHitObject = require('./StandardDiffHitObject');
 const MapStats = require('./MapStats');
 const mods = require('./mods');
 const modes = require('./constants/modes');
-const object_types = require('./object_types');
+const objectTypes = require('./constants/objectTypes');
 
 // (internal)
 // 2D point operations
@@ -75,7 +75,7 @@ class StandardDiff {
          * @type {number}
          * @description Interval threshold in milliseconds for singletaps.
          */
-        this.singletap_threshold = 125
+        this.singletap_threshold = 125;
     }
 
     /**
@@ -145,7 +145,7 @@ class StandardDiff {
      * @private
      */
     _length_bonus(stars, difficulty) {
-        return 0.32 + 0.5 * (Math.log10(difficulty + stars) - Math.log10(stars))
+        return 0.32 + 0.5 * (Math.log10(difficulty + stars) - Math.log10(stars));
     }
 
     /**
@@ -161,7 +161,7 @@ class StandardDiff {
     calculate(params) {
         let map = this.map = params.map || this.map;
         if (!map) {
-            throw new TypeError("no map given")
+            throw new TypeError("no map given");
         }
         let mod = this.mods = params.mods || this.mods;
         let singletap_threshold = this.singletap_threshold
@@ -202,7 +202,7 @@ class StandardDiff {
         this.speed = Math.sqrt(this.speed) * STAR_SCALING_FACTOR;
 
         if (mod & mods.td) {
-            this.aim = Math.pow(this.aim, 0.8)
+            this.aim = Math.pow(this.aim, 0.8);
         }
 
         this.total = this.aim + this.speed;
@@ -226,7 +226,7 @@ class StandardDiff {
             if (this.objects[i].is_single) {
                 ++this.singles;
             }
-            if (!(obj.type & (object_types.circle | object_types.slider))) {
+            if (!(obj.type & (objectTypes.circle | objectTypes.slider))) {
                 continue;
             }
             let interval = (obj.time - prev.time) / stats.speed_multiplier;
@@ -292,7 +292,7 @@ class StandardDiff {
                         delta_time = Math.max(delta_time, DROID_MAX_SPEED_BONUS);
                         break;
                     case modes.osu:
-                        delta_time = Math.max(delta_time, MAX_SPEED_BONUS)
+                        delta_time = Math.max(delta_time, MAX_SPEED_BONUS);
                 }
                 let speed_bonus = 1.0;
                 if (delta_time < MIN_SPEED_BONUS) {
@@ -330,7 +330,7 @@ class StandardDiff {
         throw {
             name: "NotImplementedError",
             message: "this difficulty type does not exist"
-        }
+        };
     }
 
     /**
@@ -354,7 +354,7 @@ class StandardDiff {
 
         diffobj.delta_time = time_elapsed;
 
-        if (obj.type & (object_types.slider | object_types.circle)) {
+        if (obj.type & (objectTypes.slider | objectTypes.circle)) {
             let distance = vec_len(vec_sub(diffobj.normpos, prev_diffobj.normpos));
             diffobj.d_distance = distance;
             if (type === DIFF_SPEED) {
@@ -365,7 +365,7 @@ class StandardDiff {
             value *= WEIGHT_SCALING[type];
         }
 
-        diffobj.strains[type] = prev_diffobj.strains[type] * decay + value
+        diffobj.strains[type] = prev_diffobj.strains[type] * decay + value;
     }
 
     /**
@@ -416,7 +416,7 @@ class StandardDiff {
                 } else {
                     max_strain = 0.0;
                 }
-                interval_end += strain_step
+                interval_end += strain_step;
             }
             max_strain = Math.max(max_strain, diffobjs[i].strains[type])
         }
@@ -485,9 +485,9 @@ class StandardDiff {
             }
 
             let obj = diffobjs[i].obj;
-            if (obj.type & object_types.spinner) {
+            if (obj.type & objectTypes.spinner) {
                 diffobjs[i].normpos = normalized_center.slice();
-            } else if (obj.type & (object_types.slider | object_types.circle)) {
+            } else if (obj.type & (objectTypes.slider | objectTypes.circle)) {
                 diffobjs[i].normpos = vec_mul(obj.data.pos, scaling_vec);
             }
             if (i >= 2) {
