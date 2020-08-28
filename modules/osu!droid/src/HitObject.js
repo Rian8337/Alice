@@ -1,6 +1,7 @@
 const Circle = require('./Circle');
 const Slider = require('./Slider');
-const object_types = require('./object_types');
+const Spinner = require('./Spinner');
+const objectTypes = require('./constants/objectTypes');
 
 /**
  * Represents a hitobject in a beatmap.
@@ -20,7 +21,7 @@ class HitObject {
      * @param {Object} values An object containing the parameters.
      * @param {number} values.time The start time of the object in milliseconds.
      * @param {number} values.type The bitwise type of the hitobject (circle/slider/spinner).
-     * @param {Circle|Slider|null} [values.data] The data of the hitobject (Circle/Slider/`null`).
+     * @param {Circle|Slider|Spinner} [values.data] The data of the hitobject (Circle/Slider/Spinner).
      */
     constructor(values) {
         /**
@@ -37,11 +38,17 @@ class HitObject {
 
         if (values.data) {
             /**
-             * @type {Circle|Slider|null}
-             * @description The data of the hitobject, which can be an instance of `Circle`, `Slider` or `null`.
+             * @type {Circle|Slider|Spinner}
+             * @description The data of the hitobject, which can be an instance of `Circle`, `Slider` or `Spinner`.
              */
-            this.data = values.data
+            this.data = values.data;
         }
+
+        /**
+         * @type {boolean}
+         * @description Whether or not this hitobject represents a new combo in the beatmap.
+         */
+        this.isNewCombo = !!(this.type & 1<<2);
     }
 
     /**
@@ -51,9 +58,9 @@ class HitObject {
      */
     typeStr() {
         let res = '';
-        if (this.type & object_types.circle) res += "circle | ";
-        if (this.type & object_types.slider) res += "slider | ";
-        if (this.type & object_types.spinner) res += "spinner | ";
+        if (this.type & objectTypes.circle) res += "circle | ";
+        if (this.type & objectTypes.slider) res += "slider | ";
+        if (this.type & objectTypes.spinner) res += "spinner | ";
         return res.substring(0, Math.max(0, res.length - 3))
     }
 
