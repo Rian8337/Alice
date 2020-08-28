@@ -15,7 +15,7 @@ declare module "osu-droid" {
         WIP = -1,
         PENDING = 0,
         RANKED = 1,
-        APPRVOED = 2,
+        APPROVED = 2,
         QUALIFIED = 3,
         LOVED = 4
     }
@@ -46,12 +46,12 @@ declare module "osu-droid" {
         /**
          * Great (100).
          */
-        RESULT_100 = 2,
+        RESULT_100 = 3,
 
         /**
          * Good (300).
          */
-        RESULT_300 = 3
+        RESULT_300 = 4
     }
 
     /**
@@ -64,9 +64,6 @@ declare module "osu-droid" {
         mania = 3
     }
 
-    /**
-     * Whether or not an osu!droid replay result is a full combo.
-     */
     export enum replayFullCombo {
         TRUE = 1,
         FALSE = 0
@@ -269,6 +266,10 @@ declare module "osu-droid" {
         toString(): string;
     }
 
+    export class BreakPoint {
+
+    }
+
     /**
      * Represents a circle in a beatmap.
      * 
@@ -360,12 +361,12 @@ declare module "osu-droid" {
          * @param {Object} values An object containing the parameters.
          * @param {number} values.time The start time of the object in milliseconds.
          * @param {number} values.type The bitwise type of the hitobject (circle/slider/spinner).
-         * @param {Circle|Slider|null} [values.data] The data of the hitobject (Circle/Slider/`null`).
+         * @param {Circle|Slider|Spinner} [values.data] The data of the hitobject (Circle/Slider/Spinner).
          */
         constructor(values: {
             time: number,
-            type: object_types,
-            data?: Circle|Slider
+            type: objectTypes,
+            data?: Circle|Slider|Spinner
         });
 
         /**
@@ -376,12 +377,17 @@ declare module "osu-droid" {
         /**
          * The bitwise type of the hitobject (circle/slider/spinner).
          */
-        type: object_types;
+        type: objectTypes;
 
         /**
-         * The data of the hitobject, which can be an instance of `Circle`, `Slider` or `null`.
+         * The data of the hitobject, which can be an instance of `Circle`, `Slider` or `Spinner`.
          */
-        data?: Circle|Slider;
+        data: Circle|Slider|Spinner;
+
+        /**
+         * Whether or not this hitobject represents a new combo in the beatmap.
+         */
+        isNewCombo: boolean;
 
         /**
          * Returns the hitobject type.
@@ -530,9 +536,9 @@ declare module "osu-droid" {
         hp: number;
 
         /**
-         * The beatmap packs that contain this beatmap. `null` if not available.
+         * The beatmap packs that contain this beatmap, represented by their ID.
          */
-        packs?: string;
+        packs: string[];
 
         /**
          * The aim difficulty rating of the beatmap.
@@ -577,7 +583,7 @@ declare module "osu-droid" {
          * @param {Object} params An object containing parameters.
          * @param {number} [params.beatmap_id] The beatmap ID of the beatmap.
          * @param {string} [params.hash] The MD5 hash of the beatmap.
-         * @param {boolean} [params.file=true] Whether or not to download the .osu file of the beatmap (required for beatmap parser utilities)
+         * @param {boolean} [params.file=true] Whether or not to download the .osu file of the beatmap (required for beatmap parser utilities).
          * @returns {Promise<MapInfo>} The current class instance with the beatmap's information.
          */
         get(params: {
@@ -695,6 +701,7 @@ declare module "osu-droid" {
          * @param {number} [params.n50=0] The amount of 50s achieved.
          * @param {number} [params.nmiss=0] THe amount of misses achieved.
          * @param {number} [params.score_version=1] The scoring version to use (`1` or `2`).
+         * @param {number} [params.speed_penalty=1] The speed penalty for 3 finger plays.
          *
          * @returns {MapPP} The current instance, which contains the results.
          */
@@ -717,7 +724,8 @@ declare module "osu-droid" {
             n100?: number,
             n50?: number,
             nmiss?: number,
-            score_version?: number
+            score_version?: number,
+            speed_penalty?: number
         }): MapPP;
 
         /**
@@ -1026,7 +1034,7 @@ declare module "osu-droid" {
     /**
      * Bitmask constant of object types. This is needed as osu! uses bits to determine object types.
      */
-    export enum object_types {
+    export enum objectTypes {
         /**
          * The bitwise constant of circle.
          */
@@ -1213,6 +1221,7 @@ declare module "osu-droid" {
      * @param {number} [params.n50=0] The amount of 50s achieved.
      * @param {number} [params.nmiss=0] THe amount of misses achieved.
      * @param {number} [params.score_version=1] The scoring version to use (`1` or `2`).
+     * @param {number} [params.speed_penalty=1] The speed penalty for 3 finger plays.
      *
      * @returns {MapPP} A `MapPP` instance containing the results.
      */
@@ -1237,7 +1246,8 @@ declare module "osu-droid" {
         n100?: number,
         n50?: number,
         nmiss?: number,
-        score_version?: number
+        score_version?: number,
+        speed_penalty?: number
     }): MapPP;
 
     /**
@@ -1307,9 +1317,11 @@ declare module "osu-droid" {
         /**
          * @param {Object} values An object containing the parameters.
          * @param {number} values.score_id The score ID of the score to analyze.
+         * @param {StandardDiff} [values.map] The analyzed beatmap in `StandardDiff` instance.
          */
         constructor(values: {
-            score_id: number
+            score_id: number,
+            map?: StandardDiff
         });
 
         /**
@@ -1336,6 +1348,16 @@ declare module "osu-droid" {
          * The results of the analyzer. `null` when initialized.
          */
         data?: ReplayData;
+
+        /**
+         * The beatmap that is being analyzed in `StandardDiff` instance.
+         */
+        map?: StandardDiff;
+
+        /**
+         * Penalty value used to penaltize dpp for 3 finger abuse.
+         */
+        penalty: number;
 
         /**
          * Asynchronously analyzes a replay.
@@ -1382,21 +1404,21 @@ declare module "osu-droid" {
             folder_name: string,
             file_name: string,
             hash: string,
-            time: number,
-            hit300k: number,
-            hit300: number,
-            hit100k: number,
-            hit100: number,
-            hit50: number,
-            hit0: number,
-            score: number,
-            max_combo: number,
-            accuracy: number,
-            is_full_combo: number,
-            player_name: string,
-            raw_mods: string,
-            droid_mods: string,
-            converted_mods: string,
+            time?: number,
+            hit300k?: number,
+            hit300?: number,
+            hit100k?: number,
+            hit100?: number,
+            hit50?: number,
+            hit0?: number,
+            score?: number,
+            max_combo?: number,
+            accuracy?: number,
+            is_full_combo?: number,
+            player_name?: string,
+            raw_mods?: string,
+            droid_mods?: string,
+            converted_mods?: string,
             cursor_movement: CursorData[],
             hit_object_data: ReplayObjectData[]
         });
@@ -1424,77 +1446,77 @@ declare module "osu-droid" {
         /**
          * The date of which the play was set.
          */
-        time: Date;
+        time?: Date;
 
         /**
          * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
          */
-        hit300k: number;
+        hit300k?: number;
 
         /**
          * The amount of 300s achieved in the play.
          */
-        hit300: number;
+        hit300?: number;
 
         /**
          * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
          */
-        hit100k: number;
+        hit100k?: number;
 
         /**
          * The amount of 100s achieved in the play.
          */
-        hit100: number;
+        hit100?: number;
 
         /**
          * The amount of 50s achieved in the play.
          */
-        hit50: number;
+        hit50?: number;
 
         /**
          * The amount of misses achieved in the play.
          */
-        hit0: number;
+        hit0?: number;
 
         /** 
          * The total score achieved in the play.
          */
-        score: number;
+        score?: number;
 
         /**
          * The maximum combo achieved in the play.
          */
-        max_combo: number;
+        max_combo?: number;
 
         /**
          * The accuracy achieved in the play.
          */
-        accuracy: number;
+        accuracy?: number;
 
         /**
          * Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
          */
-        is_full_combo: replayFullCombo;
+        is_full_combo?: replayFullCombo;
 
         /**
          * The name of the player in the replay.
          */
-        player_name: string;
+        player_name?: string;
 
         /** 
          * Enabled modifications during the play in raw form.
          */
-        raw_mods: string;
+        raw_mods?: string;
 
         /**
          * Enabled modifications during the play in osu!droid form.
          */
-        droid_mods: string;
+        droid_mods?: string;
 
         /**
          * Enabled modifications during the play in osu!standard form.
          */
-        converted_mods: string;
+        converted_mods?: string;
 
         /**
          * The cursor movement data of the replay.
@@ -1518,12 +1540,12 @@ declare module "osu-droid" {
         /**
          * @param {Object} values An object containing the parameters.
          * @param {number} values.accuracy The offset of which the hitobject was hit in milliseconds.
-         * @param {number[]} values.tickset The tickset of the hitobject.
+         * @param {boolean[]} values.tickset The tickset of the hitobject.
          * @param {hitResult} values.result The bitwise result of the hitobject (`4` is 300, `3` is 100, `2` is 50, `1` is miss).
          */
         constructor(values: {
             accuracy: number,
-            tickset: number[],
+            tickset: boolean[],
             result: hitResult
         });
 
@@ -1610,7 +1632,7 @@ declare module "osu-droid" {
         /**
          * The rank achieved in the play.
          */
-        rank: number;
+        rank: string;
 
         /**
          * The date of which the play was set.
@@ -1676,10 +1698,10 @@ declare module "osu-droid" {
      */
     export class Slider {
         /**
-         * @param {Object} values An object containing the parameters.
-         * @param {number[]} values.pos The position of the slider in `[x, y]` osupixels.
-         * @param {number} values.distance The distance of the slider.
-         * @param {number} values.repetitions The repetition amount of the slider.
+         * @param values An object containing the parameters.
+         * @param values.pos The position of the slider in `[x, y]` osupixels.
+         * @param values.distance The distance of the slider.
+         * @param values.repetitions The repetition amount of the slider.
          */
         constructor(values: {
             pos: [number, number],
@@ -1706,6 +1728,36 @@ declare module "osu-droid" {
          * Returns the string representative of the class.
          *
          * @returns {string} The string representation of the class.
+         */
+        toString(): string;
+    }
+
+    /**
+     * Represents a spinner in a beatmap.
+     * 
+     * All we need from spinners is their duration. The
+     * position of a spinner is always at 256x192.
+     */
+    export class Spinner {
+        /**
+         * @param duration The duration of the spinner.
+         */
+        constructor(duration: number);
+
+        /**
+         * The position of the spinner. This always defaults to `x=256` and `y=192`.
+         */
+        pos: [256, 192];
+
+        /**
+         * The duration of the spinner.
+         */
+        duration: number;
+
+        /**
+         * Returns the string representative of the class.
+         * 
+         * @returns {string} The string representative of the class.
          */
         toString(): string;
     }
