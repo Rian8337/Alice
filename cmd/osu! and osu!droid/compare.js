@@ -90,7 +90,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let min_error = 0;
         let max_error = 0;
 
-        const data = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
+        const params = {
+            score_id: play.score_id
+        };
+        if (mapinfo.map) {
+            params.map = mapinfo.map;
+        }
+
+        const data = await new osudroid.ReplayAnalyzer(params).analyze();
         if (data.fixed_odr) {
             n300 = data.data.hit300;
             n100 = data.data.hit100;
@@ -135,7 +142,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
             embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
-            return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed})
+            return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
         }
         const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
         const starsline = parseFloat(star.droid_stars.total.toFixed(2));

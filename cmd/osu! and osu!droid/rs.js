@@ -95,7 +95,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         let min_error = 0;
         let max_error = 0;
 
-        const data = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
+        const params = {
+            score_id: play.score_id
+        };
+        if (mapinfo.map) {
+            params.map = mapinfo.map;
+        }
+
+        const data = await new osudroid.ReplayAnalyzer(params).analyze();
         if (data.fixed_odr) {
             n300 = data.data.hit300;
             n100 = data.data.hit100;
@@ -136,7 +143,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             cd.add(message.author.id);
             setTimeout(() => {
                 cd.delete(message.author.id);
-            }, 20000);
+            }, 15000);
         }
         
         if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osu_file) {
