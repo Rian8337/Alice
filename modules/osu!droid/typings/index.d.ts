@@ -80,13 +80,13 @@ declare module "osu-droid" {
          * be automatically calculated to be the closest to the given
          * acc percent.
          * 
-         * @param {Object} values An object containing parameters.
-         * @param {number} [values.nobjects] The amount of objects in the beatmap.
-         * @param {number} [values.percent] The accuracy achieved.
-         * @param {number} [values.n300] The amount of 300s achieved.
-         * @param {number} [values.n100] The amount of 100s achieved.
-         * @param {number} [values.n50] The amount of 50s achieved.
-         * @param {number} [values.nmiss] The amount of miss count achieved.
+         * @param values An object containing parameters.
+         * @param values.nobjects The amount of objects in the beatmap.
+         * @param values.percent The accuracy achieved.
+         * @param values.n300 The amount of 300s achieved.
+         * @param values.n100 The amount of 100s achieved.
+         * @param values.n50 The amount of 50s achieved.
+         * @param values.nmiss The amount of miss count achieved.
          */
         constructor(values: {
             nobjects?: number,
@@ -1317,11 +1317,11 @@ declare module "osu-droid" {
         /**
          * @param {Object} values An object containing the parameters.
          * @param {number} values.score_id The score ID of the score to analyze.
-         * @param {StandardDiff} [values.map] The analyzed beatmap in `StandardDiff` instance.
+         * @param {Beatmap|StandardDiff} [values.map] The beatmap of the replay. This is necessary for replay analyzing or if old replay version is found (replay v1).
          */
         constructor(values: {
             score_id: number,
-            map?: StandardDiff
+            map?: Beatmap|StandardDiff
         });
 
         /**
@@ -1350,9 +1350,9 @@ declare module "osu-droid" {
         data?: ReplayData;
 
         /**
-         * The beatmap that is being analyzed in `StandardDiff` instance.
+         * The beatmap that is being analyzed in `Beatmap` or `StandardDiff` instance. `StandardDiff` is required for penalty analyzing.
          */
-        map?: StandardDiff;
+        map?: Beatmap|StandardDiff;
 
         /**
          * Penalty value used to penaltize dpp for 3 finger abuse.
