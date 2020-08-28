@@ -9,7 +9,7 @@ module.exports = {
     MapStars: require('./src/MapStars'),
     MapStats: require('./src/MapStats'),
     mods: require('./src/mods'),
-    object_types: require('./src/object_types'),
+    objectTypes: require('./src/constants/objectTypes'),
     Parser: require('./src/Parser'),
     Player: require('./src/Player'),
     ppv2: require('./src/ppv2'),
