@@ -10,7 +10,6 @@ function generateEmbed(client, page, footer, index, rolecheck) {
 		.setDescription(`Made by <@132783516176875520> and <@386742340968120321>.\n\n[GitHub Repository](https://github.com/Rian8337/Alice)\n\n**Prefix: ${config.prefix}**\n\nFor detailed information about a command, use \`${config.prefix}help [command name]\`.\nIf you found any bugs or issues with the bot, please contact bot creators.`)
 		.setThumbnail(client.user.avatarURL({dynamic: true}))
 		.setColor(rolecheck)
-		.setImage("https://i.imgur.com/6upQHyz.jpg")
 		.setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
 
 	for (const section of sections) {
