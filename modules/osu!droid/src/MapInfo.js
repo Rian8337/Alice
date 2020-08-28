@@ -3,7 +3,7 @@ const request = require('request');
 const apikey = process.env.OSU_API_KEY;
 const mods = require('./mods');
 const modes = require('./constants/modes');
-const object_types = require('./object_types');
+const objectTypes = require('./constants/objectTypes');
 const Beatmap = require('./Beatmap');
 const MapStats = require('./MapStats');
 const Parser = require('./Parser');
@@ -171,10 +171,10 @@ class MapInfo {
         this.hp = 0;
 
         /**
-         * @type {string|null}
-         * @description The beatmap packs that contain this beatmap. `null` if not available.
+         * @type {string[]}
+         * @description The beatmap packs that contain this beatmap, represented by their ID.
          */
-        this.packs = null;
+        this.packs = [];
         
         /**
          * @type {number}
@@ -306,7 +306,9 @@ class MapInfo {
                     this.ar = parseFloat(mapinfo.diff_approach);
                     this.od = parseFloat(mapinfo.diff_overall);
                     this.hp = parseFloat(mapinfo.diff_drain);
-                    if (mapinfo.packs) this.packs = mapinfo.packs;
+                    if (mapinfo.packs) {
+                        this.packs = mapinfo.packs.split(",");
+                    }
                     this.diff_aim = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
                     this.diff_speed = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
                     this.diff_total = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
@@ -427,13 +429,11 @@ class MapInfo {
             case 0: return `${this.full_title}${mods ? ` +${mods}` : ""}`;
             case 1: {
                 let string = `**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapset_id}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapset_id})`;
-                if (this.packs) {
-                    let pack_list = this.packs.split(",");
-                    if (pack_list.length > 1) string += '\n**Beatmap Packs:** ';
-                    else string += '\n**Beatmap Pack**: ';
-                    for (let i = 0; i < pack_list.length; i++) {
-                        string += `[${pack_list[i]}](https://osu.ppy.sh/beatmaps/packs/${pack_list[i]})`;
-                        if (i + 1 < pack_list.length) string += ' - ';
+                if (this.packs.length > 0) {
+                    string += '\n**Beatmap Pack**: ';
+                    for (let i = 0; i < this.packs.length; i++) {
+                        string += `[${this.packs[i]}](https://osu.ppy.sh/beatmaps/packs/${this.packs[i]})`;
+                        if (i + 1 < this.packs.length) string += ' - ';
                     }
                 }
                 return string;
@@ -509,7 +509,7 @@ class MapInfo {
         let px_per_beat = 0;
         for (let i = 0; i < objects.length; i++) {
             let object = objects[i];
-            if (!(object.type & object_types.slider)) {
+            if (!(object.type & objectTypes.slider)) {
                 score += Math.floor(300 + 300 * combo * diff_multiplier * score_multiplier / 25);
                 ++combo;
                 continue;
