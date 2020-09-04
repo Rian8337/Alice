@@ -8,7 +8,7 @@ function retrievePlayer(player_list, i, cb) {
 
 async function retrievePlay(play_list, i, cb) {
     if (!play_list[i]) return cb(null, null, true);
-    let hash = play_list[i][0];
+    let hash = play_list[i].hash;
 
     const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
     if (mapinfo.error) return cb(null);
@@ -51,7 +51,7 @@ module.exports.run = (client, message, args, maindb) => {
                         let pptotal = 0;
                         let weight = 1;
                         for (let i of play_list) {
-                            pptotal += weight * i[2];
+                            pptotal += weight * i.pp;
                             weight *= 0.95;
                         }
                         console.log(prev_pptotal + " -> " + pptotal);
