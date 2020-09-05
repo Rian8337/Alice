@@ -20,6 +20,7 @@
     "adm-zip": "^0.4.14",
     "canvas": "^2.6.1",
     "crypto-js": "^4.0.0",
+    "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "java-deserialization": "^0.1.0",
     "mongodb": "^3.5.4",
