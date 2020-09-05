@@ -304,9 +304,9 @@ export class MapInfo {
                 this.beatmapsetID = parseInt(mapinfo.beatmapset_id);
                 this.plays = parseInt(mapinfo.playcount);
                 this.favorites = parseInt(mapinfo.favourite_count);
-                const t: number[] = mapinfo.last_update.split(/[- :]/).map(parseInt);
+                const t: number[] = mapinfo.last_update.split(/[- :]/).map(e => parseInt(e));
                 this.lastUpdate = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-                const s: number[] = mapinfo.submit_date.split(/[- :]/).map(parseInt);
+                const s: number[] = mapinfo.submit_date.split(/[- :]/).map(e => parseInt(e));
                 this.submitDate = new Date(Date.UTC(s[0], s[1]-1, s[2], s[3], s[4], s[5]));
                 this.hitLength = parseInt(mapinfo.hit_length);
                 this.totalLength = parseInt(mapinfo.total_length);
