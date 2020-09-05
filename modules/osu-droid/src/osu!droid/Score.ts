@@ -73,7 +73,7 @@ export class Score {
      */
     public error: boolean;
 
-    constructor(values: {
+    constructor(values?: {
         uid?: number,
         scoreID?: number,
         username?: string,
@@ -87,18 +87,18 @@ export class Score {
         mods?: string,
         hash?: string
     }) {
-        this.uid = values.uid || 0;
-        this.scoreID = values.scoreID || 0;
-        this.username = values.username || "";
-        this.title = values.title || "";
-        this.combo = values.combo || 0;
-        this.score = values.score || 0;
-        this.rank = values.rank || '';
-        this.date = new Date(values.date || 0);
-        this.accuracy = values.accuracy || 0;
-        this.miss = values.miss || 0;
-        this.mods = mods.droidToPC(values.mods) || '';
-        this.hash = values.hash || '';
+        this.uid = values?.uid || 0;
+        this.scoreID = values?.scoreID || 0;
+        this.username = values?.username || "";
+        this.title = values?.title || "";
+        this.combo = values?.combo || 0;
+        this.score = values?.score || 0;
+        this.rank = values?.rank || '';
+        this.date = new Date(values?.date || 0);
+        this.accuracy = values?.accuracy || 0;
+        this.miss = values?.miss || 0;
+        this.mods = mods.droidToPC(values?.mods) || '';
+        this.hash = values?.hash || '';
         this.error = false;
     }
 
