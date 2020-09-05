@@ -102,7 +102,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 							.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
 							.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapsetID}`)
 							.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
-							.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo._bpmConvert(mod)} - **Length**: ${mapinfo._timeConvert(mod)}`);
+							.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo.convertBPM(mod)} - **Length**: ${mapinfo.convertTime(mod)}`);
 
 						for (i = 0; i < map_entries.length; i++) {
 							let star_rating = map_entries[i][2];
