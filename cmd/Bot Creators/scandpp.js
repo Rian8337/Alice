@@ -2,25 +2,10 @@ const Discord = require('discord.js');
 const osudroid = require('osu-droid');
 const {Db} = require('mongodb');
 
-<<<<<<< HEAD
 function sleep(seconds) {
     return new Promise(resolve => {
         setTimeout(resolve, 1000 * seconds);
     });
-=======
-function retrievePlayer(player_list, i, cb) {
-    if (!player_list[i]) return cb(null, true);
-    cb(player_list[i])
-}
-
-async function retrievePlay(play_list, i, cb) {
-    if (!play_list[i]) return cb(null, null, true);
-    let hash = play_list[i].hash;
-
-    const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
-    if (mapinfo.error) return cb(null);
-    cb(hash, mapinfo)
->>>>>>> 900373b0fa9271ee16336cf3e10ebc0c6185e1a5
 }
 
 /**
