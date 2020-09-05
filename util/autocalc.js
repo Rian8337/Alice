@@ -68,19 +68,6 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					if (!combo || combo <= 0) combo = mapinfo.maxCombo - missc;
 					if (mapinfo.maxCombo <= missc) return;
 					combo = Math.min(combo, mapinfo.maxCombo);
-					let acc_estimation = false;
-					if (acc === 100 && missc > 0) {
-						acc_estimation = true;
-						const real_acc = new osudroid.Accuracy({
-							n300: mapinfo.objects - missc,
-							n100: 0,
-							n50: 0,
-							nmiss: missc,
-							nobjects: mapinfo.objects
-						}).value() * 100;
-						acc = parseFloat(real_acc.toFixed(2));
-					}
-
 					let max_score = mapinfo.maxScore(mod);
 					let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
 					let starsline = parseFloat(star.droidStars.total.toFixed(2));
@@ -141,7 +128,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	}
 	const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
 
-	if (!mapinfo.title || !mapinfo.objects || mapinfo.mode !== 0 || !mapinfo.osuFile) return;
+	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) return;
 	if (!combo) combo = mapinfo.maxCombo - missc;
 	if (mapinfo.maxCombo <= missc) return;
 	combo = Math.min(combo, mapinfo.maxCombo);
