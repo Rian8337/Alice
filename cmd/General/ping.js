@@ -17,7 +17,7 @@ module.exports.run = (client, message) => {
 		.setAuthor("Pong!")
 		.setColor(rolecheck)
 		.setFooter("Alice Synthesis Thirty", footer[index])
-		.addField("Response time: ", `${time} ms`);
+		.addField("My response time to Discord API:", `${time} ms`);
 	message.channel.send({embed: embed}).catch(console.error);
 };
 
