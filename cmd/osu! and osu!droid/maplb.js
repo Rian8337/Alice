@@ -63,7 +63,7 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
         }
         if (!Array.isArray(entries)) resolve(null);
 
-        let droid_stars = parseFloat(global_star.droid_stars.total.toFixed(2));
+        let droidStars = parseFloat(global_star.droidStars.total.toFixed(2));
         let pc_stars = parseFloat(global_star.pc_stars.total.toFixed(2));
         let embed = new Discord.MessageEmbed()
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
@@ -71,7 +71,7 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
             .setColor(rolecheck)
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
-            .setTitle(`${mapinfo.fullTitle} (${droid_stars}★ | ${pc_stars}★)`)
+            .setTitle(`${mapinfo.fullTitle} (${droidStars}★ | ${pc_stars}★)`)
             .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
             .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
             .addField("**Top Score**", `${client.emojis.cache.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
