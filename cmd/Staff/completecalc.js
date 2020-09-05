@@ -79,7 +79,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             message.channel.send(`❎ **| ${message.author}, <@${ufind}> has requested a recalculation before!**`);
             if (queue.length > 0) {
                 const nextQueue = queue[0];
-                client.commands.get("completecalc").run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
+                this.run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
             }
             return;
         }
@@ -184,7 +184,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         queue.shift();
                         if (queue.length > 0) {
                             const nextQueue = queue[0];
-                            client.commands.get("completecalc").run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
+                            exports.run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
                         }
                     });
                     return;
@@ -195,7 +195,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 for await (const entry of entries) {
                     console.log(i);
                     ++i;
-                    const mapinfo = await new osudroid.MapInfo().get({hash: entry[11]});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({hash: entry[11]});
                     if (mapinfo.error) {
                         console.log("osu! API fetch error");
                         continue;
@@ -209,26 +209,26 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     }
                     score += parseInt(entry[3]);
                     score_list.push([parseInt(entry[3]), entry[11]]);
-                    if (!mapinfo.osu_file) {
+                    if (!mapinfo.osuFile) {
                         console.log("No osu file found");
                         continue;
                     }
-                    const mods = osudroid.mods.droid_to_PC(entry[6]);
+                    const mods = osudroid.mods.droidToPC(entry[6]);
                     const acc_percent = parseFloat(entry[7]) / 1000;
                     const combo = parseInt(entry[4]);
                     const miss = parseInt(entry[8]);
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-                    const npp = osudroid.ppv2({
-                        stars: star.droid_stars,
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                    const npp = new osudroid.PerformanceCalculator().calculate({
+                        stars: star.droidStars,
                         combo: combo,
-                        acc_percent: acc_percent,
+                        accPercent: acc_percent,
                         miss: miss,
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
                     if (!isNaN(pp)) ppentries.push({
                         hash: entry[11],
-                        title: mapinfo.full_title,
+                        title: mapinfo.fullTitle,
                         mods: mods,
                         pp: pp,
                         combo: combo,

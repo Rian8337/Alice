@@ -1,6 +1,14 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     if (message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000' && message.guild.id !== '528941000555757598') return message.channel.send("❎ **| I'm sorry, this command is only allowed in droid (International) Discord server and droid café server!**");
@@ -16,7 +24,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = userres.uid;
@@ -24,7 +32,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 pointdb.findOne(query, (err, dailyres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     let streak = 1;
                     let daily = 50;
@@ -35,7 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (streak === 5) {
                             streakcomplete = true;
                             daily += 100;
-                            streak = 1
+                            streak = 1;
                         }
                         let totalcoins = dailyres.alicecoins + daily;
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
@@ -49,9 +57,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         pointdb.updateOne(query, updateVal, err => {
                             if (err) {
                                 console.log(err);
-                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                        })
+                        });
                     } else {
                         message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`1\`. You now have ${coin}\`${daily}\` Alice coins.**`);
                         let insertVal = {
@@ -71,13 +79,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         pointdb.insertOne(insertVal, err => {
                             if (err) {
                                 console.log(err);
-                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                        })
+                        });
                     }
-                })
+                });
             });
-            break
+            break;
         }
         case "transfer": {
             let totransfer = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
@@ -91,20 +99,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 const uid = userres.uid;
                 pointdb.findOne(query, async (err, pointres) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!pointres) return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
                     let transferred = pointres.transferred;
                     if (!transferred) transferred = 0;
                     if (transferred === amount) return message.channel.send("❎ **| I'm sorry, you have reached the transfer limit for today!**");
-                    const player = await new osudroid.Player().get({uid: uid});
+                    const player = await new osudroid.Player().getInformation({uid: uid});
                     if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                     let limit = 0;
                     switch (true) {
@@ -120,7 +128,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         case (player.rank < 500):
                             limit = 500;
                             break;
-                        default: limit = 250
+                        default: limit = 250;
                     }
                     if (transferred + amount > limit) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is beyond your daily limit! You can only transfer ${coin}\`${limit - transferred}\` Alice coins for today!**`);
 
@@ -137,7 +145,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             pointdb.findOne(query, (err, giveres) => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 if (!giveres) return message.channel.send("❎ **| I'm sorry, this user has not used any daily claims before!**");
                                 let coins = giveres.alicecoins + amount;
@@ -157,27 +165,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                 };
                                 pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                    if (err) return console.log(err)
-                                })
-                            })
+                                    if (err) return console.log(err);
+                                });
+                            });
                         });
                         confirm.on("end", () => {
                             if (!confirmation) {
                                 msg.delete();
-                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
                             }
-                        })
-                    })
-                })
+                        });
+                    });
+                });
             });
-            break
+            break;
         }
         case "view": {
             let id = message.author.id;
             if (args[1]) {
                 id = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
                 if (!id) return message.channel.send("❎ **| Hey, please enter a valid user to view!**");
-                id = id.id
+                id = id.id;
             }
             query = {discordid: id};
             pointdb.findOne(query, (err, res) => {
@@ -188,7 +196,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (res) message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`${res.alicecoins}\` Alice coins.**`);
                 else message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`0\` Alice coins.**`)
             });
-            break
+            break;
         }
         case "add": {
             if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
@@ -201,7 +209,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
                 const updateVal = {
@@ -214,10 +222,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    message.channel.send(`✅ **| Successfully added ${coin}\`${amount}\` Alice coins to user. The user now has ${coin}\`${(res.alicecoins + amount).toLocaleString()}\` Alice coins.****`);
-                })
+                    message.channel.send(`✅ **| Successfully added ${coin}\`${amount}\` Alice coins to user. The user now has ${coin}\`${(res.alicecoins + amount).toLocaleString()}\` Alice coins.**`);
+                });
             });
-            break
+            break;
         }
         case "remove": {
             if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
@@ -232,7 +240,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
                 if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
-                if (res.alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is more than the user's Alice coins! The user has ${coin}\`${res.alicecoins.toLocaleString()}\` Alice coins.**`)
+                if (res.alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is more than the user's Alice coins! The user has ${coin}\`${res.alicecoins.toLocaleString()}\` Alice coins.**`);
                 const updateVal = {
                     $set: {
                         alicecoins: res.alicecoins - amount
@@ -241,14 +249,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 pointdb.updateOne(query, updateVal, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     message.channel.send(`✅ **| Successfully removed ${coin}\`${amount}\` Alice coins from user. The user now has ${coin}\`${(res.alicecoins - amount).toLocaleString()}\` Alice coins.**`);
-                })
+                });
             });
-            break
+            break;
         }
-        default: return message.channel.send("❎ **| I'm sorry, it looks like your argument is invalid! Accepted arguments are `claim`, `transfer`, and `view`.**")
+        default: return message.channel.send("❎ **| I'm sorry, it looks like your argument is invalid! Accepted arguments are `claim`, `transfer`, and `view`.**");
     }
 };
 

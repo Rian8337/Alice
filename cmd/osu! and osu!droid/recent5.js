@@ -34,6 +34,11 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 	return embed
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
@@ -42,17 +47,17 @@ module.exports.run = async (client, message, args) => {
 	let page = 1;
 	if (args[1]) page = parseInt(args[1]);
 	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
-	const player = await new osudroid.Player().get({uid: uid});
+	const player = await new osudroid.Player().getInformation({uid: uid});
 	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
-	if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-	let name = player.name;
-	let rplay = player.recent_plays;
+	if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+	if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+	let name = player.username;
+	let rplay = player.recentPlays;
 	let rolecheck;
 	try {
-		rolecheck = message.member.roles.color.hexColor
+		rolecheck = message.member.roles.color.hexColor;
 	} catch (e) {
-		rolecheck = "#000000"
+		rolecheck = "#000000";
 	}
 	let footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
@@ -62,9 +67,9 @@ module.exports.run = async (client, message, args) => {
 		msg.react("⏮️").then(() => {
 			msg.react("⬅️").then(() => {
 				msg.react("➡️").then(() => {
-					msg.react("⏭️").catch(console.error)
-				})
-			})
+					msg.react("⏭️").catch(console.error);
+				});
+			});
 		});
 
 		let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
@@ -77,7 +82,7 @@ module.exports.run = async (client, message, args) => {
 			else page = 1;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-			msg.edit({embed: embed}).catch(console.error)
+			msg.edit({embed: embed}).catch(console.error);
 		});
 
 		back.on('collect', () => {
@@ -85,7 +90,7 @@ module.exports.run = async (client, message, args) => {
 			else page--;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-			msg.edit({embed: embed}).catch(console.error)
+			msg.edit({embed: embed}).catch(console.error);
 		});
 
 		next.on('collect', () => {
@@ -93,7 +98,7 @@ module.exports.run = async (client, message, args) => {
 			else page++;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-			msg.edit({embed: embed}).catch(console.error)
+			msg.edit({embed: embed}).catch(console.error);
 		});
 
 		forward.on('collect', () => {
@@ -101,18 +106,18 @@ module.exports.run = async (client, message, args) => {
 			else page = 10;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-			msg.edit({embed: embed}).catch(console.error)
+			msg.edit({embed: embed}).catch(console.error);
 		});
 
 		backward.on("end", () => {
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-		})
+			msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+		});
 	});
 	cd.add(message.author.id);
 	setTimeout(() => {
-		cd.delete(message.author.id)
-	}, 10000)
+		cd.delete(message.author.id);
+	}, 10000);
 };
 
 module.exports.config = {

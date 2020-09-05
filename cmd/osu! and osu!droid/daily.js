@@ -296,7 +296,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         points = dailyres.points;
                         challenges = dailyres.challenges.length;
                     }
-                    const player = await new osudroid.Player().get({uid: uid});
+                    const player = await new osudroid.Player().getInformation({uid: uid});
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -406,10 +406,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmapid = dailyres.beatmapid;
                 let featured = dailyres.featured;
                 if (!featured) featured = "386742340968120321";
-                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
                 let timelimit = Math.max(0, dailyres.timelimit - Math.floor(Date.now() / 1000));
                 let requirements = challengeRequirements(challengeid, pass, bonus);
                 let pass_string = requirements[0];
@@ -418,10 +418,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
-                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                 message.channel.send({embed: embed}).catch(console.error);
                 cd.add(message.author.id);
@@ -453,10 +453,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres.beatmapid;
                     let featured = dailyres.featured;
                     if (!featured) featured = "386742340968120321";
-                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
                     let timelimit = Math.max(0, dailyres.timelimit - Math.floor(Date.now() / 1000));
                     let requirements = challengeRequirements(challengeid, pass, bonus);
                     let pass_string = requirements[0];
@@ -465,10 +465,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                         .setColor(mapinfo.statusColor())
                         .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
-                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                         .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                         .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                        .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                        .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                     message.channel.send({embed: embed}).catch(console.error);
                     cd.add(message.author.id);
@@ -488,10 +488,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
-                const player = await new osudroid.Player().get({uid: uid});
-                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
-                if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-                let rplay = player.recent_plays;
+                const player = await new osudroid.Player().getInformation({uid: uid});
+                if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
+                if (!player.recentPlays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                let rplay = player.recentPlays;
                 query = {status: "w-ongoing"};
                 dailydb.findOne(query, async (err, dailyres) => {
                     if (err) {
@@ -513,23 +513,23 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     const miss = scoreInfo.miss;
                     const mod = scoreInfo.mods;
                     const rank = scoreInfo.rank;
-                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch challenge beatmap info! Perhaps osu! API is down?**");
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-                    let npp = osudroid.ppv2({
-                        stars: star.droid_stars,
-                        combo: scoreInfo.combo,
-                        acc_percent: scoreInfo.accuracy,
-                        miss: scoreInfo.miss,
+                    let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+                    let npp = new osudroid.PerformanceCalculator().calculate({
+                        stars: star.droidStars,
+                        combo: combo,
+                        accPercent: acc,
+                        miss: miss,
                         mode: osudroid.modes.droid
                     });
-                    let pcpp = osudroid.ppv2({
-                        stars: star.pc_stars,
-                        combo: scoreInfo.combo,
-                        acc_percent: scoreInfo.acc,
-                        miss: scoreInfo.miss,
+                    let pcpp = new osudroid.PerformanceCalculator().calculate({
+                        stars: star.pcStars,
+                        combo: combo,
+                        accPercent: acc,
+                        miss: miss,
                         mode: osudroid.modes.osu
                     });
                     let dpp = parseFloat(npp.total.toFixed(2));
@@ -537,15 +537,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let passreq = dailyres.pass;
                     let bonus = dailyres.bonus;
                     
-                    let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
+                    let data = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
                     let unstableRate = 0;
                     if (["m300", "m100", "m50", "ur"].some(value => value === passreq[0] || value === bonus[0])) {
                         data = await data.analyze();
-                        if (!data.fixed_odr) {
+                        if (!data.fixedODR) {
                             return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                         }
                         if (passreq[1] === "ur" || bonus[0] === "ur") {
-                            const hit_object_data = data.data.hit_object_data;
+                            const hit_object_data = data.data.hitObjectData;
                             let hit_error_total = 0;
 
                             for (const hit_object of hit_object_data) {
@@ -561,17 +561,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                             unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                         }
-                        if (data.penalty > 1) {
-                            npp = osudroid.ppv2({
-                                stars: star.droid_stars,
-                                combo: scoreInfo.combo,
-                                acc_percent: scoreInfo.accuracy,
-                                miss: scoreInfo.miss,
-                                mode: osudroid.modes.droid,
-                                speed_penalty: data.penalty
-                            });
-                            dpp = parseFloat(npp.total.toFixed(2));
-                        }
+                        // if (data.penalty > 1) {
+                        //     npp = new osudroid.PerformanceCalculator().calculate({
+                        //         stars: star.droidStars,
+                        //         combo: combo,
+                        //         accPercent: acc,
+                        //         miss: miss,
+                        //         mode: osudroid.modes.droid
+                        //     });
+                        //     dpp = parseFloat(npp.total.toFixed(2));
+                        // }
                     }
                     let pass = false;
                     switch (passreq[0]) {
@@ -615,7 +614,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
                     let points = 0;
-                    const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
+                    const modFulfilled = !((osudroid.mods.modbitsFromString(mod) & (osudroid.mods.osuMods.ez | osudroid.mods.osuMods.nf | osudroid.mods.osuMods.ht)) || (constrain.length > 0 && osudroid.mods.modbitsFromString(mod) !== osudroid.mods.modbitsFromString(constrain)));
                     switch (bonus[0]) {
                         case "score":
                             if (modFulfilled && score >= bonus[1]) points += bonus[2];
@@ -633,7 +632,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             if (modFulfilled && scoreCalc(score, bonus[2], acc, miss) >= bonus[1]) points += bonus[3];
                             break;
                         case "mod":
-                            if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonus[1])) points += bonus[2];
+                            if (osudroid.mods.modbitsFromString(mod) === osudroid.mods.modbitsFromString(bonus[1])) points += bonus[2];
                             break;
                         case "rank":
                             if (modFulfilled && rankConvert(rank) >= rankConvert(bonus[1])) points += bonus[2];
@@ -674,12 +673,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break;
                                 }
                             }
-                            if (!bonuscheck && ((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)))) pass = false;
+                            if (!bonuscheck && !modFulfilled) pass = false;
                             if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                             if (found && bonuscheck) return message.channel.send("❎ **| I'm sorry, you have completed this bounty challenge! Please wait for the next one to start!**");
                             if (!found) {
                                 points += dailyres.points;
-                                challengelist.push([challengeid, bonuscomplete])
+                                challengelist.push([challengeid, bonuscomplete]);
                             }
                             let totalpoint = playerres.points + points;
                             let alicecoins = playerres.alicecoins + points * 2;
@@ -699,7 +698,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 console.log("Player points updated");
-                            })
+                            });
                         } else {
                             points += dailyres.points;
                             message.channel.send(`✅ **| Congratulations! You have completed weekly bounty challenge \`${challengeid}\`${bonuscomplete ? ` and its bonus` : ""}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
@@ -776,10 +775,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmapid = dailyres.beatmapid;
                 let featured = dailyres.featured;
                 if (!featured) featured = "386742340968120321";
-                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                 if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+                let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
                 let requirements = challengeRequirements(challengeid, pass, bonus);
                 let pass_string = requirements[0];
                 let bonus_string = requirements[1];
@@ -787,10 +786,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
-                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                    .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
                 message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
                 client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
@@ -1044,11 +1043,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
-                const player = await new osudroid.Player().get({uid: uid});
+                const player = await new osudroid.Player().getInformation({uid: uid});
 
-                if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
-                if (!player.recent_plays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-                let rplay = player.recent_plays;
+                if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
+                if (!player.recentPlays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                let rplay = player.recentPlays;
                 query = {status: "ongoing"};
                 dailydb.findOne(query, (err, dailyres) => {
                     if (err) {
@@ -1088,20 +1087,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                             }
                         }
-                        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
-                        const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-                        let npp = osudroid.ppv2({
-                            stars: star.droid_stars,
+                        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                        const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+                        let npp = new osudroid.PerformanceCalculator().calculate({
+                            stars: star.droidStars,
                             combo: combo,
+                            accPercent: acc,
                             miss: miss,
-                            acc_percent: acc,
                             mode: osudroid.modes.droid
                         });
-                        let pcpp = osudroid.ppv2({
-                            stars: star.pc_stars,
+                        let pcpp = new osudroid.PerformanceCalculator().calculate({
+                            stars: star.pcStars,
                             combo: combo,
+                            accPercent: acc,
                             miss: miss,
-                            acc_percent: acc,
                             mode: osudroid.modes.osu
                         });
                         let dpp = parseFloat(npp.total.toFixed(2));
@@ -1111,15 +1110,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         let passreq = dailyres.pass;
                         let bonus = dailyres.bonus;
 
-                        let data = new osudroid.ReplayAnalyzer({score_id: scoreInfo.score_id, map: star.droid_stars});
+                        let data = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
                         let unstableRate = 0;
                         if (["m300", "m100", "m50", "ur"].some(value => value === passreq[0] || bonus.some(b => value === b[0]))) {
                             data = await data.analyze();
-                            if (!data.fixed_odr) {
+                            if (!data.fixedODR) {
                                 return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                             }
                             if (passreq[1] === "ur" || bonus.some(b => b[0] === "ur")) {
-                                const hit_object_data = data.data.hit_object_data;
+                                const hit_object_data = data.data.hitObjectData;
                                 let hit_error_total = 0;
 
                                 for (const hit_object of hit_object_data) {
@@ -1135,17 +1134,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                             }
-                            if (data.penalty > 1) {
-                                npp = osudroid.ppv2({
-                                    stars: star.droid_stars,
-                                    combo: scoreInfo.combo,
-                                    acc_percent: scoreInfo.accuracy,
-                                    miss: scoreInfo.miss,
-                                    mode: osudroid.modes.droid,
-                                    speed_penalty: data.penalty
-                                });
-                                dpp = parseFloat(npp.total.toFixed(2));
-                            }
+                            // if (data.penalty > 1) {
+                            //     npp = new osudroid.PerformanceCalculator().calculate({
+                            //         stars: star.droidStars,
+                            //         combo: combo,
+                            //         accPercent: acc,
+                            //         miss: miss,
+                            //         mode: osudroid.modes.droid
+                            //     });
+                            //     dpp = parseFloat(npp.total.toFixed(2));
+                            // }
                         }
 
                         let pass = false;
@@ -1189,19 +1187,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             default: return message.channel.send("❎ **| Hey, there doesn't seem to be a pass condition. Please contact an Owner!**");
                         }
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you haven't passed the requirement to complete this challenge!**");
-                        if (
-                            !found && 
-                            (
-                                (osudroid.mods.modbits_from_string(mod) & (osudroid.mods.nf | osudroid.mods.ez | osudroid.mods.ht)) ||
-                                (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain))
-                            )
-                        ) pass = false;
+                        const modFulfilled = !((osudroid.mods.modbitsFromString(mod) & (osudroid.mods.osuMods.ez | osudroid.mods.osuMods.nf | osudroid.mods.osuMods.ht)) || (constrain.length > 0 && osudroid.mods.modbitsFromString(mod) !== osudroid.mods.modbitsFromString(constrain)));
+                        if (!found && !modFulfilled) pass = false;
                         if (!pass) return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain requirement!**");
                         if (!found) points += dailyres.points;
 
                         let bonus_string = '';
                         let mode = ['easy', 'normal', 'hard', 'insane'];
-                        const modFulfilled = !((osudroid.mods.modbits_from_string(mod) & (osudroid.mods.ez | osudroid.mods.nf | osudroid.mods.ht)) || (constrain.length > 0 && osudroid.mods.modbits_from_string(mod) !== osudroid.mods.modbits_from_string(constrain)));
                         for (let i = 0; i < bonus.length; i++) {
                             const bonusEntry = bonus[i];
                             if (bonusEntry[0] === 'none') bonuslist[i + 1] = true;
@@ -1221,7 +1213,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     }
                                     break;
                                 case "mod":
-                                    if (osudroid.mods.modbits_from_string(mod) === osudroid.mods.modbits_from_string(bonusEntry[1])) {
+                                    if (osudroid.mods.modbitsFromString(mod) === osudroid.mods.modbitsFromString(bonusEntry[1])) {
                                         points += bonusEntry[2];
                                         complete = true;
                                     }
@@ -1286,7 +1278,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         complete = true;
                                     }
                                     break;
-                                
                             }
                             if (complete) {
                                 bonuslist[i + 1] = true;
@@ -1315,7 +1306,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 console.log("Player points updated");
-                            })
+                            });
                         }
                         else {
                             message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
@@ -1339,7 +1330,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 console.log("Player points added");
-                            })
+                            });
                         }
                         if (clan) {
                             clandb.findOne({name: clan}, (err, clanres) => {

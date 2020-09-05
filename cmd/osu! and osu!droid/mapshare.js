@@ -3,9 +3,10 @@ const osudroid = require('osu-droid');
 const https = require('https');
 const apikey = process.env.OSU_API_KEY;
 const config = require('../../config.json');
+const { Db } = require('mongodb');
 
 function capitalizeString(string = "") {
-    return string.charAt(0).toUpperCase() + string.slice(1)
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function editList(res, page, rolecheck, footer, index) {
@@ -16,10 +17,10 @@ function editList(res, page, rolecheck, footer, index) {
 
     for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
         if (!res[i]) break;
-        embed.addField(`${i+1}. Submission from ${res[i].submitter}`, `**User ID**: ${res[i].id}\n**Beatmap ID**: ${res[i].beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${res[i].beatmap_id}))\nCreated at ${new Date(res[i].date * 1000).toUTCString()}`)
+        embed.addField(`${i+1}. Submission from ${res[i].submitter}`, `**User ID**: ${res[i].id}\n**Beatmap ID**: ${res[i].beatmap_id} ([Beatmap Link](https://osu.ppy.sh/b/${res[i].beatmap_id}))\nCreated at ${new Date(res[i].date * 1000).toUTCString()}`);
     }
 
-    return embed
+    return embed;
 }
 
 function isEligible(member) {
@@ -29,10 +30,10 @@ function isEligible(member) {
         if (res === -1) break;
         if (member.roles.cache.has(id[0])) {
             if (id[1] === -1) res = id[1];
-            else res = Math.max(res, id[1])
+            else res = Math.max(res, id[1]);
         }
     }
-    return res
+    return res;
 }
 
 function retrieveBeatmapList(beatmapset_id) {
@@ -42,21 +43,28 @@ function retrieveBeatmapList(beatmapset_id) {
         https.get(options, res => {
             res.setEncoding("utf8");
             res.on("data", chunk => {
-                content += chunk
+                content += chunk;
             });
             res.on("end", () => {
                 let obj;
                 try {
-                    obj = JSON.parse(content)
+                    obj = JSON.parse(content);
                 } catch (e) {
-                    return resolve(null)
+                    return resolve(null);
                 }
-                resolve(obj)
-            })
-        }).end()
-    })
+                resolve(obj);
+            });
+        }).end();
+    });
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const mapdb = alicedb.collection("mapshare");
@@ -69,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     binddb.findOne(query, (err, userres) => {
         if (err) {
             console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
 		if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         
@@ -87,7 +95,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         if (typeof status !== 'string') status = "pending";
                         if (args[2]) {
                             page = parseInt(args[2]);
-                            if (isNaN(page)) page = 1
+                            if (isNaN(page)) page = 1;
                         }
                     }
                 }
@@ -96,15 +104,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 mapdb.find({status: status}).toArray((err, map_entries) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (map_entries.length === 0) return message.channel.send(`❎ **| I'm sorry, there is no submission with ${status} status now!**`);
                     if (!map_entries[(page - 1)*10]) return message.channel.send(`❎ **| Hey, we don't have that much submission for ${status} status!**`);
                     let rolecheck;
                     try {
-                        rolecheck = message.member.roles.color.hexColor
+                        rolecheck = message.member.roles.color.hexColor;
                     } catch (e) {
-                        rolecheck = "#000000"
+                        rolecheck = "#000000";
                     }
                     const footer = config.avatar_list;
                     const index = Math.floor(Math.random() * footer.length);
@@ -115,9 +123,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
                                 msg.react("➡️").then(() => {
-                                    msg.react("⏭️").catch(console.error)
-                                })
-                            })
+                                    msg.react("⏭️").catch(console.error);
+                                });
+                            });
                         });
             
                         let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
@@ -130,7 +138,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             page = Math.max(1, page - 10);
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editList(map_entries, page, rolecheck, footer, index);
-                            msg.edit({embed: embed}).catch(console.error)
+                            msg.edit({embed: embed}).catch(console.error);
                         });
             
                         back.on('collect', () => {
@@ -138,7 +146,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             else --page;
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editList(map_entries, page, rolecheck, footer, index);
-                            msg.edit({embed: embed}).catch(console.error)
+                            msg.edit({embed: embed}).catch(console.error);
                         });
             
                         next.on('collect', () => {
@@ -154,16 +162,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             page = Math.min(page + 10, max_page);
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                             embed = editList(res, page, rolecheck, footer, index);
-                            msg.edit({embed: embed}).catch(console.error)
+                            msg.edit({embed: embed}).catch(console.error);
                         });
             
                         backward.on("end", () => {
                             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-                        })
-                    })
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                        });
+                    });
                 });
-                break
+                break;
             }
 
             case "post": {
@@ -175,7 +183,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmap_id = args[1];
                 if (typeof beatmap_id === 'string') {
                     const a = beatmap_id.split("/");
-                    beatmap_id = a[a.length - 1]
+                    beatmap_id = a[a.length - 1];
                 }
                 beatmap_id = parseInt(beatmap_id);
                 if (isNaN(beatmap_id)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
@@ -189,27 +197,27 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (res.status !== "accepted") {
                         let rejection_message = "❎ **| I'm sorry, the submission with that beatmap "
                         switch (res.status) {
-                            case "posted": rejection_message += 'has been posted before'
-                            case "denied": rejection_message += 'was denied'
-                            case "pending": rejection_message += 'is still pending'
+                            case "posted": rejection_message += 'has been posted before'; break;
+                            case "denied": rejection_message += 'was denied'; break;
+                            case "pending": rejection_message += 'is still pending'; break;
                         }
                         rejection_message += '!**';
-                        return message.channel.send(rejection_message)
+                        return message.channel.send(rejection_message);
                     }
                     let submitter = message.guild.member(res.submitter);
                     let summary = res.summary;
                     let coins = 20 * Math.floor(summary.split(" ").length / 50);
-                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
                         mapdb.deleteOne(query, err => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
                             message.channel.send("❎ **| I'm sorry, I cannot find the beatmap that was submitted! Submission has been automatically deleted.**");
                         });
-                        return
+                        return;
                     }
                     if (res.hash !== mapinfo.hash) {
                         mapdb.deleteOne(query, err => {
@@ -219,19 +227,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             message.channel.send("❎ **| I'm sorry, the beatmap was updated after submission! Submission has been automatically deleted.**");
                         });
-                        return
+                        return;
                     }
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file});
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile});
                     const embed = new Discord.MessageEmbed()
                         .setAuthor(`Submission by ${res.submitter}`)
                         .setTitle(mapinfo.showStatistics('', 0))
-                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
                         .setColor(mapinfo.statusColor())
-			            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+			            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                         .setDescription(mapinfo.showStatistics('', 1))
                         .addField(mapinfo.showStatistics('', 2), mapinfo.showStatistics('', 3))
                         .addField(mapinfo.showStatistics('', 4), mapinfo.showStatistics('', 5))
-                        .addField("**Star Rating**", `${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`)
+                        .addField("**Star Rating**", `${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`)
                         .addField("**Summary**", summary);
 
                     if (submitter) embed.setAuthor(`Submission by ${submitter.user.username}`, submitter.user.avatarURL({dynamic: true}));
@@ -264,8 +272,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                     }
                                     client.channels.cache.get("430002296160649229").send({embed: embed});
-                                    message.channel.send("✅ **| Successfully posted submission.**")
-                                })
+                                    message.channel.send("✅ **| Successfully posted submission.**");
+                                });
                             } else {
                                 insertVal = {
                                     username: userres.username,
@@ -283,28 +291,28 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 pointdb.insertOne(insertVal, err => {
                                     if (err) {
                                         console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
                                     client.channels.cache.get("430002296160649229").send({embed: embed});
-                                    message.channel.send("✅ **| Successfully posted submission.**")
-                                })
+                                    message.channel.send("✅ **| Successfully posted submission.**");
+                                });
                             }
-                        })
-                    })
+                        });
+                    });
                 });
-                break
+                break;
             }
     
             case "accept": {
                 if (!message.isOwner) {
                     if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
                     if (!isMapShareChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in this channel.**");
-                    if (!message.member.roles.cache.has('715219617303232542')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**")
+                    if (!message.member.roles.cache.has('715219617303232542')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                 }
                 let beatmap_id = args[1];
                 if (typeof beatmap_id === 'string') {
                     const a = beatmap_id.split("/");
-                    beatmap_id = a[a.length - 1]
+                    beatmap_id = a[a.length - 1];
                 }
                 beatmap_id = parseInt(beatmap_id);
                 if (isNaN(beatmap_id)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
@@ -312,10 +320,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 mapdb.findOne(query, (err, res) => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!res) return message.channel.send("❎ **| I'm sorry, there is no submission with that beatmap!**");
-                    if (res.status !== "pending") return message.channel.send("❎ **| I'm sorry, the submission with that beatmap has been processed before!**")
+                    if (res.status !== "pending") return message.channel.send("❎ **| I'm sorry, the submission with that beatmap has been processed before!**");
                     updateVal = {
                         $set: {
                             status: "accepted"
@@ -324,13 +332,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     mapdb.updateOne(query, updateVal, err => {
                         if (err) {
                             console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         query = {discordid: message.author.id};
                         pointdb.findOne(query, (err, pres) => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
                             if (pres) {
                                 updateVal = {
@@ -341,10 +349,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 pointdb.updateOne(query, updateVal, err => {
                                     if (err) {
                                         console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
-                                    message.channel.send("✅ **| Successfully accepted submission.**")
-                                })
+                                    message.channel.send("✅ **| Successfully accepted submission.**");
+                                });
                             } else {
                                 insertVal = {
                                     username: userres.username,
@@ -362,15 +370,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 pointdb.insertOne(insertVal, err => {
                                     if (err) {
                                         console.log(err);
-                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
-                                    message.channel.send("✅ **| Successfully accepted submission.**")
-                                })
+                                    message.channel.send("✅ **| Successfully accepted submission.**");
+                                });
                             }
-                        })
-                    })
+                        });
+                    });
                 });
-                break
+                break;
             }
     
             case "deny": {
@@ -382,7 +390,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let beatmap_id = args[1];
                 if (typeof beatmap_id === 'string') {
                     const a = beatmap_id.split("/");
-                    beatmap_id = a[a.length - 1]
+                    beatmap_id = a[a.length - 1];
                 }
                 beatmap_id = parseInt(beatmap_id);
                 if (isNaN(beatmap_id)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
@@ -472,7 +480,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!res) return message.channel.send("❎ **| I'm sorry, there is no submission with that beatmap!**");
                     let submitter = message.guild.member(res.id);
-                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
                         mapdb.deleteOne(query, err => {
@@ -494,18 +502,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         });
                         return
                     }
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file})
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile})
                     const embed = new Discord.MessageEmbed()
                         .setAuthor(`Submission by ${res.submitter}`)
                         .setTitle(mapinfo.showStatistics('', 0))
-                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+                        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
                         .setColor(mapinfo.statusColor())
-                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-                        .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
+                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
+                        .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
                         .setDescription(mapinfo.showStatistics('', 1))
                         .addField(mapinfo.showStatistics('', 2), mapinfo.showStatistics('', 3))
                         .addField(mapinfo.showStatistics('', 4), mapinfo.showStatistics('', 5))
-                        .addField("**Star Rating**", `${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`)
+                        .addField("**Star Rating**", `${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`)
                         .addField("**Status and Summary**", `**Status**: ${capitalizeString(res.status)}\n\n**Summary**:\n${res.summary}`);
 
                     if (submitter) embed.setAuthor(`Submission by ${submitter.user.tag}`, submitter.user.avatarURL({dynamic: true}));
@@ -638,21 +646,21 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (isNaN(beatmap_id)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
                     console.log(beatmap_id);
 
-                    const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
+                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id, file: false});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the beatmap that you are looking for!**");
                     if (mapinfo.objects < 50) return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has less than 50 objects!**");
                     if (mapinfo.circles + mapinfo.sliders === 0 || mapinfo.total_length < 30) return message.channel.send("❎ **| Hey, please refrain from posting troll submissions!**");
 
-                    if (mapinfo.approved === -1 || mapinfo.approved === 3) return message.channel.send("❎ **| I'm sorry, you cannot submit a WIP (Work In Progress) and qualified beatmap!**");
+                    if (mapinfo.approved === osudroid.rankedStatus.WIP || mapinfo.approved === osudroid.rankedStatus.QUALIFIED) return message.channel.send("❎ **| I'm sorry, you cannot submit a WIP (Work In Progress) and qualified beatmap!**");
 
                     if (mapinfo.favorites > 100) return message.channel.send("❎ **| I'm sorry, that beatmap has over 100 favorites!**");
                     if (mapinfo.plays > 300000) return message.channel.send("❎ **| I'm sorry, that beatmap has over 300000 plays!**");
 
                     // no need to check for approved maps since they are only used for very old maps
-                    if (mapinfo.approved !== 1) {
-                        if (date.getTime() - mapinfo.submit_date.getTime() < 86400 * 1000 * 7) return message.channel.send("❎ **| I'm sorry, that beatmap was submitted less than a week ago!**");
-                        if (date.getTime() - mapinfo.last_update.getTime() < 86400 * 1000 * 3) return message.channel.send("❎ **| I'm sorry, that beatmap was updated less than 3 days ago!**")
+                    if (mapinfo.approved !== osudroid.rankedStatus.RANKED) {
+                        if (date.getTime() - mapinfo.submitDate.getTime() < 86400 * 1000 * 7) return message.channel.send("❎ **| I'm sorry, that beatmap was submitted less than a week ago!**");
+                        if (date.getTime() - mapinfo.lastUpdate.getTime() < 86400 * 1000 * 3) return message.channel.send("❎ **| I'm sorry, that beatmap was updated less than 3 days ago!**")
                     }
 
                     if (mapinfo.diff_total < 3) return message.channel.send("❎ **| I'm sorry, you can only submit beatmaps that are 3\* or higher!**");
@@ -665,14 +673,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (words> 120) return message.channel.send(`❎ **| I'm sorry, your summary exceeded 120 words (${words}/120)!**`);
                     if (summary.length > 900) return message.channel.send("❎ **| I'm sorry, your summary must be at least 100 characters and at most 900 characters!**")
 
-                    mapdb.findOne({beatmap_id: mapinfo.beatmap_id}, async (err, mres) => {
+                    mapdb.findOne({beatmap_id: mapinfo.beatmapID}, async (err, mres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                         }
                         if (mres) return message.channel.send("❎ **| I'm sorry, someone has submitted the beatmap before!**");
 
-                        const mapList = await retrieveBeatmapList(mapinfo.beatmapset_id);
+                        const mapList = await retrieveBeatmapList(mapinfo.beatmapsetID);
                         if (!mapList) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap set information! Perhaps osu! API is down?**");
                         
                         const map_query = {$or: []};
@@ -680,7 +688,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         mapdb.find(map_query).toArray((err, map_list) => {
                             if (err) {
                                 console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
                             if (map_list.length > 0) {
                                 for (const map of map_list) {
@@ -691,7 +699,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
 
                             insertVal = {
-                                beatmap_id: mapinfo.beatmap_id,
+                                beatmap_id: mapinfo.beatmapID,
                                 hash: mapinfo.hash,
                                 submitter: userres.username,
                                 id: userres.discordid,
@@ -703,7 +711,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             mapdb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 if (pres) {
                                     updateVal = {
@@ -714,9 +722,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     pointdb.updateOne(query, updateVal, err => {
                                         if (err) {
                                             console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                         }
-                                        message.channel.send("✅ **| Successfully submitted your summary.**")
+                                        message.channel.send("✅ **| Successfully submitted your summary.**");
                                     })
                                 } else {
                                     insertVal = {
@@ -735,18 +743,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     pointdb.insertOne(insertVal, err => {
                                         if (err) {
                                             console.log(err);
-                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                         }
-                                        message.channel.send("✅ **| Successfully submitted your summary.**")
-                                    })
+                                        message.channel.send("✅ **| Successfully submitted your summary.**");
+                                    });
                                 }
-                            })
-                        })
-                    })
-                })
+                            });
+                        });
+                    });
+                });
             }
         }
-    })
+    });
 };
 
 module.exports.config = {

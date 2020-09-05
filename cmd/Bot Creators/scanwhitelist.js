@@ -1,93 +1,63 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 const osudroid = require('osu-droid');
 
-function retrieveWhitelist(whitelist_entries, i, cb) {
-    if (!whitelist_entries[i]) return cb(null, true);
-    cb(whitelist_entries[i])
+function sleep(seconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, 1000 * seconds);
+    });
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-    let whitelistdb = maindb.collection("mapwhitelist");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    }
 
-    whitelistdb.find({}, {projection: {_id: 0, mapid: 1, hashid: 1}}).toArray((err, whitelist_list) => {
+    const whitelistdb = maindb.collection("mapwhitelist");
+    whitelistdb.find({}, {projection: {_id: 0, mapid: 1, hashid: 1}}).toArray(async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!")
+            return message.channel.send("Error: Empty database response. Please try again!");
         }
-        let outdated_count = 0;
-        let not_available_count = 0;
-        let i = 0;
-        let attempt = 0;
-        retrieveWhitelist(whitelist_list, i, async function whitelistCheck(whitelist, stopSign = false) {
-            if (stopSign) return await message.channel.send(`✅ **| ${message.author}, whitelist entry scan complete! A total of ${not_available_count} entries were not found in osu! map listing and ${outdated_count} entries were updated.**`);
-            
-            let beatmap_id = whitelist.mapid;
-            let hash = whitelist.hashid;
-            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap_id, file: false});
-            attempt++;
 
+        let outdatedCount = 0;
+        let notAvailableCount = 0;
+        let deletedCount = 0;
+        let i = 0;
+        for await (const entry of res) {
+            const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: entry.mapid});
+            await sleep(0.05);
+            console.log(++i);
             if (mapinfo.error) {
                 console.log("API fetch error");
-                if (attempt === 3) {
-                    ++i;
-                    attempt = 0
-                }
-                return retrieveWhitelist(whitelist_list, i, whitelistCheck)
+                continue;
             }
-
-            console.log(i);
-            attempt = 0;
             if (!mapinfo.title) {
                 console.log("Whitelist entry not available");
-                ++not_available_count;
-                whitelistdb.deleteOne({mapid: beatmap_id}, err => {
-                    if (err) {
-                        console.log(err);
-                        setTimeout(() => {
-                            retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                        }, 50);
-                        return
-                    }
-                    ++i;
-                    setTimeout(() => {
-                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                    }, 50)
-                });
-                return
+                ++notAvailableCount;
+                await whitelistdb.deleteOne({mapid: entry.mapid});
+                continue;
             }
-
-            if (hash && mapinfo.hash === hash) {
-                ++i;
-                setTimeout(() => {
-                    retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                }, 50);
-                return
+            if (mapinfo.approved !== osudroid.rankedStatus.GRAVEYARD) {
+                console.log("Map not graveyarded");
+                ++deletedCount;
+                await whitelistdb.deleteOne({mapid: entry.mapid});
+                continue;
             }
-            
-            console.log("Whitelist entry outdated");
-            ++outdated_count;
-            let updateVal = {
-                $set: {
-                    hashid: mapinfo.hash
-                }
-            };
-            whitelistdb.updateOne({mapid: beatmap_id}, updateVal, err => {
-                if (err) {
-                    console.log(err);
-                    setTimeout(() => {
-                        retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                    }, 50);
-                    return
-                }
-                ++i;
-                setTimeout(() => {
-                    retrieveWhitelist(whitelist_list, i, whitelistCheck)
-                }, 50)
-            })
-        })
-    })
+            if (entry.hashid !== mapinfo.hash) {
+                console.log("Hash outdated");
+                ++outdatedCount;
+                await whitelistdb.updateOne({mapid: entry.mapid}, {$set: {hashid: mapinfo.hash}});
+            }
+        }
+        message.channel.send(`✅ **| ${message.author}, scan complete! A total of ${outdatedCount} entries were outdated, ${notAvailableCount} entries were not available, and ${deletedCount} entries were deleted.**`)
+    });
 };
 
 module.exports.config = {

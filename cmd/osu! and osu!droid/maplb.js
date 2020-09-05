@@ -69,10 +69,10 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
             .setColor(rolecheck)
-            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
-            .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
-            .setTitle(`${mapinfo.full_title} (${droid_stars}★ | ${pc_stars}★)`)
-            .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
+            .setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
+            .setTitle(`${mapinfo.fullTitle} (${droid_stars}★ | ${pc_stars}★)`)
+            .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
             .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
             .addField("**Top Score**", `${client.emojis.cache.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
 
@@ -84,7 +84,7 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
             let entry = entries[i].split(" ");
             let player = entry[2];
             let score = parseInt(entry[3]).toLocaleString();
-            let mod = osudroid.mods.droid_to_PC(entry[6]);
+            let mod = osudroid.mods.droidToPC(entry[6]);
             let combo = parseInt(entry[4]);
             let rank = rankEmote(entry[5]);
             let accuracy = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
@@ -92,20 +92,20 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
             date.setUTCHours(date.getUTCHours() + 6);
             let miss = parseInt(entry[8]);
 
-            let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mod});
-            let npp = osudroid.ppv2({
-                stars: star.droid_stars,
+            let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+            let npp = new osudroid.PerformanceCalculator().calculate({
+                stars: star.droidStars,
                 combo: combo,
-                acc_percent: accuracy,
+                accPercent: accuracy,
                 miss: miss,
                 mode: osudroid.modes.droid
             });
-            let pcpp = osudroid.ppv2({
-                stars: star.pc_stars,
+            let pcpp = new osudroid.PerformanceCalculator().calculate({
+                stars: star.pcStars,
                 combo: combo,
-                acc_percent: accuracy,
+                accPercent: acc,
                 miss: miss,
-                mode: osudroid.modes.osu
+                mode: osudroid.modes.droid
             });
             let dpp = parseFloat(npp.total.toFixed(2));
             let pp = parseFloat(pcpp.total.toFixed(2));
@@ -130,16 +130,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
     }
     if (!beatmap_id && !hash) return message.channel.send("❎ **| Hey, can you at least give me a map to retrieve?**");
-    let params = beatmap_id ? {beatmap_id: beatmap_id} : {hash: hash};
+    let params = beatmap_id ? {beatmapID: beatmap_id} : {hash: hash};
 
     let page = parseInt(args[1]);
     if (!isFinite(page) || page < 1) page = 1;
 
-    const mapinfo = await new osudroid.MapInfo().get(params);
+    const mapinfo = await new osudroid.MapInfo().getInformation(params);
     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info! Perhaps osu! API is down?**");
     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I couldn't find the map that you are looking for!**");
     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-    if (!mapinfo.osu_file) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
+    if (!mapinfo.osuFile) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
     hash = mapinfo.hash;
     let entry = [message.channel.id, hash];
     let map_index = current_map.findIndex(map => map[0] === message.channel.id);
@@ -157,7 +157,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     ];
     top = top[0].split(" ");
     let top_score = parseInt(top[3]).toLocaleString();
-    let top_mod = osudroid.mods.droid_to_PC(top[6]);
+    let top_mod = osudroid.mods.droidToPC(top[6]);
     let top_combo = parseInt(top[4]);
     let top_rank = rankEmote(top[5]);
     let top_accuracy = parseFloat((parseInt(top[7]) / 1000).toFixed(2));
@@ -165,23 +165,23 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     top_date.setUTCHours(top_date.getUTCHours() + 6);
     let top_miss = parseInt(top[8]);
 
-    let global_star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: ""});
-    let top_star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: top_mod});
+    let global_star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: ""});
+    let top_star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: top_mod});
 
-    let npp = osudroid.ppv2({
-        stars: top_star.droid_stars,
-        combo: top_combo,
-        acc_percent: top_accuracy,
-        miss: top_miss,
-        mode: osudroid.modes.droid
-    });
-    let pcpp = osudroid.ppv2({
-        stars: top_star.pc_stars,
-        combo: top_combo,
-        acc_percent: top_accuracy,
-        miss: top_miss,
-        mode: osudroid.modes.osu
-    });
+    let npp = new osudroid.PerformanceCalculator().calculate({
+		stars: top_star.droidStars,
+		combo: top_combo,
+		accPercent: top_accuracy,
+		miss: top_miss,
+		mode: osudroid.modes.droid
+	});
+    let pcpp = new osudroid.PerformanceCalculator().calculate({
+		stars: top_star.pcStars,
+		combo: top_combo,
+		accPercent: top_accuracy,
+		miss: top_miss,
+		mode: osudroid.modes.osu
+	});
     let dpp = parseFloat(npp.total.toFixed(2));
     let pp = parseFloat(pcpp.total.toFixed(2));
 
@@ -200,9 +200,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
     let rolecheck;
     try {
-        rolecheck = message.member.roles.color.hexColor
+        rolecheck = message.member.roles.color.hexColor;
     } catch (e) {
-        rolecheck = "#000000"
+        rolecheck = "#000000";
     }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
@@ -215,9 +215,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         msg.react("⏮️").then(() => {
             msg.react("⬅️").then(() => {
                 msg.react("➡️").then(() => {
-                    msg.react("⏭️").catch(console.error)
-                })
-            })
+                    msg.react("⏭️").catch(console.error);
+                });
+            });
         });
 
         let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
@@ -270,12 +270,12 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         backward.on("end", () => {
             msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
             msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-        })
+        });
     });
     cd.add(message.author.id);
     setTimeout(() => {
-        cd.delete(message.author.id)
-    }, 20000)
+        cd.delete(message.author.id);
+    }, 20000);
 };
 
 module.exports.config = {

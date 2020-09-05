@@ -36,7 +36,7 @@ module.exports.run = (client, message, args, maindb) => {
                     console.log(wlres);
                     if (err) {
                         console.log(err);
-                        return message.channel.send("Error: Empty database response. Please try again!")
+                        return message.channel.send("Error: Empty database response. Please try again!");
                     }
                     if (!wlres) {
                         let insertData = {
@@ -47,8 +47,8 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Whitelist entry added");
                         whitelist.insertOne(insertData, () => {
                             message.channel.send("Whitelist entry added | `" + entry[2] + "`");
-                            client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`")
-                        })
+                            client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`");
+                        });
                     }
                     else {
                         let updateData = { $set: {
@@ -59,14 +59,14 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log("Whitelist entry update");
                         whitelist.updateOne(dupQuery, updateData, () => {
                             message.channel.send("Whitelist entry updated | `" + entry[2] + "`");
-                            client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`")
-                        })
+                            client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`");
+                        });
                     }
-                })
-            })
+                });
+            });
         }
-        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**")
-    })
+        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**");
+    });
 };
 
 function whitelistInfo(client, link_in, message, callback) {
@@ -103,6 +103,10 @@ function whitelistInfo(client, link_in, message, callback) {
             let mapinfo = obj;
             let firstmapinfo = mapinfo[0];
             if (firstmapinfo.mode !=0) callback(0);
+            if (parseInt(firstmapinfo.approved) !== osudroid.rankedStatus.GRAVEYARD) {
+                message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
+                return callback(0);
+            }
 
             for (let i in mapinfo) {
                 if (mapinfo[i].mode == 0) {
@@ -146,10 +150,10 @@ function whitelistInfo(client, link_in, message, callback) {
             };
             message.channel.send({embed: embed}).catch(console.error);
             client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
-            callback(1, mapid, hashid, mapstring, diffstring)
-        })
+            callback(1, mapid, hashid, mapstring, diffstring);
+        });
     });
-	req.end()
+	req.end();
 }
 
 module.exports.config = {

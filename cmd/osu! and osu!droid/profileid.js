@@ -35,9 +35,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			}
 			if (weighted_accuracy) weighted_accuracy /= weight;
 		}
-		const player = await new osudroid.Player().get({uid: uid});
+		const player = await new osudroid.Player().getInformation({uid: uid});
 		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-		if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+		if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		scoredb.findOne(query, (err, playerres) => {
 			if (err) {
 				console.log(err);
@@ -61,7 +61,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					points = pointres.points;
 					coins = pointres.alicecoins;
 					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {}
+					if (!pictureConfig) pictureConfig = {};
 				}
 
 				// background
@@ -134,20 +134,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					case player.rank <= 1000:
 						c.fillStyle = '#008708';
 						break;
-					default: c.fillStyle = '#787878'
+					default: c.fillStyle = '#787878';
 				}
 				c.fillText(`#${player.rank.toLocaleString()}`, 12, 187);
 
 				// profile
 				c.fillStyle = "#000000";
 				c.font = 'bold 25px Exo';
-				c.fillText(player.name, 169, 45, 243);
+				c.fillText(player.username, 169, 45, 243);
 
 				c.font = '18px Exo';
 				c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
-				c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
+				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
 				if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
 				if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
 				if (flag) c.fillText(player.location, 451, flag.height + 20);
@@ -170,15 +170,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					for (let i = 0; i < badges.length; i++) {
 						let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
 						if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
-						else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85)
+						else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85);
 					}
 				}
 				
 				const attachment = new Discord.MessageAttachment(canvas.toBuffer());
-				message.channel.send(`✅ **| osu!droid profile for ${player.name}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]})
-			})
-		})
-	})
+				message.channel.send(`✅ **| osu!droid profile for ${player.username}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]});
+			});
+		});
+	});
 };
 
 module.exports.config = {

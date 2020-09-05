@@ -66,7 +66,7 @@ module.exports.run = (client, message, args, maindb) => {
                     cd.delete(message.author.id);
                 }, 2000);
 
-                const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
+                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap});
                 if (mapinfo.error) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
                 }
@@ -76,7 +76,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (!mapinfo.objects) {
                     return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
                 }
-                if (!mapinfo.osu_file) {
+                if (!mapinfo.osuFile) {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
                 }
                 const hash = mapinfo.hash;
@@ -99,24 +99,24 @@ module.exports.run = (client, message, args, maindb) => {
                 const combo = score.combo;
                 const miss = score.miss;
 
-                const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-                const npp = osudroid.ppv2({
-                    stars: star.droid_stars,
+                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                const npp = new osudroid.PerformanceCalculator().calculate({
+                    stars: star.droidStars,
                     combo: combo,
-                    acc_percent: acc,
+                    accPercent: acc,
                     miss: miss,
                     mode: osudroid.modes.droid
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
                 const pp_object = {
                     hash: hash,
-                    title: mapinfo.full_title,
+                    title: mapinfo.fullTitle,
                     pp: pp,
                     mods: mods,
                     accuracy: acc,
                     combo: combo,
                     miss: miss,
-                    scoreID: score.score_id
+                    scoreID: score.scoreID
                 };
                 playc++;
                 let duplicate = false;
@@ -200,14 +200,14 @@ module.exports.run = (client, message, args, maindb) => {
                     cd.delete(message.author.id);
                 }, 1000 * offset);
 
-                const player = await new osudroid.Player().get({uid: uid});
+                const player = await new osudroid.Player().getInformation({uid: uid});
                 if (player.error) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                 }
-				if (!player.name) {
+				if (!player.username) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
                 }
-                const recent_plays = player.recent_plays;
+                const recent_plays = player.recentPlays;
 				if (recent_plays.length === 0) {
                     return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 }
@@ -221,42 +221,44 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 
                 for await (const play of plays) {
-                    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash});
-                    if (mapinfo.error) {
-                        message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
-                        continue;
-                    }
-                    if (!mapinfo.title) {
-                        message.channel.send("❎ **| I'm sorry, that map does not exist in osu! database!**");
-                        continue;
-                    }
-                    if (!mapinfo.objects) {
-                        message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-                        continue;
-                    }
-                    if (!mapinfo.osu_file) {
-                        message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-                        continue;
-                    }
-
-                    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                        const isWhitelist = await whitelistdb.findOne({hashid: play.hash});
-                        if (!isWhitelist) {
-                            message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
-                            continue;
-                        }
-                    }
+                    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash});
+                    ++submitted;
 
                     const combo = play.combo;
                     const mods = play.mods;
                     const acc = play.accuracy;
                     const miss = play.miss;
 
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-                    const npp = osudroid.ppv2({
-                        stars: star.droid_stars,
+                    if (mapinfo.error) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **API fetch error**`);
+                        continue;
+                    }
+                    if (!mapinfo.title) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Beatmap not found**`);
+                        continue;
+                    }
+                    if (!mapinfo.objects) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Beatmap with 0 objects**`);
+                        continue;
+                    }
+                    if (!mapinfo.osuFile) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **API fetch error**`);
+                        continue;
+                    }
+
+                    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                        const isWhitelist = await whitelistdb.findOne({hashid: play.hash});
+                        if (!isWhitelist) {
+                            embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Unranked beatmap**`);
+                            continue;
+                        }
+                    }
+
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                    const npp = new osudroid.PerformanceCalculator().calculate({
+                        stars: star.droidStars,
                         combo: combo,
-                        acc_percent: acc,
+                        accPercent: acc,
                         miss: miss,
                         mode: osudroid.modes.droid
                     });
@@ -264,13 +266,13 @@ module.exports.run = (client, message, args, maindb) => {
 
                     const pp_object = {
                         hash: play.hash,
-                        title: mapinfo.full_title,
+                        title: mapinfo.fullTitle,
                         pp: pp,
                         mods: mods,
                         accuracy: acc,
                         combo: combo,
                         miss: miss,
-                        scoreID: play.score_id
+                        scoreID: play.scoreID
                     };
 
                     ++submitted;

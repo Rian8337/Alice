@@ -69,17 +69,17 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     //start of create role
     if (!muterole) {
         try {
-            muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}});
+            muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}, reason: "No mute role"});
             message.guild.channels.cache.forEach((channel) => {
-                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error);
-            })
+                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}, "Disallow muted members to talk").catch(console.error);
+            });
         } catch(e) {
             console.log(e.stack);
         }
     } else {
         message.guild.channels.cache.forEach((channel) => {
-            channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}).catch(console.error)
-        })
+            channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}, "Disallow muted members to talk").catch(console.error);
+        });
     }
     //end of create role
 
@@ -98,10 +98,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         .setFooter("User ID: " + tomute.id, footer[index])
         .setDescription(string);
 
-    try{
-        await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed})
+    try {
+        await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed});
     } catch (e) {
-        message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`)
+        message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`);
     }
 
     if (mutetime >= 21600) {
@@ -109,18 +109,22 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         loungedb.findOne({discordid: tomute.id}, (err, res) => {
             if (err) {
                 console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
             if (!res) {
                 loungedb.insertOne({discordid: tomute.id}, err => {
                     if (err) {
                         console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    channel.send("✅ **| Successfully locked user from lounge.**")
-                })
+                    channel.send("✅ **| Successfully locked user from lounge.**");
+                });
             }
-        })
+        });
+    }
+
+    if (message.attachments.size > 0) {
+        muteembed.attachFiles([message.attachments.first()]);
     }
 
     channel.send({embed: muteembed}).then(msg => {
@@ -132,12 +136,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
             msg.edit({embed: muteembed});
         }, mutetime * 1000);
-    })
+    });
 };
 
 module.exports.config = {
     name: "tempmute",
-    description: "Temporarily mutes a user.",
+    description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
     detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
     permission: "Helper"

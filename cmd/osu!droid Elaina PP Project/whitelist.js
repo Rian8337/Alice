@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args, maindb) => {
                 console.log(wlres);
                 if (err) {
                     console.log(err);
-                    return message.channel.send("Error: Empty database response. Please try again!")
+                    return message.channel.send("Error: Empty database response. Please try again!");
                 }
                 if (!wlres) {
                     let insertData = {
@@ -27,8 +27,8 @@ module.exports.run = async (client, message, args, maindb) => {
                     whitelist.insertOne(insertData, () => {
                         console.log("Whitelist entry added");
                         message.channel.send("Whitelist entry added | `" + mapstring + "`");
-                        client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`")
-                    })
+                        client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`");
+                    });
                 }
                 else {
                     let updateData = { $set: {
@@ -39,13 +39,13 @@ module.exports.run = async (client, message, args, maindb) => {
                     whitelist.updateOne(dupQuery, updateData, () => {
                         console.log("Whitelist entry updated");
                         message.channel.send("Whitelist entry updated | `" + mapstring + "`");
-                        client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`")
-                    })
+                        client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`");
+                    });
                 }
-            })
+            });
         }
-        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**")
-    })
+        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**");
+    });
 };
 
 async function whitelistInfo(client, link_in, hash_in, message, callback) {
@@ -55,28 +55,32 @@ async function whitelistInfo(client, link_in, hash_in, message, callback) {
     if (link_in) { //Normal mode
         let line_sep = link_in.split('/');
         beatmapid = line_sep[line_sep.length-1];
-        query = {beatmap_id: beatmapid}
+        query = {beatmapID: beatmapid};
     }
-    if (hash_in) {hashid = hash_in; query = {hash: hashid}} //Override mode (use for fixed map)
+    if (hash_in) {hashid = hash_in; query = {hash: hashid}}; //Override mode (use for fixed map)
 
-    const mapinfo = await new osudroid.MapInfo().get(query);
+    const mapinfo = await new osudroid.MapInfo().getInformation(query);
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
         message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
-        return callback(0)
+        return callback(0);
     }
-    beatmapid = mapinfo.beatmap_id;
+    if (mapinfo.approved !== osudroid.rankedStatus.GRAVEYARD) {
+        message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
+        return callback(0);
+    }
+    beatmapid = mapinfo.beatmapID;
     hashid = mapinfo.hash;
-    let mapstring = mapinfo.full_title;
+    let mapstring = mapinfo.fullTitle;
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed()
         .setFooter("Alice Synthesis Thirty", footer[index])
-        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
         .setColor(mapinfo.statusColor())
         .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
         .setTitle(mapinfo.showStatistics("", 0))
         .setDescription(mapinfo.showStatistics("", 1))
-        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .addField(mapinfo.showStatistics("", 2), mapinfo.showStatistics("", 3))
         .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.diff_total}`);
 

@@ -28,12 +28,12 @@ module.exports.run = async (client, message, args, maindb) => {
                     whitelist.deleteOne(dupQuery, updateData, () => {
                         console.log("Whitelist entry removed");
                         message.channel.send("Whitelist entry removed | `" + mapstring + "`")
-                    })
+                    });
                 } catch (e) {}
-            })
+            });
         }
-        else message.channel.send("Beatmap white-listing failed")
-    })
+        else message.channel.send("❎ **| Beatmap unwhitelisting failed.**");
+    });
 };
 
 async function whitelistInfo(link_in, hash_in, message, callback) {
@@ -43,35 +43,36 @@ async function whitelistInfo(link_in, hash_in, message, callback) {
     if (link_in) { //Normal mode
         let line_sep = link_in.split('/');
         beatmapid = line_sep[line_sep.length-1];
-        query = {beatmap_id: beatmapid}
+        query = {beatmapID: beatmapid}
     }
     if (hash_in) {hashid = hash_in; query = {hash: hashid}} //Override mode (use for fixed map)
 
-    const mapinfo = await new osudroid.MapInfo().get(query);
+    const mapinfo = await new osudroid.MapInfo().getInformation(query);
 
     if (mapinfo.error) {
         message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
-        return callback(0)
+        return callback(0);
     }
     if (!mapinfo.title || !mapinfo.objects) {
         message.channel.send("❎ **| I'm sorry, I couldn't find the beatmap!**");
-        return callback(0)
+        return callback(0);
     }
-    beatmapid = mapinfo.beatmap_id;
+
+    beatmapid = mapinfo.beatmapID;
     hashid = mapinfo.hash;
     let mapstring = mapinfo.showStatistics("", 0);
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed()
         .setFooter("Alice Synthesis Thirty", footer[index])
-        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}.jpg`)
+        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
         .setColor(mapinfo.statusColor())
         .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
         .setTitle(mapstring)
         .setDescription(mapinfo.showStatistics("", 1))
-        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
+        .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .addField(mapinfo.showStatistics("", 2), mapinfo.showStatistics("", 3))
-        .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.diff_total}`);
+        .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.totalDifficulty}`);
 
     message.channel.send({embed: embed}).catch(console.error);
     callback(1, beatmapid, hashid, mapstring)

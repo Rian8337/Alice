@@ -1,125 +1,79 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
+const {Db} = require('mongodb');
 
-function retrievePlayer(player_list, i, cb) {
-    if (!player_list[i]) return cb(null, true);
-    cb(player_list[i])
+function sleep(seconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, 1000 * seconds);
+    });
 }
 
-async function retrievePlay(play_list, i, cb) {
-    if (!play_list[i]) return cb(null, null, true);
-    let hash = play_list[i][0];
-
-    const mapinfo = await new osudroid.MapInfo().get({hash: hash, file: false});
-    if (mapinfo.error) return cb(null);
-    cb(hash, mapinfo)
-}
-
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    }
 
-    let binddb = maindb.collection("userbind");
-    let whitelistdb = maindb.collection("mapwhitelist");
+    const binddb = maindb.collection("userbind");
+    const whitelistdb = maindb.collection("mapwhitelist");
 
-    binddb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, player_list) => {
+    binddb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray(async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!")
+            return message.channel.send("Error: Empty database response. Please try again!");
         }
-        whitelistdb.find({}, {projection: {_id: 0, hashid: 1}}).toArray((err, whitelist_list) => {
-            if (err) {
-                console.log(err);
-                return message.channel.send("Error: Empty database response. Please try again!")
-            }
+
+        let count = 0;
+        console.log(`Scanning ${res.length} players`);
+        for await (const player of res) {
+            const ppList = player.pp;
+            const newList = [];
             let i = 0;
-            retrievePlayer(player_list, i, async function checkPlayer(player, stopSign = false) {
-                if (stopSign) return await message.channel.send(`✅ **| ${message.author}, dpp entry scan complete!**`);
-                console.log(i);
-                console.log("Uid:", player.uid);
-                let j = 0;
-                let attempt = 0;
-                let prev_pptotal = player.pptotal;
-                let discordid = player.discordid;
-                let play_list = player.pp;
-                let playc = player.playc;
-                await retrievePlay(play_list, j, async function validatePlay(hash, mapinfo, stopFlag = false) {
-                    attempt++;
-                    if (hash === null && attempt < 3) return await retrievePlay(play_list, j, validatePlay)
-                    if (stopFlag) {
-                        console.log("Check done");
-                        let pptotal = 0;
-                        let weight = 1;
-                        for (let i of play_list) {
-                            pptotal += weight * i[2];
-                            weight *= 0.95;
-                        }
-                        console.log(prev_pptotal + " -> " + pptotal);
-                        let updateVal = {
-                            $set: {
-                                pp: play_list,
-                                pptotal: pptotal,
-                                playc: playc
-                            }
-                        };
-                        binddb.updateOne({discordid: discordid}, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                setTimeout(async () => {
-                                    await retrievePlay(play_list, j, validatePlay)
-                                }, 50);
-                                return
-                            }
-                            ++i;
-                            retrievePlayer(player_list, i, checkPlayer)
-                        });
-                        return;
+            let playCount = player.playc;
+            console.log(`Scanning uid ${player.uid}`);
+            console.log(`Scanning ${ppList.length} plays`);
+            for await (const ppEntry of ppList) {
+                const mapinfo = await new osudroid.MapInfo().getInformation({hash: ppEntry.hash, file: false});
+                ++i;
+                await sleep(1);
+                if (mapinfo.error) {
+                    continue;
+                }
+                if (!mapinfo.title) {
+                    continue;
+                }
+                if (!mapinfo.objects) {
+                    continue;
+                }
+                if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                    const isWhitelist = await whitelistdb.findOne({hashid: mapinfo.hash});
+                    if (!isWhitelist) {
+                        continue;
                     }
-                    console.log(j);
-                    attempt = 0;
-                    if (!mapinfo.title) {
-                        console.log("Beatmap not found");
-                        play_list.splice(j, 1);
-                        --playc;
-                        setTimeout(async () => {
-                            await retrievePlay(play_list, j, validatePlay)
-                        }, 50);
-                        return
-                    }
-                    if (!mapinfo.objects) {
-                        console.log("Beatmap with 0 objects");
-                        play_list.splice(j, 1);
-                        --playc;
-                        setTimeout(async () => {
-                            await retrievePlay(play_list, j, validatePlay)
-                        }, 50);
-                        return
-                    }
-                    if (mapinfo.approved !== 3 && mapinfo.approved > 0) {
-                        ++j;
-                        setTimeout(async () => {
-                            await retrievePlay(play_list, j, validatePlay)
-                        }, 50);
-                        return
-                    }
-                    let index = whitelist_list.findIndex(whitelist => whitelist.hashid === hash);
-                    if (index === -1) {
-                        console.log("Beatmap not found in whitelist database");
-                        play_list.splice(j, 1);
-                        --playc;
-                        setTimeout(async () => {
-                            await retrievePlay(play_list, j, validatePlay)
-                        }, 50);
-                        return
-                    }
-                    ++j;
-                    setTimeout(async () => {
-                        await retrievePlay(play_list, j, validatePlay)
-                    }, 50)
-                })
-            })
-        })
-    })
+                }
+                newList.push(ppEntry);
+            }
+            if (newList.length === ppList.length) {
+                continue;
+            }
+            newList.sort((a, b) => {return b.pp - a.pp;});
+
+            let newTotal = 0;
+            for (let i = 0; i < newList.length; ++i) {
+                newTotal += newList[i].pp * Math.pow(0.95, i);
+            }
+            console.log(newTotal);
+            await binddb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, playc: playCount, pp: newList}});
+            ++count;
+            console.log(`${count}/${res.length} players complete (${((count / res.length) * 100).toFixed(2)}%)`);
+        }
+        message.channel.send(`✅ **| ${message.author}, scan done!**`);
+    });
 };
 
 module.exports.config = {

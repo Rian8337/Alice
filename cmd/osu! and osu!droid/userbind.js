@@ -39,9 +39,9 @@ module.exports.run = async (client, message, args, maindb) => {
 	else uid = parseInt(args[0]);
 
 	const binddb = maindb.collection("userbind");
-	const player = await new osudroid.Player().get(uid ? {uid: uid} : {username: username});
+	const player = await new osudroid.Player().getInformation(uid ? {uid: uid} : {username: username});
 	if (player.error) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-	if (!player.name) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
+	if (!player.username) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
 
 	uid = player.uid.toString();
 
@@ -55,7 +55,7 @@ module.exports.run = async (client, message, args, maindb) => {
 			if (!hasPlayed) {
 				cd.add(message.author.id);
 				setTimeout(() => {
-					cd.delete(message.author.id)
+					cd.delete(message.author.id);
 				}, 10000);
 				fs.readFile(`${process.cwd()}/files/LiSA - crossing field (osu!droid bind verification).osz`, (err, data) => {
 					if (err) {
@@ -80,7 +80,7 @@ module.exports.run = async (client, message, args, maindb) => {
 					previous_bind.push(uid);
 					let updateVal = {
 						$set: {
-							username: player.name,
+							username: player.username,
 							uid: uid,
 							previous_bind: previous_bind
 						}
@@ -91,12 +91,12 @@ module.exports.run = async (client, message, args, maindb) => {
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 						}
 						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
-					})
+					});
 				} else {
 					let insertVal = {
 						discordid: message.author.id,
 						uid: uid,
-						username: player.name,
+						username: player.username,
 						hasAskedForRecalc: false,
 						pptotal: 0,
 						playc: 0,
@@ -110,16 +110,16 @@ module.exports.run = async (client, message, args, maindb) => {
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
 						}
 						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
-					})
+					});
 				}
 			});
-			return
+			return;
 		}
 
 		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
 		let updateVal = {
 			$set: {
-				username: player.name,
+				username: player.username,
 				uid: uid
 			}
 		};
@@ -127,11 +127,11 @@ module.exports.run = async (client, message, args, maindb) => {
 		binddb.updateOne({discordid: message.author.id}, updateVal, err => {
 			if (err) {
 				console.log(err);
-				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
 			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
-		})
-	})
+		});
+	});
 };
 
 module.exports.config = {

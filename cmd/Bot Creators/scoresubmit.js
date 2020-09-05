@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const cd = new Set();
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function scoreRequirement(lvl) {
     let xp;
@@ -28,39 +29,39 @@ function calculateLevel(lvl, score, cb) {
             nextlevel = scoreRequirement(newlevel + 1);
             prevlevel = scoreRequirement(newlevel);
             newlevel += (score - prevlevel) / (nextlevel - prevlevel);
-            cb(newlevel)
+            cb(newlevel);
         }
-        else levelUp(newlevel, score, testcb)
+        else levelUp(newlevel, score, testcb);
     });
     else {
         nextlevel = xpreq;
         prevlevel = scoreRequirement(lvl);
         let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
-        cb(newlevel)
+        cb(newlevel);
     }
 }
 
 async function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, cb) {
     if (!playentry[i]) return cb(false, false, true);
     let play = playentry[i];
-    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false});
+    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash, file: false});
     if (mapinfo.error) {
 		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
-		return cb(false, true)
+		return cb(false, true);
 	}
     if (!mapinfo.title) {
         message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-        return cb(false, false)
+        return cb(false, false);
     }
     if (!mapinfo.objects) {
         message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-        return cb(false, false)
+        return cb(false, false);
     }
     if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
         message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved mapsets!**");
-        return cb(false, false)
+        return cb(false, false);
     }
-    let playinfo = mapinfo.showStatistics(osudroid.mods.droid_to_PC(play.mod), 0);
+    let playinfo = mapinfo.showStatistics(osudroid.mods.droidToPC(play.mod), 0);
     let dup = false;
     let diff = 0;
     let scoreentry = [play.score, play.hash];
@@ -69,27 +70,34 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
             diff = play.score - scorelist[i][0];
             scorelist[i] = scoreentry;
             dup = true;
-            break
+            break;
         }
     }
     if (!dup) {
         scorelist.push(scoreentry);
-        diff = scoreentry[0]
+        diff = scoreentry[0];
     }
     playc++;
     embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${play.combo}x | ${play.accuracy}% | ${play.miss} ❌`);
-    cb()
+    cb();
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
     // embed stuff
     let rolecheck;
     try {
-        rolecheck = message.member.roles.color.hexColor
+        rolecheck = message.member.roles.color.hexColor;
     } catch (e) {
-        rolecheck = "#000000"
+        rolecheck = "#000000";
     }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
@@ -116,11 +124,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let username = userres.username;
-        const player = await new osudroid.Player().get({uid: uid});
+        const player = await new osudroid.Player().getInformation({uid: uid});
 
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
-        if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");
-        let rplay = player.recent_plays;
+        if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
+        if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");
+        let rplay = player.recentPlays;
         let playentry = [];
         let embed = new Discord.MessageEmbed()
             .setTitle("Score submission info")
@@ -214,14 +222,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (success) submitted++;
                 if (error) attempt++;
                 else attempt = 0;
-                await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, testResult)
-            })
-        })
+                await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, testResult);
+            });
+        });
     });
     cd.add(message.author.id);
     setTimeout(() => {
-        cd.delete(message.author.id)
-    }, 1000)
+        cd.delete(message.author.id);
+    }, 1000);
 };
 
 module.exports.config = {

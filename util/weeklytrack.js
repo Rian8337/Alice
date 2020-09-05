@@ -49,10 +49,10 @@ module.exports.run = (client, maindb, alicedb) => {
         let hash = dailyres.hash;
         if (!featured) featured = '386742340968120321';
 
-        const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmapid});
+        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
         if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
-        let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
+        let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
         let pass_string = '';
         let bonus_string = '';
         switch (pass[0]) {
@@ -147,10 +147,10 @@ module.exports.run = (client, maindb, alicedb) => {
             .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
             .setColor(mapinfo.statusColor())
             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
-            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droid_stars.total)))} ${star.droid_stars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pc_stars.total)))} ${star.pc_stars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
         client.channels.cache.get("669221772083724318").send("✅ **| Weekly challenge ended!**", {embed: embed});
 

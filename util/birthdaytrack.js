@@ -24,13 +24,16 @@ module.exports.run = (client, maindb, alicedb) => {
     const query = {
         $and: [
             {date: {$gte: date - 1, $lte: date + 1}},
-            {month: {$gte: month - 1, $lte: date + 1}}
+            {month: {$gte: month - 1, $lte: month + 1}}
         ]
     };
 
     birthday.find(query).toArray((err, res) => {
         if (err) {
             return console.log(err);
+        }
+        if (res.length === 0) {
+            return;
         }
         let current_birthday = [];
 
@@ -58,7 +61,6 @@ module.exports.run = (client, maindb, alicedb) => {
                 current_birthday.push(entry);
             }
         }
-        if (current_birthday.length > 0) console.log(`Found ${current_birthday.length} valid birthday entry`);
 
         role.members.forEach((member) => {
             let index = current_birthday.findIndex((entry) => entry.discordid === member.id);
@@ -91,11 +93,9 @@ module.exports.run = (client, maindb, alicedb) => {
                     return console.log(err);
                 }
                 if (userres) {
-                    let coins = userres.alicecoins;
-                    coins += 1000;
                     let updateVal = {
-                        $set: {
-                            alicecoins: coins
+                        $inc: {
+                            alicecoins: 1000
                         }
                     };
                     points.updateOne({discordid: entry.discordid}, updateVal, err => {

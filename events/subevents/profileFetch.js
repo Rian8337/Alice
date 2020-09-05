@@ -7,9 +7,9 @@ module.exports.run = async (client, message, maindb, alicedb) => {
         const a = entry.split("=");
         const uid = parseInt(a[a.length - 1]);
         if (isNaN(uid)) continue;
-        const player = await new osudroid.Player().get({uid: uid});
-        if (player.error || !player.name) continue;
-        client.commands.get("pfid").run(client, message, [uid], maindb, alicedb)
+        const player = await new osudroid.Player().getInformation({uid: uid});
+        if (player.error || !player.username) continue;
+        client.commands.get("pfid").run(client, message, [uid], maindb, alicedb);
     }
 };
 

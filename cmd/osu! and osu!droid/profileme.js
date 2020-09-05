@@ -43,13 +43,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			weight += Math.pow(0.95, i);
 		}
 		if (weighted_accuracy) weighted_accuracy /= weight;
-		const player = await new osudroid.Player().get({uid: uid}).catch(console.error);
+		const player = await new osudroid.Player().getInformation({uid: uid}).catch(console.error);
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
 			return;
 		}
-		if (!player.name) {
+		if (!player.username) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 			return;
@@ -57,7 +57,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		scoredb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);
-				return message.channel.send("Error: Empty database response. Please try again!")
+				return message.channel.send("Error: Empty database response. Please try again!");
 			}
 			let level = 1;
 			let score = 0;
@@ -68,7 +68,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			pointdb.findOne({uid: uid}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!")
+					return message.channel.send("Error: Empty database response. Please try again!");
 				}
 				let coins = 0;
 				let points = 0;
@@ -150,20 +150,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					case player.rank <= 1000:
 						c.fillStyle = '#008708';
 						break;
-					default: c.fillStyle = '#787878'
+					default: c.fillStyle = '#787878';
 				}
 				c.fillText(`#${player.rank.toLocaleString()}`, 12, 187);
 
 				// profile
 				c.fillStyle = "#000000";
 				c.font = 'bold 25px Exo';
-				c.fillText(player.name, 169, 45, 243);
+				c.fillText(player.username, 169, 45, 243);
 
 				c.font = '18px Exo';
 				c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
-				c.fillText(`Play Count: ${player.play_count.toLocaleString()}`, 169, 144);
+				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
 				c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 164);
 				if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
 				if (flag) c.fillText(player.location, 451, flag.height + 20);
@@ -191,10 +191,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 				
 				const attachment = new Discord.MessageAttachment(canvas.toBuffer());
-				message.channel.send(`✅ **| osu!droid profile for ${player.name}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]})
-			})
-		})
-	})
+				message.channel.send(`✅ **| osu!droid profile for ${player.username}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]});
+			});
+		});
+	});
 };
 
 module.exports.config = {

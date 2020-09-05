@@ -32,6 +32,7 @@ module.exports.run = (client, maindb, alicedb) => {
 			return;
 		}
 		client.utils.get("dailyreset").run(alicedb);
+		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		const index = Math.floor(Math.random() * activity_list.length);
 		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
 	}, 10000);
@@ -40,7 +41,6 @@ module.exports.run = (client, maindb, alicedb) => {
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
 		console.log("Utilities running");
-		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		if (!maintenance) {
 			client.utils.get("trackfunc").run(client, maindb);
 			client.utils.get("clantrack").run(client, maindb, alicedb);

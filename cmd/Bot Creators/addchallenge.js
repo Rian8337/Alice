@@ -21,8 +21,8 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             value = parseInt(value);
             if (typeof value !== "number" || value <= 0)
                 return message.channel.send("❎ **| I'm sorry, that's an invalid combo count!**");
-            if (value > mapinfo.max_combo)
-                return message.channel.send(`❎ **| I'm sorry, combo count is above maximum combo (${mapinfo.max_combo})!**`);
+            if (value > mapinfo.maxCombo)
+                return message.channel.send(`❎ **| I'm sorry, combo count is above maximum combo (${mapinfo.maxCombo})!**`);
             break
         }
         case 'rank': {
@@ -43,7 +43,7 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             value = parseInt(value);
             if (typeof value !== "number")
                 return message.channel.send("❎ **| I'm sorry, that's an invalid score amount!**");
-            if (value <= 0 || value > mapinfo.max_score)
+            if (value <= 0 || value > mapinfo.maxScore)
                 return message.channel.send(`❎ **| I'm sorry, that score amount is above maximum score (${max_score})!**`);
             break
         }
@@ -58,8 +58,8 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
             value = parseInt(value);
             if (typeof value !== "number" || value < 0)
                 return message.channel.send("❎ **| I'm sorry, that's an invalid miss count!**");
-            if (value > mapinfo.max_combo)
-                return message.channel.send(`❎ **| I'm sorry, miss count is above maximum combo (${mapinfo.max_combo})!**`);
+            if (value > mapinfo.maxCombo)
+                return message.channel.send(`❎ **| I'm sorry, miss count is above maximum combo (${mapinfo.maxCombo})!**`);
             break
         }
         case 'dpp': {
@@ -81,10 +81,10 @@ function validateEntry(message, condition, value, mapinfo, dpp, pp, max_score) {
         case 'mod': {
             if (typeof value !== "string")
                 return message.channel.send("❎ **| I'm sorry, the mod combination is invalid!**");
-            value = osudroid.mods.modbits_from_string(value);
+            value = osudroid.mods.modbitsFromString(value);
             if (!value)
                 return message.channel.send("❎ **| I'm sorry, that mod combination is invalid!**");
-            value = osudroid.mods.modbits_to_string(value);
+            value = osudroid.mods.modbitsToString(value);
             break
         }
     }
@@ -227,9 +227,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let constrain = args[8];
             if (!constrain)
                 return message.channel.send("❎ **| Hey, please enter a constrain!**");
-            constrain = osudroid.mods.modbits_from_string(constrain);
+            constrain = osudroid.mods.modbitsFromString(constrain);
             if (!constrain) constrain = "";
-            else constrain = osudroid.mods.modbits_to_string(constrain);
+            else constrain = osudroid.mods.modbitsToString(constrain);
             main_entry.constrain = constrain.toLowerCase();
 
             let easy_bonus = args[9];
@@ -333,37 +333,37 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
             }
 
-            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: map});
+            const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: map});
             if (mapinfo.error)
                 return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
             if (!mapinfo.title)
                 return message.channel.send("❎ **| I'm sorry, I cannot find the map you are looking for!**");
             if (!mapinfo.objects)
                 return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-            if (!mapinfo.osu_file)
+            if (!mapinfo.osuFile)
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
 
             if (mapinfo.hash === hash)
                 return message.channel.send("❎ **| Hey, the given MD5 hash value is the same as original MD5 hash value!**");
-            const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: constrain});
-            let npp = osudroid.ppv2({
-                stars: star.droid_stars,
-                combo: mapinfo.max_combo,
-                acc_percent: 100,
+            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
+            let npp = new osudroid.PerformanceCalculator().calculate({
+                stars: star.droidStars,
+                combo: mapinfo.maxCombo,
+                accPercent: 100,
                 miss: 0,
-                mode: "droid"
+                mode: osudroid.modes.droid
             });
-            let pcpp = osudroid.ppv2({
-                stars: star.pc_stars,
-                combo: mapinfo.max_combo,
-                acc_percent: 100,
+            let pcpp = new osudroid.PerformanceCalculator().calculate({
+                stars: star.pcStars,
+                combo: mapinfo.maxCombo,
+                accPercent: 100,
                 miss: 0,
-                mode: "osu"
+                mode: osudroid.modes.osu
             });
 
             let dpp = parseFloat(npp.toString().split(" ")[0]);
             let pp = parseFloat(pcpp.toString().split(" ")[0]);
-            let max_score = mapinfo.max_score(constrain);
+            let max_score = mapinfo.maxScore(constrain);
 
             pass_value = validateEntry(message, pass_condition, pass_value, mapinfo, dpp, pp, max_score);
             if (pass_v2)
@@ -544,10 +544,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 .setAuthor(challenge_id.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                 .setColor(mapinfo.statusColor())
                 .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challenge_id}`, footer[index])
-                .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+                .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                 .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${map})**${featured ? `\nFeatured by <@${featured}>` : ""}\nDownload: [Google Drive](${main_entry.link[0]}) - [OneDrive](${main_entry.link[1]})`)
                 .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droid_stars)))} ${parseFloat(star.droid_stars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pc_stars)))} ${parseFloat(star.pc_stars).toFixed(2)} PC stars`, `**${main_entry.points === 1?"Point":"Points"}**: ${main_entry.points} ${main_entry.points === 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                .addField(`**Star Rating**\n${"★".repeat(Math.min(10, parseInt(star.droidStars)))} ${parseFloat(star.droidStars).toFixed(2)} droid stars\n${"★".repeat(Math.min(10, parseInt(star.pcStars)))} ${parseFloat(star.pcStars).toFixed(2)} PC stars`, `**${main_entry.points === 1?"Point":"Points"}**: ${main_entry.points} ${main_entry.points === 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
 
             message.channel.send(`❗**| ${message.author}, are you sure you want to add challenge \`${challenge_id}\`?**`, {embed: embed}).then(msg => {
                 msg.react("✅").catch(console.error);

@@ -24,7 +24,7 @@ async function createEmbed(content, page, footer, index, color) {
             break;
         }
         if (!(beatmaps[convertIndex] instanceof osudroid.MapInfo)) {
-            const mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmaps[convertIndex].beatmap_id, file: false});
+            const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmaps[convertIndex].beatmap_id, file: false});
             if (mapinfo.title) {
                 beatmaps[convertIndex] = mapinfo;
             }
@@ -40,8 +40,8 @@ async function createEmbed(content, page, footer, index, color) {
         const beatmap = beatmaps[i];
 
         if (beatmap instanceof osudroid.MapInfo) {
-            const title = `${i+1}. ${beatmap.showStatistics("", 0)} (${beatmap.diff_total.toFixed(2)}★)`;
-            const description = `[Beatmap Page](https://osu.ppy.sh/b/${beatmap.beatmap_id})\n${beatmap.showStatistics("", 1)}\n${beatmap.showStatistics("", 2)}\n${beatmap.showStatistics("", 3)}\n${beatmap.showStatistics("", 4)}\n${beatmap.showStatistics("", 5)}`;
+            const title = `${i+1}. ${beatmap.showStatistics("", 0)} (${beatmap.totalDifficulty.toFixed(2)}★)`;
+            const description = `[Beatmap Page](https://osu.ppy.sh/b/${beatmap.beatmapID})\n${beatmap.showStatistics("", 1)}\n${beatmap.showStatistics("", 2)}\n${beatmap.showStatistics("", 3)}\n${beatmap.showStatistics("", 4)}\n${beatmap.showStatistics("", 5)}`;
             embed.addField(title, description);
         } else {
             const dateEntries = beatmap.date.replace("T", " ").split(" ");

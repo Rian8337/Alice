@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const cd = new Set();
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function scoreRequirement(lvl) {
     let xp;
@@ -15,7 +16,7 @@ function levelUp(level, score, cb) {
     if (score < nextlevel) cb(level, true);
     else {
         level++;
-        cb(level, false)
+        cb(level, false);
     }
 }
 
@@ -28,39 +29,39 @@ function calculateLevel(lvl, score, cb) {
             nextlevel = scoreRequirement(newlevel + 1);
             prevlevel = scoreRequirement(newlevel);
             newlevel += (score - prevlevel) / (nextlevel - prevlevel);
-            cb(newlevel)
+            cb(newlevel);
         }
-        else levelUp(newlevel, score, testcb)
+        else levelUp(newlevel, score, testcb);
     });
     else {
         nextlevel = xpreq;
         prevlevel = scoreRequirement(lvl);
         let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
-        cb(newlevel)
+        cb(newlevel);
     }
 }
 
-async function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, cb) {
-    if (!playentry[i]) return cb(false, false, true);
+async function scoreApproval(embed, i, submitted, scorelist, playc, playentry, cb) {
+    if (!playentry[i]) return cb(false, true);
     let play = playentry[i];
-    const mapinfo = await new osudroid.MapInfo().get({hash: play.hash, file: false});
+    let mod = play.mod;
+    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash, file: false});
     if (mapinfo.error) {
-		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
-		return cb(false, true)
+        embed.addField(`${submitted}. ${play.title}${mod ? ` +${mod}` : ""}`, `**${play.score.toLocaleString()}** | ${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | **API fetch error**`);
+		return cb(true);
 	}
     if (!mapinfo.title) {
-        message.channel.send("❎ **| I'm sorry, the map you've played can't be found on osu! beatmap listing, please make sure the map is submitted and up-to-date!**");
-        return cb(false, false)
+        embed.addField(`${submitted}. ${play.title}${mod ? ` +${mod}` : ""}`, `**${play.score.toLocaleString()}** | ${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | **Beatmap not found**`);
+        return cb(false);
     }
     if (!mapinfo.objects) {
-        message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-        return cb(false, false)
+        embed.addField(`${submitted}. ${play.title}${mod ? ` +${mod}` : ""}`, `**${play.score.toLocaleString()}** | ${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | **Beatmap with 0 objects**`);
+        return cb(false);
     }
-    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-        message.channel.send("❎ **| I'm sorry, the score system only accepts ranked, approved, and loved mapsets!**");
-        return cb(false, false)
+    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+        embed.addField(`${submitted}. ${play.title}${mod ? ` +${mod}` : ""}`, `**${play.score.toLocaleString()}** | ${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | **Unranked beatmap**`);
+        return cb(false);
     }
-    let mod = play.mod;
     let playinfo = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]${mod ? ` +${mod}` : ""}`;
     let dup = false;
     let diff = 0;
@@ -70,25 +71,32 @@ async function scoreApproval(message, embed, i, submitted, scorelist, playc, pla
             diff = play.score - scorelist[i][0];
             scorelist[i] = scoreentry;
             dup = true;
-            break
+            break;
         }
     }
     if (!dup) {
         scorelist.push(scoreentry);
-        diff = scoreentry[0]
+        diff = scoreentry[0];
     }
     playc++;
     embed.addField(`${submitted}. ${playinfo}`, `**${scoreentry[0].toLocaleString()}** | *+${diff.toLocaleString()}*\n${play.combo}x | ${play.accuracy}% | ${play.miss} ❌`);
-    cb()
+    cb();
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     // embed stuff
     let rolecheck;
     try {
-        rolecheck = message.member.roles.color.hexColor
+        rolecheck = message.member.roles.color.hexColor;
     } catch (e) {
-        rolecheck = "#000000"
+        rolecheck = "#000000";
     }
     let footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
@@ -108,7 +116,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .addField("My old scores aren't in the system! How can I add them?", "Fortunately, a complete score calculation exists. Simply DM <@386742340968120321> to request one.")
             .addField("How does score requirement for each level calculated?", "The scoring system uses a specific formula to calculate score requirements for each level.```if n <= 100:\nscore(n) = (5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)) / 1.128\n\nif n > 100:\nscore(n) = 23875169174 + 15000000000 * (n - 100)```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
 
-        return message.channel.send({embed: embed})
+        return message.channel.send({embed: embed});
     } else if (args[0] == 'past') {
 
     } else {
@@ -133,17 +141,17 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     binddb.findOne(query, async (err, userres) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!")
+            return message.channel.send("Error: Empty database response. Please try again!");
         }
         if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let discordid = userres.discordid;
         let username = userres.username;
-        const player = await new osudroid.Player().get({uid: uid});
+        const player = await new osudroid.Player().getInformation({uid: uid});
         if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
-        if (!player.name) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-        if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-        let rplay = player.recent_plays;
+        if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+        if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+        let rplay = player.recentPlays;
         let playentry = [];
         let embed = new Discord.MessageEmbed()
             .setTitle("Score submission info")
@@ -161,7 +169,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 mod: rplay[i].mods,
                 hash: rplay[i].hash
             };
-            playentry.push(play)
+            playentry.push(play);
         }
 
         let scoredb = alicedb.collection("playerscore");
@@ -169,7 +177,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         scoredb.findOne(query, async (err, res) => {
             if (err) {
                 console.log(err);
-                return message.channel.send("Error: Empty database response. Please try again!")
+                return message.channel.send("Error: Empty database response. Please try again!");
             }
             let prescore = 0;
             let scorelist = [];
@@ -185,11 +193,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             let i = 0;
             let submitted = 1;
             let attempt = 0;
-            await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, async function testResult(error = false, success = true, stopSign = false) {
+            await scoreApproval(embed, i, submitted, scorelist, playc, playentry, async function testResult(error = false, stopSign = false) {
                 if (stopSign) {
                     if (submitted === 1) return;
                     scorelist.sort((a, b) => {
-                        return b[0] - a[0]
+                        return b[0] - a[0];
                     });
                     for (i of scorelist) score += i[0];
                     let scorediff = score - prescore;
@@ -209,10 +217,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.updateOne(query, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("Error: Empty database response. Please try again!")
+                                    return message.channel.send("Error: Empty database response. Please try again!");
                                 }
-                                console.log("Score updated")
-                            })
+                            });
                         } else {
                             let insertVal = {
                                 uid: uid,
@@ -225,27 +232,26 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("Error: Empty database response. Please try again!")
+                                    return message.channel.send("Error: Empty database response. Please try again!");
                                 }
-                                console.log("Score updated")
-                            })
+                            });
                         }
                     });
-                    return
+                    return;
                 }
                 attempt++;
                 if (!error && attempt < 3) i++;
-                if (success) submitted++;
+                submitted++;
                 if (error) attempt++;
                 else attempt = 0;
-                await scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, testResult)
-            })
-        })
+                await scoreApproval(embed, i, submitted, scorelist, playc, playentry, testResult);
+            });
+        });
     });
     cd.add(message.author.id);
     setTimeout(() => {
-        cd.delete(message.author.id)
-    }, 1000)
+        cd.delete(message.author.id);
+    }, 1000);
 };
 
 module.exports.config = {

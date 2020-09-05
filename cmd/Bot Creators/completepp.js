@@ -23,7 +23,7 @@ function test(uid, page, cb) {
 }
 
 async function calculatePP(ppentries, entry, cb) {
-    const mapinfo = await new osudroid.MapInfo().get({hash: entry[11]});
+    const mapinfo = await new osudroid.MapInfo().getInformation({hash: entry[11]});
     if (mapinfo.error) {
         console.log("API fetch error");
         return cb()
@@ -36,33 +36,33 @@ async function calculatePP(ppentries, entry, cb) {
         console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
         return cb()
     }
-    if (!mapinfo.osu_file) {
+    if (!mapinfo.osuFile) {
         console.log("No osu file");
         return cb(true)
     }
-    let mods = osudroid.mods.droid_to_PC(entry[6]);
+    let mods = osudroid.mods.droidToPC(entry[6]);
     let acc_percent = parseFloat(entry[7]) / 1000;
     let combo = parseInt(entry[4]);
     let miss = parseInt(entry[8]);
-    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-    let npp = osudroid.ppv2({
-        stars: star.droid_stars,
+    let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+    let npp = new osudroid.PerformanceCalculator().calculate({
+        stars: star.droidStars,
         combo: combo,
-        acc_percent: acc_percent,
+        accPercent: acc_percent,
         miss: miss,
-        mode: "droid"
+        mode: osudroid.modes.droid
     });
     
     let pp = parseFloat(npp.toString().split(" ")[0]);
     let ppentry = {
         hash: entry[11],
-        title: mapinfo.full_title,
+        title: mapinfo.fullTitle,
         pp: pp,
         mods: mods,
         accuracy: acc_percent,
         combo: combo,
         miss: miss,
-        score_id: parseInt(entry[0])
+        scoreID: parseInt(entry[0])
     };
     if (!isNaN(pp)) ppentries.push(ppentry);
     cb()

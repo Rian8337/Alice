@@ -22,8 +22,8 @@ function playValidation(mod, requirement) {
 }
 
 async function getPlay(i, uid, cb) {
-	const player = await new osudroid.Player().get({uid: uid});
-	cb([i, player])
+	const player = await new osudroid.Player().getInformation({uid: uid});
+	cb([i, player]);
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -76,7 +76,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 							requirement = poolres.map[i][0];
 							title = poolres.map[i][1];
 							max_score = parseInt(poolres.map[i][2]);
-							break
+							break;
 						}
 					}
 					if (!max_score || !requirement || !title) return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
@@ -99,13 +99,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 						if (j % 2 === 0) {
 							team_1_score += temp_score;
-							if (temp_score !== 0) team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
-							else team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} (N/A): **0** - Failed\n`
+							if (temp_score !== 0) team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} - (${osudroid.mods.pcToDetail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
+							else team_1_string += `${players[j][0] === "Score" ? matchres.team[0][0] : players[j][0]} (N/A): **0** - Failed\n`;
 						}
 						else {
 							team_2_score += temp_score;
-							if (temp_score !== 0) team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} - (${osudroid.mods.pc_to_detail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
-							else team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`
+							if (temp_score !== 0) team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} - (${osudroid.mods.pcToDetail(play[1].mods)}): **${Math.round(temp_score)}** - **${play[1].rank}** - ${play[1].accuracy}% - ${play[1].miss} ❌\n`;
+							else team_2_string += `${players[j][0] === "Score" ? matchres.team[1][0] : players[j][0]} (N/A): **0** - Failed\n`;
 						}
 						++j;
 					}
@@ -117,11 +117,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					let color = 0;
 					if (team_1_score > team_2_score) {
 						description = `${matchres.team[0][0]} won by ${team_1_score - team_2_score}`;
-						color = 16711680
+						color = 16711680;
 					}
 					else if (team_1_score < team_2_score) {
 						description = `${matchres.team[1][0]} won by ${team_2_score - team_1_score}`;
-						color = 262399
+						color = 262399;
 					}
 					else description = "It's a draw";
 
@@ -181,15 +181,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 								};
 
 								for (const p of score_info) {
-									const recent_play = p.recent_plays[0];
+									const recent_play = p.recentPlays[0];
 									let player_name = '';
 									if (players[0][0] !== "Score") {
-										const player_entry = players.find(e => e[0].includes(p.name));
-										player_name = player_entry ? player_entry[0] : p.name;
+										const player_entry = players.find(e => e[0].includes(p.username));
+										player_name = player_entry ? player_entry[0] : p.username;
 									}
 									else {
-										const player_entry = matchres.team.find(e => e[0].includes(p.name));
-										player_name = player_entry ? player_entry[0] : p.name;
+										const player_entry = matchres.team.find(e => e[0].includes(p.username));
+										player_name = player_entry ? player_entry[0] : p.username;
 									}
 									if (recent_play.hash === hash) {
 										let scorev2 = scoreCalc(recent_play.score, max_score, recent_play.accuracy, recent_play.miss);
@@ -202,7 +202,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 											mods: recent_play.mods,
 											miss: recent_play.miss,
 											scorev2: scorev2
-										})
+										});
 									} else {
 										score_object.scores.push({
 											player: player_name,
@@ -211,7 +211,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 											mods: "",
 											miss: 0,
 											scorev2: 0
-										})
+										});
 									}
 								}
 
@@ -230,8 +230,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 									};
 									resultdb.updateOne({matchid: id}, updateVal, err => {
 										if (err) return console.log(err);
-										console.log("Result added to database")
-									})
+										console.log("Result added to database");
+									});
 								} else {
 									const insertVal = {
 										matchid: id,
@@ -253,16 +253,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 									resultdb.insertOne(insertVal, err => {
 										if (err) return console.log(err);
-										console.log("Match added to database")
-									})
+										console.log("Match added to database");
+									});
 								}
-							})
-						})
-					})
-				})
-			})
-		})
-	})
+							});
+						});
+					});
+				});
+			});
+		});
+	});
 };
 
 module.exports.config = {

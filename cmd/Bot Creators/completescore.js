@@ -7,7 +7,7 @@ function scoreRequirement(lvl) {
     let xp;
     if (lvl <= 100) xp = (5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60)) / 1.128;
     else xp = 23875169174 + 15000000000 * (lvl - 100);
-    return Math.round(xp)
+    return Math.round(xp);
 }
 
 function levelUp(level, score, cb) {
@@ -15,7 +15,7 @@ function levelUp(level, score, cb) {
     if (score < nextlevel) cb(level, true);
     else {
         level++;
-        cb(level, false)
+        cb(level, false);
     }
 }
 
@@ -29,16 +29,16 @@ function calculateLevel(lvl, score, cb) {
             prevlevel = scoreRequirement(newlevel);
             newlevel += (score - prevlevel) / (nextlevel - prevlevel);
             console.log(newlevel);
-            cb(newlevel)
+            cb(newlevel);
         }
-        else levelUp(newlevel, score, testcb)
+        else levelUp(newlevel, score, testcb);
     });
     else {
         nextlevel = xpreq;
         prevlevel = scoreRequirement(lvl);
         let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
         console.log(newlevel);
-        cb(newlevel)
+        cb(newlevel);
     }
 }
 
@@ -48,35 +48,35 @@ function retrievePlay(uid, page, cb) {
     request(url, (err, response, data) => {
         if (err || !data) {
             console.log("Empty response");
-            return cb([], false)
+            return cb([], false);
         }
         let entries = [];
         let line = data.split("<br>");
         for (let i = 0; i < line.length; i++) entries.push(line[i].split(" "));
         entries.shift();
         if (!entries[0]) cb(entries, true);
-        else cb(entries, false)
-    })
+        else cb(entries, false);
+    });
 }
 
 async function scoreCheck(scoreentries, score, cb) {
     if (!score) return cb(false, true);
-    const mapinfo = await new osudroid.MapInfo().get({hash: score[11], file: false});
+    const mapinfo = await new osudroid.MapInfo().getInformation({hash: score[11], file: false});
     if (mapinfo.error) {
         console.log("API fetch error");
-        return cb(true)
+        return cb(true);
     }
     if (!mapinfo.title) {
         console.log("Map not found");
-        return cb()
+        return cb();
     }
-    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
+    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
         console.log("Map is not ranked, approved, or loved");
-        return cb()
+        return cb();
     }
     let scoreentry = [parseInt(score[3]), score[11]];
     scoreentries.push(scoreentry);
-    cb()
+    cb();
 }
 
 module.exports.run = (client, message, args, maindb, alicedb) => {
@@ -132,9 +132,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.updateOne(query, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Score updated")
+                                console.log("Score updated");
                             })
                         } else {
                             let insertVal = {
@@ -148,13 +148,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                console.log("Score added")
-                            })
+                                console.log("Score added");
+                            });
                         }
                     });
-                    return
+                    return;
                 }
                 console.table(entries);
                 let i = 0;
@@ -166,19 +166,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!error) {
                         i++;
                         playc++;
-                        attempt = 0
+                        attempt = 0;
                     }
                     if (i < entries.length && !stopFlag) await scoreCheck(scoreentries, entries[i], cb);
                     else {
                         console.log("Done");
                         scoreentries.sort((a, b) => {return b[0] - a[0]});
                         page++;
-                        retrievePlay(uid, page, testcb)
+                        retrievePlay(uid, page, testcb);
                     }
-                })
-            })
-        })
-    })
+                });
+            });
+        });
+    });
 };
 
 module.exports.config = {

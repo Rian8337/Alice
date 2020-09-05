@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function retrieveList(res, i, cb) {
     if (!res[i]) return cb([], true);
@@ -7,77 +8,63 @@ function retrieveList(res, i, cb) {
     list.push(res[i].uid);
     list.push(res[i].pp);
     list.push(res[i].discordid);
-    cb(list)
-}
-
-function scanWhitelist(whitelist, hash) {
-    return new Promise(resolve => {
-		whitelist.findOne({hashid: hash}, (err, res) => {
-			if (err) {
-				console.log(err);
-				return resolve(null)
-			}
-			resolve(!!res)
-		})
-	})
+    cb(list);
 }
 
 async function recalcPlay(target, i, newtarget, whitelist, cb) {
     if (!target[i]) return cb(false, true);
-    let mods = '';
-    if (target[i][1].includes('+'))  {
-        let mapstring = target[i][1].split('+');
-        mods = mapstring[mapstring.length-1];
-        if (mods.includes("]")) mods = ''
-    }
-
-    let guessing_mode = true;
-    const mapinfo = await new osudroid.MapInfo().get({hash: target[i][0]});
+    let mods = target[i].mods;
+    const mapinfo = await new osudroid.MapInfo().getInformation({hash: target[i][0]});
     if (mapinfo.error) {
 		console.log("API fetch error");
-		return cb(false, true)
+		return cb(false, true);
 	}
     if (!mapinfo.title) {
         console.log("Map not found");
-        return cb()
+        return cb();
     }
     if (!mapinfo.objects) {
         console.log("0 objects found");
-        return cb()
+        return cb();
     }
     if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-        let isWhitelist = await scanWhitelist(whitelist, target[i][0]);
-        if (isWhitelist === null) {
-            console.log("Error retrieving whitelist info");
-            return cb(true)
-        }
+        let isWhitelist = await whitelist.findOne({hashid: target[i].hash});
         if (!isWhitelist) {
             console.log("Map is not ranked, approved, loved, or whitelisted");
-            return cb()
+            return cb();
         }
     }
-    let acc_percent = 100;
-    if (target[i][4]) {
-        acc_percent = parseFloat(target[i][4]);
-        guessing_mode = false;
-    }
-    let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
-    let miss = target[i][5] ? parseInt(target[i][5]) : 0;
-    let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-    let npp = osudroid.ppv2({
-        stars: star.droid_stars,
+    let acc_percent = target[i].accuracy;
+	let combo = target[i].combo;
+	let miss = target[i].miss;
+	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+	let npp = new osudroid.PerformanceCalculator().calculate({
+        stars: star.droidStars,
         combo: combo,
-        acc_percent: acc_percent,
+        accPercent: acc_percent,
         miss: miss,
-        mode: "droid"
+        mode: osudroid.modes.droid
     });
-    let pp = parseFloat(npp.toString().split(" ")[0]);
-    let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
-    console.log(`${target[i][2]} -> ${real_pp}`);
-    newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
-    cb()
+	let real_pp = parseFloat(npp.toString().split(" ")[0]);
+	console.log(`${target[i].pp} -> ${real_pp}`);
+	newtarget.push({
+		hash: target[i].hash,
+		title: target[i].hash,
+		pp: real_pp,
+		combo: target[i].combo,
+		accuracy: target[i].accuracy,
+		miss: target[i].miss,
+		scoreID: target[i].scoreID
+	});
+    cb();
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
@@ -115,7 +102,7 @@ module.exports.run = (client, message, args, maindb) => {
                             attempt++;
                             if ((attempt === 3 && error) || !error) count++;
                             if (count < ppentry.length && !stopFlag) return await recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
-                            newppentry.sort((a, b) => {return b[2] - a[2]});
+                            newppentry.sort((a, b) => {return b[2] - a[2];});
                             let totalpp = 0;
                             let weight = 1;
                             for (let x of newppentry) {
@@ -134,27 +121,27 @@ module.exports.run = (client, message, args, maindb) => {
                                     console.log(err);
                                     if (!error) count--;
                                     testPlay;
-                                    return
+                                    return;
                                 }
                                 console.log(totalpp);
                                 console.log("Done");
                                 i++;
                                 console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
                                 m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
-                                retrieveList(res, i, testList)
-                            })
-                        })
-                    })
-                })
-            })
+                                retrieveList(res, i, testList);
+                            });
+                        });
+                    });
+                });
+            });
         });
         confirm.on("end", () => {
             if (!confirmation) {
                 msg.delete();
-                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}))
+                message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
             }
-        })
-    })
+        });
+    });
 };
 
 module.exports.config = {

@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const cd = new Set();
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function rankEmote(input) {
 	if (!input) return;
@@ -14,7 +15,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return
+		default : return;
 	}
 }
 
@@ -29,11 +30,17 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 		let date = rplay[i].date;
 		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
-		embed.addField(play, score)
+		embed.addField(play, score);
 	}
 	return embed
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	let ufind = message.author.id;
@@ -57,35 +64,35 @@ module.exports.run = (client, message, args, maindb) => {
 	binddb.findOne(query, async function (err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
+			return message.channel.send("Error: Empty database response. Please try again!");
 		}
 		if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-			return
+			return;
 		}
 		let uid = res.uid;
-		const player = await new osudroid.Player().get({uid: uid});
+		const player = await new osudroid.Player().getInformation({uid: uid});
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-			return
+			return;
 		}
-		if (!player.name) {
+		if (!player.username) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-			return
+			return;
 		}
-		if (player.recent_plays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-		let name = player.name;
-		let rplay = player.recent_plays;
+		if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+		let name = player.username;
+		let rplay = player.recentPlays;
 		let footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
 		let rolecheck;
 		try {
-			rolecheck = message.member.roles.color.hexColor
+			rolecheck = message.member.roles.color.hexColor;
 		} catch (e) {
-			rolecheck = "#000000"
+			rolecheck = "#000000";
 		}
 		let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
 
@@ -93,9 +100,9 @@ module.exports.run = (client, message, args, maindb) => {
 			msg.react("⏮️").then(() => {
 				msg.react("⬅️").then(() => {
 					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(e => console.log(e))
-					})
-				})
+						msg.react("⏭️").catch(e => console.log(e));
+					});
+				});
 			});
 
 			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
@@ -108,7 +115,7 @@ module.exports.run = (client, message, args, maindb) => {
 				else page = 1;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			back.on('collect', () => {
@@ -116,7 +123,7 @@ module.exports.run = (client, message, args, maindb) => {
 				else page--;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			next.on('collect', () => {
@@ -124,7 +131,7 @@ module.exports.run = (client, message, args, maindb) => {
 				else page++;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			forward.on('collect', () => {
@@ -132,19 +139,19 @@ module.exports.run = (client, message, args, maindb) => {
 				else page = 10;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
-				msg.edit({embed: embed}).catch(console.error)
+				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			backward.on("end", () => {
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-			})
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+			});
 		});
 		cd.add(message.author.id);
 		setTimeout(() => {
-			cd.delete(message.author.id)
-		}, 10000)
-	})
+			cd.delete(message.author.id);
+		}, 10000);
+	});
 };
 
 module.exports.config = {

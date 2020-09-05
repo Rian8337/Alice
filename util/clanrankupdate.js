@@ -32,15 +32,15 @@ module.exports.run = maindb => {
                     let rank = Number.POSITIVE_INFINITY;
                     let fix_uid = 0;
                     for await (const uid of previous_bind) {
-                        const player = await new osudroid.Player().get({uid: uid});
+                        const player = await new osudroid.Player().getInformation({uid: uid});
                         if (rank > player.rank) {
                             rank = player.rank;
-                            fix_uid = parseInt(uid) 
+                            fix_uid = parseInt(uid);
                         }
                     }
                     member.uid = fix_uid;
                     member.rank = rank;
-                    new_members.push(member)
+                    new_members.push(member);
                 }
     
                 const updateVal = {
@@ -52,11 +52,11 @@ module.exports.run = maindb => {
                 clandb.updateOne({name: clan.name}, updateVal, err => {
                     if (err) throw err;
                     ++i;
-                    retrieveClan(clans, i, processClan)
-                })
-            })
-        })
-    })
+                    retrieveClan(clans, i, processClan);
+                });
+            });
+        });
+    });
 };
 
 module.exports.config = {

@@ -138,9 +138,9 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = res[0].uid;
-                const player = await new osudroid.Player().get({uid: uid});
+                const player = await new osudroid.Player().getInformation({uid: uid});
                 if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-                let play = player.recent_plays;
+                let play = player.recentPlays;
                 let danentries = [];
                 for (let i = 0; i < 5; i++) {
                     if (!play[i]) break;
@@ -164,7 +164,7 @@ module.exports.run = (client, message, args, maindb) => {
                 danentries.forEach(x => {
                     objcount.x++;
                     let valid = validation(x.dan, x.mod, x.acc, x.rank);
-                    if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.pc_to_detail(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
+                    if (valid != 0) return message.channel.send(`❎ **| I'm sorry, the dan course you've played didn't fulfill the requirement for dan role!\n\nCourse played: ${x.play} (${x.rank}, ${osudroid.mods.pcToDetail(x.mod)}, ${x.acc}%)\nReason: ${rejectionMessage(valid)}**`);
                     let danrole = x.play;
                     let role = message.guild.roles.cache.find((r) => r.name === danrole);
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);

@@ -32,66 +32,63 @@ async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist, att
 			if (err) return console.log(err);
 			console.log("User pp is updated. Total pp:" + totalpp);
 		});
-		return
+		return;
 	}
-	let mods = '';
-	if (target[i][1].includes('+'))  {
-		let mapstring = target[i][1].split('+');
-		mods = mapstring[mapstring.length-1];
-		if (mods.includes("]")) mods = ''
-	}
-	let guessing_mode = true;
-	const mapinfo = await new osudroid.MapInfo().get({hash: target[i][0]});
+	let mods = target[i].mods;
+	const mapinfo = await new osudroid.MapInfo().getInformation({hash: target[i].hash});
 	attempt++;
 	if (mapinfo.error) {
 		console.log("API fetch error");
 		if (attempt === 3) {
 			attempt = 0;
-			await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt)
+			await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt);
 		}
 		else await recalc(target, tlength, i, newtarget, binddb, uid, whitelist, attempt);
-		return
+		return;
 	}
 	if (!mapinfo.title) {
 		console.log("Map not found");
-		return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt)
+		return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt);
 	}
 	if (mapinfo.objects === 0) {
 		console.log("0 object found");
-		return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt)
+		return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt);
 	}
 	if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
 		let isWhitelist = await scanWhitelist(whitelist, target[i][0]);
 		if (isWhitelist === null) {
 			console.log("Error retrieving whitelist info");
-			return await recalc(target, tlength, i, newtarget, binddb, uid, whitelist, attempt)
+			return await recalc(target, tlength, i, newtarget, binddb, uid, whitelist, attempt);
 		}
 		if (!isWhitelist) {
 			console.log("Map is not ranked, approved, loved, or whitelisted");
-			return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt)
+			return await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt);
 		}
 	}
-	let acc_percent = 100;
-	if (target[i][4]) {
-		acc_percent = parseFloat(target[i][4]);
-		guessing_mode = false;
-	}
-	let combo = target[i][3] ? parseInt(target[i][3]) : mapinfo.max_combo;
-	let miss = target[i][5] ? parseInt(target[i][5]) : 0;
-	let star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: mods});
-	let npp = osudroid.ppv2({
-		stars: star.droid_stars,
-		combo: combo,
-		acc_percent: acc_percent,
-		miss: miss,
-		mode: "droid"
+	let acc_percent = target[i].accuracy;
+	let combo = target[i].combo;
+	let miss = target[i].miss;
+	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+	let npp = new osudroid.PerformanceCalculator().calculate({
+        stars: star.droidStars,
+        combo: combo,
+        accPercent: acc_percent,
+        miss: miss,
+        mode: osudroid.modes.droid
+    });
+	let real_pp = parseFloat(npp.toString().split(" ")[0]);
+	console.log(`${target[i].pp} -> ${real_pp}`);
+	newtarget.push({
+		hash: target[i].hash,
+		title: target[i].hash,
+		pp: real_pp,
+		combo: target[i].combo,
+		accuracy: target[i].accuracy,
+		miss: target[i].miss,
+		scoreID: target[i].scoreID
 	});
-	let pp = parseFloat(npp.toString().split(" ")[0]);
-	let real_pp = guessing_mode ? parseFloat(target[i][2]).toFixed(2) : pp;
-	console.log(`${target[i][2]} -> ${real_pp}`);
-	newtarget.push(guessing_mode ? [target[i][0], target[i][1], real_pp] : [target[i][0], target[i][1], real_pp, target[i][3], target[i][4], target[i][5]]);
 	attempt = 0;
-	await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt)
+	await recalc(target, tlength, i+1, newtarget, binddb, uid, whitelist, attempt);
 }
 
 module.exports.run = (client, message, args, maindb) => {

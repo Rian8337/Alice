@@ -60,7 +60,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
     let mapinfo;
     if (beatmap) {
-        mapinfo = await new osudroid.MapInfo().get({beatmap_id: beatmap});
+        mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap});
         if (mapinfo.error) {
             return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
         }
@@ -73,25 +73,25 @@ module.exports.run = async (client, message, args, maindb) => {
         hash = mapinfo.hash;
     }
     const play = await new osudroid.Score({uid: uid, hash: hash}).getFromHash();
-    if (!play.score_id) {
+    if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
     if (!message.isOwner) cd.add(message.author.id);
     
-    const replay = await new osudroid.ReplayAnalyzer({score_id: play.score_id}).analyze();
+    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID}).analyze();
     const data = replay.data;
-    if (data.replay_version < 3) {
+    if (data.replayVersion < 3) {
         return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
     }
     const zip = new AdmZip();
-    zip.addFile(`${play.score_id}.odr`, replay.original_odr);
+    zip.addFile(`${play.scoreID}.odr`, replay.originalODR);
     const object = {
         version: 1,
         replaydata: {
-            filename: `${data.folder_name}\/${data.file_name}`,
-            playername: data.player_name,
-            replayfile: `${play.score_id}.odr`,
-            mod: data.droid_mods,
+            filename: `${data.folderName}\/${data.fileName}`,
+            playername: data.playerName,
+            replayfile: `${play.scoreID}.odr`,
+            mod: data.droidMods,
             score: play.score,
             combo: play.combo,
             mark: play.rank,
@@ -103,13 +103,13 @@ module.exports.run = async (client, message, args, maindb) => {
             misses: data.hit0,
             accuracy: data.accuracy,
             time: data.time.getTime(),
-            perfect: data.is_full_combo
+            perfect: data.isFullCombo
         }
     };
     zip.addFile("entry.json", Buffer.from(JSON.stringify(object, null, 2)));
-    const attachment = new Discord.MessageAttachment(zip.toBuffer(), `${data.file_name.substring(0, data.file_name.length - 4)} [${data.player_name}]-${object.replaydata.time}.edr`);
+    const attachment = new Discord.MessageAttachment(zip.toBuffer(), `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName}]-${object.replaydata.time}.edr`);
     
-    const hit_object_data = data.hit_object_data;
+    const hit_object_data = data.hitObjectData;
     let hit_error_total = 0;
     let count = 0;
     let _count = 0;
@@ -141,30 +141,29 @@ module.exports.run = async (client, message, args, maindb) => {
     const min_error = _count ? _total / _count : 0;
 
     if (!beatmap) {
-        return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
+        return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
     }
 
-    const star = new osudroid.MapStars().calculate({file: mapinfo.osu_file, mods: data.converted_mods});
-    // replay.map = star.droid_stars;
-    // replay._analyzeReplay();
+    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: data.convertedMods});
+    // replay.map = star.droidStars;
+    // replay.analyzeReplay();
 
-	let starsline = parseFloat(star.droid_stars.total.toFixed(2));
-	let pcstarsline = parseFloat(star.pc_stars.total.toFixed(2));
-	let npp = osudroid.ppv2({
-		stars: star.droid_stars,
-		combo: play.combo,
-		miss: play.miss,
-		acc_percent: play.accuracy,
-        mode: osudroid.modes.droid,
-        speed_penalty: replay.penalty
-	});
-	let pcpp = osudroid.ppv2({
-		stars: star.pc_stars,
-		combo: play.combo,
-		miss: play.miss,
-		acc_percent: play.accuracy,
-		mode: osudroid.modes.osu
-	});
+	let starsline = parseFloat(star.droidStars.total.toFixed(2));
+	let pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
+    let npp = new osudroid.PerformanceCalculator().calculate({
+        stars: star.droidStars,
+        combo: play.combo,
+        accPercent: play.accuracy,
+        miss: play.miss,
+        mode: osudroid.modes.droid
+    });
+	let pcpp = new osudroid.PerformanceCalculator().calculate({
+        stars: star.pcStars,
+        combo: play.combo,
+        accPercent: play.accuracy,
+        miss: play.miss,
+        mode: osudroid.modes.osu
+    });
 	let ppline = parseFloat(npp.total.toFixed(2));
 	let pcppline = parseFloat(pcpp.total.toFixed(2));
     const footer = config.avatar_list;
@@ -172,15 +171,15 @@ module.exports.run = async (client, message, args, maindb) => {
     const embed = new Discord.MessageEmbed()
         .setFooter(`Achieved on ${play.date.toUTCString()} | Alice Synthesis Thirty`, footer[index])
         .setAuthor(`Play Information for ${play.player_name}`, "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
-        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapset_id}l.jpg`)
+        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
         .setColor(mapinfo.statusColor())
         .attachFiles([attachment])
-		.setTitle(mapinfo.showStatistics(data.converted_mods, 0))
-        .setDescription(mapinfo.showStatistics(data.converted_mods, 1))
-		.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapset_id}/covers/cover.jpg`)
-		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmap_id}`)
-        .addField(mapinfo.showStatistics(data.converted_mods, 2), `${mapinfo.showStatistics(data.converted_mods, 3)}\n**Max score**: ${mapinfo.max_score(data.converted_mods).toLocaleString()}`)
-        .addField(mapinfo.showStatistics(data.converted_mods, 4), `${mapinfo.showStatistics(data.converted_mods, 5)}\n**Result**: ${play.score.toLocaleString()} / ${play.rank} / ${play.combo}/${mapinfo.max_combo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n**Error**: ${min_error.toFixed(2)}ms - +${max_error.toFixed(2)}ms avg\n**Unstable Rate**: ${unstable_rate.toFixed(2)}`)
+		.setTitle(mapinfo.showStatistics(data.convertedMods, 0))
+        .setDescription(mapinfo.showStatistics(data.convertedMods, 1))
+		.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
+		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
+        .addField(mapinfo.showStatistics(data.convertedMods, 2), `${mapinfo.showStatistics(data.convertedMods, 3)}\n**Max score**: ${mapinfo.maxScore(data.convertedMods).toLocaleString()}`)
+        .addField(mapinfo.showStatistics(data.convertedMods, 4), `${mapinfo.showStatistics(data.convertedMods, 5)}\n**Result**: ${play.score.toLocaleString()} / ${play.rank} / ${play.combo}/${mapinfo.maxCombo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\n**Unstable Rate**: ${unstable_rate.toFixed(2)}`)
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
     message.channel.send({embed: embed});
