@@ -28,7 +28,7 @@ module.exports.run = (client, maindb) => {
         const index = Math.floor(Math.random() * footer.length);
 		res.forEach(async function(player) {
 			const player_entry = await new osudroid.Player().getInformation({uid: player.uid});
-			const name = player_entry.name;
+			const name = player_entry.username;
 			const curtime = Date.now();
 			for await (const play of player_entry.recentPlays) {
 				let timeDiff = curtime - play.date.getTime();
