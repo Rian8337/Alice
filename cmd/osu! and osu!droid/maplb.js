@@ -64,7 +64,7 @@ function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, foo
         if (!Array.isArray(entries)) resolve(null);
 
         let droidStars = parseFloat(global_star.droidStars.total.toFixed(2));
-        let pc_stars = parseFloat(global_star.pc_stars.total.toFixed(2));
+        let pc_stars = parseFloat(global_star.pcStars.total.toFixed(2));
         let embed = new Discord.MessageEmbed()
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
