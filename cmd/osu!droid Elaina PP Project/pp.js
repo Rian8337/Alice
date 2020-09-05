@@ -275,7 +275,6 @@ module.exports.run = (client, message, args, maindb) => {
                         scoreID: play.scoreID
                     };
 
-                    ++submitted;
                     ++playc;
                     let duplicate = false;
                     for (let i in pplist) {
