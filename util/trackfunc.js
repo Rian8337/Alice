@@ -30,8 +30,8 @@ module.exports.run = (client, maindb) => {
 			const player_entry = await new osudroid.Player().getInformation({uid: player.uid});
 			const name = player_entry.name;
 			const curtime = Date.now();
-			for await (const play of player_entry.recent_plays) {
-				let timeDiff = curtime - play.date.getTime();
+			for await (const play of player_entry.recentPlays) {
+				const timeDiff = curtime - play.date.getTime();
 				if (timeDiff > 600000) break;
 				let title = play.title;
 				const score = play.score.toLocaleString();
