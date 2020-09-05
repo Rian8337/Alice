@@ -2,7 +2,7 @@
 
 const chai = require('chai');
 const expect = chai.expect;
-const javaDeserialization = require('../');
+const javaDeserialization = require('..');
 const parse = javaDeserialization.parse;
 
 describe('Special cases', function() {
