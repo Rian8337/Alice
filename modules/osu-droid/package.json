@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
-    "java-deserialization": "file:../java-deserialization",
+    "java-deserialization": "^0.1.0",
     "unzipper": "file:../unzipper"
   }
 }
