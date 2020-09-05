@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "es2016",
+      "module": "commonjs",
+      "removeComments": false,
+      "declaration": true,
+      "outDir": "./dist",
+      "strict": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", ".vscode"]
+}

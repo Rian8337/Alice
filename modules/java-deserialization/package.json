@@ -1,0 +1,63 @@
+{
+  "_from": "java-deserialization",
+  "_id": "java-deserialization@0.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-USdyndx3Wd9KVqLwDTfEW4UN8y+hnrSjU+0li47kIa0NKTXJyLCZrkBx0payxCt+G55Tc+ubG/W96CaM3Rq/FQ==",
+  "_location": "/java-deserialization",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "java-deserialization",
+    "name": "java-deserialization",
+    "escapedName": "java-deserialization",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/java-deserialization/-/java-deserialization-0.1.0.tgz",
+  "_shasum": "f208e9dce08aee04bcfe9a611ea3bf1b812bc759",
+  "_spec": "java-deserialization",
+  "_where": "C:\\Users\\rezam\\JavaScript projects\\module-rewrite",
+  "author": {
+    "name": "Martin von Gagern"
+  },
+  "bugs": {
+    "url": "https://github.com/gagern/nodeJavaDeserialization/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "long": "^3.2.0"
+  },
+  "deprecated": false,
+  "description": "Parse Java object serialization format using pure JavaScript",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1"
+  },
+  "homepage": "https://github.com/gagern/nodeJavaDeserialization#readme",
+  "keywords": [
+    "java",
+    "serialization",
+    "deserialization",
+    "format"
+  ],
+  "types": "src/index.d.ts",
+  "license": "MIT",
+  "main": "src/index.js",
+  "name": "java-deserialization",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gagern/nodeJavaDeserialization.git"
+  },
+  "scripts": {
+    "gentest": "cd test && javac *.java && java GenerateTestCases > generated.js && npm test",
+    "test": "nyc --reporter=html --reporter=text-summary mocha test/*.js"
+  },
+  "version": "0.1.0"
+}

@@ -1,0 +1,27 @@
+language: node_js
+os:
+ - linux
+ - osx
+node_js:
+ - stable
+ - lts/*
+ - "9"
+ - "8"
+ - "7"
+ - "6"
+ - "5"
+ - "4"
+matrix:
+ include:
+  - env: DO_COVERALLS=true
+    os: linux
+    node_js: stable
+sudo: false
+after_success:
+ - >
+   if [[ -n ${DO_COVERALLS} ]]; then
+     echo "Doing coveralls.";
+     npm install coveralls &&
+     node_modules/.bin/nyc report --reporter=text-lcov |
+     node_modules/.bin/coveralls;
+   fi
