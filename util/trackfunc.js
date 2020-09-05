@@ -31,7 +31,7 @@ module.exports.run = (client, maindb) => {
 			const name = player_entry.name;
 			const curtime = Date.now();
 			for await (const play of player_entry.recentPlays) {
-				const timeDiff = curtime - play.date.getTime();
+				let timeDiff = curtime - play.date.getTime();
 				if (timeDiff > 600000) break;
 				let title = play.title;
 				const score = play.score.toLocaleString();
