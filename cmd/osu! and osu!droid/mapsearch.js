@@ -569,7 +569,6 @@ module.exports.run = (client, message, args) => {
     }
 
     url = encodeURI(url);
-    console.log(url);
 
     request(url, {}, async (err, response, data) => {
         if (err || response.statusCode !== 200) {
@@ -590,7 +589,7 @@ module.exports.run = (client, message, args) => {
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id);
-        }, 30000);
+        }, 15000);
         url = url.replace("query", "search");
 
         const footer = config.avatar_list;
