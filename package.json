@@ -5,7 +5,8 @@
   "main": "mybot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node mybot.js"
+    "start": "node mybot.js",
+    "heroku-postbuild": "cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
     "node": "12.x"
@@ -16,12 +17,16 @@
   "author": "Rian8337",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^14.6.3",
     "adm-zip": "^0.4.14",
     "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "mongodb": "^3.5.4",
-    "osu-droid": "file:modules/osu!droid",
+    "osu-droid": "file:modules/osu-droid",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.2"
   }
 }
