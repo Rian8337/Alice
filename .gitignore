@@ -23,6 +23,9 @@ Thumbs.db
 # Node modules
 /node_modules
 
+# osu!droid module distributed folder
+/modules/osu-droid/dist
+
 # Coveralls
 coverage
 
