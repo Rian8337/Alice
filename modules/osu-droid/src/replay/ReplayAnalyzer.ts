@@ -1,5 +1,5 @@
 import * as request from 'request';
-import { Parse } from 'unzipper';
+import { Parse } from '../../modules/unzipper/unzip';
 import  * as javaDeserialization from 'java-deserialization';
 import { Readable } from 'stream';
 import { Beatmap } from '../beatmap/Beatmap';
