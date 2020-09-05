@@ -50,7 +50,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		players.forEach(async player => {
 			i++;
 			await getPlay(i, player[1], data => {
-				const recent_play = data[1].recent_plays[0];
+				const recent_play = data[1].recentPlays[0];
 				score_info.push(data[1]);
 				play_list.push([data[0], recent_play]);
 				if (min_time_diff < recent_play.date.getTime()) {
