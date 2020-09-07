@@ -30,12 +30,12 @@ export class ReplayAnalyzer {
     /**
      * The original odr file of the replay.
      */
-    public originalODR?: Buffer|null;
+    public originalODR: Buffer|null;
 
     /**
      * The fixed odr file of the replay.
      */
-    public fixedODR?: Buffer|null;
+    public fixedODR: Buffer|null;
 
     /**
      * Whether or not the play is considered using >=3 finger abuse.
@@ -72,8 +72,8 @@ export class ReplayAnalyzer {
         map?: Beatmap|StandardDiff
     }) {
         this.scoreID = values.scoreID;
-        this.originalODR = undefined;
-        this.fixedODR = undefined;
+        this.originalODR = null;
+        this.fixedODR = null;
         this.is3Finger = undefined;
         this.map = values.map;
         this.data = null;
