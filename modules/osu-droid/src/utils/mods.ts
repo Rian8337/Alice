@@ -155,6 +155,9 @@ export namespace mods {
         }
     }
 
+    /**
+     * Construct mods bitwise from a string, such as "HDHR".
+     */
     export function modbitsFromString(str: string = ""): number {
         let mask: number = 0;
         str = str.toLowerCase();
