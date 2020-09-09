@@ -163,7 +163,7 @@ module.exports.run = (client, maindb, alicedb) => {
                }
             }
             if (member_list.length > 0) {
-                await clandb.updateOne({name: clan.name}, {$inc: {weeklyfee: 86400 * 7}});
+                await clandb.updateOne({name: clan.name}, {$inc: {weeklyfee: 86400 * 7}, $set: {member_list: member_list}});
             }
             client.users.fetch(leader).then(u => u.send(`❗**| Hey, your clan upkeep has been picked up from your members! ${paid_count} member(s) have successfully paid their upkeep. A total of ${kicked_count} member(s) were kicked. Your next clan upkeep will be picked in ${new Date((clan.weeklyfee + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
             console.log(`Done checking ${clan.name} clan`);
