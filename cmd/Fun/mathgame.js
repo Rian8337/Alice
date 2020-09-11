@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-let cd = new Set();
+const cd = new Set();
 
 function timeConvert(num) {
     let sec = parseInt(num);
@@ -210,7 +210,8 @@ module.exports.run = (client, message, args) => {
                 .setTimestamp(new Date())
                 .setColor(rolecheck)
                 .setDescription(`**Game starter**: ${message.author}\n**Time started**: ${message.createdAt.toUTCString()}\n**Duration**: ${timeConvert(Math.floor((Date.now() - message.createdTimestamp) / 1000))}\n**Level reached**: Operator count ${operator_amount}, level ${level}\n\n**Total correct answers**: ${total_answer} ${total_answer === 1 ? "answer" : "answers"}\n${answer_string}`);
-
+            
+            cd.delete(mode === "single" ? message.author.id : message.channel.id);
             return message.channel.send(string, {embed: embed});
         }
         if (prev_equation_list.includes(equation)) {
@@ -280,6 +281,7 @@ module.exports.run = (client, message, args) => {
                         .setColor(rolecheck)
                         .setDescription(`**Game starter**: ${message.author}\n**Time started**: ${message.createdAt.toUTCString()}\n**Duration**: ${timeConvert(Math.floor((Date.now() - message.createdTimestamp) / 1000))}\n**Level reached**: Operator count ${operator_amount}, level ${level}\n\n**Total correct answers**: ${total_answer} ${total_answer === 1 ? "answer" : "answers"}\n${answer_string}`);
 
+                    cd.delete(mode === "single" ? message.author.id : message.channel.id);
                     message.channel.send(string, {embed: embed});
                 } else {
                     if (level === 20) {
