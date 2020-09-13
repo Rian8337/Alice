@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const osudroid = require('osu-droid');
 const https = require("https");
 const apikey = process.env.OSU_API_KEY;
 const config = require('../../config.json');
