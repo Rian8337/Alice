@@ -98,7 +98,7 @@ module.exports.run = (client, message, args, maindb) => {
 module.exports.config = {
     name: "lb",
     description: "Views droid pp leaderboard.",
-    usage: "lb [page]",
-    detail: "`page`: Page of leaderboard [Integer]",
+    usage: "lb [page] [clan]",
+    detail: "`clan`: The clan to view, if present [String]\n`page`: Page of leaderboard [Integer]",
     permission: "None"
 };
