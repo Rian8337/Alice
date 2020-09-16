@@ -146,7 +146,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
         case "about": {
             // about section
-            embed.setDescription(`Please go to <#705730583489282059> or tap/click [this](https://discordapp.com/channels/316545691545501706/705730583489282059/705772460288508008) hyperlink for guidelines.`);
+            embed.setDescription(`Please go to [this](https://osudroidfaq.wordpress.com/clans/) website for guidelines.`);
             message.channel.send({embed: embed});
             break;
         }
