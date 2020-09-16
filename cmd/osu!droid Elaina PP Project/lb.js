@@ -26,7 +26,13 @@ module.exports.run = (client, message, args, maindb) => {
     if (parseInt(args[0]) > 0) page = parseInt(args[0]) - 1;
     let binddb = maindb.collection('userbind');
     let ppsort = { pptotal: -1 };
-    binddb.find({}, { projection: { _id: 0, discordid: 1, uid: 1, pptotal: 1 , playc: 1, username: 1}}).sort(ppsort).toArray(function(err, res) {
+    let query = {};
+    
+    if (args[1]) {
+        query.clan = args.slice(1).join(" ");
+    }
+
+    binddb.find(query, { projection: { _id: 0, discordid: 1, uid: 1, pptotal: 1 , playc: 1, username: 1}}).sort(ppsort).toArray(function(err, res) {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!")
