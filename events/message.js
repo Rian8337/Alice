@@ -34,7 +34,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		client.subevents.get("loungeBanMuteDetection").run(message, alicedb)
 	}
 
-	if (message.author.bot || blockedList.find(id => message.author.id)) return;
+	if (message.author.bot || blockedList.find(id => id === message.author.id)) return;
 	client.utils.get("chatcoins").run(message, maindb, alicedb);
 	const msgArray = message.content.split(/\s+/g);
 	const command = msgArray[0];
