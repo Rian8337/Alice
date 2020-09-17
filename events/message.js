@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 const config = require('../config.json');
 
 let maintenance = false;
@@ -6,7 +7,14 @@ let maintenance_reason = '';
 const current_map = [];
 const disabled_commands = [];
 let command_cooldown = 0;
+const blockedList = ["533450946886238224"];
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, maindb, alicedb) => {
     message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	
@@ -26,7 +34,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		client.subevents.get("loungeBanMuteDetection").run(message, alicedb)
 	}
 
-	if (message.author.bot) return;
+	if (message.author.bot || blockedList.find(id => message.author.id)) return;
 	client.utils.get("chatcoins").run(message, maindb, alicedb);
 	const msgArray = message.content.split(/\s+/g);
 	const command = msgArray[0];
