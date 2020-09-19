@@ -460,7 +460,7 @@ export class ReplayAnalyzer {
         for (let i: number = 0; i < newCursorInstances.length; ++i) {
             const cursorInstance: CursorData = newCursorInstances[i];
             // use an estimation for accidental tap threshold
-            if (cursorInstance.size > 0 && cursorInstance.size <= Math.ceil(objects.length / 250) && cursorInstance.size / totalCursorAmount < THREE_FINGER_THRESHOLD) {
+            if (cursorInstance.size > 0 && cursorInstance.size <= Math.ceil(objects.length / 300) && cursorInstance.size / totalCursorAmount < THREE_FINGER_THRESHOLD) {
                 ++zeroCursorAmount;
                 for (const property in cursorInstance) {
                     const prop = property as keyof CursorData;
@@ -635,7 +635,7 @@ export class ReplayAnalyzer {
                 // during section and the map's length
                 //
                 // in long maps, the penalty will be decreased
-                const lengthFactor: number = 1 - Math.pow(objectCount / objects.length, 1.129841);
+                const lengthFactor: number = 1 + Math.pow(objectCount / objects.length, 1.15);
 
                 // we can skip the first 2 cursor instances since
                 // they are guaranteed not 3 finger
@@ -646,7 +646,7 @@ export class ReplayAnalyzer {
 
                     ++fingerCount;
                     // finger factor applies more penalty if more fingers were used
-                    const fingerFactor: number = 0.183847 * Math.pow(fingerCount, 0.483817);
+                    const fingerFactor: number = 0.183847 * Math.sqrt(fingerCount);
 
                     // cursor factor applies penalty based on the amount
                     // of cursors and object during section
