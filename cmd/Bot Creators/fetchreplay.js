@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
-const cd = new Set();
 const AdmZip = require('adm-zip');
 const { Db } = require('mongodb');
 
@@ -17,9 +16,6 @@ module.exports.run = async (client, message, args, maindb) => {
     }
     if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
-    }
-    if (cd.has(message.author.id)) {
-        return message.channel.send("❎ **| Hey, you're still in cooldown! Please wait for a minute or two before using this command again!**");
     }
 
     let uid, beatmap, hash;
@@ -76,34 +72,43 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
-    if (!message.isOwner) cd.add(message.author.id);
     
     const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID}).analyze();
     const data = replay.data;
-    if (data.replayVersion < 3) {
-        return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
+    if (!data) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the replay of the score!**");
     }
+
+    const isOldReplay = data.replayVersion < 3;
+    let player;
+    if (data.replayVersion < 3) {
+        player = await new osudroid.Player().getInformation({uid: uid});
+        if (!player.username) {
+            return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
+        }
+    }
+
     const zip = new AdmZip();
     zip.addFile(`${play.scoreID}.odr`, replay.originalODR);
     const object = {
         version: 1,
         replaydata: {
             filename: `${data.folderName}\/${data.fileName}`,
-            playername: data.playerName,
+            playername: isOldReplay ? player.username : data.playerName,
             replayfile: `${play.scoreID}.odr`,
-            mod: data.droidMods,
+            mod: isOldReplay ? play.droidMods : data.droidMods,
             score: play.score,
             combo: play.combo,
             mark: play.rank,
-            h300k: data.hit300k,
-            h300: data.hit300,
-            h100k: data.hit100k,
-            h100: data.hit100,
-            h50: data.hit50,
-            misses: data.hit0,
-            accuracy: data.accuracy,
-            time: data.time.getTime(),
-            perfect: data.isFullCombo
+            h300k: isOldReplay ? 0 : data.hit300k,
+            h300: isOldReplay ? 0 : data.hit300,
+            h100k: isOldReplay ? 0 : data.hit100k,
+            h100: isOldReplay ? 0 : data.hit100,
+            h50: isOldReplay ? 0 : data.hit50,
+            misses: play.miss,
+            accuracy: isOldReplay ? play.accuracy / 100 : data.accuracy,
+            time: play.date.getTime(),
+            perfect: isOldReplay ? (play.miss > 0 ? 0 : 1) : data.isFullCombo
         }
     };
     zip.addFile("entry.json", Buffer.from(JSON.stringify(object, null, 2)));
@@ -183,12 +188,6 @@ module.exports.run = async (client, message, args, maindb) => {
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
     message.channel.send({embed: embed});
-
-    if (!message.isOwner) {
-        setTimeout(() => {
-            cd.delete(message.author.id);
-        }, 60000);
-    }
 };
 
 module.exports.config = {
