@@ -109,7 +109,7 @@ export class ReplayAnalyzer {
                 })
                 .on("complete", response => {
                     if (response.statusCode !== 200) {
-                        console.log("Reply not found");
+                        console.log("Replay not found");
                         return resolve(null);
                     }
                     const result: Buffer = Buffer.concat(dataArray);
@@ -304,6 +304,8 @@ export class ReplayAnalyzer {
             resultObject.hit100 = hit100;
             resultObject.hit50 = hit50;
             resultObject.hit0 = hit0;
+
+            resultObject.accuracy = (hit300 * 300 + hit100 * 100 + hit50 * 50) / (resultObject.hitObjectData.length * 300 * 100);
         }
 
         this.data = new ReplayData(resultObject);
