@@ -115,7 +115,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 								case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
 								default: diff_icon = client.emojis.cache.get("679325905645993984"); // Extreme
 							}
-							let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].max_combo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+							let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].maxCombo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
 							embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description);
 						}
 
