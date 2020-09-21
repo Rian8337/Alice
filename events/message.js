@@ -7,7 +7,6 @@ let maintenance_reason = '';
 const current_map = [];
 const disabled_commands = [];
 let command_cooldown = 0;
-const blockedList = ["533450946886238224"];
 
 /**
  * @param {Discord.Client} client 
@@ -29,12 +28,8 @@ module.exports.run = (client, message, maindb, alicedb) => {
 			client.subevents.get("updateMap").run(message, current_map)
 		}
 	}
-	// mute detection for lounge ban
-	if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592' && message.embeds.length > 0) {
-		client.subevents.get("loungeBanMuteDetection").run(message, alicedb)
-	}
 
-	if (message.author.bot || blockedList.find(id => id === message.author.id)) return;
+	if (message.author.bot) return;
 	client.utils.get("chatcoins").run(message, maindb, alicedb);
 	const msgArray = message.content.split(/\s+/g);
 	const command = msgArray[0];
