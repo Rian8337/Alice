@@ -64,6 +64,11 @@ export class Score {
     public mods: string;
 
     /**
+     * Enabled modifications in the play in osu!droid format.
+     */
+    public droidMods: string;
+
+    /**
      * MD5 hash of the play.
      */
     public hash: string;
@@ -97,7 +102,8 @@ export class Score {
         this.date = new Date(values?.date || 0);
         this.accuracy = values?.accuracy || 0;
         this.miss = values?.miss || 0;
-        this.mods = mods.droidToPC(values?.mods) || '';
+        this.droidMods = values?.mods || "";
+        this.mods = mods.droidToPC(this.droidMods);
         this.hash = values?.hash || '';
         this.error = false;
     }
