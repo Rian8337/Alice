@@ -36,12 +36,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     binddb.findOne(query, async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-			return
+			return;
 		}
         let uid = res.uid;
         const player = await new osudroid.Player().getInformation({uid: uid});
@@ -71,9 +71,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 
         let rolecheck;
         try {
-            rolecheck = message.member.roles.color.hexColor
+            rolecheck = message.member.roles.color.hexColor;
         } catch (e) {
-            rolecheck = 8311585
+            rolecheck = 8311585;
         }
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);

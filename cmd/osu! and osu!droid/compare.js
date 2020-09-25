@@ -5,7 +5,6 @@ const { Db } = require('mongodb');
 const cd = new Set();
 
 function rankEmote(input) {
-	if (!input) return;
 	switch (input) {
 		case 'A': return '611559473236148265';
 		case 'B': return '611559473169039413';
@@ -15,7 +14,7 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return
+		default : return;
 	}
 }
 
@@ -37,7 +36,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     let ufind = message.author.id;
     if (args[0]) {
         ufind = args[0];
-        ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "")
+        ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "");
     }
 
     let binddb = maindb.collection("userbind");
@@ -45,12 +44,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
     binddb.findOne(query, async function(err, res) {
         if (err) {
             console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!res) {
             if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
             else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-            return
+            return;
         }
         let uid = res.uid;
 
