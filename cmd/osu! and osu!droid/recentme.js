@@ -96,7 +96,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
 			.setColor(mapinfo.statusColor())
 			.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-			.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
 			.setTitle(mapinfo.showStatistics(mod, 0))
 			.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
 			.setDescription(mapinfo.showStatistics(mod, 1))
