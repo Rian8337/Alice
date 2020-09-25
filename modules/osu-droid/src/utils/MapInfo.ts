@@ -381,7 +381,7 @@ export class MapInfo {
                 break;
             }
         }
-        return status.charAt(0) + status.slice(1).toLowerCase();
+        return status !== "WIP" ? status.charAt(0) + status.slice(1).toLowerCase() : status;
     }
 
     /**
