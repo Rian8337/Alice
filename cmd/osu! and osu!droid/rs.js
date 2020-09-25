@@ -5,7 +5,6 @@ const { Db } = require('mongodb');
 const cd = new Set();
 
 function rankEmote(input) {
-	if (!input) return;
 	switch (input) {
 		case 'A': return '611559473236148265';
 		case 'B': return '611559473169039413';
