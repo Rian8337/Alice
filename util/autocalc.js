@@ -32,6 +32,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		if (args[i].startsWith("-d")) ndetail = true;
 		if (args[i].startsWith("-p")) pcdetail = true;
 	}
+
+	const stats = new osudroid.MapStats();
+	if (speedMultiplier >= 0.5) {
+		stats.speedMultiplier = speedMultiplier;
+	}
+	if (forceAR >= 0) {
+		stats.ar = forceAR;
+		stats.isForceAR = true;
+	}
+
 	if (mapset) {
 		let options = new URL(`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&s=${beatmapid}`);
 		let content = '';
@@ -48,16 +58,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			res.on("end", () => {
 				let obj;
 				try {
-					obj = JSON.parse(content)
+					obj = JSON.parse(content);
 				} catch (e) {
 					console.log("Error retrieving map info");
-					return console.log(e)
+					return console.log(e);
 				}
 				if (!obj || !obj[0]) return console.log("Map not found");
 				let i = 0;
 				let map_entries = [];
-				obj = obj.filter(map => map.mode == 0);
-				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating)});
+				obj = obj.filter(map => map.mode === "0");
+				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating);});
 				let total_map = obj.length;
 				if (obj.length > 3) obj.splice(3);
 
@@ -68,8 +78,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					if (!combo || combo <= 0) combo = mapinfo.maxCombo - missc;
 					if (mapinfo.maxCombo <= missc) return;
 					combo = Math.min(combo, mapinfo.maxCombo);
-					let max_score = mapinfo.maxScore(mod);
-					let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+					
+					let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
 					let starsline = parseFloat(star.droidStars.total.toFixed(2));
 					let pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 					let npp = new osudroid.PerformanceCalculator().calculate({
@@ -77,14 +87,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 						combo: combo,
 						accPercent: acc,
 						miss: missc,
-						mode: osudroid.modes.droid
+						mode: osudroid.modes.droid,
+						stats: stats
 					});
 					let pcpp = new osudroid.PerformanceCalculator().calculate({
 						stars: star.pcStars,
 						combo: combo,
 						accPercent: acc,
 						miss: missc,
-						mode: osudroid.modes.osu
+						mode: osudroid.modes.osu,
+						stats: stats
 					});
 					let ppline = parseFloat(npp.total.toFixed(2));
 					let pcppline = parseFloat(pcpp.total.toFixed(2));
@@ -101,7 +113,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 							.setColor(mapinfo.statusColor())
 							.setURL(`https://osu.ppy.sh/s/${mapinfo.beatmapsetID}`)
 							.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
-							.setDescription(`${mapinfo.showStatistics(mod, 1)}\n**BPM**: ${mapinfo.convertBPM(mod)} - **Length**: ${mapinfo.convertTime(mod)}`);
+							.setDescription(`${mapinfo.showStatistics(mod, 1, stats)}\n**BPM**: ${mapinfo.convertBPM(stats)} - **Length**: ${mapinfo.convertTime(stats)}`);
 
 						for (i = 0; i < map_entries.length; i++) {
 							let star_rating = map_entries[i][2];
@@ -114,7 +126,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 								case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
 								default: diff_icon = client.emojis.cache.get("679325905645993984"); // Extreme
 							}
-							let description = `${map_entries[i][0].showStatistics(mod, 2)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].maxCombo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+							let description = `${map_entries[i][0].showStatistics(mod, 2, stats)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].maxCombo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
 							embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description);
 						}
 
@@ -144,8 +156,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		acc = parseFloat(real_acc.toFixed(2));
 	}
 
-	let max_score = mapinfo.maxScore(mod);
-	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
 	let starsline = parseFloat(star.droidStars.total.toFixed(2));
 	let pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 	let npp = new osudroid.PerformanceCalculator().calculate({
@@ -153,14 +164,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		combo: combo,
 		accPercent: acc,
 		miss: missc,
-		mode: osudroid.modes.droid
+		mode: osudroid.modes.droid,
+		stats: stats
 	});
 	let pcpp = new osudroid.PerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: acc,
 		miss: missc,
-		mode: osudroid.modes.osu
+		mode: osudroid.modes.osu,
+		stats: stats
 	});
 	let ppline = parseFloat(npp.total.toFixed(2));
 	let pcppline = parseFloat(pcpp.total.toFixed(2));
@@ -172,11 +185,11 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
 		.setColor(mapinfo.statusColor())
 		.setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-		.setTitle(mapinfo.showStatistics(mod, 0))
-		.setDescription(mapinfo.showStatistics(mod, 1))
+		.setTitle(mapinfo.showStatistics(mod, 0, stats))
+		.setDescription(mapinfo.showStatistics(mod, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
-		.addField(mapinfo.showStatistics(mod, 2), `${mapinfo.showStatistics(mod, 3)}\n**Max score**: ${max_score.toLocaleString()}`)
-		.addField(mapinfo.showStatistics(mod, 4), `${mapinfo.showStatistics(mod, 5)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${acc}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
+		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
+		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${acc}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
 	let string = '';
