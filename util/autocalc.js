@@ -33,12 +33,25 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			if (!isNaN(new_missc)) missc = Math.max(0, new_missc);
 		}
 		if (args[i].endsWith("x")) {
-			const new_combo = parseInt(args[i]);
-			if (!isNaN(new_combo)) combo = Math.max(0, new_combo);
+			if (args[i].includes(".")) {
+				speedMultiplier = Math.max(0.5, Math.min(2, parseFloat(parseFloat(args[i]).toFixed(2))));
+			} else {
+				const new_combo = parseInt(args[i]);
+				if (!isNaN(new_combo)) combo = Math.max(0, new_combo);
+			}
 		}
-		if (args[i].startsWith("+")) mod = args[i].replace("+", "").toUpperCase();
-		if (args[i].startsWith("-d")) ndetail = true;
-		if (args[i].startsWith("-p")) pcdetail = true;
+		if (args[i].startsWith("+")) {
+			mod = args[i].replace("+", "").toUpperCase();
+		}
+		if (args[i].startsWith("-d")) {
+			ndetail = true;
+		}
+		if (args[i].startsWith("-p")) {
+			pcdetail = true;
+		}
+		if (args[i].startsWith("AR")) {
+			forceAR = Math.max(0, Math.min(12.5, parseFloat(parseFloat(args[i].substring(2)).toFixed(2))));
+		}
 	}
 
 	const stats = new osudroid.MapStats();
