@@ -4,6 +4,13 @@ const apikey = process.env.OSU_API_KEY;
 const config = require('../config.json');
 const osudroid = require('osu-droid');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {[string, string][]} current_map 
+ * @param {boolean} mapset 
+ */
 module.exports.run = async (client, message, args, current_map, mapset = false) => {
 	let beatmapid;
 	let combo;
