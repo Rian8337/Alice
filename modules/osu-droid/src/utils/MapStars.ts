@@ -2,7 +2,6 @@ import { StandardDiff } from '../difficulty/StandardDiff';
 import { Beatmap } from '../beatmap/Beatmap';
 import { MapStats } from './MapStats';
 import { modes } from '../constants/modes';
-import { mods } from './mods';
 import { Parser } from './Parser';
 
 /**
@@ -12,17 +11,13 @@ export class MapStars {
     /**
      * The osu!droid star rating of the beatmap.
      */
-    public readonly droidStars: StandardDiff;
+    public readonly droidStars: StandardDiff = new StandardDiff();
 
     /**
      * The osu!standard star rating of the beatmap.
      */
-    public readonly pcStars: StandardDiff;
+    public readonly pcStars: StandardDiff = new StandardDiff();
 
-    constructor() {
-        this.droidStars = new StandardDiff();
-        this.pcStars = new StandardDiff();
-    }
     /**
      * Calculates the star rating of a beatmap.
      * 
@@ -30,10 +25,11 @@ export class MapStars {
      */
     calculate(params: {
         file: string,
-        mods?: string
+        mods?: string,
+        stats?: MapStats
     }): MapStars {
         if (!params.file) {
-            throw new TypeError("Please enter an osu file!");
+            throw new Error("Please enter an osu file!");
         }
         const droidParser: Parser = new Parser();
         const pcParser: Parser = new Parser();
@@ -50,26 +46,12 @@ export class MapStars {
         const mod: string = params.mods || "";
 
         const stats: MapStats = new MapStats({
-            cs: droidMap.cs,
-            ar: droidMap.ar,
-            od: droidMap.od,
-            hp: droidMap.hp,
-            mods: mod
-        }).calculate({mode: modes.droid});
+            speedMultiplier: params.stats?.speedMultiplier || 1,
+            isForceAR: params.stats?.isForceAR || false
+        });
 
-        let droidMod: number = mods.modbitsFromString(mod);
-        if (!(droidMod & mods.osuMods.td)) {
-            droidMod += mods.osuMods.td;
-        }
-        droidMod -= droidMod & (mods.osuMods.hr | mods.osuMods.ez);
-        const convertedDroidMod: string = mods.modbitsToString(droidMod);
-
-        droidMap.cs = stats.cs as number;
-        droidMap.ar = stats.ar as number;
-        droidMap.od = stats.od as number;
-
-        this.droidStars.calculate({mode: modes.droid, map: droidMap, mods: convertedDroidMod});
-        this.pcStars.calculate({mode: modes.osu, map: pcMap, mods: mod});
+        this.droidStars.calculate({mode: modes.droid, map: droidMap, mods: mod, stats: stats});
+        this.pcStars.calculate({mode: modes.osu, map: pcMap, mods: mod, stats: stats});
 
         return this;
     }

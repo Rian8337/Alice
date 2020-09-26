@@ -36,7 +36,7 @@ export class PerformanceCalculator {
     /**
      * The mode this calculator is calculating for.
      */
-    public mode?: keyof typeof modes;
+    public mode?: modes;
 
     /**
      * The speed penalty for osu!droid based on replay analyzer.
@@ -110,9 +110,10 @@ export class PerformanceCalculator {
         combo?: number,
         accPercent?: number,
         miss?: number,
-        mode?: keyof typeof modes,
+        mode?: modes,
         mods?: string,
-        speedPenalty?: number
+        speedPenalty?: number,
+        stats?: MapStats
     }): PerformanceCalculator {
         this.mode = params.mode || modes.osu;
         this.stars = params.stars;
@@ -141,9 +142,13 @@ export class PerformanceCalculator {
             mods: mod
         });
 
-        if (this.mode === modes.osu) {
-            this.mapStatistics = this.mapStatistics.calculate({mode: modes.osu});
+        if (params.stats) {
+            this.mapStatistics.ar = params.stats.ar || this.mapStatistics.ar;
+            this.mapStatistics.isForceAR = params.stats.isForceAR || this.mapStatistics.isForceAR;
+            this.mapStatistics.speedMultiplier = params.stats.speedMultiplier || this.mapStatistics.speedMultiplier;
         }
+
+        this.mapStatistics = this.mapStatistics.calculate({mode: this.mode});
 
         this.missPenalty = Math.pow(0.97, miss);
         this.comboPenalty = Math.min(Math.pow(combo, 0.8) / Math.pow(maxCombo, 0.8), 1);

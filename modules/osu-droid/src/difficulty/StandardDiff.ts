@@ -138,7 +138,8 @@ export class StandardDiff {
         map: Beatmap,
         mods?: string,
         singletapThreshold?: number,
-        mode?: modes
+        mode?: modes,
+        stats?: MapStats
     }): StandardDiff {
         const map: Beatmap = this.map = params.map || this.map;
         if (!map) {
@@ -152,21 +153,13 @@ export class StandardDiff {
         const mode: modes = params.mode || modes.osu;
 
         // apply mods to the beatmap's stats
-        const stats: MapStats = new MapStats({cs: map.cs, mods: mod}).calculate({mode: mode});
+        const stats: MapStats = new MapStats({
+            cs: map.cs,
+            mods: mod,
+            speedMultiplier: params.stats?.speedMultiplier || 1
+        }).calculate({mode: mode});
 
-        // droid's CS is already pre-calculated so there is no need
-        // to recalculate it. To avoid so, we place the CS in a
-        // variable
-        let cs: number = 0;
-        switch (mode) {
-            case modes.droid:
-                cs = map.cs;
-                break;
-            case modes.osu:
-                cs = stats.cs as number;
-        }
-
-        this.initializeObjects(map, cs);
+        this.initializeObjects(map, stats.cs as number);
 
         const speed = this.calculateIndividual(mode, DIFF_SPEED, this.objects, stats.speedMultiplier);
         this.speed = speed.difficulty;
