@@ -3,10 +3,6 @@ import { Vector } from '../../utils/Vector';
 
 /**
  * Represents a hitobject in a beatmap.
- *
- * The only common property is start time (in milliseconds).
- * Object-specific properties are stored in `data`, which can be
- * an instance of `Circle`, `Slider`, or `null`.
  */
 export abstract class HitObject {
     /**
