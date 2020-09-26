@@ -861,7 +861,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!dailyres.status.includes("ongoing")) return message.channel.send("❎ **| I'm sorry, that challenge is not ongoing now!**");
                     let challengeid = dailyres.challengeid;
                     let bonus = false;
-                    let index = 0;
+                    let index = -1;
                     let mode = args[3];
                     if (mode) mode.toLowerCase();
                     switch (mode) {
@@ -920,7 +920,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     for (let i = 0; i < dailyres.bonus.length; i++) {
                                         bonuslist.push(false);
                                     }
-                                    bonuslist[index] = bonuscomplete;
+                                    if (index !== -1) {
+                                        bonuslist[index] = bonuscomplete;
+                                    }
                                 }
                                 else bonuslist = [challengeid, bonuscomplete];
                                 challengelist.push(bonuslist);
