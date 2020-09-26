@@ -354,19 +354,10 @@ export class MapInfo {
     /**
      * Converts the beatmap's BPM if speed-changing mods are applied.
      */
-    private convertBPM(mod: string = ""): string {
+    private convertBPM(stats: MapStats): string {
         let bpm: number = this.bpm;
-        if (mod) {
-            if (mod.includes("DT")) {
-                bpm *= 1.5;
-            }
-            if (mod.includes("NC")) {
-                bpm *= 1.39;
-            }
-            if (mod.includes("HT")) {
-                bpm *= 0.75;
-            }
-        }
+        bpm *= stats.speedMultiplier;
+
         return `${this.bpm}${this.bpm === bpm ? "" : ` (${bpm.toFixed(2)})`}`;
     }
 
@@ -387,24 +378,12 @@ export class MapInfo {
     /**
      * Converts the beatmap's length if speed-changing mods are applied.
      */
-    private convertTime(mod: string = ""): string {
+    private convertTime(stats: MapStats): string {
         let hitLength: number = this.hitLength;
         let totalLength: number = this.totalLength;
 
-        if (mod) {
-            if (mod.includes("DT")) {
-                hitLength = Math.ceil(hitLength / 1.5);
-                totalLength = Math.ceil(totalLength / 1.5);
-            }
-            if (mod.includes("NC")) {
-                hitLength = Math.ceil(hitLength / 1.39);
-                totalLength = Math.ceil(totalLength / 1.39);
-            }
-            if (mod.includes("HT")) {
-                hitLength = Math.ceil(hitLength / 0.75);
-                totalLength = Math.ceil(totalLength / 0.75);
-            }
-        }
+        hitLength /= stats.speedMultiplier;
+        totalLength /= stats.speedMultiplier;
 
         return `${this.timeString(this.hitLength)}${this.hitLength === hitLength ? "" : ` (${this.timeString(hitLength)})`}/${this.timeString(this.totalLength)}${this.totalLength === totalLength ? "" : ` (${this.timeString(totalLength)})`}`;
     }
@@ -426,17 +405,49 @@ export class MapInfo {
      * - Option `4`: return last update date and map status
      * - Option `5`: return favorite count and play count
      */
-    showStatistics(mod: string, option: number): string {
-        const mapStatistics: MapStats = new MapStats(this).calculate({mods: mod, mode: modes.osu});
+    showStatistics(mod: string, option: number, stats?: MapStats): string {
+        const mapParams = {
+            cs: this.cs,
+            ar: this.ar,
+            od: this.od,
+            hp: this.hp,
+            mods: mod,
+            isForceAR: false,
+            speedMultiplier: 1
+        };
+        if (stats) {
+            mapParams.ar = stats.ar || mapParams.ar;
+            mapParams.isForceAR = stats.isForceAR || mapParams.isForceAR;
+            mapParams.speedMultiplier = stats.speedMultiplier || mapParams.speedMultiplier;
+        }
+        const mapStatistics: MapStats = new MapStats(mapParams).calculate({mode: modes.osu});
         mapStatistics.cs = parseFloat((mapStatistics.cs as number).toFixed(2));
         mapStatistics.ar = parseFloat((mapStatistics.ar as number).toFixed(2));
         mapStatistics.od = parseFloat((mapStatistics.od as number).toFixed(2));
         mapStatistics.hp = parseFloat((mapStatistics.hp as number).toFixed(2));
 
+        const maxScore: number = this.maxScore(mapStatistics);
+
         switch (option) {
-            case 0: return `${this.fullTitle}${mod ? ` +${mod}` : ""}`;
+            case 0: {
+                let string: string = `${this.fullTitle}${mod ? ` +${mod}` : ""}`;
+                if (mapParams.speedMultiplier !== 1 || mapStatistics.isForceAR) {
+                    string += " (";
+                    if (mapStatistics.isForceAR) {
+                        string += `AR${mapStatistics.ar}`;
+                    }
+                    if (mapParams.speedMultiplier !== 1) {
+                        if (mapStatistics.isForceAR) {
+                            string += ", ";
+                        }
+                        string += `${mapParams.speedMultiplier}x`;
+                    }
+                    string += ")";
+                }
+                return string;
+            }
             case 1: {
-                let string = `**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapsetID})`;
+                let string: string = `**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapsetID})`;
                 if (this.packs.length > 0) {
                     string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < this.packs.length; i++) {
@@ -447,7 +458,7 @@ export class MapInfo {
                 return string;
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "": ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "": ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "": ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "": ` (${mapStatistics.hp})`}`;
-            case 3: return `**BPM**: ${this.convertBPM(mod)} - **Length**: ${this.convertTime(mod)} - **Max Combo**: ${this.maxCombo}x`;
+            case 3: return `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
             case 4: return `**Last Update**: ${this.lastUpdate.toUTCString()} | **${this.convertStatus()}**`;
             case 5: return `❤️ **${this.favorites.toLocaleString()}** - ▶️ **${this.plays.toLocaleString()}**`;
             default: throw {
@@ -480,40 +491,60 @@ export class MapInfo {
      * 
      * This requires the `file` property set to `true` when retrieving beatmap general information using `MapInfo.get()`.
      */
-    maxScore(mod: string = ""): number {
+    private maxScore(stats: MapStats): number {
         if (!this.map) {
             return 0;
         }
-        const modbits: number = mods.modbitsFromString(mod);
+        const modbits: number = mods.modbitsFromString(stats.mods);
         const difficultyMultiplier: number = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
 
         // score multiplier
         let scoreMultiplier: number = 1;
-        if (modbits & mods.osuMods.hr) {
-            scoreMultiplier *= 1.06;
-        }
-        if (modbits & mods.osuMods.hd) {
-            scoreMultiplier *= 1.06;
-        }
-        if (modbits & mods.osuMods.dt) {
-            scoreMultiplier *= 1.12;
-        }
-        if (modbits & mods.osuMods.nc) {
-            scoreMultiplier *= 1.12;
-        }
-        if (modbits & mods.osuMods.fl) {
-            scoreMultiplier *= 1.12;
-        }
-        if (modbits & mods.osuMods.nf) {
-            scoreMultiplier *= 0.5;
-        }
-        if (modbits & mods.osuMods.ez) {
-            scoreMultiplier *= 0.5;
-        }
-        if (modbits & mods.osuMods.ht) {
-            scoreMultiplier *= 0.3;
-        }
-        if (modbits & mods.osuMods.unranked) {
+
+        if (!(modbits & mods.osuMods.unranked)) {
+            let scoreSpeedMultiplier: number = 1;
+            const speedMultiplier: number = stats.speedMultiplier;
+            if (speedMultiplier > 1) {
+                scoreSpeedMultiplier += (speedMultiplier - 1) * 0.24;
+            } else if (speedMultiplier < 1) {
+                scoreSpeedMultiplier = Math.pow(0.3, (1 - speedMultiplier) * 4);
+            }
+    
+            if (modbits & mods.osuMods.hr) {
+                scoreMultiplier *= 1.06;
+            }
+            if (modbits & mods.osuMods.hd) {
+                scoreMultiplier *= 1.06;
+            }
+            if (modbits & mods.osuMods.dt) {
+                scoreMultiplier *= 1.12;
+                scoreSpeedMultiplier /= 1.12;
+            }
+            if (modbits & mods.osuMods.nc) {
+                scoreMultiplier *= 1.12;
+                scoreSpeedMultiplier /= 1.12;
+            }
+            if (modbits & mods.osuMods.fl) {
+                scoreMultiplier *= 1.12;
+            }
+            if (modbits & mods.osuMods.nf) {
+                scoreMultiplier *= 0.5;
+            }
+            if (modbits & mods.osuMods.ez) {
+                scoreMultiplier *= 0.5;
+            }
+            if (modbits & mods.osuMods.ht) {
+                scoreMultiplier *= 0.3;
+                scoreSpeedMultiplier /= 0.3;
+            }
+            if (stats.mods.includes("RE")) {
+                scoreMultiplier *= 0.4;
+            }
+            if (stats.mods.includes("SU")) {
+                scoreMultiplier *= 1.06;
+            }
+            scoreMultiplier *= scoreSpeedMultiplier;
+        } else {
             scoreMultiplier = 0;
         }
 
