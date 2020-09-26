@@ -12,7 +12,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	let mod = '';
 	let ndetail = false;
 	let pcdetail = false;
-	if (!args[0]) return;
+	let speedMultiplier = -1;
+	let forceAR = -1;
 	let a = args[0].split("/");
 	beatmapid = a[a.length-1];
 	for (let i = 1; i < args.length; i++) {
