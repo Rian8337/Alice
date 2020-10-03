@@ -220,16 +220,7 @@ export class MapStats {
                 }
 
                 if (stats.ar !== undefined && !stats.isForceAR) {
-                    stats.ar *= statisticsMultiplier;
-                    if (stats.mods.includes("RE")) {
-                        if (stats.pcMods & mods.osuMods.ez) {
-                            stats.ar *= 2;
-                            stats.ar -= 0.5;
-                        }
-                        stats.ar -= 0.5;
-                        stats.ar -= stats.speedMultiplier - 1;
-                    }
-                    stats.ar = MapStats.modifyAR(stats.ar, stats.speedMultiplier, 1);
+                    stats.ar = MapStats.modifyAR(stats.ar, stats.speedMultiplier, statisticsMultiplier);
                 }
                 
                 if (stats.od !== undefined) {
