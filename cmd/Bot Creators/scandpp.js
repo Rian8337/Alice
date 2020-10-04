@@ -50,6 +50,7 @@ module.exports.run = (client, message, args, maindb) => {
                 if (!mapinfo.objects) {
                     continue;
                 }
+                ppEntry.title = mapinfo.fullTitle;
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                     const isWhitelist = await whitelistdb.findOne({hashid: mapinfo.hash});
                     if (!isWhitelist) {
