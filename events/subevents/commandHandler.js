@@ -56,7 +56,7 @@ module.exports.run = obj => {
             console.log(`${message.author.tag} (DM): ${message.content}`);
         }
         cmd.run(client, message, args, maindb, alicedb, current_map);
-        if (command_cooldown) {
+        if (command_cooldown && !message.isOwner) {
             cd.push(message.author.id);
             setTimeout(() => {
                 const index = cd.findIndex(c => c === message.author.id);
