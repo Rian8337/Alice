@@ -82,7 +82,7 @@ async function whitelistInfo(client, link_in, hash_in, message, callback) {
         .setDescription(mapinfo.showStatistics("", 1))
         .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .addField(mapinfo.showStatistics("", 2), mapinfo.showStatistics("", 3))
-        .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.diff_total}`);
+        .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.totalDifficulty}`);
 
     message.channel.send({embed: embed}).catch(console.error);
     client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
