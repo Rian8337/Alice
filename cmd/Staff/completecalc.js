@@ -226,7 +226,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
-                    if (!isNaN(pp)) ppentries.push({
+                    const ppObject = {
                         hash: entry[11],
                         title: mapinfo.fullTitle,
                         mods: mods,
@@ -235,7 +235,11 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         accuracy: acc_percent,
                         miss: miss,
                         scoreID: parseInt(entry[0])
-                    });
+                    };
+                    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
+                        ppObject.isOldPlay = true;
+                    }
+                    if (!isNaN(pp)) ppentries.push(ppObject);
                     ++playc;
                 }
 

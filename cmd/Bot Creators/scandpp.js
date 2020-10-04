@@ -51,6 +51,9 @@ module.exports.run = (client, message, args, maindb) => {
                     continue;
                 }
                 ppEntry.title = mapinfo.fullTitle;
+                if (osudroid.mods.modbitsFromString(ppEntry.mods) & osudroid.mods.osuMods.nc) {
+                    ppEntry.isOldPlay = true;
+                }
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                     const isWhitelist = await whitelistdb.findOne({hashid: mapinfo.hash});
                     if (!isWhitelist) {

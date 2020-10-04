@@ -11,34 +11,34 @@ function test(uid, page, cb) {
         if (err || !data) {
             console.log("Empty response from droid API");
             page--;
-            return cb([], false)
+            return cb([], false);
         }
         let entries = [];
         let line = data.split('<br>');
         for (let i of line) entries.push(i.split(' '));
         entries.shift();
         if (!entries[0]) cb(entries, true);
-        else cb(entries, false)
-    })
+        else cb(entries, false);
+    });
 }
 
 async function calculatePP(ppentries, entry, cb) {
     const mapinfo = await new osudroid.MapInfo().getInformation({hash: entry[11]});
     if (mapinfo.error) {
         console.log("API fetch error");
-        return cb()
+        return cb();
     }
     if (!mapinfo.title) {
         console.log("Map not found");
-        return cb()
+        return cb();
     }
     if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
         console.log('Error: PP system only accept ranked, approved, whitelisted or loved mapset right now');
-        return cb()
+        return cb();
     }
     if (!mapinfo.osuFile) {
         console.log("No osu file");
-        return cb(true)
+        return cb(true);
     }
     let mods = osudroid.mods.droidToPC(entry[6]);
     let acc_percent = parseFloat(entry[7]) / 1000;
@@ -64,8 +64,11 @@ async function calculatePP(ppentries, entry, cb) {
         miss: miss,
         scoreID: parseInt(entry[0])
     };
+    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
+        ppentry.isOldPlay = true;
+    }
     if (!isNaN(pp)) ppentries.push(ppentry);
-    cb()
+    cb();
 }
 
 /**
@@ -124,7 +127,7 @@ module.exports.run = (client, message, args, maindb) => {
                 };
                 binddb.updateOne(query, updateVal, function(err) {
                     if (err) throw err;
-                    console.log('pp updated')
+                    console.log('pp updated');
                 });
 
                 //reset everything if additional uid is added
@@ -149,11 +152,11 @@ module.exports.run = (client, message, args, maindb) => {
                     if (ppentries.length > 75) ppentries.splice(75);
                     page++;
                     console.table(ppentries);
-                    test(uid, page, testcb)
+                    test(uid, page, testcb);
                 }
-            })
-        })
-    })
+            });
+        });
+    });
 };
 
 module.exports.config = {

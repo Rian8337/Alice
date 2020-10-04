@@ -118,6 +118,9 @@ module.exports.run = (client, message, args, maindb) => {
                     miss: miss,
                     scoreID: score.scoreID
                 };
+                if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
+                    pp_object.isOldPlay = true;
+                }
                 playc++;
                 let duplicate = false;
                 for (let i in pplist) {
@@ -274,7 +277,9 @@ module.exports.run = (client, message, args, maindb) => {
                         miss: miss,
                         scoreID: play.scoreID
                     };
-
+                    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
+                        pp_object.isOldPlay = true;
+                    }
                     ++playc;
                     let duplicate = false;
                     for (let i in pplist) {
