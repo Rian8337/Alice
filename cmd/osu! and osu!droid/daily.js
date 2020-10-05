@@ -490,7 +490,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let clan = userres.clan;
                 const player = await new osudroid.Player().getInformation({uid: uid});
                 if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
-                if (!player.recentPlays) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+                if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 let rplay = player.recentPlays;
                 query = {status: "w-ongoing"};
                 dailydb.findOne(query, async (err, dailyres) => {
