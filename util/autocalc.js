@@ -121,7 +121,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 					});
 					let ppline = parseFloat(npp.total.toFixed(2));
 					let pcppline = parseFloat(pcpp.total.toFixed(2));
-					let entry = [mapinfo, starsline, pcstarsline, max_score, ppline, pcppline];
+					let entry = [mapinfo, starsline, pcstarsline, mapinfo.maxScore(mod), ppline, pcppline];
 					map_entries.push(entry);
 					if (i === obj.length) {
 						map_entries.sort((a, b) => {return b[2] - a[2];});
