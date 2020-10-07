@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node mybot.js",
-    "heroku-postbuild": "dts-gen -m java-deserialization -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
+    "heroku-postbuild": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
     "node": "12.x"
