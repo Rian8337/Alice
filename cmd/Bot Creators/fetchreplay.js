@@ -80,13 +80,6 @@ module.exports.run = async (client, message, args, maindb) => {
     }
 
     const isOldReplay = data.replayVersion < 3;
-    let player;
-    if (data.replayVersion < 3) {
-        player = await new osudroid.Player().getInformation({uid: uid});
-        if (!player.username) {
-            return message.channel.send("❎ **| I'm sorry, I cannot find the player!**");
-        }
-    }
 
     const zip = new AdmZip();
     zip.addFile(`${play.scoreID}.odr`, replay.originalODR);
@@ -94,7 +87,7 @@ module.exports.run = async (client, message, args, maindb) => {
         version: 1,
         replaydata: {
             filename: `${data.folderName}\/${data.fileName}`,
-            playername: isOldReplay ? player.username : data.playerName,
+            playername: isOldReplay ? play.username : data.playerName,
             replayfile: `${play.scoreID}.odr`,
             mod: isOldReplay ? play.droidMods : data.droidMods,
             score: play.score,
@@ -175,15 +168,14 @@ module.exports.run = async (client, message, args, maindb) => {
     const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()
         .setFooter(`Achieved on ${play.date.toUTCString()} | Alice Synthesis Thirty`, footer[index])
-        .setAuthor(`Play Information for ${play.player_name}`, "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
+        .setAuthor(`Play Information for ${play.username}`, "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
         .setColor(mapinfo.statusColor())
         .attachFiles([attachment])
 		.setTitle(mapinfo.showStatistics(data.convertedMods, 0))
         .setDescription(mapinfo.showStatistics(data.convertedMods, 1))
-		.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`)
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
-        .addField(mapinfo.showStatistics(data.convertedMods, 2), `${mapinfo.showStatistics(data.convertedMods, 3)}\n**Max score**: ${mapinfo.maxScore(data.convertedMods).toLocaleString()}`)
+        .addField(mapinfo.showStatistics(data.convertedMods, 2), mapinfo.showStatistics(data.convertedMods, 3))
         .addField(mapinfo.showStatistics(data.convertedMods, 4), `${mapinfo.showStatistics(data.convertedMods, 5)}\n**Result**: ${play.score.toLocaleString()} / ${play.rank} / ${play.combo}/${mapinfo.maxCombo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\n**Unstable Rate**: ${unstable_rate.toFixed(2)}`)
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
