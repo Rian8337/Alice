@@ -62,152 +62,152 @@ export class MapInfo {
     /**
      * The title of the song of the beatmap.
      */
-    public title: string;
+    public title: string = "";
 
     /**
      * The full title of the beatmap, which is `Artist - Title (Creator) [Difficulty Name]`.
      */
-    public fullTitle: string;
+    public fullTitle: string = "";
 
     /**
      * The artist of the song of the beatmap.
      */
-    public artist: string;
+    public artist: string = "";
 
     /**
      * The creator of the beatmap.
      */
-    public creator: string;
+    public creator: string = "";
 
     /**
      * The difficulty name of the beatmap.
      */
-    public version: string;
+    public version: string = "";
 
     /**
      * The ranking status of the beatmap.
      */
-    public approved: rankedStatus;
+    public approved: rankedStatus = rankedStatus.PENDING;
 
     /**
      * The ID of the beatmap.
      */
-    public beatmapID: number;
+    public beatmapID: number = 0;
 
     /**
      * The ID of the beatmapset containing the beatmap.
      */
-    public beatmapsetID: number;
+    public beatmapsetID: number = 0;
 
     /**
      * The amount of times the beatmap has been played.
      */
-    public plays: number;
+    public plays: number = 0;
 
     /**
      * The amount of times the beatmap has been favorited.
      */
-    public favorites: number;
+    public favorites: number = 0;
 
     /**
      * The date of which the beatmap was submitted.
      */
-    public submitDate: Date;
+    public submitDate: Date = new Date(0);
 
     /**
      * The date of which the beatmap was last updated.
      */
-    public lastUpdate: Date;
+    public lastUpdate: Date = new Date(0);
 
     /**
      * The duration of the beatmap not including breaks.
      */
-    public hitLength: number;
+    public hitLength: number = 0;
 
     /**
      * The duration of the beatmap including breaks.
      */
-    public totalLength: number;
+    public totalLength: number = 0;
 
     /**
      * The BPM of the beatmap.
      */
-    public bpm: number;
+    public bpm: number = 0;
 
     /**
      * The amount of circles in the beatmap.
      */
-    public circles: number;
+    public circles: number = 0;
 
     /**
      * The amount of sliders in the beatmap.
      */
-    public sliders: number;
+    public sliders: number = 0;
 
     /**
      * The amount of spinners in the beatmap.
      */
-    public spinners: number;
+    public spinners: number = 0;
 
     /**
      * The amount of objects in the beatmap.
      */
-    public objects: number;
+    public objects: number = 0;
 
     /**
      * The maximum combo of the beatmap.
      */
-    public maxCombo: number;
+    public maxCombo: number = 0;
 
     /**
      * The circle size of the beatmap.
      */
-    public cs: number;
+    public cs: number = 0;
 
     /**
      * The approach rate of the beatmap.
      */
-    public ar: number;
+    public ar: number = 0;
 
     /**
      * The overall difficulty of the beatmap.
      */
-    public od: number;
+    public od: number = 0;
 
     /**
      * The health drain rate of the beatmap.
      */
-    public hp: number;
+    public hp: number = 0;
 
     /**
      * The beatmap packs that contain this beatmap, represented by their ID.
      */
-    public packs: string[];
+    public packs: string[] = [];
 
     /**
      * The aim difficulty rating of the beatmap.
      */
-    public aimDifficulty: number;
+    public aimDifficulty: number = 0;
 
     /**
      * The speed difficulty rating of the beatmap.
      */
-    public speedDifficulty: number;
+    public speedDifficulty: number = 0;
 
     /**
      * The generic difficulty rating of the beatmap.
      */
-    public totalDifficulty: number;
+    public totalDifficulty: number = 0;
 
     /**
      * The MD5 hash of the beatmap.
      */
-    public hash: string;
+    public hash: string = "";
 
     /**
      * The `.osu` file of the beatmap.
      */
-    public osuFile: string;
+    public osuFile: string = "";
 
     /**
      * The parsed beatmap from beatmap parser.
@@ -217,41 +217,7 @@ export class MapInfo {
     /**
      * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
      */
-    public error: boolean;
-
-    constructor() {
-        this.title = "";
-        this.fullTitle = "";
-        this.artist = "";
-        this.creator = "";
-        this.version = "";
-        this.approved = 0;
-        this.beatmapID = 0;
-        this.beatmapsetID = 0;
-        this.plays = 0;
-        this.favorites = 0;
-        this.submitDate = new Date(0);
-        this.lastUpdate = new Date(0);
-        this.hitLength = 0;
-        this.totalLength = 0;
-        this.bpm = 0;
-        this.circles = 0;
-        this.sliders = 0;
-        this.spinners = 0;
-        this.objects = 0;
-        this.maxCombo = 0;
-        this.cs = 0;
-        this.ar = 0;
-        this.od = 0;
-        this.hp = 0;
-        this.packs = [];
-        this.aimDifficulty = 0;
-        this.speedDifficulty = 0;
-        this.totalDifficulty = 0;
-        this.hash = "";
-        this.osuFile = "";
-        this.error = false;
-    }
+    public error: boolean = false;
 
     /**
      * Retrieve a beatmap's general information.
@@ -354,11 +320,11 @@ export class MapInfo {
     /**
      * Converts the beatmap's BPM if speed-changing mods are applied.
      */
-    private convertBPM(stats: MapStats): string {
+    private convertBPM(stats: MapStats): number {
         let bpm: number = this.bpm;
         bpm *= stats.speedMultiplier;
 
-        return `${this.bpm}${this.bpm === bpm ? "" : ` (${bpm.toFixed(2)})`}`;
+        return bpm;
     }
 
     /**
@@ -458,7 +424,36 @@ export class MapInfo {
                 return string;
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "": ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "": ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "": ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "": ` (${mapStatistics.hp})`}`;
-            case 3: return `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+            case 3: {
+                const convertedBPM: number = this.convertBPM(mapStatistics);
+                let string = ``;
+                if (this.map) {
+                    
+                    const uninheritedTimingPoints: TimingPoint[] = this.map.timingPoints.filter(t => t.change);
+                    if (uninheritedTimingPoints.length === 1) {
+                        string += `**BPM**: ${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                    } else {
+                        string += `**BPM**: `;
+                        let maxBPM: number = convertedBPM;                        
+                        let minBPM: number = convertedBPM;
+                        let speedMulMinBPM: number = convertedBPM;
+                        let speedMulMaxBPM: number = convertedBPM;
+                        for (const t of uninheritedTimingPoints) {
+                            const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
+                            const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
+                            maxBPM = Math.max(maxBPM, bpm);
+                            minBPM = Math.min(minBPM, bpm);
+                            speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
+                            speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
+                        }
+
+                        string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                    }
+                } else {
+                    string += `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                }
+                return string;
+            }
             case 4: return `**Last Update**: ${this.lastUpdate.toUTCString()} | **${this.convertStatus()}**`;
             case 5: return `❤️ **${this.favorites.toLocaleString()}** - ▶️ **${this.plays.toLocaleString()}**`;
             default: throw {
