@@ -449,8 +449,8 @@ export class MapInfo {
                         let speedMulMinBPM: number = convertedBPM;
                         let speedMulMaxBPM: number = convertedBPM;
                         for (const t of uninheritedTimingPoints) {
-                            const bpm: number = 60000 / t.msPerBeat;
-                            const speedMulBPM: number = bpm * mapStatistics.speedMultiplier;
+                            const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
+                            const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
                             maxBPM = Math.max(maxBPM, bpm);
                             minBPM = Math.min(minBPM, bpm);
                             speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
