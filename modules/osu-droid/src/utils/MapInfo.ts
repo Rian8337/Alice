@@ -377,7 +377,7 @@ export class MapInfo {
      * Shows the beatmap's statistics based on applied mods and option.
      * 
      * - Option `0`: return map title and mods used if defined
-     * - Option `1`: return map download link to official web, bloodcat, and sayobot
+     * - Option `1`: return song source and map download link to bloodcat and sayobot
      * - Option `2`: return CS, AR, OD, HP
      * - Option `3`: return BPM, map length, max combo
      * - Option `4`: return last update date and map status
@@ -423,7 +423,7 @@ export class MapInfo {
                 return string;
             }
             case 1: {
-                let string: string = `**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapsetID})`;
+                let string: string = `${this.source ? `**Source**: ${this.source}\n` : ""}**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapsetID})`;
                 if (this.packs.length > 0) {
                     string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < this.packs.length; i++) {
