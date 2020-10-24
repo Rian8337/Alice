@@ -392,8 +392,6 @@ export class MapInfo {
         mapStatistics.od = parseFloat((mapStatistics.od as number).toFixed(2));
         mapStatistics.hp = parseFloat((mapStatistics.hp as number).toFixed(2));
 
-        const maxScore: number = this.maxScore(mapStatistics);
-
         switch (option) {
             case 0: {
                 let string: string = `${this.fullTitle}${mod ? ` +${mod}` : ""}`;
@@ -425,10 +423,10 @@ export class MapInfo {
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "": ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "": ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "": ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "": ` (${mapStatistics.hp})`}`;
             case 3: {
+                const maxScore: number = this.maxScore(mapStatistics);
                 const convertedBPM: number = this.convertBPM(mapStatistics);
                 let string = ``;
-                if (this.map) {
-                    
+                if (this.map) {    
                     const uninheritedTimingPoints: TimingPoint[] = this.map.timingPoints.filter(t => t.change);
                     if (uninheritedTimingPoints.length === 1) {
                         string += `**BPM**: ${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
