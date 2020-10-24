@@ -85,6 +85,11 @@ export class MapInfo {
     public version: string = "";
 
     /**
+     * The source of the song in the beatmap.
+     */
+    public source: string = "";
+
+    /**
      * The ranking status of the beatmap.
      */
     public approved: rankedStatus = rankedStatus.PENDING;
@@ -260,39 +265,7 @@ export class MapInfo {
                     return resolve(this);
                 }
 
-                this.fullTitle = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
-                this.title = mapinfo.title;
-                this.artist = mapinfo.artist;
-                this.creator = mapinfo.creator;
-                this.version = mapinfo.version;
-                this.approved = parseInt(mapinfo.approved);
-                this.beatmapID = parseInt(mapinfo.beatmap_id);
-                this.beatmapsetID = parseInt(mapinfo.beatmapset_id);
-                this.plays = parseInt(mapinfo.playcount);
-                this.favorites = parseInt(mapinfo.favourite_count);
-                const t: number[] = mapinfo.last_update.split(/[- :]/).map(e => parseInt(e));
-                this.lastUpdate = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-                const s: number[] = mapinfo.submit_date.split(/[- :]/).map(e => parseInt(e));
-                this.submitDate = new Date(Date.UTC(s[0], s[1]-1, s[2], s[3], s[4], s[5]));
-                this.hitLength = parseInt(mapinfo.hit_length);
-                this.totalLength = parseInt(mapinfo.total_length);
-                this.bpm = parseFloat(mapinfo.bpm);
-                this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
-                this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
-                this.spinners = mapinfo.count_spinner ? parseInt(mapinfo.count_spinner) : 0;
-                this.objects = this.circles + this.sliders + this.spinners;
-                this.maxCombo = parseInt(mapinfo.max_combo);
-                this.cs = parseFloat(mapinfo.diff_size);
-                this.ar = parseFloat(mapinfo.diff_approach);
-                this.od = parseFloat(mapinfo.diff_overall);
-                this.hp = parseFloat(mapinfo.diff_drain);
-                if (mapinfo.packs) {
-                    this.packs = mapinfo.packs.split(",").map(pack => pack.trim());
-                }
-                this.aimDifficulty = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
-                this.speedDifficulty = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
-                this.totalDifficulty = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
-                this.hash = mapinfo.file_md5;
+                this.fillMetadata(mapinfo);
 
                 if (!params.file) {
                     return resolve(this);
@@ -315,6 +288,45 @@ export class MapInfo {
                     });
             });
         });
+    }
+
+    /**
+     * Fills the current instance with metadata.
+     */
+    fillMetadata(mapinfo: OsuAPIResponse): void {
+        this.fullTitle = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
+        this.title = mapinfo.title;
+        this.artist = mapinfo.artist;
+        this.creator = mapinfo.creator;
+        this.version = mapinfo.version;
+        this.approved = parseInt(mapinfo.approved);
+        this.beatmapID = parseInt(mapinfo.beatmap_id);
+        this.beatmapsetID = parseInt(mapinfo.beatmapset_id);
+        this.plays = parseInt(mapinfo.playcount);
+        this.favorites = parseInt(mapinfo.favourite_count);
+        const t: number[] = mapinfo.last_update.split(/[- :]/).map(e => parseInt(e));
+        this.lastUpdate = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        const s: number[] = mapinfo.submit_date.split(/[- :]/).map(e => parseInt(e));
+        this.submitDate = new Date(Date.UTC(s[0], s[1]-1, s[2], s[3], s[4], s[5]));
+        this.hitLength = parseInt(mapinfo.hit_length);
+        this.totalLength = parseInt(mapinfo.total_length);
+        this.bpm = parseFloat(mapinfo.bpm);
+        this.circles = mapinfo.count_normal ? parseInt(mapinfo.count_normal) : 0;
+        this.sliders = mapinfo.count_slider ? parseInt(mapinfo.count_slider) : 0;
+        this.spinners = mapinfo.count_spinner ? parseInt(mapinfo.count_spinner) : 0;
+        this.objects = this.circles + this.sliders + this.spinners;
+        this.maxCombo = parseInt(mapinfo.max_combo);
+        this.cs = parseFloat(mapinfo.diff_size);
+        this.ar = parseFloat(mapinfo.diff_approach);
+        this.od = parseFloat(mapinfo.diff_overall);
+        this.hp = parseFloat(mapinfo.diff_drain);
+        if (mapinfo.packs) {
+            this.packs = mapinfo.packs.split(",").map(pack => pack.trim());
+        }
+        this.aimDifficulty = mapinfo.diff_aim ? parseFloat(mapinfo.diff_aim) : 0;
+        this.speedDifficulty = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
+        this.totalDifficulty = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
+        this.hash = mapinfo.file_md5;
     }
 
     /**
