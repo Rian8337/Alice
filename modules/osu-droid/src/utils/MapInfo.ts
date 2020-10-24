@@ -324,7 +324,7 @@ export class MapInfo {
         let bpm: number = this.bpm;
         bpm *= stats.speedMultiplier;
 
-        return bpm;
+        return parseFloat(bpm.toFixed(2));
     }
 
     /**
@@ -439,15 +439,15 @@ export class MapInfo {
                         let speedMulMinBPM: number = convertedBPM;
                         let speedMulMaxBPM: number = convertedBPM;
                         for (const t of uninheritedTimingPoints) {
-                            const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
-                            const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
+                            const bpm: number = 60000 / t.msPerBeat;
+                            const speedMulBPM: number = bpm * mapStatistics.speedMultiplier;
                             maxBPM = Math.max(maxBPM, bpm);
                             minBPM = Math.min(minBPM, bpm);
                             speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                             speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
                         }
 
-                        string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM.toFixed(2)}-${speedMulMaxBPM.toFixed(2)} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                     }
                 } else {
                     string += `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
