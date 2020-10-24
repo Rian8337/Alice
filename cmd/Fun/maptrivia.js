@@ -86,7 +86,6 @@ module.exports.run = async (client, message) => {
         }
     
         const beatmap = mapCache.shift();
-        console.log(beatmap.fullTitle);
 
         const tempArtist = beatmap.artist.replace(/\W|_/g, "");
         const tempTitle = beatmap.title.replace(/\W|_/g, "");
