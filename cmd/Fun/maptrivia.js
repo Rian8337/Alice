@@ -148,9 +148,8 @@ module.exports.run = (client, message) => {
             .setThumbnail(`https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`)
             .setImage(`https://assets.ppy.sh/beatmaps/${beatmap.beatmapsetID}/covers/cover.jpg`);
 
-        // for 10 letters, give 30 seconds
-        const time = Math.ceil(Math.max(shuffledArtist.length, shuffledTitle.length) / 10) * 30000;
-
+        const time = 45000;
+        
         message.channel.send(`❗**| Guess this beatmap! You have ${time / 1000} seconds!**`, {embed: embed}).then(msg => {
             let currentMessage = msg;
             const collector = message.channel.createMessageCollector(m => m.content.toLowerCase().startsWith("g:") || m.content.toLowerCase().startsWith("guess:"), {time: time});
