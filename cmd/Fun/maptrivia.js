@@ -85,7 +85,6 @@ module.exports.run = async (client, message) => {
         }
     
         const beatmap = mapCache.shift();
-        console.log(beatmap.fullTitle);
 
         const tempArtist = beatmap.artist.replace(/\W|_/g, "");
         const tempTitle = beatmap.title.replace(/\W|_/g, "");
@@ -99,7 +98,7 @@ module.exports.run = async (client, message) => {
         const shuffledTitle = beatmap.title.split("");
 
         while (artistBlankAmount-- > 0) {
-            const index = Math.floor(Math.random() * beatmap.artist.length);
+            const index = Math.floor(Math.random() * shuffledArtist.length);
             const char = shuffledArtist[index];
             if (!regex.test(char) || char.includes("`-`")) {
                 ++artistBlankAmount;
@@ -111,7 +110,7 @@ module.exports.run = async (client, message) => {
                 replacementString = " " + replacementString;
             }
     
-            if (index < beatmap.artist.length - 1 && shuffledArtist[index + 1].includes("`-`")) {
+            if (index < shuffledArtist.length - 1 && shuffledArtist[index + 1].includes("`-`")) {
                 replacementString += " ";
             }
     
@@ -119,7 +118,7 @@ module.exports.run = async (client, message) => {
         }
     
         while (titleBlankAmount-- > 0) {
-            const index = Math.floor(Math.random() * beatmap.title.length);
+            const index = Math.floor(Math.random() * shuffledTitle.length);
             const char = shuffledTitle[index];
             if (!regex.test(char) || char.includes("`-`")) {
                 ++titleBlankAmount;
@@ -131,7 +130,7 @@ module.exports.run = async (client, message) => {
                 replacementString = " " + replacementString;
             }
     
-            if (index < beatmap.title.length - 1 && shuffledTitle[index + 1].includes("`-`")) {
+            if (index < shuffledTitle.length - 1 && shuffledTitle[index + 1].includes("`-`")) {
                 replacementString += " ";
             }
     
