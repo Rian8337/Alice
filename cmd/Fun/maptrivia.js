@@ -51,7 +51,7 @@ function timeConvert(num) {
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
  */
-module.exports.run = async (client, message) => {
+module.exports.run = (client, message) => {
     if (cd.has(message.channel.id)) {
         return message.channel.send("❎ **| Hey, there is an ongoing map trivia in this channel! Please play that one instead!**");
     }
