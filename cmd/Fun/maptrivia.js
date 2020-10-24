@@ -11,7 +11,6 @@ function retrieveBeatmaps(dateLimit, level, cb) {
     const finalDate = new Date(dateLimit + Math.floor(Math.random() * (new Date().getTime() - dateLimit)));
 
     const url = `https://osu.ppy.sh/api/get_beatmaps?k=${process.env.OSU_API_KEY}&since=${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${finalDate.getUTCDate().toString().padStart(2, "0")}&m=0`;
-    console.log(url);
     request(url, (err, response, data) => {
         if (err || response.statusCode !== 200) {
             return cb([]);
@@ -86,6 +85,7 @@ module.exports.run = async (client, message) => {
         }
     
         const beatmap = mapCache.shift();
+        console.log(beatmap.fullTitle);
 
         const tempArtist = beatmap.artist.replace(/\W|_/g, "");
         const tempTitle = beatmap.title.replace(/\W|_/g, "");
@@ -182,6 +182,9 @@ module.exports.run = async (client, message) => {
                 if (beatmap.artist.toLowerCase().includes(guessedChar)) {
                     for (let i = 0; i < beatmap.artist.length; ++i) {
                         const char = beatmap.artist.charAt(i);
+                        if (!shuffledArtist[i].includes("`-`")) {
+                            continue;
+                        }
                         if (char.toLowerCase() === guessedChar) {
                             isFound = true;
                             shuffledArtist[i] = char;
@@ -192,6 +195,9 @@ module.exports.run = async (client, message) => {
                 if (beatmap.title.toLowerCase().includes(guessedChar)) {
                     for (let i = 0; i < beatmap.title.length; ++i) {
                         const char = beatmap.title.charAt(i);
+                        if (!shuffledTitle[i].includes("`-`")) {
+                            continue;
+                        }
                         if (char.toLowerCase() === guessedChar) {
                             isFound = true;
                             shuffledTitle[i] = char;
