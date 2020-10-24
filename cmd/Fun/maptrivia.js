@@ -279,7 +279,7 @@ module.exports.run = async (client, message) => {
                     .setAuthor("Beatmap Information", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
                     .setTitle(`${beatmap.artist} - ${beatmap.title} by ${beatmap.creator}`)
                     .setURL(`https://osu.ppy.sh/s/${beatmap.beatmapsetID}`)
-                    .setDescription(`${beatmap.showStatistics("", 1)}${beatmap.source ? `\n**Source**: ${beatmap.source}` : ""}\n${beatmap.showStatistics("", 4)}`)
+                    .setDescription(`${beatmap.showStatistics("", 1)}\n${beatmap.showStatistics("", 4)}`)
                     .setColor(beatmap.statusColor())
                     .setThumbnail(`https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`);
 
