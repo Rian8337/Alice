@@ -256,6 +256,7 @@ module.exports.run = (client, message) => {
 
                     embed = new Discord.MessageEmbed()
                         .setAuthor("Beatmap Hint")
+                        .setTitle(`Level ${level}`)
                         .setDescription(`**Artist:** ${guessedArtist}\n**Title**: ${guessedTitle}\n**Mapper**: ${beatmap.creator}${beatmap.source ? `\n**Source**: ${beatmap.source}` : ""}`)
                         .setColor("#fccf03")
                         .setThumbnail(`https://b.ppy.sh/thumb/${beatmap.beatmapsetID}l.jpg`)
