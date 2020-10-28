@@ -13,9 +13,9 @@ module.exports.run = client => {
 		collector.on("collect", (reaction, user) => {
 			const guildUser = guild.member(user);
 			if (guildUser.roles.cache.has(role.id)) {
-				guildUser.roles.add(role, "Automatic role assignment").catch(console.error);
-			} else {
 				guildUser.roles.remove(role, "Automatic role assignment").catch(console.error);
+			} else {
+				guildUser.roles.add(role, "Automatic role assignment").catch(console.error);
 			}
 			message.reactions.cache.forEach(reaction => reaction.users.remove(user.id).catch(console.error));
 		});
