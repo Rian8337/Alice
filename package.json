@@ -9,7 +9,7 @@
     "heroku-postbuild": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
-    "node": "15.x"
+    "node": "14.x"
   },
   "keywords": [
     "discord.js"
