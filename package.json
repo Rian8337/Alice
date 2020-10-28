@@ -17,13 +17,13 @@
   "author": "Rian8337",
   "license": "MIT",
   "dependencies": {
-    "adm-zip": "^0.4.14",
+    "adm-zip": "^0.4.16",
     "canvas": "^2.6.1",
     "crypto-js": "^4.0.0",
-    "discord.js": "^12.3.1",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "java-deserialization": "^0.1.0",
-    "mongodb": "^3.5.4",
+    "mongodb": "^3.6.2",
     "osu-droid": "file:modules/osu-droid",
     "request": "^2.88.2",
     "unzipper": "^0.10.11"
