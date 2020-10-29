@@ -1,8 +1,15 @@
+const { Client } = require('discord.js');
+const { Db } = require('mongodb');
+
+/**
+ * @param {Client} client 
+ * @param {Db} alicedb 
+ */
 module.exports.run = async (client, alicedb) => {
     let unverifieddb = alicedb.collection("unverified");
     let guild = client.guilds.cache.get("316545691545501706");
     let curtime = Date.now();
-    let unverified = guild.members.cache.filter((member) => !member.roles.cache.find((r) => r.name === 'Member') && !member.user.bot && (member.joinedTimestamp != null || member.joinedAt != null) && curtime - member.joinedTimestamp > 302400000);
+    let unverified = guild.members.cache.filter((member) => member.roles.cache.size === 0 && !member.roles.cache.find((r) => r.name === 'Member') && !member.user.bot && (member.joinedTimestamp != null || member.joinedAt != null) && curtime - member.joinedTimestamp > 302400000);
     if (unverified.size === 0) return;
     let count = 0;
     
