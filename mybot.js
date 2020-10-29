@@ -7,7 +7,11 @@ const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env
 const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
 
-client.commands = client.utils = client.aliases = client.events = client.subevents = new Discord.Collection();
+client.commands = new Discord.Collection();
+client.utils = new Discord.Collection();
+client.aliases = new Discord.Collection();
+client.events = new Discord.Collection();
+client.subevents = new Discord.Collection();
 client.help = [];
 let maintenance = false;
 
@@ -18,12 +22,14 @@ fs.readdir('./events', (err, files) => {
 	files.forEach((file, i) => {
 		fs.lstat(`./events/${file}`, (err, stats) => {
 			if (err) throw err;
-			if (stats.isDirectory()) return;
+			if (stats.isDirectory()) {
+				return;
+			}
 			const props = require(`./events/${file}`);
 			console.log(`${i+1}. ${file} loaded`);
-			client.events.set(props.config.name, props)
-		})
-	})
+			client.events.set(props.config.name, props);
+		});
+	});
 });
 
 // Subevents loading
@@ -33,8 +39,8 @@ fs.readdir('./events/subevents', (err, files) => {
 	files.forEach((file, i) => {
 		const props = require(`./events/subevents/${file}`);
 		console.log(`${i+1}. ${file} loaded`);
-		client.subevents.set(props.config.name, props)
-	})
+		client.subevents.set(props.config.name, props);
+	});
 });
 
 // Utility loading
@@ -44,8 +50,8 @@ fs.readdir("./util", (err, files) => {
 	files.forEach((file, i) => {
 		let props = require(`./util/${file}`);
 		console.log(`${i+1}. ${file} loaded`);
-		client.utils.set(props.config.name, props)
-	})
+		client.utils.set(props.config.name, props);
+	});
 });
 
 // Command loading
@@ -63,10 +69,10 @@ fs.readdir('./cmd', (err, folders) => {
 				const props = require(`./cmd/${folder}/${file}`);
 				console.log(`${i+1}.${j+1}. ${file} loaded`);
 				client.commands.set(props.config.name, props);
-				if (props.config.aliases) client.aliases.set(props.config.aliases, props)
-			})
-		})
-	})
+				if (props.config.aliases) client.aliases.set(props.config.aliases, props);
+			});
+		});
+	});
 });
 
 // Elaina DB
@@ -85,7 +91,7 @@ elainadb.connect((err, db) => {
 	console.log("Elaina DB connection established");
 	if (maindb && alicedb) {
 		console.log("Connecting to Discord API");
-		client.login(process.env.BOT_TOKEN).catch(console.error)
+		client.login(process.env.BOT_TOKEN).catch(console.error);
 	}
 });
 
@@ -95,51 +101,51 @@ alcdb.connect((err, db) => {
 	console.log("Alice DB connection established");
 	if (maindb && alicedb) {
 		console.log("Connecting to Discord API");
-		client.login(process.env.BOT_TOKEN).catch(console.error)
+		client.login(process.env.BOT_TOKEN).catch(console.error);
 	}
 });
 
 // Client events
 client.on("ready", () => {
-	client.events.get("ready").run(client, maindb, alicedb, maintenance)
+	client.events.get("ready").run(client, maindb, alicedb, maintenance);
 });
 
 client.on("message", message => {
-	client.events.get("message").run(client, message, maindb, alicedb, maintenance)
+	client.events.get("message").run(client, message, maindb, alicedb, maintenance);
 });
 
 client.on("guildMemberAdd", member => {
-	client.events.get("guildMemberAdd").run(client, member, alicedb)
+	client.events.get("guildMemberAdd").run(client, member, alicedb);
 });
 
 client.on("guildMemberRemove", member => {
-	client.events.get("guildMemberRemove").run(client, member, maindb, alicedb)
+	client.events.get("guildMemberRemove").run(client, member, maindb, alicedb);
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-	client.events.get("guildMemberUpdate").run(client, oldMember, newMember, alicedb)
+	client.events.get("guildMemberUpdate").run(client, oldMember, newMember, alicedb);
 });
 
 client.on("typingStart", (channel, user) => {
-	client.events.get("typingStart").run(client, channel, user)
+	client.events.get("typingStart").run(client, channel, user);
 });
 
 client.on("guildBanAdd", (guild, user) => {
-	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb)
+	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb);
 });
 
 client.on("guildBanRemove", (guild, user) => {
-	client.events.get("guildBanRemove").run(client, guild, user)
+	client.events.get("guildBanRemove").run(client, guild, user);
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
-	client.events.get("messageUpdate").run(client, oldMessage, newMessage)
+	client.events.get("messageUpdate").run(client, oldMessage, newMessage);
 });
 
 client.on("messageDelete", message => {
-	client.events.get("messageDelete").run(client, message, messageLog)
+	client.events.get("messageDelete").run(client, message, messageLog);
 });
 
 client.on("messageDeleteBulk", messages => {
-	client.events.get("messageDeleteBulk").run(client, messages)
+	client.events.get("messageDeleteBulk").run(client, messages);
 });
