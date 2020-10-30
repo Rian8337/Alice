@@ -57,6 +57,7 @@ module.exports.run = (client, message, args, maindb) => {
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(mapinfo.statusColor())
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setTitle(mapinfo.showStatistics("", 0))
             .setDescription(mapinfo.showStatistics("", 1))
             .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
