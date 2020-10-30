@@ -195,7 +195,6 @@ function challengeRequirements(challengeid, pass, bonus) {
     
         for (let i = 0; i < bonus.length; ++i) {
             const id = bonus[i].id;
-            let bonus_string = "";
             let id_string = "__";
             switch (id) {
                 case "score": 
