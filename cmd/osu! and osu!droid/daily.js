@@ -1501,7 +1501,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     break;
                                 }
                                 if (!found) {
-                                    points += dailyres.points;
+                                    points += dailyres.points + completedLevel * 2;
                                     challengelist.push(bonusentry);
                                 }
                                 const totalpoint = playerres.points + points;
@@ -1902,7 +1902,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 break;
                             }
                             if (!found) {
-                                points += dailyres.points;
+                                points += dailyres.points + completedLevel * 2;
                                 challengelist.push(bonusentry);
                             }
                             const totalpoint = playerres.points + points;
