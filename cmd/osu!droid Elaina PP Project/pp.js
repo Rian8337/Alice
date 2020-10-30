@@ -21,11 +21,12 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
     }
 
-    const binddb = maindb.collection("userbind");
-    const whitelistdb = maindb.collection("mapwhitelist");
+    const bindDb = maindb.collection("userbind");
+    const whitelistDb = maindb.collection("mapwhitelist");
+    const blacklistDb = maindb.collection("mapblacklist");
 
     const query = {discordid: message.author.id};
-    binddb.findOne(query, async (err, res) => {
+    bindDb.findOne(query, async (err, res) => {
         if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -80,8 +81,14 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
                 }
                 const hash = mapinfo.hash;
+
+                const isBlacklist = await blacklistDb.findOne({beatmapID: mapinfo.beatmapID});
+                if (isBlacklist) {
+                    return message.channel.send(`❎ **| I'm sorry, this beatmap has been blacklisted with reason \`${isBlacklist.reason}\`!**`);
+                }
+
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                    const isWhitelist = await whitelistdb.findOne({hashid: hash});
+                    const isWhitelist = await whitelistDb.findOne({hashid: hash});
                     if (!isWhitelist) {
                         return message.channel.send("❎ **| I'm sorry, the PP system only accepts ranked, approved, whitelisted, or loved mapset right now!**");
                     }
@@ -170,7 +177,7 @@ module.exports.run = (client, message, args, maindb) => {
 						playc: playc
 					}
 				};
-				binddb.updateOne({discordid: message.author.id}, updateVal, function (err) {
+				bindDb.updateOne({discordid: message.author.id}, updateVal, function (err) {
 					if (err) throw err;
 				});
 				break;
@@ -249,8 +256,14 @@ module.exports.run = (client, message, args, maindb) => {
                         continue;
                     }
 
+                    const isBlacklist = await blacklistDb.findOne({beatmapID: mapinfo.beatmapID});
+                    if (isBlacklist) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Blacklisted**`);
+                        continue;
+                    }
+
                     if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                        const isWhitelist = await whitelistdb.findOne({hashid: play.hash});
+                        const isWhitelist = await whitelistDb.findOne({hashid: play.hash});
                         if (!isWhitelist) {
                             embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Unranked beatmap**`);
                             continue;
@@ -333,7 +346,7 @@ module.exports.run = (client, message, args, maindb) => {
 						playc: playc
 					}
 				};
-				binddb.updateOne({discordid: message.author.id}, updateVal, function (err) {
+				bindDb.updateOne({discordid: message.author.id}, updateVal, function (err) {
 					if (err) throw err;
 				});
             }
