@@ -239,56 +239,57 @@ function challengeRequirements(challengeid, pass, bonus) {
                     break;
             }
             id_string += "__";
+            let bonusString = "";
             for (let j = 0; j < bonus[i].list.length; ++j) {
                 const b = bonus[i].list[j];
-                bonus_string += `**Level ${b.level}**: `;
+                bonusString += `**Level ${b.level}**: `;
                 switch (id) {
                     case "none":
-                        bonus_string += "None";
+                        bonusString += "None";
                         break;
                     case "score":
-                        bonus_string += `Score V1 at least **${b.value.toLocaleString()}**`;
+                        bonusString += `Score V1 at least **${b.value.toLocaleString()}**`;
                         break;
                     case "acc":
-                        bonus_string += `Accuracy at least **${b.value}**`;
+                        bonusString += `Accuracy at least **${b.value}**`;
                         break;
                     case "scorev2":
-                        bonus_string += `Score V2 at least **${b.value.toLocaleString()}**`;
+                        bonusString += `Score V2 at least **${b.value.toLocaleString()}**`;
                         break;
                     case "miss":
-                        bonus_string += `${b.value === 0 ? "No misses" : `Miss count below **${b.value}**`}`;
+                        bonusString += `${b.value === 0 ? "No misses" : `Miss count below **${b.value}**`}`;
                         break;
                     case "mod":
-                        bonus_string += `Usage of **${b.value.toUpperCase()}** mod only`;
+                        bonusString += `Usage of **${b.value.toUpperCase()}** mod only`;
                         break;
                     case "combo":
-                        bonus_string += `Combo at least **${b.value}**`;
+                        bonusString += `Combo at least **${b.value}**`;
                         break;
                     case "rank":
-                        bonus_string += `**${b.value.toUpperCase()}** rank or above`;
+                        bonusString += `**${b.value.toUpperCase()}** rank or above`;
                         break;
                     case "dpp":
-                        bonus_string += `**${b.value}** dpp or more`;
+                        bonusString += `**${b.value}** dpp or more`;
                         break;
                     case "pp":
-                        bonus_string += `**${b.value}** pp or more`;
+                        bonusString += `**${b.value}** pp or more`;
                         break;
                     case "m300":
-                        bonus_string += `300 hit result at least **${b.value}**`;
+                        bonusString += `300 hit result at least **${b.value}**`;
                         break;
                     case "m100":
-                        bonus_string += `100 hit result less than or equal to **${b.value}**`;
+                        bonusString += `100 hit result less than or equal to **${b.value}**`;
                         break;
                     case "m50":
-                        bonus_string += `50 hit result less than or equal to **${b.value}**`;
+                        bonusString += `50 hit result less than or equal to **${b.value}**`;
                         break;
                     case "ur":
-                        bonus_string += `UR (unstable rate) below or equal to **${b.value}**`;
+                        bonusString += `UR (unstable rate) below or equal to **${b.value}**`;
                         break;
                 }
                 bonus_string += "\n";
             }
-            bonusString.push({
+            bonus_string.push({
                 id: id_string,
                 bonus: bonus_string
             });
@@ -844,9 +845,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // starts a challenge, useful if bot somehow
             // fails to start one. Restricted to specific
             // people only
-            if (!message.isOwner && !message.author.bot) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
-            let challengeid = args[1];
-            if (!challengeid) return message.channel.send("❎ **| Hey, I don't know which challenge to start!**");
+            if (!message.isOwner) {
+                return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+            }
+            const challengeid = args[1];
+            if (!challengeid) {
+                return message.channel.send("❎ **| Hey, I don't know which challenge to start!**");
+            }
 
             query = {challengeid: challengeid};
             dailydb.findOne(query, async (err, dailyres) => {
@@ -854,35 +859,38 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!dailyres) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge!**");
-                if (dailyres.status != 'scheduled') return message.channel.send("❎ **| I'm sorry, this challenge is ongoing or has been finished!**");
-                let pass = dailyres.pass;
-                let bonus = dailyres.bonus;
-                let constrain = dailyres.constrain.toUpperCase();
-                let timelimit = Math.floor(Date.now() / 1000) + (dailyres.challengeid.includes("w") ? 86400 * 7 : 86400);
-                let beatmapid = dailyres.beatmapid;
-                let featured = dailyres.featured;
-                if (!featured) featured = "386742340968120321";
+                if (!dailyres) {
+                    return message.channel.send("❎ **| I'm sorry, I cannot find the challenge!**");
+                }
+                if (dailyres.status !== 'scheduled') {
+                    return message.channel.send("❎ **| I'm sorry, this challenge is ongoing or has been finished!**");
+                }
+                const pass = dailyres.pass;
+                const bonus = dailyres.bonus;
+                const timelimit = Math.floor(Date.now() / 1000) + (dailyres.challengeid.includes("w") ? 86400 * 7 : 86400);
+                const beatmapid = dailyres.beatmapid;
+                const featured = dailyres.featured ?? "386742340968120321";
                 const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
-                if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
-                if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
-                let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
-                let requirements = challengeRequirements(challengeid, pass, bonus);
-                let pass_string = requirements[0];
-                let bonus_string = requirements[1];
-                let constrain_string = constrain.length == 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
-                embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                if (!mapinfo.title) {
+                    return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
+                }
+                if (!mapinfo.objects) {
+                    return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
+                }
+                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile});
+                const pass_string = challengeRequirements(pass, bonus)[0];
+                embed.setAuthor(challengeid.includes("w") ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: Any rankable mods except EZ, NF, and HT\n\nUse \`a!daily challenges\` to see bonuses.`);
 
                 message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
                 client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 
-                let previous_challenge = challengeid.charAt(0) + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) - 1);
+                const previous_challenge = challengeid.charAt(0) + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) - 1);
                 updateVal = {
                     $set: {
                         status: "finished"
@@ -915,6 +923,84 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     console.log("Challenge started");
                 });
+            });
+            break;
+        }
+        case "challenges": {
+            let page = 1;
+            dailydb.findOne({status: "ongoing"}, (err, dailyres) => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                }
+                if (!dailyres) {
+                    return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
+                }
+                const bonuses = challengeRequirements(dailyres.pass, dailyres.bonus)[1];
+
+                embed.setAuthor("osu!droid Daily Challenge: Challenges", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
+                    .setColor(rolecheck)
+                    .setFooter(`Alice Synthesis Thirty | Challenge ID: ${dailyres.challengeid} | Page ${page}/${Math.ceil(dailyres.bonus.length / 5)}`, footer[index]);
+
+                editBonus(embed, page, bonuses);
+
+                message.channel.send({embed: embed}).then(msg => {
+                    const max_page = Math.ceil(dailyres.bonus.length / 5);
+                    if (page === max_page) {
+                        return;
+                    }
+                    msg.react("⏮️").then(() => {
+                        msg.react("⬅️").then(() => {
+                            msg.react("➡️").then(() => {
+                                msg.react("⏭️").catch(console.error);
+                            });
+                        });
+                    });
+
+                    const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+                    const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+                    const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+                    const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+
+                    backward.on('collect', () => {
+                        page = Math.max(1, page - 10);
+                        editBonus(embed, page, bonuses);
+                        msg.edit({embed: embed}).catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    });
+
+                    back.on('collect', () => {
+                        if (page === 1) page = max_page;
+                        else page--;
+                        editBonus(embed, page, bonuses);
+                        msg.edit({embed: embed}).catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    });
+
+                    next.on('collect', () => {
+                        if (page === max_page) page = 1;
+                        else page++;
+                        editBonus(embed, page, bonuses);
+                        msg.edit({embed: embed}).catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    });
+
+                    forward.on('collect', () => {
+                        page = Math.min(page + 10, max_page);
+                        editBonus(embed, page, bonuses);
+                        msg.edit({embed: embed}).catch(console.error);
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    });
+
+                    backward.on("end", () => {
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                    });
+                });
+                cd.add(message.author.id);
+                setTimeout(() => {
+                    cd.delete(message.author.id);
+                }, 10000);
             });
             break;
         }
