@@ -3,6 +3,7 @@ import { Beatmap } from './beatmap/Beatmap';
 import { BreakPoint } from './beatmap/timings/BreakPoint';
 import { Circle } from './beatmap/hitobjects/Circle';
 import { CursorData } from './replay/data/CursorData';
+import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { gamemode } from './constants/gamemode';
 import { hitResult } from './constants/hitResult';
 import { MapInfo } from './utils/MapInfo';
@@ -66,6 +67,11 @@ export = {
     CursorData: CursorData,
 
     /**
+     * Represents the hit window of osu!droid.
+     */
+    DroidHitWindow: DroidHitWindow,
+
+    /**
      * Bitwise enum for gamemodes.
      */
     gamemode: gamemode,
@@ -104,6 +110,11 @@ export = {
      * Movement type of a cursor in an osu!droid replay.
      */
     movementType: movementType,
+    
+    /**
+     * Represents the hit window of osu!standard.
+     */
+    OsuHitWindow: OsuHitWindow,
 
     /**
      * Bitmask constant of object types. This is needed as osu! uses bits to determine object types.
