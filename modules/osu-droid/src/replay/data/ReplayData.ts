@@ -194,7 +194,7 @@ export class ReplayData {
         this.cursorMovement = values.cursorMovement;
         this.hitObjectData = values.hitObjectData;
 
-        const s = values.speedModForceAR?.split("|") || "";
+        const s = values.speedModForceAR?.split("|") || [""];
         this.speedModification = parseFloat(s[0].replace("x", "")) || 1;
         if (s.length > 1) {
             this.forcedAR = parseFloat(s[1].replace("AR", ""));
