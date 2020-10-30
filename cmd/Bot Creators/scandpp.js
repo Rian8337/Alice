@@ -19,14 +19,16 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     }
 
-    const binddb = maindb.collection("userbind");
-    const whitelistdb = maindb.collection("mapwhitelist");
+    const bindDb = maindb.collection("userbind");
+    const whitelistDb = maindb.collection("mapwhitelist");
+    const blacklistDb = maindb.collection("mapblacklist");
 
-    binddb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray(async (err, res) => {
+    bindDb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray(async (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("Error: Empty database response. Please try again!");
         }
+        const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
         let count = 0;
         console.log(`Scanning ${res.length} players`);
@@ -54,8 +56,13 @@ module.exports.run = (client, message, args, maindb) => {
                 if (osudroid.mods.modbitsFromString(ppEntry.mods) & osudroid.mods.osuMods.nc) {
                     ppEntry.isOldPlay = true;
                 }
+                
+                if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
+                    continue;
+                }
+                
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                    const isWhitelist = await whitelistdb.findOne({hashid: mapinfo.hash});
+                    const isWhitelist = await whitelistDb.findOne({hashid: mapinfo.hash});
                     if (!isWhitelist) {
                         continue;
                     }
@@ -65,14 +72,16 @@ module.exports.run = (client, message, args, maindb) => {
             if (newList.length === ppList.length) {
                 continue;
             }
-            newList.sort((a, b) => {return b.pp - a.pp;});
+            newList.sort((a, b) => {
+                return b.pp - a.pp;
+            });
 
             let newTotal = 0;
             for (let i = 0; i < newList.length; ++i) {
                 newTotal += newList[i].pp * Math.pow(0.95, i);
             }
             console.log(newTotal);
-            await binddb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, playc: playCount, pp: newList}});
+            await bindDb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, playc: playCount, pp: newList}});
             ++count;
             console.log(`${count}/${res.length} players complete (${((count / res.length) * 100).toFixed(2)}%)`);
         }
