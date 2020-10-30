@@ -1254,7 +1254,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
     
                         // analyze hit object data
-                        const modWithoutSpeedChanging = osudroid.mods.modbitsToString(mod - (mod & osuMods.speed_changing));
+                        const modbits = osudroid.mods.modbitsFromString(mod);
+                        const modWithoutSpeedChanging = osudroid.mods.modbitsToString(modbits - (modbits & osuMods.speed_changing));
                         const od = new osudroid.MapStats({od: mapinfo.od, mods: modWithoutSpeedChanging}).calculate({mode: osudroid.modes.droid}).od;
                         const isPrecise = mod.includes("PR");
                         
