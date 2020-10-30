@@ -17,6 +17,30 @@ function isEligible(member) {
     return res;
 }
 
+/**
+ * @param {string} url 
+ */
+function downloadReplay(url) {
+    return new Promise(resolve => {
+        const dataArray = [];
+        request(url, {timeout: 10000})
+            .on("data", chunk => {
+                dataArray.push(Buffer.from(chunk));
+            })
+            .on("complete", response => {
+                if (response.statusCode !== 200) {
+                    return resolve(null);
+                }
+                const zip = new AdmZip(Buffer.concat(dataArray));
+                const odrFile = zip.getEntries().find(v => v.entryName.endsWith(".odr"));
+                if (!odrFile) {
+                    return resolve(null);
+                }
+                resolve(odrFile.getData());
+            });
+    });
+}
+
 function timeConvert(num) {
     let sec = parseInt(num);
     let hours = Math.floor(sec / 3600);
@@ -61,6 +85,24 @@ function editPoint(res, page) {
     }
     output += `Current Page: ${page}/${Math.ceil(res.length / 20)}`;
     return output;
+}
+
+/**
+ * @param {Discord.MessageEmbed} embed 
+ * @param {number} page 
+ * @param {{id: string, bonus: string}[]} bonuses 
+ */
+function editBonus(embed, page, bonuses) {
+    if (embed.fields.length > 0) {
+        embed.spliceFields(0, embed.fields.length);
+    }
+    for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
+        if (!bonuses[i]) {
+            break;
+        }
+        const bonus = bonuses[i];
+        embed.addField(bonus.id, bonus.bonus);
+    }
 }
 
 function challengeRequirements(challengeid, pass, bonus) {
