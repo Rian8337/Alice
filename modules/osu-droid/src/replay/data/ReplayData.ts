@@ -21,6 +21,7 @@ export interface ReplayInformation {
     rawMods?: string;
     droidMods?: string;
     convertedMods?: string;
+    speedModForceAR?: string;
     cursorMovement: CursorData[];
     hitObjectData: ReplayObjectData[];
 }
@@ -36,107 +37,139 @@ export class ReplayData {
     /**
      * The version of the replay.
      */
-    public readonly replayVersion: number;
+    readonly replayVersion: number;
 
     /**
      * The folder name containing the beatmap played.
      */
-    public readonly folderName: string;
+    readonly folderName: string;
 
     /**
      * The file name of the beatmap played.
      */
-    public readonly fileName: string;
+    readonly fileName: string;
 
     /**
      * MD5 hash of the replay.
      */
-    public readonly hash: string;
+    readonly hash: string;
 
     /**
      * The date of which the play was set.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly time?: Date;
+    readonly time: Date;
 
     /**
      * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
      */
-    public readonly hit300k?: number;
+    readonly hit300k: number;
 
     /**
      * The amount of 300s achieved in the play.
      */
-    public readonly hit300?: number;
+    readonly hit300: number;
 
     /**
      * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
      */
-    public readonly hit100k?: number;
+    readonly hit100k: number;
 
     /**
      * The amount of 100s achieved in the play.
      */
-    public readonly hit100?: number;
+    readonly hit100: number;
 
     /**
      * The amount of 50s achieved in the play.
      */
-    public readonly hit50?: number;
+    readonly hit50: number;
 
     /**
      * The amount of misses achieved in the play.
      */
-    public readonly hit0?: number;
+    readonly hit0: number;
 
     /**
      * The total score achieved in the play.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly score?: number;
+    readonly score: number;
 
     /**
      * The maximum combo achieved in the play.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly maxCombo?: number;
+    readonly maxCombo: number;
 
     /**
      * The accuracy achieved in the play.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly accuracy?: number;
+    readonly accuracy: number;
 
     /**
      * Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly isFullCombo?: number;
+    readonly isFullCombo: number;
 
     /**
      * The name of the player in the replay.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly playerName?: string;
+    readonly playerName: string;
 
     /**
      * Enabled modifications during the play in raw Java object format.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly rawMods?: string;
+    readonly rawMods: string;
 
     /**
      * Enabled modifications during the play in osu!droid format.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly droidMods?: string;
+    readonly droidMods: string;
 
     /**
      * Enabled modifications during the play in osu!standard format.
+     * 
+     * Only available in replay v3 or later.
      */
-    public readonly convertedMods?: string;
+    readonly convertedMods: string;
+
+    /**
+     * The speed modification of the replay.
+     * 
+     * Only available in replay v4 or later. By default this is 1.
+     */
+    readonly speedModification: number;
+
+    /**
+     * The forced AR of the replay.
+     * 
+     * Only available in replay v4 or later.
+     */
+    readonly forcedAR?: number;
 
     /**
      * The cursor movement data of the replay.
      */
-    public readonly cursorMovement: CursorData[];
+    readonly cursorMovement: CursorData[];
 
     /**
      * The hit object data of the replay.
      */
-    public readonly hitObjectData: ReplayObjectData[];
+    readonly hitObjectData: ReplayObjectData[];
 
     constructor(values: ReplayInformation) {
         this.replayVersion = values.replayVersion;
@@ -160,5 +193,11 @@ export class ReplayData {
         this.convertedMods = values.convertedMods || "";
         this.cursorMovement = values.cursorMovement;
         this.hitObjectData = values.hitObjectData;
+
+        const s = values.speedModForceAR?.split("|") || "";
+        this.speedModification = parseFloat(s[0].replace("x", "")) || 1;
+        if (s.length > 1) {
+            this.forcedAR = parseFloat(s[1].replace("AR", ""));
+        }
     }
 }

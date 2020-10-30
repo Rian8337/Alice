@@ -17,7 +17,9 @@ import { BreakPoint } from '../beatmap/timings/BreakPoint';
 import { StandardDiffHitObject } from '../difficulty/preprocessing/StandardDiffHitObject';
 
 /**
- * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
+ * A replay analyzer that analyzes a replay from osu!droid.
+ * 
+ * Created by reverse engineering the replay parser from the game itself, which can be found {@link https://github.com/osudroid/osu-droid/blob/master/src/ru/nsu/ccfit/zuev/osu/scoring/Replay.java here}.
  * 
  * Once analyzed, the result can be accessed via the `data` property.
  */
@@ -25,42 +27,42 @@ export class ReplayAnalyzer {
     /**
      * The score ID of the replay.
      */
-    public scoreID: number;
+    readonly scoreID: number;
 
     /**
      * The original odr file of the replay.
      */
-    public originalODR: Buffer|null;
+    originalODR: Buffer|null = null;
 
     /**
      * The fixed odr file of the replay.
      */
-    public fixedODR: Buffer|null;
+    fixedODR: Buffer|null = null;
 
     /**
      * Whether or not the play is considered using >=3 finger abuse.
      */
-    public is3Finger?: boolean;
+    is3Finger?: boolean;
 
     /**
      * The beatmap that is being analyzed. `StandardDiff` is required for penalty analyzing.
      */
-    public map?: Beatmap|StandardDiff;
+    map?: Beatmap|StandardDiff;
 
     /**
      * The results of the analyzer. `null` when initialized.
      */
-    public data: ReplayData|null;
+    data: ReplayData|null = null;
 
     /**
      * Penalty value used to penaltize dpp for 3 finger abuse.
      */
-    public penalty: number;
+    penalty: number = 1;
 
     /**
      * The amount of cursor that doesn't count as accidental taps for each cursor instance.
      */
-    public processedCursorMovement: number[];
+    readonly processedCursorMovement: number[] = [];
 
     private readonly BYTE_LENGTH = 1;
     private readonly SHORT_LENGTH = 2;
@@ -72,35 +74,39 @@ export class ReplayAnalyzer {
         map?: Beatmap|StandardDiff
     }) {
         this.scoreID = values.scoreID;
-        this.originalODR = null;
-        this.fixedODR = null;
-        this.is3Finger = undefined;
         this.map = values.map;
-        this.data = null;
-        this.penalty = 1;
-        this.processedCursorMovement = [];
     }
 
     /**
      * Analyzes a replay.
      */
     async analyze(): Promise<ReplayAnalyzer> {
-        this.fixedODR = await this.decompress();
+        if (!this.originalODR && !this.fixedODR) {
+            this.originalODR = await this.downloadReplay();
+        }
+
+        if (!this.originalODR) {
+            return this;
+        }
+
+        if (!this.fixedODR) {
+            this.fixedODR = await this.decompress();
+        }
+
         if (!this.fixedODR) {
             return this;
         }
+        
         this.parseReplay();
-        // this.analyzeReplay();
+        this.analyzeReplay();
         return this;
     }
 
     /**
-     * Downloads and decompresses a replay.
-     * 
-     * The decompressed replay is in a form of Java object. This will be converted to a buffer and deserialized to read data from the replay.
+     * Downloads the given score ID's replay.
      */
-    private decompress(): Promise<Buffer|null> {
-        return new Promise((resolve, reject) => {
+    private downloadReplay(): Promise<Buffer|null> {
+        return new Promise(resolve => {
             const dataArray: Buffer[] = [];
             const url: string = `http://ops.dgsrz.com/api/upload/${this.scoreID}.odr`;
             request(url, {timeout: 10000})
@@ -112,26 +118,32 @@ export class ReplayAnalyzer {
                         console.log("Replay not found");
                         return resolve(null);
                     }
-                    const result: Buffer = Buffer.concat(dataArray);
-                    this.originalODR = result;
-                    const stream: Readable = new Readable();
-                    stream.push(result);
-                    stream.push(null);
-                    stream.pipe(Parse())
-                        .on("entry", async entry => {
-                            const fileName: string = entry.path;
-                            if (fileName === "data") {
-                                resolve(await entry.buffer());
-                            } else {
-                                entry.autodrain();
-                            }
-                        })
-                        .on("error", e => {
-                            setTimeout(() => reject(e), 2000);
-                        });
+                    resolve(Buffer.concat(dataArray));
+                });
+        });
+    }
+
+    /**
+     * Decompresses a replay.
+     * 
+     * The decompressed replay is in a form of Java object. This will be converted to a buffer and deserialized to read data from the replay.
+     */
+    private decompress(): Promise<Buffer> {
+        return new Promise((resolve, reject) => {
+            const stream: Readable = new Readable();
+            stream.push(this.originalODR);
+            stream.push(null);
+            stream.pipe(Parse())
+                .on("entry", async entry => {
+                    const fileName: string = entry.path;
+                    if (fileName === "data") {
+                        return resolve(await entry.buffer());
+                    } else {
+                        entry.autodrain();
+                    }
                 })
                 .on("error", e => {
-                    reject(e);
+                    setTimeout(() => reject(e), 2000);
                 });
         });
     }
@@ -144,29 +156,7 @@ export class ReplayAnalyzer {
         // the rest will be a buffer that we need to manually parse
         const rawObject: any[] = javaDeserialization.parse(this.fixedODR);
 
-        const resultObject: ReplayInformation = rawObject[0].version >= 3 ? {
-            replayVersion: rawObject[0].version,
-            folderName: rawObject[1],
-            fileName: rawObject[2],
-            hash: rawObject[3],
-            time: Number(rawObject[4].readBigUInt64BE(0)),
-            hit300k: rawObject[4].readInt32BE(8),
-            hit300: rawObject[4].readInt32BE(12),
-            hit100k: rawObject[4].readInt32BE(16),
-            hit100: rawObject[4].readInt32BE(20),
-            hit50: rawObject[4].readInt32BE(24),
-            hit0: rawObject[4].readInt32BE(28),
-            score: rawObject[4].readInt32BE(32),
-            maxCombo: rawObject[4].readInt32BE(36),
-            accuracy: rawObject[4].readFloatBE(40),
-            isFullCombo: rawObject[4][44],
-            playerName: rawObject[5],
-            rawMods: rawObject[6].elements,
-            droidMods: this.convertDroidMods(rawObject[6].elements),
-            convertedMods: this.convertMods(rawObject[6].elements),
-            cursorMovement: [],
-            hitObjectData: []
-        } : {
+        const resultObject: ReplayInformation = {
             replayVersion: rawObject[0].version,
             folderName: rawObject[1],
             fileName: rawObject[2],
@@ -175,8 +165,45 @@ export class ReplayAnalyzer {
             hitObjectData: []
         };
 
+        if (resultObject.replayVersion >= 3) {
+            resultObject.time = Number(rawObject[4].readBigUInt64BE(0));
+            resultObject.hit300k = rawObject[4].readInt32BE(8);
+            resultObject.hit300 = rawObject[4].readInt32BE(12);
+            resultObject.hit100k = rawObject[4].readInt32BE(16);
+            resultObject.hit100 = rawObject[4].readInt32BE(20);
+            resultObject.hit50 = rawObject[4].readInt32BE(24);
+            resultObject.hit0 = rawObject[4].readInt32BE(28);
+            resultObject.score = rawObject[4].readInt32BE(32);
+            resultObject.maxCombo = rawObject[4].readInt32BE(36);
+            resultObject.accuracy = rawObject[4].readFloatBE(40);
+            resultObject.isFullCombo = rawObject[4][44];
+            resultObject.playerName = rawObject[5];
+            resultObject.rawMods = rawObject[6].elements;
+            resultObject.droidMods = this.convertDroidMods(rawObject[6].elements);
+            resultObject.convertedMods = this.convertMods(rawObject[6].elements);
+        }
+
+        if (resultObject.replayVersion >= 4) {
+            resultObject.speedModForceAR = rawObject[7];
+        }
+
+        let bufferIndex: number;
+        switch (true) {
+            // replay v4 and above
+            case resultObject.replayVersion >= 4:
+                bufferIndex = 8;
+                break;
+            // replay v3
+            case resultObject.replayVersion === 3:
+                bufferIndex = 7;
+                break;
+            // replay v1 and v2
+            default:
+                bufferIndex = 4;
+        }
+
         const replayDataBufferArray: Buffer[] = [];
-        for (let i: number = resultObject.replayVersion >= 3 ? 7 : 4; i < rawObject.length; ++i) {
+        for (let i = bufferIndex; i < rawObject.length; ++i) {
             replayDataBufferArray.push(rawObject[i]);
         }
 
@@ -188,7 +215,7 @@ export class ReplayAnalyzer {
         bufferCounter += this.INT_LENGTH;
 
         // parse movement data
-        for (let x: number = 0; x < size; x++) {
+        for (let x = 0; x < size; x++) {
             const moveSize: number = replayDataBuffer.readInt32BE(bufferCounter);
             bufferCounter += this.INT_LENGTH;
             const moveArray: CursorData = {
@@ -214,14 +241,14 @@ export class ReplayAnalyzer {
                     moveArray.y[i] = -1;
                 }
             }
-            resultObject.cursorMovement.push(new CursorData(moveArray));
+            resultObject.cursorMovement.push(moveArray);
         }
 
         const replayObjectLength: number = replayDataBuffer.readInt32BE(bufferCounter);
         bufferCounter += this.INT_LENGTH;
 
         // parse result data
-        for (let i: number = 0; i < replayObjectLength; i++) {
+        for (let i = 0; i < replayObjectLength; i++) {
             const replayObjectData: ReplayObjectData = {
                 accuracy: 0,
                 tickset: [],
@@ -234,7 +261,7 @@ export class ReplayAnalyzer {
             bufferCounter += this.BYTE_LENGTH;
 
             if (len > 0) {
-                const bytes = [];
+                const bytes: number[] = [];
 
                 for (let j = 0; j < len; j++) {
                     bytes.push(replayDataBuffer.readInt8(bufferCounter));
@@ -251,7 +278,7 @@ export class ReplayAnalyzer {
                 bufferCounter += this.BYTE_LENGTH;
             }
 
-            resultObject.hitObjectData.push(new ReplayObjectData(replayObjectData));
+            resultObject.hitObjectData.push(replayObjectData);
         }
 
         // parse hit results in old replay version
@@ -266,7 +293,7 @@ export class ReplayAnalyzer {
 
             const objects: HitObject[] = this.map instanceof StandardDiff ? (this.map?.map?.objects as HitObject[]) : this.map?.objects;
 
-            for (let i: number = 0; i < resultObject.hitObjectData.length; ++i) {
+            for (let i = 0; i < resultObject.hitObjectData.length; ++i) {
                 const hitObjectData: ReplayObjectData = resultObject.hitObjectData[i];
                 const isNextNewCombo: boolean = i + 1 !== objects.length ? objects[i + 1].isNewCombo : true;
 
@@ -305,7 +332,8 @@ export class ReplayAnalyzer {
             resultObject.hit50 = hit50;
             resultObject.hit0 = hit0;
 
-            resultObject.accuracy = (hit300 * 300 + hit100 * 100 + hit50 * 50) / (resultObject.hitObjectData.length * 300 * 100);
+            const totalHits = hit300 + hit100 + hit50 + hit0;
+            resultObject.accuracy = (hit300 * 300 + hit100 * 100 + hit50 * 50) / (totalHits * 300);
         }
 
         this.data = new ReplayData(resultObject);
@@ -316,17 +344,24 @@ export class ReplayAnalyzer {
      */
     private convertDroidMods(replayMods: string[]): string {
         const replayModsConstants = {
-            "NOFAIL": "n",
-            "EASY": "e",
-            "HIDDEN": "h",
-            "HARDROCK": "r",
-            "DOUBLETIME": "d",
-            "HALFTIME": "t",
-            "NIGHTCORE": "c"
+            NOFAIL: "n",
+            EASY: "e",
+            HIDDEN: "h",
+            HARDROCK: "r",
+            DOUBLETIME: "d",
+            HALFTIME: "t",
+            NIGHTCORE: "c",
+            PRECISE: "s",
+            SMALLCIRCLE: "m",
+            SPEEDUP: "b",
+            REALLYEASY: "l",
+            PERFECT: "f",
+            SUDDENDEATH: "u",
+            SCOREV2: "v"
         };
 
         let modString: string = "";
-        for (const mod in replayMods) {
+        for (const mod of replayMods) {
             for (let property in replayModsConstants) {
                 if (!replayModsConstants.hasOwnProperty(property)) {
                     continue;
@@ -346,31 +381,7 @@ export class ReplayAnalyzer {
      * Converts replay mods to regular mod string.
      */
     private convertMods(replayMods: string[]): string {
-        const replayModsBitmask = {
-            "NOFAIL": 1<<0,
-            "EASY": 1<<1,
-            "HIDDEN": 1<<3,
-            "HARDROCK": 1<<4,
-            "DOUBLETIME": 1<<6,
-            "HALFTIME": 1<<8,
-            "NIGHTCORE": 1<<9
-        };
-
-        let modbits: number = 0;
-        for (const mod of replayMods) {
-            for (let property in replayModsBitmask) {
-                if (!replayModsBitmask.hasOwnProperty(property)) {
-                    continue;
-                }
-                if (!mod.includes(property)) {
-                    continue;
-                }
-                modbits |= replayModsBitmask[property as keyof typeof replayModsBitmask];
-                break;
-            }
-        }
-
-        return mods.modbitsToString(modbits);
+        return mods.droidToPC(this.convertDroidMods(replayMods));
     }
 
     /**
