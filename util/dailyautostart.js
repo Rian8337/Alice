@@ -35,7 +35,7 @@ module.exports.run = (client, args, alicedb) => {
         }
         const pass = dailyres.pass;
         const beatmapid = dailyres.beatmapid;
-        const featured = dailyres.featured;
+        let featured = dailyres.featured;
         if (!featured) featured = '386742340968120321';
         const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) {

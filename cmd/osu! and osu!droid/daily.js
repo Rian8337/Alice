@@ -534,7 +534,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const bonus = dailyres.bonus;
                 const challengeid = dailyres.challengeid;
                 const beatmapid = dailyres.beatmapid;
-                const featured = dailyres.featured ?? "386742340968120321";
+                let featured = dailyres.featured;
+                if (!featured) featured = "386742340968120321";
                 const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
@@ -910,7 +911,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const bonus = dailyres.bonus;
                 const timelimit = Math.floor(Date.now() / 1000) + (dailyres.challengeid.includes("w") ? 86400 * 7 : 86400);
                 const beatmapid = dailyres.beatmapid;
-                const featured = dailyres.featured ?? "386742340968120321";
+                let featured = dailyres.featured;
+                if (!featured) featured = "386742340968120321";
                 const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
