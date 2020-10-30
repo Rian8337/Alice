@@ -286,7 +286,7 @@ function challengeRequirements(challengeid, pass, bonus) {
                         bonusString += `UR (unstable rate) below or equal to **${b.value}**`;
                         break;
                 }
-                bonus_string += "\n";
+                bonusString += "\n";
             }
             bonus_string.push({
                 id: id_string,
