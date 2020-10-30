@@ -78,7 +78,7 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 message.channel.send({embed: embed});
-                message.channel.send(`✅ **| Successfully blacklisted \`${mapinfo.fullTItle}\`.**`);
+                message.channel.send(`✅ **| Successfully blacklisted \`${mapinfo.fullTitle}\`.**`);
             });
         });
     });

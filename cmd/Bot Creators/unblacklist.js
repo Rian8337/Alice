@@ -62,7 +62,7 @@ module.exports.run = (client, message, args, maindb) => {
             }
 
             message.channel.send({embed: embed});
-            message.channel.send(`✅ **| Successfully unblacklisted \`${mapinfo.fullTItle}\`.**`);
+            message.channel.send(`✅ **| Successfully unblacklisted \`${mapinfo.fullTitle}\`.**`);
         });
     });
 };
