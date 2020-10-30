@@ -1969,7 +1969,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\` with challenge bonus level ${completedLevel}, earning \`${points}\` ${points == 1?"point":"points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${totalpoint}\` ${totalpoint == 1?"point":"points"} and ${coin}\`${alicecoins}\` Alice coins.**`);
                             });
                         } else {
-                            message.channel.send(`✅ **| Congratulations! You have completed challenge \`${challengeid}\`${bonus_string}, earning \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins! You now have \`${points}\` ${points == 1 ? "point" : "points"} and ${coin}\`${points * 2}\` Alice coins.**`);
                             insertVal = {
                                 username: username,
                                 uid: uid,
