@@ -291,7 +291,7 @@ function challengeRequirements(challengeid, pass, bonus) {
             }
             bonus_string.push({
                 id: id_string,
-                bonus: bonus_string
+                bonus: bonusString
             });
         }
     }
