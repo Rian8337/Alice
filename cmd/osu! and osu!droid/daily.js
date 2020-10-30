@@ -1930,6 +1930,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             id: challengeid,
                             highestLevel: completedLevel
                         };
+                        let points = 0;
                         if (playerres) {
                             let found = false;
                             for (let i = 0; i < challengelist.length; i++) {
