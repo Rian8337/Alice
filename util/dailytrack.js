@@ -36,126 +36,79 @@ module.exports.run = (client, maindb, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     let query = {status: "ongoing"};
     dailydb.findOne(query, async (err, dailyres) => {
-        if (err) return console.log("Cannot access database");
-        if (!dailyres) return client.users.fetch("386742340968120321").then((user) => user.send("Hey dear, I need you to start a daily challenge now!")).catch(console.error);
-        let timelimit = dailyres.timelimit;
-        if (Math.floor(Date.now() / 1000) < timelimit) return;
-        let pass = dailyres.pass;
-        let bonus = dailyres.bonus;
-        let challengeid = dailyres.challengeid;
-        let constrain = dailyres.constrain.toUpperCase();
-        let beatmapid = dailyres.beatmapid;
-        let featured = dailyres.featured;
-        let hash = dailyres.hash;
-        if (!featured) featured = '386742340968120321';
+        if (err) {
+            return console.log("Cannot access database");
+        }
+        if (!dailyres) {
+            return client.users.fetch("386742340968120321").then((user) => user.send("Hey dear, I need you to start a daily challenge now!")).catch(console.error);
+        }
+        const timelimit = dailyres.timelimit;
+        if (Math.floor(Date.now() / 1000) < timelimit) {
+            return;
+        }
+        const pass = dailyres.pass;
+        const challengeid = dailyres.challengeid;
+        const beatmapid = dailyres.beatmapid;
+        const featured = dailyres.featured ?? "386742340968120321";
+        const hash = dailyres.hash;
         const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
-        if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
-        if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
-        let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
+        if (!mapinfo.title) {
+            return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
+        }
+        if (!mapinfo.objects) {
+            return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
+        }
+        const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile});
         let pass_string;
-        let bonus_string = '';
-        switch (pass[0]) {
+        switch (pass.id) {
             case "score": 
-                pass_string = `Score V1 at least **${pass[1].toLocaleString()}**`;
+                pass_string = `Score V1 at least **${pass.value.toLocaleString()}**`;
                 break;
             case "acc": 
-                pass_string = `Accuracy at least **${pass[1]}%**`;
+                pass_string = `Accuracy at least **${pass.value}%**`;
                 break;
             case "scorev2": 
-                pass_string = `Score V2 at least **${pass[1].toLocaleString()}**`;
+                pass_string = `Score V2 at least **${pass.value.toLocaleString()}**`;
                 break;
             case "miss": 
-                pass_string = pass[1] === 0?"No misses":`Miss count below **${pass[1]}**`;
+                pass_string = pass.value === 0 ? "No misses" : `Miss count below **${pass.value}**`;
                 break;
             case "combo": 
-                pass_string = `Combo at least **${pass[1]}**`;
+                pass_string = `Combo at least **${pass.value}**`;
                 break;
             case "rank": 
-                pass_string = `**${pass[1].toUpperCase()}** rank or above`;
+                pass_string = `**${pass.value.toUpperCase()}** rank or above`;
                 break;
             case "dpp": 
-                pass_string = `**${pass[1]}** dpp or more`;
+                pass_string = `**${pass.value}** dpp or more`;
                 break;
             case "pp": 
-                pass_string = `**${pass[1]}** pp or more`;
+                pass_string = `**${pass.value}** pp or more`;
                 break;
             case "m300": 
-                pass_string = `300 hit result at least **${pass[1]}**`;
+                pass_string = `300 hit result at least **${pass.value}**`;
                 break;
             case "m100":
-                pass_string = `100 hit result less than or equal to **${pass[1]}**`;
+                pass_string = `100 hit result less than or equal to **${pass.value}**`;
                 break;
             case "m50":
-                pass_string = `50 hit result less than or equal to **${pass[1]}**`;
+                pass_string = `50 hit result less than or equal to **${pass.value}**`;
                 break;
             case "ur":
-                pass_string = `UR (unstable rate) below or equal to **${pass[1]}**`;
+                pass_string = `UR (unstable rate) below or equal to **${pass.value}**`;
                 break;
             default: pass_string = 'No pass condition';
         }
-        let difflist = ["Easy", "Normal", "Hard", "Insane"];
-        for (let i = 0; i < bonus.length; i++) {
-            const bonusEntry = bonus[i];
-            bonus_string += `${difflist[i]}: `;
-            switch (bonusEntry[0]) {
-                case "none":
-                    bonus_string += "None";
-                    break;
-                case "score":
-                    bonus_string += `Score V1 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "acc":
-                    bonus_string += `Accuracy at least **${parseFloat(bonusEntry[1]).toFixed(2)}%** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "scorev2":
-                    bonus_string += `Score V2 at least **${bonusEntry[1].toLocaleString()}** (__${bonusEntry[3]}__ ${bonusEntry[3] === 1 ? "point" : "points"})`;
-                    break;
-                case "miss":
-                    bonus_string += `${bonusEntry[1] === 0 ? "No misses" : `Miss count below **${bonusEntry[1]}**`} (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "mod":
-                    bonus_string += `Usage of **${bonusEntry[1].toUpperCase()}** mod only (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "combo":
-                    bonus_string += `Combo at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "rank":
-                    bonus_string += `**${bonusEntry[1].toUpperCase()}** rank or above (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "dpp":
-                    bonus_string += `**${bonusEntry[1]}** dpp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "pp":
-                    bonus_string += `**${bonusEntry[1]}** pp or more (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "m300": 
-                    bonus_string += `300 hit result at least **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "m100":
-                    bonus_string += `100 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "m50":
-                    bonus_string += `50 hit result less than or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                case "ur":
-                    bonus_string += `UR (unstable rate) below or equal to **${bonusEntry[1]}** (__${bonusEntry[2]}__ ${bonusEntry[2] === 1 ? "point" : "points"})`;
-                    break;
-                default:
-                    bonus_string += "No bonuses available";
-            }
-            bonus_string += '\n';
-        }
-        let constrain_string = constrain.length === 0 ? "Any rankable mod except EZ, NF, and HT is allowed" : `**${constrain}** only`;
-        let footer = config.avatar_list;
+        const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
-        let embed = new Discord.MessageEmbed()
+        const embed = new Discord.MessageEmbed()
             .setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
             .setColor(mapinfo.statusColor())
             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain_string}\n\n**Bonus**\n${bonus_string}`);
+            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: Any rankable mod except EZ, NF, and HT`);
 
         client.channels.cache.get("669221772083724318").send("✅ **| Daily challenge ended!**", {embed: embed});
         let updateVal = {
@@ -164,47 +117,61 @@ module.exports.run = (client, maindb, alicedb) => {
             }
         };
         dailydb.updateOne(query, updateVal, err => {
-            if (err) return console.log("Cannot update challenge status");
+            if (err) {
+                return console.log("Cannot update challenge status");
+            }
             console.log("Challenge status updated");
         });
         let nextchallenge = "d" + (parseInt(dailyres.challengeid.match(/(\d+)$/)[0]) + 1);
         client.utils.get("dailyautostart").run(client, [nextchallenge], alicedb);
 
         let entries = await fetchScores(hash, 0);
-        if (!entries) return;
-        let bonus_winner_uid = entries[0].split(" ")[1];
-        let coin = client.emojis.cache.get("669532330980802561");
+        if (!entries) {
+            return;
+        }
+        const bonus_winner_uid = entries[0].split(" ")[1];
+        const coin = client.emojis.cache.get("669532330980802561");
         binddb.findOne({uid: bonus_winner_uid}, (err, userres) => {
-            if (err) console.log("Cannot access database");
-            if (!userres) return;
-            let discordid = userres.discordid;
-            let username = userres.username;
+            if (err) {
+                return console.log("Cannot access database");
+            }
+            if (!userres) {
+                return;
+            }
+            const discordid = userres.discordid;
+            const username = userres.username;
             pointdb.findOne({uid: bonus_winner_uid}, (err, res) => {
-                if (err) return console.log("Cannot access database");
+                if (err) {
+                    return console.log("Cannot access database");
+                }
                 if (userres.clan) {
-                    let updateVal = {
+                    const updateVal = {
                         $inc: {
                             power: 15
                         }
                     };
                     clandb.updateOne({name: userres.clan}, updateVal, err => {
-                        if (err) return console.log(err);
-                            console.log("Clan data updated");
+                        if (err) {
+                            return console.log(err);
+                        }
+                        console.log("Clan data updated");
                     });
                 }
                 if (res) {
-                    let updateVal = {
+                    const updateVal = {
                         $inc: {
                             points: 5,
                             alicecoins: 10
                         }
                     };
                     pointdb.updateOne({uid: bonus_winner_uid}, updateVal, err => {
-                        if (err) return console.log("Cannot access database");
+                        if (err) {
+                            return console.log("Cannot access database");
+                        }
                         client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`);
                     });
                 } else {
-                    let insertVal = {
+                    const insertVal = {
                         username: username,
                         uid: bonus_winner_uid,
                         discordid: message.author.id,
@@ -215,7 +182,9 @@ module.exports.run = (client, maindb, alicedb) => {
                         alicecoins: 10
                     };
                     pointdb.insertOne(insertVal, err => {
-                        if (err) return console.log("Cannot access database");
+                        if (err) {
+                            return console.log("Cannot access database");
+                        }
                         client.channels.cache.get("669221772083724318").send(`✅ **| Congratulations to <@${discordid}> for achieving first place in challenge \`${challengeid}\`, earning him/her \`5\` points and ${coin} \`10\` Alice coins!**`);
                     });
                 }
