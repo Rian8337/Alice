@@ -503,7 +503,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile});
                 const timelimit = Math.max(0, dailyres.timelimit - Math.floor(Date.now() / 1000));
-                const pass_string = challengeRequirements(pass, bonus)[0];
+                const pass_string = challengeRequirements(challengeid, pass, bonus)[0];
                 embed.setAuthor(challengeid.includes("w")?"osu!droid Weekly Bounty Challenge":"osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
@@ -878,7 +878,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
                 }
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile});
-                const pass_string = challengeRequirements(pass, bonus)[0];
+                const pass_string = challengeRequirements(challengeid, pass, bonus)[0];
                 embed.setAuthor(challengeid.includes("w") ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
@@ -936,7 +936,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (!dailyres) {
                     return message.channel.send("❎ **| I'm sorry, there is no ongoing bounty now!**");
                 }
-                const bonuses = challengeRequirements(dailyres.pass, dailyres.bonus)[1];
+                const bonuses = challengeRequirements(dailyres.challengeid, dailyres.pass, dailyres.bonus)[1];
 
                 embed.setAuthor("osu!droid Daily Challenge: Challenges", "https://image.frl/p/beyefgeq5m7tobjg.jpg")
                     .setColor(rolecheck)
