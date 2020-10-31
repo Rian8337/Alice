@@ -147,7 +147,7 @@ export class Score {
                 this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
                 this.miss = parseInt(play[8]);
                 const date = new Date(parseInt(play[9]) * 1000);
-                date.setUTCHours(date.getUTCHours() + 6);
+                date.setUTCHours(date.getUTCHours() + 7);
                 this.date = date;
                 this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
                 resolve(this);
