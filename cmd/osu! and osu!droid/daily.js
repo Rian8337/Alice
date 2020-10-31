@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 const request = require('request');
+const AdmZip = require('adm-zip');
 const { Db } = require('mongodb');
 const cd = new Set();
 
@@ -19,7 +20,8 @@ function isEligible(member) {
 }
 
 /**
- * @param {string} url 
+ * @param {string} url
+ * @returns {Promise<Buffer|null>}
  */
 function downloadReplay(url) {
     return new Promise(resolve => {
