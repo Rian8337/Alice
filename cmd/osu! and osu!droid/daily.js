@@ -1320,7 +1320,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             const object = star.droidStars.objects[i];
                             const hitData = data.hitObjectData[i];
 
-                            if (!(object.object.type & osudroid.objectTypes.circle) || hitData.result === osudroid.hitResult.RESULT_0) {
+                            if (!(object.type & osudroid.objectTypes.circle) || hitData.result === osudroid.hitResult.RESULT_0) {
                                 continue;
                             }
                             
