@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const request = require('request');
 const { Db } = require('mongodb');
 const cd = new Set();
 
