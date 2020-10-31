@@ -13,7 +13,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(timezone) || timezone < -12 || timezone > 12) timezone = 0;
 
     let max_date;
-    if (month % 2 === 0 || month === 7) max_date = 31;
+    if ((month % 2 === 0 && month < 7) || month === 7 || (month % 2 !== 0 && month > 7)) max_date = 31;
     else if (month === 1) max_date = 29;
     else max_date = 30;
 
