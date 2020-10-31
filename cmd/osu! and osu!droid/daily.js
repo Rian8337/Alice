@@ -12,8 +12,11 @@ function isEligible(member) {
     for (const id of eligibleRoleList) {
         if (res === -1) break;
         if (member.roles.cache.has(id[0])) {
-            if (id[1] === -1) res = id[1];
-            else res = Math.max(res, id[1]);
+            if (id[1] === -1) {
+                res = id[1];
+            } else {
+                res = Math.max(res, id[1]);
+            }
         }
     }
     return res;
@@ -1309,8 +1312,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         const hitWindow300 = hitWindow.hitWindowFor300(isPrecise);
                         const hitWindow100 = hitWindow.hitWindowFor100(isPrecise);
                         const hitWindow50 = hitWindow.hitWindowFor50(isPrecise);
-                        for (const hitData of data.hitObjectData) {
-                            if (hitData.result === osudroid.hitResult.RESULT_0) {
+
+                        const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+                        replay.map = star.droidStars;
+
+                        for (let i = 0; i < star.droidStars.objects.length; ++i) {
+                            const object = star.droidStars.objects[i];
+                            const hitData = data.hitObjectData[i];
+
+                            if (!(object.object.type & osudroid.objectTypes.circle) || hitData.result === osudroid.hitResult.RESULT_0) {
                                 continue;
                             }
                             
@@ -1327,7 +1337,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     isEdited = accuracyAbsolute > hitWindow300;
                                     break;
                             }
-    
+
                             if (isEdited) {
                                 return message.channel.send("❎ **| I'm sorry, it appears that your replay file is edited!**");
                             }
@@ -1369,9 +1379,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             default:
                                 rank = "D";
                         }
-    
-                        const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
-                        replay.map = star.droidStars;
     
                         let unstableRate = 0;
                         let speedPenalty = 1;
