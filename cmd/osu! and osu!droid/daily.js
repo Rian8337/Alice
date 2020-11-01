@@ -1532,7 +1532,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 id: challengeid,
                                 highestLevel: completedLevel
                             };
-                            const statsMessage = `**Total score**: ${data.score.toLocaleString()}\n**Combo**: ${data.maxCombo}x\n**Accuracy**: ${(data.accuracy * 100).toFixed(2)}%\n**Time**: ${new Date(data.time).toUTCString()}\n\n**Hit great (300)**: ${data.hit300} (${data.hit300k} geki and katu)\n**Hit good (100)**: ${data.hit100} (${data.hit100k} katu)\n**Hit meh (50)**: ${data.hit50}\n**Misses**: ${data.hit0}\n\n**Level reached**: ${completedLevel}`;
+                            const statsMessage = `**Total score**: ${data.score.toLocaleString()}\n**Mods**:${data.convertedMods}\n**Combo**: ${data.maxCombo}x\n**Accuracy**: ${(data.accuracy * 100).toFixed(2)}%\n**Rank**: ${rank}\n**Time**: ${new Date(data.time).toUTCString()}\n\n**Hit great (300)**: ${data.hit300} (${data.hit300k} geki and katu)\n**Hit good (100)**: ${data.hit100} (${data.hit100k} katu)\n**Hit meh (50)**: ${data.hit50}\n**Misses**: ${data.hit0}\n\n**Level reached**: ${completedLevel}`;
                             embed.setAuthor("Score Statistics", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
                                 .setDescription(statsMessage)
                                 .setColor(rolecheck);
