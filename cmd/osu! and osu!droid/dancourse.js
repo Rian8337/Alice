@@ -138,7 +138,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = res[0].uid;
-                const player = await new osudroid.Player().getInformation({uid: uid});
+                const player = await osudroid.Player.getInformation({uid: uid});
                 if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                 let play = player.recentPlays;
                 let danentries = [];

@@ -49,7 +49,7 @@ module.exports.run = (client, maindb, alicedb) => {
         let hash = dailyres.hash;
         if (!featured) featured = '386742340968120321';
 
-        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
         if (!mapinfo.objects) return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**"));
         let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});

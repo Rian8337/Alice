@@ -33,7 +33,7 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send(`❎ **| I'm sorry, this beatmap has not been blacklisted previously!**`);
         }
 
-        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapID, file: false});
+        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapID, file: false});
         if (mapinfo.error) {
             return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
         }

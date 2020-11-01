@@ -5,7 +5,7 @@ const osudroid = require('osu-droid');
 module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
 	let uid = parseInt(args[0]);
 	if (isNaN(uid)) return message.channel.send("❎ **| Hey, can you at least give me a valid uid?**");
-	const player = await new osudroid.Player().getInformation({uid: uid});
+	const player = await osudroid.Player.getInformation({uid: uid});
 	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 	if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 	if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
@@ -43,7 +43,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	if (map_index === -1) current_map.push(entry);
 	else current_map[map_index][1] = hash;
 
-	const mapinfo = await new osudroid.MapInfo().getInformation({hash: hash});
+	const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 	if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) return;
 	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
 	let droidStars = parseFloat(star.droidStars.total.toFixed(2));

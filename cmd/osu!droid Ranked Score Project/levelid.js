@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 playc = res.playc
             }
             let levelremain = (level - Math.floor(level)) * 100;
-            const player = await new osudroid.Player().getInformation(query);
+            const player = await osudroid.Player.getInformation(query);
             if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
             if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             let avalink = player.avatarURL;

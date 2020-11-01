@@ -27,7 +27,7 @@ module.exports.run = (client, maindb) => {
 		const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
 		res.forEach(async function(player) {
-			const player_entry = await new osudroid.Player().getInformation({uid: player.uid});
+			const player_entry = await osudroid.Player.getInformation({uid: player.uid});
 			const name = player_entry.username;
 			const curtime = Date.now();
 			for await (const play of player_entry.recentPlays) {
@@ -48,7 +48,7 @@ module.exports.run = (client, maindb) => {
 					.setColor(8311585)
 					.setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
-				const mapinfo = await new osudroid.MapInfo().getInformation({hash: hash});
+				const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 				if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
 					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
 					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed})

@@ -23,7 +23,7 @@ function test(uid, page, cb) {
 }
 
 async function calculatePP(ppentries, entry, cb) {
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: entry[11]});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: entry[11]});
     if (mapinfo.error) {
         console.log("API fetch error");
         return cb();

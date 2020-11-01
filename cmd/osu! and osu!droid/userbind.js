@@ -11,7 +11,7 @@ const cd = new Set();
  * @returns {Promise<boolean>} Whether or not the player has played the mapp (`true` or `false`).
  */
 async function checkPlay(uid) {
-	const play = await new osudroid.Score().getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
+	const play = await osudroid.Score.getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
 	return !!play.title;
 }
 
@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args, maindb) => {
 	else uid = parseInt(args[0]);
 
 	const binddb = maindb.collection("userbind");
-	const player = await new osudroid.Player().getInformation(uid ? {uid: uid} : {username: username});
+	const player = await osudroid.Player.getInformation(uid ? {uid: uid} : {username: username});
 	if (player.error) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 	if (!player.username) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
 

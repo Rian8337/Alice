@@ -61,7 +61,7 @@ function retrievePlay(uid, page, cb) {
 
 async function scoreCheck(scoreentries, score, cb) {
     if (!score) return cb(false, true);
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: score[11], file: false});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: score[11], file: false});
     if (mapinfo.error) {
         console.log("API fetch error");
         return cb(true);

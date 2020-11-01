@@ -43,7 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			weight += Math.pow(0.95, i);
 		}
 		if (weighted_accuracy) weighted_accuracy /= weight;
-		const player = await new osudroid.Player().getInformation({uid: uid}).catch(console.error);
+		const player = await osudroid.Player.getInformation({uid: uid}).catch(console.error);
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");

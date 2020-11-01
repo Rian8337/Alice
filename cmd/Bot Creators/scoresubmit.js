@@ -44,7 +44,7 @@ function calculateLevel(lvl, score, cb) {
 async function scoreApproval(message, embed, i, submitted, scorelist, playc, playentry, cb) {
     if (!playentry[i]) return cb(false, false, true);
     let play = playentry[i];
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash, file: false});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: play.hash, file: false});
     if (mapinfo.error) {
 		message.channel.send("❎ **| I'm sorry, I couldn't check for beatmap availability! Perhaps osu! API is down?**");
 		return cb(false, true);
@@ -124,7 +124,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         let uid = userres.uid;
         let username = userres.username;
-        const player = await new osudroid.Player().getInformation({uid: uid});
+        const player = await osudroid.Player.getInformation({uid: uid});
 
         if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user's profile!**");
         if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, the player hasn't submitted any play!**");

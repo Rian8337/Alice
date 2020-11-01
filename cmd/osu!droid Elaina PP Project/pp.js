@@ -67,7 +67,7 @@ module.exports.run = (client, message, args, maindb) => {
                     cd.delete(message.author.id);
                 }, 2000);
 
-                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap});
+                const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap});
                 if (mapinfo.error) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap data! Perhaps osu! API is down?**");
                 }
@@ -94,7 +94,7 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                 }
 
-                const score = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
+                const score = await osudroid.Score.getFromHash({uid: uid, hash: hash});
                 if (score.error) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
                 }
@@ -210,7 +210,7 @@ module.exports.run = (client, message, args, maindb) => {
                     cd.delete(message.author.id);
                 }, 1000 * offset);
 
-                const player = await new osudroid.Player().getInformation({uid: uid});
+                const player = await osudroid.Player.getInformation({uid: uid});
                 if (player.error) {
                     return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                 }
@@ -231,7 +231,7 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 
                 for await (const play of plays) {
-                    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash});
+                    const mapinfo = await osudroid.MapInfo.getInformation({hash: play.hash});
                     ++submitted;
 
                     const combo = play.combo;

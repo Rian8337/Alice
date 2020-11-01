@@ -14,7 +14,7 @@ function retrieveList(res, i, cb) {
 async function recalcPlay(target, i, newtarget, whitelist, cb) {
     if (!target[i]) return cb(false, true);
     let mods = target[i].mods;
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: target[i][0]});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: target[i][0]});
     if (mapinfo.error) {
 		console.log("API fetch error");
 		return cb(false, true);

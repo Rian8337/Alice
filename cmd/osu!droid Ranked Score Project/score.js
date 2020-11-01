@@ -45,7 +45,7 @@ async function scoreApproval(embed, i, submitted, scorelist, playc, playentry, c
     if (!playentry[i]) return cb(false, true);
     let play = playentry[i];
     let mod = play.mod;
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: play.hash, file: false});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: play.hash, file: false});
     if (mapinfo.error) {
         embed.addField(`${submitted}. ${play.title}${mod ? ` +${mod}` : ""}`, `**${play.score.toLocaleString()}** | ${play.combo}x | ${play.accuracy}% | ${play.miss} ❌ | **API fetch error**`);
 		return cb(true);
@@ -147,7 +147,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         let uid = userres.uid;
         let discordid = userres.discordid;
         let username = userres.username;
-        const player = await new osudroid.Player().getInformation({uid: uid});
+        const player = await osudroid.Player.getInformation({uid: uid});
         if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
         if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
         if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");

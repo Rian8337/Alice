@@ -112,7 +112,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let transferred = pointres.transferred;
                     if (!transferred) transferred = 0;
                     if (transferred === amount) return message.channel.send("❎ **| I'm sorry, you have reached the transfer limit for today!**");
-                    const player = await new osudroid.Player().getInformation({uid: uid});
+                    const player = await osudroid.Player.getInformation({uid: uid});
                     if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
                     let limit = 0;
                     switch (true) {

@@ -72,7 +72,7 @@ module.exports.run = (client, message, args, maindb) => {
 			return;
 		}
 		let uid = res.uid;
-		const player = await new osudroid.Player().getInformation({uid: uid});
+		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");

@@ -31,7 +31,7 @@ module.exports.run = (client, message, args, maindb) => {
         let deletedCount = 0;
         let i = 0;
         for await (const entry of res) {
-            const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: entry.mapid});
+            const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: entry.mapid});
             await sleep(0.05);
             console.log(++i);
             if (mapinfo.error) {

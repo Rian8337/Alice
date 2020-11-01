@@ -53,7 +53,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         }
         let uid = res.uid;
 
-        const play = await new osudroid.Score().getFromHash({uid: uid, hash: hash});
+        const play = await osudroid.Score.getFromHash({uid: uid, hash: hash});
         if (play.error) return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
         if (!play.title) return message.channel.send("❎ **| I'm sorry, you don't have scores set in the map!**");
         const name = play.username;
@@ -65,7 +65,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         const miss = play.miss;
         const date = play.date;
         let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
-        const player = await new osudroid.Player().getInformation({username: name});
+        const player = await osudroid.Player.getInformation({username: name});
         if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
 
         let rolecheck;
@@ -81,7 +81,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
             .setColor(rolecheck)
             .setFooter(`Achieved on ${date.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
-        const mapinfo = await new osudroid.MapInfo().getInformation({hash: hash});
+        const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
         let n300 = 0
         let n100 = 0;
         let n50 = 0;

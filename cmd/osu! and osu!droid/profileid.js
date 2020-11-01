@@ -35,7 +35,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			}
 			if (weighted_accuracy) weighted_accuracy /= weight;
 		}
-		const player = await new osudroid.Player().getInformation({uid: uid});
+		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
 		if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		scoredb.findOne(query, (err, playerres) => {

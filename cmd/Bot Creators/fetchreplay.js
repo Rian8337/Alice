@@ -56,7 +56,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
     let mapinfo;
     if (beatmap) {
-        mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap});
+        mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap});
         if (mapinfo.error) {
             return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
         }

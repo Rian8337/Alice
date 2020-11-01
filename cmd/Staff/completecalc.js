@@ -195,7 +195,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 for await (const entry of entries) {
                     console.log(i);
                     ++i;
-                    const mapinfo = await new osudroid.MapInfo().getInformation({hash: entry[11]});
+                    const mapinfo = await osudroid.MapInfo.getInformation({hash: entry[11]});
                     if (mapinfo.error) {
                         console.log("osu! API fetch error");
                         continue;

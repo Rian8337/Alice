@@ -93,7 +93,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 				if (obj.length > 3) obj.splice(3);
 
 				obj.forEach(async map => {
-					const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: map.beatmap_id});
+					const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: map.beatmap_id});
 					i++;
 					if (!mapinfo.osuFile) return;
 					if (!combo || combo <= 0) combo = mapinfo.maxCombo - missc;
@@ -158,7 +158,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		});
 		return req.end();
 	}
-	const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+	const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
 
 	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) return;
 	if (!combo) combo = mapinfo.maxCombo - missc;

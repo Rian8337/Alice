@@ -40,7 +40,7 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(`Scanning uid ${player.uid}`);
             console.log(`Scanning ${ppList.length} plays`);
             for await (const ppEntry of ppList) {
-                const mapinfo = await new osudroid.MapInfo().getInformation({hash: ppEntry.hash, file: false});
+                const mapinfo = await osudroid.MapInfo.getInformation({hash: ppEntry.hash, file: false});
                 ++i;
                 await sleep(1);
                 if (mapinfo.error) {

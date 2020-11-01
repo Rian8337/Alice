@@ -12,7 +12,7 @@ module.exports.run = async (message, current_map) => {
     const beatmap_id = parseInt(a[a.length - 1]);
     if (isNaN(beatmap_id)) return;
 
-    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id});
+    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
     if (!mapinfo.title) return;
 
     const entry = [message.channel.id, mapinfo.hash];

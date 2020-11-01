@@ -25,7 +25,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                 return cb();
             }
             let uid = userres.uid;
-            const player = await new osudroid.Player().getInformation({uid: uid});
+            const player = await osudroid.Player.getInformation({uid: uid});
             if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             let rank = player.rank;
             if (rank > 5000) {
@@ -74,7 +74,7 @@ async function memberValidation(message, user, role, time, userres, cb) {
                     message.channel.send("❎ **| I'm sorry, the user hasn't been registered in Discord for 2 years!**");
                     return cb();
                 }
-                const player = await new osudroid.Player().getInformation({uid: uid}).catch(console.error)
+                const player = await osudroid.Player.getInformation({uid: uid}).catch(console.error)
                 if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot fetch the user's player info! Perhaps osu!droid server is down?**");
                 let rank = player.rank;
                 if (rank > 1000) {

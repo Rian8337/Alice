@@ -55,7 +55,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		}
 	}
 
-    const mapinfo = await new osudroid.MapInfo().getInformation({hash: hash});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 	if (mapinfo.error) {
 		return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
 	}

@@ -438,7 +438,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                     if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
                     if (!joinres.joincooldown) joinres.joincooldown = 0;
-                    const player = await new osudroid.Player().getInformation({uid: joinres.uid});
+                    const player = await osudroid.Player.getInformation({uid: joinres.uid});
                     if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
                     if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
                     let cooldown = joinres.joincooldown - curtime;
@@ -710,7 +710,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 if (userres.clan) return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
                 const uid = userres.uid;
-                const player = await new osudroid.Player().getInformation({uid: uid});
+                const player = await osudroid.Player.getInformation({uid: uid});
                 pointdb.findOne(query, (err, pointres) => {
                     if (err) {
                         console.log(err);

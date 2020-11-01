@@ -432,7 +432,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         points = dailyres.points;
                         challenges = dailyres.challenges.length;
                     }
-                    const player = await new osudroid.Player().getInformation({uid: uid});
+                    const player = await osudroid.Player.getInformation({uid: uid});
                     embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                         .setColor(rolecheck)
                         .setFooter("Alice Synthesis Thirty", footer[index])
@@ -542,7 +542,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const beatmapid = dailyres.beatmapid;
                 let featured = dailyres.featured;
                 if (!featured) featured = "386742340968120321";
-                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                 }
@@ -590,7 +590,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let beatmapid = dailyres.beatmapid;
                     let featured = dailyres.featured;
                     if (!featured) featured = "386742340968120321";
-                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
                     let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: constrain});
@@ -625,7 +625,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let uid = userres.uid;
                 let username = userres.username;
                 let clan = userres.clan;
-                const player = await new osudroid.Player().getInformation({uid: uid});
+                const player = await osudroid.Player.getInformation({uid: uid});
                 if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
                 if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
                 let rplay = player.recentPlays;
@@ -650,7 +650,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     const miss = scoreInfo.miss;
                     const mod = scoreInfo.mods;
                     const rank = scoreInfo.rank;
-                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch challenge beatmap info! Perhaps osu! API is down?**");
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I can't find the challenge map!**");
                     if (!mapinfo.objects) return message.channel.send("❎ **| I'm sorry, it seems like the challenge map is invalid!**");
@@ -919,7 +919,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const beatmapid = dailyres.beatmapid;
                 let featured = dailyres.featured;
                 if (!featured) featured = "386742340968120321";
-                const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                 }
@@ -1283,7 +1283,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         const passreq = dailyres.pass;
                         const bonus = dailyres.bonus;
     
-                        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: dailyres.beatmapid});
+                        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: dailyres.beatmapid});
                         if (!mapinfo.title) {
                             return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
                         }
@@ -1742,7 +1742,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const uid = userres.uid;
                 const username = userres.username;
                 const clan = userres.clan;
-                const player = await new osudroid.Player().getInformation({uid: uid});
+                const player = await osudroid.Player.getInformation({uid: uid});
 
                 if (!player.username) {
                     return message.channel.send("❎ **| I'm sorry, I cannot your profile!**");
@@ -1785,7 +1785,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
                         const challengelist = playerres?.challenges || [];
-                        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+                        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                         const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
                         const passreq = dailyres.pass;
                         const bonus = dailyres.bonus;

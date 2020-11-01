@@ -35,7 +35,7 @@ async function recalc(target, tlength, i, newtarget, binddb, uid, whitelist, att
 		return;
 	}
 	let mods = target[i].mods;
-	const mapinfo = await new osudroid.MapInfo().getInformation({hash: target[i].hash});
+	const mapinfo = await osudroid.MapInfo.getInformation({hash: target[i].hash});
 	attempt++;
 	if (mapinfo.error) {
 		console.log("API fetch error");

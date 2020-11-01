@@ -50,7 +50,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 			forceAR = Math.max(0, Math.min(12.5, parseFloat(parseFloat(args[i].substring(2)).toFixed(2))));
 		}
 	}
-	const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+	const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
 	if (mapinfo.error) {
 		return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
 	}

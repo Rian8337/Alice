@@ -24,7 +24,7 @@ async function createEmbed(content, page, footer, index, color) {
             break;
         }
         if (!(beatmaps[convertIndex] instanceof osudroid.MapInfo)) {
-            const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmaps[convertIndex].beatmap_id, file: false});
+            const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmaps[convertIndex].beatmap_id, file: false});
             if (mapinfo.title) {
                 beatmaps[convertIndex] = mapinfo;
             }

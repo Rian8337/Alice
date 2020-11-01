@@ -52,7 +52,7 @@ module.exports.run = (client, maindb, alicedb) => {
         let featured = dailyres.featured;
         if (!featured) featured = "386742340968120321";
         const hash = dailyres.hash;
-        const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmapid});
+        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) {
             return client.users.fetch("386742340968120321").then((user) => user.send("❎ **| I'm sorry, I cannot find the daily challenge map!**"));
         }

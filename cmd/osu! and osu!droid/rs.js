@@ -43,7 +43,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
 			return;
 		}
         let uid = res.uid;
-        const player = await new osudroid.Player().getInformation({uid: uid});
+        const player = await osudroid.Player.getInformation({uid: uid});
         if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
@@ -86,7 +86,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map) => {
         if (map_index === -1) current_map.push(entry);
         else current_map[map_index][1] = hash;
 
-        const mapinfo = await new osudroid.MapInfo().getInformation({hash: hash});
+        const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
         let n300 = 0
         let n100 = 0;
         let n50 = 0;

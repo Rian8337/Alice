@@ -6,7 +6,7 @@ module.exports.run = async (client, message, args) => {
 	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
 	let uid = args[0];
 	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
-	const player = await new osudroid.Player().getInformation({uid: uid});
+	const player = await osudroid.Player.getInformation({uid: uid});
 	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
 	if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
 	let name = player.username;

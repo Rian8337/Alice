@@ -207,7 +207,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     let submitter = message.guild.member(res.submitter);
                     let summary = res.summary;
                     let coins = 20 * Math.floor(summary.split(" ").length / 50);
-                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id});
+                    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
                         mapdb.deleteOne(query, err => {
@@ -480,7 +480,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     if (!res) return message.channel.send("❎ **| I'm sorry, there is no submission with that beatmap!**");
                     let submitter = message.guild.member(res.id);
-                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id});
+                    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
                         mapdb.deleteOne(query, err => {
@@ -646,7 +646,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (isNaN(beatmap_id)) return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
                     console.log(beatmap_id);
 
-                    const mapinfo = await new osudroid.MapInfo().getInformation({beatmapID: beatmap_id, file: false});
+                    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id, file: false});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I cannot find the beatmap that you are looking for!**");
                     if (mapinfo.objects < 50) return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has less than 50 objects!**");

@@ -22,7 +22,7 @@ function playValidation(mod, requirement) {
 }
 
 async function getPlay(i, uid, cb) {
-	const player = await new osudroid.Player().getInformation({uid: uid});
+	const player = await osudroid.Player.getInformation({uid: uid});
 	cb([i, player]);
 }
 
