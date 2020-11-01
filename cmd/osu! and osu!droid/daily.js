@@ -1385,7 +1385,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         const requiresReplay = ["m300", "m100", "m50", "ur"];
                         if (requiresReplay.some(v => v === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
                             replay.analyzeReplay();
-                            const hit_object_data = data.data.hitObjectData;
+                            const hit_object_data = data.hitObjectData;
                             let hit_error_total = 0;
     
                             for (const hit_object of hit_object_data) {
