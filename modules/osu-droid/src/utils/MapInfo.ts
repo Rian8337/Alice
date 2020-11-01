@@ -13,46 +13,46 @@ config();
 const apikey: string = process.env.OSU_API_KEY as string;
 
 interface OsuAPIResponse {
-    approved: string;
-    submit_date: string;
-    approved_date: string;
-    last_update: string;
-    artist: string;
-    beatmap_id: string;
-    beatmapset_id: string;
-    bpm: string;
-    creator: string;
-    creator_id: string;
-    difficultyrating?: string;
-    diff_aim?: string;
-    diff_speed?: string;
-    diff_size: string;
-    diff_overall: string;
-    diff_approach: string;
-    diff_drain: string;
-    hit_length: string;
-    source: string;
-    genre_id: string;
-    language_id: string;
-    title: string;
-    total_length: string;
-    version: string;
-    file_md5: string;
-    mode: string;
-    tags: string;
-    favourite_count: string;
-    rating: string;
-    playcount: string;
-    passcount: string;
-    count_normal: string;
-    count_slider: string;
-    count_spinner: string;
-    max_combo: string;
-    storyboard: string;
-    video: string;
-    download_unavailable: string;
-    audio_unavailable: string;
-    packs?: string;
+    readonly approved: string;
+    readonly submit_date: string;
+    readonly approved_date: string;
+    readonly last_update: string;
+    readonly artist: string;
+    readonly beatmap_id: string;
+    readonly beatmapset_id: string;
+    readonly bpm: string;
+    readonly creator: string;
+    readonly creator_id: string;
+    readonly difficultyrating?: string;
+    readonly diff_aim?: string;
+    readonly diff_speed?: string;
+    readonly diff_size: string;
+    readonly diff_overall: string;
+    readonly diff_approach: string;
+    readonly diff_drain: string;
+    readonly hit_length: string;
+    readonly source: string;
+    readonly genre_id: string;
+    readonly language_id: string;
+    readonly title: string;
+    readonly total_length: string;
+    readonly version: string;
+    readonly file_md5: string;
+    readonly mode: string;
+    readonly tags: string;
+    readonly favourite_count: string;
+    readonly rating: string;
+    readonly playcount: string;
+    readonly passcount: string;
+    readonly count_normal: string;
+    readonly count_slider: string;
+    readonly count_spinner: string;
+    readonly max_combo: string;
+    readonly storyboard: string;
+    readonly video: string;
+    readonly download_unavailable: string;
+    readonly audio_unavailable: string;
+    readonly packs?: string;
 }
 
 /**
@@ -62,174 +62,174 @@ export class MapInfo {
     /**
      * The title of the song of the beatmap.
      */
-    public title: string = "";
+    title: string = "";
 
     /**
      * The full title of the beatmap, which is `Artist - Title (Creator) [Difficulty Name]`.
      */
-    public fullTitle: string = "";
+    fullTitle: string = "";
 
     /**
      * The artist of the song of the beatmap.
      */
-    public artist: string = "";
+    artist: string = "";
 
     /**
      * The creator of the beatmap.
      */
-    public creator: string = "";
+    creator: string = "";
 
     /**
      * The difficulty name of the beatmap.
      */
-    public version: string = "";
+    version: string = "";
 
     /**
      * The source of the song in the beatmap.
      */
-    public source: string = "";
+    source: string = "";
 
     /**
      * The ranking status of the beatmap.
      */
-    public approved: rankedStatus = rankedStatus.PENDING;
+    approved: rankedStatus = rankedStatus.PENDING;
 
     /**
      * The ID of the beatmap.
      */
-    public beatmapID: number = 0;
+    beatmapID: number = 0;
 
     /**
      * The ID of the beatmapset containing the beatmap.
      */
-    public beatmapsetID: number = 0;
+    beatmapsetID: number = 0;
 
     /**
      * The amount of times the beatmap has been played.
      */
-    public plays: number = 0;
+    plays: number = 0;
 
     /**
      * The amount of times the beatmap has been favorited.
      */
-    public favorites: number = 0;
+    favorites: number = 0;
 
     /**
      * The date of which the beatmap was submitted.
      */
-    public submitDate: Date = new Date(0);
+    submitDate: Date = new Date(0);
 
     /**
      * The date of which the beatmap was last updated.
      */
-    public lastUpdate: Date = new Date(0);
+    lastUpdate: Date = new Date(0);
 
     /**
      * The duration of the beatmap not including breaks.
      */
-    public hitLength: number = 0;
+    hitLength: number = 0;
 
     /**
      * The duration of the beatmap including breaks.
      */
-    public totalLength: number = 0;
+    totalLength: number = 0;
 
     /**
      * The BPM of the beatmap.
      */
-    public bpm: number = 0;
+    bpm: number = 0;
 
     /**
      * The amount of circles in the beatmap.
      */
-    public circles: number = 0;
+    circles: number = 0;
 
     /**
      * The amount of sliders in the beatmap.
      */
-    public sliders: number = 0;
+    sliders: number = 0;
 
     /**
      * The amount of spinners in the beatmap.
      */
-    public spinners: number = 0;
+    spinners: number = 0;
 
     /**
      * The amount of objects in the beatmap.
      */
-    public objects: number = 0;
+    objects: number = 0;
 
     /**
      * The maximum combo of the beatmap.
      */
-    public maxCombo: number = 0;
+    maxCombo: number = 0;
 
     /**
      * The circle size of the beatmap.
      */
-    public cs: number = 0;
+    cs: number = 0;
 
     /**
      * The approach rate of the beatmap.
      */
-    public ar: number = 0;
+    ar: number = 0;
 
     /**
      * The overall difficulty of the beatmap.
      */
-    public od: number = 0;
+    od: number = 0;
 
     /**
      * The health drain rate of the beatmap.
      */
-    public hp: number = 0;
+    hp: number = 0;
 
     /**
      * The beatmap packs that contain this beatmap, represented by their ID.
      */
-    public packs: string[] = [];
+    packs: string[] = [];
 
     /**
      * The aim difficulty rating of the beatmap.
      */
-    public aimDifficulty: number = 0;
+    aimDifficulty: number = 0;
 
     /**
      * The speed difficulty rating of the beatmap.
      */
-    public speedDifficulty: number = 0;
+    speedDifficulty: number = 0;
 
     /**
      * The generic difficulty rating of the beatmap.
      */
-    public totalDifficulty: number = 0;
+    totalDifficulty: number = 0;
 
     /**
      * The MD5 hash of the beatmap.
      */
-    public hash: string = "";
+    hash: string = "";
 
     /**
      * The `.osu` file of the beatmap.
      */
-    public osuFile: string = "";
+    osuFile: string = "";
 
     /**
      * The parsed beatmap from beatmap parser.
      */
-    public map?: Beatmap;
+    map?: Beatmap;
 
     /**
      * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
      */
-    public error: boolean = false;
+    error: boolean = false;
 
     /**
      * Retrieve a beatmap's general information.
      * 
      * Either beatmap ID or MD5 hash of the beatmap must be specified.
      */
-    getInformation(params: {
+    static getInformation(params: {
         beatmapID?: number,
         hash?: string,
         file?: boolean
@@ -239,6 +239,7 @@ export class MapInfo {
                 params.file = true;
             }
 
+            const map: MapInfo = new MapInfo();
             const beatmapID: number|undefined = params.beatmapID;
             const hash: string|undefined = params.hash;
 
@@ -251,27 +252,27 @@ export class MapInfo {
             request(options, (err, response, data) => {
                 if (err || response.statusCode !== 200) {
                     console.log("Error retrieving map info");
-                    this.error = true;
-                    return resolve(this);
+                    map.error = true;
+                    return resolve(map);
                 }
                 
                 const mapinfo: OsuAPIResponse = JSON.parse(data as string)[0];
                 if (!mapinfo) {
                     console.log("Map not found");
-                    return resolve(this);
+                    return resolve(map);
                 }
                 if (parseInt(mapinfo.mode) !== 0) {
                     console.log("Mode not supported");
-                    return resolve(this);
+                    return resolve(map);
                 }
 
-                this.fillMetadata(mapinfo);
+                map.fillMetadata(mapinfo);
 
                 if (!params.file) {
-                    return resolve(this);
+                    return resolve(map);
                 }
 
-                const url: string = `https://osu.ppy.sh/osu/${this.beatmapID}`;
+                const url: string = `https://osu.ppy.sh/osu/${map.beatmapID}`;
                 const dataArray: Buffer[] = [];
                 request(url, {timeout: 10000})
                     .on("data", chunk => {
@@ -280,11 +281,11 @@ export class MapInfo {
                     .on("complete", response => {
                         if (response.statusCode !== 200) {
                             console.log("Error downloading osu file");
-                            return resolve(this);
+                            return resolve(map);
                         }
-                        this.osuFile = Buffer.concat(dataArray).toString("utf8");
-                        this.map = new Parser().parse(this.osuFile).map;
-                        resolve(this);
+                        map.osuFile = Buffer.concat(dataArray).toString("utf8");
+                        map.map = new Parser().parse(map.osuFile).map;
+                        resolve(map);
                     });
             });
         });

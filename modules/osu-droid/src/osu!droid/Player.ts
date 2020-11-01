@@ -6,18 +6,18 @@ config();
 const droidapikey: string = process.env.DROID_API_KEY as string;
 
 interface ExtraInformation {
-    rank: number;
-    recent: {
-        filename: string;
-        score: number;
-        scoreid: number;
-        combo: number;
-        mark: string;
-        mode: string;
-        accuracy: number;
-        miss: number;
-        date: number;
-        hash: string;
+    readonly rank: number;
+    readonly recent: {
+        readonly filename: string;
+        readonly score: number;
+        readonly scoreid: number;
+        readonly combo: number;
+        readonly mark: string;
+        readonly mode: string;
+        readonly accuracy: number;
+        readonly miss: number;
+        readonly date: number;
+        readonly hash: string;
     }[]
 }
 
@@ -28,57 +28,57 @@ export class Player {
     /**
      * The uid of the player.
      */
-    public uid: number;
+    uid: number;
 
     /**
      * The username of the player.
      */
-    public username: string;
+    username: string;
 
     /**
      * The avatar URL of the player.
      */
-    public avatarURL: string;
+    avatarURL: string;
 
     /**
      * The location of the player based on ISO 3166-1 country codes. See {@link https://en.wikipedia.org/wiki/ISO_3166-1 this} Wikipedia page for more information.
      */
-    public location: string;
+    location: string;
 
     /**
      * The email that is attached to the player's account.
      */
-    public email: string;
+    email: string;
 
     /**
      * The overall rank of the player.
      */
-    public rank: number;
+    rank: number;
 
     /**
      * The total score of the player.
      */
-    public score: number;
+    score: number;
 
     /**
      * The overall accuracy of the player.
      */
-    public accuracy: number;
+    accuracy: number;
 
     /**
      * The amount of times the player has played.
      */
-    public playCount: number;
+    playCount: number;
 
     /**
      * Recent plays of the player.
      */
-    public readonly recentPlays: Score[];
+    readonly recentPlays: Score[];
 
     /**
      * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
      */
-    public error: boolean;
+    error: boolean;
 
     constructor() {
         this.uid = 0;
@@ -100,16 +100,17 @@ export class Player {
      * 
      * Either uid or username must be specified.
      */
-    getInformation(params: {
+    static getInformation(params: {
         uid?: number,
         username?: string
     }): Promise<Player> {
         return new Promise(resolve => {
+            const player: Player = new Player();
             const uid = params.uid;
             const username = params.username;
             if (isNaN(uid as number) && !username) {
                 console.log("Uid must be integer or enter username");
-                return resolve(this);
+                return resolve(player);
             }
 
             const options: string = `http://ops.dgsrz.com/api/getuserinfo.php?apiKey=${droidapikey}&${uid ? `uid=${uid}` : `username=${encodeURIComponent(username as string)}`}`;
@@ -117,8 +118,8 @@ export class Player {
             request(options, (err, response, data) => {
                 if (err || response.statusCode !== 200) {
                     console.log("Error retrieving player data");
-                    this.error = true;
-                    return resolve(this);
+                    player.error = true;
+                    return resolve(player);
                 }
 
                 const resArr: string[] = (data as string).split("<br>");
@@ -126,26 +127,26 @@ export class Player {
 
                 if (headerRes[0] === "FAILED") {
                     console.log("Player not found");
-                    return resolve(this);
+                    return resolve(player);
                 }
 
                 const obj: ExtraInformation = JSON.parse(resArr[1]);
 
-                this.uid = parseInt(headerRes[1]);
-                this.username = headerRes[2];
-                this.score = parseInt(headerRes[3]);
-                this.playCount = parseInt(headerRes[4]);
-                this.accuracy = parseFloat((parseFloat(headerRes[5]) * 100).toFixed(2));
-                this.email = headerRes[6];
-                this.location = headerRes[7];
-                this.avatarURL = `https://secure.gravatar.com/avatar/${MD5(this.email.trim().toLowerCase()).toString()}?s=200`;
-                this.rank = obj.rank;
+                player.uid = parseInt(headerRes[1]);
+                player.username = headerRes[2];
+                player.score = parseInt(headerRes[3]);
+                player.playCount = parseInt(headerRes[4]);
+                player.accuracy = parseFloat((parseFloat(headerRes[5]) * 100).toFixed(2));
+                player.email = headerRes[6];
+                player.location = headerRes[7];
+                player.avatarURL = `https://secure.gravatar.com/avatar/${MD5(player.email.trim().toLowerCase()).toString()}?s=200`;
+                player.rank = obj.rank;
 
                 const recent: ExtraInformation["recent"] = obj.recent;
                 for (const play of recent) {
-                    this.recentPlays.push(
+                    player.recentPlays.push(
                         new Score({
-                            uid: this.uid,
+                            uid: player.uid,
                             scoreID: play.scoreid,
                             score: play.score,
                             accuracy: parseFloat((play.accuracy / 1000).toFixed(2)),
@@ -159,7 +160,7 @@ export class Player {
                         })
                     );
                 }
-                resolve(this);
+                resolve(player);
             });
         });
     }
