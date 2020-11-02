@@ -48,7 +48,7 @@ module.exports.run = (client, maindb, alicedb) => {
             const clanrole = guild.roles.cache.find(r => r.name === clan.name);
             const leader = clan.leader;
             const memberList = clan.member_list;
-            const upkeepDistribution = equalDistribution(member_list.length);
+            const upkeepDistribution = equalDistribution(memberList.length);
             const query = {discordid: {$in: []}};
             for (const member of memberList) {
                 query.discordid.$in.push(member.id);
