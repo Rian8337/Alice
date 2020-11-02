@@ -88,16 +88,26 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 				let i = 0;
 				let map_entries = [];
 				obj = obj.filter(map => map.mode === "0");
-				obj.sort((a, b) => {return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating);});
+				obj.sort((a, b) => {
+					return parseFloat(b.difficultyrating) - parseFloat(a.difficultyrating);
+				});
 				let total_map = obj.length;
 				if (obj.length > 3) obj.splice(3);
 
 				obj.forEach(async map => {
-					const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: map.beatmap_id});
+					const mapinfo = new osudroid.MapInfo();
+					mapinfo.fillMetadata(map);
+					await mapinfo.retrieveBeatmapFile();
 					i++;
-					if (!mapinfo.osuFile) return;
-					if (!combo || combo <= 0) combo = mapinfo.maxCombo - missc;
-					if (mapinfo.maxCombo <= missc) return;
+					if (!mapinfo.osuFile) {
+						return;
+					}
+					if (!combo || combo <= 0) {
+						combo = mapinfo.maxCombo - missc;
+					}
+					if (mapinfo.maxCombo <= missc) {
+						return;
+					}
 					combo = Math.min(combo, mapinfo.maxCombo);
 					
 					let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
@@ -160,9 +170,15 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	}
 	const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
 
-	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) return;
-	if (!combo) combo = mapinfo.maxCombo - missc;
-	if (mapinfo.maxCombo <= missc) return;
+	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
+		return;
+	}
+	if (!combo) {
+		combo = mapinfo.maxCombo - missc;
+	}
+	if (mapinfo.maxCombo <= missc) {
+		return;
+	}
 	combo = Math.min(combo, mapinfo.maxCombo);
 	let acc_estimation = false;
 	if (acc === 100 && missc > 0) {
