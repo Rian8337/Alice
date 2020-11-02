@@ -146,7 +146,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		main_bot: true
 	};
 
-	if (!(message.channel instanceof Discord.DMChannel) && message.content.startsWith("&")) {
+	if (message.content.startsWith("&")) {
 		let mainbot = message.guild.members.cache.get("391268244796997643");
 		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
 		obj.main_bot = false;
