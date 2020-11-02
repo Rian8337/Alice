@@ -249,7 +249,7 @@ export class MapInfo {
 
             const options: string = `https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&${beatmapID ? `b=${beatmapID}` : `h=${hash}`}`;
 
-            request(options, (err, response, data) => {
+            request(options, async (err, response, data) => {
                 if (err || response.statusCode !== 200) {
                     console.log("Error retrieving map info");
                     map.error = true;
@@ -268,25 +268,11 @@ export class MapInfo {
 
                 map.fillMetadata(mapinfo);
 
-                if (!params.file) {
-                    return resolve(map);
+                if (params.file) {
+                    await map.retrieveBeatmapFile();
                 }
 
-                const url: string = `https://osu.ppy.sh/osu/${map.beatmapID}`;
-                const dataArray: Buffer[] = [];
-                request(url, {timeout: 10000})
-                    .on("data", chunk => {
-                        dataArray.push(Buffer.from(chunk));
-                    })
-                    .on("complete", response => {
-                        if (response.statusCode !== 200) {
-                            console.log("Error downloading osu file");
-                            return resolve(map);
-                        }
-                        map.osuFile = Buffer.concat(dataArray).toString("utf8");
-                        map.map = new Parser().parse(map.osuFile).map;
-                        resolve(map);
-                    });
+                resolve(map);                
             });
         });
     }
@@ -294,7 +280,7 @@ export class MapInfo {
     /**
      * Fills the current instance with metadata.
      */
-    fillMetadata(mapinfo: OsuAPIResponse): void {
+    fillMetadata(mapinfo: OsuAPIResponse): MapInfo {
         this.fullTitle = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
         this.title = mapinfo.title;
         this.artist = mapinfo.artist;
@@ -328,6 +314,34 @@ export class MapInfo {
         this.speedDifficulty = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
         this.totalDifficulty = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
         this.hash = mapinfo.file_md5;
+        return this;
+    }
+
+    /**
+     * Retrieves the beatmap's .osu file and parses it.
+     */
+    retrieveBeatmapFile(): Promise<MapInfo> {
+        return new Promise(resolve => {
+            if (this.osuFile) {
+                return resolve(this);
+            }
+
+            const url: string = `https://osu.ppy.sh/osu/${this.beatmapID}`;
+            const dataArray: Buffer[] = [];
+            request(url, {timeout: 10000})
+                .on("data", chunk => {
+                    dataArray.push(Buffer.from(chunk));
+                })
+                .on("complete", response => {
+                    if (response.statusCode !== 200) {
+                        console.log("Error downloading osu file");
+                        return resolve(this);
+                    }
+                    this.osuFile = Buffer.concat(dataArray).toString("utf8");
+                    this.map = new Parser().parse(this.osuFile).map;
+                    resolve(this);
+                });
+        });
     }
 
     /**
