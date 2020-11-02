@@ -45,6 +45,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
 module.exports.config = {
 	name: "profilesearch",
+	aliases: "pfsearch",
 	description: "Searches for a user and retrieves the user's uid.",
 	usage: "profilesearch <username>",
 	detail: "`username`: The username to search (case insensitive) [String]",
