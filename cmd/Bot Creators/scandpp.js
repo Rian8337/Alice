@@ -31,6 +31,8 @@ module.exports.run = (client, message, args, maindb) => {
         const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
         let count = 0;
+        const mapCache = new Map();
+        const whitelistCache = new Map();
         console.log(`Scanning ${res.length} players`);
         for await (const player of res) {
             const ppList = player.pp;
@@ -40,9 +42,13 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(`Scanning uid ${player.uid}`);
             console.log(`Scanning ${ppList.length} plays`);
             for await (const ppEntry of ppList) {
-                const mapinfo = await osudroid.MapInfo.getInformation({hash: ppEntry.hash, file: false});
-                ++i;
-                await sleep(1);
+                let mapinfo = mapCache.get(ppEntry.hash);
+                if (!mapinfo) {
+                    mapinfo = await osudroid.MapInfo.getInformation({hash: ppEntry.hash, file: false});
+                    mapCache.set(ppEntry.hash, mapinfo);
+                    await sleep(1);
+                }
+                console.log(++i);
                 if (mapinfo.error) {
                     continue;
                 }
@@ -62,7 +68,11 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                    const isWhitelist = await whitelistDb.findOne({hashid: mapinfo.hash});
+                    let isWhitelist = whitelistCache.get(mapinfo.hash);
+                    if (!isWhitelist) {
+                        isWhitelist = await whitelistDb.findOne({hashid: mapinfo.hash});
+                        whitelistCache.set(mapinfo.hash, isWhitelist);
+                    }
                     if (!isWhitelist) {
                         continue;
                     }
