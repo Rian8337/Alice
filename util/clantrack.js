@@ -66,7 +66,8 @@ module.exports.run = (client, maindb, alicedb) => {
 
             for await (const bind of bindInfo) {
                 let rank = Number.POSITIVE_INFINITY;
-                for await (const uid of bindInfo.previous_bind) {
+                const previous_bind = bind.previous_bind ? bind.previous_bind : [bind.uid];
+                for await (const uid of previous_bind) {
                     rank = Math.min(rank, await osudroid.Player.getInformation({uid: uid}));
                 }
                 rankInformation.push({
