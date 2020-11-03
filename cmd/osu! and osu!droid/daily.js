@@ -237,7 +237,7 @@ function challengeRequirements(pass, bonus) {
                     bonus_string += `Score V1 at least **${b.value.toLocaleString()}**`;
                     break;
                 case "acc":
-                    bonus_string += `Accuracy at least **${b.value}**`;
+                    bonus_string += `Accuracy at least **${b.value}%**`;
                     break;
                 case "scorev2":
                     bonus_string += `Score V2 at least **${b.value.toLocaleString()}**`;
