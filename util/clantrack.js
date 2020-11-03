@@ -35,7 +35,7 @@ module.exports.run = (client, maindb, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     const curtime = Math.floor(Date.now() / 1000);
 
-    clandb.find({name: "Rabbit House"}).sort({weeklyfee: 1}).toArray(async (err, clans) => {
+    clandb.find({weeklyfee: {$lte: curtime}}).sort({weeklyfee: 1}).toArray(async (err, clans) => {
         if (err) {
             return console.log(err);
         }
@@ -154,7 +154,7 @@ module.exports.run = (client, maindb, alicedb) => {
             // kick members
             for await (const kicked of kickedList) {
                 if (clanrole) {
-                    const guildMember = guild.member(kicked);
+                    const guildMember = await guild.members.fetch(kicked);
                     if (guildMember) {
                         guildMember.roles.remove([role, clanrole], "Kicked from clan");
                     }
@@ -167,10 +167,7 @@ module.exports.run = (client, maindb, alicedb) => {
                 }});
             }
 
-            // update clan entry
-            if (newMemberList.length > 0) {
-                await clandb.updateOne({name: clan.name}, {$inc: {weeklyfee: 86400 * 7}, $set: {member_list: newMemberList}});
-            }
+            await clandb.updateOne({name: clan.name}, {$inc: {weeklyfee: 86400 * 7}, $set: {member_list: newMemberList}});
 
             // notify clan leaders
             client.users.fetch(leader).then(u => u.send(`❗**| Hey, your clan upkeep has been picked up from your members! ${newMemberList.length} member(s) have successfully paid their upkeep. A total of ${kickedList.length} member(s) were kicked. Your next clan upkeep will be picked in ${new Date((clan.weeklyfee + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
