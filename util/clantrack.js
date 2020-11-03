@@ -35,7 +35,7 @@ module.exports.run = (client, maindb, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     const curtime = Math.floor(Date.now() / 1000);
 
-    clandb.find({weeklyfee: {$lte: curtime}}).sort({weeklyfee: 1}).toArray(async (err, clans) => {
+    clandb.find({name: "Rabbit House"}).sort({weeklyfee: 1}).toArray(async (err, clans) => {
         if (err) {
             return console.log(err);
         }
@@ -62,13 +62,14 @@ module.exports.run = (client, maindb, alicedb) => {
 
             console.log("Fetching clan members coins entry");
             const membersPoints = await pointdb.find(query, {projection: {_id: 0, discordid: 1, alicecoins: 1}}).toArray();
-            const bindInfo = await binddb.find({clan: clan.name}, {projection: {_id: 0, discordid: 1, uid: 1, previous_bind: 1}}).toArray();
+            const bindInfo = await binddb.find(query, {projection: {_id: 0, discordid: 1, uid: 1, previous_bind: 1}}).toArray();
 
             for await (const bind of bindInfo) {
                 let rank = Number.POSITIVE_INFINITY;
                 const previous_bind = bind.previous_bind ? bind.previous_bind : [bind.uid];
                 for await (const uid of previous_bind) {
-                    rank = Math.min(rank, await osudroid.Player.getInformation({uid: uid}));
+                    const player = await osudroid.Player.getInformation({uid: uid});
+                    rank = Math.min(rank, player.rank);
                 }
                 rankInformation.push({
                     discordid: bind.discordid,
@@ -76,9 +77,8 @@ module.exports.run = (client, maindb, alicedb) => {
                 });
             }
 
-            for (let i = 0; i < memberList.length; ++i) {
-                const member = memberList[i];
-                const guildMember = guild.member(member.id);
+            for await (const member of memberList) {
+                const guildMember = await guild.members.fetch(member.id);
                 // if the person is not in the server, kick the person
                 if (!guildMember) {
                     upkeepDistribution.shift();
