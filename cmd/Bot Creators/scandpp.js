@@ -45,13 +45,13 @@ module.exports.run = (client, message, args, maindb) => {
                 let mapinfo = mapCache.get(ppEntry.hash);
                 if (!mapinfo) {
                     mapinfo = await osudroid.MapInfo.getInformation({hash: ppEntry.hash, file: false});
+                    if (mapinfo.error) {
+                        continue;
+                    }
                     mapCache.set(ppEntry.hash, mapinfo);
                     await sleep(1);
                 }
                 console.log(++i);
-                if (mapinfo.error) {
-                    continue;
-                }
                 if (!mapinfo.title) {
                     continue;
                 }
