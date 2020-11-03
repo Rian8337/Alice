@@ -10,8 +10,8 @@ module.exports.run = client => {
 	channel.messages.fetch("674626850164703232").then(message => {
 		message.react("✅").catch(console.error);
 		const collector = message.createReactionCollector((reaction, user) => reaction.emoji.name === "✅" && user.id !== client.user.id);
-		collector.on("collect", (reaction, user) => {
-			const guildUser = guild.member(user);
+		collector.on("collect", async (reaction, user) => {
+			const guildUser = await guild.members.fetch(user);
 			if (guildUser.roles.cache.has(role.id)) {
 				guildUser.roles.remove(role, "Automatic role assignment").catch(console.error);
 			} else {

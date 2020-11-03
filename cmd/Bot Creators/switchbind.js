@@ -1,10 +1,25 @@
-module.exports.run = (client, message, args, maindb) => {
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-    const uid = parseInt(args[0]);
-    if (isNaN(uid)) return message.channel.send("❎ **| Hey, please mention a valid uid!**");
+const { Client, Message } = require('discord.js');
+const { Db } = require('mongodb');
 
-    const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]));
-    if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
+/**
+ * @param {Client} client 
+ * @param {Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
+module.exports.run = async (client, message, args, maindb) => {
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    }
+    const uid = parseInt(args[0]);
+    if (isNaN(uid)) {
+        return message.channel.send("❎ **| Hey, please mention a valid uid!**");
+    }
+
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+    if (!user) {
+        return message.channel.send("❎ **| Hey, please mention a valid user!**");
+    }
 
     const binddb = maindb.collection("userbind");
     const query = {previous_bind: {$all: [uid.toString()]}};

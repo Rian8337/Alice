@@ -11,8 +11,8 @@ module.exports.run = (client, maindb, alicedb) => {
     let date = d.getUTCDate();
     let month = d.getUTCMonth();
 
-    let guild = client.guilds.cache.get('316545691545501706');
-    let role = guild.roles.cache.get("695201338182860860");
+    const guild = client.guilds.cache.get('316545691545501706');
+    const role = guild.roles.cache.get("695201338182860860");
     if (!role) {
         return;
     }
@@ -69,8 +69,8 @@ module.exports.run = (client, maindb, alicedb) => {
             }
         });
 
-        current_birthday.forEach((entry) => {
-            let user = guild.member(entry.discordid);
+        current_birthday.forEach(async (entry) => {
+            const user = await guild.members.fetch(entry.discordid);
             if (!user) {
                 return;
             }

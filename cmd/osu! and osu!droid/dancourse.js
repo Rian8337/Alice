@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config  = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
 function isEligible(member) {
     let res = 0;
@@ -53,7 +54,13 @@ function validation(dan, mod, acc, rank) {
     return res
 }
 
-module.exports.run = (client, message, args, maindb) => {
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
+module.exports.run = async (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     let danchannel = message.guild.channels.cache.get('361785436982476800');
     if (!danchannel || message.channel.id != '361785436982476800') return message.channel.send("❎ **| I'm sorry, this command is only supported in dan course channel in droid International Discord server.**");
@@ -91,7 +98,7 @@ module.exports.run = (client, message, args, maindb) => {
             let perm = isEligible(message.member);
             if (!perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
 
-            let togive = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+            const togive = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
             if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
 
             let rolename = args.slice(1).join(" ");
@@ -110,14 +117,14 @@ module.exports.run = (client, message, args, maindb) => {
 
             togive.roles.add(role.id, "Successfully completed dan course").then (() => {
                 message.channel.send(`✅ **| ${message.author}, successfully given ${rolename} role for <@${togive.id}>. Congratulations for <@${togive.id}>!**`);
-                if (danlist.slice(7, danlist.length).includes(rolename)) channel.send(`**<@${togive.id}> has just completed ${rolename}. Congratulations to <@${togive.id}>!**`)
+                if (danlist.slice(7, danlist.length).includes(rolename)) channel.send(`**<@${togive.id}> has just completed ${rolename}. Congratulations to <@${togive.id}>!**`);
             }).catch(console.error);
 
             // Dan Course Master
             danlist.pop();
             let count = 1;
             danlist.forEach(role => {
-                if (togive.roles.cache.find((r) => r.name === role)) count++
+                if (togive.roles.cache.find((r) => r.name === role)) count++;
             });
             if (count == danlist.length) {
                 let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
@@ -134,7 +141,7 @@ module.exports.run = (client, message, args, maindb) => {
             binddb.find(query).toArray(async (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res[0]) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 let uid = res[0].uid;
@@ -170,7 +177,7 @@ module.exports.run = (client, message, args, maindb) => {
                     if (!role) return message.channel.send(`❎ **| I'm sorry, I cannot find ${danrole} role!**`);
                     if (!message.member.roles.cache.has(role.id)) message.member.roles.add(role.id, "Successfully completed dan course").then(() => {
                         message.channel.send(`✅ **| ${message.author}, congratulations! You have completed ${danrole}.**`);
-                        if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`)
+                        if (x.dan > 7) channel.send(`**${message.author} has just completed ${danrole}. Congratulations to ${message.author}!**`);
                     }).catch(console.error);
 
                     // Dan Course Master
@@ -178,19 +185,19 @@ module.exports.run = (client, message, args, maindb) => {
                         danlist.pop();
                         let count = 1;
                         danlist.forEach(role => {
-                            if (message.member.roles.cache.find((r) => r.name === role)) count++
+                            if (message.member.roles.cache.find((r) => r.name === role)) count++;
                         });
                         if (count == danlist.length) {
                             let dcmrole = message.guild.roles.cache.find((r) => r.name === "Dan Course Master");
                             if (!dcmrole) return message.channel.send("❎ **| I'm sorry, I cannot find the Dan Course Master role!**");
                             if (!message.member.roles.cache.has(dcmrole.id)) message.member.roles.add(dcmrole.id, "Successfully completed required dan courses").then(() => {
                                 message.channel.send(`✅ **| ${message.author}, congratulations! You have completed every dan required to get the Dan Course Master role!**`);
-                                channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`)
-                            }).catch(console.error)
+                                channel.send(`**${message.author} has just achieved Dan Course Master. Congratulations to ${message.author}!**`);
+                            }).catch(console.error);
                         }
                     }
-                })
-            })
+                });
+            });
         }
     }
 };

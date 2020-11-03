@@ -6,13 +6,13 @@ const {Client, Message, MessageEmbed} = require('discord.js');
  * @param {Message} message 
  * @param {string[]} args 
  */
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
     if (message.channel.type !== "text") return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     if (!args[0]) return;
 
     message.delete().catch(console.error);
 
-    let toreport = message.guild.member(message.mentions.users.first() || message.guild.members.resolve(args[0]));
+    const toreport = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
     if (!toreport) return message.channel.send("❎ **| Hey, please enter a valid user to report!**");
     if (toreport.hasPermission("ADMINISTRATOR", {checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you cannot report this user!**");
     if (toreport.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot report yourself!**");

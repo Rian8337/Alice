@@ -291,7 +291,7 @@ function challengeRequirements(pass, bonus) {
  * @param {Db} maindb 
  * @param {Db} alicedb 
  */
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel.type !== "text") {
         return;
     }
@@ -343,7 +343,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             // ===========================
             // if args[1] is not defined,
             // defaults to the message author
-            const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1] ?? message.author.id));
+            const user = await message.guild.members.fetch(message.mentions.users.first() || (args[1] ? args[1] : message.author.id));
             if (!user) {
                 return message.channel.send("❎ **| Hey, can you give me a valid user?**");
             }
@@ -1441,7 +1441,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 msg.react("✅");
 
                                 let confirmation = false;
-                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === "✅" && isEligible(message.guild.member(user)), {time: 60000});
+                                const confirm = msg.createReactionCollector(async (reaction, user) => reaction.emoji.name === "✅" && isEligible(await message.guild.members.fetch(user)), {time: 60000});
 
                                 confirm.on('collect', () => {
                                     msg.delete();
@@ -1500,7 +1500,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 msg.react("✅");
 
                                 let confirmation = false;
-                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === "✅" && isEligible(message.guild.member(user)), {time: 60000});
+                                const confirm = msg.createReactionCollector(async (reaction, user) => reaction.emoji.name === "✅" && isEligible(await message.guild.members.fetch(user)), {time: 60000});
 
                                 confirm.on('collect', () => {
                                     msg.delete();

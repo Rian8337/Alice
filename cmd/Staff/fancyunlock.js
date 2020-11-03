@@ -1,12 +1,20 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 const config = require('../../config.json');
 
-module.exports.run = (client, message, args, maindb, alicedb) => {
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
     if (message.guild.id !== '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
 
-    const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
     const reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Please enter unlock reason!**");

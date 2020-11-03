@@ -55,7 +55,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (isNaN(uid)) return message.channel.send("❎ **| Hey, that's an invalid uid!**");
 
             query = {uid: uid.toString()};
-            namedb.findOne(query, (err, res) => {
+            namedb.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -65,7 +65,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let old_name = res.current_username;
                 let new_name = res.new_username;
                 let prev_names = res.previous_usernames;
-                let user = guild.member(res.discordid);
+                const user = await guild.members.fetch(res.discordid);
                 if (!user) {
                     updateVal = {
                         $set: {
@@ -175,14 +175,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (!reason) return message.channel.send("❎ **| Hey, please enter a denial reason!**")
             
             query = {uid: uid.toString()};
-            namedb.findOne(query, (err, res) => {
+            namedb.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!res || res.isProcessed) return message.channel.send("❎ **| I'm sorry, this user does not have an active name change request!**");
 
-                let user = guild.member(res.discordid);
+                const user = await guild.members.fetch(res.discordid);
                 let cooldown = res.cooldown;
                 let old_name = res.current_username;
                 let new_name = res.new_username;

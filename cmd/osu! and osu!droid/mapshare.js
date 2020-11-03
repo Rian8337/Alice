@@ -65,7 +65,7 @@ function retrieveBeatmapList(beatmapset_id) {
  * @param {Db} maindb 
  * @param {Db} alicedb 
  */
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const mapdb = alicedb.collection("mapshare");
     const pointdb = alicedb.collection("playerpoints");
@@ -204,7 +204,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         rejection_message += '!**';
                         return message.channel.send(rejection_message);
                     }
-                    let submitter = message.guild.member(res.submitter);
+                    const submitter = await message.guild.members.fetch(res.submitter);
                     let summary = res.summary;
                     let coins = 20 * Math.floor(summary.split(" ").length / 50);
                     const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
@@ -479,7 +479,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
                     if (!res) return message.channel.send("❎ **| I'm sorry, there is no submission with that beatmap!**");
-                    let submitter = message.guild.member(res.id);
+                    const submitter = await message.guild.members.fetch(res.id);
                     const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
@@ -527,7 +527,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const hasPermission = message.isOwner || isEligible(message.member) !== 0;
                 if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
                 if (!isMapShareChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in this channel.**");
-                let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+                const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
                 if (!user) return message.channel.send("❎ **| Hey, please enter a valid user to ban from map sharing!**");
                 query = {discordid: user.id};
                 pointdb.findOne(query, (err, pres) => {
@@ -576,7 +576,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 const hasPermission = message.isOwner || isEligible(message.member) !== 0;
                 if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
                 if (!isMapShareChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in this channel.**");
-                let user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+                const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
                 if (!user) return message.channel.send("❎ **| Hey, please enter a valid user to ban from map sharing!**");
                 query = {discordid: user.id};
                 pointdb.findOne(query, (err, pres) => {

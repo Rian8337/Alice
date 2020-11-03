@@ -27,14 +27,19 @@ function timeConvert(num) {
     return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
-    if (message.guild.id != "635532651029332000") return;
+    if (message.guild.id !== "635532651029332000") return;
 
     let timeLimit = isEligible(message.member);
     if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
 
-    let toban = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+    const toban = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
     if (!toban) return;
     if (isImmuned(toban)) return message.channel.send("You can't ban this user");
     let reason = args.slice(2).join(" ");
