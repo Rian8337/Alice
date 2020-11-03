@@ -48,7 +48,7 @@ module.exports.run = (client, maindb, alicedb) => {
             const clanrole = guild.roles.cache.find(r => r.name === clan.name);
             const leader = clan.leader;
             const memberList = clan.member_list;
-            const upkeepDistribution = equalDistribution(memberList.length);
+            const upkeepDistribution = equalDistribution(member_list.length);
             const query = {discordid: {$in: []}};
             for (const member of memberList) {
                 query.discordid.$in.push(member.id);
@@ -66,8 +66,7 @@ module.exports.run = (client, maindb, alicedb) => {
 
             for await (const bind of bindInfo) {
                 let rank = Number.POSITIVE_INFINITY;
-                const previousBind = bind.previous_bind ? bind.previous_bind : [bind.uid];
-                for await (const uid of previousBind) {
+                for await (const uid of bindInfo.previous_bind) {
                     rank = Math.min(rank, await osudroid.Player.getInformation({uid: uid}));
                 }
                 rankInformation.push({
@@ -154,7 +153,10 @@ module.exports.run = (client, maindb, alicedb) => {
             // kick members
             for await (const kicked of kickedList) {
                 if (clanrole) {
-                    await guild.member(kicked).roles.remove([role, clanrole], "Kicked from clan");
+                    const guildMember = guild.member(kicked);
+                    if (guildMember) {
+                        guildMember.roles.remove([role, clanrole], "Kicked from clan");
+                    }
                 }
                 await binddb.updateOne({discordid: kicked}, {$set: {
                     clan: "",
@@ -173,6 +175,7 @@ module.exports.run = (client, maindb, alicedb) => {
             client.users.fetch(leader).then(u => u.send(`❗**| Hey, your clan upkeep has been picked up from your members! ${newMemberList.length} member(s) have successfully paid their upkeep. A total of ${kickedList.length} member(s) were kicked. Your next clan upkeep will be picked in ${new Date((clan.weeklyfee + 86400 * 7) * 1000).toUTCString()}.**`).catch(console.error)).catch(console.error);
             console.log(`Done checking ${clan.name} clan`);
         }
+        console.log("Clan check complete");
     });
 };
 
