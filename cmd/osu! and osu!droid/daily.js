@@ -694,6 +694,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             const passreq = dailyres.pass;
                             const bonus = dailyres.bonus;
+                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
                             
                             const data = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
                             let unstableRate = 0;
@@ -723,7 +724,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                                 // speedPenalty = data.penalty;
                             }
-                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: combo,
@@ -868,7 +868,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                         break;
                                     }
                                     if (!found) {
-                                        points += dailyres.points;
+                                        points += dailyres.points + completedLevel * 2;
                                         challengelist.push(bonusentry);
                                     }
                                     const totalpoint = playerres.points + points;
