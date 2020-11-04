@@ -1,11 +1,16 @@
 const Discord = require("discord.js");
-const client = new Discord.Client();
 const fs = require("fs");
 const mongodb = require('mongodb');
 require("dotenv").config();
-const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
+
+const client = new Discord.Client({
+	ws: {
+		intents: Discord.Intents.FLAGS.GUILD_MEMBERS
+	}
+});
+const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 
 client.commands = new Discord.Collection();
 client.utils = new Discord.Collection();
