@@ -66,25 +66,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let new_name = res.new_username;
                 let prev_names = res.previous_usernames;
                 const user = await guild.members.fetch(res.discordid);
-                if (!user) {
-                    updateVal = {
-                        $set: {
-                            cooldown: cooldown - 86400 * 30,
-                            new_username: null,
-                            attachment: null,
-                            isProcessed: true
-                        }
-                    };
-
-                    namedb.updateOne(query, updateVal, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                        }
-                        message.channel.send("❎ **| I'm sorry, this user is not in the server!**");
-                    })
-                    return;
-                }
 
                 let url = encodeURI(`http://ops.dgsrz.com/api/rename.php?apiKey=${droidapikey}&username=${old_name}&newname=${new_name}`);
                 let content = '';
@@ -112,11 +93,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 }
                                 message.channel.send("❎ **| I'm sorry, the username that the user has requested has been taken!**");
 
-                                embed.setTitle("Request Details")
-                                    .setColor(16711711)
-                                    .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
-
-                                user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error);
+                                if (user) {
+                                    embed.setTitle("Request Details")
+                                        .setColor(16711711)
+                                        .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
+    
+                                    user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error);
+                                }
                             });
                             return;
                         }
@@ -152,11 +135,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             }
                             message.channel.send("✅ **| Successfully accepted name change request.**");
 
-                            embed.setTitle("Request Details")
-                                .setColor(2483712)
-                                .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
-
-                            user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error);
+                            if (user) {
+                                embed.setTitle("Request Details")
+                                    .setColor(2483712)
+                                    .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
+    
+                                user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error);
+                            }
                         });
                     });
                 });
