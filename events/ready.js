@@ -34,7 +34,7 @@ module.exports.run = (client, maindb, alicedb) => {
 		client.utils.get("dailyreset").run(alicedb);
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		const index = Math.floor(Math.random() * activity_list.length);
-		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]})
+		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]});
 	}, 10000);
 	
 	// Utilities
@@ -46,20 +46,20 @@ module.exports.run = (client, maindb, alicedb) => {
 			client.utils.get("clantrack").run(client, maindb, alicedb);
 			client.utils.get("dailytrack").run(client, maindb, alicedb);
 			client.utils.get("weeklytrack").run(client, maindb, alicedb);
-			client.utils.get("auctiontrack").run(client, maindb, alicedb)
+			client.utils.get("auctiontrack").run(client, maindb, alicedb);
 		}
 	}, 600000);
 	
 	// Clan rank update
 	setInterval(() => {
-		if (!maintenance) client.utils.get("clanrankupdate").run(maindb)
+		if (!maintenance) client.utils.get("clanrankupdate").run(maindb);
 	}, 1200000);
 
 	// Mudae role assignment reaction-based on droid cafe
-	client.subevents.get("mudaeRoleReaction").run(client)
+	client.subevents.get("mudaeRoleReaction").run(client);
 
 	// Challenge role assignment (reaction-based)
-	client.subevents.get("challengeRoleReaction").run(client)
+	client.subevents.get("challengeRoleReaction").run(client);
 };
 
 module.exports.config = {

@@ -7,7 +7,10 @@ const alicedbkey = process.env.ALICE_DB_KEY;
 
 const client = new Discord.Client({
 	ws: {
-		intents: Discord.Intents.FLAGS.GUILD_MEMBERS
+		intents: new Discord.Intents().add(
+			Discord.Intents.NON_PRIVILEGED,
+			Discord.Intents.FLAGS.GUILD_MEMBERS
+		)
 	}
 });
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
