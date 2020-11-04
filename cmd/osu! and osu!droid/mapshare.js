@@ -65,7 +65,7 @@ function retrieveBeatmapList(beatmapset_id) {
  * @param {Db} maindb 
  * @param {Db} alicedb 
  */
-module.exports.run = async (client, message, args, maindb, alicedb) => {
+module.exports.run = (client, message, args, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const mapdb = alicedb.collection("mapshare");
     const pointdb = alicedb.collection("playerpoints");
@@ -74,7 +74,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     let query = {discordid: message.author.id};
     let insertVal = {}, updateVal = {$set: {}};
 
-    binddb.findOne(query, (err, userres) => {
+    binddb.findOne(query, async (err, userres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
