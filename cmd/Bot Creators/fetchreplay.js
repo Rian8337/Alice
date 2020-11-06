@@ -68,7 +68,7 @@ module.exports.run = async (client, message, args, maindb) => {
         }
         hash = mapinfo.hash;
     }
-    const play = await new osudroid.Score({uid: uid, hash: hash}).getFromHash();
+    const play = await osudroid.Score.getFromHash({uid: uid, hash: hash});
     if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
