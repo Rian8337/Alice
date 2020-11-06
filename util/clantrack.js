@@ -93,7 +93,7 @@ module.exports.run = (client, maindb, alicedb) => {
                     upkeepDistribution.shift();
                     continue;
                 }
-                const upkeep = 500 - Math.floor(34.74 * Math.log(rank)) + upkeepDistribution[index];
+                const upkeep = 500 - Math.floor(34.74 * Math.log(rank.rank)) + upkeepDistribution[index];
                 upkeepDistribution.splice(index, 1);
 
                 const memberPoint = membersPoints.find(m => m.discordid === member.id);
