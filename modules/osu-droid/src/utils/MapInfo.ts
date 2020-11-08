@@ -452,13 +452,12 @@ export class MapInfo {
             case 3: {
                 const maxScore: number = this.maxScore(mapStatistics);
                 const convertedBPM: number = this.convertBPM(mapStatistics);
-                let string = ``;
+                let string = "**BPM**: ";
                 if (this.map) {    
                     const uninheritedTimingPoints: TimingPoint[] = this.map.timingPoints.filter(t => t.change);
                     if (uninheritedTimingPoints.length === 1) {
-                        string += `**BPM**: ${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                     } else {
-                        string += `**BPM**: `;
                         let maxBPM: number = convertedBPM;                        
                         let minBPM: number = convertedBPM;
                         let speedMulMinBPM: number = convertedBPM;
@@ -472,7 +471,11 @@ export class MapInfo {
                             speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
                         }
 
-                        string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM.toFixed(2)}-${speedMulMaxBPM.toFixed(2)} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        if (this.bpm === minBPM && this.bpm === maxBPM) {
+                            string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        } else {
+                            string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM.toFixed(2)}-${speedMulMaxBPM.toFixed(2)} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        }
                     }
                 } else {
                     string += `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
