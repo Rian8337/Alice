@@ -11,6 +11,9 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
     }
+    if (message.channel.type !== "text") {
+        return;
+    }
     const uid = parseInt(args[0]);
     if (isNaN(uid)) {
         return message.channel.send("❎ **| Hey, please mention a valid uid!**");
