@@ -312,7 +312,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     const coin = client.emojis.cache.get("669532330980802561");
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
-    const color = message.member.roles.color?.hexColor || "#000000";
+    const color = message.member?.roles.color?.hexColor || "#000000";
     const embed = new Discord.MessageEmbed().setColor(color);
     let query = {};
     let updateVal = {};
