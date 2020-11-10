@@ -14,15 +14,10 @@ let command_cooldown = 0;
  * @param {Db} maindb 
  * @param {Db} alicedb 
  */
-module.exports.run = (client, message, maindb, alicedb) => {
+module.exports.run = async (client, message, maindb, alicedb) => {
     message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
 	
 	if (message.embeds.length > 0) {
-		// mute detection for lounge ban
-		if (message.author.id === '391268244796997643' && message.channel.id === '440166346592878592') {
-			client.subevents.get("loungeBanMuteDetection").run(message, alicedb);
-		}
-
 		// owo bot support
 		if (message.author.id === "289066747443675143") {
 			client.subevents.get("updateMap").run(message, current_map);
@@ -143,14 +138,14 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	};
 
 	if (message.content.startsWith("&")) {
-		let mainbot = message.guild.members.cache.get("391268244796997643");
+		let mainbot = await message.guild.members.fetch('391268244796997643');
 		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
 		obj.main_bot = false;
-		client.subevents.get("commandHandler").run(obj)
+		client.subevents.get("commandHandler").run(obj);
 	}
 	
 	if (message.content.startsWith(config.prefix)) {
-		client.subevents.get("commandHandler").run(obj)
+		client.subevents.get("commandHandler").run(obj);
 	}
 };
 
