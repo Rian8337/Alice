@@ -292,11 +292,14 @@ function challengeRequirements(pass, bonus) {
  * @param {Db} alicedb 
  */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    if (message.channel.type !== "text") {
-        return;
-    }
-    if (!message.isOwner && message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000') {
-        return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
+    if (!message.isOwner) {
+        if (message.channel.type !== "text") {
+            return;
+        }
+
+        if (message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000') {
+            return message.channel.send("❎ **| I'm sorry, this command is only allowed in osu!droid (International) Discord server and droid café server!**");;
+        }
     }
     if (cd.has(message.author.id)) {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
