@@ -25,7 +25,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 
 		// owo bot support
 		if (message.author.id === "289066747443675143") {
-			client.subevents.get("updateMap").run(message, current_map)
+			client.subevents.get("updateMap").run(message, current_map);
 		}
 	}
 
@@ -35,44 +35,40 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	const command = msgArray[0];
 	const args = msgArray.slice(1);
 	
-	if ((message.author.id == '111499800683216896' || message.author.id == '386742340968120321') && message.content.toLowerCase() == 'brb shower') {
-		client.subevents.get("brbShower").run(message)
-	}
-	
 	// picture detector in #cute-no-lewd
 	if (message.channel.id === '686948895212961807') {
-		client.subevents.get("cuteNoLewd").run(client, message)
+		client.subevents.get("cuteNoLewd").run(client, message);
 	}
 	
 	// 8ball
 	if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
-		client.subevents.get("8ball").run(client, message, msgArray, alicedb)
+		client.subevents.get("8ball").run(client, message, msgArray, alicedb);
 	}
 	
 	// osu! beatmap link and osu!droid profile recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
 		client.subevents.get("osuRecognition").run(client, message, current_map);
-		client.subevents.get("profileFetch").run(client, message, maindb, alicedb)
+		client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
 	}
 	
 	// YouTube link detection
 	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
-		client.subevents.get("youtubeRecognition").run(client, message, current_map)
+		client.subevents.get("youtubeRecognition").run(client, message, current_map);
 	}
 	
 	// picture log
 	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
-		client.subevents.get("pictureLog").run(client, message)
+		client.subevents.get("pictureLog").run(client, message);
 	}
 	
 	// mention log
 	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
-		client.subevents.get("mentionLog").run(client, message)
+		client.subevents.get("mentionLog").run(client, message);
 	}
 	
 	// self-talking (for fun lol)
 	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') {
-		client.channels.cache.get("316545691545501706").send(message.content)
+		client.channels.cache.get("316545691545501706").send(message.content);
 	}
 	
 	// commands
