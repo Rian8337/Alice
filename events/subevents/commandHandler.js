@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const { Db } = require('mongodb');
-const cd = [];
+const cd = new Map();
 
 /**
  * @param {Object} obj
@@ -46,22 +46,26 @@ module.exports.run = obj => {
         setTimeout(() => {
             message.channel.stopTyping(true);
         }, 5000);
-        if (cd.find(c => c === message.author.id)) {
-            return message.channel.send(`❎ **| Hey, calm down with the command! I need to rest too, you know.**`);
+        const cooldownLeft = cd.get(message.author.id);
+        if (cooldownLeft) {
+            return message.channel.send(`❎ **| Hey, calm down with the command (${cooldownLeft.toFixed(1)} s)! I need to rest too, you know.**`);
         }
         if (message.channel.type === "text") {
             console.log(`${message.author.tag} (#${message.channel.name}): ${message.content}`);
-        }
-        else {
+        } else {
             console.log(`${message.author.tag} (DM): ${message.content}`);
         }
         cmd.run(client, message, args, maindb, alicedb, current_map);
         if (command_cooldown && !message.isOwner) {
-            cd.push(message.author.id);
-            setTimeout(() => {
-                const index = cd.findIndex(c => c === message.author.id);
-                cd.splice(index, 1);
-            }, 1000 * command_cooldown);
+            cd.set(message.author.id, command_cooldown);
+            const interval = setInterval(() => {
+                const cooldown = cd.get(message.author.id) - 0.1;
+                if (cooldown <= 0) {
+                    cd.delete(message.author.id);
+                    return clearInterval(interval);
+                }
+                cd.set(message.author.id, cooldown);
+            }, 100);
         }
     }
 };

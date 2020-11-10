@@ -93,7 +93,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		if (isNaN(seconds) || seconds < 0) {
 			return message.channel.send("❎ **| Hey, please enter a valid cooldown period!**");
 		}
-		command_cooldown = seconds;
+		command_cooldown = parseFloat(seconds.toFixed(1));
 		message.channel.send(`✅ **| Successfully set command cooldown to ${seconds} ${seconds === 1 ? "second" : "seconds"}.**`);
 	}
 
