@@ -147,6 +147,7 @@ export class Player {
                     player.recentPlays.push(
                         new Score({
                             uid: player.uid,
+                            username: player.username,
                             scoreID: play.scoreid,
                             score: play.score,
                             accuracy: parseFloat((play.accuracy / 1000).toFixed(2)),

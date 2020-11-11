@@ -1,22 +1,16 @@
-import * as request from 'request';
 import { mods } from '../utils/mods';
-import { config } from 'dotenv';
-config();
-const droidapikey: string = process.env.DROID_API_KEY as string;
+import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
 
-/**
- * Represents an osu!droid score.
- */
-export class Score {
+interface ScoreInformation {
     /**
      * The uid of the player.
      */
-    uid: number;
+    uid?: number;
 
     /**
      * The ID of the score.
      */
-    scoreID: number;
+    scoreID?: number;
 
     /**
      * The player's name.
@@ -46,7 +40,7 @@ export class Score {
     /**
      * The date of which the play was set.
      */
-    date: Date;
+    date: Date|number;
 
     /**
      * The accuracy achieved in the play.
@@ -64,34 +58,39 @@ export class Score {
     mods: string;
 
     /**
-     * Enabled modifications in the play in osu!droid format.
-     */
-    droidMods: string;
-
-    /**
      * MD5 hash of the play.
      */
     hash: string;
+}
+
+/**
+ * Represents an osu!droid score.
+ */
+export class Score implements ScoreInformation {
+    uid: number;
+    scoreID: number;
+    username: string;
+    title: string;
+    combo: number;
+    score: number;
+    rank: string;
+    date: Date;
+    accuracy: number;
+    miss: number;
+    mods: string;
+    hash: string;
+
+    /**
+     * Enabled modifications in the play in osu!standard format.
+     */
+    droidMods: string;
 
     /**
      * Whether or not the fetch result from `getFromHash()` returns an error. This should be immediately checked after calling said method.
      */
     error: boolean;
 
-    constructor(values?: {
-        uid?: number,
-        scoreID?: number,
-        username?: string,
-        title?: string,
-        combo?: number,
-        score?: number,
-        rank?: string,
-        date?: number,
-        accuracy?: number,
-        miss?: number,
-        mods?: string,
-        hash?: string
-    }) {
+    constructor(values?: ScoreInformation) {
         this.uid = values?.uid || 0;
         this.scoreID = values?.scoreID || 0;
         this.username = values?.username || "";
@@ -110,50 +109,73 @@ export class Score {
 
     /**
      * Retrieves play information.
+     * 
+     * @param values Function parameters.
      */
-    static getFromHash(params?: {
+    static getFromHash(params: {
+        /**
+         * The uid of the player.
+         */
         uid: number,
+
+        /**
+         * The MD5 hash to retrieve.
+         */
         hash: string
     }): Promise<Score> {
-        return new Promise(resolve => {
-            const score: Score = new Score();
-            const uid: number = score.uid = params?.uid || score.uid;
-            const hash: string = score.hash = params?.hash || score.hash;
+        return new Promise(async resolve => {
+            const score = new Score();
+            const uid: number = score.uid = params.uid;
+            const hash: string = score.hash = params.hash;
 
             if (!uid || !hash) {
                 console.log("Uid and hash must be specified");
                 return resolve(score);
             }
 
-            const options: string = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&hash=${hash}`;
-            request(options, (err, response, data) => {
-                if (err || response.statusCode !== 200) {
-                    console.log("Error retrieving score data");
-                    return resolve(score);
-                }
-                const entry: string[] = (data as string).split("<br>");
-                entry.shift();
-                if (entry.length === 0) {
-                    console.log("No play found");
-                    return resolve(score);
-                }
-                const play: string[] = entry[0].split(" ");
-                
-                score.scoreID = parseInt(play[0]);
-                score.username = play[2];
-                score.score = parseInt(play[3]);
-                score.combo = parseInt(play[4]);
-                score.rank = play[5];
-                score.mods = mods.droidToPC(play[6]);
-                score.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
-                score.miss = parseInt(play[8]);
-                const date = new Date(parseInt(play[9]) * 1000);
-                date.setUTCHours(date.getUTCHours() + 7);
-                score.date = date;
-                score.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
-                resolve(score);
-            });
+            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder();
+            apiRequestBuilder.setEndpoint("scoresearchv2.php")
+                .addParameter("uid", uid)
+                .addParameter("hash", hash);
+
+            const result: RequestResponse = await apiRequestBuilder.sendRequest();
+            if (result.statusCode !== 200) {
+                console.log("Error retrieving score data");
+                return resolve(score);
+            }
+
+            const entry: string[] = result.data.toString("utf-8").split("<br>");
+            entry.shift();
+            if (entry.length === 0) {
+                console.log("No play found");
+                return resolve(score);
+            }
+            score.fillInformation(entry[0]);
+            resolve(score);
         });
+    }
+
+    /**
+     * Fills this instance with score information.
+     * 
+     * @param info The score information to fill with.
+     */
+    fillInformation(info: string): Score {
+        const play: string[] = info.split(" ");
+            
+        this.scoreID = parseInt(play[0]);
+        this.username = play[2];
+        this.score = parseInt(play[3]);
+        this.combo = parseInt(play[4]);
+        this.rank = play[5];
+        this.mods = mods.droidToPC(play[6]);
+        this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
+        this.miss = parseInt(play[8]);
+        const date: Date = new Date(parseInt(play[9]) * 1000);
+        date.setUTCHours(date.getUTCHours() + 7);
+        this.date = date;
+        this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
+        return this;
     }
 
     /**
