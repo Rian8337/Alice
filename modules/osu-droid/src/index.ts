@@ -3,6 +3,7 @@ import { Beatmap } from './beatmap/Beatmap';
 import { BreakPoint } from './beatmap/timings/BreakPoint';
 import { Circle } from './beatmap/hitobjects/Circle';
 import { CursorData } from './replay/data/CursorData';
+import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { gamemode } from './constants/gamemode';
 import { hitResult } from './constants/hitResult';
@@ -67,6 +68,11 @@ export = {
     CursorData: CursorData,
 
     /**
+     * API request builder for osu!droid.
+     */
+    DroidAPIRequestBuilder: DroidAPIRequestBuilder,
+
+    /**
      * Represents the hit window of osu!droid.
      */
     DroidHitWindow: DroidHitWindow,
@@ -110,6 +116,11 @@ export = {
      * Movement type of a cursor in an osu!droid replay.
      */
     movementType: movementType,
+
+    /**
+     * API request builder for osu!standard.
+     */
+    OsuAPIRequestBuilder: OsuAPIRequestBuilder,
     
     /**
      * Represents the hit window of osu!standard.
