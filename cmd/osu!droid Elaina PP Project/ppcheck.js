@@ -29,10 +29,6 @@ function generateEmbed(res, page, footer, index, color) {
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel.type !== "text") {
-        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    }
-
     if (cd.has(message.author.id)) {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     }
@@ -46,20 +42,27 @@ module.exports.run = (client, message, args, maindb) => {
 		else {
 			if (args[0].length < 18) {
 				uid = parseInt(args[0]);
-				if (uid >= 500000) return message.channel.send("❎ **| Hey, that uid is too big!**");
+				if (uid >= 500000) {
+					return message.channel.send("❎ **| Hey, that uid is too big!**");
+				}
 				query = {previous_bind: {$all: [uid.toString()]}};
 			}
 			else {
 				const ufind = args[0].replace(/[<@!>]/g, "");
-				if (ufind.length !== 18) return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+				if (ufind.length !== 18) {
+					return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+				}
 				query = {discordid: ufind};
 			}
 		}
     }
     
     if (args[1]) {
-		if (isNaN(args[1]) || parseInt(args[1]) > 15 || parseInt(args[1]) <= 0) page = 1;
-		else page = parseInt(args[1]);
+		if (isNaN(args[1]) || parseInt(args[1]) > 15 || parseInt(args[1]) <= 0) {
+			page = 1;
+		} else {
+			page = parseInt(args[1]);
+		}
 	}
 
     const binddb = maindb.collection("userbind");
@@ -75,7 +78,7 @@ module.exports.run = (client, message, args, maindb) => {
         } 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
-        const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
+        const color = message.member?.roles.color?.hexColor || "#000000";
 
         let embed = generateEmbed(res, page, footer, index, color);
         const max_page = Math.ceil(res.pp.length / 5);
@@ -88,15 +91,17 @@ module.exports.run = (client, message, args, maindb) => {
 				});
             });
             
-            let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-            let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+            const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+			const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+			const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+            const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
             
             backward.on('collect', () => {
 				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 1;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = generateEmbed(res, page, footer, index, color);
 				msg.edit({embed: embed}).catch(console.error);
 			});
@@ -104,7 +109,9 @@ module.exports.run = (client, message, args, maindb) => {
 			back.on('collect', () => {
 				if (page === 1) page = max_page;
 				else page--;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = generateEmbed(res, page, footer, index, color);
 				msg.edit({embed: embed}).catch(console.error);
 			});
@@ -112,7 +119,9 @@ module.exports.run = (client, message, args, maindb) => {
 			next.on('collect', () => {
 				if (page === max_page) page = 1;
 				else page++;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = generateEmbed(res, page, footer, index, color);
 				msg.edit({embed: embed}).catch(console.error);
 			});
@@ -120,13 +129,17 @@ module.exports.run = (client, message, args, maindb) => {
 			forward.on('collect', () => {
 				if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = max_page;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = generateEmbed(res, page, footer, index, color);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			backward.on("end", () => {
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
             });
         });
