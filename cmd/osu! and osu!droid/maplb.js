@@ -1,29 +1,40 @@
 const Discord = require('discord.js');
-const request = require('request');
-const apikey = process.env.DROID_API_KEY;
-const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
+const config = require('../../config.json');
 const cd = new Set();
 
+/**
+ * @param {string} hash 
+ * @param {number} page 
+ */
 function fetchScores(hash, page) {
-    return new Promise(resolve => {
-        let url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${apikey}&hash=${hash}&page=${page}&order=score`;
-        request(url, (err, response, data) => {
-            if (err || !data) {
-                console.log("Empty response from droid API");
-                page--;
-                resolve(null);
-            }
-            let entries = [];
-            let line = data.split('<br>');
-            line.shift();
-            for (let i in line) entries.push(line[i]);
-            if (!line[0]) resolve(null);
-            else resolve(entries);
-        });
+    return new Promise(async resolve => {
+        const apiRequestBuilder = new osudroid.DroidAPIRequestBuilder()
+            .setEndpoint("scoresearchv2.php")
+            .addParameter("hash", hash)
+            .addParameter("page", page)
+            .addParameter("order", "score");
+
+        const result = await apiRequestBuilder.sendRequest();
+        if (result.statusCode !== 200) {
+            --page;
+            return resolve([]);
+        }
+
+        const entries = [];
+        const lines = result.data.toString("utf-8").split("<br>");
+        lines.shift();
+        for (const line of lines) {
+            entries.push(new osudroid.Score().fillInformation(line));
+        }
+        resolve(entries);
     });
 }
 
+/**
+ * @param {string} input 
+ */
 function rankEmote(input) {
     switch (input) {
         case 'A':
@@ -43,76 +54,95 @@ function rankEmote(input) {
         case 'XH':
             return '611559473479155713';
         default :
-            return
+            return;
     }
 }
 
-async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entry, footer, index, global_star) {
+function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer, index, starCache) {
     return new Promise(async resolve => {
-        let page_limit = Math.floor((page - 1) / 20);
-        let entries = null;
-        for (let i = 0; i < cache.length; i++) {
-            if (page_limit != cache[i].page) continue;
-            entries = cache[i].scores;
-            break
-        }
-        if (!entries) {
-            let scores = await fetchScores(hash, page_limit);
+        const pageLimit = Math.floor((page - 1) / 20);
+        const cacheEntry = cache.find(c => c.page === pageLimit);
+        let entries;
+        if (cacheEntry) {
+            entries = cacheEntry.scores;
+        } else {
+            const scores = await fetchScores(hash, pageLimit);
             entries = scores;
-            cache.push({page: page_limit, scores: scores});
+            cache.push({page: pageLimit, scores});
         }
-        if (!Array.isArray(entries)) resolve(null);
 
-        let droid_stars = parseFloat(global_star.droidStars.toString().split(" ")[0]);
-        let pc_stars = parseFloat(global_star.pcStars.toString().split(" ")[0]);
-        let embed = new Discord.MessageEmbed()
+        const embed = new Discord.MessageEmbed()
             .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
             .setFooter(`Alice Synthesis Thirty | Page ${page}`, footer[index])
-            .setColor(rolecheck)
-            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
-            .setTitle(`${mapinfo.fullTitle} (${droid_stars}★ | ${pc_stars}★)`)
-            .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
-            .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField("**Top Score**", `${client.emojis.cache.get(top_entry.rank)} **${top_entry.name}${top_entry.mod ? ` (+${top_entry.mod})` : ""}\nScore**: \`${top_entry.score}\` - Combo: \`${top_entry.combo.toLocaleString()}x\` - Accuracy: \`${top_entry.accuracy}%\` (\`${top_entry.miss}\` x)\nTime: \`${top_entry.date.toUTCString()}\`\n\`${top_entry.dpp} droid pp - ${top_entry.pp} PC pp\``);
+            .setColor(color);
+
+        // NM star rating
+        const globalStar = starCache.get(0);
+        if (mapinfo.title) {
+            embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
+                .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
+                .setTitle(`${mapinfo.fullTitle} (${globalStar.droidStars.total.toFixed(2)}★ | ${globalStar.pcStars.total.toFixed(2)}★)`)
+                .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${topEntry.dpp.toFixed(2)}DPP | ${topEntry.pp.toFixed(2)}PP** ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x/${mapinfo.maxCombo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
+        } else {
+            embed.setTitle(entries[0].title)
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get   (topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``)
+        }
 
         let i = 5 * (page - 1);
-        if (i >= 100) i -= page_limit * 100;
-        let limit = i + 5;
-        for (i; i < limit; i++) {
-            if (!entries[i]) break;
-            let entry = entries[i].split(" ");
-            let player = entry[2];
-            let score = parseInt(entry[3]).toLocaleString();
-            let mod = osudroid.mods.droidToPC(entry[6]);
-            let combo = parseInt(entry[4]);
-            let rank = rankEmote(entry[5]);
-            let accuracy = parseFloat((parseInt(entry[7]) / 1000).toFixed(2));
-            let date = new Date(parseInt(entry[9]) * 1000);
-            date.setUTCHours(date.getUTCHours() + 7);
-            let miss = parseInt(entry[8]);
-
-            let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
-            let npp = new osudroid.PerformanceCalculator().calculate({
-                stars: star.droidStars,
-                combo: combo,
-                accPercent: accuracy,
-                miss: miss,
-                mode: osudroid.modes.droid
-            });
-            let pcpp = new osudroid.PerformanceCalculator().calculate({
-                stars: star.pcStars,
-                combo: combo,
-                accPercent: accuracy,
-                miss: miss,
-                mode: osudroid.modes.osu
-            });
-            let dpp = parseFloat(npp.toString().split(" ")[0]);
-            let pp = parseFloat(pcpp.toString().split(" ")[0]);
-
-            embed.addField(`**#${5 * (page_limit * 20) + i + 1} ${client.emojis.cache.get(rank)} ${player}**${mod ? ` **(+${mod})**` : ""}`, `**Score**: \`${score}\` - Combo: \`${combo.toLocaleString()}x\` - Accuracy: \`${accuracy}%\` (\`${miss}\` x)\nTime: \`${date.toUTCString()}\`\n\`${dpp} droid pp - ${pp} PC pp\``)
+        if (i >= 100) {
+            i -= pageLimit * 100;
         }
-        resolve([cache, embed])
-    })
+        let limit = i + 5;
+
+        for (i; i < limit; ++i) {
+            if (!entries[i]) {
+                break;
+            }
+
+            const entry = entries[i];
+
+            const player = entry.username;
+            const score = entry.score;
+            const mod = entry.mods;
+            const combo = entry.combo;
+            const rank = rankEmote(entry.rank);
+            const acc = entry.accuracy;
+            const miss = entry.miss;
+            const date = entry.date;
+
+            if (mapinfo.title) {
+                const modbits = osudroid.mods.modbitsFromString(mod);
+                let star = starCache.get(modbits);
+                if (!star) {
+                    star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+                    starCache.set(modbits, star);
+                }
+
+                const dpp = new osudroid.PerformanceCalculator().calculate({
+                    stars: star.droidStars,
+                    combo,
+                    accPercent: acc,
+                    miss,
+                    mode: osudroid.modes.droid
+                }).total;
+
+                const pp = new osudroid.PerformanceCalculator().calculate({
+                    stars: star.pcStars,
+                    combo,
+                    accPercent: acc,
+                    miss,
+                    mode: osudroid.modes.osu
+                }).total;
+
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (+${mod})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+            } else {
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (+${mod})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+            }
+        }
+
+        resolve(embed);
+    });
 }
 
 /**
@@ -124,165 +154,180 @@ async function editEmbed(client, hash, cache, rolecheck, page, mapinfo, top_entr
  * @param {[string, string][]} current_map 
  */
 module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    let beatmap_id;
-    let hash;
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    }
+
+    let beatmapID, hash;
     if (!args[0]) {
         let channel_index = current_map.findIndex(map => map[0] === message.channel.id);
-        if (channel_index !== -1) hash = current_map[channel_index][1];
-    }
-    else {
+        if (channel_index !== -1) {
+            hash = current_map[channel_index][1];
+        }
+    } else {
         let a = args[0].split("/");
-        beatmap_id = parseInt(a[a.length - 1]);
-        if (isNaN(beatmap_id)) return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
+        beatmapID = parseInt(a[a.length - 1]);
+        if (isNaN(beatmapID)) {
+            return message.channel.send("❎ **| I'm sorry, that beatmap ID is invalid!**");
+        }
     }
-    if (!beatmap_id && !hash) return message.channel.send("❎ **| Hey, can you at least give me a map to retrieve?**");
-    let params = beatmap_id ? {beatmapID: beatmap_id} : {hash: hash};
+    if (!beatmapID && !hash) {
+        return message.channel.send("❎ **| Hey, can you at least give me a map to retrieve?**");
+    }
+    const params = beatmapID ? {beatmapID} : {hash};
 
     let page = parseInt(args[1]);
-    if (!isFinite(page) || page < 1) page = 1;
+    if (!isFinite(page) || page < 1) {
+        page = 1;
+    }
 
     const mapinfo = await osudroid.MapInfo.getInformation(params);
-    if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info! Perhaps osu! API is down?**");
-    if (!mapinfo.title) return message.channel.send("❎ **| I'm sorry, I couldn't find the map that you are looking for!**");
-    if (mapinfo.objects === 0) return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
-    if (!mapinfo.osuFile) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
-    hash = mapinfo.hash;
-    let top = await fetchScores(hash, 0);
-    if (!top) return message.channel.send("❎ **| I'm sorry, this map has no scores submitted yet! Perhaps osu!droid server is down?**");
-    let cache = [
+    if (!hash && mapinfo.hash) {
+        hash = mapinfo.hash;
+    }
+    const scores = await fetchScores(hash, 0);
+    const cache = [
         {
             page: 0,
-            scores: top
+            scores: scores
         }
     ];
-    top = top[0].split(" ");
-    let top_score = parseInt(top[3]).toLocaleString();
-    let top_mod = osudroid.mods.droidToPC(top[6]);
-    let top_combo = parseInt(top[4]);
-    let top_rank = rankEmote(top[5]);
-    let top_accuracy = parseFloat((parseInt(top[7]) / 1000).toFixed(2));
-    let top_date = new Date(parseInt(top[9]) * 1000);
-    top_date.setUTCHours(top_date.getUTCHours() + 7);
-    let top_miss = parseInt(top[8]);
 
-    let global_star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: ""});
-    let top_star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: top_mod});
+    const topScore = scores[0];
+    const score = topScore.score;
+    const mod = topScore.mods;
+    const combo = topScore.combo;
+    const rank = rankEmote(topScore.rank);
+    const acc = topScore.accuracy;
+    const miss = topScore.miss;
+    const date = topScore.date;
 
-    let npp = new osudroid.PerformanceCalculator().calculate({
-        stars: top_star.droidStars,
-        combo: top_combo,
-        accPercent: top_accuracy,
-        miss: top_miss,
-        mode: osudroid.modes.droid
-    });
-    let pcpp = new osudroid.PerformanceCalculator().calculate({
-        stars: top_star.pcStars,
-        combo: top_combo,
-        accPercent: top_accuracy,
-        miss: top_miss,
-        mode: osudroid.modes.osu
-    });
-    let dpp = parseFloat(npp.toString().split(" ")[0]);
-    let pp = parseFloat(pcpp.toString().split(" ")[0]);
-
-    top = {
-        name: top[2],
-        score: top_score,
-        combo: top_combo,
-        mod: top_mod,
-        rank: top_rank,
-        accuracy: top_accuracy,
-        date: top_date,
-        miss: top_miss,
-        dpp: dpp,
-        pp: pp
+    const top = {
+        name: topScore.username,
+        score,
+        combo,
+        mod,
+        rank,
+        accuracy: acc,
+        miss,
+        date
     };
 
-    let rolecheck;
-    try {
-        rolecheck = message.member.roles.color.hexColor
-    } catch (e) {
-        rolecheck = "#000000"
-    }
-    let footer = config.avatar_list;
-    const index = Math.floor(Math.random() * footer.length);
+    const starCache = new Map();
 
-    let entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
-    if (!entry) return message.channel.send("❎ **| I'm sorry, looks like the map doesn't have that many scores!**");
-    cache = entry[0];
-    let embed = entry[1];
+    let globalStar = new osudroid.MapStars();
+    if (mapinfo.title) {
+        globalStar = globalStar.calculate({file: mapinfo.osuFile});
+        const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+
+        starCache.set(0, globalStar);
+        starCache.set(osudroid.mods.modbitsFromString(mod), topStar);
+
+        const topDpp = new osudroid.PerformanceCalculator().calculate({
+            stars: topStar.droidStars,
+            combo,
+            accPercent: acc,
+            miss,
+            mode: osudroid.modes.droid
+        }).total;
+
+        const topPP = new osudroid.PerformanceCalculator().calculate({
+            stars: topStar.pcStars,
+            combo,
+            accPercent: acc,
+            miss,
+            mode: osudroid.modes.osu
+        }).total;
+
+        top.dpp = topDpp;
+        top.pp = topPP;
+    }
+
+    const footer = config.avatar_list;
+    const index = Math.floor(Math.random() * footer.length);
+    const color = message.member?.roles.color?.hexColor || "#000000";
+    let embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+
     message.channel.send({embed: embed}).then(msg => {
         msg.react("⏮️").then(() => {
             msg.react("⬅️").then(() => {
                 msg.react("➡️").then(() => {
-                    msg.react("⏭️").catch(console.error)
-                })
-            })
+                    msg.react("⏭️").catch(console.error);
+                });
+            });
         });
 
-        let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-        let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-        let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-        let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+        const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+        const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+        const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+        const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
         backward.on('collect', async () => {
-            if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            if (page === 1) {
+                if (message.channel.type === "text") {
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                }
+                return;
+            }
             page = Math.max(1, page -= 10);
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-            entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
-            if (!entry) return;
-            cache = entry[0];
-            embed = entry[1];
-            msg.edit({embed: embed}).catch(console.error)
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            msg.edit({embed: embed}).catch(console.error);
         });
 
         back.on('collect', async () => {
-            if (page !== 1) page--;
-            else return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-            entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
-            if (!entry) return;
-            cache = entry[0];
-            embed = entry[1];
-            msg.edit({embed: embed}).catch(console.error)
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
+            if (page !== 1) {
+                page--;
+            } else {
+                return;
+            }
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            msg.edit({embed: embed}).catch(console.error);
         });
 
         next.on('collect', async () => {
             page++;
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-            entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
-            if (!entry) return;
-            cache = entry[0];
-            embed = entry[1];
-            msg.edit({embed: embed}).catch(console.error)
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            msg.edit({embed: embed}).catch(console.error);
         });
 
         forward.on('collect', async () => {
             page += 10;
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-            entry = await editEmbed(client, hash, cache, rolecheck, page, mapinfo, top, footer, index, global_star);
-            if (!entry) return;
-            cache = entry[0];
-            embed = entry[1];
-            msg.edit({embed: embed}).catch(console.error)
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            msg.edit({embed: embed}).catch(console.error);
         });
 
         backward.on("end", () => {
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+            if (message.channel.type === "text") {
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+            }
             msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-        })
+        });
     });
     cd.add(message.author.id);
     setTimeout(() => {
-        cd.delete(message.author.id)
-    }, 20000)
+        cd.delete(message.author.id);
+    }, 20000);
 };
 
 module.exports.config = {
     name: "maplb",
     description: "Retrieves a map's leaderboard.",
-    usage: "maplb <beatmap id> [page]",
-    detail: "`beatmap id`: The beatmap ID to retrieve [Integer]\n`page`: Leaderboard page to view (defaults at 1) [Integer]",
+    usage: "maplb [beatmap link/ID] [page]",
+    detail: "`beatmap id`: The beatmap link or ID to retrieve. If omitted [Integer/String]\n`page`: Leaderboard page to view (defaults at 1) [Integer]",
     permission: "None"
 };
