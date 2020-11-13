@@ -1186,7 +1186,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // analyze hit object data
                     const modWithoutSpeedChanging = osudroid.mods.modbitsToString(mod - (mod & osuMods.speed_changing));
                     const od = new osudroid.MapStats({od: mapinfo.od, mods: modWithoutSpeedChanging}).calculate({mode: osudroid.modes.droid}).od;
-                    const isPrecise = mod.includes("PR");
+                    const isPrecise = data.convertedMods.includes("PR");
                     
                     const hitWindow = new osudroid.DroidHitWindow(od);
                     const hitWindow300 = hitWindow.hitWindowFor300(isPrecise);
