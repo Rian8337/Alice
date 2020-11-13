@@ -1176,7 +1176,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const combo = data.maxCombo;
                     const acc = parseFloat((data.accuracy * 100).toFixed(2));
                     const miss = data.hit0;
-                    const mod = data.convertedMods;
+                    const mod = osudroid.mods.modbitsFromString(data.convertedMods);
                     
                     const osuMods = osudroid.mods.osuMods;
                     if (mod & (osuMods.ez | osuMods.nf | osuMods.ht)) {
@@ -1193,7 +1193,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const hitWindow100 = hitWindow.hitWindowFor100(isPrecise);
                     const hitWindow50 = hitWindow.hitWindowFor50(isPrecise);
 
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: data.convertedMods});
                     replay.map = star.droidStars;
 
                     for (let i = 0; i < star.droidStars.objects.length; ++i) {
