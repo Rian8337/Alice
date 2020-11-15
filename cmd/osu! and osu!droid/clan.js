@@ -2452,7 +2452,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (args.length < 4) return message.channel.send("❎ **| Hey, I need more input!**");
                     const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
-                    const togive = await message.guild.members.fetch(message.mentions.users.first() || args[3]);
+                    const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]);
                     if (totake.id === togive.id) return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
                     let challengepass = args[4];
                     query = {discordid: totake.id};
