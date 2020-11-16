@@ -2,7 +2,7 @@ const osudroid = require('osu-droid');
 
 function retrieveClan(res, i, cb) {
     if (!res[i]) return cb(null);
-    cb(res[i])
+    cb(res[i]);
 }
 
 module.exports.run = maindb => {
@@ -25,7 +25,7 @@ module.exports.run = maindb => {
                     const user = res.find(u => u.discordid === member.id);
                     if (!user) {
                         console.log(`Couldn't find bind with Discord ID ${member.id}`);
-                        continue
+                        continue;
                     }
                     let previous_bind = user.previous_bind;
                     if (!previous_bind) previous_bind = [user.uid];
@@ -33,6 +33,9 @@ module.exports.run = maindb => {
                     let fix_uid = 0;
                     for await (const uid of previous_bind) {
                         const player = await osudroid.Player.getInformation({uid: uid});
+                        if (player.error) {
+                            continue;
+                        }
                         if (rank > player.rank) {
                             rank = player.rank;
                             fix_uid = parseInt(uid);

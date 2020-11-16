@@ -69,12 +69,20 @@ module.exports.run = (client, maindb, alicedb) => {
                 const previous_bind = bind.previous_bind ? bind.previous_bind : [bind.uid];
                 for await (const uid of previous_bind) {
                     const player = await osudroid.Player.getInformation({uid: uid});
+                    if (player.error) {
+                        continue;
+                    }
                     rank = Math.min(rank, player.rank);
                 }
                 rankInformation.push({
                     discordid: bind.discordid,
                     rank: rank
                 });
+            }
+
+            // if server is down
+            if (rankInformation.some(v => v.rank === Number.POSITIVE_INFINITY)) {
+                continue;
             }
 
             for await (const member of memberList) {
