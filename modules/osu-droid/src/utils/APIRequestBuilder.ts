@@ -12,7 +12,7 @@ export interface RequestResponse {
     readonly statusCode: number;
 }
 
-type DroidAPIEndpoint = "getuserinfo.php" | "scoresearch.php" | "scoresearchv2.php" | "rename.php" | "upload";
+type DroidAPIEndpoint = "getuserinfo.php" | "scoresearch.php" | "scoresearchv2.php" | "rename.php" | "upload" | "user_list.php" | "top.php";
 type OsuAPIEndpoint = "get_beatmaps" | "get_user" | "get_scores" | "get_user_best" | "get_user_recent" | "get_match" | "get_replay";
 
 abstract class APIRequestBuilder {
@@ -51,14 +51,14 @@ abstract class APIRequestBuilder {
      * 
      * @param endpoint The endpoint to set.
      */
-    abstract setEndpoint(endpoint: DroidAPIEndpoint|OsuAPIEndpoint): APIRequestBuilder;
+    abstract setEndpoint(endpoint: DroidAPIEndpoint|OsuAPIEndpoint): this;
 
     /**
      * Sets if this builder includes the API key in the request URL.
      * 
      * @param requireAPIkey Whether or not to include the API key in the request URL.
      */
-    setRequireAPIkey(requireAPIkey: boolean): APIRequestBuilder {
+    setRequireAPIkey(requireAPIkey: boolean): this {
         this.requiresAPIkey = requireAPIkey;
         return this;
     }
@@ -122,7 +122,7 @@ abstract class APIRequestBuilder {
      * @param param The parameter to add.
      * @param value The value to add for the parameter.
      */
-    addParameter(param: string, value: string|number): APIRequestBuilder {
+    addParameter(param: string, value: string|number): this {
         this.params.set(param, value);
         return this;
     }
@@ -132,7 +132,7 @@ abstract class APIRequestBuilder {
      * 
      * @param param The parameter to remove.
      */
-    removeParameter(param: string): APIRequestBuilder {
+    removeParameter(param: string): this {
         if (this.params.get(param)) {
             this.params.delete(param);
         }
@@ -148,7 +148,7 @@ export class DroidAPIRequestBuilder extends APIRequestBuilder {
     protected readonly APIkey: string = process.env.DROID_API_KEY as string;
     protected readonly APIkeyParam: string = `apiKey=${this.APIkey}&`;
 
-    setEndpoint(endpoint: DroidAPIEndpoint): DroidAPIRequestBuilder {
+    setEndpoint(endpoint: DroidAPIEndpoint): this {
         this.endpoint = endpoint;
         return this;
     }
@@ -162,7 +162,7 @@ export class OsuAPIRequestBuilder extends APIRequestBuilder {
     protected readonly APIkey: string = process.env.OSU_API_KEY as string;
     protected readonly APIkeyParam: string = `k=${this.APIkey}&`;
 
-    setEndpoint(endpoint: OsuAPIEndpoint): OsuAPIRequestBuilder {
+    setEndpoint(endpoint: OsuAPIEndpoint): this {
         this.endpoint = endpoint;
         return this;
     }
