@@ -86,7 +86,7 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                 .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${topEntry.dpp.toFixed(2)}DPP | ${topEntry.pp.toFixed(2)}PP** ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
         } else {
             embed.setTitle(entries[0].title)
-                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
         }
 
         let i = 5 * (page - 1);
