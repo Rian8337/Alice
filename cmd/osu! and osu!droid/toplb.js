@@ -14,7 +14,7 @@ function retrieveLeaderboard(page) {
         const result = await apiRequestBuilder.sendRequest();
 
         if (result.statusCode !== 200) {
-            return resolve();
+            return resolve([]);
         }
 
         let data = result.data.toString("utf-8");
