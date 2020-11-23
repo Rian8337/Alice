@@ -385,6 +385,7 @@ export class MapInfo {
      * Time string parsing function for statistics utility.
      */
     private timeString(second: number): string {
+        second = Math.ceil(second);
         return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":");
     }
 
