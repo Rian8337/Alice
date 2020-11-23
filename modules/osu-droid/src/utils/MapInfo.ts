@@ -464,15 +464,15 @@ export class MapInfo {
                         let speedMulMinBPM: number = convertedBPM;
                         let speedMulMaxBPM: number = convertedBPM;
                         for (const t of uninheritedTimingPoints) {
-                            const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
+                            const bpm: number = 60000 / t.msPerBeat;
                             const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
-                            maxBPM = Math.max(maxBPM, bpm);
-                            minBPM = Math.min(minBPM, bpm);
+                            maxBPM = Math.max(maxBPM, convertedBPM);
+                            minBPM = Math.min(minBPM, convertedBPM);
                             speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                             speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
                         }
 
-                        if (this.bpm === minBPM && this.bpm === maxBPM) {
+                        if (minBPM === speedMulMinBPM && maxBPM === speedMulMaxBPM) {
                             string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                         } else {
                             string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM.toFixed(2)}-${speedMulMaxBPM.toFixed(2)} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
