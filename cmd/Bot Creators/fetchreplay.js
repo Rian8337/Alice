@@ -18,7 +18,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     }
 
-    let uid, beatmap, hash;
+    let uid, beatmap = "", hash = "";
     if (args[1]) {
         uid = parseInt(args[0]);
         if (isNaN(uid)) {
@@ -67,6 +67,8 @@ module.exports.run = async (client, message, args, maindb) => {
             return message.channel.send("❎ **| I'm sorry, it seems like the beatmap has 0 objects!**");
         }
         hash = mapinfo.hash;
+    } else if (hash) {
+        mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
     }
     const play = await osudroid.Score.getFromHash({uid: uid, hash: hash});
     if (!play.scoreID) {
@@ -138,7 +140,7 @@ module.exports.run = async (client, message, args, maindb) => {
     const max_error = count ? total / count : 0;
     const min_error = _count ? _total / _count : 0;
 
-    if (!beatmap) {
+    if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
         return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
     }
 
