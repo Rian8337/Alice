@@ -30,7 +30,7 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		if (message.isOwner && message.content.includes("-h")) {
-			score += `Hash: ${rplay[i].hash}`;
+			score += `\nHash: \`${rplay[i].hash}\``;
 		}
 		embed.addField(play, score);
 	}

@@ -31,7 +31,7 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		if (message.isOwner && message.content.includes("-h")) {
-			score += `Hash: ${rplay[i].hash}`;
+			score += `\nHash: \`${rplay[i].hash}\``;
 		}
 		embed.addField(play, score);
 	}
@@ -58,7 +58,7 @@ module.exports.run = (client, message, args, maindb) => {
 			ufind = args[0];
 		} else if (parseInt(args[0]) <= 0) {
 			page = 1;
-		} else {
+		} else if (!isNaN(args[0])) {
 			page = parseInt(args[0]);
 		}
 		ufind = ufind.replace(/[<@!>]/g, "");
@@ -66,7 +66,7 @@ module.exports.run = (client, message, args, maindb) => {
 	if (args[1]) {
 		if (isNaN(args[1]) || parseInt(args[1]) > 10 || parseInt(args[1]) <= 0) {
 			page = 1;
-		} else {
+		} else if (!isNaN(args[1])) {
 			page = parseInt(args[1]);
 		}
 	}
