@@ -1,22 +1,35 @@
-let reset_time = 0;
+let resetTime = 0;
 
-module.exports.run = alicedb => {
+module.exports.run = (client, alicedb) => {
     const pointdb = alicedb.collection("playerpoints");
     const time = Math.floor(Date.now() / 1000);
-    if (reset_time > time) return;
+    if (resetTime > time) {
+        return;
+    }
     pointdb.findOne({discordid: "386742340968120321"}, (err, res) => {
-        if (err) return console.log(err);
+        if (err) {
+            return console.log(err);
+        }
         const dailyreset = res.dailyreset;
-        if (!reset_time) reset_time = dailyreset;
-        if (dailyreset > time) return;
+        if (!resetTime) {
+            resetTime = dailyreset;
+        }
+        if (resetTime > time) {
+            return;
+        }
         console.log("Resetting daily claim");
+        console.log("Running message analytics");
+        client.utils.get("messageanalytics").run(client, alicedb, (resetTime - 86400) * 1000);
+        resetTime += 86400;
         let updateVal = {
-            $set: {
-                dailyreset: dailyreset + 86400
+            $inc: {
+                dailyreset: 86400
             }
         };
         pointdb.updateOne({discordid: "386742340968120321"}, updateVal, err => {
-            if (err) return console.log(err);
+            if (err) {
+                return console.log(err);
+            }
             updateVal = {
                 $set: {
                     hasSubmittedMapShare: false,
@@ -24,26 +37,32 @@ module.exports.run = alicedb => {
                 }
             };
             pointdb.updateMany({}, updateVal, err => {
-                if (err) return console.log(err);
+                if (err) {
+                    return console.log(err);
+                }
                 updateVal = {
                     $set: {
                         streak: 0
                     }
                 };
                 pointdb.updateMany({hasClaimedDaily: false}, updateVal, err => {
-                    if (err) return console.log(err);
+                    if (err) {
+                        return console.log(err);
+                    }
                     updateVal = {
                         $set: {
                             hasClaimedDaily: false
                         }
                     };
                     pointdb.updateMany({}, updateVal, err => {
-                        if (err) return console.log(err)
-                    })
-                })
-            })
-        })
-    })
+                        if (err) {
+                            return console.log(err);
+                        }
+                    });
+                });
+            });
+        });
+    });
 };
 
 module.exports.config = {

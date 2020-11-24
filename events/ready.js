@@ -31,7 +31,7 @@ module.exports.run = (client, maindb, alicedb) => {
 		if (maintenance) {
 			return;
 		}
-		client.utils.get("dailyreset").run(alicedb);
+		client.utils.get("dailyreset").run(client, alicedb);
 		client.utils.get('birthdaytrack').run(client, maindb, alicedb);
 		const index = Math.floor(Math.random() * activity_list.length);
 		client.user.setActivity(activity_list[index][0], {type: activity_list[index][1]});
