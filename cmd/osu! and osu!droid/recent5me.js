@@ -45,21 +45,30 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+	if (message.channel instanceof Discord.DMChannel) {
+		return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+	}
 	let ufind = message.author.id;
 	if (cd.has(ufind)) {
 		return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	}
 	let page = 1;
 	if (args[0]) {
-		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
-		else if (parseInt(args[0]) <= 0) page = 1;
-		else page = parseInt(args[0]);
+		if ((isNaN(args[0]) || parseInt(args[0]) > 10) && args[0] !== "-h") {
+			ufind = args[0];
+		} else if (parseInt(args[0]) <= 0) {
+			page = 1;
+		} else {
+			page = parseInt(args[0]);
+		}
 		ufind = ufind.replace(/[<@!>]/g, "");
 	}
 	if (args[1]) {
-		if (isNaN(args[1]) || parseInt(args[1]) > 10 || parseInt(args[1]) <= 0) page = 1;
-		else page = parseInt(args[1]);
+		if (isNaN(args[1]) || parseInt(args[1]) > 10 || parseInt(args[1]) <= 0) {
+			page = 1;
+		} else {
+			page = parseInt(args[1]);
+		}
 	}
 
 	const binddb = maindb.collection("userbind");
