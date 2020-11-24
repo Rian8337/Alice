@@ -19,20 +19,23 @@ function rankEmote(input) {
 	}
 }
 
-function editpp(client, rplay, name, page, footer, index, rolecheck) {
-	let embed = new Discord.MessageEmbed()
+function editpp(client, rplay, name, page, footer, index, color, message) {
+	const embed = new Discord.MessageEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-		.setColor(rolecheck)
+		.setColor(color)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
 		let date = rplay[i].date;
-		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
+		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
+		if (message.isOwner && message.content.includes("-h")) {
+			score += `Hash: ${rplay[i].hash}`;
+		}
 		embed.addField(play, score);
 	}
-	return embed
+	return embed;
 }
 
 /**
@@ -44,7 +47,9 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 module.exports.run = (client, message, args, maindb) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	let ufind = message.author.id;
-	if (cd.has(ufind)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+	if (cd.has(ufind)) {
+		return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+	}
 	let page = 1;
 	if (args[0]) {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
@@ -59,19 +64,19 @@ module.exports.run = (client, message, args, maindb) => {
 		else page = parseInt(args[1]);
 	}
 
-	let binddb = maindb.collection("userbind");
-	let query = {discordid: ufind};
+	const binddb = maindb.collection("userbind");
+	const query = {discordid: ufind};
 	binddb.findOne(query, async function (err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 			return;
 		}
-		let uid = res.uid;
+		const uid = res.uid;
 		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
@@ -84,37 +89,32 @@ module.exports.run = (client, message, args, maindb) => {
 			return;
 		}
 		if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-		let name = player.username;
-		let rplay = player.recentPlays;
-		let footer = config.avatar_list;
+		const name = player.username;
+		const rplay = player.recentPlays;
+		const footer = config.avatar_list;
 		const index = Math.floor(Math.random() * footer.length);
-		let rolecheck;
-		try {
-			rolecheck = message.member.roles.color.hexColor;
-		} catch (e) {
-			rolecheck = "#000000";
-		}
-		let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+		const color = message.member?.roles.color?.hexColor || "#000000";
+		let embed = editpp(client, rplay, name, page, footer, index, color, message);
 
 		message.channel.send({embed: embed}).then(msg => {
 			msg.react("⏮️").then(() => {
 				msg.react("⬅️").then(() => {
 					msg.react("➡️").then(() => {
-						msg.react("⏭️").catch(e => console.log(e));
+						msg.react("⏭️").catch(console.error);
 					});
 				});
 			});
 
-			let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
-			let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
-			let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
-			let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
+			const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 60000});
+			const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 60000});
+			const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 60000});
+			const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
 
 			backward.on('collect', () => {
 				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 1;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -122,7 +122,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (page === 1) page = 10;
 				else page--;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -130,7 +130,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (page === 10) page = 1;
 				else page++;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -138,7 +138,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				else page = 10;
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 

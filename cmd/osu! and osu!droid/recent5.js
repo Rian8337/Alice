@@ -14,14 +14,14 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return
+		default : return;
 	}
 }
 
-function editpp(client, rplay, name, page, footer, index, rolecheck) {
+function editpp(client, rplay, name, page, footer, index, color, message) {
 	let embed = new Discord.MessageEmbed()
 		.setDescription("Recent play for **" + name + " (Page " + page + "/10)**")
-		.setColor(rolecheck)
+		.setColor(color)
 		.setFooter("Alice Synthesis Thirty", footer[index]);
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
@@ -29,9 +29,12 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 		let date = rplay[i].date;
 		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
-		embed.addField(play, score)
+		if (message.isOwner && message.content.includes("-h")) {
+			score += `Hash: ${rplay[i].hash}`;
+		}
+		embed.addField(play, score);
 	}
-	return embed
+	return embed;
 }
 
 /**
@@ -42,7 +45,7 @@ function editpp(client, rplay, name, page, footer, index, rolecheck) {
 module.exports.run = async (client, message, args) => {
 	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
-	let uid = parseInt(args[0]);
+	const uid = parseInt(args[0]);
 	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
 	let page = 1;
 	if (args[1]) page = parseInt(args[1]);
@@ -51,17 +54,12 @@ module.exports.run = async (client, message, args) => {
 	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
 	if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
 	if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
-	let name = player.username;
-	let rplay = player.recentPlays;
-	let rolecheck;
-	try {
-		rolecheck = message.member.roles.color.hexColor;
-	} catch (e) {
-		rolecheck = "#000000";
-	}
-	let footer = config.avatar_list;
+	const name = player.username;
+	const rplay = player.recentPlays;
+	const color = message.member?.roles.color?.hexColor || "#000000";
+	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
-	let embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+	let embed = editpp(client, rplay, name, page, footer, index, color);
 
 	message.channel.send({embed: embed}).then(msg => {
 		msg.react("⏮️").then(() => {
@@ -72,16 +70,16 @@ module.exports.run = async (client, message, args) => {
 			});
 		});
 
-		let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
-		let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
-		let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
-		let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
+		const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
+		const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
+		const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 120000});
+		const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
 		backward.on('collect', () => {
 			if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			else page = 1;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			embed = editpp(client, rplay, name, page, footer, index, color);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -89,7 +87,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 1) page = 10;
 			else page--;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			embed = editpp(client, rplay, name, page, footer, index, color);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -97,7 +95,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 10) page = 1;
 			else page++;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			embed = editpp(client, rplay, name, page, footer, index, color);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -105,7 +103,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			else page = 10;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, rolecheck);
+			embed = editpp(client, rplay, name, page, footer, index, color);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
