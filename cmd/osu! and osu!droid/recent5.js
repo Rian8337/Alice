@@ -43,23 +43,39 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
  * @param {string[]} args 
  */
 module.exports.run = async (client, message, args) => {
-	if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	if (cd.has(message.author.id)) return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
+	if (message.channel instanceof Discord.DMChannel) {
+		return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+	}
+	if (cd.has(message.author.id)) {
+		return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
+	}
 	const uid = parseInt(args[0]);
-	if (isNaN(uid)) return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
+	if (isNaN(uid)) {
+		return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
+	}
 	let page = 1;
-	if (args[1]) page = parseInt(args[1]);
-	if (isNaN(args[1]) || page <= 0 || page > 10) page = 1;
+	if (args[1]) {
+		page = parseInt(args[1]);
+	}
+	if (isNaN(args[1]) || page <= 0 || page > 10) {
+		page = 1;	
+	}
 	const player = await osudroid.Player.getInformation({uid: uid});
-	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-	if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
-	if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+	if (player.error) {
+		return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+	}
+	if (!player.username) {
+		return message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+	}
+	if (player.recentPlays.length === 0) {
+		return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+	}
 	const name = player.username;
 	const rplay = player.recentPlays;
 	const color = message.member?.roles.color?.hexColor || "#000000";
 	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
-	let embed = editpp(client, rplay, name, page, footer, index, color);
+	let embed = editpp(client, rplay, name, page, footer, index, color, message);
 
 	message.channel.send({embed: embed}).then(msg => {
 		msg.react("⏮️").then(() => {
