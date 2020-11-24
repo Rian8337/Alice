@@ -55,9 +55,7 @@ module.exports.run = (client, message, args, maindb) => {
 		if (isNaN(args[0]) || parseInt(args[0]) > 10) ufind = args[0];
 		else if (parseInt(args[0]) <= 0) page = 1;
 		else page = parseInt(args[0]);
-		ufind = ufind.replace('<@!', '');
-		ufind = ufind.replace('<@', '');
-		ufind = ufind.replace('>', '');
+		ufind = ufind.replace(/[<@!>]/g, "");
 	}
 	if (args[1]) {
 		if (isNaN(args[1]) || parseInt(args[1]) > 10 || parseInt(args[1]) <= 0) page = 1;
