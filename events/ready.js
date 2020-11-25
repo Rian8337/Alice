@@ -25,7 +25,8 @@ module.exports.run = async (client, maindb, alicedb) => {
 		["flowers from my beloved Fragnant Olive", "WATCHING"],
 		["Uncle Bercoulli's orders", "LISTENING"],
 		["Centoria", "WATCHING"],
-		["Human Empire", "WATCHING"]
+		["Human Empire", "WATCHING"],
+		["The Great War of Underworld", "COMPETING"]
 	];
 
 	// Custom activity, daily reset, and unverified prune
