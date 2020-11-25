@@ -5,7 +5,8 @@ const config = require('../config.json');
 let maintenance = false;
 let maintenance_reason = '';
 const current_map = [];
-const disabled_commands = [];
+const globally_disabled_commands = [];
+const channel_disabled_commands = [];
 let command_cooldown = 0;
 
 /**
@@ -92,13 +93,13 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 		message.channel.send(`✅ **| Successfully set command cooldown to ${seconds} ${seconds === 1 ? "second" : "seconds"}.**`);
 	}
 
-	if (message.author.id === "386742340968120321" && (command === config.prefix + 'cmd' || command === config.prefix + 'command')) {
+	if (message.author.id === "386742340968120321" && (command === config.prefix + 'gcmd' || command === config.prefix + 'globalcommand')) {
 		if (args[0] === "list") {
-			if (disabled_commands.length === 0) {
+			if (globally_disabled_commands.length === 0) {
 				return message.channel.send("❎ **| I'm sorry, there are no disabled commands now!**");
 			}
-			let string = `✅ **| The current disabled ${disabled_commands.length === 1 ? "command is" : "commands are"} `;
-			for (const disabled of disabled_commands) {
+			let string = `✅ **| The current disabled ${globally_disabled_commands.length === 1 ? "command is" : "commands are"} `;
+			for (const disabled of globally_disabled_commands) {
 				string += `\`${disabled}\`, `;
 			}
 			string = string.substring(0, string.length - 2) + ".**";
@@ -108,11 +109,11 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 		if (!cmd) {
 			return message.channel.send("❎ **| Hey, please enter a command to enable or disable!**");
 		}
-		const cmd_index = disabled_commands.findIndex(c => c === cmd.config.name);
+		const cmd_index = globally_disabled_commands.findIndex(c => c === cmd.config.name);
 		if (cmd_index === -1) {
-			disabled_commands.push(cmd.config.name);
+			globally_disabled_commands.push(cmd.config.name);
 		} else {
-			disabled_commands.splice(cmd_index, 1);
+			globally_disabled_commands.splice(cmd_index, 1);
 		}
 		message.channel.send(`✅ **| Successfully ${cmd_index === -1 ? "disabled" : "enabled"} \`${cmd.config.name}\` command.**`);
 	}
@@ -130,7 +131,8 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 		alicedb: alicedb,
 		command: command,
 		current_map: current_map,
-		disabled_commands: disabled_commands,
+		globally_disabled_commands: globally_disabled_commands,
+		channel_disabled_commands: channel_disabled_commands,
 		command_cooldown: command_cooldown,
 		maintenance: maintenance,
 		maintenance_reason: maintenance_reason,
@@ -154,3 +156,22 @@ module.exports.config = {
 };
 
 module.exports.maintenance = maintenance;
+
+/**
+ * @param {{channelID: string, disabledCommands: string[]}[]} disabledCommands 
+ */
+module.exports.setDisabledCommands = disabledCommands => {
+	channel_disabled_commands.push(...disabledCommands);
+};
+
+/**
+ * @param {{channelID: string, disabledCommands: string[]}} disabledCommand 
+ */
+module.exports.setChannelDisabledCommands = disabledCommand => {
+	const channelSettingIndex = channel_disabled_commands.findIndex(v => v.channelID === disabledCommand.channelID);
+	if (channelSettingIndex === -1) {
+		channel_disabled_commands.push(disabledCommand);
+	} else {
+		channel_disabled_commands[channelSettingIndex] = disabledCommand;
+	}
+};

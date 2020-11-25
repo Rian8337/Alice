@@ -8,7 +8,11 @@ const { Db } = require('mongodb');
  * @param {Db} alicedb 
  */
 module.exports.run = (client, maindb, alicedb) => {
-    console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
+	console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
+	
+	const disabledCommands = await alicedb.collection("channelsettings").find({}, {projection: {_id: 0, channelID: 1, disabledCommands: 1}}).toArray();
+	require('./message').setDisabledCommands(disabledCommands);
+
 	let maintenance = require('./message').maintenance;
 	
 	const activity_list = [
