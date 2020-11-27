@@ -135,6 +135,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (tag_content.length > 1500)
                 return message.channel.send("❎ **| I'm sorry, you can only enter up to 1500 characters in a tag!**");
 
+            if (!tag_content && message.attachments.size === 0) {
+                return message.channel.send("❎ **| Hey, please enter a content for your tag!**");
+            }
+
             tag_content = tag_content.replace("@everyone", "").replace("@here", "");
 
             if (message.attachments.size > 3)
