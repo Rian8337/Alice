@@ -86,7 +86,7 @@ module.exports.run = (client, maindb, alicedb) => {
             }
 
             for await (const member of memberList) {
-                const guildMember = await guild.members.fetch(member.id);
+                const guildMember = await guild.members.fetch(member.id).catch(console.error);
                 // if the person is not in the server, kick the person
                 if (!guildMember) {
                     upkeepDistribution.shift();
@@ -162,7 +162,7 @@ module.exports.run = (client, maindb, alicedb) => {
             // kick members
             for await (const kicked of kickedList) {
                 if (clanrole) {
-                    const guildMember = await guild.members.fetch(kicked);
+                    const guildMember = await guild.members.fetch(kicked).catch(console.error);
                     if (guildMember) {
                         guildMember.roles.remove([role, clanrole], "Kicked from clan");
                     }

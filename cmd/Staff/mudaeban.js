@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
     let timeLimit = isEligible(message.member);
     if (timeLimit == 0) return message.channel.send("You don't have permission to use this");
 
-    const toban = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const toban = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!toban) return;
     if (isImmuned(toban)) return message.channel.send("You can't ban this user");
     let reason = args.slice(2).join(" ");

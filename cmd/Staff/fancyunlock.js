@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.guild.id !== '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
     if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
 
-    const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
     const reason = args.slice(1).join(" ");
     if (!reason) return message.channel.send("❎ **| Please enter unlock reason!**");

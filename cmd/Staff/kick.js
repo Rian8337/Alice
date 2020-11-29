@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args) => {
     let logchannel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
     if (!logchannel) return message.channel.send(`Please create #${config.management_channel} first!`);
 
-    const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!tokick) return message.channel.send("❎ **| I can't find the user. Can you make sure you have entered a correct one?**");
 
     let immune = config.mute_immune;

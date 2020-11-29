@@ -70,7 +70,7 @@ module.exports.run = (client, maindb, alicedb) => {
         });
 
         current_birthday.forEach(async (entry) => {
-            const user = await guild.members.fetch(entry.discordid);
+            const user = await guild.members.fetch(entry.discordid).catch(console.error);
             if (!user) {
                 return;
             }

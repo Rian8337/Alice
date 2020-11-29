@@ -18,7 +18,7 @@ function isEligible(member) {
 module.exports.run = async (client, message, args) => {
     if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not allowed in DMs");
     if (!isEligible(message.member)) return message.channel.send("❎ **| You don't have permission to use this.**");
-    const verifying = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const verifying = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!verifying) return message.channel.send("❎ **| Hey, please mention a valid user to verify!**");
     let memberrole = message.guild.roles.cache.find((r) => r.name === 'Member');
     if (!memberrole) return message.channel.send("Role not found");

@@ -419,7 +419,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
         // accepts a user as clan member
         case "accept": {
-            const toaccept = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+            const toaccept = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
             if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
@@ -531,7 +531,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // ===============================
             // for now this is only restricted
             // to clan leaders and server mods
-            const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+            const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
             if (!tokick) return message.channel.send("❎ **| Hey, please enter a correct user!**");
             if (message.author.id === tokick.id) return message.channel.send("❎ **| Hey, you cannot kick yourself!**");
             let reason = args.slice(2).join(" ");
@@ -997,7 +997,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // co-leaders can do anything that a leader can
             // except changing clan name, disbanding it, changing
             // role color, and promoting other members
-            const topromote = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+            const topromote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
             if (!topromote) return message.channel.send("❎ **| Hey, please mention a valid user to promote!**");
             if (topromote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot promote yourself!**");
 
@@ -1071,7 +1071,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // moderators can demote a user to normal
             // member despite them being outside the
             // clan
-            const todemote = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+            const todemote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
             if (!todemote) return message.channel.send("❎ **| Hey, please mention a valid user to demote!**");
             if (todemote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot demote yourself!**");
 
@@ -1179,7 +1179,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 clanrole.delete("Clan disbanded").catch(console.error);
                                 let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                 clanres.member_list.forEach(async (member) => {
-                                    const guildMember = await message.guild.members.fetch(member.id);
+                                    const guildMember = await message.guild.members.fetch(member.id).catch(console.error);
                                     if (guildMember) {
                                         guildMember.roles.remove(role, "Clan disbanded").catch(console.error);
                                     }
@@ -1911,7 +1911,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             position: clanrole.position
                                         }, reason: "Clan leader bought clan role"}).then(role => {
                                             memberlist.forEach(async (member) => {
-                                                const guildMember = await message.guild.members.fetch(member.id);
+                                                const guildMember = await message.guild.members.fetch(member.id).catch(console.error);
                                                 if (guildMember) {
                                                     guildMember.roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error);
                                                 }
@@ -2165,7 +2165,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // changes the leader of a clan
                     // ============================
                     // only works for clan leaders
-                    const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!totransfer) return message.channel.send("❎ **| Hey, please enter a valid user to transfer the clan leadership to!**");
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -2360,7 +2360,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // =======================================
                     // this must be carefully watched as abuse
                     // can be easily done
-                    const togive = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const togive = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!togive) return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
                     let amount = args[3];
                     if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to add!**");
@@ -2404,7 +2404,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // =========================================
                     // just like add cmd, this must be carefully
                     // watched as abuse can be easily done
-                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
                     let amount = args[3];
                     if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to remove!**");
@@ -2450,9 +2450,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // main cmd to use during clan matches, will automatically
                     // convert total power points based on active powerups
                     if (args.length < 4) return message.channel.send("❎ **| Hey, I need more input!**");
-                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
-                    const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]);
+                    const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]).catch(console.error);
                     if (totake.id === togive.id) return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
                     let challengepass = args[4];
                     query = {discordid: totake.id};
@@ -2640,7 +2640,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 // add clan
                 case "add": {
-                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     query = {discordid: tomatch.id};
                     binddb.findOne(query, (err, userres) => {
@@ -2682,7 +2682,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 case "remove": {
                     // remove clan
-                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]);
+                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
                     if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     query = {discordid: tomatch.id};
                     binddb.findOne(query, (err, clanres) => {
@@ -2725,7 +2725,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 case "join": {
                     let user = message.author;
                     if (args[2]) {
-                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
                         if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
                         query = {discordid: user.id}
                     }
@@ -2766,7 +2766,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // views a user's cooldown in participating a clan battle
                     let user = message.author;
                     if (args[2]) {
-                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
                         if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
                         query = {discordid: user.id}
                     }

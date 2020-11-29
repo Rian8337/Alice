@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args) => {
     let timeLimit = isEligible(message.member);
     if (!message.isOwner && timeLimit != -1) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
 
-    const tomute = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const tomute = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!tomute) return message.channel.send("❎ **| Hey, please enter a valid user to mute!**");
     if ((!message.isOwner && isImmuned(tomute)) || tomute.user.bot) return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
 

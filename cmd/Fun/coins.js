@@ -98,7 +98,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
         case "transfer": {
-            const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+            const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
             if (!totransfer) {
                 return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
             }
@@ -221,7 +221,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         case "view": {
             let id = message.author.id;
             if (args[1]) {
-                id = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+                id = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
                 if (!id) return message.channel.send("❎ **| Hey, please enter a valid user to view!**");
                 id = id.id;
             }

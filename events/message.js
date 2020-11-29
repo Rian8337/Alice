@@ -140,7 +140,7 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 	};
 
 	if (message.content.startsWith("&")) {
-		let mainbot = await message.guild?.members.fetch('391268244796997643');
+		let mainbot = await message.guild?.members.fetch('391268244796997643').catch(console.error);
 		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
 		obj.main_bot = false;
 		client.subevents.get("commandHandler").run(obj);

@@ -98,7 +98,7 @@ module.exports.run = async (client, message, args, maindb) => {
             let perm = isEligible(message.member);
             if (!perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this. Please ask a Helper or Moderator!**");
 
-            const togive = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+            const togive = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
             if (!togive) return message.channel.send("❎ **| Hey, I don't know the user to give the role to!**");
 
             let rolename = args.slice(1).join(" ");

@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| Hey, please mention a valid uid!**");
     }
 
-    const user = await message.guild.members.fetch(message.mentions.users.first() || args[1]);
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
     if (!user) {
         return message.channel.send("❎ **| Hey, please mention a valid user!**");
     }

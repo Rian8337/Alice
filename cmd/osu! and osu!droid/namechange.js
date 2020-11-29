@@ -1,7 +1,5 @@
 const Discord = require('discord.js');
-const http = require('http');
 const osudroid = require('osu-droid');
-const droidapikey = process.env.DROID_API_KEY;
 const config = require('../../config.json');
 const {Db} = require('mongodb');
 
@@ -65,87 +63,85 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 let old_name = res.current_username;
                 let new_name = res.new_username;
                 let prev_names = res.previous_usernames;
-                const user = await guild.members.fetch(res.discordid);
+                const user = await guild.members.fetch(res.discordid).catch(console.error);
 
-                let url = encodeURI(`http://ops.dgsrz.com/api/rename.php?apiKey=${droidapikey}&username=${old_name}&newname=${new_name}`);
-                let content = '';
-                let req = http.request(url, name_res => {
-                    name_res.setEncoding("utf8");
-                    name_res.setTimeout(10000);
-                    name_res.on("data", chunk => {
-                        content += chunk
-                    });
-                    name_res.on("end", () => {
-                        let msg = content.split(" ");
-                        if (msg[0] === 'FAILED') {
-                            updateVal = {
-                                $set: {
-                                    new_username: null,
-                                    attachment: null,
-                                    isProcessed: true
-                                }
-                            };
+                const apiRequestBuilder = new osudroid.DroidAPIRequestBuilder()
+                    .setEndpoint("rename.php")
+                    .addParameter("username", old_name)
+                    .addParameter("newname", new_name);
 
-                            namedb.updateOne(query, updateVal, err => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                                }
-                                message.channel.send("❎ **| I'm sorry, the username that the user has requested has been taken!**");
-
-                                if (user) {
-                                    embed.setTitle("Request Details")
-                                        .setColor(16711711)
-                                        .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
-    
-                                    user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error);
-                                }
-                            });
-                            return;
+                const result = await apiRequestBuilder.sendRequest();
+                if (result.statusCode !== 200) {
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu!droid server. Please try again!**");
+                }
+                const content = result.data.toString("utf-8");
+                let msg = content.split(" ");
+                if (msg[0] === 'FAILED') {
+                    updateVal = {
+                        $set: {
+                            new_username: null,
+                            attachment: null,
+                            isProcessed: true
                         }
+                    };
 
-                        prev_names.push(old_name);
+                    namedb.updateOne(query, updateVal, err => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                        }
+                        message.channel.send("❎ **| I'm sorry, the username that the user has requested has been taken!**");
 
-                        updateVal = {
-                            $set: {
-                                username: new_name
-                            }
-                        };
+                        if (user) {
+                            embed.setTitle("Request Details")
+                                .setColor(16711711)
+                                .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Denied\n**Reason**: New username taken`);
 
-                        binddb.updateOne(query, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                            }
-                        });
-
-                        updateVal = {
-                            $set: {
-                                current_username: new_name,
-                                isProcessed: true,
-                                attachment: null,
-                                previous_usernames: prev_names
-                            }
-                        };
-
-                        namedb.updateOne(query, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
-                            }
-                            message.channel.send("✅ **| Successfully accepted name change request.**");
-
-                            if (user) {
-                                embed.setTitle("Request Details")
-                                    .setColor(2483712)
-                                    .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
-    
-                                user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error);
-                            }
-                        });
+                            user.send("❎ **| Hey, I would like to inform you that your name change request was denied as the username you have requested has been taken.\n\nYou are not subjected to the 30-day cooldown yet, so feel free to submit another request. Sorry in advance!**", {embed: embed}).catch(console.error);
+                        }
                     });
+                    return;
+                }
+
+                prev_names.push(old_name);
+
+                updateVal = {
+                    $set: {
+                        username: new_name
+                    }
+                };
+
+                binddb.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                    }
                 });
-                req.end();
+
+                updateVal = {
+                    $set: {
+                        current_username: new_name,
+                        isProcessed: true,
+                        attachment: null,
+                        previous_usernames: prev_names
+                    }
+                };
+
+                namedb.updateOne(query, updateVal, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    }
+                    message.channel.send("✅ **| Successfully accepted name change request.**");
+
+                    if (user) {
+                        embed.setTitle("Request Details")
+                            .setColor(2483712)
+                            .setDescription(`**Old Username**: ${old_name}\n**New Username**: ${new_name}\n**Creation Date:** ${new Date((cooldown - 86400 * 30) * 1000).toUTCString()}\n\n**Status**: Accepted`);
+
+                        user.send(`✅ **| Hey, I would like to inform you that your name change request was accepted. You will be able to change your username again in ${new Date(cooldown * 1000).toUTCString()}.**`, {embed: embed}).catch(console.error);
+                    }
+                });
             });
             break;
         }
@@ -167,7 +163,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 if (!res || res.isProcessed) return message.channel.send("❎ **| I'm sorry, this user does not have an active name change request!**");
 
-                const user = await guild.members.fetch(res.discordid);
+                const user = await guild.members.fetch(res.discordid).catch(console.error);
                 let cooldown = res.cooldown;
                 let old_name = res.current_username;
                 let new_name = res.new_username;

@@ -12,7 +12,7 @@ module.exports.run = async (client, message, args) => {
 
     message.delete().catch(console.error);
 
-    const toreport = await message.guild.members.fetch(message.mentions.users.first() || args[0]);
+    const toreport = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
     if (!toreport) return message.channel.send("❎ **| Hey, please enter a valid user to report!**");
     if (toreport.hasPermission("ADMINISTRATOR", {checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you cannot report this user!**");
     if (toreport.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot report yourself!**");
