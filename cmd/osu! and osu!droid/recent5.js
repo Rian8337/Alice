@@ -95,7 +95,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			else page = 1;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, color);
+			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -103,7 +103,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 1) page = 10;
 			else page--;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, color);
+			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -111,7 +111,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 10) page = 1;
 			else page++;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, color);
+			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
@@ -119,7 +119,7 @@ module.exports.run = async (client, message, args) => {
 			if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			else page = 10;
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-			embed = editpp(client, rplay, name, page, footer, index, color);
+			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
