@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { Db } = require('mongodb');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 /**
  * @param {Discord.Guild} guild 
