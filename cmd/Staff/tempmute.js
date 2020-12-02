@@ -51,10 +51,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (message.channel.type !== "text") {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     }
-    let timeLimit = isEligible(message.member);
-    if (message.isOwner || message.author.bot) {
-        timeLimit = -1;
-    }
+    const timeLimit = message.isOwner || message.author.bot ? -1 : isEligible(message.member);
     if (!timeLimit) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     }
@@ -67,12 +64,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         return message.channel.send("❎ **| I'm sorry, this user cannot be muted.**");
     }
 
-    let reason = args.slice(2).join(" ");
+    const reason = args.slice(2).join(" ");
     if (reason.length > 1800) {
         return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
     }
 
-    let mutetime = args[1];
+    const mutetime = parseInt(args[1]);
     if (!mutetime) {
         return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
     }
@@ -85,7 +82,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (mutetime === Infinity) {
         return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
     }
-    if (!message.author.bot && !message.isOwner && timeLimit !== -1 && timeLimit < mutetime) {
+    if (timeLimit !== -1 && timeLimit < mutetime) {
         return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + timeLimit + "seconds.**");
     }
 
@@ -114,7 +111,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         //start of create role
         if (!muterole) {
             try {
-                muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}, reason: "No mute role"});
+                muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions: []}, reason: "No mute role"});
                 message.guild.channels.cache.forEach((channel) => {
                     channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false, "CONNECT": false}, "Disallow muted members to talk").catch(console.error);
                 });
@@ -149,7 +146,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`);
         }
 
-        if (mutetime >= 21600) {
+        if (mutetime >= 21600 && message.guild.id === "316545691545501706") {
             const loungedb = alicedb.collection("loungelock");
             loungedb.findOne({discordid: tomute.id}, (err, res) => {
                 if (err) {
