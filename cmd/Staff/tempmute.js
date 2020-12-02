@@ -116,14 +116,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             try {
                 muterole = await message.guild.roles.create({data: {name: "elaina-muted", color: "#000000", permissions:[]}, reason: "No mute role"});
                 message.guild.channels.cache.forEach((channel) => {
-                    channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}, "Disallow muted members to talk").catch(console.error);
+                    channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false, "CONNECT": false}, "Disallow muted members to talk").catch(console.error);
                 });
             } catch(e) {
                 console.log(e.stack);
             }
         } else {
             message.guild.channels.cache.forEach((channel) => {
-                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false}, "Disallow muted members to talk").catch(console.error);
+                channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false, "CONNECT": false}, "Disallow muted members to talk").catch(console.error);
             });
         }
         //end of create role
