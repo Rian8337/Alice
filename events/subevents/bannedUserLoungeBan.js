@@ -1,36 +1,56 @@
 const Discord = require('discord.js');
-const config = require('../../config.json');
+const { Db } = require('mongodb');
+const config = require('../config.json');
 
+/**
+ * @param {Discord.Guild} guild 
+ * @param {Discord.User} user 
+ * @param {Db} alicedb 
+ */
 module.exports.run = async (guild, user, alicedb) => {
-    let banInfo = await guild.fetchBan(user.id);
-	let reason = banInfo.reason ? banInfo.reason : "Not specified";
-	let footer = config.avatar_list;
+    const banInfo = await guild.fetchBan(user).catch(console.error);
+	const reason = banInfo.reason;
+	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
+	const embed = new Discord.MessageEmbed()
 		.setTitle("Ban executed")
 		.setThumbnail(user.avatarURL({dynamic: true}))
 		.setFooter("Alice Synthesis Thirty", footer[index])
 		.setTimestamp(new Date())
 		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
 		.addField("=========================", `Reason: ${reason}`);
-	
-	guild.channels.cache.find((c) => c.name === config.management_channel).send({embed: embed});
+		
+	const loungeDb = alicedb.collection("loungelock");
+	const channelDb = alicedb.collection("mutelogchannel");
 
-	const loungedb = alicedb.collection("loungelock");
-	loungedb.findOne({discordid: user.id}, (err, res) => {
+	channelDb.findOne({guildID: guild.id}, (err, log) => {
 		if (err) {
 			console.log(err);
-			console.log("Unable to retrieve lounge ban data")
+			console.log("Unable to retrieve lounge ban data");
 		}
-		if (res) return;
-		loungedb.insertOne({discordid: user.id}, err => {
+		if (!log) {
+			return;
+		}
+		const channel = guild.channels.resolve(log.channelID);
+		channel.send({embed: embed});
+		loungeDb.findOne({discordid: user.id}, (err, res) => {
 			if (err) {
 				console.log(err);
-				console.log("Unable to insert ban data")
+				console.log("Unable to retrieve lounge ban data");
 			}
-			guild.channels.cache.find(c => c.name === config.management_channel).send("✅ **| Successfully locked user from lounge.**")
-		})
-	})
+			if (res) {
+				return;
+			}
+	
+			loungeDb.insertOne({discordid: user.id}, err => {
+				if (err) {
+					console.log(err);
+					console.log("Unable to insert ban data");
+				}
+				channel.send("✅ **| Successfully locked user from lounge.**");
+			});
+		});
+	});
 };
 
 module.exports.config = {
