@@ -83,5 +83,5 @@ module.exports.config = {
     description: "Bans a user from the server.",
     usage: "ban <user> <reason>",
     detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason for banning [String]",
-    permission: "Owner"
+    permission: "Administrator"
 };
