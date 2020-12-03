@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args, maindb) => {
 						return message.channel.send(`❎ **| I'm sorry, I'm having trouble loading verification map!\n\n${err}**`);
 					}
 					const attachment = new MessageAttachment(data, 'LiSA - crossing field (osu!droid bind verification).osz');
-					message.channel.send("❎ **| I'm sorry, the account hasn't played verification map yet! Please play the attached map before binding your account. This is a one-time verification and you will not be asked again in the future.**", {files: [attachment]});
+					message.channel.send("❎ **| I'm sorry, the account hasn't played verification map yet! Please play the attached map before binding your account. This is a one-time verification and you will not be asked again in the future.\nAfter playing the verification map, please use the command again.**", {files: [attachment]});
 				});
 				return;
 			}
