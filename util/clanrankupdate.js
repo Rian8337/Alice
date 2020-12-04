@@ -1,63 +1,58 @@
 const osudroid = require('osu-droid');
+const { Db } = require('mongodb');
 
-function retrieveClan(res, i, cb) {
-    if (!res[i]) return cb(null);
-    cb(res[i]);
-}
-
+/**
+ * @param {Db} maindb 
+ */
 module.exports.run = maindb => {
     console.log("Updating clan rank");
-    const binddb = maindb.collection("userbind");
-    const clandb = maindb.collection("clandb");
+    const bindDb = maindb.collection("userbind");
+    const clanDb = maindb.collection("clandb");
+    const currentTime = Math.floor(Date.now() / 1000);
 
-    binddb.find({}, {projection: {_id: 0, discordid: 1, previous_bind: 1}}).toArray(function(err, res) {
+    bindDb.find({clan: {$not: ""}}, {projection: {_id: 0, discordid: 1, previous_bind: 1}}).toArray((err, res) => {
         if (err) throw err;
-        clandb.find({}, {projection: {_id: 0, name: 1, member_list: 1}}).toArray(function(err, clans) {
+        clanDb.find({}, {projection: {_id: 0, name: 1, member_list: 1, weeklyfee: 1}}).toArray(async (err, clans) => {
             if (err) throw err;
-            let i = 0;
-            
-            retrieveClan(clans, i, async function processClan(clan) {
-                if (!clan) return console.log("Process complete");
-                console.log(i);
+
+            for await (const clan of clans) {
+                // do not update rank if weekly upkeep is near
+                if (clan.weeklyfee - currentTime < 600) {
+                    continue;
+                }
+
                 const members = clan.member_list;
-                const new_members = [];
+                const newMembers = [];
                 for await (const member of members) {
                     const user = res.find(u => u.discordid === member.id);
                     if (!user) {
-                        console.log(`Couldn't find bind with Discord ID ${member.id}`);
                         continue;
                     }
-                    let previous_bind = user.previous_bind;
-                    if (!previous_bind) previous_bind = [user.uid];
+
+                    const previousBind = user.previous_bind ?? [user.uid];
                     let rank = Number.POSITIVE_INFINITY;
-                    let fix_uid = 0;
-                    for await (const uid of previous_bind) {
+                    let highestRankUid = 0;
+
+                    for await (const uid of previousBind) {
                         const player = await osudroid.Player.getInformation({uid: uid});
                         if (player.error) {
                             continue;
                         }
                         if (rank > player.rank) {
                             rank = player.rank;
-                            fix_uid = parseInt(uid);
+                            highestRankUid = player.uid;
                         }
                     }
-                    member.uid = fix_uid;
+
+                    member.uid = highestRankUid;
                     member.rank = rank;
-                    new_members.push(member);
+                    newMembers.push(member);
                 }
-    
-                const updateVal = {
-                    $set: {
-                        member_list: new_members
-                    }
-                };
-    
-                clandb.updateOne({name: clan.name}, updateVal, err => {
-                    if (err) throw err;
-                    ++i;
-                    retrieveClan(clans, i, processClan);
-                });
-            });
+
+                await clanDb.updateOne({name: clan.name}, {$set: {member_list: newMembers}});
+            }
+
+            console.log("Updating rank done");
         });
     });
 };
