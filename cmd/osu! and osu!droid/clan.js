@@ -8,36 +8,52 @@ const canvas = createCanvas(900, 250);
 const c = canvas.getContext("2d");
 c.imageSmoothingQuality = "high";
 
-function capitalizeString(string = "") {
+/**
+ * @param {string} string 
+ */
+function capitalizeString(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function hasUnicode(str = "") {
+/**
+ * @param {string} str 
+ */
+function hasUnicode(str) {
     for (let i = 0; i < str.length; i++) {
         if (str.charCodeAt(i) > 127) return true;
     }
     return false;
 }
 
+/**
+ * @param {Discord.GuildMember} member 
+ */
 function isEligible(member) {
     let res = 0;
     let eligibleRoleList = config.mute_perm;
     for (const id of eligibleRoleList) {
-        if (res === -1) break;
+        if (res === -1) {
+            break;
+        }
         if (member.roles.cache.has(id[0])) {
-            if (id[1] === -1) res = id[1];
-            else res = Math.max(res, id[1]);
+            if (id[1] === -1) {
+                res = id[1];
+            } else {
+                res = Math.max(res, id[1]);
+            }
         }
     }
     return res;
 }
 
+/**
+ * @param {number} num 
+ */
 function timeConvert(num) {
-    let sec = parseInt(num);
-    let days = Math.floor(sec / 86400);
-    let hours = Math.floor((sec - days * 86400) / 3600);
-    let minutes = Math.floor((sec - days * 86400 - hours * 3600) / 60);
-    let seconds = sec - days * 86400 - hours * 3600 - minutes * 60;
+    const days = Math.floor(num / 86400);
+    const hours = Math.floor((num - days * 86400) / 3600);
+    const minutes = Math.floor((num - days * 86400 - hours * 3600) / 60);
+    const seconds = num - days * 86400 - hours * 3600 - minutes * 60;
     let string = '';
 
     if (days > 0) {
@@ -60,7 +76,7 @@ function timeConvert(num) {
 }
 
 function editMember(clanres, page, color, footer, index, coin) {
-    let embed = new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle(`${clanres.name} Members (Page ${page}/5)`)
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(color);
@@ -78,8 +94,12 @@ function editMember(clanres, page, color, footer, index, coin) {
     return embed;
 }
 
+/**
+ * @param {string} s 
+ * @param {number} l 
+ */
 function spaceFill(s, l) {
-    let a = s.length;
+    const a = s.length;
     for (let i = 1; i < l-a; i++) {
         s += ' ';
     }
@@ -121,9 +141,16 @@ function editAuction(res, coin, page, color, footer, index) {
  * @param {Db} alicedb 
  */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    if (message.channel.type !== "text") return;
-    if (args[0] !== "about" && message.channel.parentID !== '696646649128288346') return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    if (message.channel.type !== "text") {
+        return;
+    }
+    if (args[0] !== "about" && message.channel.parentID !== '696646649128288346') {
+        return message.channel.send("❎ **| I'm sorry, this command is only allowed in Clans category!**");
+    }
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    }
+
     const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
     const pointdb = alicedb.collection("playerpoints");
@@ -134,24 +161,20 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     let query = {};
     let updateVal;
     let insertVal;
-    let color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
-    let footer = config.avatar_list;
+    let color = message.member?.roles.color?.hexColor || "#000000";
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     let embed = new Discord.MessageEmbed()
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setColor(color);
 
     switch (args[0]) {
-
-
         case "about": {
             // about section
             embed.setDescription(`Please go to [this](https://osudroidfaq.wordpress.com/clans/) website for guidelines.`);
             message.channel.send({embed: embed});
             break;
         }
-
-
 
         case "info": {
             // view info of a clan
@@ -166,13 +189,20 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) {
-                    if (args[1]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                    else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <<username>`.**");
+                    if (args[1]) {
+                        message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                    } else {
+                        message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <<username>`.**");
+                    }
                     return;
                 }
-                let clan = userres.clan;
-                if (args[1]) clan = args.slice(1).join(" ");
-                if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
+                const clan = userres.clan;
+                if (args[1]) {
+                    clan = args.slice(1).join(" ");
+                }
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
+                }
                 query = {name: clan};
                 clandb.findOne(query, async (err, clanres) => {
                     if (err) {
@@ -180,21 +210,29 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
                     if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    let power = clanres.power;
-                    let clandate = clanres.createdAt * 1000;
-                    let members = clanres.member_list.length;
-                    let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                    if (clanrole) embed.setColor(clanrole.hexColor);
+                    const power = clanres.power;
+                    const clandate = clanres.createdAt * 1000;
+                    const members = clanres.member_list;
+                    const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                    if (clanrole) {
+                        embed.setColor(clanrole.hexColor);
+                    }
                     let upkeep = 200;
-                    for (const member of clanres.member_list) upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
+                    for (const member of members) {
+                        upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
+                    }
                     embed.setTitle(clan)
                         .addField("Clan Leader", `<@${clanres.leader}>\n(${clanres.leader})`, true)
                         .addField("Power", power.toLocaleString(), true)
-                        .addField("Members", `${members}/25`, true)
+                        .addField("Members", `${members.length}/25`, true)
                         .addField("Created at", new Date(clandate).toUTCString(), true)
                         .addField("Total Upkeep Estimation", `${coin}${upkeep.toLocaleString()} Alice coins`, true);
-                    if (clanres.icon) embed.setThumbnail(clanres.icon);
-                    if (clanres.description) embed.setDescription(clanres.description);
+                    if (clanres.icon) {
+                        embed.setThumbnail(clanres.icon);
+                    }
+                    if (clanres.description) {
+                        embed.setDescription(clanres.description);
+                    }
                     if (clanres.banner) {
                         try {
                             const image = await loadImage(clanres.banner);
@@ -205,16 +243,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         } catch (e) {}
                     }
                     message.channel.send({embed: embed}).catch(console.error);
-                })
+                });
             });
             cd.add(message.author.id);
             setTimeout(() => {
                 cd.delete(message.author.id);
             }, 4000);
-            break
+            break;
         }
-
-
 
         case "members": {
             // view members of a clan
@@ -228,20 +264,30 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                let clan = userres.clan;
-                if (args[1]) clan = args.slice(1).join(" ");
-                if (!clan) return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = userres.clan;
+                if (args[1]) {
+                    clan = args.slice(1).join(" ");
+                }
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
+                }
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                    if (clanrole) color = clanrole.hexColor;
-                    let embed = editMember(clanres, page, color, footer, index, coin);
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
+                    const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                    if (clanrole) {
+                        color = clanrole.hexColor;
+                    }
+                    embed = editMember(clanres, page, color, footer, index, coin);
                     message.channel.send({embed: embed}).then(msg => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
@@ -251,10 +297,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             });
                         });
 
-                        let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 45000});
-                        let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 45000});
-                        let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 45000});
-                        let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 45000});
+                        const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 45000});
+                        const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 45000});
+                        const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 45000});
+                        const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 45000});
 
                         backward.on('collect', () => {
                             if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
@@ -302,8 +348,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "lb": {
             // views leaderboard of clans based on power points
             // ================================================
@@ -315,7 +359,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!clanres[(page - 1)*20]) return message.channel.send("❎ **| Nah, we don't have that much clan :p**");
+                if (!clanres[(page - 1)*20]) {
+                    return message.channel.send("❎ **| Nah, we don't have that much clan :p**");
+                }
                 let output = editLeaderboard(clanres, page);
                 message.channel.send('```c\n' + output + '```').then(msg => {
                     msg.react("⏮️").then(() => {
@@ -374,8 +420,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break
         }
 
-
-
         case "upkeep": {
             // views weekly uptime pickup of the user's clan
             // =============================================
@@ -387,25 +431,33 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                let clan = userres.clan;
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                if (!userres.clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
+                const clan = userres.clan;
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
-                    let time = timeConvert(clanres.weeklyfee - curtime);
-                    let member_list = clanres.member_list;
-                    let member = member_list.find(m => m.id === message.author.id);
-                    let upkeep = 500 - Math.floor(34.74 * Math.log(member.rank));
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
+                    }
+                    const time = timeConvert(clanres.weeklyfee - curtime);
+                    const members = clanres.member_list;
+                    const member = members.find(m => m.id === message.author.id);
+                    const upkeep = 500 - Math.floor(34.74 * Math.log(member.rank));
                     let total_upkeep = 200;
-                    const equal_distribution = Math.floor(total_upkeep / clanres.member_list.length);
+                    const equal_distribution = Math.floor(total_upkeep / members.length);
                     total_upkeep += equal_distribution;
-                    const mod = total_upkeep % clanres.member_list.length;
-                    for (const member of clanres.member_list) total_upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
+                    const mod = total_upkeep % members.length;
+                    for (const member of members) {
+                        total_upkeep += 500 - Math.floor(34.74 * Math.log(member.rank));
+                    }
                     message.channel.send(`✅ **| ${message.author}, your upkeep cost is ${mod ? `somewhere between ${coin}\`${upkeep.toLocaleString()}-${(upkeep + 1).toLocaleString()}\`` : `${coin}\`${upkeep.toLocaleString()}\``} Alice coins, which will be taken from you in ${time}. Your clan's estimated total weekly upkeep is ${coin}\`${total_upkeep.toLocaleString()}\` Alice coins.**`)
                 });
             });
@@ -420,36 +472,49 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         // accepts a user as clan member
         case "accept": {
             const toaccept = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-            if (!toaccept) return message.channel.send("❎ **| Hey, please enter a correct user!**");
+            if (!toaccept) {
+                return message.channel.send("❎ **| Hey, please enter a correct user!**");
+            }
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                if (!userres.clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
                 query = {discordid: toaccept.id};
                 binddb.findOne(query, async (err, joinres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!joinres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                    if (joinres.clan) return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
+                    if (!joinres) {
+                        return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                    }
+                    if (joinres.clan) {
+                        return message.channel.send("❎ **| I'm sorry, this user is already in a clan!**");
+                    }
                     if (!joinres.joincooldown) joinres.joincooldown = 0;
                     const player = await osudroid.Player.getInformation({uid: joinres.uid});
-                    if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-                    if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
-                    let cooldown = joinres.joincooldown - curtime;
+                    if (player.error) {
+                        return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+                    }
+                    if (!player.username) {
+                        return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+                    }
+                    const cooldown = joinres.joincooldown - curtime;
                     if (cooldown > 0) {
-                        let time = timeConvert(cooldown);
+                        const time = timeConvert(cooldown);
                         return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time}.**`);
                     }
-                    if (!joinres.oldjoincooldown) joinres.oldjoincooldown = 0;
-                    let oldcooldown = userres.oldjoincooldown - curtime;
+                    const oldcooldown = (userres.oldjoincooldown ?? 0) - curtime;
                     if (oldcooldown > 0 && userres.oldclan === joinres.clan) {
-                        let time = timeConvert(oldcooldown);
+                        const time = timeConvert(oldcooldown);
                         return message.channel.send(`❎ **| I'm sorry, that user is still in cooldown! Please wait for ${time}.**`);
                     }
                     query = {name: userres.clan};
@@ -458,16 +523,24 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
+                        if (!clanres) {
+                            return message.channel.send("❎ **| I'm sorry, I cannot find your clan!**");
+                        }
 
-                        let memberlist = clanres.member_list;
-                        let cl_index = memberlist.findIndex(member => member.id === message.author.id);
-                        if (!memberlist[cl_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+                        const memberlist = clanres.member_list;
+                        const cl_index = memberlist.findIndex(member => member.id === message.author.id);
+                        if (!memberlist[cl_index].hasPermission) {
+                            return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+                        }
 
-                        let member_index = memberlist.findIndex(member => member.id === toaccept.id);
-                        if (member_index !== -1) return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
+                        const member_index = memberlist.findIndex(member => member.id === toaccept.id);
+                        if (member_index !== -1) {
+                            return message.channel.send("❎ **| I'm sorry, this user is already in your clan!**");
+                        }
 
-                        if (memberlist.length >= 25) return message.channel.send("❎ **| I'm sorry, a clan can only have up to 25 members (including leader)!");
+                        if (memberlist.length >= 25) {
+                            return message.channel.send("❎ **| I'm sorry, a clan can only have up to 25 members (including leader)!");
+                        }
 
                         message.channel.send(`❗**| ${toaccept}, are you sure you want to join \`${userres.clan}\`?**`).then(msg => {
                             msg.react("✅").catch(console.error);
@@ -477,9 +550,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             confirm.on("collect", () => {
                                 confirmation = true;
                                 msg.delete();
-                                let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                                let clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
-                                if (clanrole) toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
+                                const clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
+                                if (clanrole) {
+                                    const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                    toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
+                                }
                                 memberlist.push({
                                     id: toaccept.id,
                                     uid: player.uid,
@@ -493,7 +568,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                 };
                                 clandb.updateOne(query, updateVal, err => {
-                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    if (err) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    }
                                     console.log("Clan data updated");
                                 });
                                 updateVal = {
@@ -502,7 +579,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                 };
                                 binddb.updateOne({discordid: toaccept.id}, updateVal, err => {
-                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    if (err) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    }
                                     message.channel.send(`✅ **| ${toaccept}, successfully joined \`${userres.clan}\`.**`);
                                     console.log("User data updated");
                                 });
@@ -524,43 +603,61 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "kick": {
             // kicks a user out of a clan
             // ===============================
             // for now this is only restricted
             // to clan leaders and server mods
             const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-            if (!tokick) return message.channel.send("❎ **| Hey, please enter a correct user!**");
-            if (message.author.id === tokick.id) return message.channel.send("❎ **| Hey, you cannot kick yourself!**");
-            let reason = args.slice(2).join(" ");
-            if (!reason) return message.channel.send("❎ **| Hey, please enter a reason!**");
+            if (!tokick) {
+                return message.channel.send("❎ **| Hey, please enter a correct user!**");
+            }
+            if (message.author.id === tokick.id) {
+                return message.channel.send("❎ **| Hey, you cannot kick yourself!**");
+            }
+            const reason = args.slice(2).join(" ");
+            if (!reason) {
+                return message.channel.send("❎ **| Hey, please enter a reason!**");
+            }
             query = {discordid: tokick.id};
             binddb.findOne(query, (err, kickres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!kickres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!kickres.clan) return message.channel.send("❎ **| I'm sorry, this user is not in any clan!**");
-                let clan = kickres.clan;
+                if (!kickres) {
+                    return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = kickres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, this user is not in any clan!**");
+                }
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (tokick.id === clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick the leader of the clan!**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
+                    if (tokick.id === clanres.leader) {
+                        return message.channel.send("❎ **| I'm sorry, you cannot kick the leader of the clan!**");
+                    }
 
                     let memberlist = clanres.member_list;
                     let perm_index = memberlist.findIndex(member => member.id === message.author.id);
-                    if (!memberlist[perm_index].hasPermission && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    if (!memberlist[perm_index].hasPermission && !perm) {
+                        return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    }
 
                     let member_index = clanres.member_list.findIndex(member => member.id === tokick.id);
-                    if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!**");
-                    if (memberlist[member_index].hasPermission && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
+                    if (member_index === -1) {
+                        return message.channel.send("❎ **| I'm sorry, this user is not in your clan!**");
+                    }
+                    if (memberlist[member_index].hasPermission && message.author.id !== clanres.leader) {
+                        return message.channel.send("❎ **| I'm sorry, you cannot kick this clan member!**");
+                    }
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user out from ${perm?`\`${clan}\``:"your"} clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
@@ -569,9 +666,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                            let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                            if (clanrole) tokick.roles.remove([role, clanrole], "Kicked from clan").catch(console.error);
+                            const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                            if (clanrole) {
+                                const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                tokick.roles.remove([role, clanrole], "Kicked from clan").catch(console.error);
+                            }
 
                             memberlist.splice(member_index, 1);
 
@@ -581,7 +680,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 console.log("Clan data updated");
                             });
                             updateVal = {
@@ -593,7 +694,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                             };
                             binddb.updateOne({discordid: tokick.id}, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 message.channel.send(`✅ **| ${message.author}, successfully kicked user for ${reason}.**`);
                                 console.log("User data updated");
                             });
@@ -614,7 +717,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
         case "leave": {
             // leaves a clan
             // ======================
@@ -625,29 +727,39 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                let clan = userres.clan;
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = userres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (message.author.id === clanres.leader) return message.channel.send("❎ **| I'm sorry, you cannot leave as the leader of the clan!**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
+                    if (message.author.id === clanres.leader) {
+                        return message.channel.send("❎ **| I'm sorry, you cannot leave as the leader of the clan!**");
+                    }
                     message.channel.send(`❗**| ${message.author}, are you sure you want to leave your current clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                            let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                            if (clanrole) message.member.roles.remove([role, clanrole], "Left the clan").catch(console.error);
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                            if (clanrole) {
+                                const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                message.member.roles.remove([role, clanrole], "Left the clan").catch(console.error);
+                            }
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
 
                             memberlist.splice(member_index, 1);
 
@@ -657,7 +769,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 console.log("Clan data updated");
                             });
                             updateVal = {
@@ -669,7 +783,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                             };
                             binddb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 message.channel.send(`✅ **| ${message.author}, successfully left \`${clan}\` clan.**`);
                                 console.log("User clan data updated");
                             });
@@ -690,25 +806,33 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "create": {
             // creates a clan
             // =========================
             // this will use Alice coins
             // as currency
-            let clanname = args.slice(1).join(" ");
-            if (!clanname) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
-            if (clanname.length > 25) return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
-            if (hasUnicode(clanname)) return message.channel.send("❎ **| I'm sorry, clan name must not contain any unicode characters!**");
+            const clanname = args.slice(1).join(" ");
+            if (!clanname) {
+                return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
+            }
+            if (clanname.length > 25) {
+                return message.channel.send("❎ **| I'm sorry, clan names can only be 20 characters long!**");
+            }
+            if (hasUnicode(clanname)) {
+                return message.channel.send("❎ **| I'm sorry, clan name must not contain any unicode characters!**");
+            }
             query = {discordid: message.author.id};
             binddb.findOne(query, async (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (userres.clan) return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                if (userres.clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are already in a clan!**");
+                }
                 const uid = userres.uid;
                 const player = await osudroid.Player.getInformation({uid: uid});
                 pointdb.findOne(query, (err, pointres) => {
@@ -716,31 +840,39 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                    let alicecoins = pointres.alicecoins;
-                    if (alicecoins < 7500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                    if (!pointres) {
+                        return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                    }
+                    const alicecoins = pointres.alicecoins;
+                    if (alicecoins < 7500) {
+                        return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan! Creating a clan costs ${coin}\`7,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                    }
                     query = {name: clanname};
                     clandb.findOne(query, (err, clanres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (clanres) return message.channel.send("❎ **| I'm sorry, that name is already taken by other clan!**");
+                        if (clanres) {
+                            return message.channel.send("❎ **| I'm sorry, that name is already taken by other clan!**");
+                        }
                         message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan named \`${clanname}\` for ${coin}\`7,500\` Alice coins?**`).then(msg => {
                             msg.react("✅").catch(console.error);
                             let confirmation = false;
-                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                            const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                             confirm.on("collect", () => {
                                 confirmation = true;
                                 msg.delete();
                                 query = {discordid: message.author.id};
                                 updateVal = {
-                                    $set: {
-                                        alicecoins: alicecoins - 7500
+                                    $inc: {
+                                        alicecoins: -7500
                                     }
                                 };
                                 pointdb.updateOne(query, updateVal, err => {
-                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    if (err) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    }
                                     console.log("User coins data updated");
                                 });
                                 updateVal = {
@@ -749,7 +881,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                 };
                                 binddb.updateOne(query, updateVal, err => {
-                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    if (err) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    }
                                     console.log("User data updated");
                                 });
                                 insertVal = {
@@ -827,7 +961,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     ]
                                 };
                                 clandb.insertOne(insertVal, err => {
-                                    if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    if (err) {
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                    }
                                     message.channel.send(`✅ **| ${message.author}, successfully created a clan named \`${clanname}\`. You now have ${coin}\`${(alicecoins - 7500).toLocaleString()}\` Alice coins.**`);
                                     console.log("Clan data added");
                                 });
@@ -849,11 +985,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
         // main hub for clan descriptions
         case "description": {
             switch (args[1]) {
-
                 // clear a clan's description
                 // moderators can specify clan to remove a clan's description
                 case "clear": {
@@ -863,12 +997,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        let clan;
-                        if (perm && args[2]) clan = args.slice(2).join(" ");
-                        else {
-                            if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                            if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                            clan = userres.clan
+                        const clan = perm && args[2] ? args.slice(2).join(" ") : userres?.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
                         }
 
                         query = {name: clan};
@@ -877,16 +1008,20 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm && !memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!perm && !memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${clan}\` clan's description` : "your clan's description"}?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -902,7 +1037,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         message.channel.send(`✅ **| ${message.author}, successfully cleared ${perm && args[2] ? `\`${clan}\` clan's description` : "your clan's description"}.**`);
-                                    })
+                                    });
                                 });
                                 confirm.on("end", () => {
                                     if (!confirmation) {
@@ -916,12 +1051,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "edit": {
                     const cmd_length = message.content.split(" ").slice(0, 3).join(" ").length + 1;
-                    let new_desc = message.content.substring(cmd_length);
-                    if (!new_desc) return message.channel.send("❎ **| Hey, please enter a new description!**");
+                    const new_desc = message.content.substring(cmd_length);
+                    if (!new_desc) {
+                        return message.channel.send("❎ **| Hey, please enter a new description!**");
+                    }
 
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -929,9 +1064,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!userres.clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
 
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
@@ -939,19 +1078,25 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
                             let memberlist = clanres.member_list;
                             let member_index = memberlist.findIndex(member => member.id === message.author.id);
                             let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            if (!hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
-                            if (new_desc === clanres.description) return message.channel.send("❎ **| Hey, your new description is the same as the old description!**");
+                            if (new_desc === clanres.description) {
+                                return message.channel.send("❎ **| Hey, your new description is the same as the old description!**");
+                            }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan's description?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -967,7 +1112,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                         }
                                         message.channel.send(`✅ **| ${message.author}, successfully changed your clan's description.**`);
-                                    })
+                                    });
                                 });
                                 confirm.on("end", () => {
                                     if (!confirmation) {
@@ -989,8 +1134,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "promote": {
             // promotes a clan member to co-leader
             // ==================================================
@@ -998,8 +1141,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // except changing clan name, disbanding it, changing
             // role color, and promoting other members
             const topromote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-            if (!topromote) return message.channel.send("❎ **| Hey, please mention a valid user to promote!**");
-            if (topromote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot promote yourself!**");
+            if (!topromote) {
+                return message.channel.send("❎ **| Hey, please mention a valid user to promote!**");
+            }
+            if (topromote.id === message.author.id) {
+                return message.channel.send("❎ **| Hey, you cannot promote yourself!**");
+            }
 
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
@@ -1007,9 +1154,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                let clan = userres.clan;
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = userres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
 
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
@@ -1017,19 +1168,27 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
+                    if (message.author.id !== clanres.leader) {
+                        return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    }
 
-                    let member_list = clanres.member_list;
-                    let member_index = member_list.findIndex(member => member.id === topromote.id);
-                    if (member_index === -1) return message.channel.send("❎ **| I'm sorry, the user is not in your clan!**");
-                    if (member_list[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, this user is already a co-leader!**");
+                    const member_list = clanres.member_list;
+                    const member_index = member_list.findIndex(member => member.id === topromote.id);
+                    if (member_index === -1) {
+                        return message.channel.send("❎ **| I'm sorry, the user is not in your clan!**");
+                    }
+                    if (member_list[member_index].hasPermission) {
+                        return message.channel.send("❎ **| I'm sorry, this user is already a co-leader!**");
+                    }
                     member_list[member_index].hasPermission = true;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to promote ${topromote} to co-leader?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -1045,7 +1204,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 message.channel.send(`✅ **| ${message.author}, successfully promoted ${topromote} to co-leader.**`);
-                            })
+                            });
                         });
                         confirm.on("end", () => {
                             if (!confirmation) {
@@ -1072,8 +1231,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // member despite them being outside the
             // clan
             const todemote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-            if (!todemote) return message.channel.send("❎ **| Hey, please mention a valid user to demote!**");
-            if (todemote.id === message.author.id) return message.channel.send("❎ **| Hey, you cannot demote yourself!**");
+            if (!todemote) {
+                return message.channel.send("❎ **| Hey, please mention a valid user to demote!**");
+            }
+            if (todemote.id === message.author.id) {
+                return message.channel.send("❎ **| Hey, you cannot demote yourself!**");
+            }
 
             query = {discordid: todemote.id};
             binddb.findOne(query, (err, userres) => {
@@ -1081,9 +1244,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                let clan = userres.clan;
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = userres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                }
 
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
@@ -1091,19 +1258,27 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the user's clan!**");
-                    if (!perm && message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the user's clan!**");
+                    }
+                    if (!perm && message.author.id !== clanres.leader) {
+                        return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    }
 
-                    let member_list = clanres.member_list;
-                    let member_index = member_list.findIndex(member => member.id === todemote.id);
-                    if (!perm && member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in a clan!**");
-                    if (!member_list[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, this user is already a normal member!**");
+                    const member_list = clanres.member_list;
+                    const member_index = member_list.findIndex(member => member.id === todemote.id);
+                    if (!perm && member_index === -1) {
+                        return message.channel.send("❎ **| I'm sorry, this user is not in a clan!**");
+                    }
+                    if (!member_list[member_index].hasPermission) {
+                        return message.channel.send("❎ **| I'm sorry, this user is already a normal member!**");
+                    }
                     member_list[member_index].hasPermission = false;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to demote ${todemote} to normal member?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -1137,8 +1312,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "disband": {
             // disbands a clan
             // ===========================
@@ -1150,34 +1323,49 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                if (!userres && !perm) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                if (!userres.clan && !perm) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
                 let clanname = '';
                 if (perm) {
-                    if (args[1]) clanname = args.slice(1).join(" ");
-                    else clanname = userres.clan;
-                    if (!clanname) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                    if (args[1]) {
+                        clanname = args.slice(1).join(" ");
+                    } else {
+                        clanname = userres.clan;
+                    }
+
+                    if (!clanname) {
+                        return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                    }
+                } else {
+                    clanname = userres.clan;
                 }
-                else clanname = userres.clan;
                 query = {name: clanname};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                    if (message.author.id !== clanres.leader && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
+                    if (message.author.id !== clanres.leader && !perm) {
+                        return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+                    }
                     message.channel.send(`❗**| ${message.author}, are you sure you want to disband ${perm && args[1]?`\`${clanname}\` clan`:"your clan"}?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
-                            let clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
+                            const clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
                             if (clanrole) {
                                 clanrole.delete("Clan disbanded").catch(console.error);
-                                let role = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                 clanres.member_list.forEach(async (member) => {
                                     const guildMember = await message.guild.members.fetch(member.id).catch(console.error);
                                     if (guildMember) {
@@ -1221,8 +1409,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "banner": {
             // clan banner
             // ============================
@@ -1234,7 +1420,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // set banner
                     let banner = args[2];
                     if (!banner) {
-                        if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach an image or enter an image URL!**");
+                        if (message.attachments.size === 0) {
+                            return message.channel.send("❎ **| Hey, please attach an image or enter an image URL!**");
+                        }
                         if (message.attachments.size > 0) {
                             const attachment = message.attachments.first();
                             banner = attachment.url;
@@ -1243,49 +1431,65 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 banner.indexOf("png", length - 3) === -1 &&
                                 banner.indexOf("jpg", length - 3) === -1 &&
                                 banner.indexOf("jpeg", length - 4) === -1
-                            ) return message.channel.send("❎ **| Hey, please provide a valid image!**");
+                            ) {
+                                return message.channel.send("❎ **| Hey, please provide a valid image!**");
+                            }
                         }
                     }
-                    if (!banner.startsWith("http")) return message.channel.send("❎ **| Hey, I think that banner link is invalid!**");
+                    if (!banner.startsWith("http")) {
+                        return message.channel.send("❎ **| Hey, I think that banner link is invalid!**");
+                    }
                     let image;
                     try {
                         image = await loadImage(banner);
                     } catch (e) {
                         return message.channel.send("❎ **| I'm sorry, that banner link does not resolve to an image!**");
                     }
-                    if (image.naturalWidth / image.naturalHeight !== 3.6) return message.channel.send("❎ **| I'm sorry, that image ratio is not properly set! I only accept 18:5 image ratio!**");
+                    if (image.naturalWidth / image.naturalHeight !== 3.6) {
+                        return message.channel.send("❎ **| I'm sorry, that image ratio is not properly set! I only accept 18:5 image ratio!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            const hasPermission = memberlist[member_index].hasPermission;
+                            if (!hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
-                            if (clanres.power < 500) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
+                            if (clanres.power < 500) {
+                                return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
+                            }
                             let cooldown = clanres.bannercooldown - curtime;
                             if (cooldown > 0) {
-                                let time = timeConvert(cooldown);
+                                const time = timeConvert(cooldown);
                                 return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`)
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan banner? You wouldn't be able to change it for 10 minutes!**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -1296,7 +1500,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                     };
                                     clandb.updateOne(query, updateVal, err => {
-                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        if (err) {
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        }
                                         message.channel.send(`✅ **| ${message.author}, successfully set your clan banner.**`);
                                     });
                                 });
@@ -1312,7 +1518,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
                 case "remove": {
                     // remove banner
                     query = {discordid: message.author.id};
@@ -1321,14 +1526,26 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        if (!userres && !perm) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        if (!userres.clan && !perm) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         let clan = '';
                         if (perm) {
-                            if (args[2]) clan = args.slice(2).join(" ");
-                            else clan = userres.clan;
-                            if (!clan) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
-                        } else clan = userres.clan;
+                            if (args[2]) {
+                                clan = args.slice(2).join(" ");
+                            } else {
+                                clan = userres.clan;
+                            }
+                            
+                            if (!clan) {
+                                return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
+                            }
+                        } else {
+                            clan = userres.clan;
+                        }
 
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
@@ -1336,18 +1553,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm) {
-                                let hasPermission = memberlist[member_index].hasPermission;
-                                if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!perm && !memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s banner?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -1372,7 +1590,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     });
                     break;
                 }
-
                 default: return message.channel.send("❎ **| I'm sorry, looks like your second argument is invalid! Accepted arguments are `remove` and `set`.**");
             }
             cd.add(message.author.id);
@@ -1382,45 +1599,58 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
         case "announce": {
             // used to announce something to clan members for clan co-leaders and leader
             // requires clan role to work
             const cmd_length = message.content.split(" ").slice(0, 2).join(" ").length + 1;
-            let announcement_message = message.content.substring(cmd_length);
-            if (!announcement_message) return message.channel.send("❎ **| Hey, please enter an announcement message!**");
-            if (announcement_message.length > 1750) return message.channel.send("❎ **| I'm sorry, your announcement message is too long! Announcement limit is 1750 characters.**")
+            const announcement_message = message.content.substring(cmd_length);
+            if (!announcement_message) {
+                return message.channel.send("❎ **| Hey, please enter an announcement message!**");
+            }
+            if (announcement_message.length > 1750) {
+                return message.channel.send("❎ **| I'm sorry, your announcement message is too long! Announcement limit is 1750 characters.**")
+            }
             query = {discordid: message.author.id};
             binddb.findOne(query, (err, userres) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                let clan = userres.clan;
+                if (!userres) {
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                }
+                const clan = userres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                }
                 query = {name: clan};
                 clandb.findOne(query, (err, clanres) => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                     }
-                    if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    if (!clanres) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                    }
 
-                    let memberlist = clanres.member_list;
-                    let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                    let hasPermission = memberlist[member_index].hasPermission;
-                    if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    const memberlist = clanres.member_list;
+                    const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                    if (!memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                     let string = '';
                     const clanrole = message.guild.roles.cache.find(r => r.name === clan);
-                    if (clanrole) string += `${clanrole}`;
-                    else for (const member of memberlist) string += `<@${member.id}>`;
+                    if (clanrole) {
+                        string += `${clanrole}`;
+                    } else {
+                        for (const member of memberlist) {
+                            string += `<@${member.id}>`;
+                        }
+                    }
                     string += `\n\n${announcement_message}\n\n- ${message.author}`;
                     message.channel.send(`❗**| ${message.author}, are you sure you want to send an announcement for your clan?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -1442,7 +1672,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
         case "icon": {
             // main hub for clan icons
             // ============================
@@ -1451,56 +1680,60 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // icons that are contradicting
             // server rules
             switch (args[1]) {
-
                 case "set": {
                     // set icon
-                    let icon = args[2];
-                    if (!icon) {
-                        if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach an image or enter an image URL!**");
-                        if (message.attachments.size > 0) {
-                            const attachment = message.attachments.first();
-                            icon = attachment.url;
-                            const length = icon.length;
-                            if (
-                                icon.indexOf("png", length - 3) === -1 &&
-                                icon.indexOf("jpg", length - 3) === -1 &&
-                                icon.indexOf("jpeg", length - 4) === -1
-                            ) return message.channel.send("❎ **| Hey, please provide a valid image!**");
-                        }
+                    const icon = args[2] ?? (message.attachments.first()?.url || "");
+                    if (
+                        icon.indexOf("png", length - 3) === -1 &&
+                        icon.indexOf("jpg", length - 3) === -1 &&
+                        icon.indexOf("jpeg", length - 4) === -1
+                    ) {
+                        return message.channel.send("❎ **| Hey, please provide a valid image!**");
                     }
-                    if (!icon.startsWith("http")) return message.channel.send("❎ **| Hey, I think that icon link is invalid!**");
+                    if (!icon.startsWith("http")) {
+                        return message.channel.send("❎ **| Hey, I think that icon link is invalid!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
-                            if (clanres.power < 250) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 250!**");
-                            let cooldown = clanres.iconcooldown - curtime;
+                            if (clanres.power < 250) {
+                                return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 250!**");
+                            }
+                            const cooldown = clanres.iconcooldown - curtime;
                             if (cooldown > 0) {
-                                let time = timeConvert(cooldown);
+                                const time = timeConvert(cooldown);
                                 return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`);
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan icon? You wouldn't be able to change it for 5 minutes!**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -1527,8 +1760,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "remove": {
                     // remove icon
                     query = {discordid: message.author.id};
@@ -1537,14 +1768,16 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres && !perm) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan && !perm) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = '';
-                        if (perm) {
-                            if (args[2]) clan = args.slice(2).join(" ");
-                            else clan = userres.clan;
-                            if (!clan) return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
-                        } else clan = userres.clan;
+                        if (!userres && !perm) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        if (!userres.clan && !perm) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
+                        const clan = perm && args[2] ? args.slice(2).join(" ") : userres?.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| Hey, can you at least give me a clan name?**");
+                        }
 
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
@@ -1552,19 +1785,20 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm) {
-                                let hasPermission = memberlist[member_index].hasPermission;
-                                if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!perm && !memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s icon?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -1574,7 +1808,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                     };
                                     clandb.updateOne(query, updateVal, err => {
-                                        if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        if (err) {
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                        }
                                         message.channel.send(`✅ **| ${message.author}, successfully removed icon from ${perm && args[2]?`\`${clan}\``:"your clan"}.**`);
                                     });
                                 });
@@ -1598,8 +1834,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "powerup": {
             // main hub for powerups
             // ===============================
@@ -1607,7 +1841,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // active and owned powerup will be in this subcommand
 
             switch (args[1]) {
-
                 case "list": {
                     // views current powerups of the user's clan
                     query = {discordid: message.author.id};
@@ -1616,26 +1849,32 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            let powerups = clanres.powerups;
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
+                            const powerups = clanres.powerups;
                             embed.setTitle(`Currently owned powerups by ${clan}`);
-                            for (let i = 0; i < powerups.length; i++) embed.addField(capitalizeString(powerups[i].name), powerups[i].amount, true);
+                            for (const powerup of powerups) {
+                                embed.addField(capitalizeString(powerup.name), powerup.amount, true);
+                            }
                             message.channel.send({embed: embed}).catch(console.error);
                         });
                     });
                     break;
                 }
-
-
 
                 case "activelist": {
                     // views current active powerups of the user's clan
@@ -1645,21 +1884,31 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            let activepowerups = clanres.active_powerups;
-                            if (activepowerups.length === 0) return message.channel.send(`❎ **| I'm sorry, your clan does not have any powerups active!**`);
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
+                            const activepowerups = clanres.active_powerups;
+                            if (activepowerups.length === 0) {
+                                return message.channel.send(`❎ **| I'm sorry, your clan does not have any powerups active!**`);
+                            }
                             embed.setTitle(`Currently active powerups for ${clan}`);
                             let description_string = '';
-                            for (let i = 0; i < activepowerups.length; i++) description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`;
+                            for (let i = 0; i < activepowerups.length; i++) {
+                                description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`;
+                            }
                             embed.setDescription(description_string);
                             message.channel.send({embed: embed}).catch(console.error);
                         });
@@ -1667,52 +1916,67 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "activate": {
                     // activates a powerup
                     // ===============================
                     // can only be done by clan leader
-                    let powertype = args[2];
-                    if (!powertype) return message.channel.send("❎ **| Hey, I don't know what powerup to activate!**");
-                    powertype.toLowerCase();
+                    const powertype = args[2]?.toLowerCase();
+                    if (!powertype) {
+                        return message.channel.send("❎ **| Hey, I don't know what powerup to activate!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
-                            if (clanres.isMatch) return message.channel.send("❎ **| I'm sorry, your clan is currently in match mode, therefore you cannot activate powerups!**");
-                            let powerups = clanres.powerups;
-                            let activepowerups = clanres.active_powerups;
-                            let powerup_index = powerups.findIndex(powerup => powerup.name === powertype);
-                            if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup type you are looking for!**");
+                            if (clanres.isMatch) {
+                                return message.channel.send("❎ **| I'm sorry, your clan is currently in match mode, therefore you cannot activate powerups!**");
+                            }
 
-                            if (powerups[powerup_index].amount === 0) return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup list\`.**`);
+                            const powerups = clanres.powerups;
+                            const activepowerups = clanres.active_powerups;
+                            const powerup_index = powerups.findIndex(powerup => powerup.name === powertype);
+                            if (powerup_index === -1) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the powerup type you are looking for!**");
+                            }
+
+                            if (powerups[powerup_index].amount === 0) {
+                                return message.channel.send(`❎ **| I'm sorry, your clan doesn't have any \`${powertype}\` powerups! To view your clan's currently owned powerups, use \`a!clan powerup list\`.**`);
+                            }
                             --powerups[powerup_index].amount;
-                            let powercount = powerups[powerup_index].amount;
+                            const powercount = powerups[powerup_index].amount;
 
-                            if (activepowerups.includes(powertype)) return message.channel.send(`❎ **| I'm sorry, your clan currently has an active \`${powertype}\` powerup!**`);
+                            if (activepowerups.includes(powertype)) {
+                                return message.channel.send(`❎ **| I'm sorry, your clan currently has an active \`${powertype}\` powerup!**`);
+                            }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to activate \`${powertype}\` powerup for your clan?**`).then(msg => {
                                 msg.react("✅").catch(console.error);
                                 let confirmation = false;
-                                let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
                                     confirmation = true;
                                     msg.delete();
@@ -1748,8 +2012,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "shop": {
             // main hub for clan shops
             // =======================================================
@@ -1757,50 +2019,67 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // clan color change, powerups, etc in here, specified by
             // args[1]. also uses alice coins as currency
             switch (args[1]) {
-
                 case "rename": {
                     // changes the clan name
                     // ============================================
                     // only works for clan leaders, mods can disband
                     // clans with inappropriate names
-                    let newname = args.slice(2).join(" ");
-                    if (!newname) return message.channel.send("❎ **| Hey, give me a new name for your clan!**");
+                    const newname = args.slice(2).join(" ");
+                    if (!newname) {
+                        return message.channel.send("❎ **| Hey, give me a new name for your clan!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 2500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 2500) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a clan name change! A clan name change costs ${coin}\`2,500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-                                if (clanres.power < 500) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
-                                if (clanres.name === newname) return message.channel.send("❎ **| Hey, your new clan name must be different from your old clan name!**");
-                                let cooldown = clanres.namecooldown - curtime;
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                if (message.author.id !== clanres.leader) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                }
+                                if (clanres.power < 500) {
+                                    return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 500!**");
+                                }
+                                if (clanres.name === newname) {
+                                    return message.channel.send("❎ **| Hey, your new clan name must be different from your old clan name!**");
+                                }
+                                const cooldown = clanres.namecooldown - curtime;
                                 if (cooldown > 0) {
-                                    let time = timeConvert(cooldown);
+                                    const time = timeConvert(cooldown);
                                     return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`);
                                 }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2,500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -1817,7 +2096,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         binddb.updateMany({clan: clan}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                         });
                                         updateVal = {
                                             $set: {
@@ -1826,7 +2107,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         clandb.updateOne(query, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                             message.channel.send(`✅ **| ${message.author}, successfully changed your clan name to \`${newname}\`. You now have ${coin}\`${(alicecoins - 2500).toLocaleString()}\` Alice coins.**`);
                                         });
                                         updateVal = {
@@ -1835,7 +2118,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         auctiondb.updateMany({auctioneer: clan}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
+                                            }
                                         });
                                         updateVal = {
                                             $inc: {
@@ -1843,7 +2128,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving res;ponse from database now. Please try again!**")
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving res;ponse from database now. Please try again!**")
+                                            }
                                         });
                                     });
                                     confirm.on("end", () => {
@@ -1859,8 +2146,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "role": {
                     // buy a custom role for clan members
                     // =======================================
@@ -1873,37 +2158,53 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
-                        let c_role = message.guild.roles.cache.find((r) => r.name === clan);
-                        if (c_role) return message.channel.send("❎ **| I'm sorry, your clan already has a clan role!**");
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
+                        const c_role = message.guild.roles.cache.find((r) => r.name === clan);
+                        if (c_role) {
+                            return message.channel.send("❎ **| I'm sorry, your clan already has a clan role!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 5000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 5000) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A custom role costs ${coin}\`5,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-                                if (clanres.power < 2000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 2000!**");
-                                let memberlist = clanres.member_list;
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                if (message.author.id !== clanres.leader) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                }
+                                if (clanres.power < 2000) {
+                                    return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 2000!**");
+                                }
+                                const memberlist = clanres.member_list;
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a custom clan role for ${coin}\`5,000\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
-                                        let clanrole = message.guild.roles.cache.find((r) => r.name === 'Clans');
+                                        const clanrole = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                         message.guild.roles.create({data: {
                                             name: clan,
                                             color: "DEFAULT",
@@ -1923,7 +2224,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                             message.channel.send(`✅ **| ${message.author}, successfully bought clan role for your clan. You now have ${coin}\`${(alicecoins - 5000).toLocaleString()}\` Alice coins.**`);
                                         });
                                     });
@@ -1940,37 +2243,61 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "color": {
                     // changes clan role color if one is available
                     // ===========================================
                     // does not affect embed message colors, only
                     // affects clan role color and only supports
                     // integer color format
-                    let color = args[2];
-                    if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
+                    const color = args[2];
+                    if (!(/^#[0-9A-F]{6}$/i.test(color))) {
+                        return message.channel.send("❎ **| I'm sorry, that does not look like a valid hex color!**");
+                    }
                     // restrict reserved role color for admin/mod/helper/ref
-                    if (["#3498DB", "#9543BA", "#FFD78C", "#4C6876"].includes(color)) return message.channel.send("❎ **| I'm sorry, you cannot change your role color into the same role color as referees and staff members!**");
+                    if (["#3498DB", "#9543BA", "#FFD78C", "#4C6876"].includes(color)) {
+                        return message.channel.send("❎ **| I'm sorry, you cannot change your role color into the same role color as referees and staff members!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
-                        let clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                        if (!clanrole) return message.channel.send("❎ **| I'm sorry, your clan doesn't have a custom clan role!**");
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!userres.clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
+                        const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
+                        if (!clanrole) {
+                            return message.channel.send("❎ **| I'm sorry, your clan doesn't have a custom clan role!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to change your clan's custom role color! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                            }
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to change your clan's custom role color! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 500) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a custom role for your clan! A role color change costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                if (message.author.id !== clanres.leader) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a clan role color change for ${coin}\`500\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
@@ -1985,9 +2312,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                             message.channel.send(`✅ **| Successfully changed clan role color. You now have ${coin}\`${(alicecoins - 500).toLocaleString()}\` Alice coins.**`);
-                                        })
+                                        });
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
@@ -2002,8 +2331,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "powerup": {
                     // buy powerups with Alice coins
                     // =============================
@@ -2014,34 +2341,44 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 100) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 100) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to buy a powerup! A powerup costs ${coin}\`100\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                let powerups = clanres.powerups;
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                const powerups = clanres.powerups;
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a powerup for ${coin}\`100\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
                                         const gachanum = Math.random() * 100;
-                                        let powerup = false;
+                                        let powerup = "";
                                         if (gachanum > 20) {
                                             switch (true) {
                                                 case (gachanum <= 50): { // 20% chance of not getting anything
@@ -2121,13 +2458,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                 }
                                             };
                                             pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
+                                                if (err) {
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                                }
                                             });
                                             return
                                         }
-                                        let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                                        const powerup_index = powerups.findIndex(pow => pow.name === powerup);
                                         ++powerups[powerup_index].amount;
-                                        let powercount = powerups[powerup_index].amount;
+                                        const powercount = powerups[powerup_index].amount;
                                         updateVal = {
                                             $set: {
                                                 powerups: powerups
@@ -2143,8 +2482,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**")
-                                        })
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
+                                        });
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
@@ -2159,51 +2500,71 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "leader": {
                     // changes the leader of a clan
                     // ============================
                     // only works for clan leaders
                     const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!totransfer) return message.channel.send("❎ **| Hey, please enter a valid user to transfer the clan leadership to!**");
+                    if (!totransfer) {
+                        return message.channel.send("❎ **| Hey, please enter a valid user to transfer the clan leadership to!**");
+                    }
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 500) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to transfer clan leadership! A clan leadership transfer costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-                                if (message.author.id === totransfer.id) return message.channel.send("❎ **| You cannot transfer clan leadership to yourself!**");
-                                let memberlist = clanres.member_list;
-                                if (memberlist.length === 1) return message.channel.send("❎ **| I'm sorry, looks like you are alone in your clan! Who would you transfer leadership to?**");
-                                if (clanres.power < 300) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 300!**");
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                if (message.author.id !== clanres.leader) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                }
+                                if (message.author.id === totransfer.id) {
+                                    return message.channel.send("❎ **| You cannot transfer clan leadership to yourself!**");
+                                }
+                                const memberlist = clanres.member_list;
+                                if (memberlist.length === 1) {
+                                    return message.channel.send("❎ **| I'm sorry, looks like you are alone in your clan! Who would you transfer leadership to?**");
+                                }
+                                if (clanres.power < 300) {
+                                    return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 300!**");
+                                }
 
-                                let member_index = memberlist.findIndex(member => member.id === totransfer.id);
-                                if (member_index === -1) return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
+                                const member_index = memberlist.findIndex(member => member.id === totransfer.id);
+                                if (member_index === -1) {
+                                    return message.channel.send("❎ **| I'm sorry, this user is not in your clan!");
+                                }
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to transfer clan leadership to ${totransfer} for ${coin}\`500\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
@@ -2216,7 +2577,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         clandb.updateOne(query, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                             message.channel.send(`✅ **| ${message.author}, successfully transfered clan leadership to ${totransfer}. You now have ${coin}\`${(alicecoins - 500).toLocaleString()}\` Alice coins.**`);
                                         });
                                         updateVal = {
@@ -2225,7 +2588,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
-                                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            if (err) {
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                            }
                                         });
                                     });
                                     confirm.on("end", () => {
@@ -2241,7 +2606,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
                 case "channel": {
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -2249,29 +2613,47 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
-                        if (message.guild.channels.cache.find(c => c.name === clan)) return message.channel.send("❎ **| I'm sorry, your clan already has a clan channel!**")
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
+                        if (message.guild.channels.cache.find(c => c.name === clan)) {
+                            return message.channel.send("❎ **| I'm sorry, your clan already has a clan channel!**")
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < 50000) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < 50000) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to create a clan channel! A clan channel costs ${coin}\`50,000\` Alice coins. You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
                             query = {name: clan};
                             clandb.findOne(query, (err, clanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                                if (message.author.id !== clanres.leader) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-                                if (clanres.power < 5000) return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 5000!**");
+                                if (!clanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                                }
+                                if (message.author.id !== clanres.leader) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                                }
+                                if (clanres.power < 5000) {
+                                    return message.channel.send("❎ **| I'm sorry, your clan doesn't have enough power points! You need at least 5000!**");
+                                }
                                 const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
-                                if (!clanrole) return message.channel.send("❎ **| I'm sorry, your clan must have a clan role to create a clan channel!**");
+                                if (!clanrole) {
+                                    return message.channel.send("❎ **| I'm sorry, your clan must have a clan role to create a clan channel!**");
+                                }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan channel for ${coin}\`50,000\` Alice coins?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
@@ -2330,7 +2712,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
                 case "special": {
                     message.channel.send("❎ **| I'm sorry, there is no ongoing special event now! Please check back soon!**");
                     break;
@@ -2344,8 +2725,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "power": {
             // main hub for power points
             // ==========================================
@@ -2354,42 +2733,53 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
             switch (args[1]) {
-
                 case "give": {
                     // adds power points to a clan
                     // =======================================
                     // this must be carefully watched as abuse
                     // can be easily done
                     const togive = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!togive) return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
-                    let amount = args[3];
-                    if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to add!**");
-                    amount = parseInt(amount);
-                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to add.**");
+                    if (!togive) {
+                        return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
+                    }
+                    const amount = parseInt(args[3]);
+                    if (!amount) {
+                        return message.channel.send("❎ **| Hey, I don't know how many points do I need to add!**");
+                    }
+                    if (isNaN(amount) || amount <= 0) {
+                        return message.channel.send("❎ **| Invalid amount to add.**");
+                    }
                     query = {discordid: togive.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            let newpower = clanres.power + amount;
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
                             updateVal = {
-                                $set: {
-                                    power: newpower
+                                $inc: {
+                                    power: amount
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 message.channel.send(`✅ **| ${message.author}, successfully given \`${amount.toLocaleString()}\` power points to \`${clan}\` clan. The clan now has \`${newpower.toLocaleString()}\` power points.**`);
                             });
                         });
@@ -2397,93 +2787,123 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "take": {
                     // removes power points from a clan
                     // =========================================
                     // just like add cmd, this must be carefully
                     // watched as abuse can be easily done
                     const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
-                    let amount = args[3];
-                    if (!amount) return message.channel.send("❎ **| Hey, I don't know how many points do I need to remove!**");
-                    amount = parseInt(amount);
-                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Invalid amount to remove.**");
+                    if (!totake) {
+                        return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
+                    }
+                    const amount = parseInt(args[3]);
+                    if (!amount) {
+                        return message.channel.send("❎ **| Hey, I don't know how many points do I need to remove!**");
+                    }
+                    if (isNaN(amount) || amount <= 0) {
+                        return message.channel.send("❎ **| Invalid amount to remove.**");
+                    }
                     query = {discordid: totake.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            let newpower = clanres.power - amount;
-                            if (newpower < 0) return message.channel.send("❎ **| I'm sorry, this clan doesn't have as many power points as the amount you mentioned!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
+                            if (clanres.power - amount < 0) {
+                                return message.channel.send("❎ **| I'm sorry, this clan doesn't have as many power points as the amount you mentioned!**");
+                            }
                             updateVal = {
-                                $set: {
-                                    power: newpower
+                                $inc: {
+                                    power: -amount
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                }
                                 message.channel.send(`✅ **| ${message.author}, successfully taken \`${amount.toLocaleString()}\` power points from \`${clan}\` clan. The clan now has \`${newpower.toLocaleString()}\` power points.**`);
                             });
-                        })
+                        });
                     });
-                    break
+                    break;
                 }
-
-
 
                 case "transfer": {
                     // transfers power points from one clan to another
                     // =======================================================
                     // main cmd to use during clan matches, will automatically
                     // convert total power points based on active powerups
-                    if (args.length < 4) return message.channel.send("❎ **| Hey, I need more input!**");
+                    if (args.length < 4) {
+                        return message.channel.send("❎ **| Hey, I need more input!**");
+                    }
                     const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!totake) return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
+                    if (!totake) {
+                        return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
+                    }
                     const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]).catch(console.error);
-                    if (totake.id === togive.id) return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
-                    let challengepass = args[4];
+                    if (totake.id === togive.id) {
+                        return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
+                    }
+                    const challengepass = args[4];
                     query = {discordid: totake.id};
                     binddb.findOne(query, (err, takeres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!takeres) return message.channel.send("❎ **| I'm sorry, the account to take power points from is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!takeres.clan) return message.channel.send("❎ **| I'm sorry, the user to take is not in a clan!**");
-                        let takeclan = takeres.clan;
+                        if (!takeres) {
+                            return message.channel.send("❎ **| I'm sorry, the account to take power points from is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const takeclan = takeres.clan;
+                        if (!takeclan) {
+                            return message.channel.send("❎ **| I'm sorry, the user to take is not in a clan!**");
+                        }
                         query = {discordid: togive.id};
                         binddb.findOne(query, (err, giveres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!giveres) return message.channel.send("❎ **| I'm sorry, the account to give power points to is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-                            if (!giveres.clan) return message.channel.send("❎ **| I'm sorry, the user to give is not in a clan!**");
-                            let giveclan = giveres.clan;
-                            if (takeclan === giveclan) return message.channel.send("❎ **| Hey, you cannot transfer power points to the same clan!**");
+                            if (!giveres) {
+                                return message.channel.send("❎ **| I'm sorry, the account to give power points to is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+                            }
+                            const giveclan = giveres.clan;
+                            if (!giveres.clan) {
+                                return message.channel.send("❎ **| I'm sorry, the user to give is not in a clan!**");
+                            }
+                            if (takeclan === giveclan) {
+                                return message.channel.send("❎ **| Hey, you cannot transfer power points to the same clan!**");
+                            }
                             query = {name: takeclan};
                             clandb.findOne(query, (err, tclanres) => {
                                 if (err) {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                 }
-                                if (!tclanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan to take power points from!**");
-                                if (!tclanres.isMatch) return message.channel.send("❎ **| I'm sorry, the clan to take power points from is not in match mode!**");
-                                let t_power = tclanres.power;
-                                let t_activepowerups = tclanres.active_powerups;
+                                if (!tclanres) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find the clan to take power points from!**");
+                                }
+                                if (!tclanres.isMatch) {
+                                    return message.channel.send("❎ **| I'm sorry, the clan to take power points from is not in match mode!**");
+                                }
+                                const t_power = tclanres.power;
+                                const t_activepowerups = tclanres.active_powerups;
                                 let givemultiplier = 0.1;
                                 for (let i = 0; i < t_activepowerups.length; i++) {
                                     switch (t_activepowerups[i]) {
@@ -2494,7 +2914,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                         case "megabomb": {
                                             message.channel.send(`⬇️ **| \`${takeclan}\` has \`megabomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
-                                            if (!challengepass) givemultiplier /= 1.7;
+                                            if (!challengepass) {
+                                                givemultiplier /= 1.7;
+
+                                            }
                                             break;
                                         }
                                         case "superdebuff": {
@@ -2504,7 +2927,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                         case "superbomb": {
                                             message.channel.send(`⬇️ **| \`${takeclan}\` has \`superbomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
-                                            if (!challengepass) givemultiplier /= 1.3;
+                                            if (!challengepass) {
+                                                givemultiplier /= 1.3;
+                                            }
                                             break;
                                         }
                                         case "debuff": {
@@ -2514,7 +2939,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                         case "bomb": {
                                             message.channel.send(`⬇️ **| \`${takeclan}\` has \`bomb\` powerup active${!challengepass?"":", but unfortunately their opponents have accomplished the task provided"}!**`);
-                                            if (!challengepass) givemultiplier /= 1.05;
+                                            if (!challengepass) {
+                                                givemultiplier /= 1.05;
+                                            }
                                             break;
                                         }
                                     }
@@ -2525,10 +2952,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         console.log(err);
                                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                                     }
-                                    if (!gclanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan to give power points to!**");
-                                    if (!gclanres.isMatch) return message.channel.send("❎ **| I'm sorry, the clan to give power points to is not in match mode!**");
-                                    let g_power = gclanres.power;
-                                    let g_activepowerups = gclanres.active_powerups;
+                                    if (!gclanres) {
+                                        return message.channel.send("❎ **| I'm sorry, I cannot find the clan to give power points to!**");
+                                    }
+                                    if (!gclanres.isMatch) {
+                                        return message.channel.send("❎ **| I'm sorry, the clan to give power points to is not in match mode!**");
+                                    }
+                                    const g_power = gclanres.power;
+                                    const g_activepowerups = gclanres.active_powerups;
                                     for (let i = 0; i < g_activepowerups.length; i++) {
                                         switch (g_activepowerups[i]) {
                                             case "megabuff": {
@@ -2538,7 +2969,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                             case "megachallenge": {
                                                 message.channel.send(`⬆️ **| \`${giveclan}\` has \`megachallenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
-                                                if (challengepass) givemultiplier *= 1.7;
+                                                if (challengepass) {
+                                                    givemultiplier *= 1.7;
+                                                }
                                                 break;
                                             }
                                             case "superbuff": {
@@ -2548,7 +2981,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                             case "superchallenge": {
                                                 message.channel.send(`⬆️ **| \`${giveclan}\` has \`superchallenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
-                                                if (challengepass) givemultiplier *= 1.3;
+                                                if (challengepass) {
+                                                    givemultiplier *= 1.3;
+                                                }
                                                 break;
                                             }
                                             case "buff": {
@@ -2558,16 +2993,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                             case "challenge": {
                                                 message.channel.send(`⬆️ **| \`${giveclan}\` has \`challenge\` powerup active${challengepass?"":", but unfortunately they did not accomplish the task provided"}!**`);
-                                                if (challengepass) givemultiplier *= 1.05;
+                                                if (challengepass) {
+                                                    givemultiplier *= 1.05;
+                                                }
                                                 break;
                                             }
                                         }
                                     }
-                                    let totalpower = Math.min(t_power, Math.floor(t_power * givemultiplier));
+                                    const totalpower = Math.min(t_power, Math.floor(t_power * givemultiplier));
                                     message.channel.send(`❗**| ${message.author}, are you sure you want to transfer \`${totalpower.toLocaleString()}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan?**`).then(msg => {
                                         msg.react("✅").catch(console.error);
                                         let confirmation = false;
-                                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                         confirm.on("collect", () => {
                                             confirmation = true;
                                             msg.delete();
@@ -2578,30 +3015,38 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                                             updateVal = {
                                                 $set: {
-                                                    power: t_power - totalpower,
                                                     isMatch: false,
                                                     active_powerups: [],
                                                     member_list: t_memberlist
+                                                },
+                                                $inc: {
+                                                    power: -totalpower
                                                 }
                                             };
                                             clandb.updateOne({name: takeclan}, updateVal, err => {
-                                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                                if (err) {
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                                }
                                             });
 
-                                            let g_memberlist = gclanres.member_list;
-                                            let g_member_index = g_memberlist.findIndex(member => member.id === togive.id);
+                                            const g_memberlist = gclanres.member_list;
+                                            const g_member_index = g_memberlist.findIndex(member => member.id === togive.id);
                                             g_memberlist[g_member_index].battle_cooldown = curtime + 86400 * 4;
 
                                             updateVal = {
                                                 $set: {
-                                                    power: g_power + totalpower,
                                                     isMatch: false,
                                                     active_powerups: [],
                                                     member_list: g_memberlist
+                                                },
+                                                $inc: {
+                                                    power: totalpower
                                                 }
                                             };
                                             clandb.updateOne({name: giveclan}, updateVal, err => {
-                                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                                if (err) {
+                                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database now. Please try again!**");
+                                                }
                                                 message.channel.send(`✅ **| ${message.author}, successfully transferred \`${totalpower.toLocaleString()}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan.**`);
                                             });
                                         });
@@ -2627,8 +3072,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "match": {
             // adds/removes two clans into match list
             // ===========================================
@@ -2637,32 +3080,43 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             if ((message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) && !perm) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
             switch (args[1]) {
-
                 // add clan
                 case "add": {
                     const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
+                    if (!tomatch) {
+                        return message.channel.send("❎ **| Hey, please give me a valid user!**");
+                    }
                     query = {discordid: tomatch.id};
                     binddb.findOne(query, (err, userres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
-                            if (clanres.power === 0) return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
+                            if (clanres.power === 0) {
+                                return message.channel.send("❎ **| I'm sorry, the user's clan has 0 power points!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === tomatch.id);
-                            if (memberlist[member_index].battle_cooldown > curtime) return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === tomatch.id);
+                            if (memberlist[member_index].battle_cooldown > curtime) {
+                                return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
+                            }
 
                             updateVal = {
                                 $set: {
@@ -2670,7 +3124,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                             };
                             clandb.updateOne(query, updateVal, err => {
-                                if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                if (err) {
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
                                 message.channel.send(`✅ **| ${message.author}, successfully set \`${clan}\` clan in match mode.**`);
                             });
                         });
@@ -2678,28 +3134,34 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "remove": {
                     // remove clan
                     const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
-                    if (!tomatch) return message.channel.send("❎ **| Hey, please give me a valid user!**");
+                    if (!tomatch) {
+                        return message.channel.send("❎ **| Hey, please give me a valid user!**");
+                    }
                     query = {discordid: tomatch.id};
                     binddb.findOne(query, (err, clanres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!clanres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!clanres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = clanres.clan;
+                        if (!clanres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = clanres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        }
                         updateVal = {
                             $set: {
                                 isMatch: false
                             }
                         };
                         clandb.updateOne({name: clan}, updateVal, err => {
-                            if (err) return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                            if (err) {
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                            }
                             message.channel.send(`✅ **| ${message.author}, successfully removed \`${clan}\` clan from match mode.**`);
                         });
                     });
@@ -2714,20 +3176,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
         // holds cooldown information such as
         // battle cooldown and join cooldown
         case "cooldown": {
-
             switch (args[1]) {
-
-
                 case "join": {
-                    let user = message.author;
-                    if (args[2]) {
-                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-                        if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
-                        query = {discordid: user.id}
+                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error) : message.author;
+                    if (!user) {
+                        return message.channel.send("❎ **| Hey, please mention a valid user!**");
                     }
                     query = {discordid: user.id};
 
@@ -2736,23 +3192,26 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (userres.clan) return message.channel.send("❎ **| I'm sorry, this user is in a clan!**");
-                        if (!userres.joincooldown) userres.joincooldown = 0;
-                        let cooldown = Math.max(0, userres.joincooldown - curtime);
-
-                        if (!cooldown) message.channel.send("✅ **| The user is currently not in cooldown to join a clan.**");
-                        else {
-                            let time = timeConvert(cooldown);
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        if (userres.clan) {
+                            return message.channel.send("❎ **| I'm sorry, this user is in a clan!**");
+                        }
+                        const cooldown = Math.max(0, (userres.joincooldown || 0) - curtime);
+                        if (!cooldown) {
+                            message.channel.send("✅ **| The user is currently not in cooldown to join a clan.**");
+                        } else {
+                            const time = timeConvert(cooldown);
                             message.channel.send(`✅ **| ${args[2] ? "The user" : "You"} cannot join a clan for ${time}.**`);
                         }
 
                         if (userres.oldclan) {
-                            if (!userres.oldjoincooldown) userres.oldjoincooldown = 0;
-                            let old_cooldown = Math.max(0, userres.oldjoincooldown - curtime);
-                            if (!old_cooldown) message.channel.send("✅ **| The user is currently not in cooldown to join the user's old clan.**");
-                            else {
-                                let time = timeConvert(old_cooldown);
+                            const old_cooldown = Math.max(0, (userres.oldjoincooldown || 0) - curtime);
+                            if (!old_cooldown) {
+                                message.channel.send("✅ **| The user is currently not in cooldown to join the user's old clan.**");
+                            } else {
+                                const time = timeConvert(old_cooldown);
                                 message.channel.send(`✅ **| ${args[2] ? "The user": "You"} cannot join ${args[2] ? "the user's" : "your"} old clan for ${time}.**`);
                             }
                         }
@@ -2760,15 +3219,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "battle": {
                     // views a user's cooldown in participating a clan battle
-                    let user = message.author;
-                    if (args[2]) {
-                        user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-                        if (!user) return message.channel.send("❎ **| Hey, please mention a valid user!**");
-                        query = {discordid: user.id}
+                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error) : message.author;
+                    if (!user) {
+                        return message.channel.send("❎ **| Hey, please mention a valid user!**");
                     }
                     query = {discordid: user.id};
 
@@ -2777,9 +3232,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, that user is not in a clan!**");
+                        }
                         query = {name: clan};
 
                         clandb.findOne(query, (err, clanres) => {
@@ -2787,16 +3246,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === user.id);
-                            let cooldown = Math.max(0, memberlist[member_index].battle_cooldown - curtime);
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === user.id);
+                            const cooldown = Math.max(0, memberlist[member_index].battle_cooldown - curtime);
 
-                            if (!cooldown) return message.channel.send(`✅ **| ${args[2] ? `${user} is` : "You are"} currently not in cooldown from participating in a clan battle.**`);
-                            else {
-                                let time = timeConvert(cooldown);
-                                return message.channel.send(`✅ **| ${args[2] ? user : "You"} cannot participate in a clan battle for ${time}.**`);
+                            if (!cooldown) {
+                                message.channel.send(`✅ **| ${args[2] ? `${user} is` : "You are"} currently not in cooldown from participating in a clan battle.**`);
+                            } else {
+                                const time = timeConvert(cooldown);
+                                message.channel.send(`✅ **| ${args[2] ? user : "You"} cannot participate in a clan battle for ${time}.**`);
                             }
                         });
                     });
@@ -2807,23 +3269,25 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
 
-
-
         case "auction": {
             // auctions
             // =====================================
             // as of now only powerups are available
             // for auction
-
             switch (args[1]) {
-
                 case "bid": {
-                    let name = args[2];
-                    if (!name) return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
-                    if (name.length > 20) return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    const name = args[2];
+                    if (!name) {
+                        return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
+                    }
+                    if (name.length > 20) {
+                        return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    }
 
-                    let amount = parseInt(args[3]);
-                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid coin amount to bid!**");
+                    const amount = parseInt(args[3]);
+                    if (isNaN(amount) || amount <= 0) {
+                        return message.channel.send("❎ **| Hey, please enter a valid coin amount to bid!**");
+                    }
 
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -2831,17 +3295,25 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         pointdb.findOne(query, (err, pointres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!pointres) return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`0\` Alice coins.**`);
-                            let alicecoins = pointres.alicecoins;
-                            if (alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            if (!pointres) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`0\` Alice coins.**`);
+                            }
+                            const alicecoins = pointres.alicecoins;
+                            if (alicecoins < amount) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have that many ${coin}Alice coins to bid! You currently have ${coin}\`${alicecoins.toLocaleString()}\` Alice coins.**`);
+                            }
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -2849,31 +3321,41 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!auctionres) return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
-                                if (auctionres.auctioneer === clan) return message.channel.send("❎ **| Hey, you cannot bid on your clan's auction!**");
-                                if (auctionres.expirydate <= curtime) return message.channel.send("❎ **| I'm sorry, this auction is over!**");
+                                if (!auctionres) {
+                                    return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
+                                }
+                                if (auctionres.auctioneer === clan) {
+                                    return message.channel.send("❎ **| Hey, you cannot bid on your clan's auction!**");
+                                }
+                                if (auctionres.expirydate <= curtime) {
+                                    return message.channel.send("❎ **| I'm sorry, this auction is over!**");
+                                }
 
-                                let bids = auctionres.bids;
+                                const bids = auctionres.bids;
                                 let bid_index = bids.findIndex(bid => bid.clan === clan);
-                                if (bid_index !== -1) bids[bid_index].amount += amount;
-                                else bids.push({
-                                    clan: clan,
-                                    amount: amount
+                                if (bid_index !== -1) {
+                                    bids[bid_index].amount += amount;
+                                } else {
+                                    bids.push({
+                                        clan: clan,
+                                        amount: amount
+                                    });
+                                }
+                                bids.sort((a, b) => {
+                                    return b.amount - a.amount;
                                 });
-                                bids.sort((a, b) => {return b.amount - a.amount});
                                 bid_index = bids.findIndex(bid => bid.clan === clan);
-                                let cur_amount = bids[bid_index].amount;
+                                const cur_amount = bids[bid_index].amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
                                         msg.delete().catch(console.error);
                                         confirmation = true;
 
-                                        alicecoins -= amount;
                                         updateVal = {
                                             $set: {
                                                 bids: bids
@@ -2886,8 +3368,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             }
                                         });
                                         updateVal = {
-                                            $set: {
-                                                alicecoins: alicecoins
+                                            $inc: {
+                                                alicecoins: -amount
                                             }
                                         };
                                         pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
@@ -2911,26 +3393,37 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "create": {
-                    let name = args[2];
-                    if (!name) return message.channel.send("❎ **| Hey, please enter a name for your auction!**");
-                    if (name.length > 20) return message.channel.send("❎ **| I'm sorry, an auction's name must not exceed 20 characters!**");
+                    const name = args[2];
+                    if (!name) {
+                        return message.channel.send("❎ **| Hey, please enter a name for your auction!**");
+                    }
+                    if (name.length > 20) {
+                        return message.channel.send("❎ **| I'm sorry, an auction's name must not exceed 20 characters!**");
+                    }
 
-                    let powerup = args[3];
-                    if (!powerup) return message.channel.send("❎ **| Hey, please enter a powerup!**");
-                    powerup = powerup.toLowerCase();
+                    const powerup = args[3]?.toLowerCase();
+                    if (!powerup) {
+                        return message.channel.send("❎ **| Hey, please enter a powerup!**");
+                    }
 
-                    let amount = parseInt(args[4]);
-                    if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid powerup amount to auction!**");
+                    const amount = parseInt(args[4]);
+                    if (isNaN(amount) || amount <= 0) {
+                        return message.channel.send("❎ **| Hey, please enter a valid powerup amount to auction!**");
+                    }
 
-                    let min_price = parseInt(args[5]);
-                    if (isNaN(min_price) || min_price < 0) return message.channel.send("❎ **| Hey, please enter a valid minimum price for other clans to bid!**");
+                    const min_price = parseInt(args[5]);
+                    if (isNaN(min_price) || min_price < 0) {
+                        return message.channel.send("❎ **| Hey, please enter a valid minimum price for other clans to bid!**");
+                    }
 
-                    let auction_duration = parseInt(args[6]);
-                    if (isNaN(auction_duration)) return message.channel.send("❎ **| Hey, please enter a valid auction duration!**");
-                    if (auction_duration < 60 || auction_duration > 86400) return message.channel.send("❎ **| I'm sorry, auction duration can only range from 60 (1 minute) to 86400 (1 day) seconds!**");
+                    const auction_duration = parseInt(args[6]);
+                    if (isNaN(auction_duration)) {
+                        return message.channel.send("❎ **| Hey, please enter a valid auction duration!**");
+                    }
+                    if (auction_duration < 60 || auction_duration > 86400) {
+                        return message.channel.send("❎ **| I'm sorry, auction duration can only range from 60 (1 minute) to 86400 (1 day) seconds!**");
+                    }
 
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -2938,26 +3431,37 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!memberlist[member_index].hasPermission) {
+                                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            }
 
-                            let powerups = clanres.powerups;
-                            let powerup_index = powerups.findIndex(pow => pow.name === powerup);
-                            if (powerup_index === -1) return message.channel.send("❎ **| I'm sorry, I cannot find the powerup you are looking for!**");
-                            if (powerups[powerup_index].amount < amount) return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
+                            const powerups = clanres.powerups;
+                            const powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                            if (powerup_index === -1) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the powerup you are looking for!**");
+                            }
+                            if (powerups[powerup_index].amount < amount) {
+                                return message.channel.send(`❎ **| I'm sorry, you don't have that many \`${powerup}\` powerups! Your clan has \`${powerups[powerup_index][1].toLocaleString()}\` of it.**`);
+                            }
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -2965,13 +3469,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (auctionres) return message.channel.send("❎ **| I'm sorry, an auction with that name exists! Please choose another name!**");
+                                if (auctionres) {
+                                    return message.channel.send("❎ **| I'm sorry, an auction with that name exists! Please choose another name!**");
+                                }
                                 powerups[powerup_index].amount -= amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
                                         msg.delete().catch(console.error);
@@ -3023,18 +3529,22 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "list": {
                     let page = 1;
-                    if (parseInt(args[1]) > 1) page = parseInt(args[1]);
+                    if (parseInt(args[1]) > 1) {
+                        page = parseInt(args[1]);
+                    }
                     auctiondb.find({}).sort({min_price: -1}).toArray((err, auctionres) => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (auctionres.length === 0) return message.channel.send("❎ **| I'm sorry, there are no ongoing auctions as of now!**");
-                        if (!auctionres[(page - 1)*5]) return message.channel.send(`❎ **| I'm sorry, there aren't that many auctions available!**`);
+                        if (auctionres.length === 0) {
+                            return message.channel.send("❎ **| I'm sorry, there are no ongoing auctions as of now!**");
+                        }
+                        if (!auctionres[(page - 1)*5]) {
+                            return message.channel.send(`❎ **| I'm sorry, there aren't that many auctions available!**`);
+                        }
                         embed = editAuction(auctionres, coin, page, color, footer, index);
                         message.channel.send({embed: embed}).then(msg => {
                             msg.react("⏮️").then(() => {
@@ -3045,38 +3555,50 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 });
                             });
 
-                            let backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 180000});
-                            let back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 180000});
-                            let next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 180000});
-                            let forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 180000});
+                            const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 180000});
+                            const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 180000});
+                            const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 180000});
+                            const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 180000});
 
                             backward.on('collect', () => {
-                                if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                                else page = Math.max(1, page - 10);
+                                if (page === 1) {
+                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                } else {
+                                    page = Math.max(1, page - 10);
+                                }
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
                                 msg.edit({embed: embed}).catch(console.error);
                             });
 
                             back.on('collect', () => {
-                                if (page === 1) page = Math.ceil(auctionres.length / 5);
-                                else --page;
+                                if (page === 1) {
+                                    page = Math.ceil(auctionres.length / 5);
+                                } else {
+                                    --page;
+                                }
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
                                 msg.edit({embed: embed}).catch(console.error);
                             });
 
                             next.on('collect', () => {
-                                if (page === Math.ceil(auctionres.length / 5)) page = 1;
-                                else ++page;
+                                if (page === Math.ceil(auctionres.length / 5)) {
+                                    page = 1;
+                                } else {
+                                    ++page;
+                                }
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
                                 msg.edit({embed: embed}).catch(console.error);
                             });
 
                             forward.on('collect', () => {
-                                if (page === Math.ceil(auctionres.length / 5)) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-                                else page = Math.min(page + 10, Math.ceil(auctionres.length / 5));
+                                if (page === Math.ceil(auctionres.length / 5)) {
+                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                } else {
+                                    page = Math.min(page + 10, Math.ceil(auctionres.length / 5));
+                                }
                                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
                                 msg.edit({embed: embed}).catch(console.error);
@@ -3091,12 +3613,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "status": {
-                    let name = args[2];
-                    if (!name) return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
-                    if (name.length > 20) return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    const name = args[2];
+                    if (!name) {
+                        return message.channel.send("❎ **| Hey, please enter a name of the auction!**");
+                    }
+                    if (name.length > 20) {
+                        return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    }
 
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -3104,8 +3628,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        let clan = '';
-                        if (userres) clan = userres.clan;
+                        const clan = userres?.clan || "";
 
                         query = {name: name};
                         auctiondb.findOne(query, (err, auctionres) => {
@@ -3113,9 +3636,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!auctionres) return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
-                            let bids = auctionres.bids;
-                            let bid_index = bids.findIndex(bid => bid.clan === clan);
+                            if (!auctionres) {
+                                return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
+                            }
+                            const bids = auctionres.bids;
+                            const bid_index = bids.findIndex(bid => bid.clan === clan);
 
                             embed.setTitle("Auction Information")
                                 .setDescription(`**Name**: ${name}\n**Auctioneer**: ${auctionres.auctioneer}\n**Created at**: ${new Date(auctionres.creationdate * 1000).toUTCString()}\n**Expires at**: ${new Date(auctionres.expirydate * 1000).toUTCString()}`)
@@ -3123,10 +3648,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
-                                if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount}** Alice coins\n`;
-                                else top_string += `#${i+1}: -\n`;
+                                if (bids[i]) {
+                                    top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount}** Alice coins\n`;
+                                } else {
+                                    top_string += `#${i+1}: -\n`;
+                                }
                             }
-                            if (bid_index > 4) top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index].amount.toLocaleString()}** Alice coins`;
+                            if (bid_index > 4) {
+                                top_string += `${'.\n'.repeat(Math.min(bid_index - 4, 3))}#${bid_index + 1}: ${clan} - ${coin}**${bids[bid_index].amount.toLocaleString()}** Alice coins`;
+                            }
                             embed.addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             message.channel.send({embed: embed});
                         });
@@ -3134,12 +3664,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     break;
                 }
 
-
-
                 case "cancel": {
-                    let name = args[2];
-                    if (!name) return message.channel.send("❎ **| Hey, please enter a name of your auction!**");
-                    if (name.length > 20) return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    const name = args[2];
+                    if (!name) {
+                        return message.channel.send("❎ **| Hey, please enter a name of your auction!**");
+                    }
+                    if (name.length > 20) {
+                        return message.channel.send("❎ **| I'm sorry, an auction's name does not exceed 20 characters!**");
+                    }
 
                     query = {discordid: message.author.id};
                     binddb.findOne(query, (err, userres) => {
@@ -3147,21 +3679,26 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                        if (!userres.clan) return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
-                        let clan = userres.clan;
+                        if (!userres) {
+                            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                        }
+                        const clan = userres.clan;
+                        if (!clan) {
+                            return message.channel.send("❎ **| I'm sorry, you are not in a clan!**");
+                        }
                         query = {name: clan};
                         clandb.findOne(query, (err, clanres) => {
                             if (err) {
                                 console.log(err);
                                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                             }
-                            if (!clanres) return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            if (!clanres) {
+                                return message.channel.send("❎ **| I'm sorry, I cannot find the clan!**");
+                            }
 
-                            let memberlist = clanres.member_list;
-                            let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
-                            if (!hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                            const memberlist = clanres.member_list;
+                            const member_index = memberlist.findIndex(member => member.id === message.author.id);
+                            if (!memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                             query = {name: name};
                             auctiondb.findOne(query, (err, auctionres) => {
@@ -3169,20 +3706,26 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     console.log(err);
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
-                                if (!auctionres) return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
-                                if (auctionres.auctioneer !== clan) return message.channel.send("❎ **| I'm sorry, that auction does not belong to your clan!**");
-                                if (auctionres.bids.length > 0) return message.channel.send("❎ **| I'm sorry, a clan has bidded for this auction, therefore you cannot cancel it!**");
+                                if (!auctionres) {
+                                    return message.channel.send("❎ **| I'm sorry, that auction does not exist!**");
+                                }
+                                if (auctionres.auctioneer !== clan) {
+                                    return message.channel.send("❎ **| I'm sorry, that auction does not belong to your clan!**");
+                                }
+                                if (auctionres.bids.length > 0) {
+                                    return message.channel.send("❎ **| I'm sorry, a clan has bidded for this auction, therefore you cannot cancel it!**");
+                                }
 
-                                let powerup = auctionres.powerup;
-                                let amount = auctionres.amount;
-                                let powerups = clanres.powerups;
-                                let powerup_index = powerups.findIndex(pow => pow.name === powerup);
+                                const powerup = auctionres.powerup;
+                                const amount = auctionres.amount;
+                                const powerups = clanres.powerups;
+                                const powerup_index = powerups.findIndex(pow => pow.name === powerup);
                                 powerups[powerup_index].amount += amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to cancel the auction?**`).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
                                         msg.delete().catch(console.error);
