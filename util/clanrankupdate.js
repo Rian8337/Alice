@@ -10,14 +10,14 @@ module.exports.run = maindb => {
     const clanDb = maindb.collection("clandb");
     const currentTime = Math.floor(Date.now() / 1000);
 
-    bindDb.find({clan: {$not: ""}}, {projection: {_id: 0, discordid: 1, previous_bind: 1}}).toArray((err, res) => {
+    bindDb.find({clan: {$ne: ""}}, {projection: {_id: 0, discordid: 1, previous_bind: 1}}).toArray((err, res) => {
         if (err) throw err;
         clanDb.find({}, {projection: {_id: 0, name: 1, member_list: 1, weeklyfee: 1}}).toArray(async (err, clans) => {
             if (err) throw err;
 
             for await (const clan of clans) {
                 // do not update rank if weekly upkeep is near
-                if (clan.weeklyfee - currentTime < 600) {
+                if (clan.weeklyfee - currentTime <= 600) {
                     continue;
                 }
 
