@@ -23,6 +23,7 @@ function playValidation(mod, requirement) {
 	if (!mod.includes("nf")) {
 		return false;
 	}
+	mod = mod.replace("nf", "");
 	switch (requirement) {
 		case "nm": return mod === "";
 		case "hd": return mod === "hd";
