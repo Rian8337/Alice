@@ -50,7 +50,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	const mapdb = maindb.collection("mapinfo");
 	const resultdb = alicedb.collection("matchdata");
 	const lengthdb = alicedb.collection("mapinfolength");
-	const query = {matchid: id};
+	let query = {matchid: id};
 	matchdb.findOne(query, function (err, matchres) {
 		if (err) {
 			console.log(err);
