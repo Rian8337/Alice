@@ -267,10 +267,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 if (!userres) {
                     return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 }
-                const clan = userres.clan;
-                if (args[1]) {
-                    clan = args.slice(1).join(" ");
-                }
+                const clan = args[1] ? args.slice(1).join(" ") : userres.clan;
                 if (!clan) {
                     return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
                 }
