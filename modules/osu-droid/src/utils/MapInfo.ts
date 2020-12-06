@@ -466,17 +466,22 @@ export class MapInfo {
                         for (const t of uninheritedTimingPoints) {
                             const bpm: number = 60000 / t.msPerBeat;
                             const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
-                            maxBPM = Math.max(maxBPM, convertedBPM);
-                            minBPM = Math.min(minBPM, convertedBPM);
+                            maxBPM = Math.max(maxBPM, bpm);
+                            minBPM = Math.min(minBPM, bpm);
                             speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                             speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
                         }
 
-                        if (minBPM === speedMulMinBPM && maxBPM === speedMulMaxBPM) {
-                            string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
-                        } else {
-                            string += `${minBPM}-${maxBPM} (${this.bpm})${this.bpm !== convertedBPM ? ` (${speedMulMinBPM.toFixed(2)}-${speedMulMaxBPM.toFixed(2)} (${convertedBPM}))` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        string += minBPM === this.bpm && maxBPM === this.bpm ? `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
+                        if (this.bpm !== convertedBPM) {
+                            if (minBPM !== speedMulMinBPM || maxBPM !== speedMulMaxBPM) {
+                                string += `(${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM})) `;
+                            } else {
+                                string += `(${convertedBPM}) `;
+                            }
                         }
+
+                        string += `- **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                     }
                 } else {
                     string += `**BPM**: ${this.convertBPM(mapStatistics)} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
