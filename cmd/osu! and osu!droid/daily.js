@@ -44,7 +44,12 @@ function downloadReplay(url) {
                 if (response.statusCode !== 200) {
                     return resolve(null);
                 }
-                const zip = new AdmZip(Buffer.concat(dataArray));
+                let zip;
+                try {
+                    zip = new AdmZip(Buffer.concat(dataArray));
+                } catch (e) {
+                    return resolve(null);
+                }
                 const odrFile = zip.getEntries().find(v => v.entryName.endsWith(".odr"));
                 if (!odrFile) {
                     return resolve(null);
