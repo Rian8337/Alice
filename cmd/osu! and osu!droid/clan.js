@@ -196,9 +196,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     return;
                 }
-                const clan = userres.clan;
-                if (args[1]) {
-                    clan = args.slice(1).join(" ");
+                const clan = args[1] ? args.slice(1).join(" ") : userres.clan;
+                if (!clan) {
+                    return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
                 }
                 if (!clan) {
                     return message.channel.send("❎ **| I'm sorry, you are currently not in a clan! Please enter a clan name!**");
