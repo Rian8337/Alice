@@ -11,7 +11,7 @@ const config = require('../../config.json');
  * @param {number} accPortion
  */
 function scoreCalc(score, maxscore, accuracy, misscount, comboPortion, accPortion) {
-	let newScore = score / maxscore * 100000 * comboPortion + Math.pow(accuracy / 100, 4) * 100000 * accPortion;
+	let newScore = score / maxscore * 1000000 * comboPortion + Math.pow(accuracy / 100, 4) * 1000000 * accPortion;
     newScore -= misscount * 0.005 * newScore;
     return newScore;
 }
@@ -21,18 +21,18 @@ function scoreCalc(score, maxscore, accuracy, misscount, comboPortion, accPortio
  * @param {string} requirement 
  */
 function playValidation(mod, requirement) {
-    mod = mod.toLowerCase();
-    if (!mod.includes("nf")) {
+    let tempMod = mod.toLowerCase();
+    if (!tempMod.includes("nf")) {
         return false;
     }
-    mod = mod.replace("nf", "");
+    tempMod = tempMod.replace("nf", "");
 	switch (requirement) {
-		case "nm": return mod === "";
-		case "hd": return mod === "hd";
-		case "hr": return mod === "hr";
-		case "dt": return mod === 'dt' || mod === 'hddt';
-		case "fm": return (mod.includes("hd") || mod.includes("hr") || mod.includes("ez")) && (!mod.includes("ht") && !mod.includes("dt") && !mod.includes("nc"));
-		case "tb": return !mod.includes("dt") && !mod.includes("nc") && !mod.includes("ht");
+		case "nm": return tempMod === "";
+		case "hd": return tempMod === "hd";
+		case "hr": return tempMod === "hr";
+		case "dt": return tempMod === 'dt' || tempMod === 'hddt';
+		case "fm": return (tempMod.includes("hd") || tempMod.includes("hr") || tempMod.includes("ez")) && (!tempMod.includes("ht") && !tempMod.includes("dt") && !tempMod.includes("nc"));
+		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht");
 		default: return true;
 	}
 }

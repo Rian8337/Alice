@@ -13,7 +13,7 @@ const osudroid = require('osu-droid');
  */
 function scoreCalc(mode, score, maxscore, accuracy, misscount, comboPortion, accPortion) {
 	const hddt = mode === 'dt' && score.includes("h");
-	let newScore = parseInt(score) / maxscore * 100000 * comboPortion + Math.pow((accuracy / 100), 4) * 100000 * accPortion;
+	let newScore = parseInt(score) / maxscore * 1000000 * comboPortion + Math.pow((accuracy / 100), 4) * 1000000 * accPortion;
 	newScore -= misscount * 0.005 * newScore;
 	if (!hddt) {
         return Math.round(newScore);
