@@ -87,8 +87,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             parseInt(pool_res.map[mapid - 1][2]),
             parseFloat(args[2 + i * 3 + 1]),
             parseInt(args[2 + i * 3 + 2]),
-            pool_res.map[mapid - 1][3] ?? 0.6,
-            pool_res.map[mapid - 1][4] ?? 0.4
+            pool_res.map[mapid - 1][4] ?? 0.6,
+            pool_res.map[mapid - 1][5] ?? 0.4
         );
         scoreObject.scores.push({
             player: '',

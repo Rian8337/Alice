@@ -130,8 +130,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     const maxScore = parseInt(maps[index][2]);
     const requirement = maps[index][0];
     const title = maps[index][1];
-    const comboPortion = maps[index][3] ?? 0.6;
-    const accPortion = maps[index][4] ?? 0.4;
+    const comboPortion = maps[index][4] ?? 0.6;
+    const accPortion = maps[index][5] ?? 0.4;
 
     let team_1_score = 0;
     let team_2_score = 0;
