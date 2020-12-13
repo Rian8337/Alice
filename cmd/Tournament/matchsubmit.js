@@ -231,6 +231,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     teams[1][1] += team_2_score > team_1_score;
 
     embed.spliceFields(0, embed.fields.length)
+        .setTitle(null)
         .setColor(65280)
         .addField(teams[0][0], `**${teams[0][1]}**`, true)
         .addField(teams[1][0], `**${teams[1][1]}**`, true);
