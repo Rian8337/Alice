@@ -12,28 +12,35 @@ module.exports.run = (client, message, video_id, current_map) => {
         } catch (e) {
             return
         }
-        if (!info.items || info.items.length === 0) return;
         let items = info.items[0].snippet;
         let description = items.description;
         let desc_entry = description.split("\n");
+        let count = 0;
 
         for (let i = 0; i < desc_entry.length; i++) {
+            if (count === 2) {
+                break;
+            }
             let entry = desc_entry[i];
             if (entry.indexOf("https://osu.ppy.sh/") === -1 && entry.indexOf("https://bloodcat.com/osu/s/") === -1) continue;
             entry = entry.replace("\r", "");
 
             let link_entry = entry.split(" ");
-            for (let i = 0; i < link_entry.length; i++) {
-                let msg = link_entry[i];
+            for (let j = 0; j < link_entry.length; j++) {
+                if (count === 2) {
+                    break;
+                }
+                let msg = link_entry[j];
                 if (!msg.startsWith("https://osu.ppy.sh/") && !msg.startsWith("https://bloodcat.com/osu/s/")) continue;
                 let a = msg.split("/");
                 let id = parseInt(a[a.length - 1]);
                 if (isNaN(id)) continue;
+                ++count;
                 if (msg.indexOf("#osu/") !== -1 || msg.indexOf("/b/") !== -1 || msg.indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, [msg], current_map);
-                else if (msg.indexOf("/beatmapsets/") !== -1 || msg.indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, [msg], current_map, true)
+                else if (msg.indexOf("/beatmapsets/") !== -1 || msg.indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, [msg], current_map, true);
             }
         }
-    })
+    });
 };
 
 module.exports.config = {
