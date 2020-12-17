@@ -29,9 +29,10 @@ module.exports.run = (client, message, args, maindb) => {
             message.channel.send("✅ **| Recalculating all players...**");
             const binddb = maindb.collection("userbind");
             const whitelist = maindb.collection("mapwhitelist");
-            binddb.find({tempCalcDone: {$ne: true}}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
+            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
                 if (err) throw err;
                 let updated = 0;
+                const mapCache = new Map();
                 message.channel.send(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).then(async m => {
                     for await (const entry of entries) {
                         const discordid = entry.discordid;
@@ -40,15 +41,15 @@ module.exports.run = (client, message, args, maindb) => {
 
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
                         for await (const pp_entry of pp_entries) {
-                            await sleep(0.5);
                             ++index;
                             const {hash, mods, accuracy, combo, miss, scoreID, pp} = pp_entry;
+                            const mapinfo = mapCache.get(hash) ?? await osudroid.MapInfo.getInformation({hash: hash});
 
-                            const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
                             if (mapinfo.error) {
                                 console.log("API fetch error");
                                 continue;
                             }
+                            mapCache.set(hash, mapinfo);
                             if (!mapinfo.title) {
                                 continue;
                             }
@@ -71,7 +72,7 @@ module.exports.run = (client, message, args, maindb) => {
                             });
                             const replay = await new osudroid.ReplayAnalyzer({scoreID: scoreID, map: star.droidStars}).analyze();
                             if (replay.fixedODR) {
-                                await sleep(0.75);
+                                await sleep(0.2);
                                 const { data } = replay;
                                 realAcc = new osudroid.Accuracy({
                                     n300: data.hit300,
@@ -94,6 +95,7 @@ module.exports.run = (client, message, args, maindb) => {
                             pp_entries[index].pp = new_pp;
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
                         }
+                        console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
 
                         pp_entries.sort((a, b) => {
                             return b.pp - a.pp;
@@ -107,8 +109,7 @@ module.exports.run = (client, message, args, maindb) => {
                         const updateVal = {
                             $set: {
                                 pptotal: new_pptotal,
-                                pp: pp_entries,
-                                tempCalcDone: true
+                                pp: pp_entries
                             }
                         };
 
@@ -119,7 +120,6 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
                     m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
-                    await binddb.updateMany({}, {unset: {tempCalcDone: ""}});
                     message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
                 });
             });
