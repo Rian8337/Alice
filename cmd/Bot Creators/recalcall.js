@@ -81,9 +81,9 @@ module.exports.run = (client, message, args, maindb) => {
                             }
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
-                                combo: combo,
+                                combo: replay.fixedODR ? replay.data.maxCombo : combo,
                                 accPercent: realAcc,
-                                miss: miss,
+                                miss: replay.fixedODR ? replay.data.hit0 : miss,
                                 mode: osudroid.modes.droid
                             });
                             const new_pp = parseFloat(npp.total.toFixed(2));
