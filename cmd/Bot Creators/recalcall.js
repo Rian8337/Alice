@@ -32,7 +32,6 @@ module.exports.run = (client, message, args, maindb) => {
             binddb.find({tempCalcDone: {$ne: true}}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
                 if (err) throw err;
                 let updated = 0;
-                const mapCache = new Map();
                 message.channel.send(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).then(async m => {
                     for await (const entry of entries) {
                         const discordid = entry.discordid;
@@ -43,13 +42,12 @@ module.exports.run = (client, message, args, maindb) => {
                         for await (const pp_entry of pp_entries) {
                             ++index;
                             const {hash, mods, accuracy, combo, miss, scoreID, pp} = pp_entry;
-                            const mapinfo = mapCache.get(hash) ?? await osudroid.MapInfo.getInformation({hash: hash});
+                            const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 
                             if (mapinfo.error) {
                                 console.log("API fetch error");
                                 continue;
                             }
-                            mapCache.set(hash, mapinfo);
                             if (!mapinfo.title) {
                                 continue;
                             }
