@@ -1,16 +1,15 @@
 import * as request from 'request';
-import { mods } from './mods';
+import { mods } from '../utils/mods';
 import { modes } from '../constants/modes';
 import { Beatmap } from '../beatmap/Beatmap';
-import { MapStats } from './MapStats';
-import { Parser } from './Parser';
+import { MapStats } from '../utils/MapStats';
+import { Parser } from '../beatmap/Parser';
 import { rankedStatus } from '../constants/rankedStatus';
 import { HitObject } from '../beatmap/hitobjects/HitObject';
-import { TimingPoint } from '../beatmap/timings/TimingPoint';
 import { Slider } from '../beatmap/hitobjects/Slider';
-import { config } from 'dotenv';
-config();
-const apikey: string = process.env.OSU_API_KEY as string;
+import { SliderTick } from '../beatmap/hitobjects/sliderObjects/SliderTick';
+import { OsuAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
+import { TimingPoint } from '../beatmap/timings/TimingPoint';
 
 interface OsuAPIResponse {
     readonly approved: string;
@@ -85,14 +84,14 @@ export class MapInfo {
     version: string = "";
 
     /**
-     * The source of the song in the beatmap.
+     * The source of the song, if any.
      */
     source: string = "";
 
     /**
      * The ranking status of the beatmap.
      */
-    approved: rankedStatus = rankedStatus.PENDING;
+    approved: rankedStatus = 0;
 
     /**
      * The ID of the beatmap.
@@ -227,19 +226,29 @@ export class MapInfo {
     /**
      * Retrieve a beatmap's general information.
      * 
-     * Either beatmap ID or MD5 hash of the beatmap must be specified.
+     * Either beatmap ID or MD5 hash of the beatmap must be specified. If both are specified, beatmap ID is taken.
      */
     static getInformation(params: {
+        /**
+         * The ID of the beatmap.
+         */
         beatmapID?: number,
+
+        /**
+         * The MD5 hash of the beatmap.
+         */
         hash?: string,
+
+        /**
+         * Whether or not to also retrieve the .osu file of the beatmap (required for some utilities). Defaults to `true`.
+         */
         file?: boolean
     }): Promise<MapInfo> {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
             if (params.file === undefined) {
                 params.file = true;
             }
 
-            const map: MapInfo = new MapInfo();
             const beatmapID: number|undefined = params.beatmapID;
             const hash: string|undefined = params.hash;
 
@@ -247,38 +256,45 @@ export class MapInfo {
                 throw new Error("Beatmap ID or MD5 hash must be defined");
             }
 
-            const options: string = `https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&${beatmapID ? `b=${beatmapID}` : `h=${hash}`}`;
+            const apiRequestBuilder: OsuAPIRequestBuilder = new OsuAPIRequestBuilder()
+                .setEndpoint("get_beatmaps");
+            if (beatmapID) {
+                apiRequestBuilder.addParameter("b", beatmapID);
+            } else if (hash) {
+                apiRequestBuilder.addParameter("h", hash);
+            }
 
-            request(options, async (err, response, data) => {
-                if (err || response.statusCode !== 200) {
-                    console.log("Error retrieving map info");
-                    map.error = true;
-                    return resolve(map);
-                }
-                
-                const mapinfo: OsuAPIResponse = JSON.parse(data as string)[0];
-                if (!mapinfo) {
-                    console.log("Map not found");
-                    return resolve(map);
-                }
-                if (parseInt(mapinfo.mode) !== 0) {
-                    console.log("Mode not supported");
-                    return resolve(map);
-                }
+            const map: MapInfo = new MapInfo();
+            const result: RequestResponse = await apiRequestBuilder.sendRequest();
+            if (result.statusCode !== 200) {
+                console.log("API error");
+                map.error = true;
+                return resolve(map);
+            }
+            const mapinfo: OsuAPIResponse = JSON.parse(result.data.toString("utf-8"))[0];
+            if (!mapinfo) {
+                console.log("Map not found");
+                return resolve(map);
+            }
+            if (parseInt(mapinfo.mode) !== 0) {
+                console.log("Mode not supported");
+                return resolve(map);
+            }
 
-                map.fillMetadata(mapinfo);
+            map.fillMetadata(mapinfo);
 
-                if (params.file) {
-                    await map.retrieveBeatmapFile();
-                }
+            if (params.file) {
+                await map.retrieveBeatmapFile();
+            }
 
-                resolve(map);                
-            });
+            resolve(map);
         });
     }
 
     /**
-     * Fills the current instance with metadata.
+     * Fills the current instance with map data.
+     * 
+     * @param mapinfo The map data.
      */
     fillMetadata(mapinfo: OsuAPIResponse): MapInfo {
         this.fullTitle = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
@@ -286,6 +302,7 @@ export class MapInfo {
         this.artist = mapinfo.artist;
         this.creator = mapinfo.creator;
         this.version = mapinfo.version;
+        this.source = mapinfo.source;
         this.approved = parseInt(mapinfo.approved);
         this.beatmapID = parseInt(mapinfo.beatmap_id);
         this.beatmapsetID = parseInt(mapinfo.beatmapset_id);
@@ -318,7 +335,7 @@ export class MapInfo {
     }
 
     /**
-     * Retrieves the beatmap's .osu file and parses it.
+     * Retrieves the .osu file of the beatmap.
      */
     retrieveBeatmapFile(): Promise<MapInfo> {
         return new Promise(resolve => {
@@ -353,7 +370,6 @@ export class MapInfo {
 
         return parseFloat(bpm.toFixed(2));
     }
-
     /**
      *  Converts the beatmap's status into a string.
      */
@@ -444,7 +460,9 @@ export class MapInfo {
                     string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < this.packs.length; i++) {
                         string += `[${this.packs[i]}](https://osu.ppy.sh/beatmaps/packs/${this.packs[i]})`;
-                        if (i + 1 < this.packs.length) string += ' - ';
+                        if (i + 1 < this.packs.length) {
+                            string += ' - ';
+                        }
                     }
                 }
                 return string;
@@ -456,6 +474,7 @@ export class MapInfo {
                 let string = "**BPM**: ";
                 if (this.map) {    
                     const uninheritedTimingPoints: TimingPoint[] = this.map.timingPoints.filter(t => t.change);
+
                     if (uninheritedTimingPoints.length === 1) {
                         string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                     } else {
@@ -464,12 +483,12 @@ export class MapInfo {
                         let speedMulMinBPM: number = convertedBPM;
                         let speedMulMaxBPM: number = convertedBPM;
                         for (const t of uninheritedTimingPoints) {
-                            const bpm: number = 60000 / t.msPerBeat;
+                            const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
                             const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
                             maxBPM = Math.max(maxBPM, bpm);
                             minBPM = Math.min(minBPM, bpm);
-                            speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                             speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
+                            speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                         }
                         maxBPM = Math.round(maxBPM);
                         minBPM = Math.round(minBPM);
@@ -522,7 +541,7 @@ export class MapInfo {
      * 
      * This requires the `file` property set to `true` when retrieving beatmap general information using `MapInfo.get()`.
      */
-    private maxScore(stats: MapStats): number {
+    maxScore(stats: MapStats): number {
         if (!this.map) {
             return 0;
         }
@@ -573,22 +592,18 @@ export class MapInfo {
             }
             if (stats.mods.includes("SU")) {
                 scoreMultiplier *= 1.06;
+                scoreSpeedMultiplier /= 1.06;
             }
             scoreMultiplier *= scoreSpeedMultiplier;
         } else {
             scoreMultiplier = 0;
         }
 
-        const map: Beatmap = this.map;
-        const objects: HitObject[] = map.objects;
-        const timingPoints: TimingPoint[] = map.timingPoints;
+        const objects: HitObject[] = this.map.objects;
         let combo: number = 0;
         let score: number = 0;
 
-        let tindex: number = -1;
-        let tnext: number = Number.NEGATIVE_INFINITY;
-        let pixelsPerBeat: number = 0;
-        for (let i: number = 0; i < objects.length; ++i) {
+        for (let i = 0; i < objects.length; ++i) {
             const object: HitObject = objects[i];
             if (!(object instanceof Slider)) {
                 score += Math.floor(300 + 300 * combo * difficultyMultiplier * scoreMultiplier / 25);
@@ -596,41 +611,12 @@ export class MapInfo {
                 continue;
             }
 
-            while (object.time >= tnext) {
-                ++tindex;
-                if (timingPoints.length > tindex + 1) {
-                    tnext = timingPoints[tindex + 1].time;
-                } else {
-                    tnext = Number.POSITIVE_INFINITY;
-                }
-                const t: TimingPoint = timingPoints[tindex];
-                let sliderVelocityMultiplier: number = 1;
-                if (!t.change && t.msPerBeat < 0) {
-                    sliderVelocityMultiplier = -100 / t.msPerBeat;
-                }
+            const tickCount: number = object.nestedHitObjects.filter(v => v instanceof SliderTick).length;
 
-                pixelsPerBeat = map.sv * 100;
-                if (map.formatVersion >= 8) {
-                    pixelsPerBeat *= sliderVelocityMultiplier;
-                }
-            }
-
-            const numberOfBeats: number = object.distance * object.repetitions / pixelsPerBeat;
-
-            // subtract an epsilon to prevent accidental
-            // ceiling of whole values such as 2.00....1 -> 3 due
-            // to rounding errors
-            let ticks = Math.ceil(
-                (numberOfBeats - 0.1) / object.repetitions
-                * map.tickRate
-            );
-
-            --ticks;
-            const tickCount: number = Math.max(0, ticks * object.repetitions);
-
+            // apply sliderhead, slider repeats, and slider ticks
             score += 30 * object.repetitions + 10 * tickCount;
-
             combo += tickCount + object.repetitions;
+            // apply sliderend
             score += Math.floor(300 + 300 * combo * difficultyMultiplier * scoreMultiplier / 25);
             ++combo;
         }

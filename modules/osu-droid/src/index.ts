@@ -1,22 +1,31 @@
 import { Accuracy } from './utils/Accuracy';
+import { Aim } from './difficulty/skills/Aim';
 import { Beatmap } from './beatmap/Beatmap';
 import { BreakPoint } from './beatmap/timings/BreakPoint';
 import { Circle } from './beatmap/hitobjects/Circle';
 import { CursorData } from './replay/data/CursorData';
+import { DifficultyHitObject } from './beatmap/hitobjects/DifficultyHitObject';
+import { DifficultyHitObjectCreator } from './difficulty/preprocessing/DifficultyHitObjectCreator';
 import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { gamemode } from './constants/gamemode';
+import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
+import { HitObject } from './beatmap/hitobjects/HitObject';
 import { hitResult } from './constants/hitResult';
-import { MapInfo } from './utils/MapInfo';
-import { MapStars } from './utils/MapStars';
+import { MapInfo } from './tools/MapInfo';
+import { MapStars } from './tools/MapStars';
 import { MapStats } from './utils/MapStats';
 import { modes } from './constants/modes';
 import { mods } from './utils/mods';
 import { movementType } from './constants/movementType';
 import { objectTypes } from './constants/objectTypes';
-import { Parser } from './utils/Parser';
+import { Parser } from './beatmap/Parser';
+import { PathApproximator } from './utils/PathApproximator';
+import { PathType } from './constants/PathType';
+import { Precision } from './utils/Precision';
 import { PerformanceCalculator } from './difficulty/PerformanceCalculator';
 import { Player } from './osu!droid/Player';
+import { RepeatPoint } from './beatmap/hitobjects/sliderObjects/RepeatPoint';
 import { ReplayAnalyzer } from './replay/ReplayAnalyzer';
 import { ReplayData } from './replay/data/ReplayData';
 import { ReplayObjectData } from './replay/data/ReplayObjectData';
@@ -24,11 +33,13 @@ import { rankedStatus } from './constants/rankedStatus';
 import { rankImage } from './utils/rankImage';
 import { Score } from './osu!droid/Score';
 import { Slider } from './beatmap/hitobjects/Slider';
+import { SliderPath } from './utils/SliderPath';
+import { SliderTick } from './beatmap/hitobjects/sliderObjects/SliderTick';
 import { Spinner } from './beatmap/hitobjects/Spinner';
-import { StandardDiff } from './difficulty/StandardDiff';
-import { StandardDiffHitObject } from './difficulty/preprocessing/StandardDiffHitObject';
+import { StarRating } from './difficulty/StarRating';
+import { TailCircle } from './beatmap/hitobjects/sliderObjects/TailCircle';
 import { TimingPoint } from './beatmap/timings/TimingPoint';
-import { Vector } from './utils/Vector';
+import { Vector2 } from './mathutil/Vector2';
 
 import { config } from 'dotenv';
 config();
@@ -38,6 +49,11 @@ export = {
      * An accuracy calculator that calculates accuracy based on given parameters.
      */
     Accuracy: Accuracy,
+
+    /**
+     * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
+     */
+    Aim: Aim,
 
     /**
      * Represents a beatmap with advanced information.
@@ -59,13 +75,23 @@ export = {
     Circle: Circle,
 
     /**
-     * Represents a cursor in an osu!droid replay.
+     * Represents a cursor instance in an osu!droid replay.
      * 
      * Stores cursor movement data such as x and y coordinates, movement size, etc.
      * 
      * This is used when analyzing replays using replay analyzer.
      */
     CursorData: CursorData,
+
+    /**
+     * Represents an osu!standard hit object with difficulty calculation values.
+     */
+    DifficultyHitObject: DifficultyHitObject, 
+    
+    /**
+     * A converter used to convert normal hitobjects into difficulty hitobjects.
+     */
+    DifficultyHitObjectCreator: DifficultyHitObjectCreator,
 
     /**
      * API request builder for osu!droid.
@@ -82,6 +108,15 @@ export = {
      */
     gamemode: gamemode,
 
+    /**
+     * Represents the headcircle of a slider (sliderhead).
+     */
+    HeadCircle: HeadCircle,
+
+    /**
+     * Represents a hitobject in a beatmap.
+     */
+    HitObject: HitObject,
     /**
      * The result of a hit in an osu!droid replay.
      */
@@ -121,7 +156,7 @@ export = {
      * API request builder for osu!standard.
      */
     OsuAPIRequestBuilder: OsuAPIRequestBuilder,
-    
+
     /**
      * Represents the hit window of osu!standard.
      */
@@ -138,6 +173,21 @@ export = {
     Parser: Parser,
 
     /**
+     * Path approximator for sliders.
+     */
+    PathApproximator: PathApproximator,
+
+    /**
+     * Types of slider paths.
+     */
+    PathType: PathType,
+
+    /**
+     * Precision utilities.
+     */
+    Precision: Precision,
+
+    /**
      * A performance points calculator that calculates performance points for osu!standard gamemode.
      */
     PerformanceCalculator: PerformanceCalculator,
@@ -146,6 +196,11 @@ export = {
      * Represents an osu!droid player.
      */
     Player: Player,
+
+    /**
+     * Represents a repeat point in a slider.
+     */
+    RepeatPoint: RepeatPoint,
     
     /**
      * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
@@ -189,16 +244,18 @@ export = {
 
     /**
      * Represents a slider in a beatmap.
-     *
-     * This is needed to calculate max combo as we need to compute slider ticks.
-     * 
-     * The beatmap stores the distance travelled in one repetition and
-     * the number of repetitions. This is enough to calculate distance
-     * per tick using timing information and slider velocity.
-     * 
-     * Note that 1 repetition means no repeats (1 loop).
      */
     Slider: Slider,
+
+    /**
+     * Represents a slider's path.
+     */
+    SliderPath: SliderPath,
+
+    /**
+     * Represents a slider tick in a slider.
+     */
+    SliderTick: SliderTick,
 
     /**
      * Represents a spinner in a beatmap.
@@ -207,33 +264,24 @@ export = {
      * position of a spinner is always at 256x192.
      */
     Spinner: Spinner,
-
+    
     /**
      * An osu!standard difficulty calculator.
-     *
-     * Does not account for sliders because slider calculations are expensive and not worth the small accuracy increase.
      */
-    StandardDiff: StandardDiff,
-
+    StarRating: StarRating,
+    
     /**
-     * Represents an osu!standard hit object with difficulty calculation values.
+     * Represents the tailcircle of a slider (sliderend).
      */
-    StandardDiffHitObject: StandardDiffHitObject,
+    TailCircle: TailCircle,
 
     /**
      * Represents a timing point in a beatmap.
-     * 
-     * Defines parameters such as timing and sampleset for an interval.
-     * For pp calculation we only need `time` and `ms_per_beat`.
-     * 
-     * It can inherit from its preceeding point by having
-     * `change = false` and setting `ms_per_beat` to a negative value which
-     * represents the BPM multiplier as `-100 * bpm_multiplier`.
      */
     TimingPoint: TimingPoint,
 
     /**
-     * 2D point operations are stored in this class.
+     * Based on `Vector2` class in C#.
      */
-    Vector: Vector
+    Vector2: Vector2
 };

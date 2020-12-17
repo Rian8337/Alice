@@ -11,21 +11,32 @@ export class ReplayObjectData {
     /**
      * The offset of which the hitobject was hit in milliseconds.
      */
-    public accuracy: number;
+    accuracy: number;
 
     /**
      * The tickset of the hitobject.
      */
-    public tickset: boolean[];
+    tickset: boolean[];
 
     /**
      * The bitwise hit result of the hitobject.
      */
-    public result: hitResult;
+    result: hitResult;
 
     constructor(values: {
+        /**
+         * The offset of which the hitobject was hit in milliseconds.
+         */
         accuracy: number,
+
+        /**
+         * THe tickset of the hitobject.
+         */
         tickset: boolean[],
+
+        /**
+         * The bitwise hit result of the hitobject.
+         */
         result: hitResult
     }) {
         this.accuracy = values.accuracy;

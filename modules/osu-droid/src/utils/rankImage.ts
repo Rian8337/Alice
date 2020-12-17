@@ -13,6 +13,11 @@ export namespace rankImage {
         XH = "http://ops.dgsrz.com/assets/images/ranking-XH-small.png"
     }
 
+    /**
+     * Returns an image of specified rank.
+     * 
+     * @param rank The rank to get image from.
+     */
     export function get(rank: string = ""): string {
         rank = rank.toUpperCase();
         for (const rankEntry in rankImage) {

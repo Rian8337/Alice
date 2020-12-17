@@ -1,28 +1,171 @@
 import { CursorData } from "./CursorData";
 import { ReplayObjectData } from "./ReplayObjectData";
 
+/**
+ * Contains information about a replay.
+ */
 export interface ReplayInformation {
+    /**
+     * The version of the replay.
+     */
     replayVersion: number;
+
+    /**
+     * The folder name containing the beatmap played.
+     */
     folderName: string;
+
+    /**
+     * The file name of the beatmap played.
+     */
     fileName: string;
+
+    /**
+     * The MD5 hash of the beatmap played.
+     */
     hash: string;
-    time?: number;
+
+    /**
+     * The date of which the play was set.
+     * 
+     * Only available in replay v3 or later.
+     */
+    time?: Date;
+
+    /**
+     * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit300k?: number;
+
+    /**
+     * The amount of 300s achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit300?: number;
+
+    /**
+     * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit100k?: number;
+
+    /**
+     * The amount of 100s achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit100?: number;
+
+    /**
+     * The amount of 50s achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit50?: number;
+
+    /**
+     * The amount of misses achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     hit0?: number;
+
+    /**
+     * The total score achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     */
     score?: number;
+
+    /**
+     * The maximum combo achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     */
     maxCombo?: number;
+
+    /**
+     * The accuracy achieved in the play.
+     * 
+     * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
+     */
     accuracy?: number;
-    isFullCombo?: number;
+
+    /**
+     * Whether or not the play achieved the beatmap's maximum combo.
+     * 
+     * Only available in replay v3 or later.
+     */
+    isFullCombo?: boolean;
+
+    /**
+     * The name of the player in the replay.
+     * 
+     * Only available in replay v3 or later.
+     */
     playerName?: string;
+
+    /**
+     * Enabled modifications during the play in raw Java object format.
+     * 
+     * Only available in replay v3 or later.
+     */
     rawMods?: string;
+
+    /**
+     * Enabled modifications during the play in osu!droid format.
+     * 
+     * Only available in replay v3 or later.
+     */
     droidMods?: string;
+
+    /**
+     * Enabled modifications during the play in osu!standard format.
+     * 
+     * Only available in replay v3 or later.
+     */
     convertedMods?: string;
-    speedModForceAR?: string;
+
+    /**
+     * The speed modification of the replay.
+     * 
+     * Only available in replay v4 or later. By default this is 1.
+     */
+    speedModification?: number;
+
+    /**
+     * The forced AR of the replay.
+     * 
+     * Only available in replay v4 or later.
+     */
+    forcedAR?: number;
+
+    /**
+     * The cursor movement data of the replay.
+     */
     cursorMovement: CursorData[];
+
+    /**
+     * The hit object data of the replay.
+     */
     hitObjectData: ReplayObjectData[];
 }
 
@@ -33,143 +176,30 @@ export interface ReplayInformation {
  * 
  * This is used when analyzing replays using replay analyzer.
  */
-export class ReplayData {
-    /**
-     * The version of the replay.
-     */
+export class ReplayData implements ReplayInformation {
     readonly replayVersion: number;
-
-    /**
-     * The folder name containing the beatmap played.
-     */
     readonly folderName: string;
-
-    /**
-     * The file name of the beatmap played.
-     */
     readonly fileName: string;
-
-    /**
-     * MD5 hash of the replay.
-     */
     readonly hash: string;
-
-    /**
-     * The date of which the play was set.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly time: Date;
-
-    /**
-     * The amount of geki and 300 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     */
     readonly hit300k: number;
-
-    /**
-     * The amount of 300s achieved in the play.
-     */
     readonly hit300: number;
-
-    /**
-     * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
-     */
     readonly hit100k: number;
-
-    /**
-     * The amount of 100s achieved in the play.
-     */
     readonly hit100: number;
-
-    /**
-     * The amount of 50s achieved in the play.
-     */
     readonly hit50: number;
-
-    /**
-     * The amount of misses achieved in the play.
-     */
     readonly hit0: number;
-
-    /**
-     * The total score achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly score: number;
-
-    /**
-     * The maximum combo achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly maxCombo: number;
-
-    /**
-     * The accuracy achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly accuracy: number;
-
-    /**
-     * Whether or not the play achieved the beatmap's maximum combo (1 for `true`, 0 for `false`).
-     * 
-     * Only available in replay v3 or later.
-     */
-    readonly isFullCombo: number;
-
-    /**
-     * The name of the player in the replay.
-     * 
-     * Only available in replay v3 or later.
-     */
+    readonly isFullCombo: boolean;
     readonly playerName: string;
-
-    /**
-     * Enabled modifications during the play in raw Java object format.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly rawMods: string;
-
-    /**
-     * Enabled modifications during the play in osu!droid format.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly droidMods: string;
-
-    /**
-     * Enabled modifications during the play in osu!standard format.
-     * 
-     * Only available in replay v3 or later.
-     */
     readonly convertedMods: string;
-
-    /**
-     * The speed modification of the replay.
-     * 
-     * Only available in replay v4 or later. By default this is 1.
-     */
-    readonly speedModification: number;
-
-    /**
-     * The forced AR of the replay.
-     * 
-     * Only available in replay v4 or later.
-     */
-    readonly forcedAR?: number;
-
-    /**
-     * The cursor movement data of the replay.
-     */
     readonly cursorMovement: CursorData[];
-
-    /**
-     * The hit object data of the replay.
-     */
     readonly hitObjectData: ReplayObjectData[];
+    readonly speedModification: number;
+    readonly forcedAR?: number;
 
     constructor(values: ReplayInformation) {
         this.replayVersion = values.replayVersion;
@@ -186,18 +216,14 @@ export class ReplayData {
         this.score = values.score || 0;
         this.maxCombo = values.maxCombo || 0;
         this.accuracy = values.accuracy || 0;
-        this.isFullCombo = values.isFullCombo || 0;
+        this.isFullCombo = values.isFullCombo || false;
         this.playerName = values.playerName || "";
         this.rawMods = values.rawMods || "";
         this.droidMods = values.droidMods || "";
         this.convertedMods = values.convertedMods || "";
         this.cursorMovement = values.cursorMovement;
         this.hitObjectData = values.hitObjectData;
-
-        const s: string[] = values.speedModForceAR?.split("|") || [""];
-        this.speedModification = parseFloat(s[0].replace("x", "")) || 1;
-        if (s.length > 1) {
-            this.forcedAR = parseFloat(s[1].replace("AR", ""));
-        }
+        this.speedModification = values.speedModification || 1;
+        this.forcedAR = values.forcedAR;
     }
 }

@@ -5,7 +5,7 @@ interface HitWindow {
     /**
      * The overall difficulty of this hit window.
      */
-    overallDifficulty: number;
+    readonly overallDifficulty: number;
 
     /**
      * Gets the threshold for 300 (great) hit result.
@@ -27,12 +27,15 @@ interface HitWindow {
  * Represents the hit window of osu!droid.
  */
 export class DroidHitWindow implements HitWindow {
-    public readonly overallDifficulty: number;
+    readonly overallDifficulty: number;
 
     constructor(overallDifficulty: number) {
         this.overallDifficulty = overallDifficulty;
     }
 
+    /**
+     * @param isPrecise Whether or not to calculate for Precise mod.
+     */
     hitWindowFor300(isPrecise?: boolean): number {
         if (isPrecise) {
             return 55 + 6 * (5 - this.overallDifficulty);
@@ -41,6 +44,9 @@ export class DroidHitWindow implements HitWindow {
         }
     }
 
+    /**
+     * @param isPrecise Whether or not to calculate for Precise mod.
+     */
     hitWindowFor100(isPrecise?: boolean): number {
         if (isPrecise) {
             return 120 + 8 * (5 - this.overallDifficulty);
@@ -49,6 +55,9 @@ export class DroidHitWindow implements HitWindow {
         }
     }
 
+    /**
+     * @param isPrecise Whether or not to calculate for Precise mod.
+     */
     hitWindowFor50(isPrecise?: boolean): number {
         if (isPrecise) {
             return 180 + 10 * (5 - this.overallDifficulty);
@@ -62,7 +71,7 @@ export class DroidHitWindow implements HitWindow {
  * Represents the hit window of osu!standard.
  */
 export class OsuHitWindow implements HitWindow {
-    public readonly overallDifficulty: number;
+    readonly overallDifficulty: number;
 
     constructor(overallDifficulty: number) {
         this.overallDifficulty = overallDifficulty;

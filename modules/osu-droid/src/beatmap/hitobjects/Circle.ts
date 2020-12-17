@@ -1,4 +1,4 @@
-import { Vector } from '../../utils/Vector';
+import { Vector2 } from '../../mathutil/Vector2';
 import { HitObject } from './HitObject';
 
 /**
@@ -10,14 +10,14 @@ import { HitObject } from './HitObject';
  */
 export class Circle extends HitObject {
     constructor(values: {
-        time: number,
+        startTime: number,
         type: number,
-        pos: Vector
+        position: Vector2
     }) {
         super(values);
     }
 
     toString(): string {
-        return `Position: [${this.pos.x}, ${this.pos.y}]`;
+        return `Position: [${this.position.x}, ${this.position.y}]`;
     }
 }

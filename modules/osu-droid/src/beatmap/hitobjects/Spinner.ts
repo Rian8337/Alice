@@ -1,4 +1,4 @@
-import { Vector } from '../../utils/Vector';
+import { Vector2 } from '../../mathutil/Vector2';
 import { HitObject } from './HitObject';
 
 /**
@@ -11,22 +11,22 @@ export class Spinner extends HitObject {
     /**
      * The duration of the spinner.
      */
-    public readonly duration: number;
+    readonly duration: number;
 
     constructor(values: {
-        time: number,
+        startTime: number,
         type: number,
         duration: number
     }) {
         super({
-            time: values.time,
+            startTime: values.startTime,
             type: values.type,
-            pos: new Vector({x: 256, y: 192})
+            position: new Vector2({x: 256, y: 192})
         });
         this.duration = values.duration;
     }
 
     toString(): string {
-        return `Position: [${this.pos.x}, ${this.pos.y}], duration: ${this.duration}`;
+        return `Position: [${this.position.x}, ${this.position.y}], duration: ${this.duration}`;
     }
 }

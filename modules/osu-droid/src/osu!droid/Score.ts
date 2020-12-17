@@ -88,7 +88,7 @@ export class Score implements ScoreInformation {
     /**
      * Whether or not the fetch result from `getFromHash()` returns an error. This should be immediately checked after calling said method.
      */
-    error: boolean;
+    error: boolean = false;
 
     constructor(values?: ScoreInformation) {
         this.uid = values?.uid || 0;
@@ -104,7 +104,6 @@ export class Score implements ScoreInformation {
         this.droidMods = values?.mods || "";
         this.mods = mods.droidToPC(this.droidMods);
         this.hash = values?.hash || '';
-        this.error = false;
     }
 
     /**

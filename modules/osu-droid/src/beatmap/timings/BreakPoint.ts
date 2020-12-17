@@ -5,17 +5,17 @@ export class BreakPoint {
     /**
      * The start time of the break period.
      */
-    public readonly startTime: number;
+    readonly startTime: number;
 
     /**
      * The end time of the break period.
      */
-    public readonly endTime: number;
+    readonly endTime: number;
 
     /**
      * The duration of the break period. This is obtained from `endTime - startTime`.
      */
-    public readonly duration: number;
+    readonly duration: number;
 
     constructor(values: {
         startTime: number,

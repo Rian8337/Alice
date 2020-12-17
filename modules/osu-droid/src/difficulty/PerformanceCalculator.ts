@@ -1,6 +1,6 @@
 import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
-import { StandardDiff } from './StandardDiff';
+import { StarRating } from './StarRating';
 import { MapStats } from '../utils/MapStats';
 import { mods } from '../utils/mods';
 
@@ -11,130 +11,143 @@ export class PerformanceCalculator {
     /**
      * The aim performance value.
      */
-    public aim: number;
+    aim: number = 0;
 
     /**
      * The speed performance value.
      */
-    public speed: number;
+    speed: number = 0;
     
     /**
      * The accuracy performance value.
      */
-    public accuracy: number;
+    accuracy: number = 0;
 
     /**
      * The overall performance value.
      */
-    public total: number;
+    total: number = 0;
 
     /**
      * The calculated accuracy.
      */
-    public computedAccuracy?: Accuracy;
+    computedAccuracy: Accuracy = new Accuracy({});
 
     /**
      * The mode this calculator is calculating for.
      */
-    public mode?: modes;
-
-    /**
-     * The speed penalty for osu!droid based on replay analyzer.
-     */
-    private speedPenalty: number;
+    mode: modes = modes.osu;
 
     /**
      * Bitwise value of enabled modifications.
      */
-    private convertedMods: number;
+    private convertedMods: number = 0;
 
     /**
      * The calculated beatmap.
      */
-    private stars: StandardDiff;
+    private stars: StarRating = new StarRating();
 
     /**
      * The map statistics after applying modifications.
      */
-    private mapStatistics?: MapStats;
+    private mapStatistics: MapStats = new MapStats();
 
     /**
      * Overall length bonus.
      */
-    private lengthBonus: number;
+    private lengthBonus: number = 0;
 
     /**
-     * Penalty for misses.
+     * Penalty for misses for aim.
      */
-    private missPenalty: number;
+    private aimMissPenalty: number = 0;
+
+    /**
+     * Penalty for misses for speed.
+     */
+    private speedMissPenalty: number = 0;
 
     /**
      * Penalty for combo breaks.
      */
-    private comboPenalty: number;
+    private comboPenalty: number = 0;
 
     /**
      * Bonus for specific AR values.
      */
-    private arBonus: number;
+    private droidARBonus: number = 0;
+
+    /**
+     * Bonus for specific AR values.
+     */
+    private osuARBonus: number = 0;
+    
 
     /**
      * Bonus that is given if Hidden mod is applied.
      */
-    private hiddenBonus: number;
-
-    constructor() {
-        this.aim = 0;
-        this.speed = 0;
-        this.accuracy = 0;
-        this.total = 0;
-
-        this.speedPenalty = 1;
-        this.convertedMods = 0;
-        this.lengthBonus = 0;
-        this.missPenalty = 0;
-        this.comboPenalty = 0;
-        this.arBonus = 0;
-        this.hiddenBonus = 0;
-
-        this.stars = new StandardDiff();
-        this.computedAccuracy = undefined;
-        this.mapStatistics = undefined;
-    }
+    private hiddenBonus: number = 0;
 
     /**
      * Calculates the performance points of a beatmap.
      */
     calculate(params: {
-        stars: StandardDiff,
+        /**
+         * The star rating instance to calculate.
+         */
+        stars: StarRating,
+
+        /**
+         * The maximum combo achieved in the score.
+         */
         combo?: number,
-        accPercent?: number,
+
+        /**
+         * The accuracy achieved in the score.
+         */
+        accPercent?: Accuracy|number,
+
+        /**
+         * The amount of misses achieved in the score.
+         */
         miss?: number,
+
+        /**
+         * The gamemode to calculate.
+         */
         mode?: modes,
-        mods?: string,
+
+        /**
+         * The speed penalty to apply for penalized scores.
+         */
         speedPenalty?: number,
         stats?: MapStats
     }): PerformanceCalculator {
         this.mode = params.mode || modes.osu;
         this.stars = params.stars;
-        this.speedPenalty = params.speedPenalty || 1;
-        if (!this.stars) {
-            throw new Error("params.stars must be in StandardDiff instance");
+        if (!(this.stars instanceof StarRating)) {
+            throw new Error("params.stars must be in StarRating instance");
         }
-
-        let miss: number = params.miss || 0;
-        let maxCombo: number = this.stars.map?.maxCombo() as number;
-        let combo: number = params.combo || maxCombo - miss;
-        let mod = this.stars.mods;
+        
+        const maxCombo: number = this.stars.map.maxCombo();
+        const mod: string = this.stars.mods;
         this.convertedMods = mods.modbitsFromString(mod);
-        let baseAR: number = this.stars.map?.ar as number;
-        let baseOD: number = this.stars.map?.od as number;
+        const baseAR: number = this.stars.map.ar as number;
+        const baseOD: number = this.stars.map.od;
+        const objectCount: number = this.stars.objects.length;
 
-        this.computedAccuracy = new Accuracy({
-            percent: params.accPercent,
-            nobjects: this.stars.objects.length,
-            nmiss: miss
-        });
+        if (params.accPercent instanceof Accuracy) {
+            this.computedAccuracy = params.accPercent;
+        } else {
+            this.computedAccuracy = new Accuracy({
+                percent: params.accPercent,
+                nobjects: this.stars.objects.length,
+                nmiss: params.miss || 0
+            });
+        }
+        const miss: number = this.computedAccuracy.nmiss;
+        const combo: number = params.combo || maxCombo - miss;
 
         this.mapStatistics = new MapStats({
             ar: baseAR,
@@ -148,34 +161,37 @@ export class PerformanceCalculator {
             this.mapStatistics.speedMultiplier = params.stats.speedMultiplier || this.mapStatistics.speedMultiplier;
         }
 
-        this.mapStatistics = this.mapStatistics.calculate({mode: this.mode});
+        this.mapStatistics.calculate({mode: this.mode});
 
-        this.missPenalty = Math.pow(0.97, miss);
-        this.comboPenalty = Math.min(Math.pow(combo, 0.8) / Math.pow(maxCombo, 0.8), 1);
+        // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
+        this.aimMissPenalty = 0.97 * Math.pow(1 - Math.pow(miss / objectCount, 0.775), miss);
+        this.speedMissPenalty = 0.97 * Math.pow(1 - Math.pow(miss / objectCount, 0.775), Math.pow(miss, 0.875));
+        this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
         
-        let arBonus: number = 1;
+        let arBonus: number = 0;
         const calculatedAR: number = this.mapStatistics.ar as number;
         if (calculatedAR > 10.33) {
-            arBonus += 0.3 * (calculatedAR - 10.33);
+            arBonus += 0.4 * (calculatedAR - 10.33);
         } else if (calculatedAR < 8) {
-            arBonus += 0.01 * (8 - calculatedAR);
+            arBonus += 0.1 * (8 - calculatedAR);
         }
-        this.arBonus = arBonus;
+        // Change droid AR bonus to keep consistency with length-related values
+        this.droidARBonus = 1 + Math.min(arBonus, arBonus * objectCount / 1250);
+        this.osuARBonus = 1 + Math.min(arBonus, arBonus * objectCount / 1000);
 
-        let hiddenBonus = 1;
+        let hiddenBonus: number = 1;
         if (this.convertedMods & mods.osuMods.hd) {
-            hiddenBonus *= 1 + 0.04 * (12 - calculatedAR);
+            hiddenBonus += 0.04 * (12 - calculatedAR);
         }
         this.hiddenBonus = hiddenBonus;
 
-        const objectCount: number = this.stars.objects.length;
         const objectsOver2000: number = objectCount / 2000;
         let lengthBonus = 0.95 + 0.4 * Math.min(1, objectsOver2000);
         switch (this.mode) {
             case modes.droid:
                 lengthBonus = 1.650668 +
-                (0.4845796 - 1.650668) /
-                (1 + Math.pow(objectCount / 817.9306, 1.147469));
+                    (0.4845796 - 1.650668) /
+                    (1 + Math.pow(objectCount / 817.9306, 1.147469));
                 break;
             case modes.osu:
                 if (objectCount > 2000) {
@@ -188,19 +204,19 @@ export class PerformanceCalculator {
         this.calculateSpeedValue();
         this.calculateAccuracyValue();
 
-        // slight buff to final value for droid
+        // Slight buff to final value for droid
         let finalMultiplier: number = this.mode === modes.droid ? 1.15 : 1.12;
         if (this.convertedMods & mods.osuMods.nf) {
-            finalMultiplier *= 0.9;
+            finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
         }
         if (this.convertedMods & mods.osuMods.so) {
-            finalMultiplier *= 0.95;
+            finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / objectCount, 0.85);
         }
 
         if (this.mode === modes.droid) {
             // Extreme penalty
             // =======================================================
-            // added to penaltize map with little aim but ridiculously
+            // added to penalize map with little aim but ridiculously
             // high speed value (which is easily abusable by using more than 2 fingers)
             let extremePenalty = Math.pow(
                 1 - Math.abs(this.speed - Math.pow(this.aim, 1.1)) /
@@ -212,6 +228,11 @@ export class PerformanceCalculator {
                 -2 * Math.pow(1 - extremePenalty, 2) + 1
             );
             finalMultiplier *= extremePenalty;
+        }
+
+        // apply speed penalty for droid plays
+        if (this.mode === modes.droid) {
+            this.speed /= (params.speedPenalty ?? 1);
         }
 
         this.total = Math.pow(
@@ -239,9 +260,22 @@ export class PerformanceCalculator {
      */
     private calculateAimValue(): void {
         let aimValue: number = this.baseValue(this.stars.aim);
-        aimValue *= this.lengthBonus * this.missPenalty * this.comboPenalty * this.arBonus * this.hiddenBonus;
+        aimValue *= this.lengthBonus * this.comboPenalty * this.hiddenBonus;
+        if (this.computedAccuracy.nmiss > 0) {
+            aimValue *= this.aimMissPenalty;
+        }
+
+        switch (this.mode) {
+            case modes.droid:
+                aimValue *= this.droidARBonus;
+                break;
+            case modes.osu:
+                aimValue *= this.osuARBonus;
+                break;
+        }
 
         if (this.convertedMods & mods.osuMods.fl) {
+            // Apply object-based bonus for flashlight
             const objectCount: number = this.stars.objects.length;
             let flBonus: number = 1 + 0.35 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
@@ -253,11 +287,12 @@ export class PerformanceCalculator {
             aimValue *= flBonus;
         }
 
-        // accuracy bonus
-        aimValue *= 0.5 + (this.computedAccuracy?.value() as number) / 2;
+        // Scale the aim value with accuracy slightly
+        aimValue *= 0.5 + this.computedAccuracy.value() / 2;
 
-        // OD bonus
-        aimValue *= 0.98 + Math.pow(this.mapStatistics?.od as number, 2) / 2500;
+        // It is also important to also consider accuracy difficulty when doing that
+        const odScaling: number = Math.pow(this.mapStatistics.od as number, 2) / 2500;
+        aimValue *= 0.98 + (this.mapStatistics.od as number >= 0 ? odScaling : -odScaling);
 
         this.aim = aimValue;
     }
@@ -267,21 +302,36 @@ export class PerformanceCalculator {
      */
     private calculateSpeedValue(): void {
         let speedValue: number = this.baseValue(this.stars.speed);
-        speedValue *= this.lengthBonus * this.missPenalty * this.comboPenalty * this.hiddenBonus;
-        if (this.mapStatistics?.ar as number > 10.33) {
-            speedValue *= this.arBonus;
+        speedValue *= this.lengthBonus * this.speedMissPenalty * this.comboPenalty * this.hiddenBonus;
+
+        if (this.computedAccuracy.nmiss > 0) {
+            speedValue *= this.speedMissPenalty;
         }
 
-        // accuracy bonus
-        speedValue *= 0.02 + (this.computedAccuracy?.value() as number);
-
-        // OD bonus
-        speedValue *= 0.96 + Math.pow(this.mapStatistics?.od as number, 2) / 1600;
-
-        // apply speed penalty for droid plays
-        if (this.mode === modes.droid) {
-            speedValue /= this.speedPenalty;
+        if (this.mapStatistics.ar as number > 10.33) {
+            switch (this.mode) {
+                case modes.droid:
+                    speedValue *= this.droidARBonus;
+                    break;
+                case modes.osu:
+                    speedValue *= this.osuARBonus;
+                    break;
+            }
         }
+
+        // Scale the speed value with accuracy and OD
+        const odScaling: number = Math.pow(this.mapStatistics.od as number, 2) / 750;
+        speedValue *=
+            (0.95 + (this.mapStatistics.od as number > 0 ? odScaling : -odScaling)) *
+            Math.pow(
+                this.computedAccuracy.value(),
+                ((this.mode === modes.droid ? 12 : 14.5) - Math.max(this.mapStatistics.od as number, this.mode === modes.droid ? 2.5 : 8)) / 2 // Change minimum threshold for droid to OD7 droid
+            );
+
+        // Scale the speed value with # of 50s to punish doubletapping
+        const n50: number = this.computedAccuracy.n50;
+        const objectCount: number = this.stars.objects.length;
+        speedValue *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
 
         this.speed = speedValue;
     }
@@ -290,12 +340,12 @@ export class PerformanceCalculator {
      * Calculates the accuracy performance value of the beatmap.
      */
     private calculateAccuracyValue(): void {
-        const n300: number = this.computedAccuracy?.n300 as number;
-        const n100: number = this.computedAccuracy?.n100 as number;
-        const n50: number = this.computedAccuracy?.n50 as number;
+        const n300: number = this.computedAccuracy.n300;
+        const n100: number = this.computedAccuracy.n100;
+        const n50: number = this.computedAccuracy.n50;
 
-        const nobjects: number = n300 + n100 + n50 + (this.computedAccuracy?.nmiss as number);
-        const ncircles: number = this.stars.map?.circles as number;
+        const nobjects: number = this.stars.objects.length;
+        const ncircles: number = this.stars.map.circles;
 
         let realAccuracy: number = Math.max(
             ncircles > 0 ?
@@ -305,12 +355,12 @@ export class PerformanceCalculator {
         );
 
         let accuracyValue: number = this.mode === modes.droid ?
-            // drastically change acc calculation to fit droid meta
-            Math.pow(1.4, this.mapStatistics?.od as number) *
-            Math.pow(Math.max(1, this.mapStatistics?.ar as number / 10), 3) *
+            // Drastically change acc calculation to fit droid meta
+            Math.pow(1.4, this.mapStatistics.od as number) *
+            Math.pow(Math.max(1, this.mapStatistics.ar as number / 10), 3) *
             Math.pow(realAccuracy, 12) * 10
             :
-            Math.pow(1.52163, this.mapStatistics?.od as number) *
+            Math.pow(1.52163, this.mapStatistics.od as number) *
             Math.pow(realAccuracy, 24) * 2.83;
         
         accuracyValue *= Math.min(1.15, Math.pow(ncircles / 1000, 0.3));
@@ -328,7 +378,7 @@ export class PerformanceCalculator {
     /**
      * Calculates the base performance value for stars.
      */
-    private baseValue(stars: number) {
+    private baseValue(stars: number): number {
         return Math.pow(5 * Math.max(1, stars / 0.0675) - 4, 3) / 100000;
     }
 }

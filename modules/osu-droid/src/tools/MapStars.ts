@@ -1,8 +1,8 @@
-import { StandardDiff } from '../difficulty/StandardDiff';
+import { StarRating } from '../difficulty/StarRating';
 import { Beatmap } from '../beatmap/Beatmap';
-import { MapStats } from './MapStats';
+import { MapStats } from '../utils/MapStats';
 import { modes } from '../constants/modes';
-import { Parser } from './Parser';
+import { Parser } from '../beatmap/Parser';
 
 /**
  * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
@@ -11,12 +11,12 @@ export class MapStars {
     /**
      * The osu!droid star rating of the beatmap.
      */
-    public readonly droidStars: StandardDiff = new StandardDiff();
+    public readonly droidStars: StarRating = new StarRating();
 
     /**
      * The osu!standard star rating of the beatmap.
      */
-    public readonly pcStars: StandardDiff = new StandardDiff();
+    public readonly pcStars: StarRating = new StarRating();
 
     /**
      * Calculates the star rating of a beatmap.
@@ -24,8 +24,19 @@ export class MapStars {
      * The beatmap will be automatically parsed using parser utilities.
      */
     calculate(params: {
+        /**
+         * The .osu file of the beatmap.
+         */
         file: string,
+
+        /**
+         * Applied modifications in osu!standard format.
+         */
         mods?: string,
+
+        /**
+         * Custom map statistics to apply speed multiplier and force AR values.
+         */
         stats?: MapStats
     }): MapStars {
         if (!params.file) {

@@ -1,26 +1,43 @@
-/**
- * An accuracy calculator that calculates accuracy based on given parameters.
- */
-export class Accuracy {
+interface AccuracyInformation {
     /**
-     * The amount of misses achieved.
+     * The amount of objects in the beatmap.
      */
-    public readonly nmiss: number;
+    nobjects?: number;
+
+    /**
+     * The accuracy achieved.
+     */
+    percent?: number;
 
     /**
      * The amount of 300s achieved.
      */
-    public readonly n300: number;
+    n300?: number;
 
     /**
      * The amount of 100s achieved.
      */
-    public readonly n100: number;
-    
+    n100?: number;
+
     /**
      * The amount of 50s achieved.
      */
-    public readonly n50: number;
+    n50?: number;
+    
+    /**
+     * The amount of misses achieved.
+     */
+    nmiss?: number;
+}
+
+/**
+ * An accuracy calculator that calculates accuracy based on given parameters.
+ */
+export class Accuracy implements AccuracyInformation {
+    readonly nmiss: number;
+    readonly n300: number;
+    readonly n100: number;
+    readonly n50: number;
     
     /**
      * Calculates accuracy based on given parameters.
@@ -28,15 +45,10 @@ export class Accuracy {
      * If `percent` and `nobjects` are specified, `n300`, `n100`, and `n50` will
      * be automatically calculated to be the closest to the given
      * acc percent.
+     * 
+     * @param values Function parameters.
      */
-    constructor(values: {
-        nobjects?: number,
-        percent?: number,
-        n300?: number,
-        n100?: number,
-        n50?: number,
-        nmiss?: number
-    }) {
+    constructor(values: AccuracyInformation) {
         this.nmiss = values.nmiss || 0;
         this.n300 = values.n300 || -1;
         this.n100 = values.n100 || 0;

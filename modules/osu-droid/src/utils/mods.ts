@@ -6,41 +6,24 @@ export namespace mods {
      * Mods in osu!droid.
      */
     export enum droidMods {
-        "-" = 0,
-        /**
-         * No Fail.
-         */
-        n = 1 << 0,
-
-        /**
-         * Easy.
-         */
-        e = 1 << 1,
-
-        /**
-         * Hidden.
-         */
-        h = 1 << 3,
-
-        /**
-         * Hard Rock.
-         */
-        r = 1 << 4,
-
-        /**
-         * Double Time.
-         */
-        d = 1 << 6,
-
-        /**
-         * Half Time.
-         */
-        t = 1 << 8,
-
-        /**
-         * Nightcore.
-         */
-        c = 1 << 9
+        at = "a",
+        rx = "x",
+        ap = "p",
+        ez = "e",
+        nf = "n",
+        hr = "r",
+        hd = "h",
+        fl = "i",
+        dt = "d",
+        nc = "c",
+        ht = "t",
+        pr = "s",
+        sc = "m",
+        su = "b",
+        re = "l",
+        pf = "f",
+        sd = "u",
+        v2 = "v"
     }
 
     /**
@@ -53,6 +36,7 @@ export namespace mods {
         td = 1<<2,
         hd = 1<<3,
         hr = 1<<4,
+        sd = 1<<5,
         dt = 1<<6,
         rx = 1<<7,
         ht = 1<<8,
@@ -60,6 +44,7 @@ export namespace mods {
         fl = 1<<10,
         so = 1<<12,
         ap = 1<<13,
+        pf = 1<<14,
         v2 = 1<<29,
         speed_changing = dt | ht | nc,
         map_changing = ez | hr | speed_changing,
@@ -67,50 +52,80 @@ export namespace mods {
     }
 
     /**
-     * Converts droid mod string to modbits.
-     */
-    export function droidToModbits(mod: string = ""): number {
-        let modbits: number = 4;
-        if (!mod || mod === "-") {
-            return modbits;
-        }
-
-        mod = mod.toLowerCase();
-        while (mod) {
-            for (const modEntry in droidMods) {
-                const entry = modEntry as keyof typeof droidMods;
-                if (mod.startsWith(entry)) {
-                    modbits |= droidMods[entry];
-                    break;
-                }
-            }
-            mod = mod.substr(1);
-        }
-        return modbits;
-    }
-
-    /**
      * Converts droid mod string to PC mod string.
      * 
-     * You can choose to return a detailed string by specifying `detailed = true`.
+     * @param mod The string to convert.
+     * @param detailed Whether or not to return a detailed string. Defaults to `false`.
      */
     export function droidToPC(mod: string = "", detailed: boolean = false): string {
         if (!mod) {
             return "";
         }
         mod = mod.toLowerCase();
+        let res: string = '';
         
         if (detailed) {
-            let res: string = '';
             let count: number = 0;
-            if (mod.includes("-")) {res += 'None '; count++};
-            if (mod.includes("n")) {res += 'NoFail '; count++};
-            if (mod.includes("e")) {res += 'Easy '; count++};
-            if (mod.includes("t")) {res += 'HalfTime '; count++};
-            if (mod.includes("h")) {res += 'Hidden '; count++};
-            if (mod.includes("d")) {res += 'DoubleTime '; count++};
-            if (mod.includes("r")) {res += 'HardRock '; count++};
-            if (mod.includes("c")) {res += 'NightCore '; count++};
+            if (mod.includes("-")) {
+                res += 'None ';
+                count++;
+            };
+            if (mod.includes("n")) {
+                res += 'NoFail ';
+                count++;
+            }
+            if (mod.includes("e")) {
+                res += 'Easy ';
+                count++;
+            }
+            if (mod.includes("t")) {
+                res += 'HalfTime ';
+                count++;
+            }
+            if (mod.includes("h")) {
+                res += 'Hidden ';
+                count++;
+            }
+            if (mod.includes("d")) {
+                res += 'DoubleTime ';
+                count++;
+            }
+            if (mod.includes("r")) {
+                res += 'HardRock ';
+                count++;
+            }
+            if (mod.includes("c")) {
+                res += 'NightCore ';
+                count++;
+            }
+            if (mod.includes("s")) {
+                res += 'Precise ';
+                count++;
+            }
+            if (mod.includes("m")) {
+                res += 'SmallCircle ';
+                count++;
+            }
+            if (mod.includes("b")) {
+                res += 'SpeedUp';
+                count++;
+            }
+            if (mod.includes("l")) {
+                res += 'ReallyEasy ';
+                count++;
+            }
+            if (mod.includes("f")) {
+                res += 'Perfect ';
+                count++;
+            }
+            if (mod.includes("u")) {
+                res += 'SuddenDeath ';
+                count++;
+            }
+            if (mod.includes("v")) {
+                res += 'ScoreV2 ';
+                count++;
+            }
             if (count > 1) {
                 return res.trim().split(" ").join(", ");
             } else {
@@ -118,36 +133,110 @@ export namespace mods {
             }
         }
 
-        let modbits = 0;
+        mod = mod.toLowerCase();
+        let tempMod: string = mod;
+        while (tempMod) {
+            for (const modEntry in droidMods) {
+                const entry = modEntry as keyof typeof droidMods;
+                if (tempMod.startsWith(droidMods[entry])) {
+                    res += entry.toUpperCase();
+                }
+            }
+            tempMod = tempMod.slice(1);
+        }
+
+        // format mod string properly
+        res = modbitsToString(modbitsFromString(res));
+        while (mod) {
+            for (const modEntry in droidMods) {
+                const entry = modEntry as keyof typeof droidMods;
+                if (res.toLowerCase().includes(entry)) {
+                    continue;
+                }
+                if (tempMod.startsWith(droidMods[entry])) {
+                    res += entry.toUpperCase();
+                }
+            }
+            mod = mod.slice(1);
+        }
+
+        return res;
+    }
+    
+    /**
+     * Converts PC mod string to droid mod string.
+     * 
+     * @param mod The string to convert.
+     */
+    export function pcToDroid(mod: string = ""): string {
+        let res: string = "";
+        mod = mod.toLowerCase();
         while (mod) {
             for (const modEntry in droidMods) {
                 const entry = modEntry as keyof typeof droidMods;
                 if (mod.startsWith(entry)) {
-                    modbits |= droidMods[entry];
-                    break;
+                    res += droidMods[entry];
                 }
             }
-            mod = mod.substr(1);
+            mod = mod.slice(2);
         }
-        return modbitsToString(modbits);
+        return res;
     }
 
     /**
      * Converts PC mods to a detailed string.
+     * 
+     * @param mod The string to convert.
      */
     export function pcToDetail(mod: string = ""): string {
         let res = '';
         if (!mod) return 'None';
         mod = mod.toLowerCase();
         let count = 0;
-        if (mod.includes("nf")) {res += 'NoFail '; count++};
-        if (mod.includes("ez")) {res += 'Easy '; count++};
-        if (mod.includes("ht")) {res += 'HalfTime '; count++};
-        if (mod.includes("td")) {res += 'TouchDevice '; count++};
-        if (mod.includes("hd")) {res += 'Hidden '; count++};
-        if (mod.includes("dt")) {res += 'DoubleTime '; count++};
-        if (mod.includes("hr")) {res += 'HardRock '; count++};
-        if (mod.includes("nc")) {res += 'NightCore '; count++};
+        if (mod.includes("nf")) {
+            res += 'NoFail ';
+            count++;
+        }
+        if (mod.includes("ez")) {
+            res += 'Easy ';
+            count++;
+        }
+        if (mod.includes("ht")) {
+            res += 'HalfTime ';
+            count++;
+        }
+        if (mod.includes("td")) {
+            res += 'TouchDevice ';
+            count++;
+        }
+        if (mod.includes("hd")) {
+            res += 'Hidden ';
+            count++;
+        }
+        if (mod.includes("dt")) {
+            res += 'DoubleTime ';
+            count++;
+        }
+        if (mod.includes("hr")) {
+            res += 'HardRock ';
+            count++;
+        }
+        if (mod.includes("nc")) {
+            res += 'NightCore ';
+            count++;
+        }
+        if (mod.includes("pf")) {
+            res += 'Perfect ';
+            count++;
+        }
+        if (mod.includes("so")) {
+            res += 'SpunOut ';
+            count++;
+        }
+        if (mod.includes('v2')) {
+            res += 'ScoreV2 ';
+            count++;
+        }
         if (count > 1) {
             return res.trim().split(" ").join(", ");
         } else {
@@ -156,13 +245,15 @@ export namespace mods {
     }
 
     /**
-     * Construct mods bitwise from a string, such as "HDHR".
+     * Converts an osu!standard mod string into modbits.
+     * 
+     * @param str The string to convert.
      */
     export function modbitsFromString(str: string = ""): number {
         let mask: number = 0;
         str = str.toLowerCase();
         while (str) {
-            let nchars = 1;
+            let nchars: number = 1;
             for (const modEntry in osuMods) {
                 const entry = modEntry as keyof typeof osuMods;
                 if (entry.length !== 2) {
@@ -180,7 +271,9 @@ export namespace mods {
     }
 
     /**
-     * Convert mods bitwise into a string, such as "HDHR".
+     * Converts mods bitwise into a string, such as "HDHR".
+     * 
+     * @param mod The modbits to convert.
      */
     export function modbitsToString(mod: number = 0): string {
         let res: string = "";
@@ -195,6 +288,9 @@ export namespace mods {
         }
         if (res.indexOf("DT") >= 0 && res.indexOf("NC") >= 0) {
             res = res.replace("DT", "");
+        }
+        if (res.indexOf("SD") >= 0 && res.indexOf("PF") >= 0) {
+            res = res.replace("SD", "");
         }
         return res;
     }
