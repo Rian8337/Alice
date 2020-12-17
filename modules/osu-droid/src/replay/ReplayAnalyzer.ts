@@ -115,7 +115,7 @@ export class ReplayAnalyzer {
         }
 
         if (!this.fixedODR) {
-            this.fixedODR = await this.decompress();
+            this.fixedODR = await this.decompress().catch(() => {return null});
         }
 
         if (!this.fixedODR) {
