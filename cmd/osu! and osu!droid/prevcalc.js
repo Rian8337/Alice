@@ -170,7 +170,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 module.exports.config = {
     name: "prevcalc",
     description: "Calculates the previously calculated map (from recent commands (`recent`, `recentme`, `rs`), `manualcalc`, or automatic calculation).",
-    usage: "prevcalc [(+<mod>) (<combo>x) (<acc>%) (<miss>m) (AR<ar>) (<speed>x) (-d) (-p)]",
-    detail: "`mod`: Applied game modifications (HD, HR, etc) [String]\n`combo`: Max combo reached [Integer]\n`acc`: Accuracy gained [Float]\n`miss`: Amount of misses [Integer]\n`ar`: The AR to be forced into calculation [Float]\n`speed`: The speed multiplier to calculate for, ranging from 0.5x to 2x. Note that a dot must be put to differentiate it with combo (for example `1.0x`) [Float]\n`-d`: Gives detailed response of droid pp\n`-p`: Gives detailed response of pp",
+    usage: "prevcalc [(+<mod>) (<combo>x) (<acc>%) (<x100>x100) (<x50>x50) (<miss>m) (AR<ar>) (<speed>x) (-d) (-p)]",
+    detail: "`mod`: Applied game modifications (HD, HR, etc) [String]\n`combo`: Max combo reached [Integer]\n`acc`: Accuracy gained [Float]\n`miss`: Amount of misses [Integer]\n`ar`: The AR to be forced into calculation [Float]\n`speed`: The speed multiplier to calculate for, ranging from 0.5x to 2x. Note that a dot must be put to differentiate it with combo (for example `1.0x`) [Float]\n`-d`: Gives detailed response of droid pp\n`-p`: Gives detailed response of pp\N`x50`: The amount of 50s achieved. If specified, will override accuracy [Integer]\n`x100`: The amount of 100s achieved. If specified, will override accuracy [Integer]",
     permission: "None"
 };
