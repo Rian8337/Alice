@@ -720,7 +720,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 if (!replay.fixedODR) {
                                     return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                                 }
-                                const { data } = replay;
+                                const data = replay.data;
                                 realAcc = new osudroid.Accuracy({
                                     n300: data.hit300,
                                     n100: data.hit100,
@@ -791,13 +791,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     pass = pp >= passreq.value;
                                     break;
                                 case "m300":
-                                    pass = data.data.hit300 >= passreq.value;
+                                    pass = replay.data.hit300 >= passreq.value;
                                     break;
                                 case "m100":
-                                    pass = data.data.hit100 <= passreq.value;
+                                    pass = replay.data.hit100 <= passreq.value;
                                     break;
                                 case "m50":
-                                    pass = data.data.hit50 <= passreq.value;
+                                    pass = replay.data.hit50 <= passreq.value;
                                     break;
                                 case "ur":
                                     pass = unstableRate <= passreq.value;
@@ -843,13 +843,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             bonusComplete = pp >= c.value;
                                             break;
                                         case "m300":
-                                            bonusComplete = data.data.hit300 >= c.value;
+                                            bonusComplete = replay.data.hit300 >= c.value;
                                             break;
                                         case "m100":
-                                            bonusComplete = data.data.hit100 <= c.value;
+                                            bonusComplete = replay.data.hit100 <= c.value;
                                             break;
                                         case "m50":
-                                            bonusComplete = data.data.hit50 <= c.value;
+                                            bonusComplete = replay.data.hit50 <= c.value;
                                             break;
                                         case "ur":
                                             bonusComplete = unstableRate <= c.value;
@@ -1160,7 +1160,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 replay.originalODR = odrFile;
                 await replay.analyze();
 
-                const { data } = replay;
+                const data = replay.data;
                 if (data.playerName !== username) {
                     return message.channel.send("❎ **| I'm sorry, that replay file does not contain the same username as your binded osu!droid account!**");
                 }
@@ -1221,7 +1221,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const object = star.droidStars.objects[i];
                         const hitData = data.hitObjectData[i];
 
-                        if (!(object.object instanceof osudroid.Circle) || hitData.result === osudroid.hitResult.RESULT_0) {
+                        if (!(object.type & osudroid.objectTypes.circle) || hitData.result === osudroid.hitResult.RESULT_0) {
                             continue;
                         }
                         
@@ -1286,7 +1286,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const requiresReplay = ["m300", "m100", "m50", "ur"];
                     if (requiresReplay.some(v => v === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
                         await replay.analyze();
-                        const hit_object_data = data.data.hitObjectData;
+                        const hit_object_data = replay.data.hitObjectData;
                         let hit_error_total = 0;
 
                         for (const hit_object of hit_object_data) {
@@ -1706,7 +1706,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (!replay.fixedODR) {
                                 return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                             }
-                            const { data } = replay;
+                            const data = replay.data;
                             realAcc = new osudroid.Accuracy({
                                 n300: data.hit300,
                                 n100: data.hit100,
@@ -1777,13 +1777,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 pass = pp >= passreq.value;
                                 break;
                             case "m300":
-                                pass = data.data.hit300 >= passreq.value;
+                                pass = replay.data.hit300 >= passreq.value;
                                 break;
                             case "m100":
-                                pass = data.data.hit100 <= passreq.value;
+                                pass = replay.data.hit100 <= passreq.value;
                                 break;
                             case "m50":
-                                pass = data.data.hit50 <= passreq.value;
+                                pass = replay.data.hit50 <= passreq.value;
                                 break;
                             case "ur":
                                 pass = unstableRate <= passreq.value;
@@ -1829,13 +1829,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         bonusComplete = pp >= c.value;
                                         break;
                                     case "m300":
-                                        bonusComplete = data.data.hit300 >= c.value;
+                                        bonusComplete = data.hit300 >= c.value;
                                         break;
                                     case "m100":
-                                        bonusComplete = data.data.hit100 <= c.value;
+                                        bonusComplete = replay.data.hit100 <= c.value;
                                         break;
                                     case "m50":
-                                        bonusComplete = data.data.hit50 <= c.value;
+                                        bonusComplete = replay.data.hit50 <= c.value;
                                         break;
                                     case "ur":
                                         bonusComplete = unstableRate <= c.value;
