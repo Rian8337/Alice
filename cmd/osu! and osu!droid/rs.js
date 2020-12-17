@@ -204,7 +204,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
         embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
-        return message.channel.send(`✅ **| Most recebt play for ${name}:**`, {embed: embed});
+        return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
     }
     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
