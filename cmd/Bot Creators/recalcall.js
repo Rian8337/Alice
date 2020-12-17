@@ -103,7 +103,7 @@ module.exports.run = (client, message, args, maindb) => {
                             pp_entries.splice(75);
                         }
 
-                        const new_pptotal = pp_entries.reduce((acc, value, index) => acc + value.pp * Math.pow(0.95, index));
+                        const new_pptotal = pp_entries.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
                         const updateVal = {
                             $set: {
                                 pptotal: new_pptotal,
