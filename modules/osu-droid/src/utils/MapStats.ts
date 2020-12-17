@@ -209,6 +209,7 @@ export class MapStats {
                     if (!this.mods.includes("SC")) {
                         this.cs -= 4;
                     }
+                    this.cs = Math.min(this.cs, 10);
                 }
 
                 if (this.hp !== undefined) {
