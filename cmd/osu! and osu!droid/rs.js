@@ -151,13 +151,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         params.map = mapinfo.map;
     }
 
-    const data = await new osudroid.ReplayAnalyzer(params).analyze();
-    if (data.fixedODR) {
-        n300 = data.data.hit300;
-        n100 = data.data.hit100;
-        n50 = data.data.hit50;
+    const replay = await new osudroid.ReplayAnalyzer(params).analyze();
+    const data = replay.data;
+    if (replay.fixedODR) {
+        if (data.hit300) {
+            n300 = data.hit300;
+            n100 = data.hit100;
+            n50 = data.hit50;
+        }
 
-        const hit_object_data = data.data.hitObjectData;
+        const hit_object_data = data.hitObjectData;
         let hit_error_total = 0;
         let total = 0;
         let _total = 0;
@@ -187,7 +190,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 std_deviation += Math.pow(hit_object.accuracy - mean, 2);
             }
         }
-
         unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
         max_error = count ? total / count : 0;
         min_error = _count ? _total / _count : 0;
@@ -202,7 +204,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
         embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
-        return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
+        return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     }
     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
@@ -212,19 +214,31 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
+    let realAcc = new osudroid.Accuracy({
+        percent: acc,
+        nobjects: mapinfo.objects
+    });
+
+    if (replay.fixedODR) {
+        realAcc = new osudroid.Accuracy({
+            n300: n300,
+            n100: n100,
+            n50: n50,
+            nmiss: miss
+        });
+    }
+
     const npp = new osudroid.PerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
-        accPercent: acc,
-        miss: miss,
+        accPercent: realAcc,
         mode: osudroid.modes.droid
     });
 
     const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: combo,
-        accPercent: acc,
-        miss: miss,
+        accPercent: realAcc,
         mode: osudroid.modes.osu
     });
 
@@ -236,23 +250,20 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             n300: (n300 ? n300 : npp.computedAccuracy.n300) + miss,
             n100: n100 ? n100 : npp.computedAccuracy.n100,
             n50 : n50 ? n50 : npp.computedAccuracy.n50,
-            nmiss: 0,
-            nobjects: mapinfo.objects
-        }).value() * 100;
+            nmiss: 0
+        });
 
         const fc_dpp = new osudroid.PerformanceCalculator().calculate({
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            miss: 0,
             mode: osudroid.modes.droid
         });
 
         const fc_pp = new osudroid.PerformanceCalculator().calculate({
             stars: star.pcStars,
-            combo: mapinfo.maxCombo,
+            combo: combo,
             accPercent: fc_acc,
-            miss: 0,
             mode: osudroid.modes.osu
         });
 

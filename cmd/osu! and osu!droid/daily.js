@@ -32,6 +32,7 @@ function isEligible(member) {
 
 /**
  * @param {string} url 
+ * @returns {Promise<Buffer|null>}
  */
 function downloadReplay(url) {
     return new Promise(resolve => {
@@ -706,17 +707,27 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const passreq = dailyres.pass;
                             const bonus = dailyres.bonus;
                             const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
-                            
-                            const data = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
+                            let realAcc = new osudroid.Accuracy({
+                                percent: acc,
+                                nobjects: mapinfo.objects
+                            });
+                            const replay = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
                             let unstableRate = 0;
                             let speedPenalty = 1;
                             const requiresReplay = ["m300", "m100", "m50", "ur"];
                             if (requiresReplay.some(value => value === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
-                                await data.analyze();
-                                if (!data.fixedODR) {
+                                await replay.analyze();
+                                if (!replay.fixedODR) {
                                     return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                                 }
-                                const hit_object_data = data.data.hitObjectData;
+                                const { data } = replay;
+                                realAcc = new osudroid.Accuracy({
+                                    n300: data.hit300,
+                                    n100: data.hit100,
+                                    n50: data.hit50,
+                                    nmiss: miss
+                                });
+                                const hit_object_data = data.hitObjectData;
                                 let hit_error_total = 0;
 
                                 for (const hit_object of hit_object_data) {
@@ -738,15 +749,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: combo,
-                                accPercent: acc,
-                                miss: miss,
+                                accPercent: realAcc,
                                 mode: osudroid.modes.droid,
                                 speedPenalty: speedPenalty
                             });
                             const pcpp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.pcStars,
                                 combo: combo,
-                                accPercent: acc,
+                                accPercent: realAcc,
                                 miss: miss,
                                 mode: osudroid.modes.osu
                             });
@@ -1137,7 +1147,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!userres) {
-                    return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+                    return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
                 }
                 const uid = userres.uid;
                 const username = userres.username;
@@ -1150,9 +1160,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 replay.originalODR = odrFile;
                 await replay.analyze();
 
-                const data = replay.data;
+                const { data } = replay;
                 if (data.playerName !== username) {
                     return message.channel.send("❎ **| I'm sorry, that replay file does not contain the same username as your binded osu!droid account!**");
+                }
+                if (data.replayVersion < 3) {
+                    return message.channel.send("❎ **| I'm sorry, that replay file is too old!**");
                 }
 
                 query = {hash: data.hash};
@@ -1208,7 +1221,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const object = star.droidStars.objects[i];
                         const hitData = data.hitObjectData[i];
 
-                        if (!(object.type & osudroid.objectTypes.circle) || hitData.result === osudroid.hitResult.RESULT_0) {
+                        if (!(object.object instanceof osudroid.Circle) || hitData.result === osudroid.hitResult.RESULT_0) {
                             continue;
                         }
                         
@@ -1238,7 +1251,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // determine score grade
                     let rank;
                     const totalHits = h300 + h100 + h50 + miss;
-                    const isHidden = !!(mod & (osudroid.mods.osuMods.hd | osudroid.mods.osuMods.fl));
+                    const isHidden = !!(mod & (osuMods.hd | osuMods.fl));
                     const h300Ratio = h300 / totalHits;
                     switch (true) {
                         case acc === 100:
@@ -1272,7 +1285,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     let speedPenalty = 1;
                     const requiresReplay = ["m300", "m100", "m50", "ur"];
                     if (requiresReplay.some(v => v === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
-                        replay.analyzeReplay();
+                        await replay.analyze();
                         const hit_object_data = data.data.hitObjectData;
                         let hit_error_total = 0;
 
@@ -1292,12 +1305,16 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                         // speedPenalty = replay.penalty;
                     }
-
+                    const realAcc = new osudroid.Accuracy({
+                        n300: data.hit300,
+                        n100: data.hit100,
+                        n50: data.hit50,
+                        nmiss: data.hit0
+                    });
                     const dpp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
-                        accPercent: acc,
-                        miss: miss,
+                        accPercent: realAcc,
                         mode: osudroid.modes.droid,
                         speedPenalty: speedPenalty
                     }).total;
@@ -1305,8 +1322,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const pp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.pcStars,
                         combo: combo,
-                        accPercent: acc,
-                        miss: miss,
+                        accPercent: realAcc,
                         mode: osudroid.modes.osu
                     }).total;
 
@@ -1677,16 +1693,27 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const passreq = dailyres.pass;
                         const bonus = dailyres.bonus;
 
-                        const data = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
+                        const replay = new osudroid.ReplayAnalyzer({scoreID: scoreInfo.scoreID, map: star.droidStars});
                         let unstableRate = 0;
                         let speedPenalty = 1;
+                        let realAcc = new osudroid.Accuracy({
+                            percent: acc,
+                            nobjects: mapinfo.objects
+                        });
                         const requiresReplay = ["m300", "m100", "m50", "ur"];
                         if (requiresReplay.some(value => value === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
-                            await data.analyze();
-                            if (!data.fixedODR) {
+                            await replay.analyze();
+                            if (!replay.fixedODR) {
                                 return message.channel.send("❎ **| I'm sorry, I cannot find your replay file!**");
                             }
-                            const hit_object_data = data.data.hitObjectData;
+                            const { data } = replay;
+                            realAcc = new osudroid.Accuracy({
+                                n300: data.hit300,
+                                n100: data.hit100,
+                                n50: data.hit50,
+                                nmiss: miss
+                            });
+                            const hit_object_data = data.hitObjectData;
                             let hit_error_total = 0;
 
                             for (const hit_object of hit_object_data) {
@@ -1709,16 +1736,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const npp = new osudroid.PerformanceCalculator().calculate({
                             stars: star.droidStars,
                             combo: combo,
-                            accPercent: acc,
-                            miss: miss,
+                            accPercent: realAcc,
                             mode: osudroid.modes.droid,
                             speedPenalty: speedPenalty
                         });
                         const pcpp = new osudroid.PerformanceCalculator().calculate({
                             stars: star.pcStars,
                             combo: combo,
-                            accPercent: acc,
-                            miss: miss,
+                            accPercent: realAcc,
                             mode: osudroid.modes.osu
                         });
                         const dpp = parseFloat(npp.total.toFixed(2));

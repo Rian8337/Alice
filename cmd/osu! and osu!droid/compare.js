@@ -138,15 +138,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         params.map = mapinfo.map;
     }
 
-    const data = await new osudroid.ReplayAnalyzer(params).analyze();
-    if (data.fixedODR) {
-        if (data.data.hit300) {
-            n300 = data.data.hit300;
-            n100 = data.data.hit100;
-            n50 = data.data.hit50;
+    const replay = await new osudroid.ReplayAnalyzer(params).analyze();
+    const data = replay.data;
+    if (replay.fixedODR) {
+        if (data.hit300) {
+            n300 = data.hit300;
+            n100 = data.hit100;
+            n50 = data.hit50;
         }
 
-        const hit_object_data = data.data.hitObjectData;
+        const hit_object_data = data.hitObjectData;
         let hit_error_total = 0;
         let total = 0;
         let _total = 0;
@@ -185,7 +186,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         cd.add(message.author.id);
         setTimeout(() => {
             cd.delete(message.author.id);
-        }, 20000);
+        }, 15000);
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
@@ -200,19 +201,31 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
+    let realAcc = new osudroid.Accuracy({
+        percent: acc,
+        nobjects: mapinfo.objects
+    });
+
+    if (replay.fixedODR) {
+        realAcc = new osudroid.Accuracy({
+            n300: n300,
+            n100: n100,
+            n50: n50,
+            nmiss: miss
+        });
+    }
+
     const npp = new osudroid.PerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
-        accPercent: acc,
-        miss: miss,
+        accPercent: realAcc,
         mode: osudroid.modes.droid
     });
 
     const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: combo,
-        accPercent: acc,
-        miss: miss,
+        accPercent: realAcc,
         mode: osudroid.modes.osu
     });
 
@@ -224,23 +237,20 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             n300: (n300 ? n300 : npp.computedAccuracy.n300) + miss,
             n100: n100 ? n100 : npp.computedAccuracy.n100,
             n50 : n50 ? n50 : npp.computedAccuracy.n50,
-            nmiss: 0,
-            nobjects: mapinfo.objects
-        }).value() * 100;
+            nmiss: 0
+        });
 
         const fc_dpp = new osudroid.PerformanceCalculator().calculate({
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            miss: 0,
             mode: osudroid.modes.droid
         });
 
         const fc_pp = new osudroid.PerformanceCalculator().calculate({
             stars: star.pcStars,
             combo: combo,
-            accPercent: acc,
-            miss: 0,
+            accPercent: fc_acc,
             mode: osudroid.modes.osu
         });
 

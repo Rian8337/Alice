@@ -1,21 +1,29 @@
 const osudroid = require('osu-droid');
-const request = require('request');
-const droidapikey = process.env.DROID_API_KEY;
 const config = require('../../config.json');
-const {Client, Message} = require('discord.js');
-const {Db} = require('mongodb');
+const { Client, Message } = require('discord.js');
+const { Db } = require('mongodb');
 const queue = [];
+
+function sleep(seconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, 1000 * seconds);
+    });
+}
 
 function retrievePlays(page, uid, cb) {
     console.log("Current page:", page);
-    const url = `http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=${droidapikey}&uid=${uid}&page=${page}`;
-    request(url, (err, response, data) => {
-        if (err || !data) {
+    const apiRequestBuilder = new osudroid.DroidAPIRequestBuilder()
+        .setEndpoint("scoresearchv2.php")
+        .addParameter("uid", uid)
+        .addParameter("page", page);
+
+    apiRequestBuilder.sendRequest().then(result => {
+        if (result.statusCode !== 200) {
             console.log("Empty response from droid API");
             return cb([], true, false);
         }
         const entries = [];
-        const lines = data.split("<br>");
+        const lines = result.data.toString("utf-8").split("<br>");
         for (const line of lines) entries.push(line.split(" "));
         entries.shift();
         if (entries.length === 0) cb(entries, false, true);
@@ -56,24 +64,37 @@ function calculateLevel(score) {
  * @param {string[]} args 
  * @param {Db} maindb 
  * @param {Db} alicedb 
+ * @param {[string, string][]} current_map
+ * @param {boolean} repeated
  */
 module.exports.run = (client, message, args, maindb, alicedb, current_map, repeated = false) => {
-    if (message.channel.type !== "text") return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (!isEligible(message.member) && !message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
-    if (!args[0]) return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
-    let ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
+    if (message.channel.type !== "text") {
+        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    }
+    if (!isEligible(message.member) && !message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+    }
+    if (!args[0]) {
+        return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
+    }
+    const ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
 
     let query = {discordid: ufind};
     const binddb = maindb.collection("userbind");
     const scoredb = alicedb.collection("playerscore");
+    const blacklistdb = maindb.collection("mapblacklist");
     binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
         }
-        if (!res) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        if (!res) {
+            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
         const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
-        if (hasRequestedIndex) return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
+        if (hasRequestedIndex) {
+            return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
+        }
         if (res.hasAskedForRecalc) {
             queue.shift();
             message.channel.send(`❎ **| ${message.author}, <@${ufind}> has requested a recalculation before!**`);
@@ -107,14 +128,17 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         let attempts = 0;
 
         query = {uid: uid};
-        scoredb.findOne(query, (err, s_res) => {
+        scoredb.findOne(query, async (err, s_res) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
+            const blacklists = await blacklistdb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
             retrievePlays(page, uid, async function checkPlays(entries, error, stopSign) {
-                if (error && attempts < 3) return retrievePlays(page, uid, checkPlays);
+                if (error && attempts < 3) {
+                    return retrievePlays(page, uid, checkPlays);
+                }
                 if (stopSign) {
                     console.log("COMPLETED!");
                     ppentries.forEach(ppentry => {
@@ -213,20 +237,39 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         console.log("No osu file found");
                         continue;
                     }
+                    if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
+                        console.log("Beatmap is blacklisted");
+                        continue;
+                    }
                     const mods = osudroid.mods.droidToPC(entry[6]);
                     const acc_percent = parseFloat(entry[7]) / 1000;
                     const combo = parseInt(entry[4]);
                     const miss = parseInt(entry[8]);
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                    let realAcc = new osudroid.Accuracy({
+                        percent: acc_percent,
+                        nobjects: mapinfo.objects
+                    });
+                    const scoreID = parseInt(entry[0]);
+                    const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
+                    if (replay.fixedODR) {
+                        await sleep(0.75);
+                        const { data } = replay;
+                        realAcc = new osudroid.Accuracy({
+                            n300: data.hit300,
+                            n100: data.hit100,
+                            n50: data.hit50,
+                            nmiss: miss
+                        });
+                    }
                     const npp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
-                        accPercent: acc_percent,
-                        miss: miss,
+                        accPercent: realAcc,
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
-                    const ppObject = {
+                    if (!isNaN(pp)) ppentries.push({
                         hash: entry[11],
                         title: mapinfo.fullTitle,
                         mods: mods,
@@ -234,12 +277,8 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         combo: combo,
                         accuracy: acc_percent,
                         miss: miss,
-                        scoreID: parseInt(entry[0])
-                    };
-                    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
-                        ppObject.isOldPlay = true;
-                    }
-                    if (!isNaN(pp)) ppentries.push(ppObject);
+                        scoreID: scoreID
+                    });
                     ++playc;
                 }
 

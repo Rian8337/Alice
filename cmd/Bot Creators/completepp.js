@@ -1,21 +1,30 @@
 const Discord = require('discord.js');
-const request = require('request');
-const droidapikey = process.env.DROID_API_KEY;
 const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 
+/**
+ * @param {number} seconds 
+ */
+function sleep(seconds) {
+    return new Promise(resolve => setTimeout(resolve, 1000 * seconds));
+}
+
 function test(uid, page, cb) {
     console.log("Current page: " + page);
-    let url = 'http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=' + droidapikey + '&uid=' + uid + '&page=' + page;
-    request(url, function (err, response, data) {
-        if (err || !data) {
+    const apiRequestBuilder = new osudroid.DroidAPIRequestBuilder()
+        .setEndpoint("scoresearchv2.php")
+        .addParameter("uid", uid)
+        .addParameter("page", page);
+
+    apiRequestBuilder.sendRequest().then(result => {
+        if (result.statusCode !== 200) {
             console.log("Empty response from droid API");
             page--;
             return cb([], false);
         }
-        let entries = [];
-        let line = data.split('<br>');
-        for (let i of line) entries.push(i.split(' '));
+        const entries = [];
+        const line = result.data.toString("utf-8").split('<br>');
+        for (const i of line) entries.push(i.split(' '));
         entries.shift();
         if (!entries[0]) cb(entries, true);
         else cb(entries, false);
@@ -40,34 +49,49 @@ async function calculatePP(ppentries, entry, cb) {
         console.log("No osu file");
         return cb(true);
     }
-    let mods = osudroid.mods.droidToPC(entry[6]);
-    let acc_percent = parseFloat(entry[7]) / 1000;
-    let combo = parseInt(entry[4]);
-    let miss = parseInt(entry[8]);
-    let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
-    let npp = new osudroid.PerformanceCalculator().calculate({
+    const mods = osudroid.mods.droidToPC(entry[6]);
+    const combo = parseInt(entry[4]);
+    const miss = parseInt(entry[8]);
+    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+    const accPercent = parseFloat(entry[7]) / 1000;
+    let realAcc = new osudroid.Accuracy({
+        percent: accPercent,
+        nobjects: mapinfo.objects
+    });
+    const scoreID = parseInt(entry[0]);
+    const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
+    if (replay.fixedODR) {
+        await sleep(0.75);
+        const { data } = replay;
+        realAcc = new osudroid.Accuracy({
+            n300: data.hit300,
+            n100: data.hit100,
+            n50: data.hit50,
+            nmiss: data.hit0
+        });
+    }
+    const npp = new osudroid.PerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
-        accPercent: acc_percent,
+        accPercent: realAcc,
         miss: miss,
         mode: osudroid.modes.droid
     });
     
-    let pp = parseFloat(npp.toString().split(" ")[0]);
-    let ppentry = {
+    const pp = parseFloat(npp.toString().split(" ")[0]);
+    const ppentry = {
         hash: entry[11],
         title: mapinfo.fullTitle,
         pp: pp,
         mods: mods,
-        accuracy: acc_percent,
+        accuracy: accPercent,
         combo: combo,
         miss: miss,
-        scoreID: parseInt(entry[0])
+        scoreID: scoreID
     };
-    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
-        ppentry.isOldPlay = true;
+    if (!isNaN(pp)) {
+        ppentries.push(ppentry);
     }
-    if (!isNaN(pp)) ppentries.push(ppentry);
     cb();
 }
 
@@ -78,21 +102,27 @@ async function calculatePP(ppentries, entry, cb) {
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-    let ppentries = [];
+    if (message.channel instanceof Discord.DMChannel) {
+        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    }
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    }
+    const ppentries = [];
     let page = 0;
-    let ufind = args[0];
-    if (!ufind) return message.channel.send("Please mention a user or user ID");
-    ufind = ufind.replace('<@!','').replace('<@', '').replace('>', '');
+    const ufind = args[0]?.replace('<@!','').replace('<@', '').replace('>', '');
+    if (!ufind) {
+        return message.channel.send("Please mention a user or user ID");
+    }
 
-    let binddb = maindb.collection("userbind");
-    let query = { discordid: ufind };
+    const binddb = maindb.collection("userbind");
+    const query = { discordid: ufind };
 	binddb.findOne(query, function(err, userres) {
-        if (!userres) return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres.uid;
-        let pplist = [];
-        if (userres.pp) pplist = userres.pp;
+        if (!userres) {
+            return message.channel.send("❎ **| I'm sorry, the account is not binded. He/she/you need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
+        const uid = userres.uid;
+        const pplist = userres.pp ?? [];
         let playc = 0;
         let pptotal = 0;
 
@@ -110,7 +140,7 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     if (!dup) {pplist.push(ppentry); playc++;}
                 });
-                pplist.sort(function(a, b) {return b[2] - a[2]});
+                pplist.sort(function(a, b) {return b[2] - a[2];});
                 if (pplist.length > 75) pplist.splice(75);
                 console.table(pplist);
                 let weight = 1;
@@ -143,12 +173,12 @@ module.exports.run = (client, message, args, maindb) => {
                 if (!error) {
                     i++;
                     playc++;
-                    attempt = 0
+                    attempt = 0;
                 }
                 if (i < entries.length && !stopFlag) await calculatePP(ppentries, entries[i], cb);
                 else {
                     console.log("done");
-                    ppentries.sort(function(a, b) {return b[2] - a[2]});
+                    ppentries.sort(function(a, b) {return b[2] - a[2];});
                     if (ppentries.length > 75) ppentries.splice(75);
                     page++;
                     console.table(ppentries);

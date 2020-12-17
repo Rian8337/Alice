@@ -74,8 +74,9 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
+    const star = mapinfo ? new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: play.mods}) : undefined;
     
-    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID}).analyze();
+    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: star?.droidStars}).analyze();
     const data = replay.data;
     if (!data) {
         return message.channel.send("❎ **| I'm sorry, I cannot find the replay of the score!**");
@@ -140,32 +141,37 @@ module.exports.run = async (client, message, args, maindb) => {
     const max_error = count ? total / count : 0;
     const min_error = _count ? _total / _count : 0;
 
-    if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
+    if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !star) {
         return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
     }
 
-    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: data.convertedMods});
     // replay.map = star.droidStars;
     // replay.analyzeReplay();
 
-	let starsline = parseFloat(star.droidStars.total.toFixed(2));
-	let pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
-    let npp = new osudroid.PerformanceCalculator().calculate({
+    const realAcc = new osudroid.Accuracy({
+        n300: data.hit300,
+        n100: data.hit100,
+        n50: data.hit50,
+        nmiss: play.miss
+    });
+	const starsline = parseFloat(star.droidStars.total.toFixed(2));
+	const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
+    const npp = new osudroid.PerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: play.combo,
-        accPercent: play.accuracy,
+        accPercent: realAcc,
         miss: play.miss,
         mode: osudroid.modes.droid
     });
-	let pcpp = new osudroid.PerformanceCalculator().calculate({
+	const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: play.combo,
-        accPercent: play.accuracy,
+        accPercent: realAcc,
         miss: play.miss,
         mode: osudroid.modes.osu
     });
-	let ppline = parseFloat(npp.total.toFixed(2));
-	let pcppline = parseFloat(pcpp.total.toFixed(2));
+	const ppline = parseFloat(npp.total.toFixed(2));
+	const pcppline = parseFloat(pcpp.total.toFixed(2));
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()

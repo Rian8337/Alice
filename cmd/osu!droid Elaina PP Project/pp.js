@@ -4,6 +4,12 @@ const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 const cd = new Set();
 
+function sleep(seconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, 1000 * seconds);
+    });
+}
+
 /**
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
@@ -24,7 +30,6 @@ module.exports.run = (client, message, args, maindb) => {
     const bindDb = maindb.collection("userbind");
     const whitelistDb = maindb.collection("mapwhitelist");
     const blacklistDb = maindb.collection("mapblacklist");
-
     const query = {discordid: message.author.id};
     bindDb.findOne(query, async (err, res) => {
         if (err) {
@@ -81,7 +86,6 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! servers. Please try again!**");
                 }
                 const hash = mapinfo.hash;
-
                 const isBlacklist = await blacklistDb.findOne({beatmapID: mapinfo.beatmapID});
                 if (isBlacklist) {
                     return message.channel.send(`❎ **| I'm sorry, this beatmap has been blacklisted with reason \`${isBlacklist.reason}\`!**`);
@@ -107,11 +111,25 @@ module.exports.run = (client, message, args, maindb) => {
                 const miss = score.miss;
 
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                const replay = await new osudroid.ReplayAnalyzer({scoreID: score.scoreID, map: star.droidStars}).analyze();
+                let realAcc = new osudroid.Accuracy({
+                    percent: acc,
+                    nobjects: mapinfo.objects
+                });
+                if (replay.fixedODR) {
+                    const { data } = replay;
+                    realAcc = new osudroid.Accuracy({
+                        n300: data.hit300,
+                        n100: data.hit100,
+                        n50: data.hit50,
+                        nmiss: miss
+                    });
+                }
+
                 const npp = new osudroid.PerformanceCalculator().calculate({
                     stars: star.droidStars,
                     combo: combo,
-                    accPercent: acc,
-                    miss: miss,
+                    accPercent: realAcc,
                     mode: osudroid.modes.droid
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
@@ -125,9 +143,6 @@ module.exports.run = (client, message, args, maindb) => {
                     miss: miss,
                     scoreID: score.scoreID
                 };
-                if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
-                    pp_object.isOldPlay = true;
-                }
                 playc++;
                 let duplicate = false;
                 for (let i in pplist) {
@@ -208,7 +223,7 @@ module.exports.run = (client, message, args, maindb) => {
                 cd.add(message.author.id);
                 setTimeout(() => {
                     cd.delete(message.author.id);
-                }, 1000 * offset);
+                }, 1200 * offset);
 
                 const player = await osudroid.Player.getInformation({uid: uid});
                 if (player.error) {
@@ -271,11 +286,25 @@ module.exports.run = (client, message, args, maindb) => {
                     }
 
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: star.droidStars}).analyze();
+                    let realAcc = new osudroid.Accuracy({
+                        percent: acc,
+                        nobjects: mapinfo.objects
+                    });
+                    if (replay.fixedODR) {
+                        await sleep(0.75);
+                        const { data } = replay;
+                        realAcc = new osudroid.Accuracy({
+                            n300: data.hit300,
+                            n100: data.hit100,
+                            n50: data.hit50,
+                            nmiss: miss
+                        });
+                    }
                     const npp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
-                        accPercent: acc,
-                        miss: miss,
+                        accPercent: realAcc,
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
@@ -290,9 +319,7 @@ module.exports.run = (client, message, args, maindb) => {
                         miss: miss,
                         scoreID: play.scoreID
                     };
-                    if (osudroid.mods.modbitsFromString(mods) & osudroid.mods.osuMods.nc) {
-                        pp_object.isOldPlay = true;
-                    }
+
                     ++playc;
                     let duplicate = false;
                     for (let i in pplist) {

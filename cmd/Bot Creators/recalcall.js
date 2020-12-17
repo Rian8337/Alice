@@ -1,140 +1,128 @@
-const Discord = require('discord.js');
+const {Client, Message} = require('discord.js');
 const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 
-function retrieveList(res, i, cb) {
-    if (!res[i]) return cb([], true);
-    let list = [];
-    list.push(res[i].uid);
-    list.push(res[i].pp);
-    list.push(res[i].discordid);
-    cb(list);
-}
-
-async function recalcPlay(target, i, newtarget, whitelist, cb) {
-    if (!target[i]) return cb(false, true);
-    let mods = target[i].mods;
-    const mapinfo = await osudroid.MapInfo.getInformation({hash: target[i][0]});
-    if (mapinfo.error) {
-		console.log("API fetch error");
-		return cb(false, true);
-	}
-    if (!mapinfo.title) {
-        console.log("Map not found");
-        return cb();
-    }
-    if (!mapinfo.objects) {
-        console.log("0 objects found");
-        return cb();
-    }
-    if (mapinfo.approved === 3 || mapinfo.approved <= 0) {
-        let isWhitelist = await whitelist.findOne({hashid: target[i].hash});
-        if (!isWhitelist) {
-            console.log("Map is not ranked, approved, loved, or whitelisted");
-            return cb();
-        }
-    }
-    let acc_percent = target[i].accuracy;
-	let combo = target[i].combo;
-	let miss = target[i].miss;
-	let star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
-	let npp = new osudroid.PerformanceCalculator().calculate({
-        stars: star.droidStars,
-        combo: combo,
-        accPercent: acc_percent,
-        miss: miss,
-        mode: osudroid.modes.droid
+function sleep(seconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, 1000 * seconds);
     });
-	let real_pp = parseFloat(npp.toString().split(" ")[0]);
-	console.log(`${target[i].pp} -> ${real_pp}`);
-	newtarget.push({
-		hash: target[i].hash,
-		title: target[i].hash,
-		pp: real_pp,
-		combo: target[i].combo,
-		accuracy: target[i].accuracy,
-		miss: target[i].miss,
-		scoreID: target[i].scoreID
-	});
-    cb();
 }
 
 /**
- * @param {Discord.Client} client 
- * @param {Discord.Message} message 
+ * @param {Client} client 
+ * @param {Message} message 
  * @param {string[]} args 
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel || message.member.roles == null) return;
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    }
     message.channel.send(`❗**| ${message.author}, are you sure you want to recalculate all players' dpp entry?**`).then(msg => {
         msg.react("✅").catch(console.error);
         let confirmation = false;
-        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+
         confirm.on("collect", () => {
             confirmation = true;
             msg.delete();
             message.channel.send("✅ **| Recalculating all players...**");
-            let binddb = maindb.collection("userbind");
-            let whitelist = maindb.collection("mapwhitelist");
-            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, res) => {
+            const binddb = maindb.collection("userbind");
+            const whitelist = maindb.collection("mapwhitelist");
+            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
                 if (err) throw err;
-                let i = 0;
-                message.channel.send(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).then(m => {
-                    retrieveList(res, i, async function testList(list, stopSign = false) {
-                        if (stopSign) {
-                            m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
-                            return message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
-                        }
-                        let uid = list[0];
-                        let ppentry = list[1];
-                        let discordid = list[2];
-                        let newppentry = [];
-                        let count = 0;
-                        let attempt = 0;
-                        console.log("Uid:", uid);
-                        if (!ppentry) {
-                            i++;
-                            return retrieveList(res, i, testList)
-                        }
-                        await recalcPlay(ppentry, count, newppentry, whitelist, async function testPlay(error = false, stopFlag = false) {
-                            attempt++;
-                            if ((attempt === 3 && error) || !error) count++;
-                            if (count < ppentry.length && !stopFlag) return await recalcPlay(ppentry, count, newppentry, whitelist, testPlay);
-                            newppentry.sort((a, b) => {return b[2] - a[2];});
-                            let totalpp = 0;
-                            let weight = 1;
-                            for (let x of newppentry) {
-                                totalpp += x[2] * weight;
-                                weight *= 0.95
+                let updated = 0;
+                message.channel.send(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).then(async m => {
+                    for await (const entry of entries) {
+                        const discordid = entry.discordid;
+                        const pp_entries = entry.pp ? entry.pp : [];
+                        let index = -1;
+
+                        console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
+                        for await (const pp_entry of pp_entries) {
+                            await sleep(0.5);
+                            ++index;
+                            const {hash, mods, accuracy, combo, miss, scoreID, pp} = pp_entry;
+
+                            const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
+                            if (mapinfo.error) {
+                                console.log("API fetch error");
+                                continue;
                             }
-                            let updatedata = {
-                                $set: {
-                                    pptotal: totalpp,
-                                    pp: newppentry
+                            if (!mapinfo.title) {
+                                continue;
+                            }
+                            if (!mapinfo.objects) {
+                                console.log("Map has no objects");
+                                continue;
+                            }
+                            if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                                const isWhitelist = await whitelist.findOne({hashid: hash});
+                                if (!isWhitelist) {
+                                    console.log("Map is not ranked, approved, or whitelisted");
+                                    continue;
                                 }
-                            };
-                            binddb.updateOne({discordid: discordid}, updatedata, async err => {
-                                if (err) {
-                                    console.log("Error inserting data to database");
-                                    console.log(err);
-                                    if (!error) count--;
-                                    testPlay;
-                                    return;
-                                }
-                                console.log(totalpp);
-                                console.log("Done");
-                                i++;
-                                console.log(`${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)`);
-                                m.edit(`❗**| Current progress: ${i}/${res.length} players recalculated (${(i * 100 / res.length).toFixed(2)}%)**`).catch(console.error);
-                                retrieveList(res, i, testList);
+                            }
+
+                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                            let realAcc = new osudroid.Accuracy({
+                                percent: accuracy,
+                                nobjects: mapinfo.objects
                             });
+                            const replay = await new osudroid.ReplayAnalyzer({scoreID: scoreID, map: star.droidStars}).analyze();
+                            if (replay.fixedODR) {
+                                await sleep(0.75);
+                                const { data } = replay;
+                                realAcc = new osudroid.Accuracy({
+                                    n300: data.hit300,
+                                    n100: data.hit100,
+                                    n50: data.hit50,
+                                    nmiss: miss
+                                });
+                            }
+                            const npp = new osudroid.PerformanceCalculator().calculate({
+                                stars: star.droidStars,
+                                combo: combo,
+                                accPercent: realAcc,
+                                miss: miss,
+                                mode: osudroid.modes.droid
+                            });
+                            const new_pp = parseFloat(npp.total.toFixed(2));
+
+                            console.log(`${pp} => ${new_pp}`);
+                            pp_entries[index].title = mapinfo.fullTitle;
+                            pp_entries[index].pp = new_pp;
+                            console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
+                        }
+
+                        pp_entries.sort((a, b) => {
+                            return b.pp - a.pp;
                         });
-                    });
+
+                        if (pp_entries.length > 75) {
+                            pp_entries.splice(75);
+                        }
+
+                        const new_pptotal = pp_entries.reduce((acc, value, index) => acc + value.pp * Math.pow(0.95, index));
+                        const updateVal = {
+                            $set: {
+                                pptotal: new_pptotal,
+                                pp: pp_entries
+                            }
+                        };
+
+                        await binddb.updateOne({discordid: discordid}, updateVal);
+                        ++updated;
+                        console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
+                        m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
+                    }
+                    console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
+                    m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
+                    message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
                 });
             });
         });
+
         confirm.on("end", () => {
             if (!confirmation) {
                 msg.delete();
