@@ -81,9 +81,9 @@ module.exports.run = (client, message, args, maindb) => {
                             }
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
-                                combo: replay.fixedODR ? replay.data.maxCombo : combo,
+                                combo: replay.data?.maxCombo ?? combo,
                                 accPercent: realAcc,
-                                miss: replay.fixedODR ? replay.data.hit0 : miss,
+                                miss: replay.data?.hit0 ?? miss,
                                 mode: osudroid.modes.droid
                             });
                             const new_pp = parseFloat(npp.total.toFixed(2));
@@ -91,6 +91,11 @@ module.exports.run = (client, message, args, maindb) => {
                             console.log(`${pp} => ${new_pp}`);
                             pp_entries[index].title = mapinfo.fullTitle;
                             pp_entries[index].pp = new_pp;
+                            pp_entries[index].combo = replay.data?.maxCombo ?? combo;
+                            pp_entries[index].mods = replay.data?.convertedMods ?? mods;
+                            pp_entries[index].accuracy = parseFloat((realAcc.value() * 100).toFixed(2));
+                            pp_entries[index].miss = replay.data?.hit0 ?? miss;
+
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
                         }
                         console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
