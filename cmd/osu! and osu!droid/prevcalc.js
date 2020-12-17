@@ -15,7 +15,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let channel_index = current_map.findIndex(map => map[0] === message.channel.id);
     if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
     let hash = current_map[channel_index][1];
-
     let combo;
     let acc = 100;
     let missc = 0;
@@ -67,7 +66,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		}
 	}
 
-    const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
+    const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 	if (mapinfo.error) {
 		return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
 	}
