@@ -29,7 +29,7 @@ module.exports.run = (client, message, args, maindb) => {
             message.channel.send("✅ **| Recalculating all players...**");
             const binddb = maindb.collection("userbind");
             const whitelist = maindb.collection("mapwhitelist");
-            binddb.find({}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
+            binddb.find({tempCalcDone: {$ne: true}}, {projection: {_id: 0, discordid: 1, uid: 1, pp: 1, pptotal: 1}}).sort({pptotal: -1}).toArray((err, entries) => {
                 if (err) throw err;
                 let updated = 0;
                 message.channel.send(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).then(async m => {
@@ -107,7 +107,8 @@ module.exports.run = (client, message, args, maindb) => {
                         const updateVal = {
                             $set: {
                                 pptotal: new_pptotal,
-                                pp: pp_entries
+                                pp: pp_entries,
+                                tempCalcDone: true
                             }
                         };
 
@@ -118,6 +119,7 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
                     m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
+                    await binddb.updateMany({}, {unset: {tempCalcDone: ""}});
                     message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
                 });
             });
