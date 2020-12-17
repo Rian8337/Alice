@@ -274,9 +274,9 @@ export class PerformanceCalculator {
                 break;
         }
 
+        const objectCount: number = this.stars.objects.length;
         if (this.convertedMods & mods.osuMods.fl) {
             // Apply object-based bonus for flashlight
-            const objectCount: number = this.stars.objects.length;
             let flBonus: number = 1 + 0.35 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
                 flBonus += 0.3 * Math.min(1, (objectCount - 200) / 300);
@@ -288,7 +288,7 @@ export class PerformanceCalculator {
         }
 
         // Scale the aim value with accuracy slightly
-        aimValue *= 0.5 + this.computedAccuracy.value() / 2;
+        aimValue *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
 
         // It is also important to also consider accuracy difficulty when doing that
         const odScaling: number = Math.pow(this.mapStatistics.od as number, 2) / 2500;
@@ -321,16 +321,16 @@ export class PerformanceCalculator {
 
         // Scale the speed value with accuracy and OD
         const odScaling: number = Math.pow(this.mapStatistics.od as number, 2) / 750;
+        const objectCount: number = this.stars.objects.length;
         speedValue *=
             (0.95 + (this.mapStatistics.od as number > 0 ? odScaling : -odScaling)) *
             Math.pow(
-                this.computedAccuracy.value(),
+                this.computedAccuracy.value(objectCount),
                 ((this.mode === modes.droid ? 12 : 14.5) - Math.max(this.mapStatistics.od as number, this.mode === modes.droid ? 2.5 : 8)) / 2 // Change minimum threshold for droid to OD7 droid
             );
 
         // Scale the speed value with # of 50s to punish doubletapping
         const n50: number = this.computedAccuracy.n50;
-        const objectCount: number = this.stars.objects.length;
         speedValue *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
 
         this.speed = speedValue;

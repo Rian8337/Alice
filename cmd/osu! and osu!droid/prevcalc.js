@@ -150,7 +150,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.setDescription(mapinfo.showStatistics(mod, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
 		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
-		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value() * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
+		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
 	let string = '';

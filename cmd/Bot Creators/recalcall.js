@@ -1,5 +1,5 @@
 const {Client, Message} = require('discord.js');
-const osudroid = require('osu-droid');
+const osudroid = require('old-osu-droid');
 const { Db } = require('mongodb');
 
 function sleep(seconds) {
@@ -68,7 +68,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 percent: accuracy,
                                 nobjects: mapinfo.objects
                             });
-                            const replay = await new osudroid.ReplayAnalyzer({scoreID: scoreID, map: star.droidStars}).analyze();
+                            const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
                             if (replay.fixedODR) {
                                 await sleep(0.2);
                                 const { data } = replay;
@@ -79,6 +79,7 @@ module.exports.run = (client, message, args, maindb) => {
                                     nmiss: miss
                                 });
                             }
+                            console.log(scoreID, realAcc);
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: replay.data?.maxCombo ?? combo,
@@ -93,7 +94,7 @@ module.exports.run = (client, message, args, maindb) => {
                             pp_entries[index].pp = new_pp;
                             pp_entries[index].combo = replay.data?.maxCombo ?? combo;
                             pp_entries[index].mods = replay.data?.convertedMods ?? mods;
-                            pp_entries[index].accuracy = parseFloat((realAcc.value() * 100).toFixed(2));
+                            pp_entries[index].accuracy = parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2));
                             pp_entries[index].miss = replay.data?.hit0 ?? miss;
 
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
