@@ -18,7 +18,7 @@ export class Parser {
     /**
      * The parsed beatmap.
      */
-    map: Beatmap = new Beatmap();
+    readonly map: Beatmap = new Beatmap();
 
     /**
      * The amount of lines of `.osu` file.
@@ -243,7 +243,7 @@ export class Parser {
         this.map.timingPoints.push(new TimingPoint({
             time: parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0),
             msPerBeat: msPerBeat,
-            change: s[6].trim() !== "0",
+            change: (s[6] && s[6].trim() !== "0") || msPerBeat > 0,
             speedMultiplier: speedMultiplier
         }));
     }
