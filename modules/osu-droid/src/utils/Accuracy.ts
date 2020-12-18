@@ -34,10 +34,10 @@ interface AccuracyInformation {
  * An accuracy calculator that calculates accuracy based on given parameters.
  */
 export class Accuracy implements AccuracyInformation {
-    readonly nmiss: number;
     readonly n300: number;
     readonly n100: number;
     readonly n50: number;
+    readonly nmiss: number;
     
     /**
      * Calculates accuracy based on given parameters.
@@ -128,6 +128,8 @@ export class Accuracy implements AccuracyInformation {
 
     /**
      * Calculates the accuracy value (0.0 - 1.0).
+     * 
+     * @param nobjects The amount of objects in the beatmap. If `n300` was not specified in the constructor, this is required.
      */
     value(nobjects?: number): number {
         let n300 = this.n300;
