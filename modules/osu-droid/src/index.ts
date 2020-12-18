@@ -48,22 +48,22 @@ export = {
     /**
      * An accuracy calculator that calculates accuracy based on given parameters.
      */
-    Accuracy: Accuracy,
+    Accuracy,
 
     /**
      * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
      */
-    Aim: Aim,
+    Aim,
 
     /**
      * Represents a beatmap with advanced information.
      */
-    Beatmap: Beatmap,
+    Beatmap,
 
     /**
      * Represents a break period in a beatmap.
      */
-    BreakPoint: BreakPoint,
+    BreakPoint,
 
     /**
      * Represents a circle in a beatmap.
@@ -72,7 +72,7 @@ export = {
      * stored in the objects are in playfield coordinates (512*384
      * rectangle).
      */
-    Circle: Circle,
+    Circle,
 
     /**
      * Represents a cursor instance in an osu!droid replay.
@@ -81,133 +81,133 @@ export = {
      * 
      * This is used when analyzing replays using replay analyzer.
      */
-    CursorData: CursorData,
+    CursorData,
 
     /**
      * Represents an osu!standard hit object with difficulty calculation values.
      */
-    DifficultyHitObject: DifficultyHitObject, 
+    DifficultyHitObject, 
     
     /**
      * A converter used to convert normal hitobjects into difficulty hitobjects.
      */
-    DifficultyHitObjectCreator: DifficultyHitObjectCreator,
+    DifficultyHitObjectCreator,
 
     /**
      * API request builder for osu!droid.
      */
-    DroidAPIRequestBuilder: DroidAPIRequestBuilder,
+    DroidAPIRequestBuilder,
 
     /**
      * Represents the hit window of osu!droid.
      */
-    DroidHitWindow: DroidHitWindow,
+    DroidHitWindow,
 
     /**
      * Bitwise enum for gamemodes.
      */
-    gamemode: gamemode,
+    gamemode,
 
     /**
      * Represents the headcircle of a slider (sliderhead).
      */
-    HeadCircle: HeadCircle,
+    HeadCircle,
 
     /**
      * Represents a hitobject in a beatmap.
      */
-    HitObject: HitObject,
+    HitObject,
     /**
      * The result of a hit in an osu!droid replay.
      */
-    hitResult: hitResult,
+    hitResult,
 
     /**
      * Represents a beatmap with general information.
      */
-    MapInfo: MapInfo,
+    MapInfo,
 
     /**
      * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
      */
-    MapStars: MapStars,
+    MapStars,
 
     /**
      * Holds general beatmap statistics for further modifications. 
      */
-    MapStats: MapStats,
+    MapStats,
 
     /**
      * Mode enum to switch things between osu!droid and osu!standard.
      */
-    modes: modes,
+    modes,
 
     /**
      * A namespace containing bitwise constant of mods in both osu!droid and osu!standard as well as conversion methods.
      */
-    mods: mods,
+    mods,
 
     /**
      * Movement type of a cursor in an osu!droid replay.
      */
-    movementType: movementType,
+    movementType,
 
     /**
      * API request builder for osu!standard.
      */
-    OsuAPIRequestBuilder: OsuAPIRequestBuilder,
+    OsuAPIRequestBuilder,
 
     /**
      * Represents the hit window of osu!standard.
      */
-    OsuHitWindow: OsuHitWindow,
+    OsuHitWindow,
 
     /**
      * Bitmask constant of object types. This is needed as osu! uses bits to determine object types.
      */
-    objectTypes: objectTypes,
+    objectTypes,
 
     /**
      * A beatmap parser with just enough data for pp calculation.
      */
-    Parser: Parser,
+    Parser,
 
     /**
      * Path approximator for sliders.
      */
-    PathApproximator: PathApproximator,
+    PathApproximator,
 
     /**
      * Types of slider paths.
      */
-    PathType: PathType,
+    PathType,
 
     /**
      * Precision utilities.
      */
-    Precision: Precision,
+    Precision,
 
     /**
      * A performance points calculator that calculates performance points for osu!standard gamemode.
      */
-    PerformanceCalculator: PerformanceCalculator,
+    PerformanceCalculator,
 
     /**
      * Represents an osu!droid player.
      */
-    Player: Player,
+    Player,
 
     /**
      * Represents a repeat point in a slider.
      */
-    RepeatPoint: RepeatPoint,
+    RepeatPoint,
     
     /**
      * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
      * 
      * Once analyzed, the result can be accessed via the `data` property.
      */
-    ReplayAnalyzer: ReplayAnalyzer,
+    ReplayAnalyzer,
 
     /**
      * Represents a replay data in an osu!droid replay.
@@ -216,7 +216,7 @@ export = {
      * 
      * This is used when analyzing replays using replay analyzer.
      */
-    ReplayData: ReplayData,
+    ReplayData,
 
     /**
      * Represents a hitobject in an osu!droid replay.
@@ -225,37 +225,37 @@ export = {
      * 
      * This is used when analyzing replays using replay analyzer.
      */
-    ReplayObjectData: ReplayObjectData,
+    ReplayObjectData,
 
     /**
      * Ranking status of a beatmap.
      */
-    rankedStatus: rankedStatus,
+    rankedStatus,
 
     /**
      * A namespace containing links of rank images and a method to return them.
      */
-    rankImage: rankImage,
+    rankImage,
 
     /**
      * Represents an osu!droid score.
      */
-    Score: Score,
+    Score,
 
     /**
      * Represents a slider in a beatmap.
      */
-    Slider: Slider,
+    Slider,
 
     /**
      * Represents a slider's path.
      */
-    SliderPath: SliderPath,
+    SliderPath,
 
     /**
      * Represents a slider tick in a slider.
      */
-    SliderTick: SliderTick,
+    SliderTick,
 
     /**
      * Represents a spinner in a beatmap.
@@ -263,25 +263,25 @@ export = {
      * All we need from spinners is their duration. The
      * position of a spinner is always at 256x192.
      */
-    Spinner: Spinner,
+    Spinner,
     
     /**
      * An osu!standard difficulty calculator.
      */
-    StarRating: StarRating,
+    StarRating,
     
     /**
      * Represents the tailcircle of a slider (sliderend).
      */
-    TailCircle: TailCircle,
+    TailCircle,
 
     /**
      * Represents a timing point in a beatmap.
      */
-    TimingPoint: TimingPoint,
+    TimingPoint,
 
     /**
      * Based on `Vector2` class in C#.
      */
-    Vector2: Vector2
+    Vector2
 };
