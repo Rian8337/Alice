@@ -36,7 +36,7 @@ module.exports.run = (client, message, args, maindb) => {
                     for await (const entry of entries) {
                         const discordid = entry.discordid;
                         const pp_entries = entry.pp ? entry.pp : [];
-                        let index = -1;
+                        let index = 0;
 
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
                         for await (const pp_entry of pp_entries) {
@@ -83,7 +83,6 @@ module.exports.run = (client, message, args, maindb) => {
                                     nmiss: miss
                                 });
                             }
-                            console.log(scoreID, realAcc);
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: replay.data?.maxCombo ?? combo,
