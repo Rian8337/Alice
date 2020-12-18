@@ -209,6 +209,16 @@ export class MapInfo {
     hash: string = "";
 
     /**
+     * Whether or not this beatmap has a storyboard.
+     */
+    storyboardAvailable: boolean = false;
+
+    /**
+     * Whether or not this beatmap has a video.
+     */
+    videoAvailable: boolean = false;
+
+    /**
      * The `.osu` file of the beatmap.
      */
     osuFile: string = "";
@@ -331,6 +341,8 @@ export class MapInfo {
         this.speedDifficulty = mapinfo.diff_speed ? parseFloat(mapinfo.diff_speed) : 0;
         this.totalDifficulty = mapinfo.difficultyrating ? parseFloat(mapinfo.difficultyrating) : 0;
         this.hash = mapinfo.file_md5;
+        this.storyboardAvailable = !!parseInt(mapinfo.storyboard);
+        this.videoAvailable = !!parseInt(mapinfo.video);
         return this;
     }
 
@@ -465,6 +477,7 @@ export class MapInfo {
                         }
                     }
                 }
+                string += `\n🖼️ ${this.storyboardAvailable ? "✅" : "❎"} **|** 🎞️ ${this.videoAvailable ? "✅" : "❎"}`;
                 return string;
             }
             case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "": ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "": ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "": ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "": ` (${mapStatistics.hp})`}`;
