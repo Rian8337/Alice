@@ -118,7 +118,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             message.channel.send(`✅ **| Calculating <@${ufind}>'s account...**`);
         }
         const uid = res.uid;
-        const pplist = res.pp ? res.pp : [];
+        const pplist = res.pp ?? [];
         const ppentries = [];
         const score_list = [];
         let pptotal = 0;
@@ -150,7 +150,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                                 break;
                             }
                         }
-                        if (!dup) pplist.push(ppentry);
+                        if (!dup) {
+                            pplist.push(ppentry);
+                        }
                     });
 
                     pplist.sort((a, b) => {
@@ -160,8 +162,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         return b[0] - a[0];
                     });
 
-                    if (pplist.length > 75) pplist.splice(75);
-                    console.table(pplist);
+                    if (pplist.length > 75) {
+                        pplist.splice(75);
+                    }
 
                     for (let i in pplist) {
                         pptotal += pplist[i].pp * Math.pow(0.95, i);
