@@ -59,6 +59,10 @@ module.exports.run = (client, message, args, maindb) => {
                                 console.log("Map has no objects");
                                 continue;
                             }
+                            if (!mapinfo.osuFile) {
+                                console.log(".osu file not found");
+                                continue;
+                            }
                             if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                                 const isWhitelist = await whitelist.findOne({hashid: hash});
                                 if (!isWhitelist) {
