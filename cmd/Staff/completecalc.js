@@ -256,7 +256,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     const scoreID = parseInt(entry[0]);
                     const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
                     if (replay.fixedODR) {
-                        await sleep(0.75);
+                        await sleep(0.2);
                         const { data } = replay;
                         realAcc = new osudroid.Accuracy({
                             n300: data.hit300,

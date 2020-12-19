@@ -226,7 +226,7 @@ module.exports.run = (client, message, args, maindb) => {
                 cd.add(message.author.id);
                 setTimeout(() => {
                     cd.delete(message.author.id);
-                }, 1200 * offset);
+                }, 1000 * offset);
 
                 const player = await osudroid.Player.getInformation({uid: uid});
                 if (player.error) {
@@ -295,7 +295,7 @@ module.exports.run = (client, message, args, maindb) => {
                         nobjects: mapinfo.objects
                     });
                     if (replay.fixedODR) {
-                        await sleep(0.75);
+                        await sleep(0.2);
                         const { data } = replay;
                         realAcc = new osudroid.Accuracy({
                             n300: data.hit300,
