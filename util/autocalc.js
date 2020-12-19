@@ -80,7 +80,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			return;
 		}
 
-		const obj = JSON.parse(result.data.toString("utf-8"));
+		let obj = JSON.parse(result.data.toString("utf-8"));
 		if (!obj || !obj[0]) {
 			return console.log("Map not found");
 		}
@@ -99,27 +99,27 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			if (!mapinfo.osuFile) {
 				return;
 			}
-                        let realAcc = new osudroid.Accuracy({
-		                percent: acc,
-		                nobjects: mapinfo.objects
-	                });
-                        if (acc === 100 && missc > 0 && !count50 && !count100) {
-		                acc_estimation = true;
-		                realAcc = new osudroid.Accuracy({
-			                n300: mapinfo.objects - missc,
-			                n100: 0,
-			                n50: 0,
-			                nmiss: missc
-		                });
-	                }
-	                if (count50 || count100) {
-		                realAcc = new osudroid.Accuracy({
-			                n300: mapinfo.objects - count50 - count100 - missc,
-			                n100: count100,
-			                n50: count50,
-			                nmiss: missc
-		                });
-	                }
+			let realAcc = new osudroid.Accuracy({
+				percent: acc,
+				nobjects: mapinfo.objects
+			});
+			if (acc === 100 && missc > 0 && !count50 && !count100) {
+				acc_estimation = true;
+				realAcc = new osudroid.Accuracy({
+					n300: mapinfo.objects - missc,
+					n100: 0,
+					n50: 0,
+					nmiss: missc
+				});
+			}
+			if (count50 || count100) {
+				realAcc = new osudroid.Accuracy({
+					n300: mapinfo.objects - count50 - count100 - missc,
+					n100: count100,
+					n50: count50,
+					nmiss: missc
+				});
+			}
 
 			if (!combo || combo <= 0) combo = mapinfo.maxCombo - missc;
 			if (mapinfo.maxCombo <= missc) {
