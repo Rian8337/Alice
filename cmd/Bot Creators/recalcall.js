@@ -35,7 +35,10 @@ module.exports.run = (client, message, args, maindb) => {
                 message.channel.send(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).then(async m => {
                     for await (const entry of entries) {
                         const discordid = entry.discordid;
-                        const pp_entries = entry.pp ? entry.pp : [];
+                        const pp_entries = entry.pp ?? [];
+                        if (pp_entries.length === 0) {
+                            continue;
+                        }
                         let index = 0;
 
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
