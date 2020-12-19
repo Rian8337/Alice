@@ -39,6 +39,7 @@ module.exports.run = (client, message, args, maindb) => {
                         if (pp_entries.length === 0) {
                             continue;
                         }
+                        const new_pp_entries = [];
                         let index = 0;
 
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
@@ -56,10 +57,6 @@ module.exports.run = (client, message, args, maindb) => {
                             }
                             if (!mapinfo.objects) {
                                 console.log("Map has no objects");
-                                continue;
-                            }
-                            if (!mapinfo.osuFile) {
-                                console.log("osu file not found");
                                 continue;
                             }
                             if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
@@ -96,30 +93,32 @@ module.exports.run = (client, message, args, maindb) => {
                             const new_pp = parseFloat(npp.total.toFixed(2));
 
                             console.log(`${pp} => ${new_pp}`);
-                            pp_entries[index].title = mapinfo.fullTitle;
-                            pp_entries[index].pp = new_pp;
-                            pp_entries[index].combo = replay.data?.maxCombo ?? combo;
-                            pp_entries[index].mods = replay.data?.convertedMods ?? mods;
-                            pp_entries[index].accuracy = parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2));
-                            pp_entries[index].miss = replay.data?.hit0 ?? miss;
-
+                            new_pp_entries.push({
+                                hash,
+                                title: mapinfo.fullTitle,
+                                pp: new_pp,
+                                combo: replay.data?.maxCombo ?? combo,
+                                mods: mods,
+                                accuracy: parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2)),
+                                miss: replay.data?.hit0 ?? miss,
+                                scoreID
+                            });
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
                         }
-                        console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
 
-                        pp_entries.sort((a, b) => {
+                        new_pp_entries.sort((a, b) => {
                             return b.pp - a.pp;
                         });
 
-                        if (pp_entries.length > 75) {
-                            pp_entries.splice(75);
+                        if (new_pp_entries.length > 75) {
+                            new_pp_entries.splice(75);
                         }
 
-                        const new_pptotal = pp_entries.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
+                        const new_pptotal = new_pp_entries.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
                         const updateVal = {
                             $set: {
                                 pptotal: new_pptotal,
-                                pp: pp_entries,
+                                pp: new_pp_entries,
                                 tempCalcDone: true
                             }
                         };
@@ -129,7 +128,6 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
                         m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
                     }
-                    console.log(`${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)`);
                     m.edit(`❗**| Current progress: ${updated}/${entries.length} players recalculated (${(updated * 100 / entries.length).toFixed(2)}%)**`).catch(console.error);
                     await binddb.updateMany({}, {$unset: {tempCalcDone: ""}});
                     message.channel.send(`✅ **| ${message.author}, recalculation process complete!**`);
