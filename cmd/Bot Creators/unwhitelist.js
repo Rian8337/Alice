@@ -3,8 +3,12 @@ const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs");
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (message.channel instanceof Discord.DMChannel) {
+        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
+    }
+    if (!message.isOwner && message.author.id !== "293340533021999105") {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    }
 
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
@@ -16,7 +20,7 @@ module.exports.run = async (client, message, args, maindb) => {
                 console.log(wlres);
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!wlres) return message.channel.send("❎ **| I'm sorry, the beatmap is not whitelisted!**");
                 let updateData = { $set: {
@@ -27,12 +31,12 @@ module.exports.run = async (client, message, args, maindb) => {
                 try {
                     whitelist.deleteOne(dupQuery, updateData, () => {
                         console.log("Whitelist entry removed");
-                        message.channel.send("Whitelist entry removed | `" + mapstring + "`")
+                        message.channel.send("Whitelist entry removed | `" + mapstring + "`");
                     });
                 } catch (e) {}
             });
         }
-        else message.channel.send("❎ **| Beatmap unwhitelisting failed.**");
+        else message.channel.send("Beatmap white-listing failed");
     });
 };
 
@@ -43,9 +47,12 @@ async function whitelistInfo(link_in, hash_in, message, callback) {
     if (link_in) { //Normal mode
         let line_sep = link_in.split('/');
         beatmapid = line_sep[line_sep.length-1];
-        query = {beatmapID: beatmapid}
+        query = {beatmapID: beatmapid};
     }
-    if (hash_in) {hashid = hash_in; query = {hash: hashid}} //Override mode (use for fixed map)
+    if (hash_in) {
+        hashid = hash_in;
+        query = {hash: hashid};
+    } //Override mode (use for fixed map)
 
     const mapinfo = await osudroid.MapInfo.getInformation(query);
 
@@ -57,7 +64,6 @@ async function whitelistInfo(link_in, hash_in, message, callback) {
         message.channel.send("❎ **| I'm sorry, I couldn't find the beatmap!**");
         return callback(0);
     }
-
     beatmapid = mapinfo.beatmapID;
     hashid = mapinfo.hash;
     let mapstring = mapinfo.showStatistics("", 0);
@@ -75,7 +81,7 @@ async function whitelistInfo(link_in, hash_in, message, callback) {
         .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.totalDifficulty}`);
 
     message.channel.send({embed: embed}).catch(console.error);
-    callback(1, beatmapid, hashid, mapstring)
+    callback(1, beatmapid, hashid, mapstring);
 }
 
 module.exports.config = {
