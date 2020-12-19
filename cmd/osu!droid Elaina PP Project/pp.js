@@ -40,11 +40,11 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         }
         const uid = res.uid;
-        let pplist = res.pp ? res.pp : [];
+        const pplist = res.pp ?? [];
 		let pptotal = 0;
-		let pre_pptotal = res.pptotal ? res.pptotal : 0;
+		let pre_pptotal = res.pptotal ?? 0;
 		let submitted = 0;
-		let playc = res.playc ? res.playc : 0;
+		let playc = res.playc ?? 0;
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
@@ -103,7 +103,7 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
                 }
                 if (!score.title) {
-                    return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map! Perhaps osu!droid server is down?**");
+                    return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map!**");
                 }
                 const mods = score.mods;
                 const acc = score.accuracy;
@@ -133,6 +133,9 @@ module.exports.run = (client, message, args, maindb) => {
                     mode: osudroid.modes.droid
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
+                if (isNaN(pp)) {
+                    return message.channel.send("❎ **| I'm sorry, your play is worth no pp!**");
+                }
                 const pp_object = {
                     hash: hash,
                     title: mapinfo.fullTitle,
@@ -185,7 +188,7 @@ module.exports.run = (client, message, args, maindb) => {
                 embed.setDescription(`Total PP: **${pptotal.toFixed(2)} pp**\nPP gained: **${diff.toFixed(2)} pp**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
                 message.channel.send(`✅ **| ${message.author}, successfully submitted your play. More info in embed.**`, {embed: embed});
 
-                let updateVal = {
+                const updateVal = {
 					$set: {
 						pptotal: pptotal,
 						pp: pplist,
@@ -308,6 +311,10 @@ module.exports.run = (client, message, args, maindb) => {
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
+                    if (isNaN(pp)) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Worth no pp**`);
+                        continue;
+                    }
 
                     const pp_object = {
                         hash: play.hash,
