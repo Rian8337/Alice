@@ -55,12 +55,14 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 
                 if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
+                    console.log("Map is blacklisted");
                     continue;
                 }
                 
                 if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED && mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                     const isWhitelist = await whitelistDb.findOne({hashid: mapinfo.hash});
                     if (!isWhitelist) {
+                        console.log("Map is not whitelisted");
                         continue;
                     }
                 }
