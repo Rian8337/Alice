@@ -18,7 +18,7 @@ function scoreCalc(mode, score, maxscore, accuracy, misscount, comboPortion, acc
 	if (!hddt) {
         return Math.round(newScore);
     } else {
-        return Math.round(newScore/1.0625);
+        return Math.round(newScore * 0.56 / 0.59);
     }
 }
 

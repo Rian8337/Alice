@@ -144,7 +144,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         if (score.hash === hash && playValidation(score.mods, requirement)) {
             scorev2 = scoreCalc(score.score, maxScore, score.accuracy, score.miss, comboPortion, accPortion);
             if (score.mods === "HDDT") {
-                scorev2 /= 1.0625;
+                scorev2 /= 0.59 / 0.56;
             }
 			scorev2 = Math.round(scorev2);
         }
