@@ -41,6 +41,7 @@ module.exports.run = (client, message, args, maindb) => {
             console.log(`Scanning ${ppList.length} plays`);
             for await (const ppEntry of ppList) {
                 const mapinfo = await osudroid.MapInfo.getInformation({hash: ppEntry.hash, file: false});
+                await sleep(0.1);
                 console.log(++i);
                 if (!mapinfo.title) {
                     continue;
