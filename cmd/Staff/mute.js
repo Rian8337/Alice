@@ -84,7 +84,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             return message.channel.send(`❎ **| I'm sorry, please ask server managers to create a mute log channel first!**`);
         }
         if (!(channel instanceof Discord.TextChannel)) {
-            return message.channel.send("❎ **| Hey, ban log channel must be a text channel!**");
+            return message.channel.send("❎ **| Hey, mute log channel must be a text channel!**");
         }
         let muterole = message.guild.roles.cache.find(r => r.name === 'elaina-muted');
 
