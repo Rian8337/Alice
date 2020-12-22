@@ -101,7 +101,7 @@ export class MapStats {
         this.ar = values.ar;
         this.od = values.od;
         this.hp = values.hp;
-        this.mods = values.mods !== undefined ? values.mods.toUpperCase() : "";
+        this.mods = values.mods?.toUpperCase() || "";
 
         this.droidMods = this.mods ? mods.modbitsFromString(this.mods) : 0;
         this.pcMods = this.droidMods;
@@ -191,25 +191,31 @@ export class MapStats {
                 }
 
                 // HR and EZ works differently in droid in terms of
-                // CS modification, instead of CS *= 1.3 or CS *= 0.5,
-                // it is incremented or decremented
+                // CS modification (even CS in itself as well)
                 //
                 // if present mods are found, they need to be removed
                 // from the bitwise enum of mods to prevent double
                 // calculation
                 if (this.cs !== undefined) {
+                    let scale: number = ((720 / 480)
+                        * (54.42 - this.cs * 4.48)
+                        * 2 / 128)
+                        + 0.5 * (11 - 5.2450170716245195) / 5;
                     if (this.droidMods & mods.osuMods.hr) {
                         this.droidMods -= mods.osuMods.hr;
-                        ++this.cs;
+                        scale -= 0.125;
                     }
                     if (this.droidMods & mods.osuMods.ez) {
                         this.droidMods -= mods.osuMods.ez;
-                        --this.cs;
+                        scale += 0.125;
                     }
-                    if (!this.mods.includes("SC")) {
-                        this.cs -= 4;
+                    if (this.mods.includes("SC")) {
+                        scale -= ((720 / 480)
+                        * (54.42 - 4 * 4.48)
+                        * 2 / 128);
                     }
-                    this.cs = Math.min(this.cs, 10);
+                    // circle radius = 64 * scale
+                    this.cs = Math.min(5 + (5 - 10 * scale) / 0.7, 10);
                 }
 
                 if (this.hp !== undefined) {
