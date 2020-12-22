@@ -1,9 +1,18 @@
-const config = require('../../config.json');
+const { Client, Guild, User } = require('discord.js');
+const { Db } = require('mongodb');
 
+/**
+ * @param {Client} client 
+ * @param {Guild} guild 
+ * @param {User} user 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = async (client, guild, user, maindb, alicedb) => {
     if (guild.id !== '316545691545501706') return;
     const binddb = maindb.collection("userbind");
     const scoredb = alicedb.collection("playerscore");
+    const channeldb = alicedb.collection("mutelogchannel");
 
     let updateVal = {
         $set: {
@@ -14,11 +23,14 @@ module.exports.run = async (client, guild, user, maindb, alicedb) => {
     };
 
     const res = await binddb.findOneAndUpdate({discordid: user.id}, updateVal);
+    const log = await channeldb.findOne({guildID: guild.id});
+    if (!log) return;
+    const channel = guild.channels.resolve(log.channelID);
     if (!res) return;
 
     await scoredb.findOneAndDelete({discordid: user.id});
 
-    guild.channels.cache.find(c => c.name === config.management_channel).send("✅ **| Successfully wiped user's pp and score data!**")
+    channel.send("✅ **| Successfully wiped user's pp and score data!**");
 };
 
 module.exports.config = {
