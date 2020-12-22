@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
     if (!args[0]) {
         return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
     }
-    const ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
+    const ufind = args[0].replace(/[<@!>]/, "");
 
     let query = {discordid: ufind};
     const binddb = maindb.collection("userbind");
@@ -165,6 +165,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     if (pplist.length > 75) {
                         pplist.splice(75);
                     }
+                    console.table(pplist);
 
                     for (let i in pplist) {
                         pptotal += pplist[i].pp * Math.pow(0.95, i);
@@ -241,7 +242,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         continue;
                     }
                     if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
-                        console.log("Beatmap is blacklisted");
+                        console.log("Map is blacklisted");
                         continue;
                     }
                     const mods = osudroid.mods.droidToPC(entry[6]);
@@ -272,25 +273,27 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         mode: osudroid.modes.droid
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
-                    if (!isNaN(pp)) ppentries.push({
-                        hash: entry[11],
-                        title: mapinfo.fullTitle,
-                        mods: mods,
-                        pp: pp,
-                        combo: combo,
-                        accuracy: acc_percent,
-                        miss: miss,
-                        scoreID: scoreID
-                    });
+                    if (!isNaN(pp)) {
+                        ppentries.push({
+                            hash: entry[11],
+                            title: mapinfo.fullTitle,
+                            mods: mods,
+                            pp: pp,
+                            combo: combo,
+                            accuracy: acc_percent,
+                            miss: miss,
+                            scoreID: scoreID
+                        });
+                    }
                     ++playc;
                 }
 
                 if (!error) {
                     ++page;
                     attempts = 0;
-                    console.table(ppentries);
+                } else {
+                    ++attempts;
                 }
-                else ++attempts;
                 retrievePlays(page, uid, checkPlays);
             });
         });
