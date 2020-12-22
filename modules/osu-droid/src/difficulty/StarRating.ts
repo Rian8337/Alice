@@ -211,7 +211,7 @@ export class StarRating {
 
             const interval: number = (obj.object.startTime - prev.object.startTime) / stats.speedMultiplier;
             if (interval >= singletapThreshold) {
-                this.singlesThreshold;
+                ++this.singlesThreshold;
             }
         }
 
