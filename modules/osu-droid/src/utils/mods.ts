@@ -153,7 +153,7 @@ export namespace mods {
                 if (res.toLowerCase().includes(entry)) {
                     continue;
                 }
-                if (tempMod.startsWith(droidMods[entry])) {
+                if (mod.startsWith(droidMods[entry])) {
                     res += entry.toUpperCase();
                 }
             }
