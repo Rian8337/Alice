@@ -25,7 +25,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	let forceAR = -1;
 	let count50 = 0;
 	let count100 = 0;
-	for (let i = 1; i < args.length; i++) {
+	for (let i = 0; i < args.length; i++) {
 		if (args[i].endsWith("%")) {
 			const new_acc = parseFloat(args[i]);
 			if (!isNaN(new_acc)) {
