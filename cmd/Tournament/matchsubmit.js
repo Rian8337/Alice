@@ -31,8 +31,8 @@ function playValidation(mod, requirement) {
 		case "hd": return tempMod === "hd";
 		case "hr": return tempMod === "hr";
 		case "dt": return tempMod === 'dt' || tempMod === 'hddt';
-		case "fm": return (tempMod.includes("hd") || tempMod.includes("hr") || tempMod.includes("ez")) && (!tempMod.includes("ht") && !tempMod.includes("dt") && !tempMod.includes("nc"));
-		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht");
+		case "fm": return (tempMod.includes("hd") || tempMod.includes("hr") || tempMod.includes("ez")) && (!tempMod.includes("pr") && !tempMod.includes("ht") && !tempMod.includes("dt") && !tempMod.includes("nc"));
+		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht") && !tempMod.includes("pr");
 		default: return true;
 	}
 }
