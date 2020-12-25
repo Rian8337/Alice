@@ -37,7 +37,7 @@ module.exports.run = (client, message, args, maindb) => {
 		let pptotal = 0;
 
 		pplist.sort(function (a, b) {
-			return b[2] - a[2]
+			return b.pp - a.pp;
 		});
 
 		let scdelete = pplist[todelete - 1];
@@ -48,7 +48,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 		let weight = 1;
 		for (let i in pplist) {
-			pptotal += weight * pplist[i][2];
+			pptotal += weight * pplist[i].pp;
 			weight *= 0.95;
 		}
 		let footer = config.avatar_list;
