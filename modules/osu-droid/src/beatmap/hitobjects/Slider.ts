@@ -5,6 +5,7 @@ import { HeadCircle } from './sliderObjects/HeadCircle';
 import { RepeatPoint } from './sliderObjects/RepeatPoint';
 import { SliderTick } from './sliderObjects/SliderTick';
 import { TailCircle } from './sliderObjects/TailCircle';
+import { Precision } from '../../utils/Precision';
 
 /**
  * Represents a slider in a beatmap.
@@ -18,7 +19,7 @@ export class Slider extends HitObject {
     /**
      * The nested hitobjects of the slider. Consists of headcircle (sliderhead), slider ticks, repeat points, and tailcircle (sliderend).
      */
-    readonly nestedHitObjects: HitObject[];
+    readonly nestedHitObjects: HitObject[] = [];
 
     /**
      * The slider's path.
@@ -36,22 +37,24 @@ export class Slider extends HitObject {
     readonly velocity: number;
 
     /**
-     * The tick distance of the slider.
+     * The spacing between sliderticks of this slider.
      */
     readonly tickDistance: number;
 
     /**
-     * The lazy end position of the slider.
+     * The position of the cursor at the point of completion of this slider if it was hit
+     * with as few movements as possible. This is set and used by difficulty calculation.
      */
     lazyEndPosition?: Vector2;
 
     /**
-     * The lazy travel distance of the slider.
+     * The distance travelled by the cursor upon completion of this slider if it was hit
+     * with as few movements as possible. This is set and used by difficulty calculation.
      */
     lazyTravelDistance?: number;
 
     /**
-     * The span duration (repeat duration) of the slider.
+     * The length of one span of this slider.
      */
     readonly spanDuration: number;
 
@@ -91,13 +94,12 @@ export class Slider extends HitObject {
         const scoringDistance: number = 100 * values.mapSliderVelocity * values.speedMultiplier;
         this.velocity = scoringDistance / values.msPerBeat;
         this.tickDistance = scoringDistance / values.mapTickRate;
+
         this.endTime = this.startTime + this.repetitions * this.path.expectedDistance / this.velocity;
         this.duration = this.endTime - this.startTime;
         this.spanDuration = this.duration / this.repetitions;
 
         // creating nested hit objects
-        this.nestedHitObjects = [];
-
         // slider start and slider end
         this.headCircle = new HeadCircle({
             position: this.position,
@@ -110,6 +112,11 @@ export class Slider extends HitObject {
             startTime: this.endTime,
             type: 0
         });
+        
+        // If the slider has too short duration due to float number limitation, stop processing the instance
+        if (Precision.almostEqualsNumber(this.startTime, this.endTime)) {
+            return;
+        }
 
         // slider ticks
         const maxLength: number = 100000;
@@ -131,6 +138,7 @@ export class Slider extends HitObject {
                     break;
                 }
 
+                // Always generate ticks from the start of the path rather than the span to ensure that ticks in repeat spans are positioned identically to those in non-repeat spans
                 const distanceProgress: number = d / length;
                 const timeProgress: number = reversed ? 1 - distanceProgress : distanceProgress;
 
