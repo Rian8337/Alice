@@ -154,7 +154,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         const playerName = players[i][0] === "Score" ? teams[remainder][0] : players[i][0];
 
         const scoreString = `${playerName} - (${osudroid.mods.pcToDetail(score.mods)}): **${scorev2}** - ${client.emojis.cache.get(rankEmote(score.rank))} - ${score.accuracy}% - ${score.miss} ❌\n`;
-        const failString = `${playerName} - (N/A): **${scorev2}** - Failed`;
+        const failString = `${playerName} - (N/A): **${scorev2}** - Failed\n`;
         
         if (remainder === 0) {
             team_1_score += scorev2;
