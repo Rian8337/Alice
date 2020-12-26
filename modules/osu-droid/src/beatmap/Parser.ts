@@ -354,8 +354,11 @@ export class Parser {
             speedMultiplierTimingPoint = Math.max(0, Math.min(speedMultiplierTimingPoint, this.map.timingPoints.length - 1));
             msPerBeatTimingPoint = Math.max(0, Math.min(msPerBeatTimingPoint, this.map.timingPoints.length - 1));
 
-            const t1: TimingPoint = this.map.timingPoints[speedMultiplierTimingPoint];
-            const t2: TimingPoint = this.map.timingPoints[msPerBeatTimingPoint];
+            let t1: TimingPoint = this.map.timingPoints[speedMultiplierTimingPoint];
+            let t2: TimingPoint = this.map.timingPoints[msPerBeatTimingPoint];
+            if (t1.change && t2.change) {
+                t2 = t1;
+            }
 
             const object = new Slider({
                 position: position,
