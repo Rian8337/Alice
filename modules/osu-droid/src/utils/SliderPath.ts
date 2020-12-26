@@ -123,6 +123,7 @@ export class SliderPath {
                     break;
                 }
                 const subPath: Vector2[] = this.pathApproximator.approximateCircularArc(subControlPoints);
+                // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable bezier approximation.
                 if (subPath.length === 0) {
                     break;
                 }
@@ -138,45 +139,49 @@ export class SliderPath {
      * Calculates the slider's cumulative length.
      */
     calculateCumulativeLength(): void {
-        let l: number = 0;
-
+        let calculatedLength: number = 0;
         this.cumulativeLength.length = 0;
-        this.cumulativeLength.push(l);
+        this.cumulativeLength.push(0);
 
         for (let i = 0; i < this.calculatedPath.length - 1; ++i) {
             const diff: Vector2 = this.calculatedPath[i + 1].subtract(this.calculatedPath[i]);
-            const d: number = diff.getLength();
-            
-            if (this.expectedDistance !== null && this.expectedDistance !== undefined && this.expectedDistance - l < d) {
-                this.calculatedPath[i + 1] = this.calculatedPath[i].add(diff.scale((this.expectedDistance - l) / d));
-                this.calculatedPath.splice(i + 2, this.calculatedPath.length - 2 - i);
-
-                l = this.expectedDistance;
-                this.cumulativeLength.push(l);
-                break;
-            }
-
-            l += d;
-            this.cumulativeLength.push(l);
+            calculatedLength += diff.getLength();
+            this.cumulativeLength.push(calculatedLength);
         }
 
-        if (this.expectedDistance !== undefined && this.expectedDistance !== null && l < this.expectedDistance && this.calculatedPath.length > 1) {
-            const diff: Vector2 = this.calculatedPath[this.calculatedPath.length - 1].subtract(this.calculatedPath[this.calculatedPath.length - 2]);
-            const d: number = diff.getLength();
+        if (calculatedLength !== this.expectedDistance) {
+            // The last length is always incorrect
+            this.cumulativeLength.pop();
+            let pathEndIndex: number = this.calculatedPath.length - 1;
 
-            if (d <= 0) {
+            if (calculatedLength > this.expectedDistance) {
+                // The path will be shortened further, in which case we should trim any more unnecessary lengths and their associated path segments
+                while (this.cumulativeLength.length > 0 && this.cumulativeLength[this.cumulativeLength.length - 1] >= this.expectedDistance) {
+                    this.cumulativeLength.pop();
+                    this.calculatedPath.splice(pathEndIndex--, 1);
+                }
+            }
+
+            if (pathEndIndex <= 0) {
+                // The expected distance is negative or zero
+                this.cumulativeLength.push(0);
                 return;
             }
 
-            this.calculatedPath[this.calculatedPath.length - 1] = this.calculatedPath[this.calculatedPath.length - 1].add(diff.scale((this.expectedDistance - l) / d));
-            this.cumulativeLength[this.calculatedPath.length - 1] = this.expectedDistance;
+            // The direction of the segment to shorten or lengthen
+            const dir: Vector2 = this.calculatedPath[pathEndIndex].subtract(this.calculatedPath[pathEndIndex - 1]);
+            dir.normalize();
+
+            this.calculatedPath[pathEndIndex] = this.calculatedPath[pathEndIndex - 1].add(dir.scale(this.expectedDistance - this.cumulativeLength[this.cumulativeLength.length - 1]));
+            this.cumulativeLength.push(this.expectedDistance);
         }
     }
 
     /**
-     * Returns the center position of the sliderball in a certain slider progress.
+     * Computes the position on the slider at a given progress that ranges from 0 (beginning of the path)
+     * to 1 (end of the path).
      * 
-     * @param progress The progress of the slider.
+     * @param progress Ranges from 0 (beginning of the path) to 1 (end of the path).
      */
     positionAt(progress: number): Vector2 {
         this.ensureInitialized();
