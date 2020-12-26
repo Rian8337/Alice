@@ -505,6 +505,8 @@ export class MapInfo {
                         }
                         maxBPM = Math.round(maxBPM);
                         minBPM = Math.round(minBPM);
+                        speedMulMinBPM = Math.round(speedMulMinBPM);
+                        speedMulMaxBPM = Math.round(speedMulMaxBPM);
 
                         string += minBPM === this.bpm && maxBPM === this.bpm ? `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
                         if (this.bpm !== convertedBPM) {
