@@ -112,6 +112,9 @@ export class Slider extends HitObject {
             startTime: this.endTime,
             type: 0
         });
+
+        this.tailCircle.startTime = Math.max(this.startTime + this.duration / 2, this.tailCircle.startTime - this.legacyLastTickOffset);
+        this.nestedHitObjects.push(this.headCircle, this.tailCircle);
         
         // If the slider has too short duration due to float number limitation, stop processing the instance
         if (Precision.almostEqualsNumber(this.startTime, this.endTime)) {
@@ -165,9 +168,6 @@ export class Slider extends HitObject {
             this.nestedHitObjects.push(repeatPoint);
         }
 
-        this.tailCircle.startTime = Math.max(this.startTime + this.duration / 2, this.tailCircle.startTime - this.legacyLastTickOffset);
-
-        this.nestedHitObjects.push(this.headCircle, this.tailCircle);
         this.nestedHitObjects.sort((a, b) => {
             return a.startTime - b.startTime;
         });
