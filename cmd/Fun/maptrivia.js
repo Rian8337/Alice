@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
-const request = require('request');
-const { MapInfo } = require('osu-droid');
+const { OsuAPIRequestBuilder, MapInfo } = require('osu-droid');
 const cd = new Set();
 
 /**
@@ -10,13 +9,17 @@ const cd = new Set();
 function retrieveBeatmaps(dateLimit, level, cb) {
     const finalDate = new Date(dateLimit + Math.floor(Math.random() * (new Date().getTime() - dateLimit)));
 
-    const url = `https://osu.ppy.sh/api/get_beatmaps?k=${process.env.OSU_API_KEY}&since=${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${finalDate.getUTCDate().toString().padStart(2, "0")}&m=0`;
-    request(url, (err, response, data) => {
-        if (err || response.statusCode !== 200) {
+    const apiRequestBuilder = new OsuAPIRequestBuilder()
+        .setEndpoint("get_beatmaps")
+        .addParameter("since", `${finalDate.getUTCFullYear()}-${(finalDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${finalDate.getUTCDate().toString().padStart(2, "0")}`)
+        .addParameter("m", 0);
+
+    apiRequestBuilder.sendRequest().then(result => {
+        if (result.statusCode !== 200) {
             return cb([]);
         }
 
-        const apiResponse = JSON.parse(data);
+        const apiResponse = JSON.parse(result.data.toString("utf-8"));
         if (apiResponse.length === 0) {
             return cb([]);
         }
@@ -26,12 +29,12 @@ function retrieveBeatmaps(dateLimit, level, cb) {
          */
         const mapList = [];
         apiResponse.forEach(r => {
-            const metadata = new MapInfo();
-            metadata.fillMetadata(r);
+            const metadata = new MapInfo().fillMetadata(r);
             if (!mapList.find(map => map.beatmapsetID === metadata.beatmapsetID)) {
                 mapList.push(metadata);
             }
         });
+
         cb(mapList.filter(v => v.plays <= 1000000 - 60000 * level || v.favorites <= 3000 - 185 * level).sort((a, b) => {
             // bracketing for readability
             return (a.artist.length + a.title.length) - (b.artist.length + b.title.length);
@@ -149,7 +152,7 @@ module.exports.run = (client, message) => {
             .setImage(`https://assets.ppy.sh/beatmaps/${beatmap.beatmapsetID}/covers/cover.jpg`);
 
         const time = 45000;
-        
+
         message.channel.send(`❗**| Guess this beatmap! You have ${time / 1000} seconds!**`, {embed: embed}).then(msg => {
             let currentMessage = msg;
             const collector = message.channel.createMessageCollector(m => m.content.toLowerCase().startsWith("g:") || m.content.toLowerCase().startsWith("guess:"), {time: time});
