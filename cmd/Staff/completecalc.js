@@ -77,7 +77,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
     if (!args[0]) {
         return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
     }
-    const ufind = args[0].replace(/[<@!>]/, "");
+    const ufind = args[0].replace(/[<@!>]/g, "");
 
     let query = {discordid: ufind};
     const binddb = maindb.collection("userbind");
