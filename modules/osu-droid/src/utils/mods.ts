@@ -148,16 +148,18 @@ export namespace mods {
         // format mod string properly
         res = modbitsToString(modbitsFromString(res));
         while (mod) {
+            let nchars: number = 1;
             for (const modEntry in droidMods) {
                 const entry = modEntry as keyof typeof droidMods;
                 if (res.toLowerCase().includes(entry)) {
                     continue;
                 }
                 if (mod.startsWith(droidMods[entry])) {
+                    nchars = 2;
                     res += entry.toUpperCase();
                 }
             }
-            mod = mod.slice(1);
+            mod = mod.slice(nchars);
         }
 
         return res;
