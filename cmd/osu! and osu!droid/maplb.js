@@ -5,6 +5,13 @@ const config = require('../../config.json');
 const cd = new Set();
 
 /**
+ * @param {string} str 
+ */
+function sortString(str) {
+    return [...str].sort((a, b) => a.localeCompare(b)).join("");
+}
+
+/**
  * @param {string} hash 
  * @param {number} page 
  */
@@ -77,7 +84,7 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
             .setColor(color);
 
         // NM star rating
-        const globalStar = starCache.get(0);
+        const globalStar = starCache.get("");
         if (mapinfo.title) {
             embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                 .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
@@ -112,11 +119,11 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
             const date = entry.date;
 
             if (mapinfo.title) {
-                const modbits = osudroid.mods.modbitsFromString(mod);
-                let star = starCache.get(modbits);
+                const droidMod = sortString(osudroid.mods.pcToDroid(mod));
+                let star = starCache.get(droidMod);
                 if (!star) {
                     star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
-                    starCache.set(modbits, star);
+                    starCache.set(droidMod, star);
                 }
 
                 const dpp = new osudroid.PerformanceCalculator().calculate({
@@ -220,8 +227,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         globalStar = globalStar.calculate({file: mapinfo.osuFile});
         const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
 
-        starCache.set(0, globalStar);
-        starCache.set(osudroid.mods.modbitsFromString(mod), topStar);
+        starCache.set("", globalStar);
+        starCache.set(sortString(osudroid.mods.pcToDroid(mod)), topStar);
 
         const topDpp = new osudroid.PerformanceCalculator().calculate({
             stars: topStar.droidStars,
