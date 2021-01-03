@@ -110,7 +110,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
     const name = player.username;
     const play = player.recentPlays[0];
-    let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
     const score = play.score.toLocaleString();
     const combo = play.combo;
     const rank = client.emojis.cache.get(rankEmote(play.rank));
@@ -119,6 +118,29 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const miss = play.miss;
     const mod = play.mods;
     const hash = play.hash;
+    let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
+
+    const stats = new osudroid.MapStats({
+        speedMultiplier: play.speedMultiplier
+    });
+    if (play.forcedAR) {
+        stats.isForceAR = true;
+        stats.ar = play.forcedAR;
+    }
+
+    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
+        title += " (";
+        if (stats.isForceAR) {
+            title += `AR${stats.ar}`;
+        }
+        if (stats.speedMultiplier !== 1) {
+            if (stats.isForceAR) {
+                title += ", ";
+            }
+            title += `${stats.speedMultiplier}x`;
+        }
+        title += ")";
+    }
     
     const color = message.member?.roles.color?.hexColor || 8311585;
     const footer = config.avatar_list;
@@ -206,11 +228,27 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ ${n300 ? `[${n300}/${n100}/${n50}/${miss}]` : `${miss} miss(es)`}${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
         return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
     }
-    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+
+    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+    title = `${mapinfo.fullTitle} +${play.mods ? play.mods : "No Mod"}`;
+    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
+        title += " (";
+        if (stats.isForceAR) {
+            title += `AR${stats.ar}`;
+        }
+        if (stats.speedMultiplier !== 1) {
+            if (stats.isForceAR) {
+                title += ", ";
+            }
+            title += `${stats.speedMultiplier}x`;
+        }
+        title += ")";
+    }
+    title += ` [${starsline}★ | ${pcstarsline}★]`;
+
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
@@ -232,14 +270,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.droid
+        mode: osudroid.modes.droid,
+        stats
     });
 
     const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.osu
+        mode: osudroid.modes.osu,
+        stats
     });
 
     const ppline = parseFloat(npp.total.toFixed(2));
@@ -257,14 +297,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            mode: osudroid.modes.droid
+            mode: osudroid.modes.droid,
+            stats
         });
 
         const fc_pp = new osudroid.PerformanceCalculator().calculate({
             stars: star.pcStars,
             combo: combo,
             accPercent: fc_acc,
-            mode: osudroid.modes.osu
+            mode: osudroid.modes.osu,
+            stats
         });
 
         const dline = parseFloat(fc_dpp.total.toFixed(2));

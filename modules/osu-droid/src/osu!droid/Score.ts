@@ -81,6 +81,16 @@ export class Score implements ScoreInformation {
     hash: string;
 
     /**
+     * The speed multiplier of the play.
+     */
+    speedMultiplier: number;
+
+    /**
+     * The forced AR of the play.
+     */
+    forcedAR?: number;
+
+    /**
      * Enabled modifications in the play in osu!standard format.
      */
     droidMods: string;
@@ -101,9 +111,17 @@ export class Score implements ScoreInformation {
         this.date = new Date(values?.date || 0);
         this.accuracy = values?.accuracy || 0;
         this.miss = values?.miss || 0;
-        this.droidMods = values?.mods || "";
+
+        const modstrings: string[] = (values?.mods || "").split("|");
+        this.droidMods = modstrings[0];
         this.mods = mods.droidToPC(this.droidMods);
+
         this.hash = values?.hash || '';
+        this.speedMultiplier = parseFloat(modstrings[1]) ?? 1;
+        
+        if (modstrings[2]) {
+            this.forcedAR = parseFloat(modstrings[2].replace("AR", ""));
+        }
     }
 
     /**
@@ -167,7 +185,15 @@ export class Score implements ScoreInformation {
         this.score = parseInt(play[3]);
         this.combo = parseInt(play[4]);
         this.rank = play[5];
-        this.mods = mods.droidToPC(play[6]);
+
+        const modstrings: string[] = play[6].split("|");
+        this.droidMods = modstrings[0];
+        this.mods = mods.droidToPC(this.droidMods);
+        this.speedMultiplier = parseFloat(modstrings[1]) ?? 1;
+        if (modstrings[2]) {
+            this.forcedAR = parseFloat(modstrings[2].replace("AR", ""));
+        }
+
         this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
         this.miss = parseInt(play[8]);
         const date: Date = new Date(parseInt(play[9]) * 1000);

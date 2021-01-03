@@ -110,6 +110,29 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const miss = play.miss;
     const date = play.date;
     let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
+
+    const stats = new osudroid.MapStats({
+        speedMultiplier: play.speedMultiplier
+    });
+    if (play.forcedAR) {
+        stats.isForceAR = true;
+        stats.ar = play.forcedAR;
+    }
+
+    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
+        title += " (";
+        if (stats.isForceAR) {
+            title += `AR${stats.ar}`;
+        }
+        if (stats.speedMultiplier !== 1) {
+            if (stats.isForceAR) {
+                title += ", ";
+            }
+            title += `${stats.speedMultiplier}x`;
+        }
+        title += ")";
+    }
+
     const player = await osudroid.Player.getInformation({username: name});
     if (player.error) {
         return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
@@ -197,7 +220,22 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle} +${play.mods ? play.mods : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+    title = `${mapinfo.fullTitle} +${play.mods ? play.mods : "No Mod"}`;
+    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
+        title += " (";
+        if (stats.isForceAR) {
+            title += `AR${stats.ar}`;
+        }
+        if (stats.speedMultiplier !== 1) {
+            if (stats.isForceAR) {
+                title += ", ";
+            }
+            title += `${stats.speedMultiplier}x`;
+        }
+        title += ")";
+    }
+    title += ` [${starsline}★ | ${pcstarsline}★]`;
+
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
@@ -219,14 +257,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.droid
+        mode: osudroid.modes.droid,
+        stats
     });
 
     const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.osu
+        mode: osudroid.modes.osu,
+        stats
     });
 
     const ppline = parseFloat(npp.total.toFixed(2));
@@ -244,14 +284,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            mode: osudroid.modes.droid
+            mode: osudroid.modes.droid,
+            stats
         });
 
         const fc_pp = new osudroid.PerformanceCalculator().calculate({
             stars: star.pcStars,
             combo: combo,
             accPercent: fc_acc,
-            mode: osudroid.modes.osu
+            mode: osudroid.modes.osu,
+            stats
         });
 
         const dline = parseFloat(fc_dpp.total.toFixed(2));
