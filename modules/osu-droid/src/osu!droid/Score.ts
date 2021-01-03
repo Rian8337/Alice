@@ -83,7 +83,7 @@ export class Score implements ScoreInformation {
     /**
      * The speed multiplier of the play.
      */
-    speedMultiplier: number;
+    speedMultiplier: number = 1;
 
     /**
      * The forced AR of the play.
@@ -111,16 +111,18 @@ export class Score implements ScoreInformation {
         this.date = new Date(values?.date || 0);
         this.accuracy = values?.accuracy || 0;
         this.miss = values?.miss || 0;
+        this.hash = values?.hash || '';
 
         const modstrings: string[] = (values?.mods || "").split("|");
         this.droidMods = modstrings[0];
         this.mods = mods.droidToPC(this.droidMods);
-
-        this.hash = values?.hash || '';
-        this.speedMultiplier = parseFloat(modstrings[1].replace("x", "")) ?? 1;
         
-        if (modstrings[2]) {
-            this.forcedAR = parseFloat(modstrings[2].replace("AR", ""));
+        for (let i = 1; i < modstrings.length; ++i) {
+            if (modstrings[i].startsWith("AR")) {
+                this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
+            } else {
+                this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+            }
         }
     }
 
@@ -189,9 +191,13 @@ export class Score implements ScoreInformation {
         const modstrings: string[] = play[6].split("|");
         this.droidMods = modstrings[0];
         this.mods = mods.droidToPC(this.droidMods);
-        this.speedMultiplier = parseFloat(modstrings[1]) ?? 1;
-        if (modstrings[2]) {
-            this.forcedAR = parseFloat(modstrings[2].replace("AR", ""));
+        
+        for (let i = 1; i < modstrings.length; ++i) {
+            if (modstrings[i].startsWith("AR")) {
+                this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
+            } else {
+                this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+            }
         }
 
         this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
