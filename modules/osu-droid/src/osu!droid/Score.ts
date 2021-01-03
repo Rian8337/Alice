@@ -117,7 +117,7 @@ export class Score implements ScoreInformation {
         this.mods = mods.droidToPC(this.droidMods);
 
         this.hash = values?.hash || '';
-        this.speedMultiplier = parseFloat(modstrings[1]) ?? 1;
+        this.speedMultiplier = parseFloat(modstrings[1].replace("x", "")) ?? 1;
         
         if (modstrings[2]) {
             this.forcedAR = parseFloat(modstrings[2].replace("AR", ""));
