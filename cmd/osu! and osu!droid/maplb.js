@@ -65,7 +65,7 @@ function rankEmote(input) {
     }
 }
 
-function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer, index, starCache) {
+function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer, index, globalStar) {
     return new Promise(async resolve => {
         const pageLimit = Math.floor((page - 1) / 20);
         const cacheEntry = cache.find(c => c.page === pageLimit);
@@ -84,7 +84,6 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
             .setColor(color);
 
         // NM star rating
-        const globalStar = starCache.get("");
         if (mapinfo.title) {
             embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                 .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
@@ -119,19 +118,20 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
             const date = entry.date;
 
             if (mapinfo.title) {
-                const droidMod = sortString(osudroid.mods.pcToDroid(mod));
-                let star = starCache.get(droidMod);
-                if (!star) {
-                    star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
-                    starCache.set(droidMod, star);
-                }
+                const stats = new osudroid.MapStats({
+                    ar: entry.forcedAR ?? undefined,
+                    speedMultiplier: entry.speedMultiplier,
+                    isForceAR: !!entry.forcedAR
+                });
+                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 
                 const dpp = new osudroid.PerformanceCalculator().calculate({
                     stars: star.droidStars,
                     combo,
                     accPercent: acc,
                     miss,
-                    mode: osudroid.modes.droid
+                    mode: osudroid.modes.droid,
+                    stats
                 }).total;
 
                 const pp = new osudroid.PerformanceCalculator().calculate({
@@ -139,7 +139,8 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     combo,
                     accPercent: acc,
                     miss,
-                    mode: osudroid.modes.osu
+                    mode: osudroid.modes.osu,
+                    stats
                 }).total;
 
                 embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (+${mod})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
@@ -220,22 +221,25 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         date
     };
 
-    const starCache = new Map();
-
-    let globalStar = new osudroid.MapStars();
+    const globalStar = new osudroid.MapStars();
     if (mapinfo.title) {
-        globalStar = globalStar.calculate({file: mapinfo.osuFile});
-        const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+        globalStar.calculate({file: mapinfo.osuFile});
 
-        starCache.set("", globalStar);
-        starCache.set(sortString(osudroid.mods.pcToDroid(mod)), topStar);
+        const stats = new osudroid.MapStats({
+            ar: topScore.forcedAR ?? undefined,
+            speedMultiplier: topScore.speedMultiplier,
+            isForceAR: !!topScore.forcedAR
+        });
+        
+        const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 
         const topDpp = new osudroid.PerformanceCalculator().calculate({
             stars: topStar.droidStars,
             combo,
             accPercent: acc,
             miss,
-            mode: osudroid.modes.droid
+            mode: osudroid.modes.droid,
+            stats
         }).total;
 
         const topPP = new osudroid.PerformanceCalculator().calculate({
@@ -243,7 +247,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             combo,
             accPercent: acc,
             miss,
-            mode: osudroid.modes.osu
+            mode: osudroid.modes.osu,
+            stats
         }).total;
 
         top.dpp = topDpp;
@@ -253,7 +258,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     const color = message.member?.roles.color?.hexColor || "#000000";
-    let embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+    let embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, globalStar);
 
     message.channel.send({embed: embed}).then(msg => {
         msg.react("⏮️").then(() => {
@@ -280,7 +285,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (message.channel.type === "text") {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
             }
-            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, globalStar);
             msg.edit({embed: embed}).catch(console.error);
         });
 
@@ -296,7 +301,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (message.channel.type === "text") {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
             }
-            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, globalStar);
             msg.edit({embed: embed}).catch(console.error);
         });
 
@@ -305,7 +310,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (message.channel.type === "text") {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
             }
-            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, globalStar);
             msg.edit({embed: embed}).catch(console.error);
         });
 
@@ -314,7 +319,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (message.channel.type === "text") {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
             }
-            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, starCache);
+            embed = await createEmbed(client, hash, cache, color, page, mapinfo, top, footer, index, globalStar);
             msg.edit({embed: embed}).catch(console.error);
         });
 

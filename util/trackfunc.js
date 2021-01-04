@@ -53,7 +53,12 @@ module.exports.run = (client, maindb) => {
 					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
 					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
 				}
-				const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod});
+				const stats = new osudroid.MapStats({
+					ar: play.forcedAR ?? undefined,
+					speedMultiplier: play.speedMultiplier,
+					isForceAR: !!play.forcedAR
+				});
+				const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 				const starsline = parseFloat(star.droidStars.total.toFixed(2));
 				const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
@@ -67,7 +72,8 @@ module.exports.run = (client, maindb) => {
 					combo: combo,
 					accPercent: acc,
 					miss: miss,
-					mode: osudroid.modes.droid
+					mode: osudroid.modes.droid,
+					stats
 				});
 
 				const pcpp = new osudroid.PerformanceCalculator().calculate({
@@ -75,7 +81,8 @@ module.exports.run = (client, maindb) => {
 					combo: combo,
 					accPercent: acc,
 					miss: miss,
-					mode: osudroid.modes.osu
+					mode: osudroid.modes.osu,
+					stats
 				});
 
 				const ppline = parseFloat(npp.total.toFixed(2));
@@ -95,7 +102,8 @@ module.exports.run = (client, maindb) => {
 						combo: mapinfo.maxCombo,
 						accPercent: fc_acc,
 						miss: 0,
-						mode: osudroid.modes.droid
+						mode: osudroid.modes.droid,
+						stats
 					});
 		
 					const fc_pp = new osudroid.PerformanceCalculator().calculate({
@@ -103,7 +111,8 @@ module.exports.run = (client, maindb) => {
 						combo: mapinfo.maxCombo,
 						accPercent: fc_acc,
 						miss: 0,
-						mode: osudroid.modes.osu
+						mode: osudroid.modes.osu,
+						stats
 					});
 		
 					const dline = parseFloat(fc_dpp.total.toFixed(2));

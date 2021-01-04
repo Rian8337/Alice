@@ -27,14 +27,12 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
-		let date = rplay[i].date;
+		const date = rplay[i].date;
 		const stats = new osudroid.MapStats({
-			speedMultiplier: rplay[i].speedMultiplier
+			ar: rplay[i].forcedAR ?? undefined,
+			speedMultiplier: rplay[i].speedMultiplier,
+			isForceAR: !!rplay[i].forcedAR
 		});
-		if (rplay[i].forcedAR) {
-			stats.isForceAR = true;
-			stats.ar = rplay[i].forcedAR;
-		}
 	
 		let speedString = "";
 		if (stats.speedMultiplier !== 1 || stats.isForceAR) {

@@ -74,13 +74,12 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
-    const star = mapinfo ? new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: play.mods}) : undefined;
-    
-    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: star?.droidStars}).analyze();
-    const data = replay.data;
+    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: mapinfo?.osuFile}).analyze();
+    const { data } = replay;
     if (!data) {
         return message.channel.send("❎ **| I'm sorry, I cannot find the replay of the score!**");
     }
+    const star = mapinfo ? new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: play.mods, stats: {oldStatistics: data.replayVersion <= 3}}) : undefined;
 
     const isOldReplay = data.replayVersion < 3;
 
@@ -104,7 +103,7 @@ module.exports.run = async (client, message, args, maindb) => {
             misses: play.miss,
             accuracy: isOldReplay ? play.accuracy / 100 : data.accuracy,
             time: play.date.getTime(),
-            perfect: isOldReplay ? (play.miss > 0 ? 0 : 1) : data.isFullCombo
+            perfect: isOldReplay ? (play.miss > 0 ? 0 : 1) : (data.isFullCombo ? 1 : 0)
         }
     };
     zip.addFile("entry.json", Buffer.from(JSON.stringify(object, null, 2)));

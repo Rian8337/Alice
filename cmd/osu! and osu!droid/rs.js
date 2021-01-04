@@ -174,13 +174,15 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
 
     const replay = await new osudroid.ReplayAnalyzer(params).analyze();
-    const data = replay.data;
+    const { data } = replay;
     if (replay.fixedODR) {
         if (data.hit300) {
             n300 = data.hit300;
             n100 = data.hit100;
             n50 = data.hit50;
         }
+
+        stats.oldStatistics = data.replayVersion <= 3;
 
         const hit_object_data = data.hitObjectData;
         let hit_error_total = 0;

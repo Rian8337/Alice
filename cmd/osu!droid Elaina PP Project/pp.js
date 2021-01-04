@@ -109,28 +109,34 @@ module.exports.run = (client, message, args, maindb) => {
                 const acc = score.accuracy;
                 const combo = score.combo;
                 const miss = score.miss;
-
-                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
-                const replay = await new osudroid.ReplayAnalyzer({scoreID: score.scoreID, map: star.droidStars}).analyze();
-                let realAcc = new osudroid.Accuracy({
-                    percent: acc,
-                    nobjects: mapinfo.objects
-                });
-                if (replay.fixedODR) {
-                    const { data } = replay;
-                    realAcc = new osudroid.Accuracy({
-                        n300: data.hit300,
-                        n100: data.hit100,
-                        n50: data.hit50,
-                        nmiss: miss
-                    });
+                
+                const replay = await new osudroid.ReplayAnalyzer({scoreID: score.scoreID, map: mapinfo.map}).analyze();
+                const { data } = replay;
+                if (!data) {
+                    return message.channel.send("❎ **| I'm sorry, I couldn't find your replay file!**");
                 }
+                
+                const stats = new osudroid.MapStats({
+                    ar: score.forcedAR ?? undefined,
+                    speedMultiplier: score.speedMultiplier,
+                    isForceAR: !!score.forcedAR,
+                    oldStatistics: data.replayVersion <= 3
+                });
+
+                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+                const realAcc = new osudroid.Accuracy({
+                    n300: data.hit300,
+                    n100: data.hit100,
+                    n50: data.hit50,
+                    nmiss: miss
+                });
 
                 const npp = new osudroid.PerformanceCalculator().calculate({
                     stars: star.droidStars,
                     combo: combo,
                     accPercent: realAcc,
-                    mode: osudroid.modes.droid
+                    mode: osudroid.modes.droid,
+                    stats
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
                 if (isNaN(pp)) {
@@ -287,32 +293,37 @@ module.exports.run = (client, message, args, maindb) => {
                             continue;
                         }
                     }
-
-                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
-                    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: star.droidStars}).analyze();
-                    let realAcc = new osudroid.Accuracy({
-                        percent: acc,
-                        nobjects: mapinfo.objects
-                    });
-                    if (replay.fixedODR) {
-                        await sleep(0.2);
-                        const { data } = replay;
-                        realAcc = new osudroid.Accuracy({
-                            n300: data.hit300,
-                            n100: data.hit100,
-                            n50: data.hit50,
-                            nmiss: miss
-                        });
+                    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: mapinfo.map}).analyze();
+                    const { data } = replay;
+                    if (!data) {
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Replay not found**`);
+                        continue;
                     }
+                    
+                    const stats = new osudroid.MapStats({
+                        ar: score.forcedAR ?? undefined,
+                        speedMultiplier: score.speedMultiplier,
+                        isForceAR: !!score.forcedAR,
+                        oldStatistics: data.replayVersion <= 3
+                    });
+
+                    const realAcc = new osudroid.Accuracy({
+                        n300: data.hit300,
+                        n100: data.hit100,
+                        n50: data.hit50,
+                        nmiss: miss
+                    });
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
                     const npp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
-                        mode: osudroid.modes.droid
+                        mode: osudroid.modes.droid,
+                        stats
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
                     if (isNaN(pp)) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Worth no pp**`);
+                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Calculation error**`);
                         continue;
                     }
 

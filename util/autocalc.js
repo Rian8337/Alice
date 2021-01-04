@@ -126,7 +126,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 				return;
 			}
 
-			const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
+			const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 			const starsline = parseFloat(star.droidStars.toString().split(" ")[0]);
 			const pcstarsline = parseFloat(star.pcStars.toString().split(" ")[0]);
 			const npp = new osudroid.PerformanceCalculator().calculate({
@@ -134,14 +134,14 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 				combo: combo,
 				accPercent: realAcc,
 				mode: osudroid.modes.droid,
-				stats: stats
+				stats
 			});
 			const pcpp = new osudroid.PerformanceCalculator().calculate({
 				stars: star.pcStars,
 				combo: combo,
 				accPercent: realAcc,
 				mode: osudroid.modes.osu,
-				stats: stats
+				stats
 			});
 			const ppline = parseFloat(npp.toString().split(" ")[0]);
 			const pcppline = parseFloat(pcpp.toString().split(" ")[0]);
@@ -213,7 +213,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		});
 	}
 
-	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
+	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 	const starsline = parseFloat(star.droidStars.toString().split(" ")[0]);
 	const pcstarsline = parseFloat(star.pcStars.toString().split(" ")[0]);
 	const npp = new osudroid.PerformanceCalculator().calculate({
@@ -221,14 +221,14 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.droid,
-		stats: stats
+		stats
 	});
 	const pcpp = new osudroid.PerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.osu,
-		stats: stats
+		stats
 	});
 	const ppline = parseFloat(npp.toString().split(" ")[0]);
 	const pcppline = parseFloat(pcpp.toString().split(" ")[0]);

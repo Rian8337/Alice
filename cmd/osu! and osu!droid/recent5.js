@@ -26,8 +26,30 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
-		let date = rplay[i].date;
-		let play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}`;
+		const date = rplay[i].date;
+
+		const stats = new osudroid.MapStats({
+			ar: rplay[i].forcedAR ?? undefined,
+			speedMultiplier: rplay[i].speedMultiplier,
+			isForceAR: !!rplay[i].forcedA
+		});
+	
+		let speedString = "";
+		if (stats.speedMultiplier !== 1 || stats.isForceAR) {
+			speedString += " (";
+			if (stats.isForceAR) {
+				speedString += `AR${stats.ar}`;
+			}
+			if (stats.speedMultiplier !== 1) {
+				if (stats.isForceAR) {
+					speedString += ", ";
+				}
+				speedString += `${stats.speedMultiplier}x`;
+			}
+			speedString += ")";
+		}
+
+		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}${speedString ? ` ${speedString}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		if (message.isOwner && message.content.includes("-h")) {
 			score += `\nHash: \`${rplay[i].hash}\``;

@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
                         for await (const pp_entry of pp_entries) {
                             ++index;
-                            const {hash, mods, accuracy, combo, miss, scoreID, pp} = pp_entry;
+                            const { hash, mods, combo, miss, scoreID, pp } = pp_entry;
                             const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 
                             if (mapinfo.error) {
@@ -70,23 +70,21 @@ module.exports.run = (client, message, args, maindb) => {
                                     continue;
                                 }
                             }
-
-                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
-                            let realAcc = new osudroid.Accuracy({
-                                percent: accuracy,
-                                nobjects: mapinfo.objects
-                            });
-                            const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
-                            if (replay.fixedODR) {
-                                await sleep(0.2);
-                                const { data } = replay;
-                                realAcc = new osudroid.Accuracy({
-                                    n300: data.hit300,
-                                    n100: data.hit100,
-                                    n50: data.hit50,
-                                    nmiss: miss
-                                });
+                            const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
+                            const { data } = replay;
+                            if (!data) {
+                                console.log("Replay not found");
+                                continue;
                             }
+                            await sleep(0.2);
+                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                            const realAcc = new osudroid.Accuracy({
+                                n300: data.hit300,
+                                n100: data.hit100,
+                                n50: data.hit50,
+                                nmiss: miss
+                            });
+                            
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: replay.data?.maxCombo ?? combo,

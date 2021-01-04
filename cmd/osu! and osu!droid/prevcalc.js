@@ -119,7 +119,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		stats.isForceAR = true;
 	}
 
-	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats: stats});
+	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 	const starsline = parseFloat(star.droidStars.total.toFixed(2));
 	const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 	const npp = new osudroid.PerformanceCalculator().calculate({
@@ -127,14 +127,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.droid,
-		stats: stats
+		stats
 	});
 	const pcpp = new osudroid.PerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.osu,
-		stats: stats
+		stats
 	});
 	const ppline = parseFloat(npp.total.toFixed(2));
 	const pcppline = parseFloat(pcpp.total.toFixed(2));
