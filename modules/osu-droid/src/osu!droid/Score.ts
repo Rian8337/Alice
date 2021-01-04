@@ -120,7 +120,7 @@ export class Score implements ScoreInformation {
         for (let i = 1; i < modstrings.length; ++i) {
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
-            } else {
+            } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
             }
         }
@@ -195,7 +195,7 @@ export class Score implements ScoreInformation {
         for (let i = 1; i < modstrings.length; ++i) {
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
-            } else {
+            } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
             }
         }
