@@ -111,26 +111,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const date = play.date;
     let title = `${play.title}${play.mods ? ` ${play.getCompleteModString()}` : ""}`;
 
-    const stats = new osudroid.MapStats({
-        ar: play.forcedAR ?? undefined,
-        speedMultiplier: play.speedMultiplier,
-        isForceAR: !!play.forcedAR
-    });
-
-    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
-        title += " (";
-        if (stats.isForceAR) {
-            title += `AR${stats.ar}`;
-        }
-        if (stats.speedMultiplier !== 1) {
-            if (stats.isForceAR) {
-                title += ", ";
-            }
-            title += `${stats.speedMultiplier}x`;
-        }
-        title += ")";
-    }
-
     const player = await osudroid.Player.getInformation({username: name});
     if (player.error) {
         return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
@@ -161,6 +141,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
     const replay = await new osudroid.ReplayAnalyzer(params).analyze();
     const { data } = replay;
+    const stats = new osudroid.MapStats({
+        ar: play.forcedAR ?? undefined,
+        speedMultiplier: play.speedMultiplier,
+        isForceAR: !!play.forcedAR
+    });
     if (replay.fixedODR) {
         if (data.hit300) {
             n300 = data.hit300;

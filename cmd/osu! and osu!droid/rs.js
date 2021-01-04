@@ -119,12 +119,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const mod = play.mods;
     const hash = play.hash;
     let title = `${play.title}${play.mods ? ` ${play.getCompleteModString()}` : ""}`;
-
-    const stats = new osudroid.MapStats({
-        ar: play.forcedAR ?? undefined,
-        speedMultiplier: play.speedMultiplier,
-        isForceAR: !!play.forcedAR
-    });
     
     const color = message.member?.roles.color?.hexColor || 8311585;
     const footer = config.avatar_list;
@@ -159,6 +153,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
     const replay = await new osudroid.ReplayAnalyzer(params).analyze();
     const { data } = replay;
+    const stats = new osudroid.MapStats({
+        ar: play.forcedAR ?? undefined,
+        speedMultiplier: play.speedMultiplier,
+        isForceAR: !!play.forcedAR
+    });
     if (replay.fixedODR) {
         if (data.hit300) {
             n300 = data.hit300;
