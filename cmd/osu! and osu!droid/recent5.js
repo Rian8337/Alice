@@ -47,11 +47,11 @@ module.exports.run = async (client, message, args) => {
 		return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
 	}
 	if (cd.has(message.author.id)) {
-		return message.channel.send("❎  **| Hey, calm down with the command! I need to rest too, you know.**");
+		return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	}
 	const uid = parseInt(args[0]);
 	if (isNaN(uid)) {
-		return message.channel.send("❎  **| I'm sorry, that uid is not valid!**");
+		return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
 	}
 	let page = 1;
 	if (args[1]) {
