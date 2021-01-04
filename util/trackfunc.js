@@ -44,14 +44,14 @@ module.exports.run = (client, maindb) => {
 				const hash = play.hash;
 
 				const embed = new Discord.MessageEmbed()
-					.setAuthor(`${title} +${mod ? mod : "No Mod"}`, player_entry.avatarURL)
+					.setAuthor(`${title}${mod ? ` ${play.getCompleteModString()}` : ""}`, player_entry.avatarURL)
 					.setColor(8311585)
 					.setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
 				const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 				if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
 					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
-					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed})
+					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
 				}
 				const stats = new osudroid.MapStats({
 					ar: play.forcedAR ?? undefined,
@@ -62,7 +62,7 @@ module.exports.run = (client, maindb) => {
 				const starsline = parseFloat(star.droidStars.total.toFixed(2));
 				const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-				title = `${mapinfo.fullTitle} +${mod ? mod : "No Mod"} [${starsline}★ | ${pcstarsline}★]`;
+				title = `${mapinfo.fullTitle}${mod ? ` ${play.getCompleteModString()}` : ""} [${starsline}★ | ${pcstarsline}★]`;
 				embed.setAuthor(title, player_entry.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
 					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
 					.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`);

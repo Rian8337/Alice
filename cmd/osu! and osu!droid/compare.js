@@ -109,15 +109,13 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const acc = play.accuracy;
     const miss = play.miss;
     const date = play.date;
-    let title = `${play.title} +${play.mods ? play.mods : "No Mod"}`;
+    let title = `${play.title}${play.mods ? ` ${play.getCompleteModString()}` : ""}`;
 
     const stats = new osudroid.MapStats({
-        speedMultiplier: play.speedMultiplier
+        ar: play.forcedAR ?? undefined,
+        speedMultiplier: play.speedMultiplier,
+        isForceAR: !!play.forcedAR
     });
-    if (play.forcedAR) {
-        stats.isForceAR = true;
-        stats.ar = play.forcedAR;
-    }
 
     if (stats.speedMultiplier !== 1 || stats.isForceAR) {
         title += " (";
@@ -223,7 +221,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle} +${play.mods ? play.mods : "No Mod"}`;
+    title = `${mapinfo.fullTitle}${play.mods ? ` ${play.getCompleteModString()}` : ""} [${starsline}★ | ${pcstarsline}★]`;
     if (stats.speedMultiplier !== 1 || stats.isForceAR) {
         title += " (";
         if (stats.isForceAR) {

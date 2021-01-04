@@ -152,8 +152,8 @@ export class Score implements ScoreInformation {
                 return resolve(score);
             }
 
-            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder();
-            apiRequestBuilder.setEndpoint("scoresearchv2.php")
+            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
                 .addParameter("uid", uid)
                 .addParameter("hash", hash);
 
@@ -177,7 +177,7 @@ export class Score implements ScoreInformation {
     /**
      * Fills this instance with score information.
      * 
-     * @param info The score information to fill with.
+     * @param info The score information to from API response to fill with.
      */
     fillInformation(info: string): Score {
         const play: string[] = info.split(" ");
@@ -207,6 +207,29 @@ export class Score implements ScoreInformation {
         this.date = date;
         this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
         return this;
+    }
+
+    /**
+     * Returns the complete mod string of this score (mods, speed multiplier, and force AR combined).
+     */
+    getCompleteModString(): string {
+        let finalString: string = `+${this.mods ? this.mods : "No Mod"}`;
+
+        if (this.forcedAR || this.speedMultiplier !== 1) {
+            finalString += " (";
+            if (this.forcedAR) {
+                finalString += `AR${this.forcedAR}`;
+            }
+            if (this.speedMultiplier !== 1) {
+                if (this.forcedAR) {
+                    finalString += ", ";
+                }
+                finalString += `${this.speedMultiplier}x`;
+            }
+            finalString += ")";
+        }
+
+        return finalString;
     }
 
     /**

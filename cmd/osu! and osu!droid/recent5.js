@@ -31,7 +31,7 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 		const stats = new osudroid.MapStats({
 			ar: rplay[i].forcedAR ?? undefined,
 			speedMultiplier: rplay[i].speedMultiplier,
-			isForceAR: !!rplay[i].forcedA
+			isForceAR: !!rplay[i].forcedAR
 		});
 	
 		let speedString = "";
@@ -49,7 +49,7 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 			speedString += ")";
 		}
 
-		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` +${rplay[i].mods}` : ""}${speedString ? ` ${speedString}` : ""}`;
+		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` ${rplay[i].getCompleteModString()}` : ""}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		if (message.isOwner && message.content.includes("-h")) {
 			score += `\nHash: \`${rplay[i].hash}\``;

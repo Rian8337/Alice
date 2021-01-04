@@ -89,10 +89,10 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                 .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
                 .setTitle(`${mapinfo.fullTitle} (${globalStar.droidStars.total.toFixed(2)}★ | ${globalStar.pcStars.total.toFixed(2)}★)`)
                 .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${topEntry.dpp.toFixed(2)}DPP | ${topEntry.pp.toFixed(2)}PP** ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${topEntry.dpp.toFixed(2)}DPP | ${topEntry.pp.toFixed(2)}PP** ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
         } else {
             embed.setTitle(entries[0].title)
-                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (+${topEntry.mod})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ ${topEntry.miss} miss(es)\n\`${topEntry.date.toUTCString()}\``);
         }
 
         let i = 5 * (page - 1);
@@ -143,9 +143,9 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     stats
                 }).total;
 
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (+${mod})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
             } else {
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (+${mod})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
             }
         }
 
@@ -218,7 +218,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         rank,
         accuracy: acc,
         miss,
-        date
+        date,
+        modstring: topScore.getCompleteModString()
     };
 
     const globalStar = new osudroid.MapStars();
