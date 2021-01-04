@@ -91,7 +91,7 @@ export class Score implements ScoreInformation {
     forcedAR?: number;
 
     /**
-     * Enabled modifications in the play in osu!standard format.
+     * Enabled modifications in the play in osu!droid format.
      */
     droidMods: string;
 

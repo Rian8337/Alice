@@ -11,12 +11,12 @@ export class MapStars {
     /**
      * The osu!droid star rating of the beatmap.
      */
-    public readonly droidStars: StarRating = new StarRating();
+    readonly droidStars: StarRating = new StarRating();
 
     /**
      * The osu!standard star rating of the beatmap.
      */
-    public readonly pcStars: StarRating = new StarRating();
+    readonly pcStars: StarRating = new StarRating();
 
     /**
      * Calculates the star rating of a beatmap.
@@ -35,34 +35,37 @@ export class MapStars {
         mods?: string,
 
         /**
-         * Custom map statistics to apply speed multiplier and force AR values.
+         * Custom map statistics to apply speed multiplier and force AR values as well as old statistics.
          */
         stats?: MapStats
     }): MapStars {
         if (!params.file) {
             throw new Error("Please enter an osu file!");
         }
-        const droidParser: Parser = new Parser();
-        const pcParser: Parser = new Parser();
+        
+        const parser: Parser = new Parser();
         try {
-            droidParser.parse(params.file);
-            pcParser.parse(params.file);
+            parser.parse(params.file);
         } catch (e) {
             console.log("Invalid osu file");
             return this;
         }
-        const droidMap: Beatmap = droidParser.map;
-        const pcMap: Beatmap = pcParser.map;
+
+        // Copy original parser without having to parse a new beatmap, this way
+        // droidMap and pcMap will not reference to the same parser instance
+        const droidMap: Beatmap = Object.create(parser).map;
+        const pcMap: Beatmap = Object.create(parser).map;
 
         const mod: string = params.mods || "";
 
         const stats: MapStats = new MapStats({
             speedMultiplier: params.stats?.speedMultiplier || 1,
-            isForceAR: params.stats?.isForceAR || false
+            isForceAR: params.stats?.isForceAR || false,
+            oldStatistics: params.stats?.oldStatistics || false
         });
 
-        this.droidStars.calculate({mode: modes.droid, map: droidMap, mods: mod, stats: stats});
-        this.pcStars.calculate({mode: modes.osu, map: pcMap, mods: mod, stats: stats});
+        this.droidStars.calculate({mode: modes.droid, map: droidMap, mods: mod, stats});
+        this.pcStars.calculate({mode: modes.osu, map: pcMap, mods: mod, stats});
 
         return this;
     }

@@ -118,7 +118,7 @@ export class StarRating {
         singletapThreshold?: number,
 
         /**
-         * Custom map statistics to apply custom speed multiplier.
+         * Custom map statistics to apply custom speed multiplier as well as old statistics.
          */
         stats?: MapStats
     }): StarRating {
@@ -137,7 +137,8 @@ export class StarRating {
         const stats: MapStats = new MapStats({
             cs: map.cs,
             mods: mod,
-            speedMultiplier: params.stats?.speedMultiplier || 1
+            speedMultiplier: params.stats?.speedMultiplier || 1,
+            oldStatistics: params.stats?.oldStatistics || false
         }).calculate({mode: mode});
 
         this.objects = new DifficultyHitObjectCreator().generateDifficultyObjects({

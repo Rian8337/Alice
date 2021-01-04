@@ -51,6 +51,11 @@ export class MapStats {
      */
     isForceAR: boolean;
 
+    /**
+     * Whether to calculate for old statistics for osu!droid gamemode (1.6.7 and older). Defaults to `false`.
+     */
+    oldStatistics: boolean;
+
     static readonly OD0_MS: number = 80;
     static readonly OD10_MS: number = 20;
     static readonly AR0_MS: number = 1800;
@@ -95,7 +100,12 @@ export class MapStats {
         /**
          * Whether or not force AR is turned on.
          */
-        isForceAR?: boolean
+        isForceAR?: boolean,
+
+        /**
+         * Whether to calculate for old statistics for osu!droid gamemode (1.6.7 or older).
+         */
+        oldStatistics?: boolean
     } = {}) {
         this.cs = values.cs;
         this.ar = values.ar;
@@ -114,6 +124,7 @@ export class MapStats {
 
         this.speedMultiplier = values.speedMultiplier || 1;
         this.isForceAR = values.isForceAR || false;
+        this.oldStatistics = values.oldStatistics || false;
     }
 
     /**
@@ -160,6 +171,9 @@ export class MapStats {
         if (this.pcMods & mods.osuMods.ht) {
             this.speedMultiplier *= 0.75;
         }
+        if (this.pcMods & mods.osuMods.nc) {
+            this.speedMultiplier *= 1.5;
+        }
         if (this.mods.includes("SU")) {
             this.speedMultiplier *= 1.25;
         }
@@ -173,9 +187,8 @@ export class MapStats {
         switch (params?.mode || modes.osu) {
             case modes.droid: {
                 // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
-                // TODO: remember to change this back after 1.6.8!
-                if (this.droidMods & mods.osuMods.nc) {
-                    this.speedMultiplier *= 1.39;
+                if ((this.droidMods & mods.osuMods.nc) && this.oldStatistics) {
+                    this.speedMultiplier *= 1.39 / 1.5;
                 }
 
                 // CS and OD work differently in droid, therefore it
@@ -239,9 +252,6 @@ export class MapStats {
             case modes.osu: {
                 if (!(this.pcMods & mods.osuMods.map_changing) && this.speedMultiplier === 1) {
                     break;
-                }
-                if (this.pcMods & mods.osuMods.nc) {
-                    this.speedMultiplier *= 1.5;
                 }
 
                 if (this.cs !== undefined) {

@@ -122,6 +122,10 @@ export class PerformanceCalculator {
          * The speed penalty to apply for penalized scores.
          */
         speedPenalty?: number,
+
+        /**
+         * Custom map statistics to apply custom speed multiplier and force AR values as well as old statistics.
+         */
         stats?: MapStats
     }): PerformanceCalculator {
         this.mode = params.mode || modes.osu;
@@ -159,6 +163,7 @@ export class PerformanceCalculator {
             this.mapStatistics.ar = params.stats.ar || this.mapStatistics.ar;
             this.mapStatistics.isForceAR = params.stats.isForceAR || this.mapStatistics.isForceAR;
             this.mapStatistics.speedMultiplier = params.stats.speedMultiplier || this.mapStatistics.speedMultiplier;
+            this.mapStatistics.oldStatistics = params.stats.oldStatistics || this.mapStatistics.oldStatistics;
         }
 
         this.mapStatistics.calculate({mode: this.mode});
@@ -303,7 +308,7 @@ export class PerformanceCalculator {
         // Scale the aim value with accuracy slightly.
         aimValue *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
 
-        // It is also important to also consider accuracy difficulty when doing that.
+        // It is also important to consider accuracy difficulty when doing that.
         const odScaling: number = Math.pow(this.mapStatistics.od as number, 2) / 2500;
         aimValue *= 0.98 + (this.mapStatistics.od as number >= 0 ? odScaling : -odScaling);
 
@@ -368,7 +373,8 @@ export class PerformanceCalculator {
         );
 
         let accuracyValue: number = this.mode === modes.droid ?
-            // Drastically change acc calculation to fit droid meta
+            // Drastically change acc calculation to fit droid meta.
+            // It is harder to get good accuracy with touchscreen, especially in small hit window.
             Math.pow(1.4, this.mapStatistics.od as number) *
             Math.pow(Math.max(1, this.mapStatistics.ar as number / 10), 3) *
             Math.pow(realAccuracy, 12) * 10
@@ -389,7 +395,7 @@ export class PerformanceCalculator {
     }
 
     /**
-     * Calculates the base performance value for stars.
+     * Calculates the base performance value for of a star rating.
      */
     private baseValue(stars: number): number {
         return Math.pow(5 * Math.max(1, stars / 0.0675) - 4, 3) / 100000;
