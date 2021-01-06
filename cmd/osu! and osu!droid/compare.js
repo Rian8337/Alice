@@ -207,20 +207,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
     title = `${mapinfo.fullTitle}${play.mods ? ` ${play.getCompleteModString()}` : ""} [${starsline}★ | ${pcstarsline}★]`;
-    if (stats.speedMultiplier !== 1 || stats.isForceAR) {
-        title += " (";
-        if (stats.isForceAR) {
-            title += `AR${stats.ar}`;
-        }
-        if (stats.speedMultiplier !== 1) {
-            if (stats.isForceAR) {
-                title += ", ";
-            }
-            title += `${stats.speedMultiplier}x`;
-        }
-        title += ")";
-    }
-    title += ` [${starsline}★ | ${pcstarsline}★]`;
 
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
