@@ -28,7 +28,7 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
 	for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); i++) {
 		if (!rplay[i]) break;
 		const date = rplay[i].date;
-		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + `${rplay[i].mods ? ` ${rplay[i].getCompleteModString()}` : ""}`;
+		const play = client.emojis.cache.get(rankEmote(rplay[i].rank)).toString() + " | " + rplay[i].title + ` ${rplay[i].getCompleteModString()}`;
 		let score = rplay[i].score.toLocaleString() + ' / ' + rplay[i].combo + 'x / ' + rplay[i].accuracy + '% / ' + rplay[i].miss + ' miss(es) \n `' + date.toUTCString() + '`';
 		if (message.isOwner && message.content.includes("-h")) {
 			score += `\nHash: \`${rplay[i].hash}\``;
@@ -163,6 +163,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
 	name: "recent5me",
+	aliases: "rs5me",
 	description: "Retrieves a user's recent plays.",
 	usage: "recent5me [user] [page]",
 	detail: "`user`: The user to retrieve [UserResolvable (mention or user ID)]\n`page`: The page to view from 1 to 10 [Integer]",
