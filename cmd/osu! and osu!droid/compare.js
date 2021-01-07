@@ -99,7 +99,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
     }
     if (!play.title) {
-        return message.channel.send("❎ **| I'm sorry, you don't have a score set in the beatmap!**");
+        return message.channel.send("❎ **| I'm sorry, you don't have a score in the beatmap!**");
     }
     const name = play.username;
     const score = play.score.toLocaleString();
