@@ -109,7 +109,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const acc = play.accuracy;
     const miss = play.miss;
     const date = play.date;
-    let title = `${play.title}${play.mods ? ` ${play.getCompleteModString()}` : ""}`;
+    let title = `${play.title} ${play.getCompleteModString()}`;
 
     const player = await osudroid.Player.getInformation({username: name});
     if (player.error) {
@@ -206,7 +206,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle}${play.mods ? ` ${play.getCompleteModString()}` : ""} [${starsline}★ | ${pcstarsline}★]`;
+    title = `${mapinfo.fullTitle} ${play.getCompleteModString()} [${starsline}★ | ${pcstarsline}★]`;
 
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
