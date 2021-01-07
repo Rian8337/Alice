@@ -383,7 +383,7 @@ export class MapInfo {
         return parseFloat(bpm.toFixed(2));
     }
     /**
-     *  Converts the beatmap's status into a string.
+     * Converts the beatmap's status into a string.
      */
     private convertStatus(): string {
         let status: string = "Unknown";
@@ -421,7 +421,7 @@ export class MapInfo {
      * Shows the beatmap's statistics based on applied mods and option.
      * 
      * - Option `0`: return map title and mods used if defined
-     * - Option `1`: return song source and map download link to bloodcat and sayobot
+     * - Option `1`: return song source and map download link to beatmap mirrors
      * - Option `2`: return CS, AR, OD, HP
      * - Option `3`: return BPM, map length, max combo
      * - Option `4`: return last update date and map status
@@ -467,7 +467,7 @@ export class MapInfo {
                 return string;
             }
             case 1: {
-                let string: string = `${this.source ? `**Source**: ${this.source}\n` : ""}**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [sayobot](https://osu.sayobot.cn/osu.php?s=${this.beatmapsetID})`;
+                let string: string = `${this.source ? `**Source**: ${this.source}\n` : ""}**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${this.beatmapsetID}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${this.beatmapsetID}) - [Beatconnect](https://beatconnect.io/b/${this.beatmapsetID}/)${this.approved === rankedStatus.RANKED || this.approved === rankedStatus.LOVED ? ` - [Ripple](https://storage.ripple.moe/d/${this.beatmapsetID})` : ""}`;
                 if (this.packs.length > 0) {
                     string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < this.packs.length; i++) {
@@ -491,22 +491,17 @@ export class MapInfo {
                     if (uninheritedTimingPoints.length === 1) {
                         string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
                     } else {
-                        let maxBPM: number = convertedBPM;                        
-                        let minBPM: number = convertedBPM;
-                        let speedMulMinBPM: number = convertedBPM;
-                        let speedMulMaxBPM: number = convertedBPM;
+                        let maxBPM: number = this.bpm;
+                        let minBPM: number = this.bpm;
                         for (const t of uninheritedTimingPoints) {
                             const bpm: number = parseFloat((60000 / t.msPerBeat).toFixed(2));
-                            const speedMulBPM: number = parseFloat((bpm * mapStatistics.speedMultiplier).toFixed(2));
                             maxBPM = Math.max(maxBPM, bpm);
                             minBPM = Math.min(minBPM, bpm);
-                            speedMulMaxBPM = Math.max(speedMulMaxBPM, speedMulBPM);
-                            speedMulMinBPM = Math.min(speedMulMinBPM, speedMulBPM);
                         }
                         maxBPM = Math.round(maxBPM);
                         minBPM = Math.round(minBPM);
-                        speedMulMinBPM = Math.round(speedMulMinBPM);
-                        speedMulMaxBPM = Math.round(speedMulMaxBPM);
+                        const speedMulMinBPM: number = Math.round(minBPM * mapStatistics.speedMultiplier);
+                        const speedMulMaxBPM: number = Math.round(maxBPM * mapStatistics.speedMultiplier);
 
                         string += minBPM === this.bpm && maxBPM === this.bpm ? `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
                         if (this.bpm !== convertedBPM) {
@@ -554,7 +549,7 @@ export class MapInfo {
     /**
      * Calculates the droid maximum score of the beatmap.
      * 
-     * This requires the `file` property set to `true` when retrieving beatmap general information using `MapInfo.get()`.
+     * This requires .osu file to be downloaded.
      */
     maxScore(stats: MapStats): number {
         if (!this.map) {
