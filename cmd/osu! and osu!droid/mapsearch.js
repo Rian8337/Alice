@@ -29,8 +29,9 @@ function getBeatmapStatus(status) {
  * @param {any[]} mapList 
  * @param {number} page 
  * @param {string} footerImage 
+ * @param {boolean} showDownloadLink
  */
-function editEmbed(embed, mapList, page, footerImage) {
+function editEmbed(embed, mapList, page, footerImage, showDownloadLink) {
     embed.spliceFields(0, embed.fields.length)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(mapList.length / 5)} (provided by sayobot)`, footerImage);
 
@@ -40,9 +41,7 @@ function editEmbed(embed, mapList, page, footerImage) {
         }
         const d = mapList[i];
         const title = `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`;
-        const content = `**Download**: [osu! page](https://osu.ppy.sh/beatmapsets/${d.sid}) - [Sayobot full](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}) - [Sayobot no video](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid})
-            **Last Update**: ${new Date(d.lastupdate * 1000).toUTCString()} | **${getBeatmapStatus(d.approved)}**
-            ❤️ **${d.favourite_count.toLocaleString()}** - ▶️ **${d.play_count.toLocaleString()}**`;
+        const content = `${showDownloadLink ? `**Download**: [osu! page](https://osu.ppy.sh/beatmapsets/${d.sid}) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}) - [Beatconnect](https://beatconnect.io/b/${d.sid}/)${d.approved === rankedStatus.RANKED || d.approved === rankedStatus.LOVED ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})` : ""}\n` : ""}**Last Update**: ${new Date(d.lastupdate * 1000).toUTCString()} | **${getBeatmapStatus(d.approved)}**\n❤️ **${d.favourite_count.toLocaleString()}** - ▶️ **${d.play_count.toLocaleString()}**`;
 
         embed.addField(title, content);
     }
@@ -87,7 +86,7 @@ module.exports.run = (client, message, args) => {
             const index = Math.floor(Math.random() * footer.length);
             const embed = new Discord.MessageEmbed()
                 .setAuthor(`Map Search Result for ${message.author.username}`, message.author.avatarURL({dynamic: true}))
-                .setDescription(`Beatmaps found: **${data.results.toLocaleString()}**`)
+                .setDescription(`Beatmaps found: **${data.results.toLocaleString()}**\nUse 📥 to toggle beatmap download link.`)
                 .setColor(message.member?.roles.color?.hexColor || "#000000");
 
             editEmbed(embed, mapList, page, footer[index]);
@@ -101,21 +100,26 @@ module.exports.run = (client, message, args) => {
                 msg.react("⏮️").then(() => {
                     msg.react("⬅️").then(() => {
                         msg.react("➡️").then(() => {
-                            msg.react("⏭️").catch(console.error);
+                            msg.react("⏭️").then(() => {
+                                msg.react("📥").catch(console.error);
+                            });
                         });
                     });
                 });
+                let showDownloadLink = false;
                 
                 const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 150000});
                 const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 150000});
                 const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 150000});
                 const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 150000});
+                const downloadLinkToggle = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '📥' && user.id === message.author.id, {time: 150000});
 
                 backward.on('collect', () => {
                     page = Math.max(1, page - 10);
                     if (message.channel.type === "text") {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     }
+                    showDownloadLink = false;
                     editEmbed(embed, mapList, page, footer[index]);
                     msg.edit({embed: embed}).catch(console.error);
                 });
@@ -126,6 +130,7 @@ module.exports.run = (client, message, args) => {
                     if (message.channel.type === "text") {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     }
+                    showDownloadLink = false;
                     editEmbed(embed, mapList, page, footer[index]);
                     msg.edit({embed: embed}).catch(console.error);
                 });
@@ -136,6 +141,7 @@ module.exports.run = (client, message, args) => {
                     if (message.channel.type === "text") {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     }
+                    showDownloadLink = false;
                     editEmbed(embed, mapList, page, footer[index]);
                     msg.edit({embed: embed}).catch(console.error);
                 });
@@ -145,7 +151,17 @@ module.exports.run = (client, message, args) => {
                     if (message.channel.type === "text") {
                         msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
                     }
+                    showDownloadLink = false;
                     editEmbed(embed, mapList, page, footer[index]);
+                    msg.edit({embed: embed}).catch(console.error);
+                });
+
+                downloadLinkToggle.on('collect', () => {
+                    if (message.channel.type === "text") {
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                    }
+                    showDownloadLink = !showDownloadLink;
+                    editEmbed(embed, mapList, page, footer[index], showDownloadLink);
                     msg.edit({embed: embed}).catch(console.error);
                 });
     
