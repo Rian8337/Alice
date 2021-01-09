@@ -19,15 +19,14 @@ function retrievePlays(page, uid, cb) {
 
     apiRequestBuilder.sendRequest().then(result => {
         if (result.statusCode !== 200) {
-            console.log("Empty response from droid API");
+            console.log("Empty response from API");
             return cb([], true, false);
         }
         const entries = [];
         const lines = result.data.toString("utf-8").split("<br>");
         lines.shift();
         for (const line of lines) entries.push(new osudroid.Score().fillInformation(line));
-        if (entries.length === 0) cb(entries, false, true);
-        else cb(entries, false, false);
+        cb(entries, false, entries.length === 0);
     });
 }
 
@@ -245,10 +244,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                         console.log("Map is blacklisted");
                         continue;
                     }
-                    const mods = entry.mods;
-                    const acc_percent = entry.accuracy;
-                    const combo = entry.combo;
-                    const miss = entry.miss;
+                    const { mods, combo, miss, scoreID, accuracy } = entry;
 
                     const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
                     const { data } = replay;
@@ -258,9 +254,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     await sleep(0.2);
 
                     const stats = new osudroid.MapStats({
-                        ar: entry.forcedAR ?? undefined,
+                        ar: entry.forcedAR,
                         speedMultiplier: entry.speedMultiplier,
-                        isForceAR: !!entry.forcedAR,
+                        isForceAR: !isNaN(entry.forcedAR),
                         oldStatistics: data.replayVersion <= 3
                     });
 
@@ -272,8 +268,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     });
 
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
-                    const scoreID = entry.scoreID;
-                    
                     const npp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
@@ -284,17 +278,21 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     const pp = parseFloat(npp.total.toFixed(2));
                     if (!isNaN(pp)) {
                         ppentries.push({
-                            hash: entry[11],
+                            hash: entry.hash,
                             title: mapinfo.fullTitle,
                             mods: mods,
                             pp: pp,
                             combo: combo,
-                            accuracy: acc_percent,
+                            accuracy: accuracy,
                             miss: miss,
                             scoreID: scoreID
                         });
                     }
                     ++playc;
+                }
+
+                if (pplist.length > 75) {
+                    pplist.splice(75);
                 }
 
                 if (!error) {
