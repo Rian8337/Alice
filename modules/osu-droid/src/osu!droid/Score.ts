@@ -93,7 +93,7 @@ export class Score implements ScoreInformation {
     /**
      * Enabled modifications in the play in osu!droid format.
      */
-    droidMods: string;
+    droidMods: string = "";
 
     /**
      * Whether or not the fetch result from `getFromHash()` returns an error. This should be immediately checked after calling said method.
@@ -114,16 +114,21 @@ export class Score implements ScoreInformation {
         this.hash = values?.hash || '';
 
         const modstrings: string[] = (values?.mods || "").split("|");
-        this.droidMods = modstrings[0];
-        this.mods = mods.droidToPC(this.droidMods);
-        
-        for (let i = 1; i < modstrings.length; ++i) {
+        for (let i = 0; i < modstrings.length; ++i) {
+            if (!modstrings[i]) {
+                continue;
+            }
+
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
             } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+            } else {
+                this.droidMods = modstrings[i];
             }
         }
+
+        this.mods = mods.droidToPC(this.droidMods);
     }
 
     /**
@@ -189,23 +194,28 @@ export class Score implements ScoreInformation {
         this.rank = play[5];
 
         const modstrings: string[] = play[6].split("|");
-        this.droidMods = modstrings[0];
-        this.mods = mods.droidToPC(this.droidMods);
-        
-        for (let i = 1; i < modstrings.length; ++i) {
+        for (let i = 0; i < modstrings.length; ++i) {
+            if (!modstrings[i]) {
+                continue;
+            }
+
             if (modstrings[i].startsWith("AR")) {
                 this.forcedAR = parseFloat(modstrings[i].replace("AR", ""));
             } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
+            } else {
+                this.droidMods = modstrings[i];
             }
         }
 
+        this.mods = mods.droidToPC(this.droidMods);
         this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
         this.miss = parseInt(play[8]);
         const date: Date = new Date(parseInt(play[9]) * 1000);
         date.setUTCHours(date.getUTCHours() + 7);
         this.date = date;
         this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
+        this.hash = play[11];
         return this;
     }
 
