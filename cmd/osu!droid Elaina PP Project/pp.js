@@ -117,9 +117,9 @@ module.exports.run = (client, message, args, maindb) => {
                 }
                 
                 const stats = new osudroid.MapStats({
-                    ar: score.forcedAR ?? undefined,
+                    ar: score.forcedAR,
                     speedMultiplier: score.speedMultiplier,
-                    isForceAR: !!score.forcedAR,
+                    isForceAR: !isNaN(score.forcedAR),
                     oldStatistics: data.replayVersion <= 3
                 });
 
@@ -301,9 +301,9 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     
                     const stats = new osudroid.MapStats({
-                        ar: play.forcedAR ?? undefined,
+                        ar: play.forcedAR,
                         speedMultiplier: play.speedMultiplier,
-                        isForceAR: !!play.forcedAR,
+                        isForceAR: !isNaN(play.forcedAR),
                         oldStatistics: data.replayVersion <= 3
                     });
 

@@ -119,9 +119,9 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
 
             if (mapinfo.title) {
                 const stats = new osudroid.MapStats({
-                    ar: entry.forcedAR ?? undefined,
+                    ar: entry.forcedAR,
                     speedMultiplier: entry.speedMultiplier,
-                    isForceAR: !!entry.forcedAR
+                    isForceAR: !isNaN(entry.forcedAR)
                 });
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 
@@ -227,9 +227,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         globalStar.calculate({file: mapinfo.osuFile});
 
         const stats = new osudroid.MapStats({
-            ar: topScore.forcedAR ?? undefined,
+            ar: topScore.forcedAR,
             speedMultiplier: topScore.speedMultiplier,
-            isForceAR: !!topScore.forcedAR
+            isForceAR: !isNaN(topScore.forcedAR)
         });
         
         const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});

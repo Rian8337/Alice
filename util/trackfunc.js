@@ -54,9 +54,9 @@ module.exports.run = (client, maindb) => {
 					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
 				}
 				const stats = new osudroid.MapStats({
-					ar: play.forcedAR ?? undefined,
+					ar: play.forcedAR,
 					speedMultiplier: play.speedMultiplier,
-					isForceAR: !!play.forcedAR
+					isForceAR: !isNaN(play.forcedAR)
 				});
 				const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 				const starsline = parseFloat(star.droidStars.total.toFixed(2));

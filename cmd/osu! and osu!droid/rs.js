@@ -154,9 +154,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const replay = await new osudroid.ReplayAnalyzer(params).analyze();
     const { data } = replay;
     const stats = new osudroid.MapStats({
-        ar: play.forcedAR ?? undefined,
+        ar: play.forcedAR,
         speedMultiplier: play.speedMultiplier,
-        isForceAR: !!play.forcedAR
+        isForceAR: !isNaN(play.forcedAR)
     });
     if (replay.fixedODR) {
         if (data.hit300) {

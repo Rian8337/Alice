@@ -712,9 +712,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
                             const { data } = replay;
                             const stats = new osudroid.MapStats({
-                                ar: scoreInfo.forcedAR ?? undefined,
+                                ar: scoreInfo.forcedAR,
                                 speedMultiplier: scoreInfo.speedMultiplier,
-                                isForceAR: !!scoreInfo.forcedAR
+                                isForceAR: !isNaN(scoreInfo.forcedAR),
+                                oldStatistics: data.replayVersion <= 3
                             });
                             const realAcc = new osudroid.Accuracy({
                                 n300: data.hit300,
@@ -1217,9 +1218,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const hitWindow50 = hitWindow.hitWindowFor50(isPrecise);
 
                     const stats = new osudroid.MapStats({
-                        ar: data.forcedAR ?? undefined,
+                        ar: data.forcedAR,
                         speedMultiplier: data.speedModification,
-                        isForceAR: !!data.forcedAR,
+                        isForceAR: !isNaN(data.forcedAR),
                         oldStatistics: data.replayVersion <= 3
                     });
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: data.convertedMods, stats});
@@ -1704,9 +1705,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         }
                         const { data } = replay;
                         const stats = new osudroid.MapStats({
-                            ar: scoreInfo.forcedAR ?? undefined,
+                            ar: scoreInfo.forcedAR,
                             speedMultiplier: scoreInfo.speedMultiplier,
-                            isForceAR: !!scoreInfo.forcedAR,
+                            isForceAR: !isNaN(scoreInfo.forcedAR),
                             oldStatistics: data.replayVersion <= 3
                         });
                         const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});

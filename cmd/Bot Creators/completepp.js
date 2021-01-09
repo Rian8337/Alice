@@ -55,13 +55,14 @@ async function calculatePP(ppentries, entry, cb) {
         console.log("Replay not found");
         return cb();
     }
+    const { data } = replay;
     const stats = new osudroid.MapStats({
-        ar: entry.forcedAR ?? undefined,
+        ar: entry.forcedAR,
         speedMultiplier: entry.speedMultiplier,
-        isForceAR: !!entry.forcedAR
+        isForceAR: !isNaN(entry.forcedAR),
+        oldStatistics: data.replayVersion <= 3
     });
     await sleep(0.2);
-    const { data } = replay;
     const realAcc = new osudroid.Accuracy({
         n300: data.hit300,
         n100: data.hit100,
