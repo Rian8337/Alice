@@ -97,14 +97,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     const playerList = [];
     const scoreList = [];
 
+    for await (const p of players) {
+        const player = await osudroid.Player.getInformation({uid: parseInt(p[1])});
+        if (player.error || !player.username) {
+            return message.channel.send(`❎ **| I'm sorry, I couldn't fetch profile for uid ${player.uid}!**`);
+        }
+        playerList.push(player);
+    }
+
     let hash = "";
     let pick = map ?? "";
     let index = -1;
     if (map) {
         index = mapinfolength.map.findIndex(p => p[0] === map); 
-        if (index === -1) {
-            return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-        }
         hash = maps[index][3];
     } else {
         let minTime = Number.NEGATIVE_INFINITY;
@@ -120,17 +125,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
         index = maps.findIndex(p => p[3] === hash);
         pick = mapinfolength.map[index][0];
-        if (index === -1) {
-            return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-        }
     }
-
-    for await (const p of players) {
-        const player = await osudroid.Player.getInformation({uid: parseInt(p[1])});
-        if (player.error || !player.username) {
-            return message.channel.send(`❎ **| I'm sorry, I couldn't fetch profile for uid ${player.uid}!**`);
-        }
-        playerList.push(player);
+    if (index === -1) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
     }
 
     const scoreObject = {
