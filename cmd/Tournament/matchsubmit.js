@@ -32,7 +32,7 @@ function playValidation(mod, requirement) {
 		case "hr": return tempMod === "hr";
 		case "dt": return tempMod === 'dt' || tempMod === 'hddt';
 		case "fm": return (tempMod.includes("hd") || tempMod.includes("hr") || tempMod.includes("ez")) && (!tempMod.includes("pr") && !tempMod.includes("ht") && !tempMod.includes("dt") && !tempMod.includes("nc"));
-		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht") && !tempMod.includes("pr");
+		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht");
 		default: return true;
 	}
 }
@@ -70,6 +70,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (!id) {
         return message.channel.send("❎ **| Hey, I need a match ID!**");
     }
+    const map = args[1];
 
     const matchDb = maindb.collection("matchinfo");
 	const mapDb = maindb.collection("mapinfo");
@@ -87,9 +88,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (!poolres) {
         return message.channel.send("❎ **| I'm sorry, I cannot find the map pool!**");
     }
-
     const mapinfolength = await lengthDb.findOne(query);
-    
+
     const maps = poolres.map;
     const players = matchres.player;
     const teams = matchres.team;
@@ -97,31 +97,41 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     const playerList = [];
     const scoreList = [];
 
+    let hash = "";
+    let pick = map ?? "";
+    if (map) {
+        const index = mapinfolength.map.findIndex(p => p[0] === map); 
+        if (index === -1) {
+            return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+        }
+        hash = maps[index][3];
+    } else {
+        let minTime = Number.NEGATIVE_INFINITY;
+
+        for (const player of playerList) {
+            const recentPlay = player.recentPlays[0];
+            if (minTime >= recentPlay.date.getTime()) {
+                continue;
+            }
+            hash = recentPlay.hash;
+            minTime = recentPlay.date.getTime();
+        }
+
+        const index = maps.findIndex(p => p[3] === hash);
+        pick = mapinfolength.map[index][0];
+        if (index === -1) {
+            return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
+        }
+    }
+
     for await (const p of players) {
         const player = await osudroid.Player.getInformation({uid: parseInt(p[1])});
         if (player.error || !player.username) {
-            return message.channel.send(`❎ **| I'm sorry, I couldn't fetch profile for uid ${uid}!**`);
+            return message.channel.send(`❎ **| I'm sorry, I couldn't fetch profile for uid ${player.uid}!**`);
         }
         playerList.push(player);
     }
 
-    let hash = "";
-    let minTime = Number.NEGATIVE_INFINITY;
-
-    for (const player of playerList) {
-        const recentPlay = player.recentPlays[0];
-        if (minTime >= recentPlay.date.getTime()) {
-            continue;
-        }
-        hash = recentPlay.hash;
-        minTime = recentPlay.date.getTime();
-    }
-
-    const index = maps.findIndex(p => p[3] === hash);
-    if (index === -1) {
-        return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
-    }
-    const pick = mapinfolength.map[index][0];
     const scoreObject = {
         pick: pick,
         scores: []
@@ -304,7 +314,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 module.exports.config = {
 	name: "matchsubmit",
 	description: "Submits recent play for each player in a match.",
-	usage: "matchsubmit <match ID>",
-	detail: "`match ID`: The match's ID [String]",
+	usage: "matchsubmit <match ID> [pick]",
+	detail: "`match ID`: The match's ID [String]\n`pick`: The pick to be submitted. If omitted, uses the most recent play from all participants in the match [String]",
 	permission: "Referee"
 };
