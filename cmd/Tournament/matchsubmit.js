@@ -99,8 +99,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
     let hash = "";
     let pick = map ?? "";
+    let index = -1;
     if (map) {
-        const index = mapinfolength.map.findIndex(p => p[0] === map); 
+        index = mapinfolength.map.findIndex(p => p[0] === map); 
         if (index === -1) {
             return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
         }
@@ -117,7 +118,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             minTime = recentPlay.date.getTime();
         }
 
-        const index = maps.findIndex(p => p[3] === hash);
+        index = maps.findIndex(p => p[3] === hash);
         pick = mapinfolength.map[index][0];
         if (index === -1) {
             return message.channel.send("❎ **| I'm sorry, I cannot find the map!**");
