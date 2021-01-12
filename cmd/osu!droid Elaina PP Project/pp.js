@@ -4,12 +4,6 @@ const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 const cd = new Set();
 
-function sleep(seconds) {
-    return new Promise(resolve => {
-        setTimeout(resolve, 1000 * seconds);
-    });
-}
-
 /**
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
@@ -28,6 +22,7 @@ module.exports.run = (client, message, args, maindb) => {
     }
 
     const bindDb = maindb.collection("userbind");
+    const banDb = maindb.collection("ppban");
     const whitelistDb = maindb.collection("mapwhitelist");
     const blacklistDb = maindb.collection("mapblacklist");
     const query = {discordid: message.author.id};
@@ -40,6 +35,12 @@ module.exports.run = (client, message, args, maindb) => {
             return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         }
         const uid = res.uid;
+
+        const isBanned = await banDb.findOne({uid: uid});
+        if (isBanned) {
+            return message.channel.send(`❎ **| I'm sorry, your currently binded account has been disallowed from submitting pp due to \`${isBanned.reason}\`**`);
+        }
+
         const pplist = res.pp ?? [];
 		let pptotal = 0;
 		let pre_pptotal = res.pptotal ?? 0;
@@ -47,7 +48,7 @@ module.exports.run = (client, message, args, maindb) => {
 		let playc = res.playc ?? 0;
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
-        const color = message.member.roles.color ? message.member.roles.color.hexColor : "#000000";
+        const color = message.member.roles.color?.hexColor || "#000000";
         const embed = new Discord.MessageEmbed()
             .setTitle("PP submission info")
             .setFooter("Alice Synthesis Thirty", footer[index])
@@ -301,9 +302,9 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     
                     const stats = new osudroid.MapStats({
-                        ar: play.forcedAR,
-                        speedMultiplier: play.speedMultiplier,
-                        isForceAR: !isNaN(play.forcedAR),
+                        ar: score.forcedAR,
+                        speedMultiplier: score.speedMultiplier,
+                        isForceAR: !isNaN(score.forcedAR),
                         oldStatistics: data.replayVersion <= 3
                     });
 
