@@ -80,8 +80,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
 
     let query = {discordid: ufind};
     const binddb = maindb.collection("userbind");
-    const scoredb = alicedb.collection("playerscore");
-    const blacklistdb = maindb.collection("mapblacklist");
+    const banDb = maindb.collection("ppban");
+    const scoreDb = alicedb.collection("playerscore");
+    const blacklistDb = maindb.collection("mapblacklist");
     binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
@@ -90,6 +91,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         if (!res) {
             return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         }
+
+        const isBanned = await banDb.findOne({uid: uid});
+        if (isBanned) {
+            return message.channel.send(`❎ **| I'm sorry, your currently binded account has been disallowed from submitting pp due to \`${isBanned.reason}\`**`);
+        }
+
         const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
         if (hasRequestedIndex) {
             return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
@@ -127,12 +134,12 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         let attempts = 0;
 
         query = {uid: uid};
-        scoredb.findOne(query, async (err, s_res) => {
+        scoreDb.findOne(query, async (err, s_res) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
             }
-            const blacklists = await blacklistdb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
+            const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
             retrievePlays(page, uid, async function checkPlays(entries, error, stopSign) {
                 if (error && attempts < 3) {
@@ -194,7 +201,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                                     scorelist: score_list
                                 }
                             };
-                            await scoredb.updateOne(query, updateVal);
+                            await scoreDb.updateOne(query, updateVal);
                         } else {
                             const insertVal = {
                                 uid: uid,
@@ -204,7 +211,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                                 playc: playc,
                                 scorelist: score_list
                             };
-                            await scoredb.insertOne(insertVal);
+                            await scoreDb.insertOne(insertVal);
                         }
 
                         message.channel.send(`✅ **| ${message.author}, recalculated <@${ufind}>'s plays: ${pptotal.toFixed(2)} pp, ${score.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%)).**`);
