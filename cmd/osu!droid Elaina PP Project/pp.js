@@ -302,9 +302,9 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                     
                     const stats = new osudroid.MapStats({
-                        ar: score.forcedAR,
-                        speedMultiplier: score.speedMultiplier,
-                        isForceAR: !isNaN(score.forcedAR),
+                        ar: play.forcedAR,
+                        speedMultiplier: play.speedMultiplier,
+                        isForceAR: !isNaN(play.forcedAR),
                         oldStatistics: data.replayVersion <= 3
                     });
 
