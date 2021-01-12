@@ -92,6 +92,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         }
 
+        const uid = res.uid;
         const isBanned = await banDb.findOne({uid: uid});
         if (isBanned) {
             return message.channel.send(`❎ **| I'm sorry, your currently binded account has been disallowed from submitting pp due to \`${isBanned.reason}\`**`);
@@ -123,7 +124,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             }
             message.channel.send(`✅ **| Calculating <@${ufind}>'s account...**`);
         }
-        const uid = res.uid;
+        
         const pplist = res.pp ?? [];
         const ppentries = [];
         const score_list = [];
