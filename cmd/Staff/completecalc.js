@@ -83,7 +83,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
     const banDb = maindb.collection("ppban");
     const scoreDb = alicedb.collection("playerscore");
     const blacklistDb = maindb.collection("mapblacklist");
-    binddb.findOne(query, (err, res) => {
+    binddb.findOne(query, async (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
