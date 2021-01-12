@@ -254,7 +254,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     }
                     const { mods, combo, miss, scoreID, accuracy } = entry;
 
-                    const replay = await new osudroid.ReplayAnalyzer({scoreID, map: star.droidStars}).analyze();
+                    const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
                     const { data } = replay;
                     if (!data) {
                         continue;
