@@ -13,7 +13,9 @@ const { Db } = require('mongodb');
  */
 module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
     let channel_index = current_map.findIndex(map => map[0] === message.channel.id);
-    if (channel_index === -1) return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
+    if (channel_index === -1) {
+		return message.channel.send("❎ **| I'm sorry, there is no map being talked in the channel!**");
+	}
     let hash = current_map[channel_index][1];
     let combo;
     let acc = 100;
@@ -91,7 +93,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		percent: acc,
 		nobjects: mapinfo.objects
 	});
-	if (acc === 100 && missc > 0 && !count50 && !count100) {
+	const isEstimatedValue = count50 + count100 === 0;
+	if (acc === 100 && missc > 0 && isEstimatedValue) {
 		acc_estimation = true;
 		realAcc = new osudroid.Accuracy({
 			n300: mapinfo.objects - missc,
@@ -101,7 +104,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		});
 	}
 
-	if (count50 || count100) {
+	if (!isEstimatedValue) {
 		realAcc = new osudroid.Accuracy({
 			n300: mapinfo.objects - count50 - count100 - missc,
 			n100: count100,
@@ -127,18 +130,17 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.droid,
-		stats
+		stats: stats
 	});
 	const pcpp = new osudroid.PerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: realAcc,
 		mode: osudroid.modes.osu,
-		stats
+		stats: stats
 	});
 	const ppline = parseFloat(npp.total.toFixed(2));
 	const pcppline = parseFloat(pcpp.total.toFixed(2));
-
 	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
 	const embed = new Discord.MessageEmbed()
@@ -150,8 +152,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.setDescription(mapinfo.showStatistics(mod, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
 		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
-		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / ${missc} miss(es)`)
-		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
+		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / [${realAcc.n300}/${realAcc.n100}/${realAcc.n50}/${realAcc.nmiss}]`)
+		.addField(`**Droid pp (Experimental)**: __${ppline} pp__${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${starsline} stars`, `**PC pp**: ${pcppline} pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${pcstarsline} stars`);
 
 	let string = '';
 	if (ndetail) {

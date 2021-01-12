@@ -61,6 +61,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		}
 	}
 
+	const isEstimatedValue = count50 + count100 === 0;
 	const stats = new osudroid.MapStats();
 	if (speedMultiplier >= 0.5) {
 		stats.speedMultiplier = speedMultiplier;
@@ -171,7 +172,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 						case star_rating < 6.5: diff_icon = client.emojis.cache.get("679325905641930762"); break; // Expert
 						default: diff_icon = client.emojis.cache.get("679325905645993984") // Extreme
 					}
-					const description = `${map_entries[i][0].showStatistics(mod, 2, stats)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].maxCombo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp`;
+					const description = `${map_entries[i][0].showStatistics(mod, 2, stats)}\n**Max score**: ${map_entries[i][3].toLocaleString()} - **Max combo**: ${map_entries[i][0].maxCombo}x\n\`${map_entries[i][1]} droid stars - ${map_entries[i][2]} PC stars\`\n**${map_entries[i][4]}**dpp - ${map_entries[i][5]}pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""}`;
 					embed.addField(`${diff_icon} __${map_entries[i][0].version}__`, description);
 				}
 
@@ -191,11 +192,11 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	if (mapinfo.maxCombo <= missc) {
 		return;
 	}
-        let realAcc = new osudroid.Accuracy({
+	let realAcc = new osudroid.Accuracy({
 		percent: acc,
 		nobjects: mapinfo.objects
 	});
-        if (acc === 100 && missc > 0 && !count50 && !count100) {
+	if (acc === 100 && missc > 0 && isEstimatedValue) {
 		acc_estimation = true;
 		realAcc = new osudroid.Accuracy({
 			n300: mapinfo.objects - missc,
@@ -204,7 +205,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			nmiss: missc
 		});
 	}
-	if (count50 || count100) {
+	if (!isEstimatedValue) {
 		realAcc = new osudroid.Accuracy({
 			n300: mapinfo.objects - count50 - count100 - missc,
 			n100: count100,
@@ -244,8 +245,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		.setDescription(mapinfo.showStatistics(mod, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
 		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
-		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${acc}% / ${missc} miss(es)`)
-		.addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
+		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${acc}% / [${realAcc.n300}/${realAcc.n100}/${realAcc.n50}/${realAcc.nmiss}]`)
+		.addField(`**Droid pp (Experimental)**: __${ppline} pp__${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${starsline} stars`, `**PC pp**: ${pcppline} pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${pcstarsline} stars`);
 
 	let string = '';
 	if (ndetail) {
@@ -266,4 +267,4 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 
 module.exports.config = {
 	name: "autocalc"
-};
+};	
