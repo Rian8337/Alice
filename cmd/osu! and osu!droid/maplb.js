@@ -5,13 +5,6 @@ const config = require('../../config.json');
 const cd = new Set();
 
 /**
- * @param {string} str 
- */
-function sortString(str) {
-    return [...str].sort((a, b) => a.localeCompare(b)).join("");
-}
-
-/**
  * @param {string} hash 
  * @param {number} page 
  */
@@ -194,6 +187,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         hash = mapinfo.hash;
     }
     const scores = await fetchScores(hash, 0);
+    if (scores.length === 0) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find any scores for the beatmap!**");
+    }
     const cache = [
         {
             page: 0,
