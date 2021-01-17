@@ -1,6 +1,7 @@
 import { Skill } from './Skill';
 import { modes } from '../../constants/modes';
 import { DifficultyHitObject } from '../../beatmap/hitobjects/DifficultyHitObject';
+import { Spinner } from '../../beatmap/hitobjects/Spinner';
 
 /**
  * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
@@ -30,7 +31,7 @@ export class Speed extends Skill {
      * @param currentObject The hitobject to calculate.
      */
     strainValueOf(currentObject: DifficultyHitObject): number {
-        if (!currentObject.strainTime) {
+        if (!currentObject.strainTime || currentObject.object instanceof Spinner) {
             return 0;
         }
 
