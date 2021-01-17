@@ -320,7 +320,7 @@ export class PerformanceCalculator {
      */
     private calculateSpeedValue(): void {
         let speedValue: number = this.baseValue(this.stars.speed);
-        speedValue *= this.lengthBonus * this.speedMissPenalty * this.comboPenalty * this.hiddenBonus;
+        speedValue *= this.lengthBonus * this.comboPenalty * this.hiddenBonus;
 
         if (this.computedAccuracy.nmiss > 0) {
             speedValue *= this.speedMissPenalty;
