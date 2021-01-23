@@ -1,31 +1,27 @@
 const Discord = require('discord.js');
-const { Db } = require('mongodb');
 const request = require('request');
 const tatsukey = process.env.TATSU_API_KEY;
 const config = require('../../config.json');
 
 function isEligible(member) {
     let res = 0;
-    let eligibleRoleList = config.mute_perm;
-    eligibleRoleList.forEach((id) => {
-        if(member.roles.cache.has(id[0])) res = id[1]
-    });
+    let eligibleRoleList = config.mute_perm; //mute_permission
+    for (const id of eligibleRoleList) {
+        if (res === -1) break;
+        if (member.roles.cache.has(id[0])) {
+            if (id[1] === -1) res = id[1];
+            else res = Math.max(res, id[1])
+        }
+    }
     return res
 }
 
 function voteStringProcessing(topic, choices) {
     let string = `**Topic: ${topic}**\n\n`;
-    for (let i = 0; i < choices.length; i++) string += `\`[${i+1}] ${choices[i].choice} - ${choices[i].count}\`\n\n`;
+    for (let i = 0; i < choices.length; i++) string += `\`[${i+1}] ${choices[i].choice} - ${choices[i].voters.length}\`\n\n`;
     return string
 }
 
-/**
- * @param {Discord.Client} client 
- * @param {Discord.Message} message 
- * @param {string[]} args 
- * @param {Db} maindb 
- * @param {Db} alicedb 
- */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     if (message.channel instanceof Discord.DMChannel) return;
     let votedb = alicedb.collection("voting");
@@ -50,7 +46,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (!choices[i].trim()) continue;
                     choice_list.push({
                         choice: choices[i].trim(),
-                        count: 0,
                         voters: []
                     })
                 }
@@ -127,7 +122,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (user_score < xp_req && !isEligible(message.member)) return message.channel.send(`❎ **| I'm sorry, you are not eligible enough to vote! You need at least \`${xp_req}\` Tatsu server XP unless you're a staff member!**`);
 
                     const choice_index = choices.findIndex(choice => choice.voters.includes(message.author.id));
-                    if (choice_index === choice) return message.channel.send("❎ **| I'm sorry, you have voted for that option!**");
+                    if (choice === choice_index) return message.channel.send("❎ **| I'm sorry, you have voted for that option!**");
                     if (choice_index !== -1) {
                         const user_index = choices[choice_index].voters.findIndex(u => u === message.author.id);
                         choices[choice_index].voters.splice(user_index, 1)
