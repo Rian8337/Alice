@@ -56,7 +56,7 @@ export abstract class Skill {
     }
 
     /**
-     * Saves the current strain peak.
+     * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
     saveCurrentPeak(): void {
         if (this.previous.length > 0) {
@@ -65,36 +65,42 @@ export abstract class Skill {
     }
 
     /**
-     * Starts a new section to be checked.
+     * Sets the initial strain level for a new section.
      * 
-     * @param offset The offset of the new section since the beginning of the beatmap.
+     * @param offset The beginning of the new section in milliseconds.
      */
     startNewSectionFrom(offset: number): void {
+        // The maximum strain of the new section is not zero by default, strain decays as usual regardless of section boundaries.
+        // This means we need to capture the strain level at the beginning of the new section, and use that as the initial peak level.
         if (this.previous.length > 0) {
             this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].object.startTime);
         }
     }
 
     /**
-     * Calculates the strain value of a hitobject and stores the value in it.
+     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
      * 
      * @param currentObject The hitobject to process.
      */
     process(currentObject: DifficultyHitObject): void {
         this.currentStrain *= this.strainDecay(currentObject.deltaTime);
-        if (!(currentObject instanceof Spinner)) {
-            this.currentStrain += this.strainValueOf(currentObject) * this.skillMultiplier;
-            this.saveToHitObject(currentObject);
-        }
+        this.currentStrain += this.strainValueOf(currentObject) * this.skillMultiplier;
+        this.saveToHitObject(currentObject);
 
         this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
-        this.addToHistory(currentObject);
+        
+        this.previous.unshift(currentObject);
+        if (this.previous.length > 2) {
+            this.previous.pop();
+        }
     }
 
     /**
      * Calculates the difficulty value.
      */
     difficultyValue(): DifficultyValue {
+        // Difficulty is the weighted sum of the highest strains from every section.
+        // We're sorting from highest to lowest strain.
         this.strainPeaks.sort((a, b) => {
             return b - a;
         });
@@ -129,17 +135,5 @@ export abstract class Skill {
      */
     private strainDecay(ms: number): number {
         return Math.pow(this.strainDecayBase, ms / 1000);
-    }
-
-    /**
-     * Adds a hitobject into history.
-     * 
-     * @param currentObject The hitobject to add.
-     */
-    private addToHistory(currentObject: DifficultyHitObject): void {
-        this.previous.unshift(currentObject);
-        if (this.previous.length > 2) {
-            this.previous.pop();
-        }
     }
 }

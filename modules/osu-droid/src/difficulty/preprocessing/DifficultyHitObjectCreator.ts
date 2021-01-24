@@ -9,7 +9,7 @@ import { Slider } from "../../beatmap/hitobjects/Slider";
  */
 export class DifficultyHitObjectCreator {
     /**
-     * The hitobject to be generated to difficulty hitobject.
+     * The hitobjects to be generated to difficulty hitobjects.
      */
     private objects: HitObject[] = [];
 
@@ -35,6 +35,8 @@ export class DifficultyHitObjectCreator {
         const circleSize: number = params.circleSize;
 
         this.hitObjectRadius = 32 * (1 - 0.7 * (circleSize - 5) / 5);
+
+        // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
         let scalingFactor: number = 52 / this.hitObjectRadius;
 
         // apply stacked position
@@ -73,6 +75,7 @@ export class DifficultyHitObjectCreator {
 
             if (i > 0) {
                 difficultyObject.deltaTime = (difficultyObject.object.startTime - difficultyObjects[i - 1].object.startTime) / params.speedMultiplier;
+                // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
                 difficultyObject.strainTime = Math.max(50, difficultyObject.deltaTime);
             }
 
@@ -108,23 +111,25 @@ export class DifficultyHitObjectCreator {
 
         const approxFollowCircleRadius: number = this.hitObjectRadius * 3;
 
+        // Skip the head circle
         const scoringTimes: number[] = slider.nestedHitObjects.slice(1, slider.nestedHitObjects.length).map(t => {return t.startTime;});
         scoringTimes.forEach(time => {
             let progress: number = (time - slider.startTime) / slider.spanDuration;
             if (progress % 2 >= 1) {
                 progress = 1 - progress % 1;
             } else {
-                progress = progress % 1;
+                progress %= 1;
             }
 
             const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition as Vector2);
             let dist: number = diff.getLength();
 
             if (dist > approxFollowCircleRadius) {
+                // The cursor would be outside the follow circle, we need to move it
                 diff.normalize();
                 dist -= approxFollowCircleRadius;
                 slider.lazyEndPosition = (slider.lazyEndPosition as Vector2).add(diff.scale(dist));
-                slider.lazyTravelDistance = slider.lazyTravelDistance === undefined ? dist : slider.lazyTravelDistance += dist;
+                (slider.lazyTravelDistance as number) += dist;
             }
         });
     }
@@ -137,7 +142,7 @@ export class DifficultyHitObjectCreator {
 
         if (object instanceof Slider) {
             this.calculateSliderCursorPosition(object);
-            pos = object.lazyEndPosition !== null && object.lazyEndPosition !== undefined ? object.lazyEndPosition : pos;
+            pos = object.lazyEndPosition ?? pos;
         }
 
         return pos;
