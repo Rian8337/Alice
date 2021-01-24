@@ -122,7 +122,7 @@ export class StarRating {
          */
         stats?: MapStats
     }): StarRating {
-        const map: Beatmap = this.map = params.map || this.map;
+        const map: Beatmap = this.map = params.map;
         if (!map) {
             throw new Error("A map must be defined");
         }
