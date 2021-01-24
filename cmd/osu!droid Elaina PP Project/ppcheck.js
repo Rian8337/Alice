@@ -31,7 +31,7 @@ function generateEmbed(res, page, footer, index, color) {
 				}
 				modstring += ")";
 			}
-            embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`);
+            embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
         } else {
             embed.addField(`${i+1}. -`, "-");
         }
