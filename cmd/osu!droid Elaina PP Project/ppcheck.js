@@ -4,17 +4,34 @@ const { Db } = require("mongodb");
 const cd = new Set();
 
 function generateEmbed(res, page, footer, index, color) {
-    const ppentry = res.pp ? res.pp : [];
-    const pptotal = res.pptotal ? res.pptotal : 0;
+    const ppentry = res.pp ?? [];
+    const pptotal = res.pptotal ?? 0;
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
-        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidpp.glitch.me/profile?uid=${res.uid})`);
+        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})\nLast Update: **${new Date(res.lastUpdate).toUTCString()}**`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-        const pp = ppentry[i];
+		const pp = ppentry[i];
         if (pp) {
-            embed.addField(`${i+1}. ${pp.title}${pp.mods ? ` +${pp.mods}` : ""}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+			let modstring = pp.mods ? `+${pp.mods}` : "";
+			if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
+				if (pp.mods) {
+					modstring += " ";
+				}
+				modstring += "(";
+				if (pp.forcedAR) {
+					modstring += `AR${pp.forcedAR}`;
+				}
+				if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
+					if (pp.forcedAR) {
+						modstring += ", ";
+					}
+					modstring += `${pp.speedMultiplier}x`;
+				}
+				modstring += ")";
+			}
+            embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`);
         } else {
             embed.addField(`${i+1}. -`, "-");
         }
@@ -27,27 +44,28 @@ function generateEmbed(res, page, footer, index, color) {
  * @param {Discord.Message} message 
  * @param {string[]} args 
  * @param {Db} maindb 
+ * @param {Db} alicedb 
  */
-module.exports.run = (client, message, args, maindb) => {
-    if (cd.has(message.author.id)) {
+module.exports.run = (client, message, args, maindb, alicedb) => {
+	if (cd.has(message.author.id)) {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    }
-
+	}
+	
     let page = 1;
     let uid = 0;
     let query = {discordid: message.author.id};
 
     if (args[0]) {
-		if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) page = parseInt(args[0]);
-		else {
+		if (parseInt(args[0]) > 0 && parseInt(args[0]) <= 15) {
+			page = parseInt(args[0]);
+		} else {
 			if (args[0].length < 18) {
 				uid = parseInt(args[0]);
 				if (uid >= 500000) {
 					return message.channel.send("❎ **| Hey, that uid is too big!**");
 				}
 				query = {previous_bind: {$all: [uid.toString()]}};
-			}
-			else {
+			} else {
 				const ufind = args[0].replace(/[<@!>]/g, "");
 				if (ufind.length !== 18) {
 					return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
@@ -142,11 +160,13 @@ module.exports.run = (client, message, args, maindb) => {
 				}
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
             });
-        });
-        cd.add(message.author.id);
-        setTimeout(() => {
-            cd.delete(message.author.id);
-        }, 10000);
+		});
+		if (!message.isOwner) {
+			cd.add(message.author.id);
+			setTimeout(() => {
+				cd.delete(message.author.id);
+			}, 10000);
+		}
     });
 };
 
