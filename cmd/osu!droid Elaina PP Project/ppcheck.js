@@ -9,7 +9,7 @@ function generateEmbed(res, page, footer, index, color) {
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
-        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})\nLast Update: **${new Date(res.lastUpdate).toUTCString()}**`);
+        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
 		const pp = ppentry[i];
