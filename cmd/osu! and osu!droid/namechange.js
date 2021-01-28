@@ -265,7 +265,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, this part of the command is only allowed in DMs for privacy reasons.**");
             }
 
-            if (args.length !== 2) return message.channel.send("❎ **| Hey, spaces in nicknames are not allowed!**");
+            if (args.length > 2) return message.channel.send("❎ **| Hey, spaces in nicknames are not allowed!**");
 
             const email = args[0];
             if (!email) return message.channel.send("❎ **| Hey, please enter your email address!**");
