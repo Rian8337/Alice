@@ -276,7 +276,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             if (hasUnicode(new_name) || !(/^[a-zA-Z0-9_]+$/.test(new_name))) return message.channel.send("❎ **| I'm sorry, usernames can only contain letters, numbers, and underscores!**");
             if (new_name.includes('<:')) return message.channel.send("❎ **| I'm sorry, a username cannot contain emojis!**");
 
-            if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach a screenshot of your osu!droid main menu with your account logged in!**");
+            if (message.attachments.size === 0) return message.channel.send("❎ **| Hey, please attach a screenshot of your osu!droid main menu with your account logged in along with the command!**");
             if (message.attachments.size > 1) return message.channel.send("❎ **| Hey, please attach only one screenshot of your osu!droid main menu with your account logged in!**");
             const attachment = message.attachments.first();
             const url = attachment.url;
