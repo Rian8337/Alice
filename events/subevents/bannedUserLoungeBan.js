@@ -21,7 +21,7 @@ module.exports.run = async (guild, user, alicedb) => {
 		.addField("=========================", `Reason: ${reason}`);
 		
 	const loungeDb = alicedb.collection("loungelock");
-	const channelDb = alicedb.collection("mutelogchannel");
+	const channelDb = alicedb.collection("punishmentconfig");
 
 	channelDb.findOne({guildID: guild.id}, (err, log) => {
 		if (err) {
@@ -31,8 +31,14 @@ module.exports.run = async (guild, user, alicedb) => {
 		if (!log) {
 			return;
 		}
-		const channel = guild.channels.resolve(log.channelID);
+		const channel = guild.channels.resolve(log.logChannel);
+		if (!channel) {
+			return;
+		}
 		channel.send({embed: embed});
+		if (guild.id !== "316545691545501706") {
+			return;
+		}
 		loungeDb.findOne({discordid: user.id}, (err, res) => {
 			if (err) {
 				console.log(err);

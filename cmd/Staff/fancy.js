@@ -105,35 +105,47 @@ async function memberValidation(message, user, role, time, userres, cb) {
  * @param {Db} alicedb 
  */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    if (message.guild.id != '316545691545501706') return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
-    if (!message.member.roles.cache.find((r) => r.name === "Moderator")) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
+    if (message.guild.id !== '316545691545501706') {
+        return message.channel.send("❎ **| I'm sorry, this command is only available in droid (International) Discord server!**");
+    }
+    if (!message.member.roles.cache.find((r) => r.name === "Moderator")) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command. Please ask a Moderator!**");
+    }
 
-    const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(console.error);
-    if (!user) return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
-    let role = args[1];
-    if (!role) return message.channel.send("❎ **| Hey, I don't know what role to give!**");
-    let time = Math.floor((Date.now() - user.joinedTimestamp) / 1000);
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch();
+    if (!user) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the server member you are looking for!**");
+    }
+    const role = args[1];
+    if (!role) {
+        return message.channel.send("❎ **| Hey, I don't know what role to give!**");
+    }
+    const time = Math.floor((Date.now() - user.joinedTimestamp) / 1000);
     
-    let binddb = maindb.collection("userbind");
-    let loungedb = alicedb.collection("loungeban");
-    let query = {discordid: user.id};
+    const binddb = maindb.collection("userbind");
+    const loungedb = alicedb.collection("loungeban");
+    const query = {discordid: user.id};
     loungedb.findOne(query, (err, banres) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
-        if (banres) return message.channel.send("❎ **| I'm sorry, this user has been banned from the channel!**");
+        if (banres) {
+            return message.channel.send("❎ **| I'm sorry, this user has been banned from the channel!**");
+        }
         binddb.findOne(query, async (err, userres) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.");
+            if (!userres) {
+                return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.");
+            }
             await memberValidation(message, user, role, time, userres, (valid = false) => {
                 if (valid) {
                     let pass = message.guild.roles.cache.find((r) => r.name === 'Lounge Pass');
                     user.roles.add(pass, "Fulfilled requirement for role").then(() => {
-                        message.channel.send("✅ **| Successfully given `" + pass.name + "` for <@" + user + ">.**")
+                        message.channel.send("✅ **| Successfully given `" + pass.name + "` for <@" + user + ">.**");
                     }).catch(() => message.channel.send("❎ **| I'm sorry, this user already has a pass!**"));
                 }
             });

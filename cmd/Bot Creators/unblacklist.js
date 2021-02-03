@@ -11,7 +11,7 @@ const { Db } = require('mongodb');
  */
 module.exports.run = (client, message, args, maindb) => {
     if (!message.isOwner) {
-        return message.channel.send("❎ **| I'm sorry, you do not have the permission to use this command.**");
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
     if (!args[0]) {
         return message.channel.send("❎ **| Hey, please enter a beatmap link or ID!**");
@@ -73,5 +73,5 @@ module.exports.config = {
     description: "Unblacklists a beatmap.",
     usage: "unblacklist <beatmap link/ID>",
     detail: "`beatmap link/ID`: The beatmap link or ID to unblacklist [Integer/String]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

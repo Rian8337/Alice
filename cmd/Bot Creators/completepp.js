@@ -23,11 +23,12 @@ function test(uid, page, cb) {
             return cb([], false);
         }
         const entries = [];
-        const line = result.data.toString("utf-8").split('<br>');
-        line.shift();
-        for (const i of line) entries.push(new osudroid.Score().fillInformation(i));
-        if (!entries[0]) cb(entries, true);
-        else cb(entries, false);
+        const lines = result.data.toString("utf-8").split('<br>');
+        lines.shift();
+        for (const line of lines) {
+            entries.push(new osudroid.Score().fillInformation(line));
+        }
+        cb(entries, !entries[0]);
     });
 }
 
@@ -95,6 +96,12 @@ async function calculatePP(ppentries, entry, cb) {
         miss: miss,
         scoreID: scoreID
     };
+    if (stats.isForceAR) {
+        ppentry.forcedAR = stats.ar;
+    }
+    if (entry.speedMultiplier !== 1) {
+        ppentry.speedMultiplier = stats.speedMultiplier;
+    }
     if (!isNaN(pp)) {
         ppentries.push(ppentry);
     }
@@ -114,6 +121,7 @@ module.exports.run = (client, message, args, maindb) => {
     if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     }
+
     const ppentries = [];
     let page = 0;
     const ufind = args[0]?.replace('<@!','').replace('<@', '').replace('>', '');
@@ -140,14 +148,25 @@ module.exports.run = (client, message, args, maindb) => {
                     let dup = false;
                     for (let i in pplist) {
                         if (ppentry[0].trim() === pplist[i][0].trim()) {
-                            if(ppentry[2] >= pplist[i][2]) pplist[i] = ppentry; 
-                            dup = true; playc++; break;
+                            if (ppentry[2] >= pplist[i][2]) {
+                                pplist[i] = ppentry; 
+                            }
+                            dup = true;
+                            playc++;
+                            break;
                         }
                     }
-                    if (!dup) {pplist.push(ppentry); playc++;}
+                    if (!dup) {
+                        pplist.push(ppentry);
+                        playc++;
+                    }
                 });
-                pplist.sort(function(a, b) {return b[2] - a[2];});
-                if (pplist.length > 75) pplist.splice(75);
+                pplist.sort(function(a, b) {
+                    return b[2] - a[2];
+                });
+                if (pplist.length > 75) {
+                    pplist.splice(75);
+                }
                 console.table(pplist);
                 let weight = 1;
                 for (let i of pplist) {
@@ -181,11 +200,16 @@ module.exports.run = (client, message, args, maindb) => {
                     playc++;
                     attempt = 0;
                 }
-                if (i < entries.length && !stopFlag) await calculatePP(ppentries, entries[i], cb);
-                else {
+                if (i < entries.length && !stopFlag) {
+                    await calculatePP(ppentries, entries[i], cb);
+                } else {
                     console.log("done");
-                    ppentries.sort(function(a, b) {return b[2] - a[2];});
-                    if (ppentries.length > 75) ppentries.splice(75);
+                    ppentries.sort(function(a, b) {
+                        return b[2] - a[2];
+                    });
+                    if (ppentries.length > 75) {
+                        ppentries.splice(75);
+                    }
                     page++;
                     console.table(ppentries);
                     test(uid, page, testcb);
@@ -197,8 +221,8 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
     name: "completepp",
-    description: "Recalculates all plays of an account.",
+    description: "Recalculates all plays of an account for droid pp.",
     usage: "completepp <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

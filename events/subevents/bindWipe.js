@@ -1,15 +1,16 @@
-const { Client, Guild, User } = require('discord.js');
+const { Guild, User } = require('discord.js');
 const { Db } = require('mongodb');
 
 /**
- * @param {Client} client 
  * @param {Guild} guild 
  * @param {User} user 
  * @param {Db} maindb 
  * @param {Db} alicedb 
  */
-module.exports.run = async (client, guild, user, maindb, alicedb) => {
-    if (guild.id !== '316545691545501706') return;
+module.exports.run = async (guild, user, maindb, alicedb) => {
+    if (guild.id !== '316545691545501706') {
+        return;
+    }
     const binddb = maindb.collection("userbind");
     const scoredb = alicedb.collection("playerscore");
     const channeldb = alicedb.collection("mutelogchannel");

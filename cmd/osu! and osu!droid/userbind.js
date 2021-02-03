@@ -8,7 +8,7 @@ const cd = new Set();
  * Checks if a specific uid has played verification map.
  *
  * @param {number|string} uid The uid of the account.
- * @returns {Promise<boolean>} Whether or not the player has played the mapp (`true` or `false`).
+ * @returns {Promise<boolean>} Whether or not the player has played the map (`true` or `false`).
  */
 async function checkPlay(uid) {
 	const play = await osudroid.Score.getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);

@@ -520,5 +520,5 @@ module.exports.config = {
     description: "Main command for tags. Tags can have a name up to 30 characters and content up to 1500 characters, with up to 3 attachments.",
     usage: "tags <name>\ntags add <name> [content]\ntags delete <name>\ntags edit <name> [content]\ntags move <old user> <new user>\ntags info <name>\ntags list [user]",
     detail: "`content`: Content of the tag, up to 1500 characters [String]\n`old user`: The old user to move tags from [UserResolvable (mention or user ID)]\n`name`: The name of the tag, up to 30 characters [String]\n`new user`: The new user to move tags to [UserResolvable (mention or user ID)]\n`user`: The user to retrieve tag list from [UserResolvable (mention or user ID)]",
-    permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "None | Bot Creators"
 };

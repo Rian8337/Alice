@@ -43,9 +43,6 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
  * @param {string[]} args 
  */
 module.exports.run = async (client, message, args) => {
-	if (message.channel instanceof Discord.DMChannel) {
-		return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	}
 	if (cd.has(message.author.id)) {
 		return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	}
@@ -92,9 +89,16 @@ module.exports.run = async (client, message, args) => {
 		const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
 
 		backward.on('collect', () => {
-			if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			if (page === 1) {
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
+				return;
+			}
 			else page = 1;
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			if (message.channel.type === "text") {
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			}
 			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
@@ -102,7 +106,9 @@ module.exports.run = async (client, message, args) => {
 		back.on('collect', () => {
 			if (page === 1) page = 10;
 			else page--;
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			if (message.channel.type === "text") {
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			}
 			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
@@ -110,7 +116,9 @@ module.exports.run = async (client, message, args) => {
 		next.on('collect', () => {
 			if (page === 10) page = 1;
 			else page++;
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			if (message.channel.type === "text") {
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			}
 			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
@@ -118,13 +126,17 @@ module.exports.run = async (client, message, args) => {
 		forward.on('collect', () => {
 			if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 			else page = 10;
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			if (message.channel.type === "text") {
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			}
 			embed = editpp(client, rplay, name, page, footer, index, color, message);
 			msg.edit({embed: embed}).catch(console.error);
 		});
 
 		backward.on("end", () => {
-			msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+			if (message.channel.type === "text") {
+				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+			}
 			msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
 		});
 	});

@@ -85,12 +85,18 @@ fs.readdir('./cmd', (err, folders) => {
 
 // Elaina DB
 let elainauri = 'mongodb://' + elainadbkey + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true';
-let maindb = '';
+/**
+ * @type {mongodb.Db}
+ */
+let maindb;
 let elainadb = new mongodb.MongoClient(elainauri, {useNewUrlParser: true, useUnifiedTopology: true});
 
 // Alice DB
 let aliceuri = 'mongodb+srv://' + alicedbkey + '@alicedb-hoexz.gcp.mongodb.net/test?retryWrites=true&w=majority';
-let alicedb = '';
+/**
+ * @type {mongodb.Db}
+ */
+let alicedb;
 let alcdb = new mongodb.MongoClient(aliceuri, {useNewUrlParser: true, useUnifiedTopology: true});
 
 elainadb.connect((err, db) => {
@@ -139,11 +145,11 @@ client.on("typingStart", (channel, user) => {
 });
 
 client.on("guildBanAdd", (guild, user) => {
-	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb);
+	client.events.get("guildBanAdd").run(guild, user, maindb, alicedb);
 });
 
 client.on("guildBanRemove", (guild, user) => {
-	client.events.get("guildBanRemove").run(client, guild, user);
+	client.events.get("guildBanRemove").run(guild, user, alicedb);
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {

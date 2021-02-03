@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         return;
     }
     if (message.guild.id !== '316545691545501706' && message.guild.id !== '635532651029332000' && message.guild.id !== '528941000555757598') {
-        return message.channel.send("❎ **| I'm sorry, this command is only allowed in droid (International) Discord server and droid café server!**");
+        return message.channel.send("❎ **| I'm sorry, this command is only allowed in the international server!**");
     }
     const binddb = maindb.collection("userbind");
     const pointdb = alicedb.collection("playerpoints");
@@ -55,9 +55,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             daily += 100;
                             streak = 1;
                         }
-                        let totalcoins = dailyres.alicecoins + daily;
+                        const totalcoins = dailyres.alicecoins + daily;
                         message.channel.send(`✅ **| ${message.author}, you have ${streakcomplete ? "completed a streak and " : ""}claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`${streak}\`. You now have ${coin}\`${totalcoins}\` Alice coins.**`);
-                        let updateVal = {
+                        const updateVal = {
                             $set: {
                                 hasClaimedDaily: true,
                                 alicecoins: totalcoins,
@@ -72,7 +72,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         });
                     } else {
                         message.channel.send(`✅ **| ${message.author}, you have claimed ${coin}\`${daily}\` Alice coins! Your current streak is \`1\`. You now have ${coin}\`${daily}\` Alice coins.**`);
-                        let insertVal = {
+                        const insertVal = {
                             username: username,
                             uid: uid,
                             discordid: message.author.id,
@@ -98,7 +98,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
         case "transfer": {
-            const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+            const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch();
             if (!totransfer) {
                 return message.channel.send("❎ **| Hey, I don't know the user to give your coins to!**");
             }
@@ -111,7 +111,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             if (curtime - totransfer.joinedTimestamp / 1000 < 86400 * 7) {
                 return message.channel.send("❎ **| I'm sorry, the user you are giving your coins to has not been in the server for a week!**");
             }
-            let amount = parseInt(args[2]);
+            const amount = parseInt(args[2]);
             if (isNaN(amount) || amount <= 0) {
                 return message.channel.send("❎ **| Hey, I need a valid amount to give!**");
             }
@@ -133,8 +133,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (!pointres) {
                         return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
                     }
-                    let transferred = pointres.transferred;
-                    if (!transferred) transferred = 0;
+                    const transferred = pointres.transferred ?? 0;
                     if (transferred === amount) {
                         return message.channel.send("❎ **| I'm sorry, you have reached the transfer limit for today!**");
                     }
@@ -156,20 +155,21 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         case (player.rank < 500):
                             limit = 500;
                             break;
-                        default: limit = 250;
+                        default:
+                            limit = 250;
                     }
                     if (transferred + amount > limit) {
                         return message.channel.send(`❎ **| I'm sorry, the amount you have specified is beyond your daily limit! You can only transfer ${coin}\`${limit - transferred}\` Alice coins for today!**`);
                     }
 
-                    let alicecoins = pointres.alicecoins;
+                    const alicecoins = pointres.alicecoins;
                     if (alicecoins < amount) {
                         return message.channel.send("❎ **| I'm sorry, you don't have enough coins!**");
                     }
                     message.channel.send(`❗**| Are you sure you want to transfer ${coin}\`${amount}\` Alice coins to ${totransfer}?**`).then(msg => {
                         msg.react("✅").catch(console.error);
                         let confirmation = false;
-                        let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                        const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
                         confirm.on("collect", () => {
                             confirmation = true;
                             msg.delete();
@@ -182,7 +182,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 if (!giveres) {
                                     return message.channel.send("❎ **| I'm sorry, this user has not used any daily claims before!**");
                                 }
-                                let coins = giveres.alicecoins + amount;
+                                const coins = giveres.alicecoins + amount;
                                 message.channel.send(`✅ **| ${message.author}, successfully transferred ${coin}\`${amount}\` Alice coins to ${totransfer}. You can transfer ${coin}\`${limit - (amount + transferred)}\` Alice coins left today. You now have ${coin}\`${alicecoins - amount}\` Alice coins.**`)
                                 let updateVal = {
                                     $set: {
@@ -221,35 +221,44 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         case "view": {
             let id = message.author.id;
             if (args[1]) {
-                id = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
-                if (!id) return message.channel.send("❎ **| Hey, please enter a valid user to view!**");
+                id = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch();
+                if (!id) {
+                    return message.channel.send("❎ **| Hey, please enter a valid user to view!**");
+                }
                 id = id.id;
             }
             query = {discordid: id};
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (res) message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`${res.alicecoins}\` Alice coins.**`);
-                else message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`0\` Alice coins.**`)
+                else message.channel.send(`✅ **| ${message.author}, ${args[1] ? "that user has" : "you have"} ${coin}\`0\` Alice coins.**`);
             });
             break;
         }
         case "add": {
-            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-            let toadd = args[1];
-            if (!toadd) return message.channel.send("❎ **| Hey, please enter a valid user to add coins to!**");
-            toadd = toadd.replace("<@!", "").replace("<@", "").replace(">", "");
+            if (!message.isOwner) {
+                return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+            }
+            const toadd = args[1]?.replace("<@!", "").replace("<@", "").replace(">", "");
+            if (!toadd) {
+                return message.channel.send("❎ **| Hey, please enter a valid user to add coins to!**");
+            }
             const amount = parseInt(args[2]);
-            if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid amount to add!**");
+            if (isNaN(amount) || amount <= 0) {
+                return message.channel.send("❎ **| Hey, please enter a valid amount to add!**");
+            }
             query = {discordid: toadd};
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
+                if (!res) {
+                    return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
+                }
                 const updateVal = {
                     $set: {
                         alicecoins: res.alicecoins + amount
@@ -266,19 +275,29 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             break;
         }
         case "remove": {
-            if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
-            let toremove = args[1];
-            if (!toremove) return message.channel.send("❎ **| Hey, please enter a valid user to remove coins from!**");
+            if (!message.isOwner) {
+                return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+            }
+            const toremove = args[1]?.replace("<@!", "").replace("<@", "").replace(">", "");
+            if (!toremove) {
+                return message.channel.send("❎ **| Hey, please enter a valid user to remove coins from!**");
+            }
             const amount = parseInt(args[2]);
-            if (isNaN(amount) || amount <= 0) return message.channel.send("❎ **| Hey, please enter a valid amount to remove!**");
+            if (isNaN(amount) || amount <= 0) {
+                return message.channel.send("❎ **| Hey, please enter a valid amount to remove!**");
+            }
             query = {discordid: toremove};
             pointdb.findOne(query, (err, res) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!res) return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
-                if (res.alicecoins < amount) return message.channel.send(`❎ **| I'm sorry, the amount you have specified is more than the user's Alice coins! The user has ${coin}\`${res.alicecoins.toLocaleString()}\` Alice coins.**`);
+                if (!res) {
+                    return message.channel.send("❎ **| I'm sorry, this user has not claimed daily coins at least once!**");
+                }
+                if (res.alicecoins < amount) {
+                    return message.channel.send(`❎ **| I'm sorry, the amount you have specified is more than the user's Alice coins! The user has ${coin}\`${res.alicecoins.toLocaleString()}\` Alice coins.**`);
+                }
                 const updateVal = {
                     $set: {
                         alicecoins: res.alicecoins - amount
@@ -303,5 +322,5 @@ module.exports.config = {
     description: "Main command for Alice coins.",
     usage: "coins add <user> <amount>\ncoins claim\ncoins remove <user> <amount>\ncoins transfer <user>\ncoins view [user]",
     detail: "`amount`: The amount of coins to add or remove [Integer]\n`user`: User to add, remove, transfer, or view [UserResolvable (mention or user ID)]",
-    permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "None | Bot Creators"
 };

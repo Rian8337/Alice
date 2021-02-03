@@ -14,8 +14,9 @@ function time(second) {
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel) return;
-    if (message.member.roles == null || !message.member.roles.cache.find(r => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
+    if (!message.isOwner && !["316545691545501706", "526214018269184001"].includes(message.guild?.id) && !message.member?.roles.cache.find((r) => r.name === 'Referee')) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
 
     let map = args[0];
     if (!map) return message.channel.send("❎ **| Hey, I don't know what map is playing!**");

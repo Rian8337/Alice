@@ -4,45 +4,35 @@ const cd = new Set();
 const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 
-function scoreRequirement(lvl) {
-    let xp;
-    if (lvl <= 100) xp = (5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60)) / 1.128;
-    else xp = 23875169174 + 15000000000 * (lvl - 100);
-    return Math.round(xp)
-}
-
-function levelUp(level, score, cb) {
-    let nextlevel = scoreRequirement(level + 1);
-    if (score < nextlevel) cb(level, true);
-    else {
-        level++;
-        cb(level, false);
+/**
+ * Calculates the level of a given score.
+ * 
+ * @param {number} score The score to calculate.
+ * @returns {number} The level of the given score.
+ */
+function calculateLevel(score) {
+    function scoreRequirement(level) {
+        return Math.round(
+            level <= 100 ? 
+            (5000 / 3 * (4 * Math.pow(level, 3) - 3 * Math.pow(level, 2) - level) + 1.25 * Math.pow(1.8, level - 60)) / 1.128 :
+            23875169174 + 15000000000 * (level - 100)
+        );
     }
-}
 
-function calculateLevel(lvl, score, cb) {
-    let xpreq = scoreRequirement(lvl + 1);
-    let nextlevel = 0;
-    let prevlevel = 0;
-    if (score >= xpreq) levelUp(lvl, score, function testcb(newlevel, stopSign) {
-        if (stopSign) {
-            nextlevel = scoreRequirement(newlevel + 1);
-            prevlevel = scoreRequirement(newlevel);
-            newlevel += (score - prevlevel) / (nextlevel - prevlevel);
-            cb(newlevel);
-        }
-        else levelUp(newlevel, score, testcb);
-    });
-    else {
-        nextlevel = xpreq;
-        prevlevel = scoreRequirement(lvl);
-        let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
-        cb(newlevel);
+    let level = 1;
+    while (scoreRequirement(level + 1) <= score) {
+        ++level;
     }
+    const nextLevelReq = scoreRequirement(level + 1) - scoreRequirement(level);
+    const curLevelReq = score - scoreRequirement(level);
+    level += curLevelReq / nextLevelReq;
+    return level;
 }
 
 async function scoreApproval(embed, i, submitted, scorelist, playc, playentry, cb) {
-    if (!playentry[i]) return cb(false, true);
+    if (!playentry[i]) {
+        return cb(false, true);
+    }
     let play = playentry[i];
     let mod = play.mod;
     const mapinfo = await osudroid.MapInfo.getInformation({hash: play.hash, file: false});
@@ -98,7 +88,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     } catch (e) {
         rolecheck = "#000000";
     }
-    let footer = config.avatar_list;
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
 
     // actual command
@@ -117,15 +107,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             .addField("How does score requirement for each level calculated?", "The scoring system uses a specific formula to calculate score requirements for each level.```if n <= 100:\nscore(n) = (5000 / 3 * (4n^3 - 3n^2 - n) + 1.25 * 1.8^(n - 60)) / 1.128\n\nif n > 100:\nscore(n) = 23875169174 + 15000000000 * (n - 100)```Where *n* is level.\n\nYou can see how many scores do you need left to level up each time you submit your scores.");
 
         return message.channel.send({embed: embed});
-    } else if (args[0] == 'past') {
-
-    } else {
-
     }
-    if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
+
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, can you calm down with the command? I need to rest too, you know.**");
+    }
     let channels = config.pp_channel;
     let channel_index = channels.findIndex(id => message.channel.id === id);
-    if (!message.isOwner && channel_index === -1) return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+    if (!message.isOwner && channel_index === -1) {
+        return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
+    }
 
     let ufind = message.author.id;
     let offset = 1;
@@ -134,33 +125,47 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (args[1]) start = parseInt(args[1]);
     if (isNaN(offset)) offset = 1;
     if (isNaN(start)) start = 1;
-    if (offset < 1 || offset > 5) return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
-    if (offset + start - 1 > 50) return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
-    let binddb = maindb.collection("userbind");
+    if (offset < 1 || offset > 5) {
+        return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
+    }
+    if (offset + start - 1 > 50) {
+        return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
+    }
+    const binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
     binddb.findOne(query, async (err, userres) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!");
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
-        if (!userres) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres.uid;
-        let discordid = userres.discordid;
-        let username = userres.username;
+        if (!userres) {
+            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
+        const uid = userres.uid;
+        const discordid = userres.discordid;
+        const username = userres.username;
         const player = await osudroid.Player.getInformation({uid: uid});
-        if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
-        if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-        if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
-        let rplay = player.recentPlays;
-        let playentry = [];
-        let embed = new Discord.MessageEmbed()
+        if (player.error) {
+            return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
+        }
+        if (!player.username) {
+            return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+        }
+        if (player.recentPlays.length === 0) {
+            return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
+        }
+        const rplay = player.recentPlays;
+        const playentry = [];
+        const embed = new Discord.MessageEmbed()
             .setTitle("Score submission info")
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setColor(rolecheck);
 
         for (let i = start - 1; i < start + offset - 1; i++) {
-            if (!rplay[i]) break;
-            let play = {
+            if (!rplay[i]) {
+                break;
+            }
+            playentry.push({
                 title: rplay[i].title,
                 score: rplay[i].score,
                 accuracy: rplay[i].accuracy,
@@ -168,27 +173,20 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 combo: rplay[i].combo,
                 mod: rplay[i].mods,
                 hash: rplay[i].hash
-            };
-            playentry.push(play);
+            });
         }
 
-        let scoredb = alicedb.collection("playerscore");
+        const scoredb = alicedb.collection("playerscore");
         query = {uid: uid};
         scoredb.findOne(query, async (err, res) => {
             if (err) {
                 console.log(err);
-                return message.channel.send("Error: Empty database response. Please try again!");
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            let prescore = 0;
-            let scorelist = [];
-            let playc = 0;
-            let currentlevel = 1;
-            if (res) {
-                currentlevel = res.level;
-                prescore = res.score;
-                scorelist = res.scorelist;
-                playc = res.playc
-            }
+            const prescore = res?.score ?? 0;
+            const scorelist = res?.scorelist ?? [];
+            const playc = res?.playc ?? 0;
+            const currentlevel = res?.level ?? 1;
             let score = 0;
             let i = 0;
             let submitted = 1;
@@ -196,17 +194,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             await scoreApproval(embed, i, submitted, scorelist, playc, playentry, async function testResult(error = false, stopSign = false) {
                 if (stopSign) {
                     if (submitted === 1) return;
-                    scorelist.sort((a, b) => {
-                        return b[0] - a[0];
-                    });
                     for (i of scorelist) score += i[0];
                     let scorediff = score - prescore;
-                    calculateLevel(Math.floor(currentlevel) - 1, score, level => {
-                        let levelremain = (level - Math.floor(level)) * 100;
+                    const level = calculateLevel(score);
+                    let levelremain = (level - Math.floor(level)) * 100;
                         embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**\nCurrent level: **${Math.floor(level)} (${levelremain.toFixed(2)}%)${Math.floor(level) > Math.floor(currentlevel)?"\n🆙 Level up!":""}**\nScore needed to level up: **${(scoreRequirement(Math.floor(level) + 1) - score).toLocaleString()}**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
                         message.channel.send('✅ **| <@' + discordid + '>, successfully submitted your play(s). More info in embed.**', {embed: embed});
                         if (res) {
-                            let updateVal = {
+                            const updateVal = {
                                 $set: {
                                     level: level,
                                     score: score,
@@ -217,11 +212,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.updateOne(query, updateVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("Error: Empty database response. Please try again!");
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                             });
                         } else {
-                            let insertVal = {
+                            const insertVal = {
                                 uid: uid,
                                 username: username,
                                 level: level,
@@ -232,18 +227,23 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             scoredb.insertOne(insertVal, err => {
                                 if (err) {
                                     console.log(err);
-                                    return message.channel.send("Error: Empty database response. Please try again!");
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                             });
                         }
-                    });
                     return;
                 }
                 attempt++;
-                if (!error && attempt < 3) i++;
+                if (!error && attempt < 3) {
+                    i++;
+                }
                 submitted++;
-                if (error) attempt++;
-                else attempt = 0;
+
+                if (error) {
+                    attempt++;
+                } else {
+                    attempt = 0;
+                }
                 await scoreApproval(embed, i, submitted, scorelist, playc, playentry, testResult);
             });
         });

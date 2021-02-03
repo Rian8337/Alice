@@ -30,8 +30,8 @@ function scoreCalc(mode, score, maxscore, accuracy, misscount, comboPortion, acc
  * @param {Db} alicedb 
  */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    if (!message.member?.roles.cache.find((r) => r.name === 'Referee')) {
-        return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+    if (!message.isOwner && !["316545691545501706", "526214018269184001"].includes(message.guild?.id) && !message.member?.roles.cache.find((r) => r.name === 'Referee')) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
     const id = args[0];

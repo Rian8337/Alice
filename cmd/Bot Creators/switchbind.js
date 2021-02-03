@@ -9,7 +9,7 @@ const { Db } = require('mongodb');
  */
 module.exports.run = async (client, message, args, maindb) => {
     if (!message.isOwner) {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
     if (message.channel.type !== "text") {
         return;
@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| Hey, please mention a valid uid!**");
     }
 
-    const user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+    const user = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch();
     if (!user) {
         return message.channel.send("❎ **| Hey, please mention a valid user!**");
     }
@@ -30,25 +30,60 @@ module.exports.run = async (client, message, args, maindb) => {
     binddb.findOne(query, (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
-        if (!res) return message.channel.send("❎ **| I'm sorry, this uid is not binded to anyone!**");
-        if (res.discordid === user.id) return message.channel.send("❎ **| Hey, you can't switch the bind to the same Discord account!**");
+        if (!res) {
+            return message.channel.send("❎ **| I'm sorry, this uid is not binded to anyone!**");
+        }
+        if (res.discordid === user.id) {
+            return message.channel.send("❎ **| Hey, you can't switch the bind to the same Discord account!**");
+        }
 
-        let updateVal = {
-            $set: {
-                discordid: user.id
-            }
-        };
+        const previousBind = res.previous_bind;
 
-        binddb.updateOne(query, updateVal, err => {
-            if (err) {
-                console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+        if (previousBind.length > 0) {
+            const index = previousBind.findIndex(v => v === uid.toString());
+            const removedUid = previousBind.splice(index, 1);
+
+            const updateVal = {
+                $set: {
+                    previous_bind: previousBind
+                }
+            };
+
+            if (removedUid === res.uid) {
+                updateVal.$set.uid = Math.floor(Math.random() * previousBind.length);
             }
-            message.channel.send("✅ **| Successfully switched bind.**")
-        })
-    })
+
+            binddb.updateOne(query, updateVal, err => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                }
+                binddb.updateOne({discordid: user.id}, {$addToSet: {previous_bind: uid.toString()}}, err => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                    }
+                    message.channel.send("✅ **| Successfully switched bind.**");
+                });
+            });
+        } else {
+            const updateVal = {
+                $set: {
+                    discordid: user.id
+                }
+            };
+    
+            binddb.updateOne(query, updateVal, err => {
+                if (err) {
+                    console.log(err);
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                }
+                message.channel.send("✅ **| Successfully switched bind.**");
+            });
+        }        
+    });
 };
 
 module.exports.config = {
@@ -56,5 +91,5 @@ module.exports.config = {
     description: "Switches osu!droid account bind from one Discord account to another.",
     usage: "switchbind <uid> <user>",
     detail: "`uid`: The uid to switch [Integer]\n`user`: The user to switch the bind to [UserResolvable (mention or user ID)]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

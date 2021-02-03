@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		let weighted_accuracy = 0;
 		let weight = 0;
@@ -33,26 +33,28 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 				weight += Math.pow(0.95, i);
 			}
-			if (weighted_accuracy) weighted_accuracy /= weight;
+			if (weighted_accuracy) {
+				weighted_accuracy /= weight;
+			}
 		}
 		const player = await osudroid.Player.getInformation({uid: uid});
-		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-		if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+		if (player.error) {
+			return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+		}
+		if (!player.username) {
+			return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+		}
 		scoredb.findOne(query, (err, playerres) => {
 			if (err) {
 				console.log(err);
-				return message.channel.send("Error: Empty database response. Please try again!")
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			let level = 1;
-			let score = 0;
-			if (playerres) {
-				score = playerres.score;
-				level = playerres.level;
-			}
+			const level = playerres?.level ?? 1;
+			const score = playerres?.score ?? 0;
 			pointdb.findOne(query, async (err, pointres) => {
 				if (err) {
 					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!")
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
 				let coins = 0;
 				let points = 0;
@@ -61,7 +63,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					points = pointres.points;
 					coins = pointres.alicecoins;
 					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {};
+					if (!pictureConfig) {
+						pictureConfig = {};
+					}
 				}
 
 				// background

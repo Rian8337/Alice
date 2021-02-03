@@ -15,7 +15,9 @@ c.imageSmoothingQuality = "high";
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
+    if (isNaN(uid)) {
+		return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
+	}
     const binddb = maindb.collection("userbind");
     const scoredb = alicedb.collection("playerscore");
     const pointdb = alicedb.collection("playerpoints");
@@ -23,7 +25,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		let weighted_accuracy = 0;
 		let weight = 0;
@@ -33,31 +35,35 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 				weight += Math.pow(0.95, i);
 			}
-			if (weighted_accuracy) weighted_accuracy /= weight;
+			if (weighted_accuracy) {
+				weighted_accuracy /= weight;
+			}
 		}
 		const player = await osudroid.Player.getInformation(query);
-		if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-		if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+		if (player.error) {
+			return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+		}
+		if (!player.username) {
+			return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
+		}
 		scoredb.findOne(query, function(err, playerres) {
 			if (err) {
 				console.log(err);
-				return message.channel.send("Error: Empty database response. Please try again!")
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			let level = 1;
-			let score = 0;
-			if (playerres) {
-				score = playerres.score;
-				level = playerres.level;
-			}
+			const level = playerres?.level ?? 1;
+			const score = playerres?.score ?? 0;
 			pointdb.findOne(query, async function(err, pointres) {
 				if (err) {
 					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!");
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
 				let pictureConfig = {};
 				if (pointres) {
 					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {};
+					if (!pictureConfig) {
+						pictureConfig = {};
+					}
 				}
 
 				// background
@@ -133,8 +139,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				if (flag) c.fillText(player.location, 451, flag.height + 20);
 
 				// ranked level
-				let textColor = pictureConfig.textColor;
-				if (!textColor) textColor = "#000000";
+				const textColor = pictureConfig.textColor ?? "#000000";
 				c.fillStyle = textColor;
 				c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 321, 173);
 				c.fillText(`Lv${Math.floor(level)}`, 169, 173);

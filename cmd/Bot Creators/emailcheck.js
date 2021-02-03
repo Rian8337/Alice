@@ -2,31 +2,35 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
-	if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
-	let uid = args[0];
-	if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
-	const player = await osudroid.Player.getInformation({uid: uid});
-	if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-	if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
-	let name = player.username;
-	let email = player.email;
-
-	let rolecheck;
-	try {
-		rolecheck = message.member.roles.color.hexColor
-	} catch (e) {
-		rolecheck = "#000000"
+	if (!message.isOwner) {
+		return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
 	}
-	let footer = config.avatar_list;
+	const uid = args[0];
+	if (isNaN(uid)) {
+		return message.channel.send("❎ **| I'm sorry, that uid is not valid.**");
+	}
+	const player = await osudroid.Player.getInformation({uid: uid});
+	if (player.error) {
+		return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+	}
+	if (!player.username) {
+		return message.channel.send("❎ **| I'm sorry, I cannot find the user you are looking for!**");
+	}
+	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
-	let embed = new Discord.MessageEmbed()
+	const embed = new Discord.MessageEmbed()
 		.setTitle("User profile")
-		.setColor(rolecheck)
+		.setColor(message.member?.roles.color?.hexColor || "#000000")
 		.setFooter("Alice Synthesis Thirty", footer[index])
-		.addField("Username", name)
+		.addField("Username", player.username)
 		.addField("Uid", uid)
-		.addField("Email", email);
+		.addField("Email", player.email);
 
 	try {
 		message.author.send({embed: embed});
@@ -40,6 +44,6 @@ module.exports.config = {
 	name: "emailcheck",
 	description: "Retrieves the registered email of an droid account.",
 	usage: "emailcheck <uid>",
-	detail: "`uid`: Uid to retrieve email from [Integer]`",
-	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+	detail: "`uid`: The uid to retrieve email from [Integer]",
+	permission: "Bot Creators"
 };

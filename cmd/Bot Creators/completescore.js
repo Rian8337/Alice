@@ -1,182 +1,152 @@
 const Discord = require('discord.js');
-const request = require('request');
-const droidapikey = process.env.DROID_API_KEY;
+const { Db } = require('mongodb');
 const osudroid = require('osu-droid');
 
-function scoreRequirement(lvl) {
-    let xp;
-    if (lvl <= 100) xp = (5000 / 3 * (4 * Math.pow(lvl, 3) - 3 * Math.pow(lvl, 2) - lvl) + 1.25 * Math.pow(1.8, lvl - 60)) / 1.128;
-    else xp = 23875169174 + 15000000000 * (lvl - 100);
-    return Math.round(xp);
-}
-
-function levelUp(level, score, cb) {
-    let nextlevel = scoreRequirement(level + 1);
-    if (score < nextlevel) cb(level, true);
-    else {
-        level++;
-        cb(level, false);
+/**
+ * Calculates the level of a given score.
+ * 
+ * @param {number} score The score to calculate.
+ * @returns {number} The level of the given score.
+ */
+function calculateLevel(score) {
+    function scoreRequirement(level) {
+        return Math.round(
+            level <= 100 ? 
+            (5000 / 3 * (4 * Math.pow(level, 3) - 3 * Math.pow(level, 2) - level) + 1.25 * Math.pow(1.8, level - 60)) / 1.128 :
+            23875169174 + 15000000000 * (level - 100)
+        );
     }
-}
 
-function calculateLevel(lvl, score, cb) {
-    let xpreq = scoreRequirement(lvl + 1);
-    let nextlevel = 0;
-    let prevlevel = 0;
-    if (score >= xpreq) levelUp(lvl, score, function testcb(newlevel, stopSign) {
-        if (stopSign) {
-            nextlevel = scoreRequirement(newlevel + 1);
-            prevlevel = scoreRequirement(newlevel);
-            newlevel += (score - prevlevel) / (nextlevel - prevlevel);
-            console.log(newlevel);
-            cb(newlevel);
-        }
-        else levelUp(newlevel, score, testcb);
-    });
-    else {
-        nextlevel = xpreq;
-        prevlevel = scoreRequirement(lvl);
-        let newlevel = lvl + (score - prevlevel) / (nextlevel - prevlevel);
-        console.log(newlevel);
-        cb(newlevel);
+    let level = 1;
+    while (scoreRequirement(level + 1) <= score) {
+        ++level;
     }
+    const nextLevelReq = scoreRequirement(level + 1) - scoreRequirement(level);
+    const curLevelReq = score - scoreRequirement(level);
+    level += curLevelReq / nextLevelReq;
+    return level;
 }
+/**
+ * @param {number} uid 
+ * @param {number} page 
+ */
+function retrievePlays(uid, page) {
+    return new Promise(async resolve => {
+        console.log("Current page: " + page);
 
-function retrievePlay(uid, page, cb) {
-    console.log("Current page: " + page);
-    let url = "http://ops.dgsrz.com/api/scoresearchv2.php?apiKey=" + droidapikey + "&uid=" + uid + "&page=" + page;
-    request(url, (err, response, data) => {
-        if (err || !data) {
-            console.log("Empty response");
-            return cb([], false);
+        const apiRequestBuilder = new osudroid.DroidAPIRequestBuilder()
+            .setEndpoint("scoresearchv2.php")
+            .addParameter("uid", uid)
+            .addParameter("page", page);
+
+        const result = await apiRequestBuilder.sendRequest();
+
+        if (result.statusCode !== 200) {
+            console.log("Empty response from osu!droid API");
+            return resolve([]);
         }
-        let entries = [];
-        let line = data.split("<br>");
-        for (let i = 0; i < line.length; i++) entries.push(line[i].split(" "));
-        entries.shift();
-        if (!entries[0]) cb(entries, true);
-        else cb(entries, false);
+        const entries = [];
+        const lines = result.data.toString("utf-8").split('<br>');
+        lines.shift();
+        for (const line of lines) {
+            entries.push(new osudroid.Score().fillInformation(line));
+        }
+        resolve(entries);
     });
 }
 
-async function scoreCheck(scoreentries, score, cb) {
-    if (!score) return cb(false, true);
-    const mapinfo = await osudroid.MapInfo.getInformation({hash: score[11], file: false});
-    if (mapinfo.error) {
-        console.log("API fetch error");
-        return cb(true);
-    }
-    if (!mapinfo.title) {
-        console.log("Map not found");
-        return cb();
-    }
-    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-        console.log("Map is not ranked, approved, or loved");
-        return cb();
-    }
-    let scoreentry = [parseInt(score[3]), score[11]];
-    scoreentries.push(scoreentry);
-    cb();
-}
-
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel) return;
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
 
-    if (!args[0]) return message.channel.send("❎ **| Hey, I don't know who to recalculate!**");
-    let ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
+    if (!args[0]) {
+        return message.channel.send("❎ **| Hey, I don't know who to recalculate!**");
+    }
+    const ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
     let page = 0;
-    let playc = 0;
-    let scoreentries = [];
 
-    let binddb = maindb.collection("userbind");
+    const binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
 
     binddb.findOne(query, (err, userres) => {
         if (err) {
             console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
-        if (!userres) return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = userres.uid;
-        let username = userres.username;
-        let discordid = userres.discordid;
+        if (!userres) {
+            return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
+        const uid = userres.uid;
+        const username = userres.username;
+        const discordid = userres.discordid;
 
-        let scoredb = alicedb.collection("playerscore");
+        const scoredb = alicedb.collection("playerscore");
         query = {uid: uid};
-        scoredb.findOne(query, (err, res) => {
+        scoredb.findOne(query, async (err, res) => {
             if (err) {
                 console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            retrievePlay(uid, page, async function testcb(entries, stopSign) {
-                if (stopSign) {
-                    console.log("COMPLETED!");
-                    scoreentries.sort((a, b) => {
-                        return b[0] - a[0]
-                    });
-                    let score = 0;
-                    for (let i = 0; i < scoreentries.length; i++) score += scoreentries[i][0];
-                    calculateLevel(0, score, level => {
-                        console.log(score.toLocaleString());
-                        message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${score.toLocaleString()} (level ${Math.floor(level)}).**`);
-                        if (res) {
-                            let updateVal = {
-                                $set: {
-                                    level: level,
-                                    score: score,
-                                    playc: playc,
-                                    scorelist: scoreentries
-                                }
-                            };
-                            scoredb.updateOne(query, updateVal, err => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                                }
-                                console.log("Score updated");
-                            })
-                        } else {
-                            let insertVal = {
-                                uid: uid,
-                                username: username,
-                                level: level,
-                                score: score,
-                                playc: playc,
-                                scorelist: scoreentries
-                            };
-                            scoredb.insertOne(insertVal, err => {
-                                if (err) {
-                                    console.log(err);
-                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                                }
-                                console.log("Score added");
-                            });
-                        }
-                    });
-                    return;
+
+            await scoredb.deleteOne({uid});
+            await scoredb.insertOne({
+                uid,
+                username,
+                score: 0,
+                playc: 0,
+                scorelist: []
+            });
+
+            let totalScore = 0;
+            while (true) {
+                const entries = await retrievePlays(uid, page);
+                ++page;
+                if (entries.length === 0) {
+                    break;
                 }
-                console.table(entries);
-                let i = 0;
-                let attempt = 0;
-                await scoreCheck(scoreentries, entries[i], async function cb(error = false, stopFlag = false) {
-                    console.log(i);
-                    attempt++;
-                    if (attempt === 3 && error) i++;
-                    if (!error) {
-                        i++;
-                        playc++;
-                        attempt = 0;
+                
+                let score = 0;
+                const scoreEntries = [];
+                for await (const entry of entries) {
+                    const mapinfo = await osudroid.MapInfo.getInformation({hash: entry.hash, file: false});
+                    if (mapinfo.error) {
+                        continue;
                     }
-                    if (i < entries.length && !stopFlag) await scoreCheck(scoreentries, entries[i], cb);
-                    else {
-                        console.log("Done");
-                        scoreentries.sort((a, b) => {return b[0] - a[0]});
-                        page++;
-                        retrievePlay(uid, page, testcb);
+                    if (!mapinfo.title) {
+                        continue;
+                    }
+                    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                        continue;
+                    }
+                    totalScore += entry.score;
+                    score += entry.score;
+                    scoreEntries.push([entry.score, entry.hash]);
+                }
+
+                await scoredb.updateOne({uid}, {
+                    $inc: {
+                        score,
+                        playc: scoreEntries.length
+                    },
+                    $addToSet: {
+                        scorelist: {
+                            $each: scoreEntries
+                        }
                     }
                 });
-            });
+            }
+
+            const level = calculateLevel(totalScore);
+            console.log(totalScore.toLocaleString());
+            message.channel.send(`✅ **| ${message.author}, recalculated <@${discordid}>'s plays: ${totalScore.toLocaleString()} (level ${Math.floor(level)}).**`);
         });
     });
 };
@@ -186,5 +156,5 @@ module.exports.config = {
     description: "Recalculates all plays of an account.",
     usage: "completescore <user>",
     detail: "`user`: The user to calculate [UserResolvable (mention or user ID)]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

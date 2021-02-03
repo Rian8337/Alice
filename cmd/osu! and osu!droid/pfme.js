@@ -26,11 +26,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+			} else {
+				message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			}
 			return;
 		}
 		let uid = res.uid;
@@ -42,38 +45,44 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 			weight += Math.pow(0.95, i);
 		}
-		if (weighted_accuracy) weighted_accuracy /= weight;
+		if (weighted_accuracy) {
+			weighted_accuracy /= weight;
+		}
 		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+			} else {
+				message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			}
 			return;
 		}
 		if (!player.username) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
-			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+			} else {
+				message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+			}
 			return;
 		}
 		scoredb.findOne({uid: uid}, function(err, playerres) {
 			if (err) {
 				console.log(err);
-				return message.channel.send("Error: Empty database response. Please try again!");
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			let level = 1;
-			let score = 0;
-			if (playerres) {
-				score = playerres.score;
-				level = playerres.level;
-			}
+			const level = playerres?.level ?? 1;
+			const score = playerres?.score ?? 0;
 			pointdb.findOne(query, async function(err, pointres) {
 				if (err) {
 					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!");
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
 				let pictureConfig = {};
 				if (pointres) {
 					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {};
+					if (!pictureConfig) {
+						pictureConfig = {};
+					}
 				}
 
 				// background

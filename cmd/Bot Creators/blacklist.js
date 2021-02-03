@@ -90,5 +90,5 @@ module.exports.config = {
     description: "Blacklists a beatmap. Used to unrank ranked or loved beatmaps locally inside droid pp system.\n\nBlacklisting a beatmap will automatically unwhitelist it if it is whitelisted.",
     usage: "blacklist <beatmap link/ID> <reason>",
     detail: "`beatmap link/ID`: The beatmap link or ID to blacklist [Integer/String]\n`reason`: Reason for blacklisting [String]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

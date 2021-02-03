@@ -10,10 +10,6 @@ const config = require('../../config.json');
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    if (message.channel instanceof Discord.DMChannel || message.guild.id !== '316545691545501706') {
-        return;
-    }
-
     const date = new Date();
     if (args[1]) {
         const entry = args[1].split("-");
@@ -164,7 +160,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
                     .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index]);
                 msg.edit({embed: embed}).catch(console.error);
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                if (message.channel.type === "text") {
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                }
             });
 
             next.on("collect", () => {
@@ -173,12 +171,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 embed.setDescription(`**${description_list[(page - 1)].category}**\n\n${description_list[(page - 1)].description}`)
                     .setFooter(`Alice Synthesis Thirty | Page ${page}/${max_page}`, footer[index]);
                 msg.edit({embed: embed}).catch(console.error);
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                if (message.channel.type === "text") {
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                }
             });
 
             back.on("end", () => {
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                if (message.channel.type === "text") {
+                    msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                }
+                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id).catch(console.error));
             });
         });
     });
@@ -186,7 +188,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "activityinfo",
-    description: "Retrieves channel activities.",
+    description: "Views channel activities in international server.",
     usage: "activityinfo [mode] [<year>-<month>-<date>]",
     detail: "`mode`: Mode to use. Accepted arguments are `daily`, `weekly`, and `monthly`. Defaults to `overall` (will retrieve overall statistics) [String]\n`year`: UTC year to retrieve [Integer]\n`month`: UTC month to retrieve [Integer]\n`date`: UTC date to retrieve [Integer]",
     permission: "None"

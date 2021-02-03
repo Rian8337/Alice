@@ -76,8 +76,15 @@ module.exports.run = (client, message, args, maindb) => {
                                 console.log("Replay not found");
                                 continue;
                             }
+
                             await sleep(0.2);
-                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods});
+                            const stats = new osudroid.MapStats({
+                                ar: data.forcedAR,
+                                speedMultiplier: data.speedModification,
+                                isForceAR: !isNaN(data.forcedAR),
+                                oldStatistics: data.replayVersion <= 3
+                            });
+                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
                             const realAcc = new osudroid.Accuracy({
                                 n300: data.hit300,
                                 n100: data.hit100,
@@ -90,12 +97,13 @@ module.exports.run = (client, message, args, maindb) => {
                                 combo: replay.data?.maxCombo ?? combo,
                                 accPercent: realAcc,
                                 miss: replay.data?.hit0 ?? miss,
-                                mode: osudroid.modes.droid
+                                mode: osudroid.modes.droid,
+                                stats
                             });
                             const new_pp = parseFloat(npp.total.toFixed(2));
 
                             console.log(`${pp} => ${new_pp}`);
-                            new_pp_entries.push({
+                            const newEntry = {
                                 hash,
                                 title: mapinfo.fullTitle,
                                 pp: new_pp,
@@ -104,7 +112,14 @@ module.exports.run = (client, message, args, maindb) => {
                                 accuracy: parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2)),
                                 miss: replay.data?.hit0 ?? miss,
                                 scoreID
-                            });
+                            };
+                            if (stats.isForceAR) {
+                                newEntry.forcedAR = stats.ar;
+                            }
+                            if (stats.speedMultiplier !== 1) {
+                                newEntry.speedMultiplier = stats.speedMultiplier;
+                            }
+                            new_pp_entries.push(newEntry);
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
                         }
 
@@ -148,8 +163,8 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
     name: "recalcall",
-    description: "Recalculates the entire userbind database.",
+    description: "Recalculates all players' scores in pp database.",
     usage: "recalcall",
     detail: "None",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

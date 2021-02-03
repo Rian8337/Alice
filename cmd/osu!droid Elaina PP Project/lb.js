@@ -58,9 +58,9 @@ module.exports.run = (client, message, args, maindb) => {
             msg.react("⏮️").then(() => {
                 msg.react("⬅️").then(() => {
                     msg.react("➡️").then(() => {
-                        msg.react("⏭️").catch(e => console.log(e))
-                    })
-                })
+                        msg.react("⏭️").catch(console.error);
+                    });
+                });
             });
 
             const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});

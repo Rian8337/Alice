@@ -93,9 +93,7 @@ async function drawImage(properties, template = false) {
     if (flag) c.fillText(properties.player.location, 451, flag.height + 20);
 
     // ranked level
-    let textColor = properties.pictureConfig.textColor;
-    if (!textColor) textColor = "#000000";
-    c.fillStyle = textColor;
+    c.fillStyle = properties.pictureConfig.textColor ?? "#000000";
     c.fillText(((properties.level - Math.floor(properties.level)) * 100).toFixed(2) + "%", 245, 226);
     c.font = '19px Exo';
     c.fillText(`Lv${Math.floor(properties.level)}`, 15, 230);

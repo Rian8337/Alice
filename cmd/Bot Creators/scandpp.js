@@ -16,7 +16,7 @@ function sleep(seconds) {
  */
 module.exports.run = (client, message, args, maindb) => {
     if (!message.isOwner) {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
     const bindDb = maindb.collection("userbind");
@@ -26,7 +26,7 @@ module.exports.run = (client, message, args, maindb) => {
     bindDb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray(async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!");
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
@@ -88,8 +88,8 @@ module.exports.run = (client, message, args, maindb) => {
 
 module.exports.config = {
     name: "scandpp",
-    description: "Scans player's dpp entries and updates the list if outdated.",
+    description: "Scans players' dpp entries and updates the list if outdated.",
     usage: "scandpp",
     detail: "None",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

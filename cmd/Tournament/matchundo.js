@@ -1,7 +1,17 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'Referee')) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
+	if (!message.isOwner && !["316545691545501706", "526214018269184001"].includes(message.guild?.id) && !message.member?.roles.cache.find((r) => r.name === 'Referee')) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, can you give me a match ID?**");
 	let matchdb = maindb.collection("matchinfo");

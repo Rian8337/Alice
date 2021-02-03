@@ -3,19 +3,17 @@ const config = require('../../config.json');
 const osudroid = require('osu-droid');
 const AdmZip = require('adm-zip');
 const { Db } = require('mongodb');
+const cd = new Set();
 
 /**
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
- * @param {stringp} args 
+ * @param {string[]} args 
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel.type !== 'text') {
-        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    }
-    if (!message.isOwner) {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     }
 
     let uid, beatmap = "", hash = "";
@@ -41,15 +39,15 @@ module.exports.run = async (client, message, args, maindb) => {
             beatmap = args[0];
         }
         if (!beatmap && !hash) {
-            return message.channel.send("❎ **| Hey, please enter a valid beatmap link/ID or hash!**")
+            return message.channel.send("❎ **| Hey, please enter a valid beatmap link/ID or hash!**");
         }
     }
 
-    if (typeof beatmap === 'string') {
-        const a = beatmap.split("/");
-        beatmap = a[a.length - 1];
+    const a = beatmap.split("/");
+    beatmap = a[a.length - 1];
+    if (beatmap) {
+        beatmap = parseInt(beatmap);
     }
-    if (beatmap) beatmap = parseInt(beatmap);
     if (isNaN(beatmap) && !hash) {
         return message.channel.send("❎ **| Hey, please enter a valid beatmap link or ID!**");
     }
@@ -74,13 +72,21 @@ module.exports.run = async (client, message, args, maindb) => {
     if (!play.scoreID) {
         return message.channel.send(`❎ **| I'm sorry, ${args[1] ? "that uid does" : "you do"} not have a score submitted on that beatmap!**`);
     }
-    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: mapinfo?.osuFile}).analyze();
+    const mapFound = !!mapinfo.title;
+    const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: mapFound ? mapinfo.map : undefined}).analyze();
     const { data } = replay;
     if (!data) {
         return message.channel.send("❎ **| I'm sorry, I cannot find the replay of the score!**");
     }
-    const star = mapinfo ? new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: play.mods, stats: {oldStatistics: data.replayVersion <= 3}}) : undefined;
 
+    if (!message.isOwner) {
+        cd.add(message.author.id);
+        setTimeout(() => {
+            cd.delete(message.author.id);
+        }, 30000);
+    }
+
+    const star = mapFound ? new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: play.mods, stats: {oldStatistics: data.replayVersion <= 3}}) : undefined;
     const isOldReplay = data.replayVersion < 3;
 
     const zip = new AdmZip();
@@ -95,15 +101,15 @@ module.exports.run = async (client, message, args, maindb) => {
             score: play.score,
             combo: play.combo,
             mark: play.rank,
-            h300k: isOldReplay ? 0 : data.hit300k,
-            h300: isOldReplay ? 0 : data.hit300,
-            h100k: isOldReplay ? 0 : data.hit100k,
-            h100: isOldReplay ? 0 : data.hit100,
-            h50: isOldReplay ? 0 : data.hit50,
+            h300k: mapFound || !isOldReplay ? data.hit300k : 0,
+            h300: mapFound || !isOldReplay ? data.hit300 : 0,
+            h100k: mapFound || !isOldReplay ? data.hit100k : 0,
+            h100: mapFound || !isOldReplay ? data.hit100 : 0,
+            h50: mapFound || !isOldReplay ? data.hit50 : 0,
             misses: play.miss,
             accuracy: isOldReplay ? play.accuracy / 100 : data.accuracy,
             time: play.date.getTime(),
-            perfect: isOldReplay ? (play.miss > 0 ? 0 : 1) : (data.isFullCombo ? 1 : 0)
+            perfect: isOldReplay ? (play.miss === 0 ? 1 : 0) : (data.isFullCombo ? 1 : 0)
         }
     };
     zip.addFile("entry.json", Buffer.from(JSON.stringify(object, null, 2)));
@@ -140,12 +146,9 @@ module.exports.run = async (client, message, args, maindb) => {
     const max_error = count ? total / count : 0;
     const min_error = _count ? _total / _count : 0;
 
-    if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !star) {
+    if (!mapFound) {
         return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
     }
-
-    // replay.map = star.droidStars;
-    // replay.analyzeReplay();
 
     const realAcc = new osudroid.Accuracy({
         n300: data.hit300,
@@ -193,6 +196,6 @@ module.exports.config = {
 	name: "fetchreplay",
     description: "Fetches replay from a player or yourself on a beatmap.\n\nIf the second argument is omitted, your binded uid will be taken as the uid to fetch the replay from.",
 	usage: "fetchreplay <beatmap/uid> [beatmap]",
-	detail: "`beatmap`: The beatmap link, ID, or MD5 hash (prefix with `h:` if using hash) [Integer/String]\n`uid`: The uid of the player [Integer]",
+	detail: "`beatmap`: The beatmap link, ID, or MD5 hash (prefix with `h:` if using MD5 hash) [Integer/String]\n`uid`: The uid of the player [Integer]",
 	permission: "None"
 };

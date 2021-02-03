@@ -61,10 +61,7 @@ module.exports.run = (client, message) => {
 
     cd.add(message.channel.id);
     const dateBase = 1199145600000; // January 1st, 2008 0:00 UTC
-
-    /**
-     * @type {MapInfo[]}
-     */
+    
     const mapCache = [];
     let attempt = 0;
 
@@ -293,7 +290,9 @@ module.exports.run = (client, message) => {
                 if (guessedArtist !== beatmap.artist || guessedTitle !== beatmap.title) {
                     message.channel.send("❗**| No one guessed the beatmap! Here is the beatmap's information.**", {embed: embed});
 
-                    leaderboard.sort((a, b) => {return b.score - a.score;});
+                    leaderboard.sort((a, b) => {
+                        return b.score - a.score;
+                    });
                     let leaderboardString = "";
                     for (let i = 0; i < 10; ++i) {
                         if (!leaderboard[i]) {

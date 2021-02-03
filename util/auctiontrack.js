@@ -2,25 +2,32 @@ const Discord = require('discord.js');
 const config = require('../config.json');
 
 function capitalizeString(string = "") {
-    return string.charAt(0).toUpperCase() + string.slice(1)
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function retrieveAuction(res, i, cb) {
-    if (!res[i]) return cb(null, true);
-    cb(res[i])
+    if (!res[i]) {
+        return cb(null, true);
+    }
+    cb(res[i]);
 }
 
 function checkClan(clandb, bids, j, cb) {
-    if (!bids[j]) return cb(null, false, true);
+    if (!bids[j]) {
+        return cb(null, false, true);
+    }
     let name = bids[j].clan;
     clandb.findOne({name: name}, (err, clanres) => {
         if (err) {
             console.log(err);
-            cb(null, true)
+            cb(null, true);
         }
-        if (clanres) cb(clanres);
-        else cb()
-    })
+        if (clanres) {
+            cb(clanres);
+        } else {
+            cb();
+        }
+    });
 }
 
 module.exports.run = (client, maindb, alicedb) => {
@@ -37,11 +44,17 @@ module.exports.run = (client, maindb, alicedb) => {
         .setFooter("Alice Synthesis Thirty", footer[index]);
 
     auctiondb.find({expirydate: {$lte: curtime}}).sort({expirydate: 1}).toArray((err, auctionres) => {
-        if (err) return console.log(err);
-        if (auctionres.length === 0) return;
+        if (err) {
+            return console.log(err);
+        }
+        if (auctionres.length === 0) {
+            return;
+        }
         let i = 0;
         retrieveAuction(auctionres, i, function checkAuction(auction, stopSign = false) {
-            if (stopSign || curtime < auction.expirydate) return;
+            if (stopSign || curtime < auction.expirydate) {
+                return;
+            }
             let powerup = auction.powerup;
             let amount = auction.amount;
             let bids = auction.bids;
@@ -52,11 +65,11 @@ module.exports.run = (client, maindb, alicedb) => {
                 clandb.findOne({name: auction.auctioneer}, (err, clanres) => {
                     if (err) {
                         console.log(err);
-                        return retrieveAuction(auctionres, i, checkAuction)
+                        return retrieveAuction(auctionres, i, checkAuction);
                     }
                     if (!clanres) {
                         ++i;
-                        return retrieveAuction(auctionres, i, checkAuction)
+                        return retrieveAuction(auctionres, i, checkAuction);
                     }
                     let powerups = clanres.powerups;
                     let powerup_index = powerups.findIndex(pow => pow.name === powerup);
@@ -65,7 +78,7 @@ module.exports.run = (client, maindb, alicedb) => {
                     auctiondb.deleteOne({auctioneer: auction.auctioneer}, err => {
                         if (err) {
                             console.log(err);
-                            return retrieveAuction(auctionres, i, checkAuction)
+                            return retrieveAuction(auctionres, i, checkAuction);
                         }
                     });
                     updateVal = {
@@ -76,7 +89,7 @@ module.exports.run = (client, maindb, alicedb) => {
                     clandb.updateOne({name: auction.auctioneer}, updateVal, err => {
                         if (err) {
                             console.log(err);
-                            return retrieveAuction(auctionres, i, checkAuction)
+                            return retrieveAuction(auctionres, i, checkAuction);
                         }
                         embed.setColor('#cb3438')
                             .setTitle("Auction Information")
@@ -85,10 +98,10 @@ module.exports.run = (client, maindb, alicedb) => {
 
                         auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are no bids put!**`, {embed: embed});
                         ++i;
-                        retrieveAuction(auctionres, i, checkAuction)
+                        retrieveAuction(auctionres, i, checkAuction);
                     })
                 });
-                return
+                return;
             }
 
             let j = 0;
@@ -97,11 +110,11 @@ module.exports.run = (client, maindb, alicedb) => {
                     clandb.findOne({name: auction.auctioneer}, (err, clanres) => {
                         if (err) {
                             console.log(err);
-                            return checkClan(clandb, bids, j, isClanAvailable)
+                            return checkClan(clandb, bids, j, isClanAvailable);
                         }
                         if (!clanres) {
                             ++j;
-                            return checkClan(clandb, bids, j, isClanAvailable)
+                            return checkClan(clandb, bids, j, isClanAvailable);
                         }
                         let powerups = clanres.powerups;
                         let powerup_index = powerups.findIndex(pow => pow.name === powerup);
@@ -115,12 +128,15 @@ module.exports.run = (client, maindb, alicedb) => {
                         clandb.updateOne({name: auction.auctioneer}, updateVal, err => {
                             if (err) {
                                 console.log(err);
-                                return checkClan(clandb, bids, j, isClanAvailable)
+                                return checkClan(clandb, bids, j, isClanAvailable);
                             }
                             let top_string = '';
                             for (let i = 0; i < 5; i++) {
-                                if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
-                                else top_string += `#${i+1}: -\n`
+                                if (bids[i]) {
+                                    top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
+                                } else {
+                                    top_string += `#${i+1}: -\n`;
+                                }
                             }
                             embed.setTitle("Auction Information")
                                 .setDescription(auction_info)
@@ -129,14 +145,16 @@ module.exports.run = (client, maindb, alicedb) => {
                                 .addField("**Bid Information**", `**Bidders**: ${bids.length.toLocaleString()}\n**Top bidders**:\n${top_string}`);
                             auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! There are bids put, however all bidders were disbanded!**`, {embed: embed});
                             ++i;
-                            retrieveAuction(auctionres, i, checkAuction)
-                        })
+                            retrieveAuction(auctionres, i, checkAuction);
+                        });
                     });
-                    return
+                    return;
                 }
                 if (!clan) {
-                    if (!error) ++j;
-                    return checkClan(clandb, bids, j, isClanAvailable)
+                    if (!error) {
+                        ++j;
+                    }
+                    return checkClan(clandb, bids, j, isClanAvailable);
                 }
                 let powerups = clan.powerups;
                 let powerup_index = powerups.findIndex(pow => pow.name === powerup);
@@ -153,15 +171,20 @@ module.exports.run = (client, maindb, alicedb) => {
                 auctiondb.deleteOne({auctioneer: auction.auctioneer}, err => {
                     if (err) {
                         console.log(err);
-                        return checkClan(clandb, bids, j, isClanAvailable)
+                        return checkClan(clandb, bids, j, isClanAvailable);
                     }
 
                     let top_string = '';
                     for (let i = 0; i < 5; i++) {
-                        if (bids[i]) top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
-                        else top_string += `#${i+1}: -\n`
+                        if (bids[i]) {
+                            top_string += `#${i+1}: ${bids[i].clan} - ${coin}**${bids[i].amount.toLocaleString()}** Alice coins\n`;
+                        } else {
+                            top_string += `#${i+1}: -\n`;
+                        }
                     }
-                    if (j > 4) top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j].amount.toLocaleString()}** Alice coins`;
+                    if (j > 4) {
+                        top_string += `${'.\n'.repeat(Math.min(j - 4, 3))}#${j + 1}: ${clan.name} - ${coin}**${bids[j].amount.toLocaleString()}** Alice coins`;
+                    }
 
                     embed.setTitle("Auction Information")
                         .setDescription(auction_info)
@@ -171,11 +194,11 @@ module.exports.run = (client, maindb, alicedb) => {
 
                     auction_channel.send(`❗**| ${auction.auctioneer}'s \`${auction.name}\` auction has ended! ${j > 0 ? `Unfortunately, the top ${j} bidders were not available or disbanded. ` : ""}\`${clan.name}\` wins the auction!**`, {embed: embed});
                     ++i;
-                    retrieveAuction(auctionres, i, checkAuction)
-                })
-            })
-        })
-    })
+                    retrieveAuction(auctionres, i, checkAuction);
+                });
+            });
+        });
+    });
 };
 
 module.exports.config = {

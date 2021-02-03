@@ -1,3 +1,6 @@
+const { Client, Message } = require("discord.js");
+const { Db } = require("mongodb");
+
 function statusread(status) {
 	let code = 0;
 	switch (status) {
@@ -8,23 +11,29 @@ function statusread(status) {
 	return code
 }
 
+/**
+ * @param {Client} client 
+ * @param {Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
 	let id = args[0];
 	if (!id) return message.channel.send("❎ **| Hey, can you give me a match ID?**");
 	let matchdb = maindb.collection("matchinfo");
 	let query = { matchid: id };
-	matchdb.find(query).toArray(function(err, res) {
+	matchdb.findOne(query, function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
-		if (!res[0]) return message.channel.send("❎ **| I'm sorry, I can't find the match!**");
-		let name = res[0].name;
-		let t1name = res[0].team[0][0];
-		let t2name = res[0].team[1][0];
-		let t1score = res[0].team[0][1];
-		let t2score = res[0].team[1][1];
-		let status = statusread(res[0].status);
+		if (!res) return message.channel.send("❎ **| I'm sorry, I can't find the match!**");
+		let name = res.name;
+		let t1name = res.team[0][0];
+		let t2name = res.team[1][0];
+		let t1score = res.team[0][1];
+		let t2score = res.team[1][1];
+		let status = statusread(res.status);
 		const embed = {
 			"title": name,
 			"color": status,
@@ -42,7 +51,7 @@ module.exports.run = (client, message, args, maindb) => {
 			]
 		};
 		message.channel.send({embed: embed}).catch(console.error);
-	})
+	});
 };
 
 module.exports.config = {

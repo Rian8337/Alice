@@ -7,7 +7,16 @@ let maintenance_reason = '';
 const current_map = [];
 const globally_disabled_commands = [];
 const channel_disabled_commands = [];
+const channel_disabled_utils = [];
 let command_cooldown = 0;
+
+/**
+ * @param {string[] | undefined} disabledUtils 
+ * @param {string} utilName 
+ */
+function isUtilDisabled(disabledUtils, utilName) {
+	return !!disabledUtils?.find(v => v === utilName);
+}
 
 /**
  * @param {Discord.Client} client 
@@ -16,7 +25,9 @@ let command_cooldown = 0;
  * @param {Db} alicedb 
  */
 module.exports.run = async (client, message, maindb, alicedb) => {
-    message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
+	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
+	const disabledUtilConfiguration = channel_disabled_utils.find(v => v.channelID = message.channel.id);
+	const disabledUtils = disabledUtilConfiguration?.disabledUtils;
 	
 	if (message.embeds.length > 0) {
 		// owo bot support
@@ -37,18 +48,31 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 	}
 	
 	// 8ball
-	if ((message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) && message.content.endsWith("?")) {
+	if (
+		(message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) &&
+		message.content.endsWith("?") &&
+		!isUtilDisabled(disabledUtils, "8ball")
+	) {
 		client.subevents.get("8ball").run(client, message, msgArray, alicedb);
 	}
 	
 	// osu! beatmap link and osu!droid profile recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-		client.subevents.get("osuRecognition").run(client, message, current_map);
-		client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
+		if (!isUtilDisabled(disabledUtils, "osuRecognition") || message.member?.hasPermission("ADMINISTRATOR")) {
+			client.subevents.get("osuRecognition").run(client, message, current_map);
+		}
+		if (!isUtilDisabled(disabledUtils, "profileFetch")) {
+			client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
+		}
 	}
 	
 	// YouTube link detection
-	if (!(message.channel instanceof Discord.DMChannel) && !message.content.startsWith("&") && !message.content.startsWith(config.prefix)) {
+	if (
+		!(message.channel instanceof Discord.DMChannel) && 
+		message.content.startsWith("&") &&
+		!message.content.startsWith(config.prefix) &&
+		!isUtilDisabled(disabledUtils, "youtubeRecognition")
+	) {
 		client.subevents.get("youtubeRecognition").run(client, message, current_map);
 	}
 	
@@ -58,12 +82,12 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 	}
 	
 	// mention log
-	if (message.mentions.users.size > 0 && message.guild.id == '316545691545501706') {
+	if (message.mentions.users.size > 0 && message.guild.id === '316545691545501706') {
 		client.subevents.get("mentionLog").run(client, message);
 	}
 	
 	// self-talking (for fun lol)
-	if (message.author.id == '386742340968120321' && message.channel.id == '683633835753472032') {
+	if (message.author.id == '386742340968120321' && message.channel.id === '683633835753472032') {
 		client.channels.cache.get("316545691545501706").send(message.content);
 	}
 	
@@ -93,7 +117,7 @@ module.exports.run = async (client, message, maindb, alicedb) => {
 		message.channel.send(`✅ **| Successfully set command cooldown to ${seconds} ${seconds === 1 ? "second" : "seconds"}.**`);
 	}
 
-	if (message.author.id === "386742340968120321" && (command === config.prefix + 'gcmd' || command === config.prefix + 'globalcommand')) {
+	if (message.author.id === "386742340968120321" && (command === config.prefix + 'cmd' || command === config.prefix + 'command')) {
 		if (args[0] === "list") {
 			if (globally_disabled_commands.length === 0) {
 				return message.channel.send("❎ **| I'm sorry, there are no disabled commands now!**");
@@ -158,13 +182,27 @@ module.exports.config = {
 module.exports.maintenance = maintenance;
 
 /**
- * @param {{channelID: string, disabledCommands: string[]}[]} disabledCommands 
+ * Called upon bot start.
+ * 
+ * @param {{channelID: string, disabledCommands: string[], disabledUtils: string[]}[]} disabledCommandsAndUtils
  */
-module.exports.setDisabledCommands = disabledCommands => {
-	channel_disabled_commands.push(...disabledCommands);
+module.exports.setDisabledCommandsAndUtils = disabledCommandsAndUtils => {
+	disabledCommandsAndUtils.forEach(d => {
+		channel_disabled_commands.push({
+			channelID: d.channelID,
+			disabledCommands: d.disabledCommands
+		});
+
+		channel_disabled_utils.push({
+			channelID: d.channelID,
+			disabledUtils: d.disabledUtils
+		});
+	});
 };
 
 /**
+ * Called when a command is disabled/enabled in a channel.
+ * 
  * @param {{channelID: string, disabledCommands: string[]}} disabledCommand 
  */
 module.exports.setChannelDisabledCommands = disabledCommand => {
@@ -173,5 +211,25 @@ module.exports.setChannelDisabledCommands = disabledCommand => {
 		channel_disabled_commands.push(disabledCommand);
 	} else {
 		channel_disabled_commands[channelSettingIndex] = disabledCommand;
+	}
+};
+
+/**
+ * Called when a utility is disabled/enabled in a channel.
+ * 
+ * @param {{channelID: string, disabledUtils: string[]}} disabledUtil 
+ */
+module.exports.setChannelDisabledUtils = disabledUtil => {
+	const channelSettingIndex = channel_disabled_utils.findIndex(v => v.channelID === disabledUtil.channelID);
+	if (channelSettingIndex === -1) {
+		channel_disabled_utils.push({
+			channelID: disabledUtil.channelID,
+			disabledUtils: disabledUtil.disabledUtils
+		});
+	} else {
+		channel_disabled_utils[channelSettingIndex] = {
+			channelID: disabledUtil.channelID,
+			disabledUtils: disabledUtil.disabledUtils
+		};
 	}
 };

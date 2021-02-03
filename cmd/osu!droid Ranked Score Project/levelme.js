@@ -31,12 +31,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!userres) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			if (args[0]) {
+                message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+            } else {
+                message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+            }
 			return;
 		}
-        let uid = userres.uid;
-        let username = userres.username;
+        const uid = userres.uid;
+        const username = userres.username;
 
         query = {uid: uid};
         scoredb.findOne(query, async (err, res) => {
@@ -44,39 +47,32 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            let score = 0;
-            let level = 1;
-            let playc = 0;
-            if (res) {
-                score = res.score;
-                level = res.level;
-                playc = res.playc;
-            }
-            let levelremain = (level - Math.floor(level)) * 100;
+            const score = res?.score ?? 0;
+            const level = res?.level ?? 1;
+            const playc = res?.playc ?? 0;
+            const levelremain = (level - Math.floor(level)) * 100;
             const player = await osudroid.Player.getInformation({uid: uid});
             if (player.error) {
-                if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
-                else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+                if (args[0]) {
+                    message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
+                } else {
+                    message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+                }
                 return;
             }
-            if (!player.username) return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
-            let avalink = player.avatarURL;
-            let rolecheck;
-            try {
-                rolecheck = message.member.roles.color.hexColor;
-            } catch (e) {
-                rolecheck = "#000000";
+            if (!player.username) {
+                return message.channel.send("❎ **| I'm sorry, I cannot find the user info!**");
             }
-            let footer = config.avatar_list;
+            const footer = config.avatar_list;
             const index = Math.floor(Math.random() * footer.length);
-            let embed = new Discord.MessageEmbed()
-                .setColor(rolecheck)
-                .setThumbnail(avalink)
+            const embed = new Discord.MessageEmbed()
+                .setColor(message.member?.roles.color?.hexColor || "#000000")
+                .setThumbnail(player.avatarURL)
                 .setAuthor(`Level profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", `http://ops.dgsrz.com/profile.php?uid=${uid}.html`)
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setDescription(`**Total Ranked Score:** ${score.toLocaleString()}\n**Play Count:** ${playc}\n**Level:** ${Math.floor(level)} (${levelremain.toFixed(2)}%)\n\n**Level Progress**\n${levelBar(levelremain)}`);
 
-            message.channel.send({embed: embed}).catch(console.error);
+            message.channel.send(embed).catch(console.error);
         });
     });
 };

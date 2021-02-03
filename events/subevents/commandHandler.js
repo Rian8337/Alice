@@ -39,7 +39,7 @@ module.exports.run = obj => {
         return;
     }
     
-    if (!message.isOwner) {
+    if (!message.isOwner && !message.member?.hasPermission("ADMINISTRATOR")) {
         if (maintenance) {
             return message.channel.send(`❎ **| I'm sorry, I'm currently under maintenance due to \`${maintenance_reason}\`. Please try again later!**`);
         }

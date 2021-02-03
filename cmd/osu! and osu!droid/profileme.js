@@ -26,7 +26,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
@@ -35,7 +35,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		}
 		let uid = res.uid;
 		let pp = res.pptotal;
-		let pp_entries = res.pp ? res.pp : [];
+		let pp_entries = res.pp ?? [];
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
@@ -45,30 +45,32 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (weighted_accuracy) weighted_accuracy /= weight;
 		const player = await osudroid.Player.getInformation({uid: uid}).catch(console.error);
 		if (player.error) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-			else message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+			} else {
+				message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+			}
 			return;
 		}
 		if (!player.username) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
-			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
+			} else {
+				message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+			}
 			return;
 		}
 		scoredb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);
-				return message.channel.send("Error: Empty database response. Please try again!");
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			let level = 1;
-			let score = 0;
-			if (playerres) {
-				score = playerres.score;
-				level = playerres.level;
-			}
+			const level = playerres?.level ?? 1;
+			const score = playerres?.score ?? 0;
 			pointdb.findOne({uid: uid}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
-					return message.channel.send("Error: Empty database response. Please try again!");
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
 				let coins = 0;
 				let points = 0;
@@ -77,7 +79,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					points = pointres.points;
 					coins = pointres.alicecoins;
 					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) pictureConfig = {}
+					if (!pictureConfig) {
+						pictureConfig = {};
+					}
 				}
 
 				// background
@@ -169,9 +173,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				if (flag) c.fillText(player.location, 451, flag.height + 20);
 
 				// ranked level
-				let textColor = pictureConfig.textColor;
-				if (!textColor) textColor = "#000000";
-				c.fillStyle = textColor;
+				c.fillStyle = pictureConfig.textColor ?? "#000000";
 				c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 245, 226);
 				c.font = '19px Exo';
 				c.fillText(`Lv${Math.floor(level)}`, 15, 230);

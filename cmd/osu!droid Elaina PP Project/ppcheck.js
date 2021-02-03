@@ -87,7 +87,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     binddb.findOne(query, (err, res) => {
         if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!res) {
 			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")

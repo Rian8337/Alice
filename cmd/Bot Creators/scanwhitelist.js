@@ -16,14 +16,14 @@ function sleep(seconds) {
  */
 module.exports.run = (client, message, args, maindb) => {
     if (!message.isOwner) {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
     const whitelistdb = maindb.collection("mapwhitelist");
     whitelistdb.find({}, {projection: {_id: 0, mapid: 1, hashid: 1}}).toArray(async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!");
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
 
         let outdatedCount = 0;
@@ -56,7 +56,7 @@ module.exports.run = (client, message, args, maindb) => {
                 await whitelistdb.updateOne({mapid: entry.mapid}, {$set: {hashid: mapinfo.hash}});
             }
         }
-        message.channel.send(`✅ **| ${message.author}, scan complete! A total of ${outdatedCount} entries were outdated, ${notAvailableCount} entries were not available, and ${deletedCount} entries were deleted.**`)
+        message.channel.send(`✅ **| ${message.author}, scan complete! A total of ${outdatedCount} entries were outdated, ${notAvailableCount} entries were not available, and ${deletedCount} entries were deleted.**`);
     });
 };
 
@@ -65,5 +65,5 @@ module.exports.config = {
     description: "Scans whitelist entries and updates the entry if it's outdated.",
     usage: "scanwhitelist",
     detail: "None",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

@@ -5,14 +5,24 @@ module.exports.run = (client, member, maindb) => {
     
     let query = {discordid: member.id};
     binddb.findOne(query, (err, res) => {
-        if (err) return console.log(err);
-        if (!res) return;
+        if (err) {
+            return console.log(err);
+        }
+        if (!res) {
+            return;
+        }
         let clan = res.clan;
-        if (!clan) return;
+        if (!clan) {
+            return;
+        }
         query = {name: clan};
         clandb.findOne(query, (err, clanres) => {
-            if (err) return console.log(err);
-            if (!clanres) return;
+            if (err) {
+                return console.log(err);
+            }
+            if (!clanres) {
+                return;
+            }
             let member_list = clanres.member_list;
             let leader = clanres.leader;
             const index = member_list.findIndex(m => m.id === member.id);
@@ -26,19 +36,23 @@ module.exports.run = (client, member, maindb) => {
                 }
             };
             binddb.updateOne({discordid: member.id}, updateVal, err => {
-                if (err) return console.log(err);
+                if (err) {
+                    return console.log(err);
+                }
                 updateVal = {
                     $set: {
                         member_list: member_list
                     }
                 };
                 clandb.updateOne(query, updateVal, err => {
-                    if (err) return console.log(err);
-                    client.users.fetch(leader).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, the user has been kicked from your clan!**`).catch(console.error)).catch(console.error)
-                })
-            })
-        })
-    })
+                    if (err) {
+                        return console.log(err);
+                    }
+                    client.users.fetch(leader).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, the user has been kicked from your clan!**`).catch(console.error)).catch(console.error);
+                });
+            });
+        });
+    });
 };
 
 module.exports.config = {

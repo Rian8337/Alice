@@ -10,7 +10,7 @@ module.exports.run = (client, message, video_id, current_map) => {
         try {
             info = JSON.parse(data);
         } catch (e) {
-            return
+            return;
         }
         let items = info.items[0].snippet;
         let description = items.description;
@@ -22,7 +22,9 @@ module.exports.run = (client, message, video_id, current_map) => {
                 break;
             }
             let entry = desc_entry[i];
-            if (entry.indexOf("https://osu.ppy.sh/") === -1 && entry.indexOf("https://bloodcat.com/osu/s/") === -1) continue;
+            if (entry.indexOf("https://osu.ppy.sh/") === -1 && entry.indexOf("https://bloodcat.com/osu/s/") === -1) {
+                continue;
+            }
             entry = entry.replace("\r", "");
 
             let link_entry = entry.split(" ");
@@ -31,13 +33,20 @@ module.exports.run = (client, message, video_id, current_map) => {
                     break;
                 }
                 let msg = link_entry[j];
-                if (!msg.startsWith("https://osu.ppy.sh/") && !msg.startsWith("https://bloodcat.com/osu/s/")) continue;
+                if (!msg.startsWith("https://osu.ppy.sh/") && !msg.startsWith("https://bloodcat.com/osu/s/")) {
+                    continue;
+                }
                 let a = msg.split("/");
                 let id = parseInt(a[a.length - 1]);
-                if (isNaN(id)) continue;
+                if (isNaN(id)) {
+                    continue;
+                }
                 ++count;
-                if (msg.indexOf("#osu/") !== -1 || msg.indexOf("/b/") !== -1 || msg.indexOf("/beatmaps/") !== -1) client.utils.get("autocalc").run(client, message, [msg], current_map);
-                else if (msg.indexOf("/beatmapsets/") !== -1 || msg.indexOf("/s/") !== -1) client.utils.get("autocalc").run(client, message, [msg], current_map, true);
+                if (msg.indexOf("#osu/") !== -1 || msg.indexOf("/b/") !== -1 || msg.indexOf("/beatmaps/") !== -1) {
+                    client.utils.get("autocalc").run(client, message, [msg], current_map);
+                } else if (msg.indexOf("/beatmapsets/") !== -1 || msg.indexOf("/s/") !== -1) {
+                    client.utils.get("autocalc").run(client, message, [msg], current_map, true);
+                }
             }
         }
     });

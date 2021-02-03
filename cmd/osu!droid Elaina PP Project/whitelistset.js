@@ -3,6 +3,7 @@ const osudroid = require('osu-droid');
 const https = require("https");
 const apikey = process.env.OSU_API_KEY;
 const config = require('../../config.json');
+const { Db } = require('mongodb');
 
 function mapstatusread(status) {
 	switch (status) {
@@ -17,9 +18,19 @@ function mapstatusread(status) {
 	}
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    if (message.member.roles == null || !message.member.roles.cache.find((r) => r.name === 'pp-project Map Validator')) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+    if (message.channel instanceof Discord.DMChannel) {
+        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
+    }
+    if (!message.isOwner && message.member.roles.cache.has('551662273962180611')) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
 
     let whitelist = maindb.collection("mapwhitelist");
     let link_in = args[0];
@@ -66,7 +77,7 @@ module.exports.run = (client, message, args, maindb) => {
                 });
             });
         }
-        else message.channel.send("❎ **| I'm sorry, beatmap white-listing failed.**");
+        else message.channel.send("❎ **| I'm sorry, beatmap whitelisting failed.**");
     });
 };
 

@@ -23,7 +23,9 @@ function isPrime(num) {
 
     let sqrt_num = Math.floor(Math.sqrt(num));
     for (let i = 2; i < sqrt_num; i++) {
-        if (num % i === 0) return false;
+        if (num % i === 0) {
+            return false;
+        }
     }
 
     return true;
@@ -163,11 +165,15 @@ module.exports.run = (client, message, args) => {
 
     switch (mode) {
         case "single":
-            if (cd.has(message.author.id)) return message.channel.send("❎ **| Hey, you still have a game ongoing! Play that one instead!**");
+            if (cd.has(message.author.id)) {
+                return message.channel.send("❎ **| Hey, you still have a game ongoing! Play that one instead!**");
+            }
             cd.add(message.author.id);
             break;
         case "multi":
-            if (cd.has(message.channel.id)) return message.channel.send("❎ **| Hey, there is a game ongoing in this channel! Play that one instead!**");
+            if (cd.has(message.channel.id)) {
+                return message.channel.send("❎ **| Hey, there is a game ongoing in this channel! Play that one instead!**");
+            }
             cd.add(message.channel.id);
             break;
         default: return message.channel.send("❎ **| I'm sorry, that mode is invalid! Accepted modes are \`single\` and \`multi\`.**");
@@ -196,19 +202,13 @@ module.exports.run = (client, message, args) => {
                 answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
             }
 
-            let rolecheck;
-            try {
-                rolecheck = message.member.roles.color.hexColor;
-            } catch (e) {
-                rolecheck = "#000000";
-            }
             const footer = config.avatar_list;
             const index = Math.floor(Math.random() * footer.length);
             const embed = new Discord.MessageEmbed()
                 .setTitle("Math Game Statistics")
                 .setFooter("Alice Synthesis Thirty", footer[index])
                 .setTimestamp(new Date())
-                .setColor(rolecheck)
+                .setColor(message.member?.roles.color?.hexColor || "#000000")
                 .setDescription(`**Game starter**: ${message.author}\n**Time started**: ${message.createdAt.toUTCString()}\n**Duration**: ${timeConvert(Math.floor((Date.now() - message.createdTimestamp) / 1000))}\n**Level reached**: Operator count ${operator_amount}, level ${level}\n\n**Total correct answers**: ${total_answer} ${total_answer === 1 ? "answer" : "answers"}\n${answer_string}`);
             
             cd.delete(mode === "single" ? message.author.id : message.channel.id);
@@ -266,19 +266,13 @@ module.exports.run = (client, message, args) => {
                         answer_string += `#${i+1}: <@${answer_list[i].id}> - ${answer_list[i].count} ${answer_list[i].count === 1 ? "answer" : "answers"}\n`;
                     }
 
-                    let rolecheck;
-                    try {
-                        rolecheck = message.member.roles.color.hexColor;
-                    } catch (e) {
-                        rolecheck = "#000000";
-                    }
                     const footer = config.avatar_list;
                     const index = Math.floor(Math.random() * footer.length);
                     const embed = new Discord.MessageEmbed()
                         .setTitle("Math Game Statistics")
                         .setFooter("Alice Synthesis Thirty", footer[index])
                         .setTimestamp(new Date())
-                        .setColor(rolecheck)
+                        .setColor(message.member?.roles.color?.hexColor || "#000000")
                         .setDescription(`**Game starter**: ${message.author}\n**Time started**: ${message.createdAt.toUTCString()}\n**Duration**: ${timeConvert(Math.floor((Date.now() - message.createdTimestamp) / 1000))}\n**Level reached**: Operator count ${operator_amount}, level ${level}\n\n**Total correct answers**: ${total_answer} ${total_answer === 1 ? "answer" : "answers"}\n${answer_string}`);
 
                     cd.delete(mode === "single" ? message.author.id : message.channel.id);

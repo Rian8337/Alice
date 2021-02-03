@@ -2,17 +2,20 @@ const Discord = require('discord.js');
 const config = require('../../config.json');
 const osudroid = require('osu-droid');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    }
-    if (!message.isOwner && message.author.id !== "293340533021999105") {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
-    let whitelist = maindb.collection("mapwhitelist");
-    let link_in = args[0];
-    let hash_in = args[1];
+    const whitelist = maindb.collection("mapwhitelist");
+    const link_in = args[0];
+    const hash_in = args[1];
     await whitelistInfo(link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
         if (res > 0) {
             let dupQuery = {mapid: parseInt(mapid)};
@@ -36,7 +39,7 @@ module.exports.run = async (client, message, args, maindb) => {
                 } catch (e) {}
             });
         }
-        else message.channel.send("Beatmap white-listing failed");
+        else message.channel.send("❎ **| Beatmap unwhitelisting failed.**");
     });
 };
 
@@ -89,5 +92,5 @@ module.exports.config = {
     description: "Unwhitelists a beatmap.",
     usage: "unwhitelist <map link/map ID>",
     detail: "`map link/map ID`: The beatmap link or ID to unwhitelist [String]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

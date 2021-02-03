@@ -45,9 +45,6 @@ function editpp(client, rplay, name, page, footer, index, color, message) {
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel) {
-		return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-	}
 	let ufind = message.author.id;
 	if (cd.has(ufind)) {
 		return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
@@ -79,7 +76,7 @@ module.exports.run = (client, message, args, maindb) => {
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
 			return;
 		}
@@ -95,7 +92,9 @@ module.exports.run = (client, message, args, maindb) => {
 			else message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
 			return;
 		}
-		if (player.recentPlays.length === 0) return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+		if (player.recentPlays.length === 0) {
+			return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any plays!**");
+		}
 		const name = player.username;
 		const rplay = player.recentPlays;
 		const footer = config.avatar_list;
@@ -118,9 +117,16 @@ module.exports.run = (client, message, args, maindb) => {
 			const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 60000});
 
 			backward.on('collect', () => {
-				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (page === 1) {
+					if (message.channel.type === "text") {
+						msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+					}
+					return;
+				}
 				else page = 1;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
@@ -128,7 +134,9 @@ module.exports.run = (client, message, args, maindb) => {
 			back.on('collect', () => {
 				if (page === 1) page = 10;
 				else page--;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
@@ -136,21 +144,32 @@ module.exports.run = (client, message, args, maindb) => {
 			next.on('collect', () => {
 				if (page === 10) page = 1;
 				else page++;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			forward.on('collect', () => {
-				if (page === 10) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (page === 10) {
+					if (message.channel.type === "text") {
+						msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+					}
+					return;
+				}
 				else page = 10;
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				embed = editpp(client, rplay, name, page, footer, index, color, message);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
 			backward.on("end", () => {
-				msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
+				if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				}
 				msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
 			});
 		});

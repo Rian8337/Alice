@@ -1963,5 +1963,5 @@ module.exports.config = {
     description: "Main command for daily challenges.",
     usage: "daily\ndaily about\ndaily bounty [check|challenges]\ndaily challenges\ndaily check\ndaily checksubmit <challenge ID> <uid>\ndaily lb [page]\ndaily manual\ndaily profile [user]\ndaily start <challenge ID> (specific person)",
     detail: "`challenge ID`: The ID of the challenge [String]\n`check`: Checks the current ongoing weekly bounty challenge. If not defined, submits the user's plays to validate [String]\n`page`: Page of leaderboard [Integer]\n`uid`: The uid to check submission for [Integer]\n`user`: The user to view or give [UserResolvable (mention or user ID)]",
-    permission: "None | Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "None | Bot Creators"
 };

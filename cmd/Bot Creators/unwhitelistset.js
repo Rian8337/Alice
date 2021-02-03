@@ -23,11 +23,8 @@ function mapstatusread(status) {
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    }
-    if (!message.isOwner && message.author.id !== "293340533021999105") {
-        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
     const whitelist = maindb.collection("mapwhitelist");
@@ -133,5 +130,5 @@ module.exports.config = {
     description: "Unwhitelists a beatmap set.",
     usage: "unwhitelistset <map set link/map set ID>",
     detail: "`map set link/map set ID`: The beatmap set link or ID to unwhitelist [String]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

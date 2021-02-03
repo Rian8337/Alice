@@ -5,9 +5,9 @@ async function filterMessage(message, filter, i, count, embed, startid) {
     let lastid = final.first();
     if (!lastid) {
         console.log("Complete!");
-        if (count === 1) return message.channel.send("No users have sent that message!");
-        if (count % 25 !== 0) return message.channel.send(embed);
-        else return
+        if (count === 1) message.channel.send("No users have sent that message!");
+        if (count % 25 !== 0) message.channel.send(embed);
+        return;
     }
     lastid = lastid.id;
     console.log("Start ID: " + startid);
@@ -27,20 +27,31 @@ async function filterMessage(message, filter, i, count, embed, startid) {
             i = 1;
             embed = new Discord.MessageEmbed()
                 .setTitle("Users who sent `" + filter + "`:")
-                .setColor(message.member.roles.color.hexColor)
+                .setColor(message.member.roles.color.hexColor);
         }
     });
-    return filterMessage(message, filter, i, count, embed, lastid)
+    return filterMessage(message, filter, i, count, embed, lastid);
 }
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ */
 module.exports.run = async (client, message, args) => {
-    if (!message.isOwner) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    if (!message.isOwner) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
+    }
 
     let startid = args[0];
-    if (isNaN(startid)) return message.channel.send("❎ **| Please enter valid message ID!**");
+    if (isNaN(startid)) {
+        return message.channel.send("❎ **| Please enter valid message ID!**");
+    }
 
     let filter = args.slice(1).join(" ");
-    if (!filter) return message.channel.send("❎ **| Please insert filter!**");
+    if (!filter) {
+        return message.channel.send("❎ **| Please insert filter!**");
+    }
 
     let embed = new Discord.MessageEmbed()
         .setTitle("Users who sent `" + filter + "`:")
@@ -54,5 +65,5 @@ module.exports.config = {
     description: "Fetches messages after a specified message with specific filter.",
     usage: "fetchmessage <id> <filter>",
     detail: "`id`: The message's ID [Snowflake (String)]\n`filter`: The filter to only search messages containing the filter [String]",
-    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+    permission: "Bot Creators"
 };

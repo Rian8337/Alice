@@ -18,17 +18,6 @@ function rankEmote(input) {
 	}
 }
 
-function getUidFromDatabase(bindDb, userID) {
-    return new Promise(resolve => {
-        bindDb.findOne({discordid: userID}, (err, res) => {
-            if (err || !res) {
-                return resolve(null);
-            }
-            resolve(res.uid);
-        });
-    });
-}
-
 /**
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
@@ -70,7 +59,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (ufind.length !== 18) {
                 return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
             }
-            uid = await getUidFromDatabase(bindDb, ufind);
+            uid = await bindDb.findOne({discordid: ufind});
             if (!uid) {
                 if (args[0]) {
                     message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
@@ -79,11 +68,12 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 }
                 return;
             }
+            uid = uid.uid;
         }
     }
 
     if (!uid) {
-        uid = await getUidFromDatabase(bindDb, message.author.id);
+        uid = await bindDb.findOne({discordid: message.author.id});
         if (!uid) {
             if (args[0]) {
                 message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
@@ -92,6 +82,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             }
             return;
         }
+        uid = uid.uid;
     }
 
     const play = await osudroid.Score.getFromHash({uid: uid, hash: hash});
@@ -116,12 +107,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
     }
 
-    const color = message.member.roles.color ? message.member.roles.color.hexColor : 8311585;
     const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()
         .setAuthor(title, player.avatarURL)
-        .setColor(color)
+        .setColor(message.member.roles.color?.hexColor || 8311585)
         .setFooter(`Achieved on ${date.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
     const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});

@@ -199,5 +199,5 @@ module.exports.config = {
 	description: "Used to track daily and weekly challenge time limit.",
 	usage: "None",
 	detail: "None",
-	permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
+	permission: "Bot Creators"
 };

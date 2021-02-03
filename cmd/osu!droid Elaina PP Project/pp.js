@@ -144,15 +144,22 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, your play is worth no pp!**");
                 }
                 const pp_object = {
-                    hash: hash,
+                    hash,
                     title: mapinfo.fullTitle,
-                    pp: pp,
-                    mods: mods,
+                    pp,
+                    mods,
                     accuracy: acc,
-                    combo: combo,
-                    miss: miss,
+                    combo,
+                    miss,
                     scoreID: score.scoreID
                 };
+                if (stats.isForceAR) {
+                    pp_object.forcedAR = stats.ar;
+                }
+                if (score.speedMultiplier !== 1) {
+                    pp_object.speedMultiplier = score.speedMultiplier;
+                }
+
                 playc++;
                 let duplicate = false;
                 for (let i in pplist) {
@@ -331,13 +338,19 @@ module.exports.run = (client, message, args, maindb) => {
                     const pp_object = {
                         hash: play.hash,
                         title: mapinfo.fullTitle,
-                        pp: pp,
-                        mods: mods,
+                        pp,
+                        mods,
                         accuracy: acc,
-                        combo: combo,
-                        miss: miss,
+                        combo,
+                        miss,
                         scoreID: play.scoreID
                     };
+                    if (stats.isForceAR) {
+                        pp_object.forcedAR = stats.ar;
+                    }
+                    if (play.speedMultiplier !== 1) {
+                        pp_object.speedMultiplier = play.speedMultiplier;
+                    }
 
                     ++playc;
                     let duplicate = false;

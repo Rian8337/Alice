@@ -1,8 +1,19 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, message, args, maindb) => {
-	if (message.channel instanceof Discord.DMChannel || message.member.roles == null || !message.member.roles.cache.find(r => r.name === "Referee")) return message.channel.send("❎ **| I'm sorry, you don't have enough permission to do this.**");
-	if (args.length <= 4) return message.channel.send("❎ **| I'm sorry, I need more input!**");
+	if (!message.isOwner && !["316545691545501706", "526214018269184001"].includes(message.guild?.id) && !message.member?.roles.cache.find((r) => r.name === 'Referee')) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
+	if (args.length <= 4) {
+		return message.channel.send("❎ **| I'm sorry, I need more input!**");
+	}
 	let id = args[0]; let i = 1; let name  = ""; let inName = false;
 	for (i; i < args.length; i++) {
 		if (args[i].includes("(")) inName = true;
@@ -14,7 +25,9 @@ module.exports.run = (client, message, args, maindb) => {
 	team.push([args[i], 0]);
 	team.push([args[i+1], 0]);
 	i+=2;
-	if ((args.length-i)%4!=0 && (args.length-i) <= 0) return message.channel.send("❎ **| I'm sorry, I need more input!**");
+	if ((args.length-i)%4!=0 && (args.length-i) <= 0) {
+		return message.channel.send("❎ **| I'm sorry, I need more input!**");
+	}
 	let player = [];
 	let nP = 0;
 	while (i < args.length) {
@@ -38,18 +51,18 @@ module.exports.run = (client, message, args, maindb) => {
 	matchdb.find(query).toArray(function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (res[0]) return message.channel.send("❎ **| I'm sorry, a match with the same match ID already exist!**");
 		matchdb.insertOne(matchinfo, function(err) {
 			if (err) {
 				console.log(err);
-				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
 			console.log("match added");
-			message.channel.send(`✅ **| Successfully added match \`${id}\`.**`)
-		})
-	})
+			message.channel.send(`✅ **| Successfully added match \`${id}\`.**`);
+		});
+	});
 };
 
 module.exports.config = {

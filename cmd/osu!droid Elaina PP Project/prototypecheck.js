@@ -87,11 +87,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     ppdb.findOne(query, (err, res) => {
         if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!");
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!res) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+			} else {
+				message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			}
 			return;
         } 
         const footer = config.avatar_list;
@@ -115,8 +118,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
             
             backward.on('collect', () => {
-				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = 1;
+				if (page === 1) {
+					return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				} else {
+					page = 1;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -125,8 +131,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			back.on('collect', () => {
-				if (page === 1) page = max_page;
-				else page--;
+				if (page === 1) {
+					page = max_page;
+				} else {
+					page--;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -135,8 +144,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			next.on('collect', () => {
-				if (page === max_page) page = 1;
-				else page++;
+				if (page === max_page) {
+					page = 1;
+				} else {
+					page++;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -145,8 +157,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			forward.on('collect', () => {
-				if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = max_page;
+				if (page === max_page) {
+					return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				} else {
+					page = max_page;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}

@@ -1,51 +1,61 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
 const config = require("../../config.json");
 
+/**
+ * Converts time from seconds to human-readable form.
+ * @param {number} num Amount of time in seconds.
+ * @returns {string} The human-readable form of time.
+ */
 function timeConvert(num) {
-    let sec = parseInt(num);
-    let hours = Math.floor(sec / 3600);
-    let minutes = Math.floor((sec - hours * 3600) / 60);
-    let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":")
+    let hours = Math.floor(num / 3600);
+    let minutes = Math.floor((num - hours * 3600) / 60);
+    let seconds = num - hours * 3600 - minutes * 60;
+    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":");
 }
 
-module.exports.run = (client, message, args) => {
-    if (message.channel instanceof Discord.DMChannel) return message.channel.send("This command is not available in DMs");
-    if (!message.member.hasPermission("ADMINISTRATOR", {checkAdmin: true, checkOwner: true})) return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this. Please ask an Owner!**");
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
+module.exports.run = (client, message, args, maindb, alicedb) => {
+    if (message.channel instanceof Discord.DMChannel) {
+        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
+    }
+    if (!message.member.hasPermission("CREATE_INSTANT_INVITE")) {
+        return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
+    }
 
-    let logchannel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
-    if (!logchannel) return message.channel.send(`Please create ${config.management_channel} first!`);
+    let maxage = parseInt(args[0]);
+    if (isNaN(maxage) || maxage < 0 || (maxage > 0 && maxage < 1)) {
+        return message.channel.send("❎ **| Hey, please enter valid time (in seconds) until invite link expires!**");
+    }
 
-    let maxage = args[0];
-    if (!maxage) return message.channel.send("Please enter time (seconds) until invite link expires!");
-    if (isNaN(maxage) || maxage < 0 || (maxage > 0 && maxage < 1)) return message.channel.send("Invalid time");
+    let maxuses = parseInt(args[1]);
+    if (isNaN(maxuses) || maxuses < 0) {
+        return message.channel.send("❎ **| Hey, please enter maximum invite link usage!**");
+    }
+    const reason = args.slice(2).join(" ") || "Not specified";
 
-    let maxuses = args[1];
-    if (!maxuses) return message.channel.send("Please enter maximum invite link usage!");
-    if (isNaN(maxuses) || maxuses < 0) return message.channel.send("Invalid maximum usage");
-
-    let reason = args.slice(2).join(" ");
-    if (!reason) return message.channel.send("Please enter your reason.");
-
-    message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses, reason: reason}).then((invite) => {
+    message.guild.systemChannel.createInvite({maxAge: maxage, maxUses: maxuses, reason: reason}).then(invite => {
         let time = timeConvert(maxage);
-        if (maxage == 0) time = 'Never';
-        if (maxuses == 0) maxuses = 'Infinite';
-
-        let footer = config.avatar_list;
-        const index = Math.floor(Math.random() * footer.length);
-        let rolecheck;
-        try {
-            rolecheck = message.member.roles.color.hexColor
-        } catch (e) {
-            rolecheck = "#000000"
+        if (maxage === 0) {
+            time = 'Never';
+        }
+        if (maxuses === 0) {
+            maxuses = 'Infinite';
         }
 
+        const footer = config.avatar_list;
+        const index = Math.floor(Math.random() * footer.length);
         const embed = new Discord.MessageEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
             .setFooter("Alice Synthesis Thirty", footer[index])
             .setTimestamp(new Date())
-            .setColor(rolecheck)
+            .setColor(message.member.roles.color?.hexColor || "#000000")
             .setTitle("Invite link created")
             .addField("Created in", message.channel)
             .addField("Maximum usage", maxuses)
@@ -53,8 +63,8 @@ module.exports.run = (client, message, args) => {
             .addField("Reason", reason)
             .addField("Invite link", invite.url);
 
-        message.channel.send({embed: embed}).catch(console.error)
-    })
+        message.channel.send({embed: embed}).catch(console.error);
+    });
 };
 
 module.exports.config = {
@@ -62,5 +72,5 @@ module.exports.config = {
     description: "Creates an invite link to the server's system channel.",
     usage: "createinvite <duration> <usage>",
     detail: "`duration`: Invite link expiration in seconds, set to 0 for never expire [Integer]\n`usage`: Maximum usage of invite link, set to 0 for infinite [Integer]",
-    permission: "Owner"
+    permission: "Create Invite"
 };
