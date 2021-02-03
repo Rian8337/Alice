@@ -8,7 +8,7 @@ const cd = new Set();
  * Checks if a specific uid has played verification map.
  *
  * @param {number|string} uid The uid of the account.
- * @returns {Promise<boolean>} Whether or not the player has played the map (`true` or `false`).
+ * @returns {Promise<boolean>} Whether or not the player has played the map.
  */
 async function checkPlay(uid) {
 	const play = await osudroid.Score.getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
@@ -22,35 +22,56 @@ async function checkPlay(uid) {
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-	if (message.channel.type !== "text") return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-	let inter_server = client.guilds.cache.get("316545691545501706");
-	let member = inter_server.member(message.author.id);
-	if (!member) return message.channel.send("❎ **| I'm sorry, you must be a verified member of the osu!droid International Discord server to use this command!**");
-	let role = member.roles.cache.find(r => r.name === "Member");
-	if (!role) {
-		if (message.guild.id === '316545691545501706') return message.channel.send("❎ **| I'm sorry, you must be a verified member to use this command!**");
-		else return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
+	if (cd.has(message.author.id)) {
+        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
+    }
+
+	if (!args[0]) {
+		return message.channel.send("❎ **| Hey, what am I supposed to bind? Give me a username or uid!**");
 	}
 
-	if (!args[0]) return message.channel.send("❎ **| Hey, what am I supposed to bind? Give me a username or uid!**");
-
 	let username, uid;
-	if (isNaN(args[0])) username = args[0];
-	else uid = parseInt(args[0]);
+	if (isNaN(args[0])) {
+		username = args[0];
+	} else {
+		uid = parseInt(args[0]);
+	}
 
 	const binddb = maindb.collection("userbind");
 	const player = await osudroid.Player.getInformation(uid ? {uid: uid} : {username: username});
-	if (player.error) message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-	if (!player.username) return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
+	if (player.error) {
+		return message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
+	}
+	if (!player.username) {
+		return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
+	}
 
 	uid = player.uid.toString();
 
 	binddb.findOne({previous_bind: {$all: [uid]}}, async (err, res) => {
 		if (err) {
 			console.log(err);
-			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
+			// Binding a new account must be done inside international server
+			const interServer = client.guilds.cache.get("316545691545501706");
+			if (message.guild.id !== interServer.id) {
+				return message.channel.send("❎ **| I'm sorry, new account binding must be done in the osu!droid International Discord server! This is required to keep bind moderation at ease.**");
+			}
+			const member = await interServer.members.fetch(message.author.id).catch();
+			if (!member) {
+				return message.channel.send("❎ **| I'm sorry, you must be a verified member of the osu!droid International Discord server to use this command!**");
+			}
+			const role = member.roles.cache.find(r => r.name === "Member");
+			if (!role) {
+				if (message.guild.id === '316545691545501706') {
+					return message.channel.send("❎ **| I'm sorry, you must be a verified member to use this command!**");
+				} else {
+					return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
+				}
+			}
+
 			const hasPlayed = await checkPlay(uid).catch(console.error);
 			if (!hasPlayed) {
 				cd.add(message.author.id);
@@ -70,15 +91,16 @@ module.exports.run = async (client, message, args, maindb) => {
 			binddb.findOne({discordid: message.author.id}, (err, bindres) => {
 				if (err) {
 					console.log(err);
-					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
 				if (bindres) {
-					let previous_bind = bindres.previous_bind;
-					if (!previous_bind) previous_bind = [];
-					if (previous_bind.length === 2) return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+					const previous_bind = bindres.previous_bind ?? [];
+					if (previous_bind.length === 2) {
+						return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+					}
 
 					previous_bind.push(uid);
-					let updateVal = {
+					const updateVal = {
 						$set: {
 							username: player.username,
 							uid: uid,
@@ -88,12 +110,12 @@ module.exports.run = async (client, message, args, maindb) => {
 					binddb.updateOne({discordid: message.author.id}, updateVal, err => {
 						if (err) {
 							console.log(err);
-							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 						}
 						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
 					});
 				} else {
-					let insertVal = {
+					const insertVal = {
 						discordid: message.author.id,
 						uid: uid,
 						username: player.username,
@@ -107,7 +129,7 @@ module.exports.run = async (client, message, args, maindb) => {
 					binddb.insertOne(insertVal, err => {
 						if (err) {
 							console.log(err);
-							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**")
+							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 						}
 						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
 					});
@@ -116,8 +138,10 @@ module.exports.run = async (client, message, args, maindb) => {
 			return;
 		}
 
-		if (res.discordid !== message.author.id) return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
-		let updateVal = {
+		if (res.discordid !== message.author.id) {
+			return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
+		}
+		const updateVal = {
 			$set: {
 				username: player.username,
 				uid: uid
