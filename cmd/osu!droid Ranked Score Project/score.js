@@ -4,6 +4,11 @@ const cd = new Set();
 const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 
+/**
+ * Calculates the score requirement of reaching a certain level.
+ * 
+ * @param {number} level The level to calculate.
+ */
 function scoreRequirement(level) {
     return Math.round(
         level <= 100 ? 
@@ -146,7 +151,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         const username = userres.username;
         const player = await osudroid.Player.getInformation({uid: uid});
         if (player.error) {
-            return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**")
+            return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
         }
         if (!player.username) {
             return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
