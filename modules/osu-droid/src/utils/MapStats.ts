@@ -261,6 +261,7 @@ export class MapStats {
                     if (this.pcMods & mods.osuMods.ez) {
                         this.cs *= 0.5;
                     }
+                    this.cs = Math.min(this.cs, 10);
                 }
 
                 if (this.hp !== undefined) {
