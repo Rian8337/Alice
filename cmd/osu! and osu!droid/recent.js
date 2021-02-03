@@ -115,7 +115,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()
         .setAuthor(title, player.avatarURL)
-        .setColor(message.member.roles.color?.hexColor || 8311585)
+        .setColor(message.member?.roles.color?.hexColor || 8311585)
         .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
     const entry = [message.channel.id, hash];
