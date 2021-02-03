@@ -164,6 +164,6 @@ module.exports.config = {
     name: "tempmute",
     description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
-    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Decimal]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
     permission: "Specific Roles"
 };

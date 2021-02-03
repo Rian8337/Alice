@@ -238,6 +238,6 @@ module.exports.config = {
 	name: "manualsubmit",
 	description: "Manually submits a match.",
 	usage: "manualsubmit <match id> <map sort> <score 1>[h] <acc 1> <miss 1> <score 2>[h] <acc 2> <miss 2> <...>",
-	detail: "`match id`: The ID of the match [String]\n`map sort` The order of the map in pool [Integer]\n`score n`: Score achieved by player n [Integer]\n`h`: Means the player played HDDT (applies score penalty, only works if pick is a DT pick) [String]\n`acc n`: Accuracy achieved by player n [Float]\n`miss n`: Amount of misses from player n [Integer]",
+	detail: "`match id`: The ID of the match [String]\n`map sort` The order of the map in pool [Integer]\n`score n`: Score achieved by player n [Integer]\n`h`: Means the player played HDDT (applies score penalty, only works if pick is a DT pick) [String]\n`acc n`: Accuracy achieved by player n [Decimal]\n`miss n`: Amount of misses from player n [Integer]",
 	permission: "Referee"
 };
