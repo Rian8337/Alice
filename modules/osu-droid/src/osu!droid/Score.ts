@@ -188,6 +188,7 @@ export class Score implements ScoreInformation {
         const play: string[] = info.split(" ");
             
         this.scoreID = parseInt(play[0]);
+        this.uid = parseInt(play[1]);
         this.username = play[2];
         this.score = parseInt(play[3]);
         this.combo = parseInt(play[4]);
