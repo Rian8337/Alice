@@ -52,7 +52,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     initiator: message.author.id,
                     channel: message.channel.id,
                     topic: topic,
-                    xp: xp_req,
                     choices: choice_list
                 };
 
