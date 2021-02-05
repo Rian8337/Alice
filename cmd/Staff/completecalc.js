@@ -101,6 +101,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         }
 
         const uid = res.uid;
+        const username = res.username;
         const isBanned = await banDb.findOne({uid: uid});
         if (isBanned) {
             return message.channel.send(`❎ **| I'm sorry, your currently binded account has been disallowed from submitting pp due to \`${isBanned.reason}\`**`);
