@@ -102,7 +102,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 			}
 			let realAcc = new osudroid.Accuracy({
 				percent: acc,
-				nobjects: mapinfo.objects
+				nobjects: mapinfo.objects,
+				nmiss: missc
 			});
 			if (acc === 100 && missc > 0 && !count50 && !count100) {
 				acc_estimation = true;
@@ -194,7 +195,8 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 	}
 	let realAcc = new osudroid.Accuracy({
 		percent: acc,
-		nobjects: mapinfo.objects
+		nobjects: mapinfo.objects,
+		nmiss: missc
 	});
 	if (acc === 100 && missc > 0 && isEstimatedValue) {
 		acc_estimation = true;

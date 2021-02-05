@@ -99,7 +99,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	let acc_estimation = false;
 	let realAcc = new osudroid.Accuracy({
 		percent: acc,
-		nobjects: mapinfo.objects
+		nobjects: mapinfo.objects,
+		nmiss: missc
 	});
 	const isEstimatedValue = count50 + count100 === 0;
 	if (acc === 100 && missc > 0 && isEstimatedValue) {
