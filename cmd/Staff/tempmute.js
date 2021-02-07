@@ -79,8 +79,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
             }
 
-            if (allowedRoleEntry.maxTime < mutetime) {
-                return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + allowedRoleEntry.maxTime.toLocaleString() + "seconds.**");
+            if (allowedRoleEntry.maxTime > 0 && allowedRoleEntry.maxTime < mutetime) {
+                return message.channel.send("❎ **| I'm sorry, you don't have enough permission to mute a user for longer than " + allowedRoleEntry.maxTime.toLocaleString() + " seconds.**");
             }
 
             const immuneRoleEntry = immuneMuteRoles.find(v => tomute.roles.cache.has(v));
@@ -164,6 +164,6 @@ module.exports.config = {
     name: "tempmute",
     description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
-    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Decimal]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
-    permission: "Specific Roles"
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
+    permission: "Helper"
 };
