@@ -51,6 +51,9 @@ async function calculatePP(ppentries, entry, cb) {
         return cb(true);
     }
     const scoreID = entry.scoreID;
+    if (entry.forcedAR !== undefined || entry.speedMultiplier !== 1) {
+        return cb();
+    }
     const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
     if (!replay.fixedODR) {
         console.log("Replay not found");

@@ -104,7 +104,13 @@ module.exports.run = (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I couldn't check the map's scores! Perhaps osu!droid server is down?**");
                 }
                 if (!score.title) {
-                    return message.channel.send("❎ **| I'm sorry, you don't have any plays submitted in this map!**");
+                    return message.channel.send("❎ **| I'm sorry, you don't have a score submitted in this map!**");
+                }
+                if (score.forcedAR !== undefined) {
+                    return message.channel.send("❎ **| I'm sorry, force AR is not allowed!**");
+                }
+                if (score.speedMultiplier !== 1) {
+                    return message.channel.send("❎ **| I'm sorry, custom speed multiplier is not allowed!**");
                 }
                 const mods = score.mods;
                 const acc = score.accuracy;
@@ -271,40 +277,47 @@ module.exports.run = (client, message, args, maindb) => {
                     const acc = play.accuracy;
                     const miss = play.miss;
 
+                    const titleString = `${submitted}. ${play.title} ${play.getCompleteModString()}`;
+                    const statsString = `${combo}x | ${acc}% | ${miss} ❌`;
+
                     if (mapinfo.error) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **API fetch error**`);
+                        embed.addField(titleString, `${statsString} | **API fetch error**`);
                         continue;
                     }
                     if (!mapinfo.title) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Beatmap not found**`);
+                        embed.addField(titleString, `${statsString} | **Beatmap not found**`);
                         continue;
                     }
                     if (!mapinfo.objects) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Beatmap with 0 objects**`);
+                        embed.addField(titleString, `${statsString} | **Beatmap with 0 objects**`);
                         continue;
                     }
                     if (!mapinfo.osuFile) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **API fetch error**`);
+                        embed.addField(titleString, `${statsString} | **API fetch error**`);
                         continue;
                     }
 
                     const isBlacklist = await blacklistDb.findOne({beatmapID: mapinfo.beatmapID});
                     if (isBlacklist) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Blacklisted**`);
+                        embed.addField(titleString, `${statsString} | **Blacklisted**`);
                         continue;
                     }
 
                     if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                         const isWhitelist = await whitelistDb.findOne({hashid: play.hash});
                         if (!isWhitelist) {
-                            embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Unranked beatmap**`);
+                            embed.addField(titleString, `${statsString} | **Unranked beatmap**`);
                             continue;
                         }
+                    }
+                    if (play.forcedAR !== undefined || play.speedMultiplier !== 1) {
+                        embed.addField(titleString, `${statsString} | **Unranked feature active**`);
+                        continue;
                     }
                     const replay = await new osudroid.ReplayAnalyzer({scoreID: play.scoreID, map: mapinfo.map}).analyze();
                     const { data } = replay;
                     if (!data) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Replay not found**`);
+                        embed.addField(titleString, `${statsString} | **Replay not found**`);
                         continue;
                     }
                     
@@ -331,7 +344,7 @@ module.exports.run = (client, message, args, maindb) => {
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
                     if (isNaN(pp)) {
-                        embed.addField(`${submitted}. ${play.title}${play.mods ? ` +${mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | **Calculation error**`);
+                        embed.addField(titleString, `${statsString} | **Calculation error**`);
                         continue;
                     }
 
@@ -373,14 +386,14 @@ module.exports.run = (client, message, args, maindb) => {
                         pplist.splice(75);
                     }
 
-                    if (duplicate) embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Duplicate**`);
+                    if (duplicate) embed.addField(titleString, `${statsString} | ${pp}pp | **Duplicate**`);
 				    else {
                         const dup_index = pplist.findIndex(p => p.hash === pp_object.hash);
                         if (dup_index !== -1) {
-                            embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp`);
+                            embed.addField(titleString, `${statsString} | ${pp}pp`);
                         }
                         else {
-                            embed.addField(`${submitted}. ${pp_object.title}${pp_object.mods ? ` +${pp_object.mods}` : ""}`, `${combo}x | ${acc}% | ${miss} ❌ | ${pp}pp | **Worth no pp**`);
+                            embed.addField(titleString, `${statsString} | ${pp}pp | **Worth no pp**`);
                         }
                     }
                 }

@@ -184,6 +184,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                     console.log("Map is blacklisted");
                     continue;
                 }
+                if (entry.forcedAR !== undefined || entry.speedMultiplier !== 1) {
+                    continue;
+                }
                 const { mods, combo, miss, scoreID, accuracy } = entry;
 
                 const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
