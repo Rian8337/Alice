@@ -14,7 +14,7 @@ function sleep(seconds) {
  * @param {string[]} args 
  * @param {Db} maindb 
  */
-module.exports.run = (client, message, args, maindb) => {
+module.exports.run = async (client, message, args, maindb) => {
     if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
@@ -23,20 +23,22 @@ module.exports.run = (client, message, args, maindb) => {
     const whitelistDb = maindb.collection("mapwhitelist");
     const blacklistDb = maindb.collection("mapblacklist");
 
-    bindDb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).toArray(async (err, res) => {
-        if (err) {
-            console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-        }
-        const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
+    const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
 
-        let count = 0;
-        console.log(`Scanning ${res.length} players`);
-        for await (const player of res) {
+    let skipMultiplier = 0;
+    let count = 0;
+    while (true) {
+        const players = await bindDb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).skip(skipMultiplier * 50).limit(50).toArray();
+        ++skipMultiplier;
+
+        if (players.length === 0) {
+            break;
+        }
+
+        for await (const player of players) {
             const ppList = player.pp;
             const newList = [];
             let i = 0;
-            let playCount = player.playc;
             console.log(`Scanning uid ${player.uid}`);
             console.log(`Scanning ${ppList.length} plays`);
             for await (const ppEntry of ppList) {
@@ -49,11 +51,6 @@ module.exports.run = (client, message, args, maindb) => {
                 if (!mapinfo.objects) {
                     continue;
                 }
-                ppEntry.title = mapinfo.fullTitle;
-                if (osudroid.mods.modbitsFromString(ppEntry.mods) & osudroid.mods.osuMods.nc) {
-                    ppEntry.isOldPlay = true;
-                }
-                
                 if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
                     continue;
                 }
@@ -73,17 +70,14 @@ module.exports.run = (client, message, args, maindb) => {
                 return b.pp - a.pp;
             });
 
-            let newTotal = 0;
-            for (let i = 0; i < newList.length; ++i) {
-                newTotal += newList[i].pp * Math.pow(0.95, i);
-            }
+            const newTotal = newList.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
             console.log(newTotal);
-            await bindDb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, playc: playCount, pp: newList}});
+            await bindDb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, pp: newList}});
             ++count;
-            console.log(`${count}/${res.length} players complete (${((count / res.length) * 100).toFixed(2)}%)`);
+            console.log(`${count} players recalculated`);
         }
-        message.channel.send(`✅ **| ${message.author}, scan done!**`);
-    });
+    }
+    message.channel.send(`✅ **| ${message.author}, scan done!**`);
 };
 
 module.exports.config = {
