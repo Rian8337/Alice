@@ -164,14 +164,8 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		main_bot: true
 	};
 
-	if (message.content.startsWith("&")) {
-		let mainbot = await message.guild?.members.fetch('391268244796997643').catch(console.error);
-		if (!mainbot || mainbot.user.presence.status !== 'offline') return;
-		obj.main_bot = false;
-		client.subevents.get("commandHandler").run(obj);
-	}
-	
-	if (message.content.startsWith(config.prefix)) {
+	if (message.content.startsWith(config.prefix) || message.content.startsWith("&")) {
+		obj.main_bot = message.content.startsWith(config.prefix);
 		client.subevents.get("commandHandler").run(obj);
 	}
 };
