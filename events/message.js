@@ -61,28 +61,27 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		if (!isUtilDisabled(disabledUtils, "osuRecognition") || message.member?.hasPermission("ADMINISTRATOR")) {
 			client.subevents.get("osuRecognition").run(client, message, current_map);
 		}
-		if (!isUtilDisabled(disabledUtils, "profileFetch")) {
+		if (!isUtilDisabled(disabledUtils, "profileFetch") || message.member?.hasPermission("ADMINISTRATOR")) {
 			client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
 		}
 	}
 	
 	// YouTube link detection
 	if (
-		!(message.channel instanceof Discord.DMChannel) && 
-		message.content.startsWith("&") &&
+		!message.content.startsWith("&") &&
 		!message.content.startsWith(config.prefix) &&
-		!isUtilDisabled(disabledUtils, "youtubeRecognition")
+		(!isUtilDisabled(disabledUtils, "youtubeRecognition") || message.member?.hasPermission("ADMINISTRATOR"))
 	) {
 		client.subevents.get("youtubeRecognition").run(client, message, current_map);
 	}
 	
 	// picture log
-	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && !(message.channel instanceof Discord.DMChannel) && message.guild.id === '316545691545501706') {
+	if (message.attachments.size > 0 && message.channel.id !== '686948895212961807' && message.guild?.id === '316545691545501706') {
 		client.subevents.get("pictureLog").run(client, message);
 	}
 	
 	// mention log
-	if (message.mentions.users.size > 0 && message.guild.id === '316545691545501706') {
+	if (message.mentions.users.size > 0 && message.guild?.id === '316545691545501706') {
 		client.subevents.get("mentionLog").run(client, message);
 	}
 	

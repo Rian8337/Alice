@@ -255,7 +255,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 default: {
                     embed.setTitle("Utilities Settings")
-                        .setDescription(`Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util disable/enable <util>\` to access this command.\nAvailable toggleable utilities are:\n- Beatmap detection (\`osuRecognition\`)\n- YouTube link beatmap detection (\`youtubeRecognition\`)\n- 8ball (\`8ball\`)\n- osu!droid profile detection (\`profileFetch\`)`);
+                        .setDescription(`Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util disable/enable <util>\` to access this command.\nAvailable toggleable utilities are:\n- Beatmap detection (\`osuRecognition\`)\n- YouTube link beatmap detection (\`youtubeRecognition\`)\n- 8ball (\`8ball\`)\n- osu!droid profile detection (\`profileFetch\`)\n\nUsers with Administrator permission will override this setting.`);
 
                     message.channel.send(embed);
                 }
@@ -515,7 +515,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         default: {
             embed.setTitle("Server Settings")
                 .addField("Command", `Enable or disable commands in the channel. Use \`${config.prefix}settings command\` to access this menu.\n\nUsers with Administrator permission will override this setting.`)
-                .addField("Utilities", `Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util\` to access this menu.`)
+                .addField("Utilities", `Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util\` to access this menu.\n\nUsers with Administrator permission will override this setting.`)
                 .addField("Punishment Log Channel", `Sets a log channel to log punishment history, such as mutes, kicks, and bans. Use \`${config.prefix}settings log <channel>\` to set the server's log channel. Only users with Administrator permission can access this menu.`)
                 .addField("Mute Configuration", `Allow certain roles to use mute commands and allow certain roles to be immune to it. Use \`${config.prefix}settings mute\` to access this menu.\n\nOnly users with Administrator permission can access this menu.`);
             
