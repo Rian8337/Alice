@@ -51,7 +51,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	if (
 		(message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) &&
 		message.content.endsWith("?") &&
-		!isUtilDisabled(disabledUtils, "8ball")
+		(!isUtilDisabled(disabledUtils, "8ball") || message.member?.hasPermission("ADMINISTRATOR"))
 	) {
 		client.subevents.get("8ball").run(client, message, msgArray, alicedb);
 	}
