@@ -26,7 +26,6 @@ function isUtilDisabled(disabledUtils, utilName) {
  */
 module.exports.run = (client, message, maindb, alicedb) => {
 	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
-	// TODO: figure out why the top channel config resets
 	const disabledUtilConfiguration = channel_disabled_utils.find(v => v.channelID === message.channel.id);
 	const disabledUtils = disabledUtilConfiguration?.disabledUtils;
 	
