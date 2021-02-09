@@ -161,11 +161,10 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		command_cooldown: command_cooldown,
 		maintenance: maintenance,
 		maintenance_reason: maintenance_reason,
-		main_bot: true
+		main_bot: message.content.startsWith(config.prefix)
 	};
 
 	if (message.content.startsWith(config.prefix) || message.content.startsWith("&")) {
-		obj.main_bot = message.content.startsWith(config.prefix);
 		client.subevents.get("commandHandler").run(obj);
 	}
 };
