@@ -40,14 +40,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
     switch (args[0]?.toLowerCase()) {
         case "command": {
+            const command = args[2]?.toLowerCase();
+            const cmd = client.commands.get(command) || client.aliases.get(command);
+
             switch (args[1]?.toLowerCase()) {
                 case "disable": {
-                    const command = args[2]?.toLowerCase();
                     if (!command) {
                         return message.channel.send("❎ **| Hey, please enter a command to disable!**");
                     }
-        
-                    const cmd = client.commands.get(command) || client.aliases.get(command);
                     if (!cmd) {
                         return message.channel.send("❎ **| I'm sorry, I cannot find the command that you want to disable!**");
                     }
@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
-                                message.channel.send(`✅ **| Successfully disabled \`${cmd.config.name}\`.**`);
+                                message.channel.send(`✅ **| Successfully enabled \`${cmd.config.name}\`.**`);
                             });
                         } else {
                             channelSettingsDb.insertOne({channelID: message.channel.id, disabledCommands, disabledUtils: []}, err => {
@@ -84,19 +84,16 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
-                                message.channel.send(`✅ **| Successfully disabled \`${cmd.config.name}\`.**`);
+                                message.channel.send(`✅ **| Successfully enabled \`${cmd.config.name}\`.**`);
                             });
                         }
                     });
                     break;
                 }
                 case "enable": {
-                    const command = args[2]?.toLowerCase();
                     if (!command) {
                         return message.channel.send("❎ **| Hey, please enter a command to enable!**");
                     }
-        
-                    const cmd = client.commands.get(command) || client.aliases.get(command);
                     if (!cmd) {
                         return message.channel.send("❎ **| I'm sorry, I cannot find the command that you want to enable!**");
                     }
@@ -146,22 +143,32 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
 
         case "util": {
-            const availableUtils = ["osuRecognition", "youtubeRecognition", "8ball", "profileFetch"];
+            const util = args[2]?.toLowerCase();
+            let utilName;
+            switch (util) {
+                case "beatmap":
+                    utilName = "osuRecognition";
+                    break;
+                case "youtube":
+                    utilName = "youtubeRecognition";
+                    break;
+                case "8ball":
+                    utilName = "8ball";
+                    break;
+                case "profile":
+                    utilName = "profileFetch";
+                    break;
+            }
+            const actualUtil = client.subevents.get(utilName);
 
             switch (args[1]?.toLowerCase()) {
                 case "enable": {
-                    const util = args[2]?.toLowerCase();
-
                     if (!util) {
                         return message.channel.send("❎ **| Hey, please enter a utility to enable!**");
                     }
-
-                    const utilName = availableUtils.find(v => v.toLowerCase() === util);
                     if (!utilName) {
                         return message.channel.send("❎ **| Hey, that utility isn't available!**");
                     }
-
-                    const actualUtil = client.subevents.get(utilName);
                     if (!actualUtil) {
                         return message.channel.send("❎ **| I'm sorry, I cannot find the utility that you want to enable!**");
                     }
@@ -202,18 +209,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     break;
                 }
                 case "disable": {
-                    const util = args[2]?.toLowerCase();
-
                     if (!util) {
                         return message.channel.send("❎ **| Hey, please enter a utility to disable!**");
                     }
-
-                    const utilName = availableUtils.find(v => v.toLowerCase() === util);
                     if (!utilName) {
                         return message.channel.send("❎ **| Hey, that utility isn't available!**");
                     }
-
-                    const actualUtil = client.subevents.get(utilName);
                     if (!actualUtil) {
                         return message.channel.send("❎ **| I'm sorry, I cannot find the utility that you want to disable!**");
                     }
@@ -255,7 +256,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 default: {
                     embed.setTitle("Utilities Settings")
-                        .setDescription(`Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util disable/enable <util>\` to access this command.\nAvailable toggleable utilities are:\n- Beatmap detection (\`osuRecognition\`)\n- YouTube link beatmap detection (\`youtubeRecognition\`)\n- 8ball (\`8ball\`)\n- osu!droid profile detection (\`profileFetch\`)\n\nUsers with Administrator permission will override this setting.`);
+                        .setDescription(`Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util disable/enable <util>\` to access this command.\nAvailable toggleable utilities are:\n- Beatmap detection (\`beatmap\`)\n- YouTube link beatmap detection (\`youtube\`)\n- 8ball (\`8ball\`)\n- osu!droid profile detection (\`profile\`)`);
 
                     message.channel.send(embed);
                 }
@@ -515,7 +516,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         default: {
             embed.setTitle("Server Settings")
                 .addField("Command", `Enable or disable commands in the channel. Use \`${config.prefix}settings command\` to access this menu.\n\nUsers with Administrator permission will override this setting.`)
-                .addField("Utilities", `Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util\` to access this menu.\n\nUsers with Administrator permission will override this setting.`)
+                .addField("Utilities", `Enable or disable utilities such as automatic beatmap detection, YouTube link beatmap detection, and 8ball in the channel. Use \`${config.prefix}settings util\` to access this menu.`)
                 .addField("Punishment Log Channel", `Sets a log channel to log punishment history, such as mutes, kicks, and bans. Use \`${config.prefix}settings log <channel>\` to set the server's log channel. Only users with Administrator permission can access this menu.`)
                 .addField("Mute Configuration", `Allow certain roles to use mute commands and allow certain roles to be immune to it. Use \`${config.prefix}settings mute\` to access this menu.\n\nOnly users with Administrator permission can access this menu.`);
             
