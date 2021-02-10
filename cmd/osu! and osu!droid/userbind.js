@@ -5,17 +5,6 @@ const { Client, Message, MessageAttachment } = require('discord.js');
 const cd = new Set();
 
 /**
- * Checks if a specific uid has played verification map.
- *
- * @param {number|string} uid The uid of the account.
- * @returns {Promise<boolean>} Whether or not the player has played the map.
- */
-async function checkPlay(uid) {
-	const play = await osudroid.Score.getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'}).catch(console.error);
-	return !!play.title;
-}
-
-/**
  * @param {Client} client 
  * @param {Message} message 
  * @param {string[]} args 
@@ -56,7 +45,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		if (!res) {
 			// Binding a new account must be done inside international server
 			const interServer = client.guilds.cache.get("316545691545501706");
-			if (message.guild.id !== interServer.id) {
+			if (message.guild?.id !== interServer.id) {
 				return message.channel.send("❎ **| I'm sorry, new account binding must be done in the osu!droid International Discord server! This is required to keep bind moderation at ease.**");
 			}
 			const member = await interServer.members.fetch(message.author.id).catch();
@@ -65,15 +54,15 @@ module.exports.run = async (client, message, args, maindb) => {
 			}
 			const role = member.roles.cache.find(r => r.name === "Member");
 			if (!role) {
-				if (message.guild.id === '316545691545501706') {
+				if (message.guild?.id === '316545691545501706') {
 					return message.channel.send("❎ **| I'm sorry, you must be a verified member to use this command!**");
 				} else {
 					return message.channel.send("❎ **| I'm sorry, you must be a verified member in the osu!droid International Discord server to use this command!**");
 				}
 			}
 
-			const hasPlayed = await checkPlay(uid).catch(console.error);
-			if (!hasPlayed) {
+			const score = await osudroid.Score.getFromHash({uid: uid, hash: '0eb866a0f36ce88b21c5a3d4c3d76ab0'});
+			if (!score.title) {
 				cd.add(message.author.id);
 				setTimeout(() => {
 					cd.delete(message.author.id);
