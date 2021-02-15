@@ -252,7 +252,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
         const fc_pp = new osudroid.PerformanceCalculator().calculate({
             stars: star.pcStars,
-            combo: combo,
+            combo: mapinfo.maxCombo,
             accPercent: fc_acc,
             mode: osudroid.modes.osu,
             stats
