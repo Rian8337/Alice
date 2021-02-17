@@ -402,7 +402,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 const { immuneMuteRoles } = res;
 
-                                const roleIndex = immuneMuteRoles.findIndex(v => v.id === role.id);
+                                const roleIndex = immuneMuteRoles.findIndex(v => v === role.id);
                                 if (roleIndex !== -1) {
                                     return message.channel.send("❎ **| I'm sorry, this role has been given mute immunity!**");
                                 }
@@ -444,7 +444,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 const { immuneMuteRoles } = res;
 
-                                const roleIndex = immuneMuteRoles.findIndex(v => v.id === role.id);
+                                const roleIndex = immuneMuteRoles.findIndex(v => v === role.id);
                                 if (roleIndex === -1) {
                                     return message.channel.send("❎ **| I'm sorry, this role does not have mute immunity!**");
                                 }
