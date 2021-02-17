@@ -19,7 +19,7 @@ const cd = new Map();
  * @param {string} obj.maintenance_reason
  * @param {boolean} obj.main_bot
  */
-module.exports.run = obj => {
+module.exports.run = async obj => {
     const client = obj.client;
     const message = obj.message;
     const args = obj.args;
@@ -51,7 +51,9 @@ module.exports.run = obj => {
         if (channelSetting) {
             for (const c of channelSetting.disabledCommands) {
                 if (c === cmd.config.name) {
-                    return message.channel.send(`❎ **| I'm sorry, \`${cmd.config.name}\` is disabled in this channel!**`);
+                    message.delete();
+                    message.channel.send(`❎ **| I'm sorry, ${message.author}, \`${cmd.config.name}\` is disabled in this channel!**`)
+                        .then(m => m.delete({timeout: 5000}));
                 }
             }
         }
