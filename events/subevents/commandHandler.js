@@ -19,7 +19,7 @@ const cd = new Map();
  * @param {string} obj.maintenance_reason
  * @param {boolean} obj.main_bot
  */
-module.exports.run = async obj => {
+module.exports.run = obj => {
     const client = obj.client;
     const message = obj.message;
     const args = obj.args;
