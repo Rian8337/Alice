@@ -75,7 +75,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
-                                message.channel.send(`✅ **| Successfully enabled \`${cmd.config.name}\`.**`);
+                                message.channel.send(`✅ **| Successfully disabled \`${cmd.config.name}\`.**`);
                             });
                         } else {
                             channelSettingsDb.insertOne({channelID: message.channel.id, disabledCommands, disabledUtils: []}, err => {
@@ -84,7 +84,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                 }
                                 client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
-                                message.channel.send(`✅ **| Successfully enabled \`${cmd.config.name}\`.**`);
+                                message.channel.send(`✅ **| Successfully disabled \`${cmd.config.name}\`.**`);
                             });
                         }
                     });
@@ -303,7 +303,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
                                 const { allowedMuteRoles } = res;
 
-                                const roleIndex = allowedMuteRoles.find(v => v.id === role.id);
+                                const roleIndex = allowedMuteRoles.findIndex(v => v.id === role.id);
                                 if (roleIndex !== -1) {
                                     allowedMuteRoles[roleIndex].maxTime = duration;
                                 } else {
