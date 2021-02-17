@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	let binddb = maindb.collection("userbind");
 	let scoredb = alicedb.collection("playerscore");
 	let pointdb = alicedb.collection("playerpoints");
-	let query = {previous_bind: {$all: [ufind]}};
+	let query = {discordid: ufind};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);

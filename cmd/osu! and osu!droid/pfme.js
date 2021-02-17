@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 	let binddb = maindb.collection("userbind");
 	let scoredb = alicedb.collection("playerscore");
 	let pointdb = alicedb.collection("playerpoints");
-	let query = {previous_bind: {$all: [ufind]}};
+	let query = {discordid: ufind};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
@@ -37,7 +37,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		}
 		let uid = res.uid;
 		let pp = res.pptotal;
-		let pp_entries = res.pp ? res.pp : [];
+		let pp_entries = res.pp ?? [];
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
