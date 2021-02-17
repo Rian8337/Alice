@@ -16,21 +16,23 @@ c.imageSmoothingQuality = "high";
 module.exports.run = (client, message, args, maindb, alicedb) => {
 	let ufind = message.author.id;
 	if (args[0]) {
-		ufind = args[0];
-		ufind = ufind.replace("<@!", "").replace("<@", "").replace(">", "");
+		ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
 	}
 	let binddb = maindb.collection("userbind");
 	let scoredb = alicedb.collection("playerscore");
 	let pointdb = alicedb.collection("playerpoints");
-	let query = { discordid: ufind };
+	let query = {previous_bind: {$all: [ufind]}};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		if (!res) {
-			if (args[0]) message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-			else message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			if (args[0]) {
+				message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+			} else {
+				message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+			}
 			return;
 		}
 		let uid = res.uid;

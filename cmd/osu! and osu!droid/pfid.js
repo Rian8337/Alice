@@ -21,7 +21,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     const binddb = maindb.collection("userbind");
     const scoredb = alicedb.collection("playerscore");
     const pointdb = alicedb.collection("playerpoints");
-    const query = {uid: uid.toString()};
+    const query = {previous_bind: {$all: [uid.toString()]}};
     binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);

@@ -16,13 +16,12 @@ c.imageSmoothingQuality = "high";
 module.exports.run = (client, message, args, maindb, alicedb) => {
 	let ufind = message.author.id;
 	if (args[0]) {
-		ufind = args[0];
-		ufind = ufind.replace('<@!', '').replace('<@', '').replace('>', '');
+		ufind = args[0].replace('<@!', '').replace('<@', '').replace('>', '');
 	}
 	let binddb = maindb.collection("userbind");
 	let scoredb = alicedb.collection("playerscore");
 	let pointdb = alicedb.collection("playerpoints");
-	let query = { discordid: ufind };
+	let query = {previous_bind: {$all: [ufind]}};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);

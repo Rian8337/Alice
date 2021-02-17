@@ -15,11 +15,13 @@ c.imageSmoothingQuality = "high";
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
     let uid = parseInt(args[0]);
-    if (isNaN(uid)) return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
+    if (isNaN(uid)) {
+		return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
+	}
     let binddb = maindb.collection("userbind");
     let scoredb = alicedb.collection("playerscore");
 	let pointdb = alicedb.collection("playerpoints");
-	const query = {uid: uid.toString()};
+	const query = {previous_bind: {$all: [uid.toString()]}};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
