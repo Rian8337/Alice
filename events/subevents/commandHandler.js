@@ -52,7 +52,7 @@ module.exports.run = obj => {
             for (const c of channelSetting.disabledCommands) {
                 if (c === cmd.config.name) {
                     message.delete();
-                    message.channel.send(`❎ **| I'm sorry, ${message.author}, \`${cmd.config.name}\` is disabled in this channel!**`)
+                    return message.channel.send(`❎ **| I'm sorry, ${message.author}, \`${cmd.config.name}\` is disabled in this channel!**`)
                         .then(m => m.delete({timeout: 5000}));
                 }
             }
