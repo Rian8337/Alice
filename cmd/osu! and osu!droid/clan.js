@@ -1680,6 +1680,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 case "set": {
                     // set icon
                     const icon = args[2] ?? (message.attachments.first()?.url || "");
+                    const length = icon.length;
                     if (
                         icon.indexOf("png", length - 3) === -1 &&
                         icon.indexOf("jpg", length - 3) === -1 &&
