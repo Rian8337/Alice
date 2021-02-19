@@ -113,7 +113,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         }
         if (res.hasAskedForRecalc) {
             queue.shift();
-            message.channel.send(`❎ **| ${message.author}, <@${ufind}> has requested a recalculation before!**`);
+            message.channel.send(`❎ **| ${message.author}, the user has requested a recalculation before!**`);
             if (queue.length > 0) {
                 const nextQueue = queue[0];
                 this.run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
@@ -131,7 +131,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             if (queue.length > 1) {
                 return message.channel.send(`✅ **| ${message.author}, successfully queued <@${ufind}> for calculation. There are currently ${queue.length} ${queue.length === 1 ? "user" : "users"} awaiting for calculation.**`);
             }
-            message.channel.send(`✅ **| Calculating <@${ufind}>'s account...**`);
+            message.channel.send(`✅ **| Calculating the user's account...**`);
         }
         
         const pplist = res.pp ?? [];
