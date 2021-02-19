@@ -181,7 +181,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				}
 				
 				const attachment = new Discord.MessageAttachment(canvas.toBuffer());
-				message.channel.send(`✅ **| osu!droid profile for ${player.username}:\nhttp://ops.dgsrz.com/profile.php?uid=${player.uid}**`, {files: [attachment]});
+				message.channel.send(`✅ **| osu!droid profile for ${player.username}:\n<http://ops.dgsrz.com/profile.php?uid=${player.uid}>**`, {files: [attachment]});
 			});
 		});
 	});
