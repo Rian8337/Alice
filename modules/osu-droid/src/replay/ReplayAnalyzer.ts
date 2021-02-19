@@ -139,7 +139,6 @@ export class ReplayAnalyzer {
 
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
-                console.log("Replay not found");
                 return resolve(null);
             }
             resolve(result.data);
