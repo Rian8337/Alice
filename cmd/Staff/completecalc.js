@@ -283,7 +283,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         }
         
         const level = calculateLevel(totalScore);
-        const totalPP = pplist.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
+        const totalPP = pplist.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index), 0);
 
         console.log(`${totalPP.toFixed(2)} pp, ${totalScore.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%))`);
                 
