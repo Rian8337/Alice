@@ -1,5 +1,7 @@
 const osudroid = require('osu-droid');
-const {createCanvas, loadImage} = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
+const { Client, Message } = require('discord.js');
+const { Db } = require('mongodb');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
 c.imageSmoothingQuality = "high";
@@ -133,96 +135,88 @@ async function drawImage(properties, template = false) {
     return canvas.toBuffer();
 }
 
+/**
+ * @param {Client} client 
+ * @param {Message} message 
+ * @param {string[]} args 
+ * @param {Db} maindb 
+ * @param {Db} alicedb 
+ */
 module.exports.run = async (client, message, args, maindb, alicedb) => {
-    let binddb = maindb.collection("userbind");
-    let scoredb = alicedb.collection("playerscore");
-    let pointdb = alicedb.collection("playerpoints");
-    let coin = client.emojis.cache.get("669532330980802561");
-    let coinImage = await loadImage(coin.url);
+    const bindDb = maindb.collection("userbind");
+    const scoreDb = alicedb.collection("playerscore");
+    const pointDb = alicedb.collection("playerpoints");
+    const coin = client.emojis.cache.get("669532330980802561");
+    const coinImage = await loadImage(coin.url);
     let insertVal;
     let updateVal;
-    let backgroundList = [
-        {id: 'bg', name: "Default"},
-        {id: 'sky', name: 'Clear Sky'},
-        {id: "torch", name: "Torch"},
-        {id: "village", name: "Village"},
-        {id: "church", name: "Church"},
-        {id: "ricefield", name: "Ricefield"},
-        {id: "tree", name: "Tree"},
-        {id: "lookout", name: "Morning Star Lookout"},
-        {id: "iceroom", name: "Ice Room"}
-    ];
 
-    binddb.findOne({discordid: message.author.id}, async (err, res) => {
+    bindDb.findOne({discordid: message.author.id}, async (err, res) => {
         if (err) {
             console.log(err);
-            return message.channel.send("Error: Empty database response. Please try again!")
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
-        if (!res) return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-        let uid = res.uid;
-        let username = res.username;
-        let pp = res.pptotal;
-        const player = await osudroid.Player.getInformation({uid: uid});
-        if (player.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-        if (!player.username) return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-        scoredb.findOne({discordid: message.author.id}, (err, playerres) => {
+        if (!res) {
+            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+        }
+        const uid = res.uid;
+        const username = res.username;
+        const pp = res.pptotal;
+        const player = await osudroid.Player.getInformation({uid});
+        if (player.error) {
+            return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
+        }
+        if (!player.username) {
+            return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
+        }
+        scoreDb.findOne({discordid: message.author.id}, (err, playerres) => {
             if (err) {
                 console.log(err);
-                return message.channel.send("Error: Empty database response. Please try again!")
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            let level = 1;
-            let score = 0;
-            if (playerres) {
-                score = playerres.score;
-                level = playerres.level;
-            }
-            pointdb.findOne({discordid: message.author.id}, async (err, pointres) => {
+            const level = playerres?.level ?? 1;
+            const score = playerres?.score ?? 0;
+            pointDb.findOne({discordid: message.author.id}, async (err, pointres) => {
                 if (err) {
                     console.log(err);
-                    return message.channel.send("Error: Empty database response. Please try again!")
+                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                let coins = 0;
-                let points = 0;
-                let pictureConfig = {};
-                if (pointres) {
-                    points = pointres.points;
-                    coins = pointres.alicecoins;
-                    pictureConfig = pointres.picture_config;
-                    if (!pictureConfig) pictureConfig = {};
-                }
+                let coins = pointres?.alicecoins ?? 0;
+                const points = pointres?.points ?? 0;
+                const pictureConfig = pointres?.picture_config ?? {};
 
                 switch (args[0]) {
                     case "background": {
+
+                        const backgroundList = await alicedb.collection("profilebackgrounds").find({}, {projection: {_id: 0, id: 1, name: 1}}).toArray();
                         switch (args[1]) {
                             case "change": {
-                                let type = args.slice(2).join(" ");
-                                if (!type) return message.channel.send("❎ **| Hey, please enter a background name!**");
-                                let id = '';
-                                for (let i = 0; i < backgroundList.length; i++) {
-                                    let bg = backgroundList[i];
-                                    if (bg.name !== type) continue;
-                                    id = bg.id;
-                                    break;
+                                const type = args.slice(2)?.join(" ");
+                                if (!type) {
+                                    return message.channel.send("❎ **| Hey, please enter a background name!**");
                                 }
-                                if (!id) return message.channel.send(`❎ **| I'm sorry, the background you have mentioned (${type}) is invalid!**`);
-                                let owned_list = pictureConfig.backgrounds;
-                                if (!owned_list) owned_list = [];
-                                let owned = false;
-                                if (id === 'bg') owned = true;
-                                for (let i = 0; i < owned_list.length; i++) {
-                                    if (owned_list[i].id !== id) continue;
-                                    owned = true;
-                                    break;
+                                
+                                const id = backgroundList.find(v => v.name === type)?.id;
+                                if (!id) {
+                                    return message.channel.send(`❎ **| I'm sorry, the background you have mentioned (${type}) is invalid!**`);
                                 }
+
+                                const ownedList = pictureConfig.backgrounds ?? [];
+                                const owned = !!ownedList.find(v => v.id === id) || id === "bg";
                                 let confirm_string = '❗**| ';
-                                if (owned) confirm_string += `${message.author}, are you sure you want to change your background profile picture?**`;
-                                else {
-                                    if (coins < 500) return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to perform this action! A background costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${coins}\` Alice coins.**`);
+                                if (owned) {
+                                    confirm_string += `${message.author}, are you sure you want to change your background profile picture?**`;
+                                } else {
+                                    if (coins < 500) {
+                                        return message.channel.send(`❎ **| I'm sorry, you don't have enough ${coin}Alice coins to perform this action! A background costs ${coin}\`500\` Alice coins. You currently have ${coin}\`${coins}\` Alice coins.**`);
+                                    }
                                     confirm_string += `${message.author}, you don't have this background yet! Are you sure you want to purchase this background for ${coin}\`500\` Alice coins and change your background profile picture to the background?**`;
                                 }
-                                if (!pictureConfig.activeBackground) pictureConfig.activeBackground = {};
+                                if (!pictureConfig.activeBackground) {
+                                    pictureConfig.activeBackground = {};
+                                }
                                 pictureConfig.activeBackground.id = id;
-                                let properties = {
+                                const properties = {
                                     res: res,
                                     player: player,
                                     coinImage: coinImage,
@@ -233,41 +227,42 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     coins: coins,
                                     pictureConfig: pictureConfig
                                 };
-                                let attachment = await drawImage(properties);
+                                const attachment = await drawImage(properties);
                                 message.channel.send(confirm_string, {files: [attachment]}).then(msg => {
                                     msg.react("✅").catch(console.error);
                                     let confirmation = false;
-                                    let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                    const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
                                         if (!owned) {
                                             coins -= 500;
-                                            owned_list.push({id: id, name: type});
+                                            ownedList.push({id: id, name: type});
                                         }
                                         updateVal = {
                                             $set: {
                                                 alicecoins: coins,
                                                 picture_config: {
-                                                    badges: pictureConfig.badges ? pictureConfig.badges : [],
-                                                    activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
+                                                    badges: pictureConfig.badges ?? [],
+                                                    activeBadges: pictureConfig.activeBadges ?? [],
                                                     activeBackground: {
                                                         id: id,
                                                         name: type
                                                     },
-                                                    backgrounds: owned_list,
-                                                    bgColor: pictureConfig.bgColor ? pictureConfig.bgColor : "#008bff",
-                                                    textColor: pictureConfig.textColor ? pictureConfig.textColor : "#000000"
+                                                    backgrounds: ownedList,
+                                                    bgColor: pictureConfig.bgColor ?? "#008bff",
+                                                    textColor: pictureConfig.textColor ?? "#000000"
                                                 }
                                             }
                                         };
-                                        pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                        pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
                                             if (err) {
                                                 console.log(err);
-                                                return message.channel.send("Error: Empty database response. Please try again!");
+                                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                             }
                                             message.channel.send(`✅ **| ${message.author}, successfully set your background profile picture to \`${type}\`.${!owned ? ` You have ${coin}\`${coins}\` Alice coins.` : ""}**`);
-                                        })
+                                        });
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
@@ -287,10 +282,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                                 background_list = background_list.trimEnd();
                                 let owned = pictureConfig.backgrounds;
-                                if (!owned || owned.length === 0) return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
+                                if (!owned || owned.length === 0) {
+                                    return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
+                                }
                                 for (let i = 0; i < owned.length; i++) {
                                     owned_list += `\`${owned[i].name}\``;
-                                    if (i + 1 < owned.length) owned_list += ', ';
+                                    if (i + 1 < owned.length) {
+                                        owned_list += ', ';
+                                    }
                                 }
 
                                 message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own ${owned.length + 1} backgrounds: ${owned_list}.**`);
@@ -332,27 +331,42 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             case "bgcolor": {
                                 switch (args[2]) {
                                     case "view": {
-                                        let color = "#008BFF";
-                                        if (pictureConfig.bgColor) color = pictureConfig.bgColor;
-                                        if (color.includes(",")) return message.channel.send(`✅ **| Your description box RGBA color is \`${color}\`.**`);
+                                        const color = pictureConfig.bgColor ?? "#008BFF";
+                                        // RGBA support
+                                        if (color.includes(",")) {
+                                            return message.channel.send(`✅ **| Your description box RGBA color is \`${color}\`.**`);
+                                        }
                                         message.channel.send(`✅ **| Your description box color hex code is \`${color}\`.**`);
                                         break;
                                     }
                                     case "change": {
-                                        let color = args[3];
-                                        if (!color) color = "#008bff";
-                                        if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box color to the same color!**");
-                                        if (color.includes(",")) {
-                                            let color_entry = color.split(",");
-                                            if (color_entry.length !== 4) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
-                                            color_entry = color_entry.map((x) => parseFloat(x));
-                                            if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
-                                            if (color_entry[3] < 0 || color_entry[3] > 1) return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
-                                            color = `rgba(${color_entry.join(",")})`;
+                                        let color = args[3] ?? "#008BFF";
+                                        if (pictureConfig.bgColor === color) {
+                                            return message.channel.send("❎ **| Hey, you cannot change your description box color to the same color!**");
                                         }
-                                        else if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
+                                        // RGBA format
+                                        if (color.includes(",")) {
+                                            const color_entry = color.split(",");
+                                            if (color_entry.length !== 4) {
+                                                return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                            }
+
+                                            color_entry = color_entry.map((x) => parseFloat(x));
+
+                                            if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) {
+                                                return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                            }
+
+                                            if (color_entry[3] < 0 || color_entry[3] > 1) {
+                                                return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
+                                            }
+
+                                            color = `rgba(${color_entry.join(",")})`;
+                                        } else if (!(/^#[0-9A-F]{6}$/i.test(color))) {
+                                            return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
+                                        }
                                         pictureConfig.bgColor = color;
-                                        let properties = {
+                                        const properties = {
                                             res: res,
                                             player: player,
                                             score: score,
@@ -363,11 +377,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             coins: coins,
                                             pictureConfig: pictureConfig
                                         };
-                                        let attachment = await drawImage(properties);
+                                        const attachment = await drawImage(properties);
                                         message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box color to \`${color}\`?**`, {files: [attachment]}).then(msg => {
                                             msg.react("✅").catch(console.error);
                                             let confirmation = false;
-                                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                            const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+
                                             confirm.on("collect", () => {
                                                 confirmation = true;
                                                 msg.delete();
@@ -375,19 +390,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                     updateVal = {
                                                         $set: {
                                                             picture_config: {
-                                                                badges: pictureConfig.badges ? pictureConfig.badges : [],
-                                                                activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
-                                                                activeBackground: pictureConfig.activeBackground ? pictureConfig.activeBackground : {id: "bg", name: "Default"},
-                                                                backgrounds: pictureConfig.backgrounds ? pictureConfig.backgrounds : [],
+                                                                badges: pictureConfig.badges ?? [],
+                                                                activeBadges: pictureConfig.activeBadges ?? [],
+                                                                activeBackground: pictureConfig.activeBackground ?? {id: "bg", name: "Default"},
+                                                                backgrounds: pictureConfig.backgrounds ?? [],
                                                                 bgColor: color,
-                                                                textColor: pictureConfig.textColor ? pictureConfig.textColor : "#000000"
+                                                                textColor: pictureConfig.textColor ?? "#000000"
                                                             }
                                                         }
                                                     };
-                                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                                    pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
                                                         if (err) {
                                                             console.log(err);
-                                                            return message.channel.send("Error: Empty database response. Please try again!");
+                                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                                         }
                                                         message.channel.send(`✅ **| ${message.author}, successfully changed your profile picture description box color to \`${color}\`.**`);
                                                     });
@@ -413,10 +428,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                             textColor: "#000000"
                                                         }
                                                     };
-                                                    pointdb.insertOne(insertVal, err => {
+                                                    pointDb.insertOne(insertVal, err => {
                                                         if (err) {
                                                             console.log(err);
-                                                            return message.channel.send("Error: Empty database response. Please try again!");
+                                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                                         }
                                                         message.channel.send(`✅ **| ${message.author}, successfully changed your profile picture description box color to \`${color}\`.**`);
                                                     });
@@ -438,27 +453,40 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             case "textcolor": {
                                 switch (args[2]) {
                                     case "view": {
-                                        let color = '#000000';
-                                        if (pictureConfig.textColor) color = pictureConfig.textColor;
-                                        if (color.includes(",")) return message.channel.send(`✅ **| Your description box text RGBA color is \`${color}\`.**`);
+                                        const color = pictureConfig.textColor ?? '#000000';
+                                        if (color.includes(",")) {
+                                            return message.channel.send(`✅ **| Your description box text RGBA color is \`${color}\`.**`);
+                                        }
                                         message.channel.send(`✅ **| Your description box text color hex code is \`${color}\`.**`);
-                                        break
+                                        break;
                                     }
                                     case "change": {
-                                        let color = args[3];
-                                        if (!color) color = '#000000';
-                                        if (pictureConfig.bgColor && pictureConfig.bgColor === color) return message.channel.send("❎ **| Hey, you cannot change your description box text color to the same color!**");
-                                        if (color.includes(",")) {
-                                            let color_entry = color.split(",");
-                                            if (color_entry.length !== 4) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
-                                            color_entry = color_entry.map((x) => parseFloat(x));
-                                            if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
-                                            if (color_entry[3] < 0 || color_entry[3] > 1) return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
-                                            color = `rgba(${color_entry.join(",")})`;
+                                        let color = args[3] ?? '#000000';
+                                        if (pictureConfig.bgColor === color) {
+                                            return message.channel.send("❎ **| Hey, you cannot change your description box text color to the same color!**");
                                         }
-                                        if (!(/^#[0-9A-F]{6}$/i.test(color))) return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
+                                        if (color.includes(",")) {
+                                            const color_entry = color.split(",");
+                                            if (color_entry.length !== 4) {
+                                                return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                            }
+
+                                            color_entry = color_entry.map((x) => parseFloat(x));
+
+                                            if (color_entry.slice(0, 3).some(value => isNaN(value) || value < 0 || value > 255)) {
+                                                return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
+                                            }
+                                            
+                                            if (color_entry[3] < 0 || color_entry[3] > 1) {
+                                                return message.channel.send("❎ **| I'm sorry, that RGBA color format is invalid!**");
+                                            }
+
+                                            color = `rgba(${color_entry.join(",")})`;
+                                        } else if (!(/^#[0-9A-F]{6}$/i.test(color))) {
+                                            return message.channel.send("❎ **| I'm sorry, this hex code is invalid!**");
+                                        }
                                         pictureConfig.textColor = color;
-                                        let properties = {
+                                        const properties = {
                                             res: res,
                                             player: player,
                                             score: score,
@@ -469,11 +497,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             coins: coins,
                                             pictureConfig: pictureConfig
                                         };
-                                        let attachment = await drawImage(properties);
+                                        const attachment = await drawImage(properties);
                                         message.channel.send(`❗**| ${message.author}, are you sure you want to change your profile picture description box text color to \`${color}\`?**`, {files: [attachment]}).then(msg => {
                                             msg.react("✅").catch(console.error);
                                             let confirmation = false;
-                                            let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+                                            const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 15000});
+
                                             confirm.on("collect", () => {
                                                 confirmation = true;
                                                 msg.delete();
@@ -481,19 +510,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                     updateVal = {
                                                         $set: {
                                                             picture_config: {
-                                                                badges: pictureConfig.badges ? pictureConfig.badges : [],
-                                                                activeBadges: pictureConfig.activeBadges ? pictureConfig.activeBadges : [],
-                                                                activeBackground: pictureConfig.activeBackground ? pictureConfig.activeBackground : {id: "bg", name: "Default"},
-                                                                backgrounds: pictureConfig.backgrounds ? pictureConfig.backgrounds : [],
-                                                                bgColor: pictureConfig.bgColor ? pictureConfig.bgColor : "#008bff",
+                                                                badges: pictureConfig.badges ?? [],
+                                                                activeBadges: pictureConfig.activeBadges ?? [],
+                                                                activeBackground: pictureConfig.activeBackground ?? {id: "bg", name: "Default"},
+                                                                backgrounds: pictureConfig.backgrounds ?? [],
+                                                                bgColor: pictureConfig.bgColor ?? "#008bff",
                                                                 textColor: color
                                                             }
                                                         }
                                                     };
-                                                    pointdb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                                    pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
                                                         if (err) {
                                                             console.log(err);
-                                                            return message.channel.send("Error: Empty database response. Please try again!");
+                                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                                         }
                                                         message.channel.send(`✅ **| ${message.author}, successfully changed your profile picture description box color to \`${color}\`.**`);
                                                     });
@@ -519,10 +548,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                                             textColor: color
                                                         }
                                                     };
-                                                    pointdb.insertOne(insertVal, err => {
+                                                    pointDb.insertOne(insertVal, err => {
                                                         if (err) {
                                                             console.log(err);
-                                                            return message.channel.send("Error: Empty database response. Please try again!");
+                                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                                         }
                                                         message.channel.send(`✅ **| ${message.author}, successfully changed your profile picture description box color to \`${color}\`.**`);
                                                     });
