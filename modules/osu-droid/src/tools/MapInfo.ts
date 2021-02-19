@@ -348,10 +348,12 @@ export class MapInfo {
 
     /**
      * Retrieves the .osu file of the beatmap.
+     * 
+     * @param forceDownload Whether or not to download the file regardless if it's already available.
      */
-    retrieveBeatmapFile(): Promise<MapInfo> {
+    retrieveBeatmapFile(forceDownload?: boolean): Promise<MapInfo> {
         return new Promise(resolve => {
-            if (this.osuFile) {
+            if (this.osuFile && !forceDownload) {
                 return resolve(this);
             }
 
