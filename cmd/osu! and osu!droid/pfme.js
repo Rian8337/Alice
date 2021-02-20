@@ -76,19 +76,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
-				let pictureConfig = {};
-				if (pointres) {
-					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) {
-						pictureConfig = {};
-					}
-				}
+				const pictureConfig = pointres?.picture_config ?? {};
 
 				// background
-				let backgroundImage = pictureConfig.activeBackground;
-				if (!backgroundImage) backgroundImage = 'bg';
-				else backgroundImage = backgroundImage.id;
-				const bg = await loadImage(`./img/${backgroundImage}.png`);
+				const backgroundImage = pictureConfig.activeBackground?.id ?? "bg";
+				const bg = await loadImage(`${process.cwd()}/img/${backgroundImage}.png`);
 				c.drawImage(bg, 0, 75, 500, 300, 0, 0, 500, 300);
 
 				// player avatar
@@ -103,8 +95,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// player flag
 				c.globalAlpha = 1;
-				let flag = player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`) : undefined;
-				if (flag) c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+				const flag = player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`) : undefined;
+				if (flag) {
+					c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+				}
 
 				// player rank
 				c.globalAlpha = 0.9;
@@ -119,7 +113,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				let progress = (level - Math.floor(level)) * 263;
 				c.globalAlpha = 1;
 				c.fillStyle = '#e1c800';
-				if (progress > 0) c.fillRect(217, 154, progress, 26);
+				if (progress > 0) {
+					c.fillRect(217, 154, progress, 26);
+				}
 
 				// text
 				// player rank
@@ -153,21 +149,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 86);
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 104);
 				c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 122);
-				if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 140);
-				if (flag) c.fillText(player.location, 451, flag.height + 20);
+				if (res.clan) {
+					c.fillText(`Clan: ${res.clan}`, 169, 140);
+				}
+				if (flag) {
+					c.fillText(player.location, 451, flag.height + 20);
+				}
 
 				// ranked level
-				let textColor = pictureConfig.textColor;
-				if (!textColor) textColor = "#000000";
+				const textColor = pictureConfig.textColor ?? "#000000";
 				c.fillStyle = textColor;
 				c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 321, 173);
 				c.fillText(`Lv${Math.floor(level)}`, 169, 173);
 
 				const attachment = new Discord.MessageAttachment(canvas.toBuffer());
 				message.channel.send(`✅ **| osu!droid profile for ${player.username}:\n<http://ops.dgsrz.com/profile.php?uid=${player.uid}>**`, {files: [attachment]});
-			})
-		})
-	})
+			});
+		});
+	});
 };
 
 module.exports.config = {
