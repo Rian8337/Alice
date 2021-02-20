@@ -512,7 +512,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 updateVal = {
                                     $set: {
                                         picture_config: {
-                                            activeBadges
+                                            badges: ownedBadges,
+                                            activeBadges: activeBadges,
+                                            activeBackground: pictureConfig.activeBackground ?? {id: "bg", name: "Default"},
+                                            backgrounds: pictureConfig.backgrounds ?? [],
+                                            bgColor: pictureConfig.bgColor ?? "#008bff",
+                                            textColor: pictureConfig.textColor ?? "#000000"
                                         }
                                     }
                                 };
@@ -643,7 +648,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         }
                                         // RGBA format
                                         if (color.includes(",")) {
-                                            const color_entry = color.split(",");
+                                            let color_entry = color.split(",");
                                             if (color_entry.length !== 4) {
                                                 return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
                                             }
@@ -763,7 +768,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             return message.channel.send("❎ **| Hey, you cannot change your description box text color to the same color!**");
                                         }
                                         if (color.includes(",")) {
-                                            const color_entry = color.split(",");
+                                            let color_entry = color.split(",");
                                             if (color_entry.length !== 4) {
                                                 return message.channel.send("❎ **| I'm sorry, that's an invalid RGBA color format!**");
                                             }
