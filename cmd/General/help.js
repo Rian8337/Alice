@@ -59,7 +59,9 @@ module.exports.run = (client, message, args) => {
                 else --page;
                 embed = generateEmbed(client, page, footer, index, rolecheck);
                 msg.edit({embed: embed}).catch(console.error);
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+				}
             });
 
             next.on("collect", () => {
@@ -67,14 +69,18 @@ module.exports.run = (client, message, args) => {
                 else ++page;
                 embed = generateEmbed(client, page, footer, index, rolecheck);
                 msg.edit({embed: embed}).catch(console.error);
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error))
+                if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+				}
             });
 
             back.on("end", () => {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id));
-                msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
-            })
-		})
+                if (message.channel.type === "text") {
+					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+				}
+            });
+		});
 	}
 };
 
