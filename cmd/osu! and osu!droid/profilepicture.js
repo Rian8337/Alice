@@ -113,6 +113,7 @@ async function drawImage(properties, template = false) {
 
     // badges
     if (template) {
+        // Box area: 470x170 pixels, 15 pixels offset from edge of canvas
         // line
         c.globalAlpha = 0.7;
         c.fillStyle = '#000000';
@@ -246,15 +247,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                                 pictureConfig.activeBackground.id = id;
                                 const properties = {
-                                    res: res,
-                                    player: player,
-                                    coinImage: coinImage,
-                                    level: level,
-                                    pp: pp,
-                                    points: points,
-                                    score: score,
-                                    coins: coins,
-                                    pictureConfig: pictureConfig
+                                    res,
+                                    player,
+                                    coinImage,
+                                    level,
+                                    pp,
+                                    points,
+                                    score,
+                                    coins,
+                                    pictureConfig
                                 };
                                 const attachment = await drawImage(properties);
                                 message.channel.send(confirm_string, {files: [attachment]}).then(msg => {
@@ -334,15 +335,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         switch (args[1]) {
                             case "template": {
                                 const properties = {
-                                    res: res,
-                                    player: player,
-                                    score: score,
-                                    coinImage: coinImage,
-                                    level: level,
-                                    pp: pp,
-                                    points: points,
-                                    coins: coins,
-                                    pictureConfig: pictureConfig
+                                    res,
+                                    player,
+                                    score,
+                                    coinImage,
+                                    level,
+                                    pp,
+                                    points,
+                                    coins,
+                                    pictureConfig
                                 };
                                 const attachment = await drawImage(properties, true);
                                 message.channel.send("", {files: [attachment]});
@@ -618,7 +619,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 });
                                 break;
                             }
-                            default: return message.channel.send("❎ **| I'm sorry, badges will be coming soon!**");
+                            default: return message.channel.send(`❎ **| I'm sorry, looks like your second argument (${args[1]}) is invalid! Accepted arguments are \`change\`, \`claim\`, and \`list\`.**`);
                         }
                         break;
                     }
