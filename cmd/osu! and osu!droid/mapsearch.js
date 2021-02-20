@@ -93,9 +93,6 @@ module.exports.run = (client, message, args) => {
 
             message.channel.send({embed: embed}).then(msg => {
                 const maxPage = Math.ceil(mapList.length / 5);
-                if (maxPage === 1) {
-                    return;
-                }
 
                 msg.react("⏮️").then(() => {
                     msg.react("⬅️").then(() => {
