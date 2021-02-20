@@ -495,7 +495,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, you don't own the badge with that ID!**");
                                 }
 
-                                const badgeIndex = parseInt(args[3]) + 1;
+                                const badgeIndex = parseInt(args[3]);
                                 if (isNaN(badgeIndex)) {
                                     return message.channel.send("❎ **| Hey, please enter a valid badge slot!**");
                                 }
@@ -507,7 +507,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 activeBadges.length = 10;
                                 activeBadges[badgeIndex - 1] = badge;
 
-                                // No need to check if entry in datbaase exists or not since
+                                // No need to check if entry in database exists or not since
                                 // they need to claim first anyway
                                 updateVal = {
                                     $set: {
