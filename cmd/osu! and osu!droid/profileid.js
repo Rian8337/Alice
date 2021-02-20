@@ -58,23 +58,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
-				let coins = 0;
-				let points = 0;
-				let pictureConfig = {};
-				if (pointres) {
-					points = pointres.points;
-					coins = pointres.alicecoins;
-					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) {
-						pictureConfig = {};
-					}
-				}
+				const coins = pointres?.coins ?? 0;
+				const points = pointres?.alicecoins ?? 0;
+				const pictureConfig = pointres?.picture_config ?? {};
 
 				// background
-				let backgroundImage = pictureConfig.activeBackground;
-				if (!backgroundImage) backgroundImage = 'bg';
-				else backgroundImage = backgroundImage.id;
-				const bg = await loadImage(`./img/${backgroundImage}.png`);
+				const backgroundImage = pictureConfig.activeBackground?.id ?? "bg";
+				const bg = await loadImage(`${process.cwd()}/img/${backgroundImage}.png`);
 				c.drawImage(bg, 0, 0);
 
 				// player avatar
@@ -89,8 +79,10 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// player flag
 				c.globalAlpha = 1;
-				let flag = player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`) : undefined;
-				if (flag) c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+				const flag = player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${player.location}.png`) : undefined;
+				if (flag) {
+					c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+				}
 
 				// player rank
 				c.globalAlpha = 0.9;
@@ -117,7 +109,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				let progress = (level - Math.floor(level)) * 401;
 				c.globalAlpha = 1;
 				c.fillStyle = '#e1c800';
-				if (progress > 0) c.fillRect(79, 208, progress, 26);
+				if (progress > 0) {
+					c.fillRect(79, 208, progress, 26);
+				}
 
 				// alice coins
 				let coinImage = await loadImage(client.emojis.cache.get("669532330980802561").url);
@@ -154,13 +148,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
-				if (res && res.pptotal) c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
-				if (res && res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
-				if (flag) c.fillText(player.location, 451, flag.height + 20);
+				if (res?.pptotal) {
+					c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 164);
+				}
+				if (res?.clan) {
+					c.fillText(`Clan: ${res.clan}`, 169, 184);
+				}
+				if (flag) {
+					c.fillText(player.location, 451, flag.height + 20);
+				}
 
 				// ranked level
-				let textColor = pictureConfig.textColor;
-				if (!textColor) textColor = "#000000";
+				const textColor = pictureConfig.textColor ?? "#000000";
 				c.fillStyle = textColor;
 				c.fillText(((level - Math.floor(level)) * 100).toFixed(2) + "%", 245, 226);
 				c.font = '19px Exo';
@@ -170,13 +169,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`${coins.toLocaleString()} Alice Coins | ${points} Challenge Points`, 75, 285);
 
 				// badges
-				let badges = pictureConfig.activeBadges;
-				if (!badges) badges = [];
+				const badges = pictureConfig.activeBadges ?? [];
 				if (badges.length > 0) {
 					for (let i = 0; i < badges.length; i++) {
-						let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
-						if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
-						else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85);
+						if (!badges[i]) {
+							continue;
+						}
+						const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i]}.png`);
+						if (i / 5 < 1) {
+							c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
+						} else {
+							c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85);
+						}
 					}
 				}
 				

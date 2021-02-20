@@ -14,15 +14,12 @@ c.imageSmoothingQuality = "high";
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-	let ufind = message.author.id;
-	if (args[0]) {
-		ufind = args[0].replace("<@!", "").replace("<@", "").replace(">", "");
-	}
-	let binddb = maindb.collection("userbind");
-	let scoredb = alicedb.collection("playerscore");
-	let pointdb = alicedb.collection("playerpoints");
+	const ufind = args[0] ? args[0].replace(/[<@!>]/g, "") : message.author.id;
+	const bindDb = maindb.collection("userbind");
+	const scoreDb = alicedb.collection("playerscore");
+	const pointDb = alicedb.collection("playerpoints");
 	let query = {discordid: ufind};
-	binddb.findOne(query, async function(err, res) {
+	bindDb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -35,16 +32,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			}
 			return;
 		}
-		let uid = res.uid;
-		let pp = res.pptotal;
-		let pp_entries = res.pp ?? [];
+		const uid = res.uid;
+		const pp = res.pptotal;
+		const pp_entries = res.pp ?? [];
 		let weighted_accuracy = 0;
 		let weight = 0;
 		for (let i = 0; i < pp_entries.length; ++i) {
 			weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 			weight += Math.pow(0.95, i);
 		}
-		if (weighted_accuracy) weighted_accuracy /= weight;
+		if (weighted_accuracy) {
+			weighted_accuracy /= weight;
+		}
 		const player = await osudroid.Player.getInformation({uid: uid}).catch(console.error);
 		if (player.error) {
 			if (args[0]) {
@@ -62,34 +61,24 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			}
 			return;
 		}
-		scoredb.findOne({uid: uid}, (err, playerres) => {
+		scoreDb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
 			const level = playerres?.level ?? 1;
 			const score = playerres?.score ?? 0;
-			pointdb.findOne({uid: uid}, async (err, pointres) => {
+			pointDb.findOne({uid: uid}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
-				let coins = 0;
-				let points = 0;
-				let pictureConfig = {};
-				if (pointres) {
-					points = pointres.points;
-					coins = pointres.alicecoins;
-					pictureConfig = pointres.picture_config;
-					if (!pictureConfig) {
-						pictureConfig = {};
-					}
-				}
+				const coins = pointres?.coins ?? 0;
+				const points = pointres?.alicecoins ?? 0;
+				const pictureConfig = pointres?.picture_config ?? {};
 
 				// background
-				let backgroundImage = pictureConfig.activeBackground;
-				if (!backgroundImage) backgroundImage = 'bg';
-				else backgroundImage = backgroundImage.id;
+				const backgroundImage = pictureConfig.activeBackground?.id ?? "bg";
 				const bg = await loadImage(`./img/${backgroundImage}.png`);
 				c.drawImage(bg, 0, 0);
 
@@ -184,11 +173,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`${coins.toLocaleString()} Alice Coins | ${points} Challenge Points`, 75, 285);
 
 				// badges
-				let badges = pictureConfig.activeBadges;
-				if (!badges) badges = [];
+				const badges = pictureConfig.activeBadges ?? [];
 				if (badges.length > 0) {
 					for (let i = 0; i < badges.length; i++) {
-						let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
+						if (!badges[i]) {
+							continue;
+						}
+						const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i].id}.png`);
 						if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
 						else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85)
 					}

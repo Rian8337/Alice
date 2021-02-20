@@ -1,6 +1,7 @@
 const osudroid = require('osu-droid');
 const { createCanvas, loadImage } = require('canvas');
-const { Client, Message } = require('discord.js');
+const { Client, Message, MessageEmbed } = require('discord.js');
+const config = require('../../config.json');
 const { Db } = require('mongodb');
 const canvas = createCanvas(500, 500);
 const c = canvas.getContext('2d');
@@ -8,10 +9,8 @@ c.imageSmoothingQuality = "high";
 
 async function drawImage(properties, template = false) {
     // background
-    let backgroundImage = properties.pictureConfig.activeBackground;
-    if (!backgroundImage) backgroundImage = 'bg';
-    else backgroundImage = backgroundImage.id;
-    const bg = await loadImage(`./img/${backgroundImage}.png`);
+    const backgroundImage = properties.pictureConfig.activeBackground?.id ?? "bg";
+    const bg = await loadImage(`${process.cwd()}/img/${backgroundImage}.png`);
     c.drawImage(bg, 0, 0);
 
     // player avatar
@@ -26,8 +25,10 @@ async function drawImage(properties, template = false) {
 
     // player flag
     c.globalAlpha = 1;
-    let flag = properties.player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`) : undefined;
-    if (flag) c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+    const flag = properties.player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`) : undefined;
+    if (flag) {
+        c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
+    }
 
     // player rank
     c.globalAlpha = 0.9;
@@ -36,8 +37,7 @@ async function drawImage(properties, template = false) {
 
     // description box
     c.globalAlpha = 0.85;
-    let bgColor = properties.pictureConfig.bgColor;
-    if (!bgColor) bgColor = 'rgb(0,139,255)';
+    const bgColor = properties.pictureConfig.bgColor ?? "rgb(0,139,255)";
     c.fillStyle = bgColor;
     c.fillRect(9, 197, 482, 294);
 
@@ -51,10 +51,12 @@ async function drawImage(properties, template = false) {
     c.fillStyle = '#979797';
     c.fillRect(79, 208, 401, 26);
 
-    let progress = (properties.level - Math.floor(properties.level)) * 401;
+    const progress = (properties.level - Math.floor(properties.level)) * 401;
     c.globalAlpha = 1;
     c.fillStyle = '#e1c800';
-    if (progress > 0) c.fillRect(79, 208, progress, 26);
+    if (progress > 0) {
+        c.fillRect(79, 208, progress, 26);
+    }
 
     // alice coins
     c.drawImage(properties.coinImage, 15, 255, 50, 50);
@@ -90,9 +92,15 @@ async function drawImage(properties, template = false) {
     c.fillText(`Ranked Score: ${properties.score.toLocaleString()}`, 169, 104);
     c.fillText(`Accuracy: ${properties.player.accuracy}%`, 169, 124);
     c.fillText(`Play Count: ${properties.player.playCount.toLocaleString()}`, 169, 144);
-    if (properties.res && properties.res.pptotal) c.fillText(`Droid pp: ${properties.res.pptotal.toFixed(2)}pp`, 169, 164);
-    if (properties.res && properties.res.clan) c.fillText(`Clan: ${properties.res.clan}`, 169, 184);
-    if (flag) c.fillText(properties.player.location, 451, flag.height + 20);
+    if (properties.res?.pptotal) {
+        c.fillText(`Droid pp: ${properties.res.pptotal.toFixed(2)}pp`, 169, 164);
+    }
+    if (properties.res?.clan) {
+        c.fillText(`Clan: ${properties.res.clan}`, 169, 184);
+    }
+    if (flag) {
+        c.fillText(properties.player.location, 451, flag.height + 20);
+    }
 
     // ranked level
     c.fillStyle = properties.pictureConfig.textColor ?? "#000000";
@@ -119,20 +127,40 @@ async function drawImage(properties, template = false) {
 
         c.font = 'bold 12px Exo';
         for (let i = 0; i < 10; i++) {
-            if (i / 5 < 1) c.fillText((i+1).toString(), 45 + i * 47, 352);
-            else c.fillText((i+1).toString(), 45 + (i - 5) * 47, 437);
+            if (i / 5 < 1) {
+                c.fillText((i+1).toString(), 54.5 + i * 94, 353.5);
+            } else {
+                c.fillText((i+1).toString(), 54.5 + (i - 5) * 94, 439.5);
+            }
         }
     } else {
-        let badges = properties.pictureConfig.activeBadges;
-        if (!badges) badges = [];
+        const badges = properties.pictureConfig.activeBadges ?? [];
         for (let i = 0; i < badges.length; i++) {
-            let badge = await loadImage(`./img/badges/${badges[i].id}.png`);
-            if (i / 5 < 1) c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
-            else c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85);
+            const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i].id}.png`);
+            if (i / 5 < 1) {
+                c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
+            } else {
+                c.drawImage(badge, (i - 5) * 94 + 19.5, 397, 85, 85);
+            }
         }
     }
 
     return canvas.toBuffer();
+}
+
+/**
+ * @param {MessageEmbed} embed 
+ * @param {{id: string, name: string, description: string, isOwned: boolean}[]} badgeList 
+ * @param {number} page 
+ * @param {string} footerImage 
+ */
+function listBadge(embed, badgeList, page, footerImage) {
+    embed.spliceFields(0, embed.fields.length)
+        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(badgeList.length / 5)}`, footerImage);
+
+    for (let i = 5 * (page - 1); i < Math.min(badgeList.length, 5 + 5 * (page - 1)); ++i) {
+        embed.addField(`${i+1}. ${badgeList[i].name} (\`${badgeList[i].id}\`${badgeList[i].isOwned ? ", owned" : ""})`, `Rewarded for ${badgeList[i].description}`);
+    }
 }
 
 /**
@@ -146,6 +174,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     const bindDb = maindb.collection("userbind");
     const scoreDb = alicedb.collection("playerscore");
     const pointDb = alicedb.collection("playerpoints");
+    const badgeDb = alicedb.collection("profilebadges");
     const coin = client.emojis.cache.get("669532330980802561");
     const coinImage = await loadImage(coin.url);
     let insertVal;
@@ -169,7 +198,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         if (!player.username) {
             return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
         }
-        scoreDb.findOne({discordid: message.author.id}, (err, playerres) => {
+        scoreDb.findOne({uid}, (err, playerres) => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -278,10 +307,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 let owned_list = `\`${backgroundList[0].name}\`, `;
                                 for (let i = 0; i < backgroundList.length; i++) {
                                     background_list += `\`${backgroundList[i].name}\``;
-                                    if (i + 1 < backgroundList.length) background_list += ', ';
+                                    if (i + 1 < backgroundList.length) {
+                                        background_list += ', ';
+                                    }
                                 }
                                 background_list = background_list.trimEnd();
-                                let owned = pictureConfig.backgrounds;
+                                const owned = pictureConfig.backgrounds;
                                 if (!owned || owned.length === 0) {
                                     return message.channel.send(`✅ **| There are ${backgroundList.length} available backgrounds: ${background_list}. You own 1 background: \`${backgroundList[0].name}\`**`);
                                 }
@@ -300,10 +331,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         break;
                     }
                     case "badges": {
-                        //TODO: add badges
                         switch (args[1]) {
                             case "template": {
-                                let properties = {
+                                const properties = {
                                     res: res,
                                     player: player,
                                     score: score,
@@ -314,12 +344,278 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     coins: coins,
                                     pictureConfig: pictureConfig
                                 };
-                                let attachment = await drawImage(properties, true);
-                                message.channel.send(attachment);
+                                const attachment = await drawImage(properties, true);
+                                message.channel.send("", {files: [attachment]});
+                                break;
+                            }
+                            case "claim": {
+                                const badgeID = args[2];
+                                if (!badgeID) {
+                                    return message.channel.send("❎ **| Hey, please enter a badge ID!**");
+                                }
+
+                                const ownedBadges = pictureConfig.badges ?? [];
+                                if (ownedBadges.find(v => v.id.toLowerCase() === badgeID.toLowerCase())) {
+                                    return message.channel.send("❎ **| I'm sorry, you have already owned the badge!**");
+                                }
+
+                                const badge = await badgeDb.findOne({id: new RegExp(badgeID, "i")});
+                                if (!badge) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find a badge with that ID!**");
+                                }
+
+                                let isValid = false;
+                                switch (badge.type) {
+                                    case "dpp": {
+                                        isValid = pp >= badge.requirement;
+                                        break;
+                                    }
+                                    case "score_total": {
+                                        isValid = player.score >= badge.requirement;
+                                        break;
+                                    }
+                                    case "score_ranked": {
+                                        isValid = score >= badge.requirement;
+                                        break;
+                                    }
+                                    case "star_fc": {
+                                        const beatmap = args[3];
+                                        if (!beatmap) {
+                                            return message.channel.send("❎ **| Hey, please enter the beatmap where you have achieved the full combo!**");
+                                        }
+
+                                        const a = beatmap.split("/");
+                                        const beatmapID = parseInt(a[a.length - 1]);
+                                        if (isNaN(beatmapID)) {
+                                            return message.channel.send("❎ **| Hey, please enter a valid beatmap ID or link!**");
+                                        }
+
+                                        const mapinfo = await osudroid.MapInfo.getInformation({beatmapID});
+                                        if (mapinfo.error) {
+                                            return message.channel.send("❎ **| I'm sorry, I cannot fetch beatmap info from osu! API! Perhaps it is down?**");
+                                        }
+                                        if (!mapinfo.title) {
+                                            return message.channel.send("❎ **| I'm sorry, I cannot find the map that you are looking for!**");
+                                        }
+                                        if (!mapinfo.objects) {
+                                            return message.channel.send("❎ **| I'm sorry, it seems like the map has 0 objects!**");
+                                        }
+                                        if (mapinfo.approved !== osudroid.rankedStatus.RANKED && mapinfo.approved !== osudroid.rankedStatus.APPROVED) {
+                                            return message.channel.send("❎ **| I'm sorry, only ranked or approved beatmaps count!**");
+                                        }
+
+                                        const score = await osudroid.Score.getFromHash({uid, hash: mapinfo.hash});
+                                        if (score.error) {
+                                            return message.channel.send("❎ **| I'm sorry, I couldn't check the beatmap's scores! Perhaps osu!droid server is down?**");
+                                        }
+                                        if (!score.title) {
+                                            return message.channel.send("❎ **| I'm sorry, you don't have a score in the beatmap!**");
+                                        }
+                                        const stars = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: score.mods});
+                                        isValid = stars.pcStars.total >= badge.requirement;
+                                        break;
+                                    }
+                                }
+
+                                if (!isValid) {
+                                    return message.channel.send("❎ **| I'm sorry, you do not fulfill the requirement to get the badge!**");
+                                }
+
+                                ownedBadges.push({
+                                    id: badge.id,
+                                    name: badge.name
+                                });
+
+                                if (pointres) {
+                                    updateVal = {
+                                        $set: {
+                                            picture_config: {
+                                                badges: ownedBadges,
+                                                activeBadges: pictureConfig.activeBadges ?? [],
+                                                activeBackground: pictureConfig.activeBackground ?? {id: "bg", name: "Default"},
+                                                backgrounds: pictureConfig.backgrounds ?? [],
+                                                bgColor: pictureConfig.bgColor ?? "#008bff",
+                                                textColor: pictureConfig.textColor ?? "#000000"
+                                            }
+                                        }
+                                    };
+                                    pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                        }
+                                        message.channel.send(`✅ **| ${message.author}, successfully claimed badge \`${badge.id}\`.**`);
+                                    });
+                                } else {
+                                    insertVal = {
+                                        discordid: message.author.id,
+                                        uid: uid,
+                                        username: username,
+                                        challenges: [],
+                                        points: 0,
+                                        dailycooldown: 0,
+                                        alicecoins: 0,
+                                        streak: 0,
+                                        picture_config: {
+                                            badges: ownedBadges,
+                                            activeBadges: [],
+                                            activeBackground: {
+                                                id: "bg",
+                                                name: "Default"
+                                            },
+                                            backgrounds: [],
+                                            bgColor: "#008bff",
+                                            textColor: "#000000"
+                                        }
+                                    };
+                                    pointDb.insertOne(insertVal, err => {
+                                        if (err) {
+                                            console.log(err);
+                                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                        }
+                                        message.channel.send(`✅ **| ${message.author}, successfully claimed badge \`${badge.id}\`.**`);
+                                    });
+                                }
                                 break;
                             }
                             case "change": {
-                                message.channel.send("❎ **| I'm sorry, badges will be coming soon!**");
+                                const ownedBadges = pictureConfig.badges ?? [];
+                                if (ownedBadges.length === 0) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't own any badges!**");
+                                }
+
+                                const badgeID = args[2]?.toLowerCase();
+                                if (!badgeID) {
+                                    return message.channel.send("❎ **| Hey, please enter a badge ID!**");
+                                }
+
+                                const badge = ownedBadges.find(v => v.id.toLowerCase() === badgeID);
+                                if (!badge) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't own the badge with that ID!**");
+                                }
+
+                                const badgeIndex = parseInt(args[3]) + 1;
+                                if (isNaN(badgeIndex)) {
+                                    return message.channel.send("❎ **| Hey, please enter a valid badge slot!**");
+                                }
+                                if (badgeIndex < 1 || badgeIndex > 10) {
+                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 0 to 9!**");
+                                }
+
+                                const activeBadges = pictureConfig.activeBadges ?? [];
+                                activeBadges.length = 10;
+                                activeBadges[badgeIndex - 1] = badge;
+
+                                // No need to check if entry in datbaase exists or not since
+                                // they need to claim first anyway
+                                updateVal = {
+                                    $set: {
+                                        picture_config: {
+                                            activeBadges
+                                        }
+                                    }
+                                };
+                                pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                    }
+                                    message.channel.send(`✅ **| ${message.author}, successfully changed badge at slot ${badgeIndex} to badge \`${badge.id}\`.**`);
+                                });
+                                break;
+                            }
+                            case "list": {
+                                const badgeList = await badgeDb.find({}, {projection: {_id: 0, id: 1, name: 1, description: 1}}).sort({type: 1, name: 1}).toArray();
+                                const ownedBadges = pictureConfig.badges ?? [];
+                                badgeList.forEach(badge => {
+                                    badge.isOwned = !!ownedBadges.find(v => v.id === badge.id);
+                                });
+                                badgeList.sort((a, b) => {return b.isOwned - a.isOwned;});
+
+                                const maxPage = Math.ceil(badgeList.length / 5);
+                                let page = Math.max(1, Math.min(parseInt(args[2]) || 1, maxPage));
+
+                                const footer = config.avatar_list;
+                                const index = Math.floor(Math.random() * footer.length);
+                                const embed = new MessageEmbed()
+                                    .setColor(message.member?.roles.color?.hexColor || "#000000")
+                                    .setAuthor(`Badges for ${message.author.tag}`, message.author.avatarURL({dynamic: true}))
+                                    .setDescription(`Total badges: **${badgeList.length.toLocaleString()}**\nEarned badges: **${badgeList.filter(v => v.isOwned).length.toLocaleString()}**`);
+                                
+                                listBadge(embed, badgeList, page, footer[index]);
+
+                                message.channel.send(embed).then(msg => {
+                                    if (page === maxPage) {
+                                        return;
+                                    }
+
+                                    msg.react("⏮️").then(() => {
+                                        msg.react("⬅️").then(() => {
+                                            msg.react("➡️").then(() => {
+                                                msg.react("⏭️").catch(console.error);
+                                            });
+                                        });
+                                    });
+                            
+                                    const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 150000});
+                                    const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 150000});
+                                    const next = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '➡️' && user.id === message.author.id, {time: 150000});
+                                    const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 150000});
+                            
+                                    backward.on('collect', () => {
+                                        if (message.channel.type === "text") {
+                                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                        }
+                                        if (page === 1) {
+                                            return;
+                                        }
+                                        page = Math.max(1, page - 10);
+                                        listBadge(embed, badgeList, page, footer[index]);
+                                        msg.edit(embed).catch(console.error);
+                                    });
+                            
+                                    back.on('collect', () => {
+                                        if (message.channel.type === "text") {
+                                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                        }
+                                        if (page !== 1) {
+                                            page--;
+                                        } else {
+                                            page = maxPage;
+                                        }
+                                        listBadge(embed, badgeList, page, footer[index]);
+                                        msg.edit(embed).catch(console.error);
+                                    });
+                            
+                                    next.on('collect', () => {
+                                        if (page === maxPage) {
+                                            page = 1;
+                                        } else {
+                                            ++page;
+                                        }
+                                        listBadge(embed, badgeList, page, footer[index]);
+                                        msg.edit(embed).catch(console.error);
+                                        if (message.channel.type === "text") {
+                                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+                                        }
+                                    });
+                            
+                                    forward.on('collect', () => {
+                                        page = Math.min(page + 10, maxPage);
+                                        listBadge(embed, badgeList, page, footer[index]);
+                                        msg.edit(embed).catch(console.error);
+                                        if (message.channel.type === "text") {
+                                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+                                        }
+                                    });
+                            
+                                    backward.on("end", () => {
+                                        if (message.channel.type === "text") {
+                                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));   
+                                        }
+                                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+                                    });
+                                });
                                 break;
                             }
                             default: return message.channel.send("❎ **| I'm sorry, badges will be coming soon!**");
@@ -583,8 +879,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "profilepicture",
+    aliases: "pfp",
     description: "Modify your profile picture.",
-    usage: "profilepicture background <change/list>\nprofilepicture badges <change/list/template>\nprofilepicture descriptionbox <bgcolor/textcolor> <change/view>",
-    detail: "`background change`: Change your profile picture background.\n`background list`: List all available backgrounds and those you currently have\n`badges change`: Change your badge depending on position\n`badges list`: List all the badges you currently own\n`badges template`: Show the template number for each badge slot\n`descriptionbox change`: Change background color/text color of your profile picture description box. Supports hex code and RGBA\n`descriptionbox view`: Show your current description box background/text color",
+    usage: "profilepicture background change <bg name>\nprofilepicture background list\nprofilepicture badges change <badge ID> <badge slot>\nprofilepicture badges list \nprofilepicture badges template\nprofilepicture descriptionbox bgcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox bgcolor view\nprofilepicture descriptionbox textcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox textcolor view",
+    detail: "`background change`: Change your profile picture background.\n`background list`: List all available backgrounds and those you currently have\n`badges change`: Change your badge on badge slot\n`badges list`: List all the badges you currently own\n`badges template`: Show the template number for each badge slot\n`descriptionbox change`: Change background color/text color of your profile picture description box. Supports hex code and RGBA\n`descriptionbox view`: Show your current description box background/text color",
     permission: "None"
 };
