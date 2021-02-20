@@ -479,7 +479,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                                 break;
                             }
-                            case "change": {
+                            case "equip": {
                                 const ownedBadges = pictureConfig.badges ?? [];
                                 if (ownedBadges.length === 0) {
                                     return message.channel.send("❎ **| I'm sorry, you don't own any badges!**");
@@ -526,7 +526,48 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         console.log(err);
                                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                                     }
-                                    message.channel.send(`✅ **| ${message.author}, successfully changed badge at slot ${badgeIndex} to badge \`${badge.id}\`.**`);
+                                    message.channel.send(`✅ **| ${message.author}, successfully equip badge \`${badge.id}\` at slot ${badgeIndex}.**`);
+                                });
+                                break;
+                            }
+                            case "unequip": {
+                                const ownedBadges = pictureConfig.badges ?? [];
+                                if (ownedBadges.length === 0) {
+                                    return message.channel.send("❎ **| I'm sorry, you don't own any badges!**");
+                                }
+
+                                const badgeIndex = parseInt(args[2]);
+                                if (isNaN(badgeIndex)) {
+                                    return message.channel.send("❎ **| Hey, please enter a valid badge slot!**");
+                                }
+                                if (badgeIndex < 1 || badgeIndex > 10) {
+                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 0 to 9!**");
+                                }
+
+                                const activeBadges = pictureConfig.activeBadges ?? [];
+                                activeBadges.length = 10;
+                                activeBadges[badgeIndex - 1] = null;
+
+                                // No need to check if entry in database exists or not since
+                                // they need to claim first anyway
+                                updateVal = {
+                                    $set: {
+                                        picture_config: {
+                                            badges: ownedBadges,
+                                            activeBadges: activeBadges,
+                                            activeBackground: pictureConfig.activeBackground ?? {id: "bg", name: "Default"},
+                                            backgrounds: pictureConfig.backgrounds ?? [],
+                                            bgColor: pictureConfig.bgColor ?? "#008bff",
+                                            textColor: pictureConfig.textColor ?? "#000000"
+                                        }
+                                    }
+                                };
+                                pointDb.updateOne({discordid: message.author.id}, updateVal, err => {
+                                    if (err) {
+                                        console.log(err);
+                                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                    }
+                                    message.channel.send(`✅ **| ${message.author}, successfully unequipped badge at slot ${badgeIndex}.**`);
                                 });
                                 break;
                             }
@@ -624,7 +665,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 });
                                 break;
                             }
-                            default: return message.channel.send(`❎ **| I'm sorry, looks like your second argument (${args[1]}) is invalid! Accepted arguments are \`change\`, \`claim\`, and \`list\`.**`);
+                            default: return message.channel.send(`❎ **| I'm sorry, looks like your second argument (${args[1]}) is invalid! Accepted arguments are \`claim\`, \`equip\`, \`list\`, \`template\`, and \`unequip\`.**`);
                         }
                         break;
                     }
@@ -887,7 +928,7 @@ module.exports.config = {
     name: "profilepicture",
     aliases: "pfp",
     description: "Modify your profile picture.",
-    usage: "profilepicture background change <bg name>\nprofilepicture background list\nprofilepicture badges change <badge ID> <badge slot>\nprofilepicture badges list \nprofilepicture badges template\nprofilepicture descriptionbox bgcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox bgcolor view\nprofilepicture descriptionbox textcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox textcolor view",
+    usage: "profilepicture background change <bg name>\nprofilepicture background list\nprofilepicture badges equip <badge ID> <badge slot>\nprofilepicture badges list\nprofilepicture badges template\nprofilepicture badges unequip <badge slot>\nprofilepicture descriptionbox bgcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox bgcolor view\nprofilepicture descriptionbox textcolor change <color (hex/RGBA)>\nprofilepicture descriptionbox textcolor view",
     detail: "`background change`: Change your profile picture background.\n`background list`: List all available backgrounds and those you currently have\n`badges change`: Change your badge on badge slot\n`badges list`: List all the badges you currently own\n`badges template`: Show the template number for each badge slot\n`descriptionbox change`: Change background color/text color of your profile picture description box. Supports hex code and RGBA\n`descriptionbox view`: Show your current description box background/text color",
     permission: "None"
 };
