@@ -73,8 +73,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
-				const coins = pointres?.coins ?? 0;
-				const points = pointres?.alicecoins ?? 0;
+				const coins = pointres?.alicecoins ?? 0;
+				const points = pointres?.points ?? 0;
 				const pictureConfig = pointres?.picture_config ?? {};
 
 				// background

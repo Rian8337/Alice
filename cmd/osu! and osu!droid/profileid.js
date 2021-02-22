@@ -30,7 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let weighted_accuracy = 0;
 		let weight = 0;
 		if (res) {
-			let pp_entries = res?.pp ?? [];
+			let pp_entries = res.pp ?? [];
 			for (let i = 0; i < pp_entries.length; ++i) {
 				weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 				weight += Math.pow(0.95, i);
@@ -46,7 +46,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (!player.username) {
 			return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		}
-		scoreDb.findOne({uid}, (err, playerres) => {
+		scoreDb.findOne({uid: uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -58,8 +58,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 				}
-				const coins = pointres?.coins ?? 0;
-				const points = pointres?.alicecoins ?? 0;
+				const coins = pointres?.alicecoins ?? 0;
+				const points = pointres?.points ?? 0;
 				const pictureConfig = pointres?.picture_config ?? {};
 
 				// background
