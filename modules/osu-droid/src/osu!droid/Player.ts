@@ -12,10 +12,13 @@ interface ExtraInformation {
         readonly mark: string;
         readonly mode: string;
         readonly accuracy: number;
+        readonly perfect: number;
+        readonly good: number;
+        readonly bad: number;
         readonly miss: number;
         readonly date: number;
         readonly hash: string;
-    }[]
+    }[];
 }
 
 /**
@@ -90,7 +93,7 @@ export class Player {
             const player: Player = new Player();
             const uid = params.uid;
             const username = params.username;
-            if (isNaN(uid as number) && !username) {
+            if (Number.isInteger(uid as number) && !username) {
                 console.log("Uid must be integer or enter username");
                 return resolve(player);
             }
@@ -139,6 +142,9 @@ export class Player {
                         scoreID: play.scoreid,
                         score: play.score,
                         accuracy: parseFloat((play.accuracy / 1000).toFixed(2)),
+                        hit300: play.perfect,
+                        hit100: play.good,
+                        hit50: play.bad,
                         miss: play.miss,
                         rank: play.mark,
                         combo: play.combo,

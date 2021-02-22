@@ -48,6 +48,21 @@ interface ScoreInformation {
     accuracy: number;
 
     /**
+     * The perfect hit result of the play.
+     */
+    hit300: number;
+
+    /**
+     * The good hit result of the play.
+     */
+    hit100: number;
+
+    /**
+     * The bad hit result of the play.
+     */
+    hit50: number;
+
+    /**
      * The amount of misses achieved in the play.
      */
     miss: number;
@@ -76,6 +91,9 @@ export class Score implements ScoreInformation {
     rank: string;
     date: Date;
     accuracy: number;
+    hit300: number;
+    hit100: number;
+    hit50: number;
     miss: number;
     mods: string;
     hash: string;
@@ -112,6 +130,9 @@ export class Score implements ScoreInformation {
         this.accuracy = values?.accuracy || 0;
         this.miss = values?.miss || 0;
         this.hash = values?.hash || '';
+        this.hit300 = values?.hit300 || 0;
+        this.hit100 = values?.hit100 || 0;
+        this.hit50 = values?.hit50 || 0;
 
         const modstrings: string[] = (values?.mods || "").split("|");
         for (let i = 0; i < modstrings.length; ++i) {
@@ -188,7 +209,6 @@ export class Score implements ScoreInformation {
         const play: string[] = info.split(" ");
             
         this.scoreID = parseInt(play[0]);
-        this.uid = parseInt(play[1]);
         this.username = play[2];
         this.score = parseInt(play[3]);
         this.combo = parseInt(play[4]);
@@ -211,12 +231,15 @@ export class Score implements ScoreInformation {
 
         this.mods = mods.droidToPC(this.droidMods);
         this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
-        this.miss = parseInt(play[8]);
-        const date: Date = new Date(parseInt(play[9]) * 1000);
+        this.hit300 = parseInt(play[8]);
+        this.hit100 = parseInt(play[9]);
+        this.hit50 = parseInt(play[10]);
+        this.miss = parseInt(play[11]);
+        const date: Date = new Date(parseInt(play[12]) * 1000);
         date.setUTCHours(date.getUTCHours() + 7);
         this.date = date;
-        this.title = play[10].substring(0, play[10].length - 4).replace(/_/g, " ");
-        this.hash = play[11];
+        this.title = play[13].substring(0, play[13].length - 4).replace(/_/g, " ");
+        this.hash = play[14];
         return this;
     }
 
