@@ -1011,7 +1011,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm && !memberlist[member_index].hasPermission) {
+                            if (!perm && !memberlist[member_index]?.hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
 
@@ -1081,7 +1081,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             let memberlist = clanres.member_list;
                             let member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            let hasPermission = memberlist[member_index].hasPermission;
+                            let hasPermission = memberlist[member_index]?.hasPermission;
                             if (!hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
@@ -1470,7 +1470,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            const hasPermission = memberlist[member_index].hasPermission;
+                            const hasPermission = memberlist[member_index]?.hasPermission;
                             if (!hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
@@ -1556,7 +1556,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm && !memberlist[member_index].hasPermission) {
+                            if (!perm && !memberlist[member_index]?.hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s banner?**`).then(msg => {
@@ -1632,7 +1632,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                     const memberlist = clanres.member_list;
                     const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                    if (!memberlist[member_index].hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
+                    if (!memberlist[member_index]?.hasPermission) return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
 
                     let string = '';
                     const clanrole = message.guild.roles.cache.find(r => r.name === clan);
@@ -1716,7 +1716,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!memberlist[member_index].hasPermission) {
+                            if (!memberlist[member_index]?.hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
 
@@ -1789,7 +1789,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!perm && !memberlist[member_index].hasPermission) {
+                            if (!perm && !memberlist[member_index]?.hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
 
@@ -1947,7 +1947,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
-                            if (!memberlist[member_index].hasPermission) {
+                            if (!memberlist[member_index]?.hasPermission) {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
 
@@ -3112,7 +3112,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === tomatch.id);
-                            if (memberlist[member_index].battle_cooldown > curtime) {
+                            if (memberlist[member_index]?.battle_cooldown > curtime) {
                                 return message.channel.send("❎ **| I'm sorry, this clan member is currently in cooldown!**");
                             }
 
@@ -3250,8 +3250,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === user.id);
-                            const cooldown = Math.max(0, memberlist[member_index].battle_cooldown - curtime);
-
+                            const cooldown = Math.max(0, memberlist[member_index]?.battle_cooldown - curtime);
+                            if (isNaN(cooldown)) {
+                                return message.channel.send("❎ **| I'm sorry, this user is not in a clan!**");
+                            }
                             if (!cooldown) {
                                 message.channel.send(`✅ **| ${args[2] ? `${user} is` : "You are"} currently not in cooldown from participating in a clan battle.**`);
                             } else {
