@@ -18,11 +18,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(uid)) {
 		return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
 	}
-    const binddb = maindb.collection("userbind");
-    const scoredb = alicedb.collection("playerscore");
-    const pointdb = alicedb.collection("playerpoints");
+    const bindDb = maindb.collection("userbind");
+    const scoreDb = alicedb.collection("playerscore");
+    const pointDb = alicedb.collection("playerpoints");
     const query = {previous_bind: {$all: [uid.toString()]}};
-    binddb.findOne(query, async function(err, res) {
+    bindDb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -46,14 +46,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (!player.username) {
 			return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		}
-		scoredb.findOne(query, function(err, playerres) {
+		scoreDb.findOne({uid}, function(err, playerres) {
 			if (err) {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
 			const level = playerres?.level ?? 1;
 			const score = playerres?.score ?? 0;
-			pointdb.findOne(query, async function(err, pointres) {
+			pointDb.findOne({discordid: res?.discordid ?? ""}, async function(err, pointres) {
 				if (err) {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");

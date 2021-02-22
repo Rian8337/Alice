@@ -68,7 +68,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			}
 			const level = playerres?.level ?? 1;
 			const score = playerres?.score ?? 0;
-			pointDb.findOne({uid: uid}, async (err, pointres) => {
+			pointDb.findOne({discordid: ufind}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");

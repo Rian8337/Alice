@@ -18,11 +18,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(uid)) {
 		return message.channel.send("❎ **| I'm sorry, that uid is not valid!**");
 	}
-    let binddb = maindb.collection("userbind");
-    let scoredb = alicedb.collection("playerscore");
-	let pointdb = alicedb.collection("playerpoints");
+    const bindDb = maindb.collection("userbind");
+    const scoreDb = alicedb.collection("playerscore");
+	const pointDb = alicedb.collection("playerpoints");
 	const query = {previous_bind: {$all: [uid.toString()]}};
-	binddb.findOne(query, async function(err, res) {
+	bindDb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -30,7 +30,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		let weighted_accuracy = 0;
 		let weight = 0;
 		if (res) {
-			let pp_entries = res.pp ? res.pp : [];
+			let pp_entries = res?.pp ?? [];
 			for (let i = 0; i < pp_entries.length; ++i) {
 				weighted_accuracy += parseFloat(pp_entries[i].accuracy) * Math.pow(0.95, i);
 				weight += Math.pow(0.95, i);
@@ -46,14 +46,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (!player.username) {
 			return message.channel.send("❎ **| I'm sorry, I couldn't find the player's profile!**");
 		}
-		scoredb.findOne(query, (err, playerres) => {
+		scoreDb.findOne({uid}, (err, playerres) => {
 			if (err) {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
 			const level = playerres?.level ?? 1;
 			const score = playerres?.score ?? 0;
-			pointdb.findOne(query, async (err, pointres) => {
+			pointDb.findOne({discordid: res?.discordid ?? ""}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
 					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
