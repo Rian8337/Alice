@@ -34,9 +34,10 @@ module.exports.run = (client, message) => {
     if (roleMentionString) {
         embed.addField("Mentioned Roles", roleMentionString);
     }
-    embed.addField("Content", message.content.substring(0, 1024));
+    const content = message.content.substring(0, 1024);
+    embed.addField("Content", content.length > 0 ? content : "No content");
 
-    client.channels.cache.get("683504788272578577").send({embed: embed});
+    client.channels.cache.get("683504788272578577").send(embed);
 };
 
 module.exports.config = {
