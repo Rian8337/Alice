@@ -59,6 +59,7 @@ async function calculatePP(ppentries, entry, cb) {
         console.log("Replay not found");
         return cb();
     }
+    await sleep(0.2);
     const { data } = replay;
     const stats = new osudroid.MapStats({
         ar: entry.forcedAR,
@@ -66,7 +67,6 @@ async function calculatePP(ppentries, entry, cb) {
         isForceAR: !isNaN(entry.forcedAR),
         oldStatistics: data.replayVersion <= 3
     });
-    await sleep(0.2);
     const realAcc = new osudroid.Accuracy({
         n300: data.hit300,
         n100: data.hit100,
@@ -173,7 +173,7 @@ module.exports.run = (client, message, args, maindb) => {
                 console.table(pplist);
                 let weight = 1;
                 for (let i of pplist) {
-                    pptotal += weight * i[2];
+                    pptotal += weight * i.pp;
                     weight *= 0.95;
                 }
                 message.channel.send('✅ **| <@' + message.author.id + '>, recalculated <@' + ufind + ">'s plays: " + pptotal + ' pp.**');
