@@ -126,19 +126,6 @@ module.exports.run = (client, message, args, maindb) => {
                             console.log(`${index}/${pp_entries.length} recalculated (${(index * 100 / pp_entries.length).toFixed(2)}%)`);
                         }
 
-                        const currentPlayerEntry = await binddb.findOne({discordid});
-                        const currentPPEntry = currentPlayerEntry.pp;
-
-                        for (let i = 0; i < currentPPEntry.length; ++i) {
-                            const current = currentPPEntry[i];
-                            const newPPIndex = new_pp_entries.findIndex(v => v.hash === current.hash);
-                            if (newPPIndex !== -1 && current.pp > new_pp_entries[newPPIndex].pp) {
-                                new_pp_entries[newPPIndex] = current;
-                            } else {
-                                new_pp_entries.push(current);
-                            }
-                        }
-
                         new_pp_entries.sort((a, b) => {
                             return b.pp - a.pp;
                         });
