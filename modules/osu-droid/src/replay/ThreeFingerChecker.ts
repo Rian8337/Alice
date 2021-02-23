@@ -137,12 +137,14 @@ export class ThreeFingerChecker {
     private readonly minSectionObjectCount: number = 5;
 
     /**
-     * The sections of beatmap that was cut based on `maxSectionDeltaTime`.
+     * The sections of the beatmap that was cut based on `maxSectionDeltaTime` and `minSectionObjectCount`.
      */
     private readonly beatmapSections: BeatmapSection[] = [];
 
     /**
-     * This threshold is used to filter out accidental taps.
+     * This threshold is used to filter out accidental taps. It is assumed
+     * that there is at least one accidental tap for every `accidentalTapThreshold`
+     * object count.
      * 
      * Increasing this number makes the filtration more sensitive, however it
      * will also increase the chance of 3-fingered plays getting out from
