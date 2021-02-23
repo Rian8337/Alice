@@ -131,6 +131,10 @@ module.exports.run = (client, message, args, maindb) => {
                 });
 
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+
+                replay.map = star.droidStars;
+                replay.checkFor3Finger();
+
                 const realAcc = new osudroid.Accuracy({
                     n300: data.hit300,
                     n100: data.hit100,
@@ -143,6 +147,7 @@ module.exports.run = (client, message, args, maindb) => {
                     combo: combo,
                     accPercent: realAcc,
                     mode: osudroid.modes.droid,
+                    speedPenalty: replay.penalty,
                     stats
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
@@ -335,11 +340,16 @@ module.exports.run = (client, message, args, maindb) => {
                         nmiss: miss
                     });
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+
+                    replay.map = star.droidStars;
+                    replay.checkFor3Finger();
+
                     const npp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
                         mode: osudroid.modes.droid,
+                        speedPenalty: replay.penalty,
                         stats
                     });
                     const pp = parseFloat(npp.total.toFixed(2));

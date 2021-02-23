@@ -77,6 +77,8 @@ async function calculatePP(ppentries, entry, cb) {
     const combo = entry.combo;
     const miss = entry.miss;
     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+    replay.map = star.droidStars;
+    replay.checkFor3Finger();
     const accPercent = entry.accuracy;
     
     const npp = new osudroid.PerformanceCalculator().calculate({
@@ -85,6 +87,7 @@ async function calculatePP(ppentries, entry, cb) {
         accPercent: realAcc,
         miss: miss,
         mode: osudroid.modes.droid,
+        speedPenalty: replay.penalty,
         stats
     });
     

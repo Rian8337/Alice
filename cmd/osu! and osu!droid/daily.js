@@ -724,9 +724,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 nmiss: miss
                             });
                             const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
+                            replay.map = star.droidStars;
+                            replay.checkFor3Finger();
                             let unstableRate = 0;
-                            let speedPenalty = 1;
-                            const requiresReplay = ["m300", "m100", "m50", "ur"];
+                            const requiresReplay = ["ur"];
                             if (requiresReplay.some(value => value === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
                                 const hit_object_data = data.hitObjectData;
                                 let hit_error_total = 0;
@@ -745,14 +746,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
 
                                 unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
-                                // speedPenalty = data.penalty;
                             }
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: combo,
                                 accPercent: realAcc,
                                 mode: osudroid.modes.droid,
-                                speedPenalty: speedPenalty,
+                                speedPenalty: replay.penalty,
                                 stats
                             });
                             const pcpp = new osudroid.PerformanceCalculator().calculate({
@@ -1252,6 +1252,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, it appears that your replay file is edited!**");
                         }
                     }
+
+                    replay.checkFor3Finger();
                     
                     const h300 = data.hit300;
                     const h100 = data.hit100;
@@ -1291,8 +1293,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
 
                     let unstableRate = 0;
-                    let speedPenalty = 1;
-                    const requiresReplay = ["m300", "m100", "m50", "ur"];
+                    const requiresReplay = ["ur"];
                     if (requiresReplay.some(v => v === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
                         const hit_object_data = replay.data.hitObjectData;
                         let hit_error_total = 0;
@@ -1311,20 +1312,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
 
                         unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
-                        // speedPenalty = replay.penalty;
                     }
                     const realAcc = new osudroid.Accuracy({
-                        n300: data.hit300,
-                        n100: data.hit100,
-                        n50: data.hit50,
-                        nmiss: data.hit0
+                        n300: h300,
+                        n100: h100,
+                        n50: h50,
+                        nmiss: miss
                     });
                     const dpp = new osudroid.PerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
                         mode: osudroid.modes.droid,
-                        speedPenalty: speedPenalty,
+                        speedPenalty: replay.penalty,
                         stats
                     }).total;
 
@@ -1711,18 +1711,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             oldStatistics: data.replayVersion <= 3
                         });
                         const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
+                        replay.map = star.droidStars;
+                        replay.checkFor3Finger();
                         const passreq = dailyres.pass;
                         const bonus = dailyres.bonus;
 
                         let unstableRate = 0;
-                        let speedPenalty = 1;
                         const realAcc = new osudroid.Accuracy({
                             n300: data.hit300,
                             n100: data.hit100,
                             n50: data.hit50,
                             nmiss: miss
                         });
-                        const requiresReplay = ["m300", "m100", "m50", "ur"];
+                        const requiresReplay = ["ur"];
                         if (requiresReplay.some(value => value === passreq.id) || bonus.some(v => requiresReplay.includes(v.id))) {
                             const hit_object_data = data.hitObjectData;
                             let hit_error_total = 0;
@@ -1741,7 +1742,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 if (hit_object.result !== osudroid.hitResult.RESULT_0) std_deviation += Math.pow(hit_object.accuracy - mean, 2);
 
                             unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
-                            // speedPenalty = data.penalty;
                         }
 
                         const npp = new osudroid.PerformanceCalculator().calculate({
@@ -1749,7 +1749,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             combo: combo,
                             accPercent: realAcc,
                             mode: osudroid.modes.droid,
-                            speedPenalty: speedPenalty,
+                            speedPenalty: replay.penalty,
                             stats
                         });
                         const pcpp = new osudroid.PerformanceCalculator().calculate({

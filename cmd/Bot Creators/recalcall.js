@@ -85,6 +85,8 @@ module.exports.run = (client, message, args, maindb) => {
                                 oldStatistics: data.replayVersion <= 3
                             });
                             const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+                            replay.map = star.droidStars;
+                            replay.checkFor3Finger();
                             const realAcc = new osudroid.Accuracy({
                                 n300: data.hit300,
                                 n100: data.hit100,
@@ -94,10 +96,11 @@ module.exports.run = (client, message, args, maindb) => {
                             
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
-                                combo: replay.data?.maxCombo ?? combo,
+                                combo: replay.data.maxCombo ?? combo,
                                 accPercent: realAcc,
-                                miss: replay.data?.hit0 ?? miss,
+                                miss: replay.data.hit0 ?? miss,
                                 mode: osudroid.modes.droid,
+                                speedPenalty: replay.penalty,
                                 stats
                             });
                             const new_pp = parseFloat(npp.total.toFixed(2));
@@ -107,10 +110,10 @@ module.exports.run = (client, message, args, maindb) => {
                                 hash,
                                 title: mapinfo.fullTitle,
                                 pp: new_pp,
-                                combo: replay.data?.maxCombo ?? combo,
+                                combo: replay.data.maxCombo ?? combo,
                                 mods: mods,
                                 accuracy: parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2)),
-                                miss: replay.data?.hit0 ?? miss,
+                                miss: replay.data.hit0 ?? miss,
                                 scoreID
                             };
                             if (stats.isForceAR) {
@@ -131,7 +134,7 @@ module.exports.run = (client, message, args, maindb) => {
                             new_pp_entries.splice(75);
                         }
 
-                        const new_pptotal = new_pp_entries.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
+                        const new_pptotal = new_pp_entries.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index), 0);
                         const updateVal = {
                             $set: {
                                 pptotal: new_pptotal,

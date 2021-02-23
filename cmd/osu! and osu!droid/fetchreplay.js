@@ -150,6 +150,16 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send(`✅ **| Successfully fetched replay.\n\nRank: ${play.rank}\nScore: ${play.score.toLocaleString()}\nMax Combo: ${play.combo}x\nAccuracy: ${play.accuracy}% [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n\nError: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\nUnstable Rate: ${unstable_rate.toFixed(2)}**`, {files: [attachment]});
     }
 
+    replay.map = star.droidStars;
+    replay.checkFor3Finger();
+
+    const stats = new osudroid.MapStats({
+        ar: play.forcedAR,
+        speedMultiplier: play.speedMultiplier,
+        isForceAR: !isNaN(play.forcedAR),
+        oldStatistics: data.replayVersion <= 3
+    });
+
     const realAcc = new osudroid.Accuracy({
         n300: data.hit300,
         n100: data.hit100,
@@ -163,14 +173,17 @@ module.exports.run = async (client, message, args, maindb) => {
         combo: play.combo,
         accPercent: realAcc,
         miss: play.miss,
-        mode: osudroid.modes.droid
+        mode: osudroid.modes.droid,
+        speedPenalty: replay.penalty,
+        stats
     });
 	const pcpp = new osudroid.PerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: play.combo,
         accPercent: realAcc,
         miss: play.miss,
-        mode: osudroid.modes.osu
+        mode: osudroid.modes.osu,
+        stats
     });
 	const ppline = parseFloat(npp.total.toFixed(2));
 	const pcppline = parseFloat(pcpp.total.toFixed(2));
@@ -182,11 +195,11 @@ module.exports.run = async (client, message, args, maindb) => {
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
         .setColor(mapinfo.statusColor())
         .attachFiles([attachment])
-		.setTitle(mapinfo.showStatistics(data.convertedMods, 0))
-        .setDescription(mapinfo.showStatistics(data.convertedMods, 1))
+		.setTitle(mapinfo.showStatistics(data.convertedMods, 0, stats))
+        .setDescription(mapinfo.showStatistics(data.convertedMods, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
-        .addField(mapinfo.showStatistics(data.convertedMods, 2), mapinfo.showStatistics(data.convertedMods, 3))
-        .addField(mapinfo.showStatistics(data.convertedMods, 4), `${mapinfo.showStatistics(data.convertedMods, 5)}\n**Result**: ${play.score.toLocaleString()} / ${play.rank} / ${play.combo}/${mapinfo.maxCombo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\n**Unstable Rate**: ${unstable_rate.toFixed(2)}`)
+        .addField(mapinfo.showStatistics(data.convertedMods, 2, stats), mapinfo.showStatistics(data.convertedMods, 3, stats))
+        .addField(mapinfo.showStatistics(data.convertedMods, 4, stats), `${mapinfo.showStatistics(data.convertedMods, 5, stats)}\n**Result**: ${play.score.toLocaleString()} / ${play.rank} / ${play.combo}/${mapinfo.maxCombo}x / ${play.accuracy}% / [${data.hit300}/${data.hit100}/${data.hit50}/${data.hit0}]\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms avg\n**Unstable Rate**: ${unstable_rate.toFixed(2)}`)
         .addField(`**Droid pp (Experimental)**: __${ppline} pp__ - ${starsline} stars`, `**PC pp**: ${pcppline} pp - ${pcstarsline} stars`);
 
     message.channel.send({embed: embed});

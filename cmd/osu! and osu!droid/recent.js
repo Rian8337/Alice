@@ -200,6 +200,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
 
     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
+
+    replay.map = star.droidStars;
+    replay.checkFor3Finger();
+
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
@@ -208,25 +212,19 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
-    let realAcc = new osudroid.Accuracy({
-        percent: acc,
-        nobjects: mapinfo.objects
+    const realAcc = new osudroid.Accuracy({
+        n300,
+        n100,
+        n50,
+        nmiss: miss
     });
-
-    if (replay.fixedODR) {
-        realAcc = new osudroid.Accuracy({
-            n300: n300,
-            n100: n100,
-            n50: n50,
-            nmiss: miss
-        });
-    }
 
     const npp = new osudroid.PerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
         mode: osudroid.modes.droid,
+        speedPenalty: replay.penalty,
         stats
     });
 
@@ -243,9 +241,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
     if (miss > 0 || combo < mapinfo.maxCombo) {
         const fc_acc = new osudroid.Accuracy({
-            n300: (n300 ? n300 : npp.computedAccuracy.n300) + miss,
-            n100: n100 ? n100 : npp.computedAccuracy.n100,
-            n50 : n50 ? n50 : npp.computedAccuracy.n50,
+            n300: n300 + miss,
+            n100,
+            n50,
             nmiss: 0
         });
 
@@ -254,6 +252,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
             mode: osudroid.modes.droid,
+            speedPenalty: replay.penalty,
             stats
         });
 
