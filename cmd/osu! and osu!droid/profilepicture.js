@@ -416,6 +416,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         isValid = stars.pcStars.total >= badge.requirement;
                                         break;
                                     }
+                                    case "unclaimable": {
+                                        return message.channel.send("❎ **| I'm sorry, this badge cannot be claimed!**");
+                                    }
                                 }
 
                                 if (!isValid) {
@@ -587,7 +590,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 const embed = new MessageEmbed()
                                     .setColor(message.member?.roles.color?.hexColor || "#000000")
                                     .setAuthor(`Badges for ${message.author.tag}`, message.author.avatarURL({dynamic: true}))
-                                    .setDescription(`Total badges: **${badgeList.length.toLocaleString()}**\nEarned badges: **${badgeList.filter(v => v.isOwned).length.toLocaleString()}**`);
+                                    .setDescription(`Total badges: **${badgeList.length.toLocaleString()}**\nEarned badges: **${badgeList.filter(v => v.isOwned).length.toLocaleString()}**\n\n**Credits to <@260736637116350465> for badge images!**`);
                                 
                                 listBadge(embed, badgeList, page, footer[index]);
 
