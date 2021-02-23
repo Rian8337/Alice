@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('old-osu-droid');
+const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 
 /**
