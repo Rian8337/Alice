@@ -142,8 +142,8 @@ export class ThreeFingerChecker {
     private readonly beatmapSections: BeatmapSection[] = [];
 
     /**
-     * This threshold is used to filter out accidental taps. It is assumed
-     * that there is at least one accidental tap for every `accidentalTapThreshold`
+     * This threshold is used to filter accidental taps. It is assumed that
+     * there is at least one accidental tap for every `accidentalTapThreshold`
      * object count.
      * 
      * Increasing this number makes the filtration more sensitive, however it
