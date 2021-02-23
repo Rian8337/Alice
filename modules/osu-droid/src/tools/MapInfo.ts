@@ -469,7 +469,7 @@ export class MapInfo {
                 return string;
             }
             case 1: {
-                let string: string = `${this.source ? `**Source**: ${this.source}\n` : ""}**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${this.beatmapsetID}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${this.beatmapsetID}) - [Beatconnect](https://beatconnect.io/b/${this.beatmapsetID}/)${this.approved >= rankedStatus.RANKED && this.approved !== rankedStatus.QUALIFIED ? ` - [Ripple](https://storage.ripple.moe/d/${this.beatmapsetID})` : ""}`;
+                let string: string = `${this.source ? `**Source**: ${this.source}\n` : ""}**Download**: [Bloodcat](https://bloodcat.com/osu/_data/beatmaps/${this.beatmapsetID}.osz) (__deprecated__) - [Chimu](https://chimu.moe/en/d/${this.beatmapsetID}) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${this.beatmapsetID}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${this.beatmapsetID}) - [Beatconnect](https://beatconnect.io/b/${this.beatmapsetID}/)${this.approved >= rankedStatus.RANKED && this.approved !== rankedStatus.QUALIFIED ? ` - [Ripple](https://storage.ripple.moe/d/${this.beatmapsetID})` : ""}`;
                 if (this.packs.length > 0) {
                     string += '\n**Beatmap Pack**: ';
                     for (let i = 0; i < this.packs.length; i++) {

@@ -41,7 +41,7 @@ function editEmbed(embed, mapList, page, footerImage, showDownloadLink) {
         }
         const d = mapList[i];
         const title = `${i + 1}. ${d.artist} - ${d.title} (${d.creator})`;
-        const content = `${showDownloadLink ? `**Download**: [osu! page](https://osu.ppy.sh/beatmapsets/${d.sid}) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}) - [Beatconnect](https://beatconnect.io/b/${d.sid}/)${d.approved >= rankedStatus.RANKED && d.approved !== rankedStatus.QUALIFIED ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})` : ""}\n` : ""}**Last Update**: ${new Date(d.lastupdate * 1000).toUTCString()} | **${getBeatmapStatus(d.approved)}**\n❤️ **${d.favourite_count.toLocaleString()}** - ▶️ **${d.play_count.toLocaleString()}**`;
+        const content = `${showDownloadLink ? `**Download**: [osu! page](https://osu.ppy.sh/beatmapsets/${d.sid}) - [Chimu](https://chimu.moe/en/d/${d.sid}) - [Sayobot](https://txy1.sayobot.cn/beatmaps/download/full/${d.sid}) [(no video)](https://txy1.sayobot.cn/beatmaps/download/novideo/${d.sid}) - [Beatconnect](https://beatconnect.io/b/${d.sid}/)${d.approved >= rankedStatus.RANKED && d.approved !== rankedStatus.QUALIFIED ? ` - [Ripple](https://storage.ripple.moe/d/${d.sid})` : ""}\n` : ""}**Last Update**: ${new Date(d.lastupdate * 1000).toUTCString()} | **${getBeatmapStatus(d.approved)}**\n❤️ **${d.favourite_count.toLocaleString()}** - ▶️ **${d.play_count.toLocaleString()}**`;
 
         embed.addField(title, content);
     }
