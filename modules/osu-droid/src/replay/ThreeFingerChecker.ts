@@ -40,11 +40,6 @@ interface AccurateBreakPoint {
      * The end time of the break point.
      */
     readonly endTime: number;
-    
-    /**
-     * The index of the first `DifficultyHitObject` after the break point is finished.
-     */
-    readonly objectIndex: number;
 }
 
 /**
@@ -235,8 +230,7 @@ export class ThreeFingerChecker {
 
             this.breakPointAccurateTimes.push({
                 startTime: timeBefore,
-                endTime: timeAfter,
-                objectIndex: afterIndex
+                endTime: timeAfter
             });
         }
     }
@@ -312,7 +306,7 @@ export class ThreeFingerChecker {
 
             if (realDeltaTime >= this.maxSectionDeltaTime) {
                 // Ignore sections that don't meet object count requirement.
-                if (i - firstObjectIndex <= this.minSectionObjectCount) {
+                if (i - firstObjectIndex < this.minSectionObjectCount) {
                     firstObjectIndex = i + 1;
                     continue;
                 }
@@ -324,6 +318,16 @@ export class ThreeFingerChecker {
                     dragFingerIndex: -1
                 });
             }
+        }
+
+        // Don't forget to manually add the last beatmap section, which would otherwise be ignored.
+        if (this.map.objects.length - firstObjectIndex > this.minSectionObjectCount) {
+            this.beatmapSections.push({
+                firstObjectIndex,
+                lastObjectIndex: this.map.objects.length - 1,
+                isDragged: false,
+                dragFingerIndex: -1
+            });
         }
     }
 
@@ -499,7 +503,7 @@ export class ThreeFingerChecker {
         const objects: DifficultyHitObject[] = this.map.objects;
 
         // Time intervals to be used to filter cursor instances.
-        const od: number = new MapStats(this.map.map).calculate({mode: modes.osu, mods: this.data.convertedMods, speedMultiplier: this.data.speedModification}).od as number;
+        const od: number = new MapStats(this.map.map).calculate({mode: modes.osu, mods: this.data.convertedMods}).od as number;
         const isPrecise: boolean = this.data.convertedMods.includes("PR");
         let startTime: number = Number.NaN;
         let endTime: number = Number.NaN;
@@ -549,7 +553,7 @@ export class ThreeFingerChecker {
                 }
     
                 // Ignore if object count is less than or equal to 5.
-                if (i - strainIndexStart <= 5) {
+                if (i - strainIndexStart <= this.minSectionObjectCount) {
                     // Reset everything to detect next section.
                     startTime = Number.NaN;
                     endTime = Number.NaN;
@@ -602,8 +606,8 @@ export class ThreeFingerChecker {
                 // Divide >=4th (3rd for drag) cursor instances with 1st + 2nd (+ 3rd for nondrag)
                 // to check if the section is 3-fingered.
                 const is3Finger: boolean =
-                    cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value) /
-                    cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value)
+                    cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value) /
+                    cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value)
                     > this.threeFingerRatioThreshold;
     
     
@@ -617,7 +621,7 @@ export class ThreeFingerChecker {
     
                     const strainFactor: number = speedStrains
                         .sort((a, b) => {return b - a;})
-                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index)) / 1000;
+                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index)) / 750;
     
                     // We can ignore the first 3 (2 for drag) filled cursor instances
                     // since they are guaranteed not 3 finger.
@@ -625,7 +629,7 @@ export class ThreeFingerChecker {
     
                     // Finger factor applies more penalty if more fingers were used.
                     const fingerFactor: number = threeFingerCursorAmounts.reduce((acc, value, index) =>
-                        acc * Math.max(1, Math.pow((index + 1) * value / objectCount, 1.4)),
+                        acc * Math.max(1, Math.pow((index + 1) * value / objectCount, 1.5)),
                         1
                     );
     
