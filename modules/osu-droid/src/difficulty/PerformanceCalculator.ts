@@ -237,8 +237,8 @@ export class PerformanceCalculator {
             // added to penalize map with little aim but ridiculously
             // high speed value (which is easily abusable by using more than 2 fingers).
             let extremePenalty = Math.pow(
-                1 - Math.abs(this.speed - Math.pow(this.aim, 1.11)) /
-                Math.max(this.speed, Math.pow(this.aim, 1.11)),
+                1 - Math.abs(this.speed - Math.pow(this.aim, 1.15)) /
+                Math.max(this.speed, Math.pow(this.aim, 1.15)),
                 0.2
             );
             extremePenalty = Math.max(

@@ -19,9 +19,6 @@ export class Speed extends Skill {
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
 
-    // ~280 1/4 BPM streams - edit to fit droid
-    private readonly droidMaxSpeedBonus: number = 53;
-
     // ~330 BPM 1/4 streams
     private readonly maxSpeedBonus: number = 45;
 
@@ -36,11 +33,11 @@ export class Speed extends Skill {
         }
 
         const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, currentObject.jumpDistance + currentObject.travelDistance);
-        const deltaTime: number = Math.max(this.mode === modes.droid ? this.droidMaxSpeedBonus : this.maxSpeedBonus, currentObject.deltaTime);
+        const deltaTime: number = Math.max(this.maxSpeedBonus, currentObject.deltaTime);
 
         let speedBonus: number = 1;
         if (deltaTime < this.minSpeedBonus) {
-            speedBonus += Math.pow((this.minSpeedBonus - deltaTime) / (this.mode === modes.droid ? 50 : 40), 2);
+            speedBonus += Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
         }
 
         let angleBonus: number = 1;

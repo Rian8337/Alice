@@ -12,11 +12,6 @@ export interface DifficultyValue {
  */
 export abstract class Skill {
     /**
-     * The gamemode this calculator is calculating for.
-     */
-    protected readonly mode: modes;
-
-    /**
      * The previous hitobjects during a section.
      */
     protected readonly previous: DifficultyHitObject[] = [];
@@ -50,10 +45,6 @@ export abstract class Skill {
      * Angle threshold to start giving bonus.
      */
     protected abstract readonly angleBonusBegin: number;
-
-    constructor(mode: modes) {
-        this.mode = mode;
-    }
 
     /**
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.

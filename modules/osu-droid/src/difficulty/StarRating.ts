@@ -18,7 +18,7 @@ export class StarRating {
     /**
      * The difficulty objects of the beatmap.
      */
-    objects: DifficultyHitObject[] = [];
+    readonly objects: DifficultyHitObject[] = [];
 
     /**
      * The modifications applied.
@@ -141,14 +141,14 @@ export class StarRating {
             oldStatistics: params.stats?.oldStatistics || false
         }).calculate({mode: mode});
 
-        this.objects = new DifficultyHitObjectCreator().generateDifficultyObjects({
+        this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
             objects: map.objects,
             circleSize: stats.cs as number,
             speedMultiplier: stats.speedMultiplier
-        });
+        }));
 
-        const aimSkill: Aim = new Aim(mode);
-        const speedSkill: Speed = new Speed(mode);
+        const aimSkill: Aim = new Aim();
+        const speedSkill: Speed = new Speed();
 
         const sectionLength: number = this.sectionLength * stats.speedMultiplier;
         let currentSectionEnd: number = Math.ceil(map.objects[0].startTime / sectionLength) * sectionLength;
