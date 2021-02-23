@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const osudroid = require('osu-droid');
+const osudroid = require('old-osu-droid');
 const { Db } = require('mongodb');
 
 /**
@@ -93,7 +93,7 @@ async function calculatePP(ppentries, entry, cb) {
     
     const pp = parseFloat(npp.toString().split(" ")[0]);
     const ppentry = {
-        hash: entry[11],
+        hash: mapinfo.hash,
         title: mapinfo.fullTitle,
         pp: pp,
         mods: mods,
@@ -121,9 +121,6 @@ async function calculatePP(ppentries, entry, cb) {
  * @param {Db} maindb 
  */
 module.exports.run = (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
-    }
     if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this.**");
     }
@@ -153,8 +150,8 @@ module.exports.run = (client, message, args, maindb) => {
                 ppentries.forEach(ppentry => {
                     let dup = false;
                     for (let i in pplist) {
-                        if (ppentry[0].trim() === pplist[i][0].trim()) {
-                            if (ppentry[2] >= pplist[i][2]) {
+                        if (ppentry.hash.trim() === pplist[i].hash.trim()) {
+                            if (ppentry.pp >= pplist[i].pp) {
                                 pplist[i] = ppentry; 
                             }
                             dup = true;
@@ -168,7 +165,7 @@ module.exports.run = (client, message, args, maindb) => {
                     }
                 });
                 pplist.sort(function(a, b) {
-                    return b[2] - a[2];
+                    return b.pp - a.pp;
                 });
                 if (pplist.length > 75) {
                     pplist.splice(75);
@@ -211,7 +208,7 @@ module.exports.run = (client, message, args, maindb) => {
                 } else {
                     console.log("done");
                     ppentries.sort(function(a, b) {
-                        return b[2] - a[2];
+                        return b.pp - a.pp;
                     });
                     if (ppentries.length > 75) {
                         ppentries.splice(75);
