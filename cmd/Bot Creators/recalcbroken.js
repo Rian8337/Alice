@@ -1,6 +1,6 @@
 const { Client, Message } = require("discord.js");
 const { Db } = require("mongodb");
-const osudroid = require('old-osu-droid');
+const osudroid = require('osu-droid');
 
 /**
  * @param {number} uid 
