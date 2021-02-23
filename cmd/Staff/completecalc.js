@@ -108,7 +108,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
         }
 
         const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
-        if (hasRequestedIndex) {
+        if (hasRequestedIndex && !repeated) {
             return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
         }
         if (res.hasAskedForRecalc) {
