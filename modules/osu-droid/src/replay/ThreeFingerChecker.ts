@@ -222,11 +222,13 @@ export class ThreeFingerChecker {
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
 
         for (const breakPoint of this.map.map.breakPoints) {
-            const beforeIndex: number = objects.findIndex((o, i) => o.object.endTime > breakPoint.startTime && objectData[i].result !== hitResult.RESULT_0) - 1;
-            const timeBefore: number = objects[beforeIndex].object.endTime + objectData[beforeIndex].accuracy;
+            const beforeIndex: number = objects.findIndex(o => o.object.endTime > breakPoint.startTime) - 1;
+            const timeBefore: number = objects[beforeIndex].object.endTime +
+                (objectData[beforeIndex].result !== hitResult.RESULT_0 ? objectData[beforeIndex].accuracy : 0);
 
             const afterIndex: number = beforeIndex + 1;
-            const timeAfter: number = objects[afterIndex].object.startTime + objectData[afterIndex].accuracy;
+            const timeAfter: number = objects[afterIndex].object.startTime +
+                (objectData[afterIndex].result !== hitResult.RESULT_0 ? objectData[afterIndex].accuracy : 0);
 
             this.breakPointAccurateTimes.push({
                 startTime: timeBefore,
