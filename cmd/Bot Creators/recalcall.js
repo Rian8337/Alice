@@ -45,7 +45,7 @@ module.exports.run = (client, message, args, maindb) => {
                         console.log(`Recalculating ${pp_entries.length} entries from uid ${entry.uid}`);
                         for await (const pp_entry of pp_entries) {
                             ++index;
-                            const { hash, mods, combo, miss, scoreID, pp } = pp_entry;
+                            const { hash, scoreID, pp } = pp_entry;
                             const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 
                             if (mapinfo.error) {
@@ -84,19 +84,19 @@ module.exports.run = (client, message, args, maindb) => {
                                 isForceAR: !isNaN(data.forcedAR),
                                 oldStatistics: data.replayVersion <= 3
                             });
-                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+                            const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: data.convertedMods, stats});
                             replay.map = star.droidStars;
                             replay.checkFor3Finger();
                             const realAcc = new osudroid.Accuracy({
                                 n300: data.hit300,
                                 n100: data.hit100,
                                 n50: data.hit50,
-                                nmiss: miss
+                                nmiss: data.hit0
                             });
                             
                             const npp = new osudroid.PerformanceCalculator().calculate({
                                 stars: star.droidStars,
-                                combo: replay.data.maxCombo ?? combo,
+                                combo: replay.data.maxCombo,
                                 accPercent: realAcc,
                                 mode: osudroid.modes.droid,
                                 speedPenalty: replay.penalty,
@@ -109,8 +109,8 @@ module.exports.run = (client, message, args, maindb) => {
                                 hash,
                                 title: mapinfo.fullTitle,
                                 pp: new_pp,
-                                combo: replay.data.maxCombo ?? combo,
-                                mods: mods,
+                                combo: replay.data.maxCombo,
+                                mods: data.convertedMods,
                                 accuracy: parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2)),
                                 miss: realAcc.nmiss,
                                 scoreID
