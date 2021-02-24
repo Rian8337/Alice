@@ -93,7 +93,7 @@ export class Player {
             const player: Player = new Player();
             const uid = params.uid;
             const username = params.username;
-            if (Number.isInteger(uid as number) && !username) {
+            if (!Number.isInteger(uid as number) && !username) {
                 console.log("Uid must be integer or enter username");
                 return resolve(player);
             }
