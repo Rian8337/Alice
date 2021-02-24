@@ -152,7 +152,7 @@ export class PathApproximator {
             return [];
         }
 
-        const scaledVec: Vector2 = a.scale(s).add(b.scale(t)).add(c.scale(u))
+        const scaledVec: Vector2 = a.scale(s).add(b.scale(t)).add(c.scale(u));
         const center: Vector2 = scaledVec.divide(sum);
         const dA: Vector2 = a.subtract(center);
         const dC: Vector2 = c.subtract(center);
