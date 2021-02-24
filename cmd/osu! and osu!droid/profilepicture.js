@@ -137,6 +137,9 @@ async function drawImage(properties, template = false) {
     } else {
         const badges = properties.pictureConfig.activeBadges ?? [];
         for (let i = 0; i < badges.length; i++) {
+            if (!badges[i]) {
+                continue;
+            }
             const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i].id}.png`);
             if (i / 5 < 1) {
                 c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
