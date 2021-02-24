@@ -405,6 +405,10 @@ export class ThreeFingerChecker {
      */
     private findDragIndex(sectionObjects: DifficultyHitObject[], sectionReplayObjectData: ReplayObjectData[], cursorIndexes: number[]): number {
         let objectIndex: number = sectionObjects.findIndex((v, i) => !(v.object instanceof Spinner) && sectionReplayObjectData[i].result !== hitResult.RESULT_0);
+        if (objectIndex === -1) {
+            return -1;
+        }
+        
         while (cursorIndexes.length > 0) {
             if (objectIndex === sectionObjects.length) {
                 break;
@@ -626,15 +630,15 @@ export class ThreeFingerChecker {
     
                     const strainFactor: number = speedStrains
                         .sort((a, b) => {return b - a;})
-                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index)) / 500;
+                        .reduce((acc, value, index) => acc + value * Math.pow(0.95, index)) / 1500;
     
                     // We can ignore the first 3 (2 for drag) filled cursor instances
                     // since they are guaranteed not 3 finger.
-                    const threeFingerCursorAmounts: number[] = cursorAmounts.slice(fingerSplitIndex).filter(amount => amount > 0);
+                    const threeFingerCursors: number[] = cursorAmounts.slice(fingerSplitIndex);
     
                     // Finger factor applies more penalty if more fingers were used.
-                    const fingerFactor: number = threeFingerCursorAmounts.reduce((acc, value, index) =>
-                        acc * Math.max(1, Math.pow((index + 1) * value / objectCount, 1.6)),
+                    const fingerFactor: number = threeFingerCursors.reduce((acc, value, index) =>
+                        acc + (index + 1) * value * objectCount / 100,
                         1
                     );
     
