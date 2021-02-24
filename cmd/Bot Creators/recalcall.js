@@ -98,7 +98,6 @@ module.exports.run = (client, message, args, maindb) => {
                                 stars: star.droidStars,
                                 combo: replay.data.maxCombo ?? combo,
                                 accPercent: realAcc,
-                                miss: replay.data.hit0 ?? miss,
                                 mode: osudroid.modes.droid,
                                 speedPenalty: replay.penalty,
                                 stats
@@ -113,7 +112,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 combo: replay.data.maxCombo ?? combo,
                                 mods: mods,
                                 accuracy: parseFloat((realAcc.value(mapinfo.objects) * 100).toFixed(2)),
-                                miss: replay.data.hit0 ?? miss,
+                                miss: realAcc.nmiss,
                                 scoreID
                             };
                             if (stats.isForceAR) {
