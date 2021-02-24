@@ -90,17 +90,17 @@ export class Beatmap {
     /**
      * The objects of the beatmap.
      */
-    objects: HitObject[] = [];
+    readonly objects: HitObject[] = [];
 
     /**
      * The timing points of the beatmap.
      */
-    timingPoints: TimingPoint[] = [];
+    readonly timingPoints: TimingPoint[] = [];
 
     /**
      * The break points of the beatmap.
      */
-    breakPoints: BreakPoint[] = [];
+    readonly breakPoints: BreakPoint[] = [];
 
     /**
      * The stack leniency of the beatmap.
