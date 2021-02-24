@@ -45,7 +45,7 @@ export class MapStars {
         
         const parser: Parser = new Parser();
         try {
-            parser.parse(params.file);
+            parser.parse(params.file, params.mods);
         } catch (e) {
             console.log("Invalid osu file");
             return this;

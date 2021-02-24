@@ -10,6 +10,7 @@ import { objectTypes } from '../constants/objectTypes';
 import { Vector2 } from '../mathutil/Vector2';
 import { SliderPath } from '../utils/SliderPath';
 import { HitObject } from './hitobjects/HitObject';
+import { MapStats } from '../utils/MapStats';
 
 /**
  * A beatmap parser with just enough data for pp calculation.
@@ -44,8 +45,11 @@ export class Parser {
      * Parses a beatmap.
      * 
      * This will process a `.osu` file and returns the current instance of the parser for easy chaining.
+     * 
+     * @param str The `.osu` file to parse.
+     * @param mods The mods to parse the beatmap for.
      */
-    parse(str: string): Parser {
+    parse(str: string, mods: string = ""): Parser {
         const lines: string[] = str.split("\n");
 
         for (let i: number = 0; i < lines.length; ++i) {
@@ -57,6 +61,12 @@ export class Parser {
         } else {
             this.applyStackingOld();
         }
+
+        const circleSize: number = new MapStats({cs: this.map.cs, mods}).calculate().cs as number;
+        const scale: number = (1 - 0.7 * (circleSize - 5) / 5) / 2;
+        this.map.objects.forEach(h => {
+            h.calculateStackedPosition(scale);
+        });
         
         return this;
     }

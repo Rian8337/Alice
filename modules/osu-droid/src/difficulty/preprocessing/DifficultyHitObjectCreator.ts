@@ -39,11 +39,6 @@ export class DifficultyHitObjectCreator {
         // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
         let scalingFactor: number = 52 / this.hitObjectRadius;
 
-        // apply stacked position
-        this.objects.forEach(hitObject => {
-            hitObject.calculateStackedPosition(this.hitObjectRadius / 64);
-        });
-
         // high circle size (small CS) bonus
         if (this.hitObjectRadius < this.CIRCLESIZE_BUFF_THRESHOLD) {
             scalingFactor *= 1 +
@@ -58,41 +53,40 @@ export class DifficultyHitObjectCreator {
             const difficultyObject: DifficultyHitObject = new DifficultyHitObject(this.objects[i]);
             difficultyObject.radius = this.hitObjectRadius;
 
-            if (i >= 1) {
+            if (i > 0) {
                 const lastObject: DifficultyHitObject = difficultyObjects[i - 1];
                 if (lastObject.object instanceof Slider) {
                     this.calculateSliderCursorPosition(lastObject.object);
                     difficultyObject.travelDistance = lastObject.object.lazyTravelDistance as number * scalingFactor;
                 }
-            }
-
-            const lastCursorPosition: Vector2 = i >= 1 ? this.getEndCursorPosition(this.objects[i - 1]) : new Vector2({x: 0, y: 0});
-            if (i > 0 && !(difficultyObject.object.type & objectTypes.spinner)) {
-                difficultyObject.jumpDistance = difficultyObject.object.stackedPosition.multiply(scalingVector)
-                    .subtract(lastCursorPosition.multiply(scalingVector))
-                    .getLength();
-            }
-
-            if (i > 0) {
+    
+                const lastCursorPosition: Vector2 = this.getEndCursorPosition(this.objects[i - 1]);
+                if (!(difficultyObject.object.type & objectTypes.spinner)) {
+                    difficultyObject.jumpDistance = difficultyObject.object.stackedPosition.multiply(scalingVector)
+                        .subtract(lastCursorPosition.multiply(scalingVector))
+                        .getLength();
+                }
+    
                 difficultyObject.deltaTime = (difficultyObject.object.startTime - difficultyObjects[i - 1].object.startTime) / params.speedMultiplier;
                 // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
                 difficultyObject.strainTime = Math.max(50, difficultyObject.deltaTime);
+    
+                if (i >= 2) {
+                    const prev1: DifficultyHitObject = difficultyObjects[i - 1];
+                    const prev2: DifficultyHitObject = difficultyObjects[i - 2];
+    
+                    const prev2CursorPosition: Vector2 = this.getEndCursorPosition(prev2.object);
+    
+                    const v1: Vector2 = prev2CursorPosition.subtract(prev1.object.stackedPosition);
+                    const v2: Vector2 = difficultyObject.object.stackedPosition.subtract(lastCursorPosition);
+                    const dot: number = v1.dot(v2);
+                    const det: number = v1.x * v2.y - v1.y * v2.x;
+                    difficultyObject.angle = Math.abs(Math.atan2(det, dot));
+                } else {
+                    difficultyObject.angle = null;
+                }
             }
 
-            if (i >= 2) {
-                const prev1: DifficultyHitObject = difficultyObjects[i - 1];
-                const prev2: DifficultyHitObject = difficultyObjects[i - 2];
-
-                const prev2CursorPosition: Vector2 = this.getEndCursorPosition(prev2.object);
-
-                const v1: Vector2 = prev2CursorPosition.subtract(prev1.object.stackedPosition);
-                const v2: Vector2 = difficultyObject.object.stackedPosition.subtract(lastCursorPosition);
-                const dot: number = v1.dot(v2);
-                const det: number = v1.x * v2.y - v1.y * v2.x;
-                difficultyObject.angle = Math.abs(Math.atan2(det, dot));
-            } else {
-                difficultyObject.angle = null;
-            }
             difficultyObjects.push(difficultyObject);
         }
 
