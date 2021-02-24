@@ -143,14 +143,14 @@ export class ThreeFingerChecker {
 
     /**
      * This threshold is used to filter accidental taps. It is assumed that
-     * there is at least one accidental tap for every `accidentalTapThreshold`
-     * object count.
+     * there is at least one accidental tap for every `n` object count, where
+     * `n` is this value.
      * 
-     * Increasing this number makes the filtration more sensitive, however it
-     * will also increase the chance of 3-fingered plays getting out from
-     * being flagged.
+     * Increasing this number will make the filtration less sensitive,
+     * however decreasing it will increase the chance of 3-fingered plays
+     * getting out from being flagged.
      */
-    private readonly accidentalTapThreshold: number = 400;
+    private readonly accidentalTapThreshold: number = 750;
 
     /**
      * A reprocessed break points to match right on object time.
@@ -196,7 +196,7 @@ export class ThreeFingerChecker {
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
         }
-
+        
         this.getBeatmapSections();
         this.detectDragPlay();
         this.preventAccidentalTaps();
@@ -210,6 +210,7 @@ export class ThreeFingerChecker {
         this.calculateNerfFactors();
 
         const finalPenalty: number = this.calculateFinalPenalty();
+
         return { is3Finger: finalPenalty > 1, penalty: finalPenalty };
     }
 
@@ -321,6 +322,8 @@ export class ThreeFingerChecker {
                     isDragged: false,
                     dragFingerIndex: -1
                 });
+
+                firstObjectIndex = i + 1;
             }
         }
 
@@ -606,16 +609,14 @@ export class ThreeFingerChecker {
                 // If the section is dragged, the dragged instance will be ignored,
                 // hence why the index is 1 less than nondragged section.
                 const fingerSplitIndex: number = dragIndex !== -1 ? 2 : 3;
-            
+    
                 // Divide >=4th (3rd for drag) cursor instances with 1st + 2nd (+ 3rd for nondrag)
                 // to check if the section is 3-fingered.
-                const is3Finger: boolean =
+                const threeFingerRatio: number =
                     cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value) /
-                    cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value)
-                    > this.threeFingerRatioThreshold;
+                    cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value);
     
-    
-                if (is3Finger) {
+                if (threeFingerRatio >= this.threeFingerRatioThreshold) {
                     // Strain factor
                     const objectCount: number = i - strainIndexStart - 1;
                     const speedStrains: number[] = [];
@@ -625,7 +626,7 @@ export class ThreeFingerChecker {
     
                     const strainFactor: number = speedStrains
                         .sort((a, b) => {return b - a;})
-                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index)) / 750;
+                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index)) / 500;
     
                     // We can ignore the first 3 (2 for drag) filled cursor instances
                     // since they are guaranteed not 3 finger.
@@ -633,12 +634,12 @@ export class ThreeFingerChecker {
     
                     // Finger factor applies more penalty if more fingers were used.
                     const fingerFactor: number = threeFingerCursorAmounts.reduce((acc, value, index) =>
-                        acc * Math.max(1, Math.pow((index + 1) * value / objectCount, 1.5)),
+                        acc * Math.max(1, Math.pow((index + 1) * value / objectCount, 1.6)),
                         1
                     );
     
                     // Length factor applies more penalty if there are more 3-fingered object.
-                    const lengthFactor: number = 1 + Math.pow(objectCount / objects.length, 1.2);
+                    const lengthFactor: number = 1 + Math.pow((objectCount + objects.length) / objects.length, 1.2);
     
                     this.nerfFactors.push({
                         strainFactor,
