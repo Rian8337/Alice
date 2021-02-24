@@ -239,6 +239,7 @@ export class Parser {
             return this.warn("Ignoring malformed timing point");
         }
         const msPerBeat: number = parseFloat(this.setPosition(s[1]));
+        // TODO: handle incredibly small (i.e. 1e-298) ms per beat
         const speedMultiplier = msPerBeat < 0 ? 100 / -msPerBeat : 1;
         this.map.timingPoints.push(new TimingPoint({
             time: parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0),
@@ -334,31 +335,8 @@ export class Parser {
                 expectedDistance: Math.max(0, distance)
             });
 
-            let speedMultiplierTimingPoint: number = -1;
-            let msPerBeatTimingPoint: number = -1;
-
-            for (let i = 0; i < this.map.timingPoints.length; ++i) {
-                const timingPoint: TimingPoint = this.map.timingPoints[i];
-                if (timingPoint.change) {
-                    msPerBeatTimingPoint = i;
-                }
-                if (timingPoint.time > time) {
-                    speedMultiplierTimingPoint = i - 1;
-                }
-
-                if (speedMultiplierTimingPoint >= 0 && msPerBeatTimingPoint >= 0) {
-                    break;
-                }
-            }
-
-            speedMultiplierTimingPoint = Math.max(0, Math.min(speedMultiplierTimingPoint, this.map.timingPoints.length - 1));
-            msPerBeatTimingPoint = Math.max(0, Math.min(msPerBeatTimingPoint, this.map.timingPoints.length - 1));
-
-            let t1: TimingPoint = this.map.timingPoints[speedMultiplierTimingPoint];
-            let t2: TimingPoint = this.map.timingPoints[msPerBeatTimingPoint];
-            if (t1.change && t2.change) {
-                t2 = t1;
-            }
+            const speedMultiplierTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints);
+            const msPerBeatTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints.filter(v => v.change));
 
             const object = new Slider({
                 position: position,
@@ -366,8 +344,8 @@ export class Parser {
                 type: type,
                 repetitions: parseInt(this.setPosition(s[6])),
                 path: path,
-                speedMultiplier: t1.speedMultiplier,
-                msPerBeat: t2.msPerBeat,
+                speedMultiplier: speedMultiplierTimingPoint.speedMultiplier,
+                msPerBeat: msPerBeatTimingPoint.msPerBeat,
                 mapSliderVelocity: this.map.sv,
                 mapTickRate: this.map.tickRate
             });
@@ -389,6 +367,32 @@ export class Parser {
             }
             this.map.objects.push(object);
         }
+    }
+
+    /**
+     * Gets the index of the time at given timing points.
+     * 
+     * @param time The time to search.
+     * @param timingPoints The timing points to search in.
+     */
+    private getTimingPointIndex(time: number, timingPoints: TimingPoint[]): TimingPoint {
+        let currentTimingPoint: number|undefined = undefined;
+
+        for (let i = 0; i < timingPoints.length; i++) {
+            if (timingPoints[i].time > time) {
+                currentTimingPoint = i - 1;
+                break;
+            }
+        }
+
+        if (currentTimingPoint === undefined)
+            currentTimingPoint = timingPoints.length - 1;
+
+        if (currentTimingPoint < 0) {
+            currentTimingPoint = 0;
+        }
+        
+        return timingPoints[currentTimingPoint];
     }
 
     /**
