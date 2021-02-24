@@ -20,19 +20,21 @@ export class DifficultyHitObject {
     speedStrain: number = 0;
 
     /**
-     * The travel distance of the hitobject.
+     * The normalized distance between the start and end position of the previous hitobject.
      */
     travelDistance: number = 0;
 
     /**
-     * The jump distance of the hitobject.
+     * The normalized distance from the end position of the previous hitobject to the start position of this hitobject.
      */
     jumpDistance: number = 0;
 
     /**
-     * The angle created by the hitobject and the previous 2 hitobjects (if present).
+     * Angle the player has to take to hit this hitobject.
+     * 
+     * Calculated as the angle between the circles (current-2, current-1, current).
      */
-    angle: number|null = 0;
+    angle: number|null = null;
 
     /**
      *  Whether or not the hitobject is considered as singletap.

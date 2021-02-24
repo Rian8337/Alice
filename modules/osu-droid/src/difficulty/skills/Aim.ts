@@ -31,7 +31,7 @@ export class Aim extends Skill {
         };
 
         if (this.previous.length > 0) {
-            if (currentObject.angle !== null && currentObject.angle > 0 && currentObject.angle > this.angleBonusBegin) {
+            if (currentObject.angle !== null && currentObject.angle > this.angleBonusBegin) {
                 const angleBonus: number = Math.sqrt(
                     Math.max(this.previous[0].jumpDistance - scale, 0) *
                     Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *

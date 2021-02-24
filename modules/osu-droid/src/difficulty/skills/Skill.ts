@@ -1,6 +1,4 @@
-import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
-import { modes } from '../../constants/modes';
 
 export interface DifficultyValue {
     readonly difficulty: number;
@@ -32,12 +30,14 @@ export abstract class Skill {
     private readonly strainPeaks: number[] = [];
 
     /**
-     * Skill multiplier for currently calculated difficulty factor.
+     * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
      */
     protected abstract readonly skillMultiplier: number;
 
     /**
-     * Strain decay base for currently calculated difficulty factor.
+     * Determines how quickly strain decays for the given skill.
+     * 
+     * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
      */
     protected abstract readonly strainDecayBase: number;
 

@@ -41,7 +41,7 @@ export class Speed extends Skill {
         }
 
         let angleBonus: number = 1;
-        if (currentObject.angle !== null && currentObject.angle > 0 && currentObject.angle < this.angleBonusBegin) {
+        if (currentObject.angle !== null && currentObject.angle < this.angleBonusBegin) {
             angleBonus += Math.pow(
                 Math.sin(1.5 * (this.angleBonusBegin - currentObject.angle)),
                 2
