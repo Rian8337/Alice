@@ -82,7 +82,6 @@ export class PerformanceCalculator {
      * Bonus for specific AR values.
      */
     private osuARBonus: number = 0;
-    
 
     /**
      * Bonus that is given if Hidden mod is applied.
@@ -178,7 +177,7 @@ export class PerformanceCalculator {
         if (calculatedAR > 10.33) {
             arBonus += 0.4 * (calculatedAR - 10.33);
         } else if (calculatedAR < 8) {
-            arBonus += 0.1 * (8 - calculatedAR);
+            arBonus += 0.01 * (8 - calculatedAR);
         }
         // Change droid AR bonus to keep consistency with length-related values.
         this.droidARBonus = 1 + Math.min(arBonus, arBonus * objectCount / 1250);
@@ -223,7 +222,7 @@ export class PerformanceCalculator {
 
         // Custom multiplier for SO and NF.
         // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
-        let finalMultiplier: number = this.mode === modes.droid ? 1.44 : 1.12;
+        let finalMultiplier: number = this.mode === modes.droid ? 1.25 : 1.12;
         if (this.convertedMods & mods.osuMods.nf) {
             finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
         }

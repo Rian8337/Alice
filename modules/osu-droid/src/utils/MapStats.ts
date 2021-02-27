@@ -206,7 +206,7 @@ export class MapStats {
                 // HR and EZ works differently in droid in terms of
                 // CS modification (even CS in itself as well)
                 //
-                // if present mods are found, they need to be removed
+                // If present mods are found, they need to be removed
                 // from the bitwise enum of mods to prevent double
                 // calculation
                 if (this.cs !== undefined) {
@@ -224,11 +224,12 @@ export class MapStats {
                     }
                     if (this.mods.includes("SC")) {
                         scale -= ((720 / 480)
-                        * (54.42 - 4 * 4.48)
+                        * (4 * 4.48)
                         * 2 / 128);
                     }
-                    // circle radius = 64 * scale
-                    this.cs = Math.min(5 + (5 - 10 * scale) / 0.7, 10);
+                    // Assume 681 is height
+                    const radius: number = 64 * scale / (681 * 0.85 / 384);
+                    this.cs = Math.min(5 + (1 - radius / 32) * 5 / 0.7, 10);
                 }
 
                 if (this.hp !== undefined) {
