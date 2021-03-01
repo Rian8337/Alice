@@ -210,7 +210,8 @@ export class MapStats {
                 // from the bitwise enum of mods to prevent double
                 // calculation
                 if (this.cs !== undefined) {
-                    let scale: number = ((720 / 480)
+                    // Assume 681 is height
+                    let scale: number = ((681 / 480)
                         * (54.42 - this.cs * 4.48)
                         * 2 / 128)
                         + 0.5 * (11 - 5.2450170716245195) / 5;
@@ -227,7 +228,6 @@ export class MapStats {
                         * (4 * 4.48)
                         * 2 / 128);
                     }
-                    // Assume 681 is height
                     const radius: number = 64 * scale / (681 * 0.85 / 384);
                     this.cs = Math.min(5 + (1 - radius / 32) * 5 / 0.7, 10);
                 }
