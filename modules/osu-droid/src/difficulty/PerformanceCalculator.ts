@@ -222,7 +222,7 @@ export class PerformanceCalculator {
 
         // Custom multiplier for SO and NF.
         // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
-        let finalMultiplier: number = this.mode === modes.droid ? 1.25 : 1.12;
+        let finalMultiplier: number = this.mode === modes.droid ? 1.24 : 1.12;
         if (this.convertedMods & mods.osuMods.nf) {
             finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
         }
