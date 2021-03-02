@@ -105,6 +105,9 @@ export class DifficultyHitObjectCreator {
         slider.lazyTravelDistance = 0;
 
         // Stop here if the slider has too short duration due to float number limitation.
+        // Incredibly close start and end time fluctuates travel distance and lazy
+        // end position heavily, which we do not want to happen.
+        //
         // In the real game, this shouldn't happen--perhaps need to reinvestigate this
         // in the future.
         if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
