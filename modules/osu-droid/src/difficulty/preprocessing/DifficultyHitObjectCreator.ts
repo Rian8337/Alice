@@ -3,6 +3,7 @@ import { HitObject } from "../../beatmap/hitobjects/HitObject";
 import { Vector2 } from "../../mathutil/Vector2";
 import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
 import { Slider } from "../../beatmap/hitobjects/Slider";
+import { Precision } from "../../utils/Precision";
 
 /**
  * A converter used to convert normal hitobjects into difficulty hitobjects.
@@ -39,13 +40,11 @@ export class DifficultyHitObjectCreator {
         // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
         let scalingFactor: number = 52 / this.hitObjectRadius;
 
-        // high circle size (small CS) bonus
+        // High circle size (small CS) bonus
         if (this.hitObjectRadius < this.CIRCLESIZE_BUFF_THRESHOLD) {
             scalingFactor *= 1 +
                 Math.min(this.CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
         }
-
-        const scalingVector: Vector2 = new Vector2({x: scalingFactor, y: scalingFactor});
 
         const difficultyObjects: DifficultyHitObject[] = [];
 
@@ -61,9 +60,11 @@ export class DifficultyHitObjectCreator {
                 }
     
                 const lastCursorPosition: Vector2 = this.getEndCursorPosition(this.objects[i - 1]);
+
+                // Don't need to jump to reach spinners
                 if (!(difficultyObject.object.type & objectTypes.spinner)) {
-                    difficultyObject.jumpDistance = difficultyObject.object.stackedPosition.multiply(scalingVector)
-                        .subtract(lastCursorPosition.multiply(scalingVector))
+                    difficultyObject.jumpDistance = difficultyObject.object.stackedPosition.scale(scalingFactor)
+                        .subtract(lastCursorPosition.scale(scalingFactor))
                         .getLength();
                 }
     
@@ -103,6 +104,13 @@ export class DifficultyHitObjectCreator {
         slider.lazyEndPosition = slider.stackedPosition;
         slider.lazyTravelDistance = 0;
 
+        // Stop here if the slider has too short duration due to float number limitation.
+        // In the real game, this shouldn't happen--perhaps need to reinvestigate this
+        // in the future.
+        if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
+            return;
+        }
+
         const approxFollowCircleRadius: number = this.hitObjectRadius * 3;
 
         // Skip the head circle
@@ -120,7 +128,7 @@ export class DifficultyHitObjectCreator {
 
             if (dist > approxFollowCircleRadius) {
                 // The cursor would be outside the follow circle, we need to move it
-                diff.normalize();
+                diff.normalize(); // Obtain direction of diff
                 dist -= approxFollowCircleRadius;
                 slider.lazyEndPosition = (slider.lazyEndPosition as Vector2).add(diff.scale(dist));
                 (slider.lazyTravelDistance as number) += dist;

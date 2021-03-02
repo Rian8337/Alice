@@ -87,6 +87,7 @@ export class Slider extends HitObject {
         mapTickRate: number
     }) {
         super(values);
+        // Basically equal to span count
         this.repetitions = values.repetitions;
         this.path = values.path;
         this.endPosition = this.position.add(this.path.positionAt(1));
@@ -99,78 +100,88 @@ export class Slider extends HitObject {
         this.duration = this.endTime - this.startTime;
         this.spanDuration = this.duration / this.repetitions;
 
-        // creating nested hit objects
-        // slider start and slider end
+        // Creating nested hit objects
+        // Slider start and slider end
         this.headCircle = new HeadCircle({
             position: this.position,
             startTime: this.startTime,
             type: 0
         });
 
-        this.tailCircle = new TailCircle({
-            position: this.endPosition,
-            startTime: this.endTime,
-            type: 0
-        });
+        this.nestedHitObjects.push(this.headCircle);
 
-        this.tailCircle.startTime = Math.max(this.startTime + this.duration / 2, this.tailCircle.startTime - this.legacyLastTickOffset);
-        this.nestedHitObjects.push(this.headCircle, this.tailCircle);
-        
-        // If the slider has too short duration due to float number limitation, stop processing the instance
-        if (Precision.almostEqualsNumber(this.startTime, this.endTime)) {
-            return;
-        }
-
-        // slider ticks
+        // Slider ticks and repeat points
+        // A very lenient maximum length of a slider for ticks to be generated.
+        // This exists for edge cases such as /b/1573664 where the beatmap has been edited by the user, and should never be reached in normal usage.
         const maxLength: number = 100000;
         const length: number = Math.min(maxLength, this.path.expectedDistance);
         const tickDistance: number = Math.min(Math.max(this.tickDistance, 0), length);
 
-        if (tickDistance === 0) {
-            return;
-        }
+        if (tickDistance !== 0) {
+            const minDistanceFromEnd: number = this.velocity * 10;
 
-        const minDistanceFromEnd: number = this.velocity * 10;
+            for (let span = 0; span < this.repetitions; ++span) {
+                const spanStartTime: number = this.startTime + span * this.spanDuration;
+                const reversed: boolean = span % 2 === 1;
+                
+                const sliderTicks: SliderTick[] = [];
+                for (let d = tickDistance; d <= length; d += tickDistance) {
+                    if (d >= length - minDistanceFromEnd) {
+                        break;
+                    }
 
-        for (let span = 0; span < this.repetitions; ++span) {
-            const spanStartTime: number = this.startTime + span * this.spanDuration;
-            const reversed: boolean = span % 2 === 1;
+                    // Always generate ticks from the start of the path rather than the span to ensure that ticks in repeat spans are positioned identically to those in non-repeat spans
+                    const distanceProgress: number = d / length;
+                    const timeProgress: number = reversed ? 1 - distanceProgress : distanceProgress;
 
-            for (let d = tickDistance; d <= length; d += tickDistance) {
-                if (d > length - minDistanceFromEnd) {
-                    break;
+                    const sliderTickPosition: Vector2 = this.position.add(this.path.positionAt(distanceProgress));
+                    const sliderTick: SliderTick = new SliderTick({
+                        startTime: spanStartTime + timeProgress * this.spanDuration,
+                        position: sliderTickPosition,
+                        spanIndex: span,
+                        spanStartTime: spanStartTime
+                    });
+                    sliderTicks.push(sliderTick);
                 }
 
-                // Always generate ticks from the start of the path rather than the span to ensure that ticks in repeat spans are positioned identically to those in non-repeat spans
-                const distanceProgress: number = d / length;
-                const timeProgress: number = reversed ? 1 - distanceProgress : distanceProgress;
+                // For repeat spans, ticks are returned in reverse-StartTime order.
+                if (reversed) {
+                    sliderTicks.reverse();
+                }
 
-                const sliderTickPosition: Vector2 = this.position.add(this.path.positionAt(distanceProgress));
-                const sliderTick: SliderTick = new SliderTick({
-                    startTime: spanStartTime + timeProgress * this.spanDuration,
-                    position: sliderTickPosition,
-                    spanIndex: span,
-                    spanStartTime: spanStartTime
-                });
-                this.nestedHitObjects.push(sliderTick);
+                this.nestedHitObjects.push(...sliderTicks);
+
+                if (span < this.repetitions - 1) {
+                    const repeatPosition: Vector2 = this.position.add(this.path.positionAt((span + 1) % 2));
+                    const repeatPoint: RepeatPoint = new RepeatPoint({
+                        position: repeatPosition,
+                        startTime: spanStartTime + this.spanDuration,
+                        repeatIndex: span,
+                        spanDuration: this.spanDuration
+                    });
+                    this.nestedHitObjects.push(repeatPoint);
+                }
             }
         }
 
-        // repeat points
-        for (let repeatIndex = 0, repeat = 1; repeatIndex < this.repetitions - 1; ++repeatIndex, ++repeat) {
-            const repeatPosition: Vector2 = this.position.add(this.path.positionAt(repeat % 2));
-            const repeatPoint: RepeatPoint = new RepeatPoint({
-                position: repeatPosition,
-                startTime: this.startTime + repeat * this.spanDuration,
-                repeatIndex: repeatIndex,
-                spanDuration: this.spanDuration
-            });
-            this.nestedHitObjects.push(repeatPoint);
-        }
+        // Okay, I'll level with you. I made a mistake. It was 2007.
+        // Times were simpler. osu! was but in its infancy and sliders were a new concept.
+        // A hack was made, which has unfortunately lived through until this day.
+        //
+        // This legacy tick is used for some calculations and judgements where audio output is not required.
+        // Generally we are keeping this around just for difficulty compatibility.
+        // Optimistically we do not want to ever use this for anything user-facing going forwards.
+        const finalSpanIndex: number = this.repetitions;
+        const finalSpanStartTime: number = this.startTime + finalSpanIndex * this.spanDuration;
+        const finalSpanEndTime: number = Math.max(this.startTime + this.duration / 2, finalSpanStartTime + this.spanDuration - this.legacyLastTickOffset);
 
-        this.nestedHitObjects.sort((a, b) => {
-            return a.startTime - b.startTime;
+        this.tailCircle = new TailCircle({
+            position: this.endPosition,
+            startTime: finalSpanEndTime,
+            type: 0
         });
+
+        this.nestedHitObjects.push(this.tailCircle);
     }
 
     toString(): string {
