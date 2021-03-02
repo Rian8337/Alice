@@ -10,6 +10,7 @@ import { Slider } from '../beatmap/hitobjects/Slider';
 import { SliderTick } from '../beatmap/hitobjects/sliderObjects/SliderTick';
 import { OsuAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
 import { TimingPoint } from '../beatmap/timings/TimingPoint';
+import { Precision } from '../utils/Precision';
 
 interface OsuAPIResponse {
     readonly approved: string;
@@ -505,9 +506,12 @@ export class MapInfo {
                         const speedMulMinBPM: number = Math.round(minBPM * mapStatistics.speedMultiplier);
                         const speedMulMaxBPM: number = Math.round(maxBPM * mapStatistics.speedMultiplier);
 
-                        string += minBPM === this.bpm && maxBPM === this.bpm ? `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
-                        if (this.bpm !== convertedBPM) {
-                            if (minBPM !== speedMulMinBPM || maxBPM !== speedMulMaxBPM) {
+                        string +=
+                            Precision.almostEqualsNumber(minBPM, this.bpm) && Precision.almostEqualsNumber(maxBPM, this.bpm) ?
+                            `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
+
+                        if (!Precision.almostEqualsNumber(this.bpm, convertedBPM)) {
+                            if (!Precision.almostEqualsNumber(minBPM, speedMulMinBPM) || !Precision.almostEqualsNumber(maxBPM, speedMulMinBPM)) {
                                 string += `(${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM})) `;
                             } else {
                                 string += `(${convertedBPM}) `;
