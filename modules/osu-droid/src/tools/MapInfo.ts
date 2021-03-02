@@ -511,7 +511,7 @@ export class MapInfo {
                             `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
 
                         if (!Precision.almostEqualsNumber(this.bpm, convertedBPM)) {
-                            if (!Precision.almostEqualsNumber(minBPM, speedMulMinBPM) || !Precision.almostEqualsNumber(maxBPM, speedMulMinBPM)) {
+                            if (!Precision.almostEqualsNumber(minBPM, speedMulMinBPM) || !Precision.almostEqualsNumber(maxBPM, speedMulMaxBPM)) {
                                 string += `(${speedMulMinBPM}-${speedMulMaxBPM} (${convertedBPM})) `;
                             } else {
                                 string += `(${convertedBPM}) `;
