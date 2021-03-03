@@ -211,10 +211,12 @@ export class MapStats {
                 // calculation
                 if (this.cs !== undefined) {
                     // Assume 681 is height
-                    let scale: number = ((681 / 480)
+                    const assumedHeight: number = 681;
+                    let scale: number = ((assumedHeight / 480)
                         * (54.42 - this.cs * 4.48)
                         * 2 / 128)
                         + 0.5 * (11 - 5.2450170716245195) / 5;
+                    
                     if (this.droidMods & mods.osuMods.hr) {
                         this.droidMods -= mods.osuMods.hr;
                         scale -= 0.125;
@@ -224,11 +226,11 @@ export class MapStats {
                         scale += 0.125;
                     }
                     if (this.mods.includes("SC")) {
-                        scale -= ((720 / 480)
+                        scale -= ((assumedHeight / 480)
                         * (4 * 4.48)
                         * 2 / 128);
                     }
-                    const radius: number = 64 * scale / (681 * 0.85 / 384);
+                    const radius: number = 64 * scale / (assumedHeight * 0.85 / 384);
                     this.cs = Math.min(5 + (1 - radius / 32) * 5 / 0.7, 10);
                 }
 
