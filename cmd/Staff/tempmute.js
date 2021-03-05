@@ -101,7 +101,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             }
         }
 
-        if (message.member.roles.cache.has(muterole.id)) {
+        if (tomute.roles.cache.has(muterole.id)) {
             return message.channel.send("❎ **| I'm sorry, this user is already muted!**");
         }
 
