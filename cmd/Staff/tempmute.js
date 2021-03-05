@@ -42,10 +42,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (isNaN(mutetime)) {
         return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
     }
-    if (mutetime < 1) {
-        return message.channel.send("❎ **| I'm sorry, you can only mute for at least 1 second.**");
+    if (mutetime < 30) {
+        return message.channel.send("❎ **| I'm sorry, you can only mute for at least 30 seconds.**");
     }
-    if (mutetime === Infinity) {
+    if (mutetime === Number.POSITIVE_INFINITY) {
         return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
     }
 
@@ -54,7 +54,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     }
 
     const channelDb = alicedb.collection("punishmentconfig");
-    channelDb.findOne({guildID: message.guild.id}, async (err, res) => {
+    const query = {guildID: message.guild.id};
+    channelDb.findOne(query, async (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -71,8 +72,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         }
 
         if (!message.isOwner && !message.author.bot && !message.member.hasPermission("ADMINISTRATOR")) {
-            const allowedMuteRoles = res.allowedMuteRoles;
-            const immuneMuteRoles = res.immuneMuteRoles;
+            const allowedMuteRoles = res.allowedMuteRoles ?? [];
+            const immuneMuteRoles = res.immuneMuteRoles ?? [];
 
             const allowedRoleEntry = allowedMuteRoles.find(v => message.member.roles.cache.has(v.id));
             if (!allowedRoleEntry) {
@@ -99,8 +100,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, I couldn't create the mute role!**");
             }
         }
+
+        if (message.member.roles.cache.has(muterole.id)) {
+            return message.channel.send("❎ **| I'm sorry, this user is already muted!**");
+        }
+
         message.guild.channels.cache.forEach((channel) => {
-            channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false, "CONNECT": false}).catch(console.error);
+            channel.updateOverwrite(muterole, {SEND_MESSAGES: false, ADD_REACTIONS: false, SPEAK: false, CONNECT: false}).catch(console.error);
         });
         //end of create role
 
@@ -147,14 +153,25 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             muteembed.attachFiles([message.attachments.first()]);
         }
 
-        channel.send({embed: muteembed}).then(msg => {
+        channel.send({embed: muteembed}).then(async msg => {
             tomute.roles.add(muterole.id)
                 .catch(console.error);
 
-            setTimeout(() => {
+            const currentMutes = res.currentMutes ?? [];
+            currentMutes.push({
+                userID: tomute.id,
+                logChannelID: channel.id,
+                logMessageID: msg.id,
+                muteEndTime: Math.floor(Date.now() / 1000) + mutetime
+            });
+
+            await channelDb.updateOne(query, {$set: {currentMutes}});
+
+            setTimeout(async () => {
                 tomute.roles.remove(muterole.id);
                 muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
                 msg.edit({embed: muteembed});
+                await channelDb.updateOne(query, {$pull: {currentMutes: {id: tomute.id}}});
             }, mutetime * 1000);
         });
     });
@@ -164,6 +181,6 @@ module.exports.config = {
     name: "tempmute",
     description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
-    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds [Float]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds. Minimum duration allowed is 30 seconds [Decimal]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
     permission: "Helper"
 };
