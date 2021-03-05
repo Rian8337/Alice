@@ -65,6 +65,9 @@ module.exports.run = async (client, maindb, alicedb) => {
 
 	// Challenge role assignment (reaction-based)
 	client.subevents.get("challengeRoleReaction").run(client);
+
+	// Continue mutes
+	client.subevents.get("muteResume").run(client, alicedb);
 };
 
 module.exports.config = {
