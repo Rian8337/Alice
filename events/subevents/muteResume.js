@@ -45,14 +45,12 @@ module.exports.run = async (client, alicedb) => {
             const logChannel = guild.channels.resolve(currentMute.logChannelID);
 
             if (!(logChannel instanceof TextChannel)) {
-                await guildMember.roles.remove(muteRole);
                 await muteDb.updateOne(guildQuery, guildUpdateQuery);
                 continue;
             }
 
             const logMessage = await logChannel.messages.fetch(currentMute.logMessageID).catch();
             if (!logMessage) {
-                await guildMember.roles.remove(muteRole);
                 await muteDb.updateOne(guildQuery, guildUpdateQuery);
                 continue;
             }
