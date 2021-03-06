@@ -36,8 +36,12 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		}
 	}
 
-	if (message.author.bot) return;
+	if (message.author.bot) {
+		return;
+	}
+	
 	client.utils.get("chatcoins").run(message, maindb, alicedb);
+	client.subevents.get("emojiStatistician").run(message, alicedb);
 	const msgArray = message.content.split(/\s+/g);
 	const command = msgArray[0];
 	const args = msgArray.slice(1);
