@@ -10,13 +10,16 @@ module.exports.run = async (message, alicedb) => {
         return;
     }
 
-    const emojis = message.content.match(/<a:.+?:\d+>|<:.+?:\d+>/g) ?? [];
+    const emojiMessages = message.content.match(/<a:.+?:\d+>|<:.+?:\d+>/g) ?? [];
     const emojiDb = alicedb.collection("emojistatistics");
     const guildEntry = await emojiDb.findOne({guildID: message.guild.id});
     const guildEmojiStats = guildEntry?.emojiStats ?? [];
 
-    for (const emoji of emojis) {
-        const actualEmoji = message.guild.emojis.resolve(emoji);
+    for (const emojiMessage of emojiMessages) {
+        const a = emojiMessage.split(":");
+        const emojiID = a[a.length - 1].replace(">", "");
+        
+        const actualEmoji = message.guild.emojis.resolve(emojiID);
         
         if (!actualEmoji) {
             continue;
