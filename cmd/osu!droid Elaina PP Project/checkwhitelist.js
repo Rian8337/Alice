@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         }
         hash = channelEntry[1];
     } else {
-        const a = beatmapLink.split("/");
+        const a = beatmapID.split("/");
         beatmapID = parseInt(a[a.length - 1]);
 
         if (isNaN(beatmapID)) {
