@@ -130,7 +130,7 @@ export class Player {
             player.accuracy = parseFloat((parseFloat(headerRes[5]) * 100).toFixed(2));
             player.email = headerRes[6];
             player.location = headerRes[7];
-            player.avatarURL = `https://ops.dgsrz.com/user/avatar?id=${MD5(player.email.trim().toLowerCase()).toString()}&s=200`;
+            player.avatarURL = `http://ops.dgsrz.com/user/avatar?id=${MD5(player.email.trim().toLowerCase()).toString()}&s=200`;
             player.rank = obj.rank;
 
             const recent: ExtraInformation["recent"] = obj.recent;
