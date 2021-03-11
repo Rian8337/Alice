@@ -226,14 +226,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const ppline = parseFloat(npp.total.toFixed(2));
     const pcppline = parseFloat(pcpp.total.toFixed(2));
 
-    if (miss > 0 || combo < mapinfo.maxCombo) {
-        const fc_acc = new osudroid.Accuracy({
-            n300: n300 + miss,
-            n100,
-            n50,
-            nmiss: 0
-        });
+    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** `;
+    const fc_acc = new osudroid.Accuracy({
+        n300: n300 + miss,
+        n100,
+        n50,
+        nmiss: 0
+    });
+    const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
 
+    if (notFullCombo) {
         const fc_dpp = new osudroid.PerformanceCalculator().calculate({
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
@@ -254,10 +256,37 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${(fc_acc.value(mapinfo.objects) * 100).toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
-    } else {
-        embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
+        beatmapInformation += `(${dline}DPP, ${pline}PP for ${(fc_acc.value() * 100).toFixed(2)}% FC) `;
     }
+
+    if (replay.penalty !== 1) {
+        const noPenaltyDpp = new osudroid.PerformanceCalculator().calculate({
+            stars: star.droidStars,
+            combo,
+            accPercent: realAcc,
+            mode: osudroid.modes.droid,
+            stats
+        });
+
+        beatmapInformation += `(${noPenaltyDpp.total.toFixed(2)}DPP`;
+
+        if (notFullCombo) {
+            const noPenaltyFCDpp = new osudroid.PerformanceCalculator().calculate({
+                stars: star.droidStars,
+                combo: mapinfo.maxCombo,
+                accPercent: fc_acc,
+                mode: osudroid.modes.droid,
+                stats
+            });
+
+            beatmapInformation += `, ${noPenaltyFCDpp.total.toFixed(2)}DPP (for FC)`;
+        }
+
+        beatmapInformation += ` without speed penalty) `;
+    }
+
+    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
+    embed.setDescription(beatmapInformation);
 
     message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
 };
