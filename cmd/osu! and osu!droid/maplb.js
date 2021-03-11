@@ -106,9 +106,19 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
             const mod = entry.mods;
             const combo = entry.combo;
             const rank = rankEmote(entry.rank);
-            const acc = entry.accuracy;
-            const miss = entry.miss;
             const date = entry.date;
+
+            const n300 = entry.hit300;
+            const n100 = entry.hit100;
+            const n50 = entry.hit50;
+            const miss = entry.miss;
+
+            const acc = new osudroid.Accuracy({
+                n300,
+                n100,
+                n50,
+                nmiss
+            });
 
             if (mapinfo.title) {
                 const stats = new osudroid.MapStats({
@@ -122,7 +132,6 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     stars: star.droidStars,
                     combo,
                     accPercent: acc,
-                    miss,
                     mode: osudroid.modes.droid,
                     stats
                 }).total;
@@ -136,9 +145,9 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     stats
                 }).total;
 
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${(acc.value() * 100).toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
             } else {
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${acc.toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ ${miss} miss(es)\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${(acc.value() * 100).toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
             }
         }
 
