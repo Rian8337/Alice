@@ -117,7 +117,7 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                 n300,
                 n100,
                 n50,
-                nmiss
+                nmiss: miss
             });
 
             if (mapinfo.title) {
