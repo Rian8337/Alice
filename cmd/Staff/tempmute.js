@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const config = require("../../config.json");
 const { Db } = require("mongodb");
+const currentTempMutes = new Map();
 
 function timeConvert(num) {
     let sec = parseInt(num);
@@ -158,23 +159,52 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 .catch(console.error);
 
             const currentMutes = res.currentMutes ?? [];
+            const muteEnd = Math.floor(Date.now() / 1000) + mutetime;
             currentMutes.push({
                 userID: tomute.id,
                 logChannelID: channel.id,
                 logMessageID: msg.id,
-                muteEndTime: Math.floor(Date.now() / 1000) + mutetime
+                muteEndTime: muteEnd
             });
 
             await channelDb.updateOne(query, {$set: {currentMutes}});
 
-            setTimeout(async () => {
+            const timeout = setTimeout(async () => {
                 tomute.roles.remove(muterole.id);
                 muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
                 msg.edit({embed: muteembed});
+                currentTempMutes.delete(tomute.id);
                 await channelDb.updateOne(query, {$pull: {currentMutes: {id: tomute.id}}});
             }, mutetime * 1000);
+
+            currentTempMutes.set(tomute.id, {muteEndTime: muteEnd, timeout});
         });
     });
+};
+
+/**
+ * @param {Discord.GuildMember} user 
+ */
+module.exports.unmuteUser = user => {
+    const timeoutInfo = currentTempMutes.get(user.id);
+    if (!timeoutInfo) {
+        return false;
+    }
+
+    const { muteEndTime, timeout } = timeoutInfo;
+    currentTempMutes.delete(user.id);
+    if (muteEndTime <= Math.floor(Date.now() / 1000)) {
+        return false;
+    }
+
+    const muteRole = user.guild.roles.cache.find(r => r.name === 'elaina-muted');
+    if (!muteRole) {
+        return false;
+    }
+
+    clearTimeout(timeout);
+    user.roles.remove(muteRole);
+    return true;
 };
 
 module.exports.config = {
@@ -182,5 +212,5 @@ module.exports.config = {
     description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
     detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds. Minimum duration allowed is 30 seconds [Decimal]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
-    permission: "Helper"
+    permission: `Mute Permission (configure with \`${config.prefix}settings\`)`
 };

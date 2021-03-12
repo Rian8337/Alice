@@ -4,6 +4,9 @@ module.exports.run = (client, oldMember, newMember, alicedb) => {
 
 	// Lounge ban detection
 	client.subevents.get("roleAddLoungeBanDetection").run(newMember, alicedb);
+
+	// Member manual unmute detection
+	client.subevents.get("memberUnmute").run(oldMember, newMember, alicedb);
 };
 
 module.exports.config = {

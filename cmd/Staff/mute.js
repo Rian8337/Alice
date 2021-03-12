@@ -124,6 +124,6 @@ module.exports.config = {
     name: "mute",
     description: "Permanently mutes a user.",
     usage: "mute <user> <reason>",
-    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason for banning, maximum length is 1024 characters [String]",
-    permission: "Specific Roles"
+    detail: "`user`: The user to ban [UserResolvable (mention or user ID)]\n`reason`: Reason for banning, maximum length is 1800 characters [String]",
+    permission: `Permanent Mute Permission (configure with \`${config.prefix}settings\`)`
 };
