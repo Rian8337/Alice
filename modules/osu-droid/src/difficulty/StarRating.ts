@@ -176,11 +176,11 @@ export class StarRating {
 
         this.aim = Math.sqrt(aimRating.difficulty) * this.difficultyMultiplier;
         this.aimDifficulty = aimRating.total;
-        this.aimLengthBonus = this.lengthBonus(aimRating.difficulty, this.aimDifficulty);
+        this.aimLengthBonus = this.lengthBonus(aimRating.difficulty, aimRating.total);
 
         this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
         this.speedDifficulty = speedRating.total;
-        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, this.difficultyMultiplier);
+        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
 
         if (convertedMod & mods.osuMods.td || mode === modes.droid) {
             this.aim = Math.pow(this.aim, 0.8);
