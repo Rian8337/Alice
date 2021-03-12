@@ -201,6 +201,7 @@ module.exports.addTemporaryMute = (user, alicedb, durationLeft, logChannelID, lo
 
     const timeout = setTimeout(async () => {
         await user.roles.remove(muteRole);
+        currentTempMutes.delete(user.id);
 
         const logChannel = user.guild.channels.resolve(logChannelID);
         if (!(logChannel instanceof TextChannel)) {
