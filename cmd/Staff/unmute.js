@@ -70,7 +70,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I couldn't unmute the user!**");
         }
 
-        let string = `**${toUnmute} in ${message.channel}**\nUser ID: ${tomute.id}\n\n=========================\n\n**Reason**:\n${reason ? reason : "Not specified."}`;
+        let string = `**${toUnmute} in ${message.channel}**\nUser ID: ${toUnmute.id}\n\n=========================\n\n**Reason**:\n${reason ? reason : "Not specified."}`;
 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
