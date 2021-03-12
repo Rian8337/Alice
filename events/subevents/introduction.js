@@ -9,10 +9,12 @@ const { GuildMember } = require('discord.js');
 		return;
 	}
 	const general = oldMember.guild.channels.cache.get("316545691545501706");
-	if (!general || oldMember.roles.cache.find(r => r.name === "Member") || !newMember.roles.cache.find(r => r.name === "Member")) {
+	if (!general || oldMember.roles.cache.size === newMember.roles.cache.size) {
 		return;
 	}
-	general.send(`Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`, {files: ["https://i.imgur.com/LLzteLz.jpg"]});
+	if (!oldMember.roles.cache.find(r => r.name === "Member") && newMember.roles.cache.find(r => r.name === "Member")) {
+		general.send(`Welcome to ${oldMember.guild.name}, <@${oldMember.id}>!`, {files: ["https://i.imgur.com/LLzteLz.jpg"]});
+	}
 };
 
 module.exports.config = {
