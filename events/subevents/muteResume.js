@@ -42,26 +42,7 @@ module.exports.run = async (client, alicedb) => {
                 continue;
             }
 
-            const logChannel = guild.channels.resolve(currentMute.logChannelID);
-
-            if (!(logChannel instanceof TextChannel)) {
-                await muteDb.updateOne(guildQuery, guildUpdateQuery);
-                continue;
-            }
-
-            const logMessage = await logChannel.messages.fetch(currentMute.logMessageID).catch();
-            if (!logMessage) {
-                await muteDb.updateOne(guildQuery, guildUpdateQuery);
-                continue;
-            }
-
-            const muteEmbed = logMessage.embeds[0];
-            setTimeout(async () => {
-                await guildMember.roles.remove(muteRole);
-                muteEmbed.setFooter(muteEmbed.footer.text + " | User unmuted", muteEmbed.footer.iconURL);
-                logMessage.edit(muteEmbed);
-                await muteDb.updateOne(guildQuery, guildUpdateQuery);
-            }, endTime * 1000 - Date.now());
+            client.commands.get("tempmute").addTemporaryMute(guildMember, alicedb, endTime * 1000 - Date.now(), currentMute.logChannelID, currentMute.logMessageID);
         }
     }
 };

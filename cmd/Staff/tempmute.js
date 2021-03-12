@@ -184,6 +184,47 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
 /**
  * @param {Discord.GuildMember} user 
+ * @param {Db} alicedb 
+ * @param {number} durationLeft 
+ * @param {string} logChannelID 
+ * @param {string} logMessageID 
+ */
+module.exports.addTemporaryMute = (user, alicedb, durationLeft, logChannelID, logMessageID) => {
+    const muteRole = user.guild.roles.cache.find(r => r.name === 'elaina-muted');
+    if (!muteRole) {
+        return;
+    }
+
+    const muteDb = alicedb.collection("punishmentconfig");
+    const guildQuery = {guildID: user.guild.id};
+    const guildUpdateQuery = {$pull: {currentMutes: {userID: user.id}}};
+
+    const timeout = setTimeout(async () => {
+        await user.roles.remove(muteRole);
+
+        const logChannel = user.guild.channels.resolve(logChannelID);
+        if (!(logChannel instanceof TextChannel)) {
+            await muteDb.updateOne(guildQuery, guildUpdateQuery);
+            return;
+        }
+
+        const logMessage = await logChannel.messages.fetch(logMessageID).catch(() => {return undefined;});
+        if (!logMessage) {
+            await muteDb.updateOne(guildQuery, guildUpdateQuery);
+            return;
+        }
+
+        const muteEmbed = logMessage.embeds[0];
+        muteEmbed.setFooter(muteEmbed.footer.text + " | User unmuted", muteEmbed.footer.iconURL);
+        logMessage.edit(muteEmbed);
+        await muteDb.updateOne(guildQuery, guildUpdateQuery);
+    }, durationLeft);
+
+    currentTempMutes.set(user.id, timeout);
+};
+
+/**
+ * @param {Discord.GuildMember} user 
  */
 module.exports.unmuteUser = user => {
     const timeoutInfo = currentTempMutes.get(user.id);
