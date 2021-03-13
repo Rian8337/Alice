@@ -145,7 +145,7 @@ client.on("typingStart", (channel, user) => {
 });
 
 client.on("guildBanAdd", (guild, user) => {
-	client.events.get("guildBanAdd").run(guild, user, maindb, alicedb);
+	client.events.get("guildBanAdd").run(client, guild, user, maindb, alicedb);
 });
 
 client.on("guildBanRemove", (guild, user) => {
