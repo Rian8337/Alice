@@ -9,7 +9,7 @@ const osudroid = require('osu-droid');
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-    if (!message.isOwner) {
+    if (!message.isOwner && !message.member.roles.cache.has('551662273962180611')) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
