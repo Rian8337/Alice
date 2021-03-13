@@ -6,7 +6,6 @@ const { Db } = require('mongodb');
  * @param {Db} alicedb 
  */
 module.exports.run = async (message, alicedb) => {
-    return;
     if (!(message.channel instanceof TextChannel)) {
         return;
     }
