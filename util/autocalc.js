@@ -2,7 +2,13 @@ const Discord = require('discord.js');
 const config = require('../config.json');
 const osudroid = require('osu-droid');
 
-module.exports.run = async (client, message, args, current_map, mapset = false) => {
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {boolean} mapset 
+ */
+module.exports.run = async (client, message, args, mapset = false) => {
 	let combo;
 	let acc = 100;
 	let missc = 0;
@@ -258,13 +264,6 @@ module.exports.run = async (client, message, args, current_map, mapset = false) 
 		string += `Raw PC pp: ${pcpp.toString()}`;
 	}
 	message.channel.send(string, {embed: embed}).catch(console.error);
-
-	const map_index = current_map.findIndex(map => map[0] === message.channel.id);
-	if (map_index === -1) {
-		current_map.push([message.channel.id, mapinfo.hash]);
-	} else {
-		current_map[map_index][1] = mapinfo.hash;
-	}
 };
 
 module.exports.config = {

@@ -62,9 +62,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	
 	// osu! beatmap link and osu!droid profile recognition
 	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
-		if (!isUtilDisabled(disabledUtils, "osuRecognition") || message.member?.hasPermission("ADMINISTRATOR")) {
-			client.subevents.get("osuRecognition").run(client, message, current_map);
-		}
+		client.subevents.get("osuRecognition").run(client, message, current_map, !isUtilDisabled(disabledUtils, "osuRecognition") || message.member?.hasPermission("ADMINISTRATOR"));
 		if (!isUtilDisabled(disabledUtils, "profileFetch") || message.member?.hasPermission("ADMINISTRATOR")) {
 			client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
 		}
