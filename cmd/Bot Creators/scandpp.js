@@ -28,7 +28,7 @@ module.exports.run = async (client, message, args, maindb) => {
     let skipMultiplier = 0;
     let count = 0;
     while (true) {
-        const players = await bindDb.find({}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).skip(skipMultiplier * 50).limit(50).toArray();
+        const players = await bindDb.find({checkDone: {$ne: true}}, {projection: {_id: 0, uid: 1, discordid: 1, pp: 1, playc: 1, pptotal: 1}}).sort({pptotal: -1}).skip(skipMultiplier * 50).limit(50).toArray();
         ++skipMultiplier;
 
         if (players.length === 0) {
@@ -72,11 +72,11 @@ module.exports.run = async (client, message, args, maindb) => {
 
             const newTotal = newList.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index));
             console.log(newTotal);
-            await bindDb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, pp: newList}});
-            ++count;
-            console.log(`${count} players recalculated`);
+            await bindDb.updateOne({discordid: player.discordid}, {$set: {pptotal: newTotal, pp: newList, checkDone: true}});
+            console.log(`${++count} players recalculated`);
         }
     }
+    await bindDb.updateMany({}, {$unset: {checkDone: ""}});
     message.channel.send(`✅ **| ${message.author}, scan done!**`);
 };
 
