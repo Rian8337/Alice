@@ -165,7 +165,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
     name: "emojistatistics",
-    description: "Gives statistics for emoji usage.",
+    description: "Gives statistics for emoji usage of the server.",
 	usage: "emojistatistics [sort option]",
 	detail: "`sort option`: Whether to sort based on overall or average per month usage, with overall as default. Accepted arguments are `average` and `overall` [String]",
 	permission: "None"
