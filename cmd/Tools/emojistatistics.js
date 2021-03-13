@@ -7,7 +7,7 @@ const config = require('../../config.json');
  * @param {Discord.MessageEmbed} embed 
  * @param {number} page 
  * @param {string} footerImage
- * @param {{emoji: Discord.GuildEmoji, count: number}[]} validEmojis 
+ * @param {{emoji: Discord.GuildEmoji, count: number, averagePerMonth: number}[]} validEmojis 
  */
 function modifyEmbed(embed, page, footerImage, validEmojis) {
     embed.spliceFields(0, embed.fields.length)
@@ -15,7 +15,7 @@ function modifyEmbed(embed, page, footerImage, validEmojis) {
 
     for (let i = 5 * (page - 1); i < Math.min(validEmojis.length, 5 + 5 * (page - 1)); ++i) {
         const validEmoji = validEmojis[i];
-        embed.addField(`${i+1}. ${validEmoji.emoji.name}`, `Added at ${validEmoji.emoji.createdAt.toUTCString()}\nUsage: ${validEmoji.count.toLocaleString()}`);
+        embed.addField(`${i+1}. ${validEmoji.emoji.name}`, `**Emoji**: ${validEmoji.emoji}\n**Date created**: ${validEmoji.emoji.createdAt.toUTCString()}\n**Overall usage**: ${validEmoji.count.toLocaleString()}\n**Average per month usage**: ${validEmoji.averagePerMonth.toLocaleString()}`);
     }
 }
 
@@ -35,6 +35,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
     }
 
+    const sortOption = args[0]?.toLowerCase() ?? "overall";
+
     alicedb.collection("emojistatistics").findOne({guildID: message.guild.id}, (err, res) => {
         if (err) {
             console.log(err);
@@ -46,6 +48,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
         const emojis = res.emojiStats;
         const validEmojis = [];
+        const currentDate = new Date();
 
         for (const emoji of emojis) {
             const actualEmoji = message.guild.emojis.resolve(emoji.id);
@@ -54,9 +57,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 continue;
             }
 
+            const dateCreation = actualEmoji.createdAt;
+            const months = Math.max(1, (currentDate.getUTCFullYear() - dateCreation.getUTCFullYear()) * 12 + currentDate.getUTCMonth() - dateCreation.getUTCMonth());
+            const averagePerMonth = Math.round(emoji.count / months);
+
             validEmojis.push({
                 emoji: actualEmoji,
-                count: emoji.count
+                count: emoji.count,
+                averagePerMonth
             });
         }
 
@@ -64,11 +72,18 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I couldn't find any valid emojis!**");
         }
 
-        validEmojis.sort((a, b) => {return b.count - a.count;});
+        if (sortOption === "average") {
+            validEmojis.sort((a, b) => {return b.averagePerMonth - a.averagePerMonth;});
+        } else {
+            validEmojis.sort((a, b) => {return b.count - a.count;});
+        }
 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const embed = new Discord.MessageEmbed()
+            .setAuthor(`Emoji statistics for ${message.guild.name}`, message.guild.iconURL({dynamic: true}))
+            .setDescription(`**Sort mode**: ${sortOption === "average" ? "Average per month" : "Overall"} usage`)
+            .setColor(message.member.displayHexColor)
             .setFooter("Alice Synthesis Thirty", footer[index]);
 
         let page = 1;
@@ -139,17 +154,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
             });
         });
-        cd.add(message.author.id);
-        setTimeout(() => {
-            cd.delete(message.author.id);
-        }, 30000);
+        if (!message.isOwner) {
+            cd.add(message.author.id);
+            setTimeout(() => {
+                cd.delete(message.author.id);
+            }, 20000);
+        }
     });
 };
 
 module.exports.config = {
     name: "emojistatistics",
     description: "Gives statistics for emoji usage.",
-	usage: "None",
-	detail: "None",
+	usage: "emojistatistics [sort option]",
+	detail: "`sort option`: Whether to sort based on overall or average per month usage, with overall as default. Accepted arguments are `average` and `overall` [String]",
 	permission: "None"
 };
