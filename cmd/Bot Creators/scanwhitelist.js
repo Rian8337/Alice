@@ -78,6 +78,7 @@ module.exports.run = async (client, message, args, maindb) => {
         }
     }
 
+    await whitelistDb.updateMany({}, {$unset: {checkDone: ""}});
     message.channel.send(`✅ **| ${message.author}, scan complete! A total of ${outdatedCount} entries were outdated, ${notAvailableCount} entries were not available, and ${deletedCount} entries were deleted.**`);
 };
 
