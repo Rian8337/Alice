@@ -103,7 +103,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     });
                 });
             });
-
     
             const backward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏮️' && user.id === message.author.id, {time: 120000});
             const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⬅️' && user.id === message.author.id, {time: 120000});
