@@ -6,9 +6,11 @@ const osudroid = require('osu-droid');
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
  * @param {string[]} args 
+ * @param {[string, string][]} current_map
  * @param {boolean} mapset 
+ * @param {boolean} calculate
  */
-module.exports.run = async (client, message, args, mapset = false) => {
+module.exports.run = async (client, message, args, current_map, mapset = false, calculate = false) => {
 	let combo;
 	let acc = 100;
 	let missc = 0;
@@ -78,6 +80,9 @@ module.exports.run = async (client, message, args, mapset = false) => {
 	}
 
 	if (mapset) {
+		if (!calculate) {
+			return;
+		}
 		const apiRequestBuilder = new osudroid.OsuAPIRequestBuilder()
 			.setEndpoint("get_beatmaps")
 			.addParameter("s", beatmapid);
@@ -189,8 +194,14 @@ module.exports.run = async (client, message, args, mapset = false) => {
 		return;
 	}
 	const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
+	const map_index = current_map.findIndex(map => map[0] === message.channel.id);
+	if (map_index === -1) {
+		current_map.push([message.channel.id, mapinfo.hash]);
+	} else {
+		current_map[map_index][1] = mapinfo.hash;
+	}
 
-	if (!mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
+	if (!calculate || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
 		return;
 	}
 	if (!combo) {
