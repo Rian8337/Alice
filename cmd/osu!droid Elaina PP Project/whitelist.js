@@ -76,7 +76,7 @@ module.exports.run = async (client, message, args, maindb) => {
         }
     };
     await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
-    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\``);
+    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`);
 };
 
 module.exports.config = {
