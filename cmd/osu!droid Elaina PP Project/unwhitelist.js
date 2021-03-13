@@ -9,10 +9,7 @@ const osudroid = require('osu-droid');
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    }
-    if (!message.isOwner && !message.member.roles.cache.has('551662273962180611')) {
+    if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
@@ -29,17 +26,9 @@ module.exports.run = async (client, message, args, maindb) => {
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
                 if (!wlres) return message.channel.send("❎ **| I'm sorry, the beatmap is not whitelisted!**");
-                let updateData = { $set: {
-                        mapid: parseInt(mapid),
-                        hashid: hashid,
-                        mapname: mapstring
-                    }};
-                try {
-                    whitelist.deleteOne(dupQuery, updateData, () => {
-                        console.log("Whitelist entry removed");
-                        message.channel.send("Whitelist entry removed | `" + mapstring + "`");
-                    });
-                } catch (e) {}
+                whitelist.deleteOne(dupQuery, () => {
+                    message.channel.send("✅ **| Whitelist entry removed | `" + mapstring + "`.**");
+                });
             });
         }
         else message.channel.send("❎ **| Beatmap unwhitelisting failed.**");

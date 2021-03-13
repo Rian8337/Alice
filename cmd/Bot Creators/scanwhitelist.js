@@ -27,7 +27,7 @@ module.exports.run = async (client, message, args, maindb) => {
     let deletedCount = 0;
     let i = 0;
     while (true) {
-        const entries = await whitelistDb.find({}, {projection: {_id: 0, mapid: 1, hashid: 1}}).sort({mapid: -1}).skip(skipMultiplier * 100).limit(100).toArray();
+        const entries = await whitelistDb.find({checkDone: {$ne: true}}, {projection: {_id: 0, mapid: 1, hashid: 1}}).sort({mapid: -1}).skip(skipMultiplier * 100).limit(100).toArray();
         ++skipMultiplier;
 
         if (entries.length === 0) {
@@ -35,7 +35,7 @@ module.exports.run = async (client, message, args, maindb) => {
         }
 
         for await (const entry of entries) {
-            const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: entry.mapid});
+            const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: entry.mapid, file: false});
             await sleep(0.05);
             console.log(++i);
             if (mapinfo.error) {
@@ -54,10 +54,26 @@ module.exports.run = async (client, message, args, maindb) => {
                 await whitelistDb.deleteOne({mapid: entry.mapid});
                 continue;
             }
+            const updateQuery = {
+                $set: {
+                    checkDone: true,
+                    hashid: mapinfo.hash,
+                    diffstat: {
+                        cs: mapinfo.cs,
+                        ar: mapinfo.ar,
+                        od: mapinfo.od,
+                        hp: mapinfo.hp,
+                        sr: mapinfo.totalDifficulty
+                    }
+                },
+                $unset: {
+                    hash: ""
+                }
+            };
+            await whitelistDb.updateOne({mapid: entry.mapid}, updateQuery);
             if (entry.hashid !== mapinfo.hash) {
                 console.log("Hash outdated");
                 ++outdatedCount;
-                await whitelistDb.updateOne({mapid: entry.mapid}, {$set: {hashid: mapinfo.hash}});
             }
         }
     }

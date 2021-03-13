@@ -23,10 +23,7 @@ function mapstatusread(status) {
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
-    if (message.channel instanceof Discord.DMChannel) {
-        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
-    }
-    if (!message.isOwner && !message.member.roles.cache.has('551662273962180611')) {
+    if (!message.isOwner) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
@@ -49,14 +46,8 @@ module.exports.run = async (client, message, args, maindb) => {
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!");
                     }
                     if (!wlres) return message.channel.send("❎ **| I'm sorry, the beatmap is not whitelisted!**");
-                    let removeData = {
-                        mapid: parseInt(entry[0]),
-                        hashid: entry[1],
-                        mapname: entry[2]
-                    };
-                    console.log("Whitelist entry removed");
-                    whitelist.deleteOne(dupQuery, removeData, () => {
-                        message.channel.send("Whitelist entry removed | `" + entry[2] + "`");
+                    whitelist.deleteOne(dupQuery, () => {
+                        message.channel.send("✅ **| Whitelist entry removed | `" + entry[2] + "`.**");
                     });
                 });
             });

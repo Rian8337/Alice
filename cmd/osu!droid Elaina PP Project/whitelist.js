@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
-const config = require('../../config.json');
 const osudroid = require('osu-droid');
+const config = require('../../config.json');
+const { Db } = require('mongodb');
 
 /**
  * @param {Discord.Client} client 
@@ -16,74 +17,38 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
-    const whitelist = maindb.collection("mapwhitelist");
-    let link_in = args[0];
-    let hash_in = args[1];
-    await whitelistInfo(client, link_in, hash_in, message, (res, mapid = "", hashid = "", mapstring = "") => {
-        if (res > 0) {
-            let dupQuery = {mapid: parseInt(mapid)};
-            whitelist.findOne(dupQuery, (err, wlres) => {
-                console.log(wlres);
-                if (err) {
-                    console.log(err);
-                    return message.channel.send("Error: Empty database response. Please try again!");
-                }
-                if (!wlres) {
-                    let insertData = {
-                        mapid: parseInt(mapid),
-                        hashid: hashid,
-                        mapname: mapstring
-                    };
-                    whitelist.insertOne(insertData, () => {
-                        console.log("Whitelist entry added");
-                        message.channel.send("Whitelist entry added | `" + mapstring + "`");
-                        client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + mapstring + "`");
-                    });
-                }
-                else {
-                    let updateData = { $set: {
-                        mapid: parseInt(mapid),
-                        hashid: hashid,
-                        mapname: mapstring
-                    }};
-                    whitelist.updateOne(dupQuery, updateData, () => {
-                        console.log("Whitelist entry updated");
-                        message.channel.send("Whitelist entry updated | `" + mapstring + "`");
-                        client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + mapstring + "`");
-                    });
-                }
-            });
-        }
-        else message.channel.send("❎ **| I'm sorry, beatmap whitelisting failed.**");
-    });
-};
-
-async function whitelistInfo(client, link_in, hash_in, message, callback) {
-    let beatmapid = "";
-    let hashid = "";
-    let query = {};
-    if (link_in) { //Normal mode
-        let line_sep = link_in.split('/');
-        beatmapid = line_sep[line_sep.length-1];
-        query = {beatmapID: beatmapid};
+    const whitelistDb = maindb.collection("mapwhitelist");
+    
+    const link = args[1];
+    if (!link) {
+        return message.channel.send("❎ **| Hey, please enter the beatmap link or ID to whitelist!**");
     }
-    if (hash_in) {hashid = hash_in; query = {hash: hashid}}; //Override mode (use for fixed map)
+    const hash = args[2];
+
+    let query = {};
+    // Normal mode
+    if (link) {
+        const a = link.split("/");
+        query = {beatmapID: parseInt(a[a.length - 1])};
+    }
+
+    // Override mode (use for fixed maps)
+    if (hash) {
+        query = {hash};
+    }
+    query.file = false;
 
     const mapinfo = await osudroid.MapInfo.getInformation(query);
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
-        message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
-        return callback(0);
+        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
     }
     if (mapinfo.approved !== osudroid.rankedStatus.GRAVEYARD) {
-        message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
-        return callback(0);
+        return message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
     }
-    beatmapid = mapinfo.beatmapID;
-    hashid = mapinfo.hash;
-    let mapstring = mapinfo.fullTitle;
-    let footer = config.avatar_list;
+
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
-    let embed = new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setFooter("Alice Synthesis Thirty", footer[index])
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}.jpg`)
         .setColor(mapinfo.statusColor())
@@ -94,15 +59,30 @@ async function whitelistInfo(client, link_in, hash_in, message, callback) {
         .addField(mapinfo.showStatistics("", 2), mapinfo.showStatistics("", 3))
         .addField(mapinfo.showStatistics("", 4), `Star Rating: ${mapinfo.totalDifficulty}`);
 
-    message.channel.send({embed: embed}).catch(console.error);
-    client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
-    callback(1, beatmapid, hashid, mapstring)
-}
+    message.channel.send(embed);
+    client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
+
+    const updateQuery = {
+        $set: {
+            hashid: mapinfo.hash,
+            mapname: mapinfo.fullTitle,
+            diffstat: {
+                cs: mapinfo.cs,
+                ar: mapinfo.ar,
+                od: mapinfo.od,
+                hp: mapinfo.hp,
+                sr: mapinfo.totalDifficulty
+            }
+        }
+    };
+    await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
+    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\``);
+};
 
 module.exports.config = {
     name: "whitelist",
     description: "Whitelists a beatmap.",
-    usage: "whitelist <map link/map ID>",
-    detail: "`map link/map ID`: The beatmap link or ID to whitelist [String]",
+    usage: "whitelist <map link/map ID> [hash]",
+    detail: "`hash`: The MD5 hash of the beatmap. Use this for fixed maps [String]\n`map link/map ID`: The beatmap link or ID to whitelist [String]",
     permission: "pp-project Map Validator"
 };

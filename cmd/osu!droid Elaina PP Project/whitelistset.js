@@ -1,22 +1,7 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
-const https = require("https");
-const apikey = process.env.OSU_API_KEY;
 const config = require('../../config.json');
 const { Db } = require('mongodb');
-
-function mapstatusread(status) {
-	switch (status) {
-		case -2: return 16711711;
-		case -1: return 9442302;
-		case 0: return 16312092;
-		case 1: return 2483712;
-		case 2: return 16741376;
-		case 3: return 5301186;
-		case 4: return 16711796;
-		default: return 0
-	}
-}
 
 /**
  * @param {Discord.Client} client 
@@ -24,7 +9,7 @@ function mapstatusread(status) {
  * @param {string[]} args 
  * @param {Db} maindb 
  */
-module.exports.run = (client, message, args, maindb) => {
+module.exports.run = async (client, message, args, maindb) => {
     if (message.channel instanceof Discord.DMChannel) {
         return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
     }
@@ -32,141 +17,76 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
-    let whitelist = maindb.collection("mapwhitelist");
-    let link_in = args[0];
-    whitelistInfo(client, link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
-        if (res > 0) {
-            let i = 0;
-            let entryarr = [];
-            for (i in mapid) {
-                let finalstring = mapstring + " [" + diffstring[i] + "]";
-                entryarr.push([mapid[i], hashid[i], finalstring]);
-            }
-            entryarr.forEach((entry) => {
-                let dupQuery = {mapid: parseInt(entry[0])};
-                whitelist.findOne(dupQuery, (err, wlres) => {
-                    console.log(wlres);
-                    if (err) {
-                        console.log(err);
-                        return message.channel.send("Error: Empty database response. Please try again!");
-                    }
-                    if (!wlres) {
-                        let insertData = {
-                            mapid: parseInt(entry[0]),
-                            hashid: entry[1],
-                            mapname: entry[2]
-                        };
-                        console.log("Whitelist entry added");
-                        whitelist.insertOne(insertData, () => {
-                            message.channel.send("Whitelist entry added | `" + entry[2] + "`");
-                            client.channels.cache.get("638671295470370827").send("Whitelist entry added | `" + entry[2] + "`");
-                        });
-                    }
-                    else {
-                        let updateData = { $set: {
-                            mapid: parseInt(entry[0]),
-                            hashid: entry[1],
-                            mapname: entry[2]
-                        }};
-                        console.log("Whitelist entry update");
-                        whitelist.updateOne(dupQuery, updateData, () => {
-                            message.channel.send("Whitelist entry updated | `" + entry[2] + "`");
-                            client.channels.cache.get("638671295470370827").send("Whitelist entry updated | `" + entry[2] + "`");
-                        });
-                    }
-                });
-            });
-        }
-        else message.channel.send("❎ **| I'm sorry, beatmap whitelisting failed.**");
-    });
-};
-
-function whitelistInfo(client, link_in, message, callback) {
-    let setid = "";
-    let mapid = [];
-    let hashid = [];
-    let diffstring = [];
-
-    if(link_in) {  //Normal mode
-        let line_sep = link_in.split('/');
-        setid = line_sep[line_sep.length-1]
+    const whitelistDb = maindb.collection("mapwhitelist");
+    
+    const link = args[1];
+    if (!link) {
+        return message.channel.send("❎ **| Hey, please enter the beatmapset link or ID to whitelist!**");
     }
-    let options = new URL("https://osu.ppy.sh/api/get_beatmaps?k=" + apikey + "&s=" + setid);
 
-	let content = "";
+    const a = link.split("/");
+    const beatmapsetID = parseInt(a[a.length - 1]);
 
-	let req = https.get(options, function(res) {
-		res.setEncoding("utf8");
-		res.on("data", function (chunk) {
-			content += chunk;
-        });
-		res.on("error", err => {
-		    console.log(err);
-            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again later!**")
-        });
-        res.on("end", function () {
-            let obj;
-            try {
-                obj = JSON.parse(content);
-            } catch (e) {
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API. Please try again later!**")
-            }
-            if (!obj[0]) {console.log("Set not found"); callback(0);}
-            let mapinfo = obj;
-            let firstmapinfo = mapinfo[0];
-            if (firstmapinfo.mode !=0) callback(0);
-            if (parseInt(firstmapinfo.approved) !== osudroid.rankedStatus.GRAVEYARD) {
-                message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
-                return callback(0);
-            }
+    const apiRequestBuilder = new osudroid.OsuAPIRequestBuilder()
+        .setEndpoint("get_beatmaps")
+        .addParameter("s", beatmapsetID);
 
-            for (let i in mapinfo) {
-                if (mapinfo[i].mode == 0) {
-                    mapid.push(mapinfo[i].beatmap_id);
-                    hashid.push(mapinfo[i].file_md5);
-                    diffstring.push(mapinfo[i].version);
+    const result = await apiRequestBuilder.sendRequest();
+    if (result.statusCode !== 200) {
+        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
+    }
+
+    const data = JSON.parse(result.data.toString("utf-8"));
+    if (data.length === 0) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the beatmapset that you have specified!**");
+    }
+
+    const osuBeatmaps = data.filter(v => parseInt(v.mode) === 0 && parseInt(v.approved) === osudroid.rankedStatus.GRAVEYARD);
+    if (osuBeatmaps.length === 0) {
+        return message.channel.send("❎ **| I'm sorry, the beatmapset that you have sent doesn't have an osu!standard gamemode beatmap that is graveyarded!**");
+    }
+    
+    const mapinfos = [];
+    osuBeatmaps.forEach(d => {
+        mapinfos.push(new osudroid.MapInfo().fillMetadata(d));
+    });
+
+    const firstMapinfo = mapinfos[0];
+    const footer = config.avatar_list;
+    const index = Math.floor(Math.random() * footer.length);
+    const embed = new Discord.MessageEmbed()
+        .setFooter("Alice Synthesis Thirty", footer[index])
+        .setThumbnail(`https://b.ppy.sh/thumb/${firstMapinfo.beatmapsetID}.jpg`)
+        .setColor(firstMapinfo.statusColor())
+        .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+        .setTitle(firstMapinfo.showStatistics("", 0))
+        .setDescription(firstMapinfo.showStatistics("", 1))
+        .setURL(`https://osu.ppy.sh/b/${firstMapinfo.beatmapID}`)
+        .addField(firstMapinfo.showStatistics("", 2), firstMapinfo.showStatistics("", 3))
+        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- ${v.version} - **${v.totalDifficulty.toFixed(2)}**\n`;})}`);
+
+    message.channel.send(embed).catch(console.error);
+    client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
+
+    for await (const mapinfo of mapinfos) {
+        const updateQuery = {
+            $set: {
+                hashid: mapinfo.hash,
+                mapname: mapinfo.fullTitle,
+                diffstat: {
+                    cs: mapinfo.cs,
+                    ar: mapinfo.ar,
+                    od: mapinfo.od,
+                    hp: mapinfo.hp,
+                    sr: mapinfo.totalDifficulty
                 }
             }
-            
-            let listoutput = "";
+        };
 
-            for (let i in diffstring) {
-                listoutput += "- " + diffstring[i] + " - **" + parseFloat(mapinfo[i].difficultyrating).toFixed(2) + "**\n" ;
-            }
-
-            let mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
-            let footer = config.avatar_list;
-            const index = Math.floor(Math.random() * footer.length);
-            const embed = {
-                "title": mapstring,
-                "description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat]()",
-                "url": "https://osu.ppy.sh/b/" + firstmapinfo.beatmap_id ,
-                "color": mapstatusread(parseInt(firstmapinfo.approved)),
-                "footer": {
-                    "icon_url": footer[index],
-                    "text": "Alice Synthesis Thirty"
-                },
-                "author": {
-                    "name": "Set Found",
-                    "icon_url": "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg"
-                },
-                "thumbnail": {
-                    "url": "https://b.ppy.sh/thumb/" + firstmapinfo.beatmapset_id + ".jpg"
-                },
-                "fields": [
-                    {
-                        "name": "Last Update: " + firstmapinfo.last_update,
-                        "value": "Star Rating: \n" + listoutput 
-                    }
-                ]
-            };
-            message.channel.send({embed: embed}).catch(console.error);
-            client.channels.cache.get("638671295470370827").send({embed: embed}).catch(console.error);
-            callback(1, mapid, hashid, mapstring, diffstring);
-        });
-    });
-	req.end();
-}
+        await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
+        await message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\``);
+    }
+};
 
 module.exports.config = {
     name: "whitelistset",
