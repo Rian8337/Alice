@@ -1,3 +1,4 @@
+import { Circle } from "../beatmap/hitobjects/Circle";
 import { DifficultyHitObject } from "../beatmap/hitobjects/DifficultyHitObject";
 import { Spinner } from "../beatmap/hitobjects/Spinner";
 import { hitResult } from "../constants/hitResult";
@@ -7,6 +8,7 @@ import { StarRating } from "../difficulty/StarRating";
 import { Vector2 } from "../mathutil/Vector2";
 import { DroidHitWindow } from "../utils/HitWindow";
 import { MapStats } from "../utils/MapStats";
+import { mods } from "../utils/mods";
 import { CursorData } from "./data/CursorData";
 import { ReplayData } from "./data/ReplayData";
 import { ReplayObjectData } from "./data/ReplayObjectData";
@@ -111,6 +113,16 @@ export class ThreeFingerChecker {
     private readonly strainThreshold: number = 200;
 
     /**
+     * The amount of notes that has a speed strain exceeding `strainThreshold`.
+     */
+    private readonly strainNoteCount: number;
+
+    /**
+     * The speed strain sum of all notes that exceed `strainThreshold`.
+     */
+    private readonly speedStrainSum: number;
+
+    /**
      * The ratio threshold between non-3 finger cursors and 3-finger cursors.
      * 
      * Increasing this number will increase detection accuracy, however
@@ -123,16 +135,15 @@ export class ThreeFingerChecker {
      * 
      * Increasing this number decreases the amount of beatmap sections in general.
      * 
-     * Note that this value does not account the speed multiplier of the play, similar
-     * to the way replay object data is stored.
+     * Note that this value does not account for the speed multiplier of
+     * the play, similar to the way replay object data is stored.
      */
     private readonly maxSectionDeltaTime: number = 2000;
 
     /**
      * The minimum object count required to make a beatmap section.
      * 
-     * Increasing this number may increase the amount of beatmap sections, thus increasing
-     * three-finger detection accuracy, however it decreases drag detection accuracy.
+     * Increasing this number decreases the amount of beatmap sections.
      */
     private readonly minSectionObjectCount: number = 5;
 
@@ -142,15 +153,9 @@ export class ThreeFingerChecker {
     private readonly beatmapSections: BeatmapSection[] = [];
 
     /**
-     * This threshold is used to filter accidental taps. It is assumed that
-     * there is at least one accidental tap for every `n` object count, where
-     * `n` is this value.
-     * 
-     * Increasing this number will make the filtration less sensitive,
-     * however decreasing it will increase the chance of 3-fingered plays
-     * getting out from being flagged.
+     * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
      */
-    private readonly accidentalTapThreshold: number = 750;
+    private readonly hitWindow: DroidHitWindow;
 
     /**
      * A reprocessed break points to match right on object time.
@@ -177,6 +182,16 @@ export class ThreeFingerChecker {
     constructor(map: StarRating, data: ReplayData) {
         this.map = map;
         this.data = data;
+
+        const speedModRegex: RegExp = new RegExp(`[${mods.droidMods.dt}${mods.droidMods.nc}${mods.droidMods.ht}${mods.droidMods.su}]`, "g");
+        const droidModNoSpeedMod: string = mods.pcToDroid(this.map.mods).replace(speedModRegex, "");
+        const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
+
+        this.hitWindow = new DroidHitWindow(stats.od as number);
+
+        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.speedStrain >= this.strainThreshold);
+        this.strainNoteCount = strainNotes.length;
+        this.speedStrainSum = strainNotes.map(v => {return v.speedStrain;}).reduce((acc, value) => acc + value, 0);
     }
 
     /**
@@ -190,15 +205,20 @@ export class ThreeFingerChecker {
      * nerf factor, taking beatmap difficulty into account.
      */
     check(): ThreeFingerInformation {
+        if (this.strainNoteCount === 0) {
+            return { is3Finger: false, penalty: 1 };
+        }
+
         this.getAccurateBreakPoints();
         this.filterCursorInstances();
 
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
         }
-        
+
         this.getBeatmapSections();
         this.detectDragPlay();
+        this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
 
         // Recheck if there are less than
@@ -224,14 +244,44 @@ export class ThreeFingerChecker {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
 
+        const isPrecise: boolean = this.map.mods.includes("PR");
+
         for (const breakPoint of this.map.map.breakPoints) {
             const beforeIndex: number = objects.findIndex(o => o.object.endTime > breakPoint.startTime) - 1;
-            const timeBefore: number = objects[beforeIndex].object.endTime +
-                (objectData[beforeIndex].result !== hitResult.RESULT_0 ? objectData[beforeIndex].accuracy : 0);
+            let timeBefore: number = objects[beforeIndex].object.endTime;
+
+            // For sliders and spinners, automatically set hit window length to be as lenient as possible.
+            let beforeIndexHitWindowLength: number = this.hitWindow.hitWindowFor50(isPrecise);
+            switch (objectData[beforeIndex].result) {
+                case hitResult.RESULT_300:
+                    beforeIndexHitWindowLength = this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    beforeIndexHitWindowLength = this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    beforeIndexHitWindowLength = this.hitWindow.hitWindowFor50(isPrecise);
+            }
+
+            timeBefore += beforeIndexHitWindowLength;
 
             const afterIndex: number = beforeIndex + 1;
-            const timeAfter: number = objects[afterIndex].object.startTime +
-                (objectData[afterIndex].result !== hitResult.RESULT_0 ? objectData[afterIndex].accuracy : 0);
+            let timeAfter: number = objects[afterIndex].object.startTime;
+
+            // For sliders and spinners, automatically set hit window length to be as lenient as possible.
+            let afterIndexHitWindowLength: number = this.hitWindow.hitWindowFor50(isPrecise);
+            switch (objectData[afterIndex].result) {
+                case hitResult.RESULT_300:
+                    afterIndexHitWindowLength = this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    afterIndexHitWindowLength = this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    afterIndexHitWindowLength = this.hitWindow.hitWindowFor50(isPrecise);
+            }
+
+            timeAfter += afterIndexHitWindowLength;
 
             this.breakPointAccurateTimes.push({
                 startTime: timeBefore,
@@ -242,16 +292,53 @@ export class ThreeFingerChecker {
 
     /**
      * Filters the original cursor instances, returning only those with `movementType.DOWN` movement ID.
+     * 
+     * This also filters cursors that are in break period or happen before start/after end of the beatmap.
      */
     private filterCursorInstances(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
 
-        const firstObjectOffset: number = objectData[0].accuracy;
-        const lastObjectOffset: number = objectData[objectData.length - 1].accuracy;
+        const firstObjectResult: hitResult = objectData[0].result;
+        const lastObjectResult: hitResult = objectData[objectData.length - 1].result;
 
-        const firstObjectHitTime: number = objects[0].object.startTime + firstObjectOffset;
-        const lastObjectHitTime: number = objects[objects.length - 1].object.endTime + lastObjectOffset;
+        const isPrecise: boolean = this.map.mods.includes("PR");
+
+        // For sliders, automatically set hit window length to be as lenient as possible.
+        let firstObjectHitWindow: number = this.hitWindow.hitWindowFor50(isPrecise);
+        if (objects[0].object instanceof Circle) {
+            switch (firstObjectResult) {
+                case hitResult.RESULT_300:
+                    firstObjectHitWindow = this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    firstObjectHitWindow = this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    firstObjectHitWindow = this.hitWindow.hitWindowFor50(isPrecise);
+            }
+        }
+        
+        // For sliders, automatically set hit window length to be as lenient as possible.
+        let lastObjectHitWindow: number = this.hitWindow.hitWindowFor50(isPrecise);
+        if (objects[objects.length - 1].object instanceof Circle) {
+            switch (lastObjectResult) {
+                case hitResult.RESULT_300:
+                    lastObjectHitWindow = this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    lastObjectHitWindow = this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    lastObjectHitWindow = this.hitWindow.hitWindowFor50(isPrecise);
+            }
+        }
+
+        // These hit time uses hit window length as threshold.
+        // This is because cursors aren't recorded exactly at hit time,
+        // probably due to the game's behavior.
+        const firstObjectHitTime: number = objects[0].object.startTime - firstObjectHitWindow;
+        const lastObjectHitTime: number = objects[objects.length - 1].object.startTime + lastObjectHitWindow;
 
         for (let i = 0; i < this.data.cursorMovement.length; ++i) {
             const cursorInstance: CursorData = this.data.cursorMovement[i];
@@ -298,7 +385,8 @@ export class ThreeFingerChecker {
     }
 
     /**
-     * Divides the beatmap into sections, which will be used to detect dragged sections.
+     * Divides the beatmap into sections, which will be used to
+     * detect dragged sections and improve detection speed.
      */
     private getBeatmapSections(): void {
         let firstObjectIndex: number = 0;
@@ -360,15 +448,46 @@ export class ThreeFingerChecker {
     private checkDrag(section: BeatmapSection): number {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
+        const isPrecise: boolean = this.map.mods.includes("PR");
 
-        const firstObjectHitTime: number = objects[section.firstObjectIndex].object.startTime +
-            (objectData[section.firstObjectIndex].result !== hitResult.RESULT_0 ? objectData[section.firstObjectIndex].accuracy : 0);
-        const lastObjectHitTime: number = objects[section.lastObjectIndex].object.startTime +
-            (objectData[section.lastObjectIndex].result !== hitResult.RESULT_0 ? objectData[section.lastObjectIndex].accuracy : 0);
+        const firstObject: DifficultyHitObject = objects[section.firstObjectIndex];
+        const lastObject: DifficultyHitObject = objects[section.lastObjectIndex];
+
+        let firstObjectMinHitTime: number = firstObject.object.startTime;
+        if (firstObject.object instanceof Circle) {
+            switch (objectData[section.firstObjectIndex].result) {
+                case hitResult.RESULT_300:
+                    firstObjectMinHitTime -= this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    firstObjectMinHitTime -= this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    firstObjectMinHitTime -= this.hitWindow.hitWindowFor50(isPrecise);
+            }
+        } else {
+            firstObjectMinHitTime -= this.hitWindow.hitWindowFor50(isPrecise);
+        }
+
+        let lastObjectMaxHitTime: number = lastObject.object.startTime;
+        if (lastObject.object instanceof Circle) {
+            switch (objectData[section.lastObjectIndex].result) {
+                case hitResult.RESULT_300:
+                    lastObjectMaxHitTime += this.hitWindow.hitWindowFor300(isPrecise);
+                    break;
+                case hitResult.RESULT_100:
+                    lastObjectMaxHitTime += this.hitWindow.hitWindowFor100(isPrecise);
+                    break;
+                default:
+                    lastObjectMaxHitTime += this.hitWindow.hitWindowFor50(isPrecise);
+            }
+        } else {
+            lastObjectMaxHitTime += this.hitWindow.hitWindowFor50(isPrecise);
+        }
 
         // Since there may be more than 1 cursor instance index, 
         // we check which cursor instance follows hitobjects all over.
-        let cursorIndexes: number[] = [];
+        const cursorIndexes: number[] = [];
         for (let i = 0; i < this.data.cursorMovement.length; ++i) {
             const c: CursorData = this.data.cursorMovement[i];
             if (c.size === 0) {
@@ -377,7 +496,7 @@ export class ThreeFingerChecker {
 
             // Do not include cursors that don't have an occurence in this section
             // this speeds up checking process.
-            if (c.time.filter(v => v >= firstObjectHitTime && v <= lastObjectHitTime).length === 0) {
+            if (c.time.filter(v => v >= firstObjectMinHitTime && v <= lastObjectMaxHitTime).length === 0) {
                 continue;
             }
 
@@ -455,7 +574,7 @@ export class ThreeFingerChecker {
                         const t: number = (mSecPassed - c.time[nextHitIndex]) / (c.time[hitIndex] - c.time[nextHitIndex]);
                         cursorPosition.x = c.x[hitIndex] * t + c.x[nextHitIndex] * (1 - t);
                         cursorPosition.y = c.y[hitIndex] * t + c.y[nextHitIndex] * (1 - t);
-                        
+
                         if (o.object.stackedPosition.getDistance(cursorPosition) <= o.radius) {
                             isInObject = true;
                             break;
@@ -475,34 +594,161 @@ export class ThreeFingerChecker {
     }
 
     /**
-     * Attempts to prevent accidental taps from being flagged.
+     * Redivides the beatmap into sections.
+     * 
+     * The result will be used to detect for three-fingered
+     * sections.
      */
-    private preventAccidentalTaps(): void {
+    private getDetailedBeatmapSections(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
-        let filledCursorAmount: number = this.downCursorInstances.filter(v => v.size > 0).length;
-        const totalCursorAmount: number = this.downCursorInstances
-            .map(v => {return v.size;})
-            .reduce((acc, value) => acc + value, 0);
+        const newBeatmapSections: BeatmapSection[] = [];
+        
+        for (const beatmapSection of this.beatmapSections) {
+            let inSpeedSection: boolean = false;
+            let newFirstObjectIndex = beatmapSection.firstObjectIndex;
 
-        for (let i = 0; i < this.downCursorInstances.length; ++i) {
-            if (filledCursorAmount <= 3) {
-                break;
-            }
-            const cursorInstance: CursorData = this.downCursorInstances[i];
-            // Use an estimation for accidental tap threshold.
-            if (cursorInstance.size > 0 && cursorInstance.size <= Math.ceil(objects.length / this.accidentalTapThreshold) && cursorInstance.size / totalCursorAmount < this.threeFingerRatioThreshold) {
-                --filledCursorAmount;
-                for (const property in cursorInstance) {
-                    const prop = property as keyof CursorData;
-                    if (Array.isArray(cursorInstance[prop])) {
-                        (cursorInstance[prop] as number[]).length = 0;
-                    } else {
-                        (cursorInstance[prop] as number) = 0;
-                    }
+            for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
+                if (!inSpeedSection && objects[i].speedStrain >= this.strainThreshold) {
+                    inSpeedSection = true;
+                    newFirstObjectIndex = i;
+                    continue;
+                }
+
+                if (inSpeedSection && objects[i].speedStrain < this.strainThreshold) {
+                    inSpeedSection = false;
+                    newBeatmapSections.push({
+                        firstObjectIndex: newFirstObjectIndex,
+                        lastObjectIndex: i,
+                        isDragged: beatmapSection.isDragged,
+                        dragFingerIndex: beatmapSection.dragFingerIndex
+                    });
                 }
             }
-            this.downCursorInstances[i] = cursorInstance;
+
+            // Don't forget to manually add the last beatmap section, which would otherwise be ignored.
+            if (inSpeedSection) {
+                newBeatmapSections.push({
+                    firstObjectIndex: newFirstObjectIndex,
+                    lastObjectIndex: beatmapSection.lastObjectIndex,
+                    isDragged: beatmapSection.isDragged,
+                    dragFingerIndex: beatmapSection.dragFingerIndex
+                });
+            }
         }
+
+        this.beatmapSections.length = 0;
+        this.beatmapSections.push(...newBeatmapSections);
+    }
+
+    /**
+     * Attempts to prevent accidental taps from being flagged.
+     * 
+     * This detection will filter cursors that don't hit
+     * any object in beatmap sections, thus eliminating any
+     * unnecessary taps.
+     */
+    private preventAccidentalTaps(): void {
+        let filledCursorAmount: number = this.downCursorInstances.filter(v => v.size > 0).length;
+        if (filledCursorAmount <= 3) {
+            return;
+        }
+
+        const streamCursorData: CursorData[] = [];
+        for (let i = 0; i < this.downCursorInstances.length; ++i) {
+            streamCursorData.push(new CursorData({
+                size: 0,
+                time: [],
+                x: [],
+                y: [],
+                id: []
+            }));
+        }
+
+        const isPrecise: boolean = this.map.mods.includes("PR");
+        for (const beatmapSection of this.beatmapSections) {
+            for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
+                const object: DifficultyHitObject = this.map.objects[i];
+                const objectData: ReplayObjectData = this.data.hitObjectData[i];
+                
+                // Just skip spinners or objects that are missed.
+                if (objectData.result === hitResult.RESULT_0 || object.object instanceof Spinner) {
+                    continue;
+                }
+
+                // For sliders, automatically set hit window length to be as lenient as possible.
+                let hitWindowLength: number = this.hitWindow.hitWindowFor50(isPrecise);
+                if (object.object instanceof Circle) {
+                    switch (objectData.result) {
+                        case hitResult.RESULT_300:
+                            hitWindowLength = this.hitWindow.hitWindowFor300(isPrecise);
+                            break;
+                        case hitResult.RESULT_100:
+                            hitWindowLength = this.hitWindow.hitWindowFor100(isPrecise);
+                            break;
+                        default:
+                            hitWindowLength = this.hitWindow.hitWindowFor50(isPrecise);
+                    }
+                }
+                            
+                const hitTime: number = object.object.startTime + objectData.accuracy;
+                const maximumHitTime: number = object.object.startTime + hitWindowLength;
+                const minimumHitTime: number = object.object.startTime - hitWindowLength;
+
+                // Get the cursor that has the closest time to the object's hit time.
+                // This is because cursors are not recorded exactly at hit time, probably
+                // due to the game's behavior.
+                const cursorHitTimes: {
+                    readonly cIndex: number,
+                    readonly time: number
+                }[] = [];
+                for (const c of this.downCursorInstances) {
+                    let minimumDeltaTime: number = Number.POSITIVE_INFINITY;
+                    let minCIndex: number = -1;
+                    for (let j = 0; j < c.size; ++j) {
+                        if (c.time[j] < minimumHitTime) {
+                            continue;
+                        }
+
+                        if (c.time[j] > maximumHitTime) {
+                            break;
+                        }
+
+                        const deltaTimeFromActualHitTime: number = Math.abs(hitTime - c.time[j]);
+
+                        if (minimumDeltaTime > deltaTimeFromActualHitTime) {
+                            minimumDeltaTime = deltaTimeFromActualHitTime;
+                            minCIndex = j;
+                        }
+                    }
+
+                    cursorHitTimes.push({
+                        cIndex: minCIndex,
+                        time: minimumDeltaTime
+                    });
+                }
+
+                let minTime: number = Number.POSITIVE_INFINITY;
+                let cursorInstanceIndex: number = -1;
+                let cursorIndex: number = -1;
+                for (let j = 0; j < cursorHitTimes.length; ++j) {
+                    if (minTime > cursorHitTimes[j].time) {
+                        minTime = cursorHitTimes[j].time;
+                        cursorIndex = cursorHitTimes[j].cIndex;
+                        cursorInstanceIndex = j;
+                    }
+                }
+
+                const cursorInstance: CursorData = this.downCursorInstances[cursorInstanceIndex];
+                ++streamCursorData[cursorInstanceIndex].size;
+                streamCursorData[cursorInstanceIndex].x.push(cursorInstance.x[cursorIndex]);
+                streamCursorData[cursorInstanceIndex].y.push(cursorInstance.y[cursorIndex]);
+                streamCursorData[cursorInstanceIndex].time.push(cursorInstance.time[cursorIndex]);
+                streamCursorData[cursorInstanceIndex].id.push(cursorInstance.id[cursorIndex]);
+            }
+        }
+
+        this.downCursorInstances.length = 0;
+        this.downCursorInstances.push(...streamCursorData);
     }
 
     /**
@@ -512,150 +758,95 @@ export class ThreeFingerChecker {
      */
     private calculateNerfFactors(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
-
-        // Time intervals to be used to filter cursor instances.
-        const od: number = new MapStats(this.map.map).calculate({mode: modes.osu, mods: this.data.convertedMods}).od as number;
+        const objectData: ReplayObjectData[] = this.data.hitObjectData;
         const isPrecise: boolean = this.data.convertedMods.includes("PR");
-        let startTime: number = Number.NaN;
-        let endTime: number = Number.NaN;
 
-        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
-
-        // First index of object with strain above strain threshold.
-        let strainIndexStart: number = 0;
-
-        // In here we only filter cursor instances that are above the strain threshold
+        // In here, we only filter cursor instances that are above the strain threshold
         // this minimalizes the amount of cursor instances to analyze.
         for (const beatmapSection of this.beatmapSections) {
             const dragIndex: number = beatmapSection.dragFingerIndex;
 
-            for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
-                const object: DifficultyHitObject = objects[i];
-                const speedStrain: number = object.speedStrain;
-                const replayObject: ReplayObjectData = this.data.hitObjectData[i];
-    
-                if (isNaN(startTime)) {
-                    // Ignore any speed strain below threshold.
-                    if (speedStrain < this.strainThreshold) {
-                        continue;
-                    }
-                    // Insert time interval to determine
-                    // the section to be searched.
-                    startTime = object.object.startTime + replayObject.accuracy;
-    
-                    // Sometimes missed objects have wack accuracy,
-                    // therefore if the object was missed, use the
-                    // maximum hit window threshold for meh (50) hit result.
-                    if (replayObject.result === hitResult.RESULT_0) {
-                        startTime -= replayObject.accuracy + hitWindow.hitWindowFor50(isPrecise);
-                    }
-    
-                    strainIndexStart = i;
+            const startTime: number = objects[beatmapSection.firstObjectIndex].object.startTime +
+                (
+                    objectData[beatmapSection.firstObjectIndex].result !== hitResult.RESULT_0 ?
+                    objectData[beatmapSection.firstObjectIndex].accuracy : 
+                    -this.hitWindow.hitWindowFor50(isPrecise)
+                );
+
+            const endTime: number = objects[beatmapSection.lastObjectIndex].object.endTime +
+                (
+                    objectData[beatmapSection.lastObjectIndex].result !== hitResult.RESULT_0 ?
+                    objectData[beatmapSection.lastObjectIndex].accuracy :
+                    this.hitWindow.hitWindowFor50(isPrecise)
+                );
+
+            // Filter cursor instances during section.
+            this.downCursorInstances.forEach(c => {
+                const i: number = c.time.findIndex(t => t >= startTime);
+                if (i !== -1) {
+                    c.size -= i;
+                    c.time.splice(0, i);
+                    c.x.splice(0, i);
+                    c.y.splice(0, i);
+                    c.id.splice(0, i);
+                }
+            });
+            const cursorAmounts: number[] = [];
+            for (let i = 0; i < this.downCursorInstances.length; ++i) {
+                // Do not include drag cursor instance.
+                if (i === dragIndex) {
                     continue;
                 }
-    
-                // Now that we determine the start time to detect,
-                // we would want to determine the end time.
-                //
-                // In that case, we detect if speed strain goes
-                // below the threshold to determine the end time.
-                if (speedStrain > this.strainThreshold && i + 1 !== objects.length) {
-                    continue;
-                }
-    
-                // Ignore if object count is less than or equal to 5.
-                if (i - strainIndexStart <= this.minSectionObjectCount) {
-                    // Reset everything to detect next section.
-                    startTime = Number.NaN;
-                    endTime = Number.NaN;
-                    continue;
-                }
-    
-                // When strain goes below threshold, end the section
-                // and mark the time.
-                endTime = objects[i - 1].object.endTime + replayObject.accuracy;
-    
-                // Sometimes missed objects have wack accuracy,
-                // therefore if the object was missed, use the
-                // maximum hit window threshold for meh (50) hit result.
-                if (replayObject.result === hitResult.RESULT_0) {
-                    endTime += hitWindow.hitWindowFor50(isPrecise) - replayObject.accuracy;
-                }
-    
-                // Filter cursor instances during section.
-                this.downCursorInstances.forEach(c => {
-                    const i: number = c.time.findIndex(t => t >= startTime);
-                    if (i !== -1) {
-                        c.size -= i;
-                        c.time.splice(0, i);
-                        c.x.splice(0, i);
-                        c.y.splice(0, i);
-                        c.id.splice(0, i);
+                const cursorData: CursorData = this.downCursorInstances[i];
+                let amount = 0;
+                for (let j: number = 0; j < cursorData.size; ++j) {
+                    if (cursorData.time[j] >= startTime && cursorData.time[j] <= endTime) {
+                        ++amount;
                     }
+                }
+                cursorAmounts.push(amount);
+            }
+
+            // This index will be used to detect if a section is 3-fingered.
+            // If the section is dragged, the dragged instance will be ignored,
+            // hence why the index is 1 less than nondragged section.
+            const fingerSplitIndex: number = dragIndex !== -1 ? 2 : 3;
+
+            // Divide >=4th (3rd for drag) cursor instances with 1st + 2nd (+ 3rd for nondrag)
+            // to check if the section is 3-fingered.
+            const threeFingerRatio: number =
+                cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value) /
+                cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value);
+
+            if (threeFingerRatio > this.threeFingerRatioThreshold) {
+                // Strain factor applies more penalty for high strain sections.
+                const strainSum: number = objects
+                    .slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex + 1)
+                    .map(v => {return v.speedStrain;})
+                    .reduce((acc, value) => acc + value, 0);
+
+                const strainFactor: number = 1 + Math.pow(strainSum / this.speedStrainSum, 1.2);
+
+                // We can ignore the first 3 (2 for drag) filled cursor instances
+                // since they are guaranteed not 3 finger.
+                const threeFingerCursors: number[] = cursorAmounts.slice(fingerSplitIndex);
+
+                // Finger factor applies more penalty if more fingers were used.
+                const objectCount: number = beatmapSection.lastObjectIndex + 1 - beatmapSection.firstObjectIndex;
+                const fingerFactor: number = threeFingerCursors.reduce((acc, value, index) =>
+                    acc + (index + 1) * value * objectCount / 100,
+                    1
+                );
+
+                // Length factor applies more penalty if there are more 3-fingered object.
+                const lengthFactor: number = 1 + Math.pow(objectCount / this.strainNoteCount, 1.2);
+
+                this.nerfFactors.push({
+                    strainFactor,
+                    fingerFactor,
+                    lengthFactor,
+                    objectCount
                 });
-                const cursorAmounts: number[] = [];
-                for (let j = 0; j < this.downCursorInstances.length; ++j) {
-                    // Do not include drag cursor instance.
-                    if (j === dragIndex) {
-                        continue;
-                    }
-                    const cursorData: CursorData = this.downCursorInstances[j];
-                    let amount = 0;
-                    for (let k: number = 0; k < cursorData.size; ++k) {
-                        if (cursorData.time[k] >= startTime && cursorData.time[k] <= endTime) {
-                            ++amount;
-                        }
-                    }
-                    cursorAmounts.push(amount);
-                }
-    
-                // This index will be used to detect if a section is 3-fingered.
-                // If the section is dragged, the dragged instance will be ignored,
-                // hence why the index is 1 less than nondragged section.
-                const fingerSplitIndex: number = dragIndex !== -1 ? 2 : 3;
-    
-                // Divide >=4th (3rd for drag) cursor instances with 1st + 2nd (+ 3rd for nondrag)
-                // to check if the section is 3-fingered.
-                const threeFingerRatio: number =
-                    cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value) /
-                    cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value);
-    
-                if (threeFingerRatio >= this.threeFingerRatioThreshold) {
-                    // Strain factor
-                    const objectCount: number = i - strainIndexStart - 1;
-                    const speedStrains: number[] = [];
-                    for (let j = strainIndexStart; j <= i; ++j) {
-                        speedStrains.push(objects[j].speedStrain);
-                    }
-    
-                    const strainFactor: number = speedStrains
-                        .sort((a, b) => {return b - a;})
-                        .reduce((acc, value, index) => acc + value * Math.pow(0.95, index)) / 1500;
-    
-                    // We can ignore the first 3 (2 for drag) filled cursor instances
-                    // since they are guaranteed not 3 finger.
-                    const threeFingerCursors: number[] = cursorAmounts.slice(fingerSplitIndex);
-    
-                    // Finger factor applies more penalty if more fingers were used.
-                    const fingerFactor: number = threeFingerCursors.reduce((acc, value, index) =>
-                        acc + (index + 1) * value * objectCount / 100,
-                        1
-                    );
-    
-                    // Length factor applies more penalty if there are more 3-fingered object.
-                    const lengthFactor: number = 1 + Math.pow((objectCount + objects.length) / objects.length, 1.2);
-    
-                    this.nerfFactors.push({
-                        strainFactor,
-                        fingerFactor,
-                        lengthFactor,
-                        objectCount
-                    });
-                }
-    
-                // Reset everything to detect next section.
-                startTime = Number.NaN;
-                endTime = Number.NaN;
             }
         }
     }
@@ -669,11 +860,8 @@ export class ThreeFingerChecker {
 
         let semifinalNerfFactor: number = 1;
         this.nerfFactors.forEach(n => {
-            semifinalNerfFactor += 0.125 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1);
+            semifinalNerfFactor += 0.1 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1);
         });
-
-        // The amount of objects in sections that were 3-fingered.
-        const objectCount: number = this.nerfFactors.map(n => {return n.objectCount;}).reduce((acc, value) => acc + value, 0);
 
         // Difficulty factor nerfs heavily speed-based maps.
         //
@@ -681,11 +869,16 @@ export class ThreeFingerChecker {
         // speed-based maps, they tend to be mashed more.
         const difficultyFactor: number = Math.pow(speed / Math.pow(aim, 1.25), 0.2);
 
-        // Three finger amount factor nerfs speed based on how
-        // many objects were 3-fingered in contrast of map length.
-        const threeFingerAmountFactor: number = 1 + objectCount / this.map.objects.length;
+        // Three finger note factor nerfs based on how
+        // many objects were 3-fingered in contrast of the amount
+        // of notes that exceed strain threshold.
+        //
+        // Realistically, overall object count should never exceed strainNoteCount,
+        // therefore further checking is unnecessary.
+        const overallObjectCount: number = this.nerfFactors.map(n => {return n.objectCount;}).reduce((acc, value) => acc + value, 0);
+        const threeFingerNoteFactor: number = 1 + Math.pow(overallObjectCount / this.strainNoteCount, 1.15);
         
-        const finalNerfFactor: number = Math.pow(semifinalNerfFactor * difficultyFactor * threeFingerAmountFactor, 0.2);
+        const finalNerfFactor: number = Math.pow(semifinalNerfFactor * difficultyFactor * threeFingerNoteFactor, 0.2);
 
         return Math.max(1, finalNerfFactor);
     }
