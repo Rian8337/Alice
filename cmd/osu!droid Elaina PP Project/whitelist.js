@@ -19,11 +19,11 @@ module.exports.run = async (client, message, args, maindb) => {
 
     const whitelistDb = maindb.collection("mapwhitelist");
     
-    const link = args[1];
+    const link = args[0];
     if (!link) {
         return message.channel.send("❎ **| Hey, please enter the beatmap link or ID to whitelist!**");
     }
-    const hash = args[2];
+    const hash = args[1];
 
     let query = {};
     // Normal mode
