@@ -71,12 +71,13 @@ module.exports.run = async (client, message, args, maindb) => {
                 ar: mapinfo.ar,
                 od: mapinfo.od,
                 hp: mapinfo.hp,
-                sr: mapinfo.totalDifficulty
+                sr: parseFloat(mapinfo.totalDifficulty.toFixed(2)),
+                bpm: mapinfo.bpm
             }
         }
     };
     await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
-    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\``);
+    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`);
     client.channels.cache.get("638671295470370827").send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
 };
 

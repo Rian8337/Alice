@@ -78,7 +78,8 @@ module.exports.run = async (client, message, args, maindb) => {
                     ar: mapinfo.ar,
                     od: mapinfo.od,
                     hp: mapinfo.hp,
-                    sr: parseFloat(mapinfo.totalDifficulty.toFixed(2))
+                    sr: parseFloat(mapinfo.totalDifficulty.toFixed(2)),
+                    bpm: mapinfo.bpm
                 }
             }
         };
