@@ -21,12 +21,14 @@ module.exports.run = async (client, message, args, maindb) => {
 
     const whitelistDb = maindb.collection("mapwhitelist");
 
+    let skipMultiplier = 0;
     let outdatedCount = 0;
     let notAvailableCount = 0;
     let deletedCount = 0;
     let i = 0;
     while (true) {
-        const entries = await whitelistDb.find({checkDone: {$ne: true}}, {projection: {_id: 0, mapid: 1, hashid: 1}}).sort({mapid: -1}).limit(500).toArray();
+        const entries = await whitelistDb.find({checkDone: {$ne: true}}, {projection: {_id: 0, mapid: 1, hashid: 1}}).sort({mapid: -1}).skip(skipMultiplier * 100).limit(100).toArray();
+        ++skipMultiplier;
 
         if (entries.length === 0) {
             break;
@@ -55,14 +57,14 @@ module.exports.run = async (client, message, args, maindb) => {
             const updateQuery = {
                 $set: {
                     checkDone: true,
-                    mapname: mapinfo.fullTitle,
                     hashid: mapinfo.hash,
                     diffstat: {
                         cs: mapinfo.cs,
                         ar: mapinfo.ar,
                         od: mapinfo.od,
                         hp: mapinfo.hp,
-                        sr: parseFloat(mapinfo.totalDifficulty.toFixed(2))
+                        sr: parseFloat(mapinfo.totalDifficulty.toFixed(2)),
+                        bpm: mapinfo.bpm
                     }
                 },
                 $unset: {
