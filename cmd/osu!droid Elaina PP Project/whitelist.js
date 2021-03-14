@@ -43,7 +43,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
     }
     if (mapinfo.approved !== osudroid.rankedStatus.GRAVEYARD) {
-        return message.channel.send("❎ **| I'm sorry, this map is not graveyarded!**");
+        return message.channel.send("❎ **| I'm sorry, this beatmapset is not graveyarded!**");
     }
 
     const footer = config.avatar_list;
@@ -71,12 +71,13 @@ module.exports.run = async (client, message, args, maindb) => {
                 ar: mapinfo.ar,
                 od: mapinfo.od,
                 hp: mapinfo.hp,
-                sr: parseFloat(mapinfo.totalDifficulty.toFixed(2))
+                sr: mapinfo.totalDifficulty
             }
         }
     };
     await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
-    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`);
+    message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\``);
+    client.channels.cache.get("638671295470370827").send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
 };
 
 module.exports.config = {

@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
     const whitelistDb = maindb.collection("mapwhitelist");
     
-    const link = args[1];
+    const link = args[0];
     if (!link) {
         return message.channel.send("❎ **| Hey, please enter the beatmapset link or ID to whitelist!**");
     }
@@ -85,6 +85,7 @@ module.exports.run = async (client, message, args, maindb) => {
 
         await whitelistDb.updateOne({mapid: mapinfo.beatmapID}, updateQuery, {upsert: true});
         await message.channel.send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`);
+        client.channels.cache.get("638671295470370827").send(`✅ **| Successfully whitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
     }
 };
 

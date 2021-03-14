@@ -1,20 +1,7 @@
 const Discord = require('discord.js');
 const osudroid = require('osu-droid');
-const { Db } = require('mongodb');
 const config = require('../../config.json');
-
-function mapstatusread(status) {
-	switch (status) {
-		case -2: return 16711711;
-		case -1: return 9442302;
-		case 0: return 16312092;
-		case 1: return 2483712;
-		case 2: return 16741376;
-		case 3: return 5301186;
-		case 4: return 16711796;
-		default: return 0
-	}
-}
+const { Db } = require('mongodb');
 
 /**
  * @param {Discord.Client} client 
@@ -23,106 +10,89 @@ function mapstatusread(status) {
  * @param {Db} maindb 
  */
 module.exports.run = async (client, message, args, maindb) => {
+    if (message.channel instanceof Discord.DMChannel) {
+        return message.channel.send("❎ **| I'm sorry, this command is not allowed in DMs.**");
+    }
     if (!message.isOwner && !message.member.roles.cache.has('551662273962180611')) {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
-    const whitelist = maindb.collection("mapwhitelist");
-    const link_in = args[0];
-    await whitelistInfo(link_in, message, (res, mapid, hashid, mapstring, diffstring) => {
-        if (res > 0) {
-            let i = 0;
-            let entryarr = [];
-            for (i in mapid) {
-                let finalstring = mapstring + " [" + diffstring[i] + "]";
-                entryarr.push([mapid[i], hashid[i], finalstring]);
-            }
-            entryarr.forEach((entry) => {
-                let dupQuery = {mapid: parseInt(entry[0])};
-                whitelist.findOne(dupQuery, (err, wlres) => {
-                    console.log(wlres);
-                    if (err) {
-                        console.log(err);
-                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!");
-                    }
-                    if (!wlres) return message.channel.send("❎ **| I'm sorry, the beatmap is not whitelisted!**");
-                    whitelist.deleteOne(dupQuery, () => {
-                        message.channel.send("✅ **| Whitelist entry removed | `" + entry[2] + "`.**");
-                    });
-                });
-            });
-        }
-    });
-};
-
-async function whitelistInfo(link_in, message, callback) {
-    let setid = "";
-    let mapid = [];
-    let hashid = [];
-    let diffstring = [];
-
-    if(link_in) {                 //Normal mode
-        let line_sep = link_in.split('/');
-        setid = line_sep[line_sep.length-1];
+    const whitelistDb = maindb.collection("mapwhitelist");
+    
+    const link = args[0];
+    if (!link) {
+        return message.channel.send("❎ **| Hey, please enter the beatmapset link or ID to whitelist!**");
     }
+
+    const a = link.split("/");
+    const beatmapsetID = parseInt(a[a.length - 1]);
 
     const apiRequestBuilder = new osudroid.OsuAPIRequestBuilder()
         .setEndpoint("get_beatmaps")
-        .addParameter("s", setid);
+        .addParameter("s", beatmapsetID);
 
     const result = await apiRequestBuilder.sendRequest();
-    const mapinfo = JSON.parse(result.data.toString("utf-8"));
+    if (result.statusCode !== 200) {
+        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from osu! API now. Please try again later!**");
+    }
 
-    if (!mapinfo[0]) {console.log("Set not found"); callback(0);}
-    let firstmapinfo = mapinfo[0];
-    if (firstmapinfo.mode !=0) callback(0);
+    const data = JSON.parse(result.data.toString("utf-8"));
+    if (data.length === 0) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the beatmapset that you have specified!**");
+    }
 
-    for (let i in mapinfo) {
-        mapid.push(mapinfo[i].beatmap_id);
-        hashid.push(mapinfo[i].file_md5);
-        diffstring.push(mapinfo[i].version);
+    const osuBeatmaps = data.filter(v => parseInt(v.mode) === 0 && parseInt(v.approved) === osudroid.rankedStatus.GRAVEYARD && parseInt(mapinfo.difficultyrating) > 0);
+    if (osuBeatmaps.length === 0) {
+        return message.channel.send("❎ **| I'm sorry, the beatmapset that you have sent doesn't have a valid osu!standard gamemode beatmap that is graveyarded!**");
     }
     
-    let listoutput = "";
+    const mapinfos = [];
+    osuBeatmaps.forEach(d => {
+        mapinfos.push(new osudroid.MapInfo().fillMetadata(d));
+    });
 
-    for (let i in diffstring) {
-        listoutput += "- " + diffstring[i] + " - **" + parseFloat(mapinfo[i].difficultyrating).toFixed(2) + "**\n" ;
-    }
-
-    let mapstring = firstmapinfo.artist + " - " + firstmapinfo.title + " (" + firstmapinfo.creator + ")";
-    let footer = config.avatar_list;
+    const firstMapinfo = mapinfos[0];
+    const footer = config.avatar_list;
     const index = Math.floor(Math.random() * footer.length);
-    const embed = {
-        "title": mapstring,
-        "description": "Download: [osu!](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download) ([no video](https://osu.ppy.sh/beatmapsets/" + firstmapinfo.beatmapset_id + "/download?noVideo=1)) - [Bloodcat]()",
-        "url": "https://osu.ppy.sh/b/" + firstmapinfo.beatmap_id ,
-        "color": mapstatusread(parseInt(firstmapinfo.approved)),
-        "footer": {
-            "icon_url": footer[index],
-            "text": "Alice Synthesis Thirty"
-        },
-        "author": {
-            "name": "Set Found",
-            "icon_url": "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg"
-        },
-        "thumbnail": {
-            "url": "https://b.ppy.sh/thumb/" + firstmapinfo.beatmapset_id + ".jpg"
-        },
-        "fields": [
-            {
-                "name": "Last Update: " + firstmapinfo.last_update,
-                "value": "Star Rating: \n" + listoutput 
+    const embed = new Discord.MessageEmbed()
+        .setFooter("Alice Synthesis Thirty", footer[index])
+        .setThumbnail(`https://b.ppy.sh/thumb/${firstMapinfo.beatmapsetID}.jpg`)
+        .setColor(firstMapinfo.statusColor())
+        .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
+        .setTitle(firstMapinfo.showStatistics("", 0))
+        .setDescription(firstMapinfo.showStatistics("", 1))
+        .setURL(`https://osu.ppy.sh/b/${firstMapinfo.beatmapID}`)
+        .addField(firstMapinfo.showStatistics("", 2), firstMapinfo.showStatistics("", 3))
+        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- ${v.version} - **${v.totalDifficulty.toFixed(2)}**\n`;})}`);
+
+    message.channel.send(embed).catch(console.error);
+    client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
+
+    for await (const mapinfo of mapinfos) {
+        const updateQuery = {
+            $set: {
+                hashid: mapinfo.hash,
+                mapname: mapinfo.fullTitle,
+                diffstat: {
+                    cs: mapinfo.cs,
+                    ar: mapinfo.ar,
+                    od: mapinfo.od,
+                    hp: mapinfo.hp,
+                    sr: parseFloat(mapinfo.totalDifficulty.toFixed(2))
+                }
             }
-        ]
-    };
-    message.channel.send({embed: embed}).catch(console.error);
-    callback(1, mapid, hashid, mapstring, diffstring);
-}
+        };
+
+        await whitelistDb.deleteOne({mapid: mapinfo.beatmapID});
+        await message.channel.send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`);
+        client.channels.cache.get("638671295470370827").send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
+    }
+};
 
 module.exports.config = {
     name: "unwhitelistset",
     description: "Unwhitelists a beatmap set.",
     usage: "unwhitelistset <map set link/map set ID>",
     detail: "`map set link/map set ID`: The beatmap set link or ID to unwhitelist [String]",
-    permission: "Bot Creators"
+    permission: "pp-project Map Validator"
 };
