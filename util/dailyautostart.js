@@ -36,6 +36,7 @@ module.exports.run = (client, args, alicedb) => {
         const pass = dailyres.pass;
         const beatmapid = dailyres.beatmapid;
         const featured = dailyres.featured ? dailyres.featured : '386742340968120321';
+        const constrain = dailyres.constrain ?? "";
         const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) {
             return channel.send("❎ **| I'm sorry, I cannot find the daily challenge map!**");
@@ -95,7 +96,7 @@ module.exports.run = (client, args, alicedb) => {
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: Any rankable mod except EZ, NF, and HT\n\nUse \`${challengeid.includes("w") ? "a!daily bounty challenges" : "a!daily challenges"}\` to check bonuses.`);
+            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\nUse \`${challengeid.includes("w") ? "a!daily bounty challenges" : "a!daily challenges"}\` to check bonuses.`);
 
         client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});
 

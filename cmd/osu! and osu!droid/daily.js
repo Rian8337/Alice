@@ -112,6 +112,13 @@ function spaceFill(s, l) {
     return s;
 }
 
+/**
+ * @param {string} str 
+ */
+function sortAlphabet(str) {
+    return [...str].sort((a, b) => a.localeCompare(b)).join("");
+}
+
 function editPoint(res, page) {
     let output = '#   | Username         | UID    | Challenges | Points\n';
     for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); i++) {
@@ -494,6 +501,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 const challengeid = dailyres.challengeid;
                 const beatmapid = dailyres.beatmapid;
                 const featured = dailyres.featured ? dailyres.featured : "386742340968120321";
+                const constrain = dailyres.constrain ?? "";
                 const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
@@ -510,7 +518,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: Any rankable mods except EZ, NF, and HT\n\nUse \`a!daily challenges\` to check bonuses.`);
+                    .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\nUse \`a!daily challenges\` to check bonuses.`);
 
                 message.channel.send({embed: embed}).catch(console.error);
                 cd.add(message.author.id);
@@ -538,6 +546,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const challengeid = dailyres.challengeid;
                         const beatmapid = dailyres.beatmapid;
                         const featured = dailyres.featured ? dailyres.featured : "386742340968120321";
+                        const constrain = dailyres.constrain ?? "";
                         const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                         if (!mapinfo.title) {
                             return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
@@ -554,7 +563,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                             .addField("**Map Info**", `${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: Any rankable mods except EZ, NF, and HT\n\nUse \`a!daily bounty challenges\` to check bonuses.`);
+                            .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\nUse \`a!daily bounty challenges\` to check bonuses.`);
 
                         message.channel.send({embed: embed}).catch(console.error);
                         cd.add(message.author.id);
@@ -678,6 +687,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const challengeid = dailyres.challengeid;
                             const beatmapid = dailyres.beatmapid;
                             const hash = dailyres.hash;
+                            const constrain = dailyres.constrain ?? "";
                             const scoreInfo = rplay.find(play => play.hash === hash);
                             if (!scoreInfo) {
                                 return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
@@ -690,8 +700,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const rank = scoreInfo.rank;
 
                             const osuMods = osudroid.mods.osuMods;
+                            if (constrain && sortAlphabet(mod) !== sortAlphabet(constrain)) {
+                                return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain of this challenge!**");
+                            }
                             if (mod & (osuMods.ez | osuMods.nf | osuMods.ht)) {
-                                return message.channel.send("❎ **| I'm sorry, EZ, NF, and HT is not allowed in challenges!**");
+                                return message.channel.send("❎ **| I'm sorry, EZ, NF, and HT are not allowed in challenges!**");
                             }
 
                             const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
@@ -834,7 +847,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             bonusComplete = scorev2 >= c.value;
                                             break;
                                         case "mod":
-                                            bonusComplete = osudroid.mods.modbitsFromString(mod) === osudroid.mods.modbitsFromString(c.value);
+                                            bonusComplete = sortAlphabet(mod) === sortAlphabet(c.value);
                                             break;
                                         case "rank":
                                             bonusComplete = rankConvert(rank) >= rankConvert(c.value);
@@ -1186,6 +1199,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                     const challengeid = dailyres.challengeid;
                     const passreq = dailyres.pass;
+                    const constrain = dailyres.constrain ?? "";
                     const bonus = dailyres.bonus;
 
                     const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: dailyres.beatmapid});
@@ -1203,6 +1217,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const mod = osudroid.mods.modbitsFromString(data.convertedMods);
                     
                     const osuMods = osudroid.mods.osuMods;
+                    if (constrain && sortAlphabet(data.convertedMods) !== sortAlphabet(constrain)) {
+                        return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain of this challenge!**");
+                    }
                     if (mod & (osuMods.ez | osuMods.nf | osuMods.ht)) {
                         return message.channel.send("❎ **| I'm sorry, EZ, NF, and HT is not allowed in challenges!**");
                     }
@@ -1405,7 +1422,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     bonusComplete = scorev2 >= c.value;
                                     break;
                                 case "mod":
-                                    bonusComplete = osudroid.mods.modbitsFromString(mod) === osudroid.mods.modbitsFromString(c.value);
+                                    bonusComplete = sortAlphabet(data.convertedMods) === sortAlphabet(c.value);
                                     break;
                                 case "rank":
                                     bonusComplete = rankConvert(rank) >= rankConvert(c.value);
@@ -1675,6 +1692,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     const challengeid = dailyres.challengeid;
                     const beatmapid = dailyres.beatmapid;
+                    const constrain = dailyres.constrain ?? "";
                     const hash = dailyres.hash;
                     const scoreInfo = rplay.find(play => play.hash === hash);
                     if (!scoreInfo) {
@@ -1688,8 +1706,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     const rank = scoreInfo.rank;
 
                     const osuMods = osudroid.mods.osuMods;
+                    if (constrain && sortAlphabet(mod) !== sortAlphabet(constrain)) {
+                        return message.channel.send("❎ **| I'm sorry, you didn't fulfill the constrain of this challenge!**");
+                    }
                     if (mod & (osuMods.ez | osuMods.nf | osuMods.ht)) {
-                        return message.channel.send("❎ **| I'm sorry, EZ, NF, and HT is not allowed in challenges!**");
+                        return message.channel.send("❎ **| I'm sorry, EZ, NF, and HT are not allowed in challenges!**");
                     }
                     
                     pointdb.findOne({discordid: message.author.id}, async (err, playerres) => {
@@ -1830,7 +1851,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                         bonusComplete = scorev2 >= c.value;
                                         break;
                                     case "mod":
-                                        bonusComplete = osudroid.mods.modbitsFromString(mod) === osudroid.mods.modbitsFromString(c.value);
+                                        bonusComplete = sortAlphabet(mod) === sortAlphabet(c.value);
                                         break;
                                     case "rank":
                                         bonusComplete = rankConvert(rank) >= rankConvert(c.value);
