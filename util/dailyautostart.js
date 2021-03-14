@@ -36,7 +36,7 @@ module.exports.run = (client, args, alicedb) => {
         const pass = dailyres.pass;
         const beatmapid = dailyres.beatmapid;
         const featured = dailyres.featured ? dailyres.featured : '386742340968120321';
-        const constrain = dailyres.constrain ?? "";
+        const constrain = dailyres.constrain?.toUpperCase() ?? "";
         const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
         if (!mapinfo.title) {
             return channel.send("❎ **| I'm sorry, I cannot find the daily challenge map!**");

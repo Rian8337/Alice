@@ -501,7 +501,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 const challengeid = dailyres.challengeid;
                 const beatmapid = dailyres.beatmapid;
                 const featured = dailyres.featured ? dailyres.featured : "386742340968120321";
-                const constrain = dailyres.constrain ?? "";
+                const constrain = dailyres.constrain?.toUpperCase() ?? "";
                 const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                 if (!mapinfo.title) {
                     return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
@@ -546,7 +546,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const challengeid = dailyres.challengeid;
                         const beatmapid = dailyres.beatmapid;
                         const featured = dailyres.featured ? dailyres.featured : "386742340968120321";
-                        const constrain = dailyres.constrain ?? "";
+                        const constrain = dailyres.constrain?.toUpperCase() ?? "";
                         const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmapid});
                         if (!mapinfo.title) {
                             return message.channel.send("❎ **| I'm sorry, I cannot find the challenge map!**");
@@ -687,7 +687,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const challengeid = dailyres.challengeid;
                             const beatmapid = dailyres.beatmapid;
                             const hash = dailyres.hash;
-                            const constrain = dailyres.constrain ?? "";
+                            const constrain = dailyres.constrain?.toUpperCase() ?? "";
                             const scoreInfo = rplay.find(play => play.hash === hash);
                             if (!scoreInfo) {
                                 return message.channel.send("❎ **| I'm sorry, you haven't played the challenge map!**");
@@ -1199,7 +1199,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                     const challengeid = dailyres.challengeid;
                     const passreq = dailyres.pass;
-                    const constrain = dailyres.constrain ?? "";
+                    const constrain = dailyres.constrain?.toUpperCase() ?? "";
                     const bonus = dailyres.bonus;
 
                     const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: dailyres.beatmapid});
@@ -1692,7 +1692,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     const challengeid = dailyres.challengeid;
                     const beatmapid = dailyres.beatmapid;
-                    const constrain = dailyres.constrain ?? "";
+                    const constrain = dailyres.constrain?.toUpperCase() ?? "";
                     const hash = dailyres.hash;
                     const scoreInfo = rplay.find(play => play.hash === hash);
                     if (!scoreInfo) {
