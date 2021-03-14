@@ -69,20 +69,6 @@ module.exports.run = async (client, message, args, maindb) => {
     client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
 
     for await (const mapinfo of mapinfos) {
-        const updateQuery = {
-            $set: {
-                hashid: mapinfo.hash,
-                mapname: mapinfo.fullTitle,
-                diffstat: {
-                    cs: mapinfo.cs,
-                    ar: mapinfo.ar,
-                    od: mapinfo.od,
-                    hp: mapinfo.hp,
-                    sr: parseFloat(mapinfo.totalDifficulty.toFixed(2))
-                }
-            }
-        };
-
         await whitelistDb.deleteOne({mapid: mapinfo.beatmapID});
         await message.channel.send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`);
         client.channels.cache.get("638671295470370827").send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
