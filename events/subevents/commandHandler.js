@@ -80,7 +80,7 @@ module.exports.run = obj => {
     setTimeout(() => {
         message.channel.stopTyping(true);
     }, 5000);
-    const cooldownMapKey = `${message.author.id}:${cmd.config.name}`;
+    const cooldownMapKey = `${message.author.id}:${message.channel.id}:${cmd.config.name}`;
     const cooldownLeft = cd.get(cooldownMapKey);
     if (cooldownLeft) {
         return message.channel.send(`❎ **| Hey, calm down with the command (${timeConvert(cooldownLeft)})! I need to rest too, you know.**`);
