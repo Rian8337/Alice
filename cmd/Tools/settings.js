@@ -56,8 +56,8 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     if (isNaN(cooldown) || cooldown < 0) {
                         return message.channel.send("❎ **| Hey, please enter a valid cooldown in seconds!**");
                     }
-                    if (cooldown > 300) {
-                        return message.channel.send("❎ **| I'm sorry, command cooldown limit is 5 minutes!**");
+                    if (cooldown > 3600) {
+                        return message.channel.send("❎ **| I'm sorry, command cooldown limit is 1 hour!**");
                     }
 
                     channelSettingsDb.findOne({channelID: message.channel.id}, (err, res) => {
@@ -201,7 +201,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 default: {
                     embed.setTitle("Command Settings")
-                        .setDescription(`Enable, disable, and set cooldown for commands in the channel. Use \`${config.prefix}settings command cooldown/disable/enable <command> <cooldown in seconds>\` to access this command. \`cooldown\` argument is required only for cooldown subcommand, and can only be set up to 5 minutes.\n\nKeep in mind that Administrator permission will override this setting.`);
+                        .setDescription(`Enable, disable, and set cooldown for commands in the channel. Use \`${config.prefix}settings command cooldown/disable/enable <command> <cooldown in seconds>\` to access this command.\n\n\`cooldown\` argument is required only for cooldown subcommand, and can only be set up to 1 hour.\n\nKeep in mind that Administrator permission will override this setting.`);
 
                     message.channel.send(embed);
                 }
