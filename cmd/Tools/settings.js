@@ -44,6 +44,65 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             const cmd = client.commands.get(command) || client.aliases.get(command);
 
             switch (args[1]?.toLowerCase()) {
+                case "cooldown": {
+                    if (!command) {
+                        return message.channel.send("❎ **| Hey, please enter a command that you want to configure the cooldown of!**");
+                    }
+                    if (!cmd) {
+                        return message.channel.send("❎ **| I'm sorry, I cannot find the command that you want!**");
+                    }
+
+                    const cooldown = parseFloat(args[3]);
+                    if (isNaN(cooldown) || cooldown < 0) {
+                        return message.channel.send("❎ **| Hey, please enter a valid cooldown in seconds!**");
+                    }
+                    if (cooldown > 300) {
+                        return message.channel.send("❎ **| I'm sorry, command cooldown limit is 5 minutes!**");
+                    }
+
+                    channelSettingsDb.findOne({channelID: message.channel.id}, (err, res) => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                        }
+
+                        const disabledCommands = res?.disabledCommands || [];
+                        const disabledCommandIndex = disabledCommands.findIndex(v => v.name === cmd.config.name);
+                        if (disabledCommandIndex !== -1) {
+                            if (cooldown === 0) {
+                                disabledCommands.splice(disabledCommandIndex, 1);
+                            } else {
+                                disabledCommands[disabledCommandIndex].cooldown = cooldown;
+                            }
+                        } else {
+                            disabledCommands.push({
+                                name: cmd.config.name,
+                                cooldown
+                            });
+                        }
+
+                        if (res) {
+                            channelSettingsDb.updateOne({channelID: message.channel.id}, {$set: {disabledCommands}}, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
+                                client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
+                                message.channel.send(`✅ **| Successfully set \`${cmd.config.name}\` command cooldown to ${cooldown} seconds.**`);
+                            });
+                        } else {
+                            channelSettingsDb.insertOne({channelID: message.channel.id, disabledCommands, disabledUtils: []}, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
+                                client.events.get("message").setChannelDisabledCommands({channelID: message.channel.id, disabledCommands});
+                                message.channel.send(`✅ **| Successfully set \`${cmd.config.name}\` command cooldown to ${cooldown} seconds.**`);
+                            });
+                        }
+                    });
+                    break;
+                }
                 case "disable": {
                     if (!command) {
                         return message.channel.send("❎ **| Hey, please enter a command to disable!**");
@@ -62,11 +121,19 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
         
                         const disabledCommands = res?.disabledCommands || [];
-                        const disabledCommand = disabledCommands.find(v => v === cmd.config.name);
-                        if (disabledCommand) {
-                            return message.channel.send("❎ **| I'm sorry, that command has been disabled already!**");
+                        const disabledCommandIndex = disabledCommands.findIndex(v => v.name === cmd.config.name);
+                        if (disabledCommandIndex === -1) {
+                            if (disabledCommands[disabledCommandIndex].cooldown === -1) {
+                                return message.channel.send("❎ **| I'm sorry, that command has been disabled already!**");
+                            }
+
+                            disabledCommands[disabledCommandIndex].cooldown = -1;
+                        } else {
+                            disabledCommands.push({
+                                name: cmd.config.name,
+                                cooldown: -1
+                            });
                         }
-                        disabledCommands.push(cmd.config.name);
         
                         if (res) {
                             channelSettingsDb.updateOne({channelID: message.channel.id}, {$set: {disabledCommands}}, err => {
@@ -105,11 +172,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         }
         
                         const disabledCommands = res?.disabledCommands || [];
-                        const disabledCommand = disabledCommands.findIndex(v => v === cmd.config.name);
-                        if (disabledCommand === -1) {
+                        const disabledCommandIndex = disabledCommands.findIndex(v => v === cmd.config.name);
+                        if (disabledCommandIndex === -1) {
                             return message.channel.send("❎ **| I'm sorry, that command has been enabled already!**");
                         }
-                        disabledCommands.splice(disabledCommand, 1);
+                        disabledCommands.splice(disabledCommandIndex, 1);
                         if (res) {
                             channelSettingsDb.updateOne({channelID: message.channel.id}, {$set: {disabledCommands}}, err => {
                                 if (err) {
@@ -134,7 +201,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 default: {
                     embed.setTitle("Command Settings")
-                        .setDescription(`Enable or disable commands in the channel. Use \`${config.prefix}settings command disable/enable <command>\` to access this command.\n\nKeep in mind that Administrator permission will override this setting.`);
+                        .setDescription(`Enable, disable, and set cooldown for commands in the channel. Use \`${config.prefix}settings command cooldown/disable/enable <command> <cooldown in seconds>\` to access this command. \`cooldown\` argument is required only for cooldown subcommand, and can only be set up to 5 minutes.\n\nKeep in mind that Administrator permission will override this setting.`);
 
                     message.channel.send(embed);
                 }
@@ -502,6 +569,14 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 }
                 if (res) {
                     punishmentDb.updateOne({guildID: message.guild.id}, {$set: {logChannel: channel.id}}, err => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                        }
+                        message.channel.send(`✅ **| Successfully set punishment log to ${channel}.**`);
+                    });
+                } else {
+                    punishmentDb.insertOne({guildID: message.guild.id, logChannel: channel.id, allowedMuteRoles: [], immuneMuteRoles: []}, err => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");

@@ -149,18 +149,18 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	}
 	
 	const obj = {
-		client: client,
-		message: message,
-		args: args,
-		maindb: maindb,
-		alicedb: alicedb,
-		command: command,
-		current_map: current_map,
-		globally_disabled_commands: globally_disabled_commands,
-		channel_disabled_commands: channel_disabled_commands,
-		command_cooldown: command_cooldown,
-		maintenance: maintenance,
-		maintenance_reason: maintenance_reason,
+		client,
+		message,
+		args,
+		maindb,
+		alicedb,
+		command,
+		current_map,
+		globally_disabled_commands,
+		channel_disabled_commands,
+		command_cooldown,
+		maintenance,
+		maintenance_reason,
 		main_bot: message.content.startsWith(config.prefix)
 	};
 
@@ -178,7 +178,7 @@ module.exports.maintenance = maintenance;
 /**
  * Called upon bot start.
  * 
- * @param {{channelID: string, disabledCommands: string[], disabledUtils: string[]}[]} disabledCommandsAndUtils
+ * @param {{channelID: string, disabledCommands: {name: string, cooldown: number}[], disabledUtils: string[]}[]} disabledCommandsAndUtils
  */
 module.exports.setDisabledCommandsAndUtils = disabledCommandsAndUtils => {
 	disabledCommandsAndUtils.forEach(d => {
@@ -197,7 +197,7 @@ module.exports.setDisabledCommandsAndUtils = disabledCommandsAndUtils => {
 /**
  * Called when a command is disabled/enabled in a channel.
  * 
- * @param {{channelID: string, disabledCommands: string[]}} disabledCommand 
+ * @param {{channelID: string, disabledCommands: {name: string, cooldown: number}[]}} disabledCommand 
  */
 module.exports.setChannelDisabledCommands = disabledCommand => {
 	const channelSettingIndex = channel_disabled_commands.findIndex(v => v.channelID === disabledCommand.channelID);
