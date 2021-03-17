@@ -18,21 +18,22 @@ function rankEmote(input) {
 }
 
 module.exports.run = (client, maindb) => {
-	let trackdb = maindb.collection("tracking");
-	trackdb.find({}).toArray(function(err, res) {
+	maindb.collection("tracking").find({}).toArray(async function(err, res) {
 		if (err) {
 			console.log(err);
-			return message.channel.send("Error: Empty database response. Please try again!")
+			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 		}
 		const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
-		res.forEach(async function(player) {
+		for await (const player of res) {
 			const player_entry = await osudroid.Player.getInformation({uid: player.uid});
 			const name = player_entry.username;
 			const curtime = Date.now();
 			for await (const play of player_entry.recentPlays) {
-				let timeDiff = curtime - play.date.getTime();
-				if (timeDiff > 600000) break;
+				const timeDiff = curtime - play.date.getTime();
+				if (timeDiff > 600000) {
+					break;
+				}
 				let title = play.title;
 				const score = play.score.toLocaleString();
 				const ptime = play.date;
@@ -43,6 +44,17 @@ module.exports.run = (client, maindb) => {
 				const combo = play.combo;
 				const hash = play.hash;
 
+				const n300 = play.hit300;
+				const n100 = play.hit100;
+				const n50 = play.hit50;
+
+				const realAcc = new osudroid.Accuracy({
+					n300,
+					n100,
+					n50,
+					nmiss: miss
+				});
+
 				const embed = new Discord.MessageEmbed()
 					.setAuthor(`${title}${mod ? ` ${play.getCompleteModString()}` : ""}`, player_entry.avatarURL)
 					.setColor(8311585)
@@ -50,7 +62,7 @@ module.exports.run = (client, maindb) => {
 
 				const mapinfo = await osudroid.MapInfo.getInformation({hash: hash});
 				if (mapinfo.error || !mapinfo.title || !mapinfo.objects) {
-					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ ${miss} miss(es)`);
+					embed.setDescription(`▸ ${rank} ▸ ${acc}%\n▸ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]`);
 					return client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
 				}
 				const stats = new osudroid.MapStats({
@@ -70,8 +82,7 @@ module.exports.run = (client, maindb) => {
 				const npp = new osudroid.PerformanceCalculator().calculate({
 					stars: star.droidStars,
 					combo: combo,
-					accPercent: acc,
-					miss: miss,
+					accPercent: realAcc,
 					mode: osudroid.modes.droid,
 					stats
 				});
@@ -79,8 +90,7 @@ module.exports.run = (client, maindb) => {
 				const pcpp = new osudroid.PerformanceCalculator().calculate({
 					stars: star.pcStars,
 					combo: combo,
-					accPercent: acc,
-					miss: miss,
+					accPercent: realAcc,
 					mode: osudroid.modes.osu,
 					stats
 				});
@@ -118,12 +128,12 @@ module.exports.run = (client, maindb) => {
 					const dline = parseFloat(fc_dpp.total.toFixed(2));
 					const pline = parseFloat(fc_pp.total.toFixed(2));
 		
-					embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ ${miss} miss(es)`);
-				} else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ ${miss} miss(es)`);
+					embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** (${dline}DPP, ${pline}PP for ${fc_acc.toFixed(2)}% FC) ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}]`);
+				} else embed.setDescription(`▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** ▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}]`);
 
 				client.channels.cache.get("665106609382359041").send(`✅ **| Most recent play for ${name}:**\n${ppline >= 450 ? "<@119496080269377536>" : ""}`, {embed: embed}).catch(console.error);
 			}
-		});
+		}
 	});
 };
 
