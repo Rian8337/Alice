@@ -15,9 +15,6 @@ c.imageSmoothingQuality = "high";
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
 	const ufind = args[0]?.replace(/[<@!>]/g, "") ?? message.author.id;
-	if (args[0]) {
-		ufind = args[0].replace('<@!', '').replace('<@', '').replace('>', '');
-	}
 	const binddb = maindb.collection("userbind");
 	const scoredb = alicedb.collection("playerscore");
 	const pointdb = alicedb.collection("playerpoints");
