@@ -39,6 +39,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				weighted_accuracy /= weight;
 			}
 		}
+		const ppRank = res ? await bindDb.countDocuments({pptotal: {$gt: res.pptotal}}) + 1 : null;
 		const player = await osudroid.Player.getInformation({uid});
 		if (player.error) {
 			return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
@@ -131,7 +132,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 86);
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 104);
 				if (res?.pptotal) {
-					c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp`, 169, 122);
+					c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp (#${ppRank.toLocaleString()})`, 169, 122);
 				}
 				if (res?.clan) {
 					c.fillText(`Clan: ${res.clan}`, 169, 140);

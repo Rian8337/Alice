@@ -14,14 +14,14 @@ c.imageSmoothingQuality = "high";
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-	let ufind = message.author.id;
+	const ufind = args[0]?.replace(/[<@!>]/g, "") ?? message.author.id;
 	if (args[0]) {
 		ufind = args[0].replace('<@!', '').replace('<@', '').replace('>', '');
 	}
-	let binddb = maindb.collection("userbind");
-	let scoredb = alicedb.collection("playerscore");
-	let pointdb = alicedb.collection("playerpoints");
-	let query = {discordid: ufind};
+	const binddb = maindb.collection("userbind");
+	const scoredb = alicedb.collection("playerscore");
+	const pointdb = alicedb.collection("playerpoints");
+	const query = {discordid: ufind};
 	binddb.findOne(query, async function(err, res) {
 		if (err) {
 			console.log(err);
@@ -47,6 +47,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (weighted_accuracy) {
 			weighted_accuracy /= weight;
 		}
+		const ppRank = await binddb.countDocuments({pptotal: {$gt: res.pptotal}}) + 1;
 		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) {
 			if (args[0]) {
@@ -148,7 +149,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 68);
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 86);
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 104);
-				c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 122);
+				c.fillText(`Droid pp: ${pp.toFixed(2)}pp (#${ppRank.toLocaleString()})`, 169, 122);
 				if (res.clan) {
 					c.fillText(`Clan: ${res.clan}`, 169, 140);
 				}

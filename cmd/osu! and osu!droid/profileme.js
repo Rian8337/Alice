@@ -14,7 +14,7 @@ c.imageSmoothingQuality = "high";
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-	const ufind = args[0] ? args[0].replace(/[<@!>]/g, "") : message.author.id;
+	const ufind = args[0]?.replace(/[<@!>]/g, "") ?? message.author.id;
 	const bindDb = maindb.collection("userbind");
 	const scoreDb = alicedb.collection("playerscore");
 	const pointDb = alicedb.collection("playerpoints");
@@ -44,6 +44,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 		if (weighted_accuracy) {
 			weighted_accuracy /= weight;
 		}
+		const ppRank = await bindDb.countDocuments({pptotal: {$gt: res.pptotal}}) + 1;
 		const player = await osudroid.Player.getInformation({uid: uid}).catch(console.error);
 		if (player.error) {
 			if (args[0]) {
@@ -159,7 +160,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
 				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
-				c.fillText(`Droid pp: ${pp.toFixed(2)}pp`, 169, 164);
+				c.fillText(`Droid pp: ${pp.toFixed(2)}pp (#${ppRank.toLocaleString()})`, 169, 164);
 				if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
 				if (flag) c.fillText(player.location, 451, flag.height + 20);
 
