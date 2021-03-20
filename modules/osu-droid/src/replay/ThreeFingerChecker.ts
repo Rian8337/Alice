@@ -128,7 +128,7 @@ export class ThreeFingerChecker {
      * Increasing this number will increase detection accuracy, however
      * it also increases the chance of falsely flagged plays.
      */
-    private readonly threeFingerRatioThreshold: number = 0.05;
+    private readonly threeFingerRatioThreshold: number = 0.01;
 
     /**
      * The maximum delta time allowed between two beatmap sections.
@@ -151,6 +151,15 @@ export class ThreeFingerChecker {
      * The sections of the beatmap that was cut based on `maxSectionDeltaTime` and `minSectionObjectCount`.
      */
     private readonly beatmapSections: BeatmapSection[] = [];
+
+    /**
+     * This threshold is used to filter out accidental taps.
+     * 
+     * Increasing this number makes the filtration more sensitive, however it
+     * will also increase the chance of 3-fingered plays getting out from
+     * being flagged.
+     */
+     private readonly accidentalTapThreshold: number = 200;
 
     /**
      * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
@@ -745,6 +754,32 @@ export class ThreeFingerChecker {
                 streamCursorData[cursorInstanceIndex].time.push(cursorInstance.time[cursorIndex]);
                 streamCursorData[cursorInstanceIndex].id.push(cursorInstance.id[cursorIndex]);
             }
+        }
+
+        // Keep old tap filtering method, but with less lenient threshold.
+        const objects: DifficultyHitObject[] = this.map.objects;
+        const totalCursorAmount: number = streamCursorData
+            .map(v => {return v.size;})
+            .reduce((acc, value) => acc + value, 0);
+
+        for (let i = 0; i < streamCursorData.length; ++i) {
+            if (filledCursorAmount <= 3) {
+                break;
+            }
+            const cursorInstance: CursorData = streamCursorData[i];
+            // Use an estimation for accidental tap threshold.
+            if (cursorInstance.size > 0 && cursorInstance.size <= Math.ceil(objects.length / this.accidentalTapThreshold) && cursorInstance.size / totalCursorAmount < this.threeFingerRatioThreshold) {
+                --filledCursorAmount;
+                for (const property in cursorInstance) {
+                    const prop = property as keyof CursorData;
+                    if (Array.isArray(cursorInstance[prop])) {
+                        (cursorInstance[prop] as number[]).length = 0;
+                    } else {
+                        (cursorInstance[prop] as number) = 0;
+                    }
+                }
+            }
+            streamCursorData[i] = cursorInstance;
         }
 
         this.downCursorInstances.length = 0;
