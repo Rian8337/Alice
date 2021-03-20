@@ -128,7 +128,7 @@ export class ThreeFingerChecker {
      * Increasing this number will increase detection accuracy, however
      * it also increases the chance of falsely flagged plays.
      */
-    private readonly threeFingerRatioThreshold: number = 0.01;
+    private readonly threeFingerRatioThreshold: number = 0.05;
 
     /**
      * The maximum delta time allowed between two beatmap sections.
@@ -815,8 +815,8 @@ export class ThreeFingerChecker {
             // Divide >=4th (3rd for drag) cursor instances with 1st + 2nd (+ 3rd for nondrag)
             // to check if the section is 3-fingered.
             const threeFingerRatio: number =
-                cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value) /
-                cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value);
+                cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value, 0) /
+                cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value, 0);
 
             if (threeFingerRatio > this.threeFingerRatioThreshold) {
                 // Strain factor applies more penalty for high strain sections.
@@ -855,6 +855,10 @@ export class ThreeFingerChecker {
      * Calculates the final penalty.
      */
     private calculateFinalPenalty(): number {
+        if (this.nerfFactors.length === 0) {
+            return 1;
+        }
+
         const aim: number = this.map.aim;
         const speed: number = this.map.speed;
 
