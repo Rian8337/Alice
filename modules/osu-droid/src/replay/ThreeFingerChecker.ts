@@ -159,7 +159,7 @@ export class ThreeFingerChecker {
      * will also increase the chance of 3-fingered plays getting out from
      * being flagged.
      */
-    private readonly accidentalTapThreshold: number = 750;
+    private readonly accidentalTapThreshold: number = 500;
 
     /**
      * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
@@ -662,116 +662,16 @@ export class ThreeFingerChecker {
             return;
         }
 
-        const streamCursorData: CursorData[] = [];
-        for (let i = 0; i < this.downCursorInstances.length; ++i) {
-            streamCursorData.push(new CursorData({
-                size: 0,
-                time: [],
-                x: [],
-                y: [],
-                id: []
-            }));
-        }
-
-        const isPrecise: boolean = this.map.mods.includes("PR");
-        for (const beatmapSection of this.beatmapSections) {
-            for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
-                const object: DifficultyHitObject = this.map.objects[i];
-                const objectData: ReplayObjectData = this.data.hitObjectData[i];
-                
-                // Just skip spinners or objects that are missed.
-                if (objectData.result === hitResult.RESULT_0 || object.object instanceof Spinner) {
-                    continue;
-                }
-
-                // For sliders, automatically set hit window length to be as lenient as possible.
-                let hitWindowLength: number = this.hitWindow.hitWindowFor50(isPrecise);
-                if (object.object instanceof Circle) {
-                    switch (objectData.result) {
-                        case hitResult.RESULT_300:
-                            hitWindowLength = this.hitWindow.hitWindowFor300(isPrecise);
-                            break;
-                        case hitResult.RESULT_100:
-                            hitWindowLength = this.hitWindow.hitWindowFor100(isPrecise);
-                            break;
-                        default:
-                            hitWindowLength = this.hitWindow.hitWindowFor50(isPrecise);
-                    }
-                }
-                            
-                const hitTime: number = object.object.startTime + objectData.accuracy;
-                const maximumHitTime: number = object.object.startTime + hitWindowLength;
-                const minimumHitTime: number = object.object.startTime - hitWindowLength;
-
-                // Get the cursor that has the closest time to the object's hit time.
-                // This is because cursors are not recorded exactly at hit time, probably
-                // due to the game's behavior.
-                const cursorHitTimes: {
-                    readonly cIndex: number,
-                    readonly time: number
-                }[] = [];
-                for (const c of this.downCursorInstances) {
-                    let minimumDeltaTime: number = Number.POSITIVE_INFINITY;
-                    let minCIndex: number = -1;
-                    for (let j = 0; j < c.size; ++j) {
-                        if (c.time[j] < minimumHitTime) {
-                            continue;
-                        }
-
-                        if (c.time[j] > maximumHitTime) {
-                            break;
-                        }
-
-                        const deltaTimeFromActualHitTime: number = Math.abs(hitTime - c.time[j]);
-
-                        if (minimumDeltaTime > deltaTimeFromActualHitTime) {
-                            minimumDeltaTime = deltaTimeFromActualHitTime;
-                            minCIndex = j;
-                        }
-                    }
-
-                    cursorHitTimes.push({
-                        cIndex: minCIndex,
-                        time: minimumDeltaTime
-                    });
-                }
-
-                let minTime: number = Number.POSITIVE_INFINITY;
-                let cursorInstanceIndex: number = -1;
-                let cursorIndex: number = -1;
-                for (let j = 0; j < cursorHitTimes.length; ++j) {
-                    if (minTime > cursorHitTimes[j].time) {
-                        minTime = cursorHitTimes[j].time;
-                        cursorIndex = cursorHitTimes[j].cIndex;
-                        cursorInstanceIndex = j;
-                    }
-                }
-
-                // TODO: figure out why this is not found
-                if (cursorInstanceIndex === -1) {
-                    continue;
-                }
-
-                const cursorInstance: CursorData = this.downCursorInstances[cursorInstanceIndex];
-                ++streamCursorData[cursorInstanceIndex].size;
-                streamCursorData[cursorInstanceIndex].x.push(cursorInstance.x[cursorIndex]);
-                streamCursorData[cursorInstanceIndex].y.push(cursorInstance.y[cursorIndex]);
-                streamCursorData[cursorInstanceIndex].time.push(cursorInstance.time[cursorIndex]);
-                streamCursorData[cursorInstanceIndex].id.push(cursorInstance.id[cursorIndex]);
-            }
-        }
-
-        // Keep old tap filtering method, but with less lenient threshold.
         const objects: DifficultyHitObject[] = this.map.objects;
-        const totalCursorAmount: number = streamCursorData
+        const totalCursorAmount: number = this.downCursorInstances
             .map(v => {return v.size;})
             .reduce((acc, value) => acc + value, 0);
 
-        for (let i = 0; i < streamCursorData.length; ++i) {
+        for (let i = 0; i < this.downCursorInstances.length; ++i) {
             if (filledCursorAmount <= 3) {
                 break;
             }
-            const cursorInstance: CursorData = streamCursorData[i];
+            const cursorInstance: CursorData = this.downCursorInstances[i];
             // Use an estimation for accidental tap threshold.
             if (cursorInstance.size > 0 && cursorInstance.size <= Math.ceil(objects.length / this.accidentalTapThreshold) && cursorInstance.size / totalCursorAmount < this.threeFingerRatioThreshold) {
                 --filledCursorAmount;
@@ -784,11 +684,8 @@ export class ThreeFingerChecker {
                     }
                 }
             }
-            streamCursorData[i] = cursorInstance;
+            this.downCursorInstances[i] = cursorInstance;
         }
-
-        this.downCursorInstances.length = 0;
-        this.downCursorInstances.push(...streamCursorData);
     }
 
     /**
