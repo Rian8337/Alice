@@ -159,7 +159,7 @@ export class ThreeFingerChecker {
      * will also increase the chance of 3-fingered plays getting out from
      * being flagged.
      */
-     private readonly accidentalTapThreshold: number = 200;
+    private readonly accidentalTapThreshold: number = 750;
 
     /**
      * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
@@ -745,6 +745,11 @@ export class ThreeFingerChecker {
                         cursorIndex = cursorHitTimes[j].cIndex;
                         cursorInstanceIndex = j;
                     }
+                }
+
+                // TODO: figure out why this is not found
+                if (cursorInstanceIndex === -1) {
+                    continue;
                 }
 
                 const cursorInstance: CursorData = this.downCursorInstances[cursorInstanceIndex];
