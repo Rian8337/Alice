@@ -204,7 +204,7 @@ module.exports.addTemporaryMute = (user, alicedb, durationLeft, logChannelID, lo
         currentTempMutes.delete(user.id);
 
         const logChannel = user.guild.channels.resolve(logChannelID);
-        if (!(logChannel instanceof TextChannel)) {
+        if (!(logChannel instanceof Discord.TextChannel)) {
             await muteDb.updateOne(guildQuery, guildUpdateQuery);
             return;
         }
