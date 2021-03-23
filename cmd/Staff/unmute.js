@@ -70,6 +70,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, I couldn't unmute the user!**");
         }
 
+        message.delete().catch(O_o=>{});
+
         let string = `**${toUnmute} in ${message.channel}**\n\n=========================\n\n**Reason**:\n${reason ? reason : "Not specified."}`;
 
         const footer = config.avatar_list;
@@ -83,6 +85,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             .setDescription(string);
 
         channel.send(unmuteEmbed);
+        await toUnmute.send(`❗**| Hey, you were unmuted for \`${reason}\`.`, {embed: unmuteEmbed}).catch();
 
         const { currentMutes } = res;
         if (!currentMutes) {
