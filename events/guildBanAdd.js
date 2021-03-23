@@ -3,7 +3,7 @@ module.exports.run = (client, guild, user, maindb, alicedb) => {
     client.subevents.get("bannedUserLoungeBan").run(guild, user, alicedb);
 
     // Userbind wipe
-    client.subevents.get("bindWipe").run(guild, user, maindb, alicedb)
+    client.subevents.get("bindWipe").run(guild, user, maindb, alicedb);
 };
 
 module.exports.config = {
