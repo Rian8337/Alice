@@ -113,7 +113,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
         message.delete().catch(O_o=>{});
 
-        let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\nUser ID: ${tomute.id}\n\n=========================\n\n**Reason**:\n${reason}`;
+        let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\n\n=========================\n\n**Reason**:\n${reason}`;
 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
@@ -122,7 +122,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             .setTitle("Mute executed")
             .setColor("#000000")
             .setTimestamp(new Date())
-            .setFooter("User ID: " + tomute.id, footer[index])
+            .setFooter(`User ID: ${tomute.id} | Channel ID: ${message.channel.id}`, footer[index])
             .setDescription(string);
 
         try {
@@ -171,7 +171,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
             const timeout = setTimeout(async () => {
                 tomute.roles.remove(muterole.id);
-                muteembed.setFooter("User ID: " + tomute.id + " | User unmuted", footer[index]);
+                muteembed.setFooter(`${muteembed.footer.text} | User unmuted`, footer[index]);
                 msg.edit({embed: muteembed});
                 currentTempMutes.delete(tomute.id);
                 await channelDb.updateOne(query, {$pull: {currentMutes: {id: tomute.id}}});

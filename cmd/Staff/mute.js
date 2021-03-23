@@ -72,6 +72,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| I'm sorry, I couldn't create the mute role!**");
             }
         }
+
+        if (tomute.roles.cache.has(muterole.id)) {
+            return message.channel.send("❎ **| I'm sorry, this user is already muted!**");
+        }
+
         message.guild.channels.cache.forEach((channel) => {
             channel.updateOverwrite(muterole, {"SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false, "CONNECT": false}).catch(console.error);
         });
@@ -87,7 +92,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             .setTitle("Mute executed")
             .setColor("#000000")
             .setTimestamp(new Date())
-            .setFooter("User ID: " + tomute.id, footer[index])
+            .setFooter(`User ID: ${tomute.id} | Channel ID: ${message.channel.id}`, footer[index])
             .setDescription(`**${tomute} in ${message.channel} permanently**\n\n=========================\n\n**Reason**: ${reason}`);
 
         try{
