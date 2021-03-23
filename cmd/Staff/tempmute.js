@@ -4,11 +4,88 @@ const { Db } = require("mongodb");
 const currentTempMutes = new Map();
 
 function timeConvert(num) {
-    let sec = parseInt(num);
+    let sec = num;
+
+    let days = Math.floor(sec / 86400);
+    sec -= days * 86400;
+    
     let hours = Math.floor(sec / 3600);
-    let minutes = Math.floor((sec - hours * 3600) / 60);
-    let seconds = sec - hours * 3600 - minutes * 60;
-    return [hours, minutes.toString().padStart(2, "0"), seconds.toString().padStart(2, "0")].join(":");
+    sec -= hours * 3600;
+    
+    let minutes = Math.floor(sec / 60);
+    sec -= minutes * 60;
+
+    return [days.toString().padStart(2, "0"), hours.toString().padStart(2, "0"), minutes.toString().padStart(2, "0"), sec.toString().padStart(2, "0")].join(":");
+}
+
+/**
+ * @param {string} arg 
+ * @returns {number}
+ */
+function getMuteSeconds(arg = "") {
+    let mutetime = 0;
+    const muteTimeEntry = arg.toLowerCase().split(/[dhms:]/g);
+    
+    if (muteTimeEntry.length > 1) {
+        if (/[dhms]/g.test(arg)) {
+            // Contains either "d", "h", "m", or "s",
+            // used to prevent duplicate entry
+            const usedFormats = [];
+            for (let i = 0, mark = 0; i < arg.length; ++i) {
+                if (isNaN(mutetime)) {
+                    break;
+                }
+                const str = arg.charAt(i);
+                if (/[dhms]/.test(str) && !usedFormats.includes(str)) {
+                    if (mark === i) {
+                        ++mark;
+                        continue;
+                    }
+                    usedFormats.push(str);
+                    const time = parseFloat(arg.slice(mark, i));
+                    mark = i + 1;
+
+                    let multiplier = 1;
+                    switch (str) {
+                        case "d":
+                            multiplier = 86400;
+                            break;
+                        case "h":
+                            multiplier = 3600;
+                            break;
+                        case "m":
+                            multiplier = 60;
+                            break;
+                    }
+
+                    mutetime += time * multiplier;
+                }
+            }
+        } else {
+            for (let i = muteTimeEntry.length - 1, multiplier = 1; i >= 0; --i) {
+                switch (i) {
+                    case muteTimeEntry.length - 4:
+                        multiplier *= 24;
+                        break;
+                    case muteTimeEntry.length - 3:
+                    case muteTimeEntry.length - 2:
+                        multiplier *= 60;
+                        break;
+                    default:
+                        // Limit up to days
+                        multiplier = Number.NaN;
+                }
+                if (isNaN(multiplier) || isNaN(mutetime)) {
+                    break;
+                }
+                mutetime += parseFloat(muteTimeEntry[i]) * multiplier;
+            }
+        }
+    } else {
+        mutetime = parseFloat(arg);
+    }
+    
+    return mutetime;
 }
 
 /**
@@ -36,18 +113,19 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
     }
 
-    const mutetime = parseInt(args[1]);
+    const mutetime = getMuteSeconds(args[1]);
+
     if (!mutetime) {
         return message.channel.send("❎ **| Hey, at least tell me how long do I need to mute this user!**");
     }
     if (isNaN(mutetime)) {
-        return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Only send number of seconds.**");
+        return message.channel.send("❎ **| I'm sorry, the time limit is not valid. Please give me a valid one!**");
     }
     if (mutetime < 30) {
         return message.channel.send("❎ **| I'm sorry, you can only mute for at least 30 seconds.**");
     }
     if (mutetime === Number.POSITIVE_INFINITY) {
-        return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` (Moderator only) to permanently mute someone instead.**");
+        return message.channel.send("❎ **| To infinity and beyond! Seriously though, please enter a valid mute time! You can use `a!mute` to permanently mute someone instead.**");
     }
 
     if (!reason) {
@@ -66,7 +144,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         }
         const channel = message.guild.channels.resolve(res.logChannel);
         if (!channel) {
-            return message.channel.send(`❎ **| I'm sorry, please ask server managers to create a log channel first!**`);
+            return message.channel.send("❎ **| I'm sorry, please ask server managers to create a log channel first!**");
         }
         if (!(channel instanceof Discord.TextChannel)) {
             return message.channel.send("❎ **| Hey, log channel must be a text channel!**");
@@ -106,14 +184,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             return message.channel.send("❎ **| I'm sorry, this user is already muted!**");
         }
 
-        message.guild.channels.cache.forEach((channel) => {
-            channel.updateOverwrite(muterole, {SEND_MESSAGES: false, ADD_REACTIONS: false, SPEAK: false, CONNECT: false}).catch(console.error);
+        message.guild.channels.cache.forEach(async channel => {
+            await channel.updateOverwrite(muterole, {SEND_MESSAGES: false, ADD_REACTIONS: false, SPEAK: false, CONNECT: false}).catch(console.error);
         });
         //end of create role
 
         message.delete().catch(O_o=>{});
 
-        let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)} (${mutetime} ${mutetime === 1 ? "second" : "seconds"})**\n\n=========================\n\n**Reason**:\n${reason}`;
+        let string = `**${tomute} in ${message.channel} for ${timeConvert(mutetime)}**\n\n=========================\n\n**Reason**:\n${reason}`;
 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
@@ -126,9 +204,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             .setDescription(string);
 
         try {
-            await tomute.send(`❗**| Hey, you were muted for \`${mutetime}\` seconds for \`${reason}\`. Sorry!**`, {embed: muteembed});
+            await tomute.send(`❗**| Hey, you were muted for \`${timeConvert(mutetime)}\` for \`${reason}\`. Sorry!**`, {embed: muteembed});
         } catch (e) {
-            message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${mutetime} second(s).**`);
+            message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${timeConvert(mutetime)}.**`);
         }
 
         if (mutetime >= 21600 && message.guild.id === "316545691545501706") {
@@ -253,6 +331,6 @@ module.exports.config = {
     name: "tempmute",
     description: "Temporarily mutes a user.\n\nAn attachment can be put for proof of mute.",
     usage: "tempmute <user> <duration> <reason>",
-    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute in seconds. Minimum duration allowed is 30 seconds [Decimal]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
+    detail: "`user`: The user to mute [UserResolvable (mention or user ID)]\n`duration`: Time to mute. Accepted format is in direct seconds, `[<days>d<hours>h<minutes>m<seconds>s]`, or `[days]:[hours]:[minutes]:[seconds]` (partial inputs such as `[<minutes>m<seconds>s]` and `[minutes]:[seconds]` are supported). Minimum mute duration allowed is 30 seconds [Decimal/Time Format]\n`reason`: Reason for muting, maximum length is 1024 characters [String]",
     permission: `Mute Permission (configure with \`${config.prefix}settings\`)`
 };
