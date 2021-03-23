@@ -17,7 +17,11 @@ module.exports.run = (guild, user, alicedb) => {
             return;
         }
 
-        const auditLog = await guild.fetchAuditLogs({user: user, limit: 1, type: "MEMBER_BAN_REMOVE"}).entries.first();
+        const auditLogEntries = await guild.fetchAuditLogs({user: user, limit: 1, type: "MEMBER_BAN_REMOVE"}).catch(console.error);
+        if (!auditLogEntries) {
+            return;
+        }
+        const auditLog = auditLogEntries.entries.first();
         const executor = auditLog.executor;
         const reason = auditLog.reason ?? "Not specified.";
         

@@ -8,13 +8,20 @@ const config = require('../../config.json');
  * @param {Db} alicedb 
  */
 module.exports.run = async (guild, user, alicedb) => {
-    const banInfo = await guild.fetchBan(user).catch(console.error);
-	const reason = banInfo.reason;
+	const auditLogEntries = await guild.fetchAuditLogs({user: user, limit: 1, type: "MEMBER_BAN_ADD"}).catch(console.error);
+	if (!auditLogEntries) {
+		return;
+	}
+
+	const auditLog = auditLogEntries.entries.first();
+	const executor = auditLog.executor;
+	const reason = auditLog.reason ?? "Not specified.";
+	
 	const footer = config.avatar_list;
 	const index = Math.floor(Math.random() * footer.length);
 	const embed = new Discord.MessageEmbed()
 		.setTitle("Ban executed")
-		.setThumbnail(user.avatarURL({dynamic: true}))
+		.setThumbnail(executor.avatarURL({dynamic: true}))
 		.setFooter("Alice Synthesis Thirty", footer[index])
 		.setTimestamp(new Date())
 		.addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
@@ -35,7 +42,7 @@ module.exports.run = async (guild, user, alicedb) => {
 		if (!channel) {
 			return;
 		}
-		channel.send({embed: embed});
+		channel.send(embed);
 		if (guild.id !== "316545691545501706") {
 			return;
 		}
