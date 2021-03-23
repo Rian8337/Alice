@@ -101,6 +101,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted permanently.**`);
         }
 
+        // Also disconnect user from voice chat
+        if (tomute.voice.channel) {
+            tomute.voice.kick("User muted");
+        }
+
         channel.send({embed: muteembed});
 
         tomute.roles.add(muterole.id).catch(console.error);

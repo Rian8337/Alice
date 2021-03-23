@@ -209,6 +209,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             message.channel.send(`❗**| A user has been muted... but their DMs are locked. The user will be muted for ${timeConvert(mutetime)}.**`);
         }
 
+        // Also disconnect user from voice chat
+        if (tomute.voice.channel) {
+            tomute.voice.kick("User muted");
+        }
+
         if (mutetime >= 21600 && message.guild.id === "316545691545501706") {
             const loungedb = alicedb.collection("loungelock");
             loungedb.findOne({discordid: tomute.id}, (err, res) => {
