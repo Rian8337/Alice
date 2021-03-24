@@ -118,11 +118,6 @@ export class ThreeFingerChecker {
     private readonly strainNoteCount: number;
 
     /**
-     * The speed strain sum of all notes that exceed `strainThreshold`.
-     */
-    private readonly speedStrainSum: number;
-
-    /**
      * The ratio threshold between non-3 finger cursors and 3-finger cursors.
      * 
      * Increasing this number will increase detection accuracy, however
@@ -191,16 +186,13 @@ export class ThreeFingerChecker {
     constructor(map: StarRating, data: ReplayData) {
         this.map = map;
         this.data = data;
+        this.strainNoteCount = map.objects.filter(v => v.speedStrain >= this.strainThreshold).length;
 
         const speedModRegex: RegExp = new RegExp(`[${mods.droidMods.dt}${mods.droidMods.nc}${mods.droidMods.ht}${mods.droidMods.su}]`, "g");
         const droidModNoSpeedMod: string = mods.pcToDroid(this.map.mods).replace(speedModRegex, "");
         const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
 
         this.hitWindow = new DroidHitWindow(stats.od as number);
-
-        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.speedStrain >= this.strainThreshold);
-        this.strainNoteCount = strainNotes.length;
-        this.speedStrainSum = strainNotes.map(v => {return v.speedStrain;}).reduce((acc, value) => acc + value, 0);
     }
 
     /**
@@ -757,12 +749,12 @@ export class ThreeFingerChecker {
 
             if (threeFingerRatio > this.threeFingerRatioThreshold) {
                 // Strain factor applies more penalty for high strain sections.
-                const strainSum: number = objects
-                    .slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex + 1)
-                    .map(v => {return v.speedStrain;})
-                    .reduce((acc, value) => acc + value, 0);
-
-                const strainFactor: number = 1 + Math.pow(strainSum / this.speedStrainSum, 1.2);
+                const strainFactor: number = Math.max(1,
+                    objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex + 1)
+                        .map(v => {return v.speedStrain;})
+                        .sort((a, b) => {return b - a;})
+                        .reduce((acc, value, index) => acc + value * Math.pow(0.98, index), 0) / 750
+                );
 
                 // We can ignore the first 3 (2 for drag) filled cursor instances
                 // since they are guaranteed not 3 finger.
@@ -770,13 +762,14 @@ export class ThreeFingerChecker {
 
                 // Finger factor applies more penalty if more fingers were used.
                 const objectCount: number = beatmapSection.lastObjectIndex + 1 - beatmapSection.firstObjectIndex;
-                const fingerFactor: number = threeFingerCursors.reduce((acc, value, index) =>
+                const fingerWeight: number = threeFingerCursors.reduce((acc, value, index) =>
                     acc + (index + 1) * value * objectCount / 100,
                     1
                 );
+                const fingerFactor: number = fingerWeight * Math.max(1, Math.sqrt(strainFactor));
 
                 // Length factor applies more penalty if there are more 3-fingered object.
-                const lengthFactor: number = 1 + Math.pow(objectCount / this.strainNoteCount, 1.2);
+                const lengthFactor: number = 1 + Math.pow(objectCount / this.strainNoteCount, 2);
 
                 this.nerfFactors.push({
                     strainFactor,
@@ -817,9 +810,9 @@ export class ThreeFingerChecker {
         // Realistically, overall object count should never exceed strainNoteCount,
         // therefore further checking is unnecessary.
         const overallObjectCount: number = this.nerfFactors.map(n => {return n.objectCount;}).reduce((acc, value) => acc + value, 0);
-        const threeFingerNoteFactor: number = 1 + Math.pow(overallObjectCount / this.strainNoteCount, 1.15);
+        const threeFingerNoteFactor: number = 1 + Math.pow(overallObjectCount / this.strainNoteCount, 1.5);
         
-        const finalNerfFactor: number = Math.pow(semifinalNerfFactor * difficultyFactor * threeFingerNoteFactor, 0.2);
+        const finalNerfFactor: number = Math.pow(semifinalNerfFactor * difficultyFactor * threeFingerNoteFactor, 0.3);
 
         return Math.max(1, finalNerfFactor);
     }
