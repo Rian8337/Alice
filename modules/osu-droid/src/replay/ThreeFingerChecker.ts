@@ -195,9 +195,7 @@ export class ThreeFingerChecker {
         const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
 
         this.hitWindow = new DroidHitWindow(stats.od as number);
-
-        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.speedStrain >= this.strainThreshold);
-        this.strainNoteCount = strainNotes.length;
+        this.strainNoteCount = map.objects.filter(v => v.speedStrain >= this.strainThreshold).length;
     }
 
     /**
@@ -791,7 +789,6 @@ export class ThreeFingerChecker {
      private calculateFinalPenalty(): number {
         let semifinalNerfFactor: number = 1;
 
-        // Strain factor
         this.nerfFactors.forEach(n => {
             semifinalNerfFactor += 0.125 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1);
         });
