@@ -122,7 +122,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         
                         const disabledCommands = res?.disabledCommands || [];
                         const disabledCommandIndex = disabledCommands.findIndex(v => v.name === cmd.config.name);
-                        if (disabledCommandIndex === -1) {
+                        if (disabledCommandIndex !== -1) {
                             if (disabledCommands[disabledCommandIndex].cooldown === -1) {
                                 return message.channel.send("❎ **| I'm sorry, that command has been disabled already!**");
                             }
