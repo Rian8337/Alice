@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args, maindb) => {
         .setDescription(firstMapinfo.showStatistics("", 1))
         .setURL(`https://osu.ppy.sh/b/${firstMapinfo.beatmapID}`)
         .addField(firstMapinfo.showStatistics("", 2), firstMapinfo.showStatistics("", 3))
-        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- ${v.version} - **${v.totalDifficulty.toFixed(2)}**\n`;})}`);
+        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- ${v.version} - **${v.totalDifficulty.toFixed(2)}**`;}).join("\n")}`);
 
     message.channel.send(embed).catch(console.error);
     client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
