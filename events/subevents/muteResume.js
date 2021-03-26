@@ -26,7 +26,7 @@ module.exports.run = async (client, alicedb) => {
 
         for await (const currentMute of currentMutes) {
             const guildUpdateQuery = {$pull: {currentMutes: {userID: currentMute.userID}}};
-            const guildMember = await guild.members.fetch(currentMute.userID).catch();
+            const guildMember = await guild.members.fetch(currentMute.userID).catch(() => {});
             if (!guildMember || !guildMember.roles.cache.has(muteRole.id)) {
                 await muteDb.updateOne(guildQuery, guildUpdateQuery);
                 continue;
