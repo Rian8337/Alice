@@ -85,6 +85,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             .setDescription(string);
 
         channel.send(unmuteEmbed);
+        toUnmute.roles.remove(muteRole, "User unmuted");
         await toUnmute.send(`❗**| Hey, you were unmuted for \`${reason}\`.`, {embed: unmuteEmbed}).catch();
 
         const { currentMutes } = res;
