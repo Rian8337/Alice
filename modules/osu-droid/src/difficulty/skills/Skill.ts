@@ -32,7 +32,7 @@ export abstract class Skill {
     /**
      * Unsorted strain peaks for strain chart.
      */
-     readonly unsortedStrainPeaks: number[] = [];
+    readonly unsortedStrainPeaks: number[] = [];
 
     /**
      * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
