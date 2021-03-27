@@ -12,6 +12,7 @@ import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
 import { HitObject } from './beatmap/hitobjects/HitObject';
 import { hitResult } from './constants/hitResult';
+import { LineChart } from './utils/LineChart';
 import { MapInfo } from './tools/MapInfo';
 import { MapStars } from './tools/MapStars';
 import { MapStats } from './utils/MapStats';
@@ -121,6 +122,13 @@ export = {
      * The result of a hit in an osu!droid replay.
      */
     hitResult,
+
+    /**
+     * Utility to draw a line graph with only node-canvas.
+     * 
+     * Used for creating strain graph of beatmaps.
+     */
+    LineChart,
 
     /**
      * Represents a beatmap with general information.

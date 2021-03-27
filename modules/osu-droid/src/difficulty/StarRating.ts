@@ -8,6 +8,8 @@ import { DifficultyHitObjectCreator } from '../difficulty/preprocessing/Difficul
 import { Aim } from './skills/Aim';
 import { Speed } from './skills/Speed';
 import { DifficultyValue } from './skills/Skill';
+import { LineChart } from '../utils/LineChart';
+import { loadImage } from 'canvas';
 
 export class StarRating {
     /**
@@ -217,6 +219,50 @@ export class StarRating {
         }
 
         return this;
+    }
+
+    /**
+     * Generates the strain chart of this beatmap and returns the chart as a buffer.
+     * 
+     * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
+     */
+     getStrainChart(beatmapsetID?: number): Promise<Buffer> {
+        return new Promise(async resolve => {
+            const strainInformations: {
+                readonly time: number,
+                readonly strain: number
+            }[] = this.objects.map(o => {
+                return {
+                    time: o.object.startTime / 1000,
+                    strain: Math.sqrt(Math.pow(o.aimStrain, 2) + Math.pow(o.speedStrain, 2))
+                };
+            });
+
+            const maxTime: number = strainInformations[strainInformations.length - 1].time;
+            const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}));
+
+            const maxXUnits: number = 10;
+            const maxYUnits: number = 10;
+
+            const unitsPerTickX: number = Math.ceil(maxTime / maxXUnits / 10) * 10;
+            const unitsPerTickY: number = Math.ceil(maxStrain / maxYUnits / 20) * 20;
+
+            const lineChart: LineChart = new LineChart({
+                graphWidth: 900,
+                graphHeight: 250,
+                minX: 0,
+                minY: 0,
+                maxX: Math.ceil(maxTime / unitsPerTickX) * unitsPerTickX,
+                maxY: Math.ceil(maxStrain / unitsPerTickY) * unitsPerTickY,
+                unitsPerTickX,
+                unitsPerTickY,
+                background: beatmapsetID ? await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`) : undefined
+            });
+
+            lineChart.drawLine(strainInformations.map(v => {return {x: v.time, y: v.strain};}), "#000000", 1);
+
+            resolve(lineChart.getBuffer());
+        });
     }
 
     /**
