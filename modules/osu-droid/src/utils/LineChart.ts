@@ -110,7 +110,7 @@ export class LineChart implements ChartInitializer {
     private readonly tickSize: number = 10;
     private readonly axisColor: string = "#555";
     private readonly font: string = "12pt Calibri";
-    private readonly boldFont: string;
+    private readonly axisLabelFont: string = "bold 11pt Calibri";
     private readonly fontHeight: number = 12;
     private readonly baseLabelOffset: number = 15;
 
@@ -144,7 +144,6 @@ export class LineChart implements ChartInitializer {
         this.xLabel = values.xLabel;
         this.yLabel = values.yLabel;
         this.pointRadius = Math.max(0, values.pointRadius ?? 1);
-        this.boldFont = "bold " + this.font;
 
         // Relationships
         this.rangeX = this.maxX - this.minX;
@@ -219,7 +218,7 @@ export class LineChart implements ChartInitializer {
         c.save();
         if (this.xLabel) {
             c.textAlign = "center";
-            c.font = this.boldFont;
+            c.font = this.axisLabelFont;
             c.fillText(this.xLabel, this.x + this.width / 2, this.y + this.height + labelOffset);
             c.restore();
         }
@@ -265,7 +264,7 @@ export class LineChart implements ChartInitializer {
         c.save();
         if (this.yLabel) {
             c.textAlign = "center";
-            c.font = this.boldFont;
+            c.font = this.axisLabelFont;
             c.translate(0, this.graphHeight);
             c.rotate(-Math.PI / 2);
             c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2);
