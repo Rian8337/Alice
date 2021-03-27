@@ -45,6 +45,21 @@ interface ChartInitializer {
      * The background of this graph.
      */
     readonly background?: Image;
+
+    /**
+     * The X axis label of the graph.
+     */
+    readonly xLabel?: string;
+
+    /**
+     * The Y axis label of the graph.
+     */
+    readonly yLabel?: string;
+
+    /**
+     * The radius of a data point in the graph. Set to 0 to disable this.
+     */
+    readonly pointRadius?: number;
 }
 
 /**
@@ -87,13 +102,17 @@ export class LineChart implements ChartInitializer {
     readonly unitsPerTickX: number;
     readonly unitsPerTickY: number;
     readonly background?: Image;
+    readonly xLabel?: string;
+    readonly yLabel?: string;
+    readonly pointRadius: number;
 
     private readonly padding: number = 10;
     private readonly tickSize: number = 10;
     private readonly axisColor: string = "#555";
-    private readonly pointRadius: number = 1;
     private readonly font: string = "12pt Calibri";
+    private readonly boldFont: string;
     private readonly fontHeight: number = 12;
+    private readonly baseLabelOffset: number = 15;
 
     private readonly rangeX: number;
     private readonly rangeY: number;
@@ -122,6 +141,10 @@ export class LineChart implements ChartInitializer {
         this.unitsPerTickX = values.unitsPerTickX;
         this.unitsPerTickY = values.unitsPerTickY;
         this.background = values.background;
+        this.xLabel = values.xLabel;
+        this.yLabel = values.yLabel;
+        this.pointRadius = Math.max(0, values.pointRadius ?? 1);
+        this.boldFont = "bold " + this.font;
 
         // Relationships
         this.rangeX = this.maxX - this.minX;
@@ -132,8 +155,8 @@ export class LineChart implements ChartInitializer {
         this.y = this.padding * 2;
         this.width = this.canvas.width - this.x - this.padding * 2;
         this.height = this.canvas.height - this.y - this.padding - this.fontHeight;
-        this.scaleX = this.width / this.rangeX;
-        this.scaleY = this.height / this.rangeY;
+        this.scaleX = (this.width - (this.xLabel ? this.baseLabelOffset : 0)) / this.rangeX;
+        this.scaleY = (this.height - (this.yLabel ? this.baseLabelOffset : 0)) / this.rangeY;
 
         // Draw background and X and Y axis tick marks
         this.setBackground();
@@ -164,10 +187,12 @@ export class LineChart implements ChartInitializer {
             c.lineTo(point.x * this.scaleX, point.y * this.scaleY);
             c.stroke();
             c.closePath();
-            c.beginPath();
-            c.arc(point.x * this.scaleX, point.y * this.scaleY, this.pointRadius, 0, 2 * Math.PI, false);
-            c.fill();
-            c.closePath();
+            if (this.pointRadius) {
+                c.beginPath();
+                c.arc(point.x * this.scaleX, point.y * this.scaleY, this.pointRadius, 0, 2 * Math.PI, false);
+                c.fill();
+                c.closePath();
+            }
 
             // Position for next segment
             c.beginPath();
@@ -189,10 +214,18 @@ export class LineChart implements ChartInitializer {
      */
     private drawXAxis(): void {
         const c: CanvasRenderingContext2D = this.context;
+        const labelOffset: number = this.xLabel ? this.baseLabelOffset : 0;
+        const yLabelOffset: number = this.yLabel ? this.baseLabelOffset : 0;
         c.save();
+        if (this.xLabel) {
+            c.textAlign = "center";
+            c.font = this.boldFont;
+            c.fillText(this.xLabel, this.x + this.width / 2, this.y + this.height + labelOffset);
+            c.restore();
+        }
         c.beginPath();
-        c.moveTo(this.x, this.y + this.height);
-        c.lineTo(this.x + this.width, this.y + this.height);
+        c.moveTo(this.x + yLabelOffset, this.y + this.height - labelOffset);
+        c.lineTo(this.x + this.width, this.y + this.height - labelOffset);
         c.strokeStyle = this.axisColor;
         c.lineWidth = 2;
         c.stroke();
@@ -200,8 +233,8 @@ export class LineChart implements ChartInitializer {
         // Draw tick marks
         for (let n = 0; n < this.numXTicks; ++n) {
             c.beginPath();
-            c.moveTo((n + 1) * this.width / this.numXTicks + this.x, this.y + this.height);
-            c.lineTo((n + 1) * this.width / this.numXTicks + this.x, this.y + this.height - this.tickSize);
+            c.moveTo((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height - labelOffset);
+            c.lineTo((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height - labelOffset - this.tickSize);
             c.stroke();
         }
 
@@ -214,7 +247,7 @@ export class LineChart implements ChartInitializer {
         for (let n = 0; n < this.numXTicks; ++n) {
             const label = Math.round((n + 1) * this.maxX / this.numXTicks);
             c.save();
-            c.translate((n + 1) * this.width / this.numXTicks + this.x, this.y + this.height + this.padding);
+            c.translate((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height + this.padding - labelOffset);
             c.fillText(label.toString(), 0, 0);
             c.restore();
         }
@@ -227,33 +260,43 @@ export class LineChart implements ChartInitializer {
      */
     private drawYAxis(): void {
         const c: CanvasRenderingContext2D = this.context;
-        c.save();  
-        c.beginPath();  
-        c.moveTo(this.x, this.y);  
-        c.lineTo(this.x, this.y + this.height);  
-        c.strokeStyle = this.axisColor;  
-        c.lineWidth = 2;  
-        c.stroke();  
+        const labelOffset: number = this.yLabel ? this.baseLabelOffset : 0;
+        const xLabelOffset: number = this.xLabel ? this.baseLabelOffset : 0;
+        c.save();
+        if (this.yLabel) {
+            c.textAlign = "center";
+            c.font = this.boldFont;
+            c.translate(0, this.graphHeight);
+            c.rotate(-Math.PI / 2);
+            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2);
+            c.restore();
+        }
+        c.beginPath();
+        c.moveTo(this.x + labelOffset, this.y);
+        c.lineTo(this.x + labelOffset, this.y + this.height - xLabelOffset);
+        c.strokeStyle = this.axisColor;
+        c.lineWidth = 2;
+        c.stroke();
         c.restore();
 
         // Draw tick marks
         for (let n = 0; n < this.numYTicks; ++n) {
-            c.beginPath();  
-            c.moveTo(this.x, n * this.height / this.numYTicks + this.y);  
-            c.lineTo(this.x + this.tickSize, n * this.height / this.numYTicks + this.y);  
+            c.beginPath();
+            c.moveTo(this.x + labelOffset, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
+            c.lineTo(this.x + labelOffset + this.tickSize, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
             c.stroke();
         }
 
         // Draw values
         c.font = this.font;
-        c.fillStyle = "black";  
+        c.fillStyle = "black";
         c.textAlign = "right";
         c.textBaseline = "middle";
 
         for (let n = 0; n < this.numYTicks; ++n) {
             const value: number = Math.round(this.maxY - n * this.maxY / this.numYTicks);
             c.save();
-            c.translate(this.x - this.padding, n * this.height / this.numYTicks + this.y);
+            c.translate(this.x + labelOffset - this.padding, n * (this.height - xLabelOffset) / this.numYTicks + this.y);
             c.fillText(value.toString(), 0, 0);
             c.restore();
         }
@@ -267,8 +310,8 @@ export class LineChart implements ChartInitializer {
     private transformContext(): void {
         const c: CanvasRenderingContext2D = this.context;
 
-        // Move context to the center of the canvas
-        c.translate(this.x, this.y + this.height);
+        // Move context to point (0, 0) in graph
+        c.translate(this.x + (this.yLabel ? this.baseLabelOffset : 0), this.y + this.height - (this.xLabel ? this.baseLabelOffset : 0));
 
         // Invert the Y scale so that it
         // increments as we go upwards
@@ -276,7 +319,7 @@ export class LineChart implements ChartInitializer {
     }
 
     /**
-     * Gets the longest width value of the graph.
+     * Gets the longest width from each label text in Y axis.
      */
     private getLongestValueWidth(): number {
         this.context.font = this.font;
@@ -301,7 +344,7 @@ export class LineChart implements ChartInitializer {
         }
         this.context.globalAlpha = 1;
         this.context.drawImage(this.background, 0, 0, this.canvas.width, this.canvas.height);
-        this.context.globalAlpha = 0.7;
+        this.context.globalAlpha = 0.8;
         this.context.fillStyle = "#bbbbbb";
         this.context.fillRect(0, 0, 900, 250);
         this.context.globalAlpha = 1;

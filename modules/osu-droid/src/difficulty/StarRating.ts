@@ -1,3 +1,4 @@
+import { loadImage } from 'canvas';
 import { objectTypes } from '../constants/objectTypes';
 import { Beatmap } from '../beatmap/Beatmap';
 import { modes } from '../constants/modes';
@@ -9,7 +10,6 @@ import { Aim } from './skills/Aim';
 import { Speed } from './skills/Speed';
 import { DifficultyValue } from './skills/Skill';
 import { LineChart } from '../utils/LineChart';
-import { loadImage } from 'canvas';
 
 export class StarRating {
     /**
@@ -79,11 +79,14 @@ export class StarRating {
 
     private readonly sectionLength: number = 400;
     private readonly difficultyMultiplier: number = 0.0675;
+    private aimStrainPeaks: number[] = [];
+    private speedStrainPeaks: number[] = [];
+    private speedMultiplier: number = 1;
 
     /**
      * Calculates the star rating of the specified beatmap.
      * 
-     * The map is analyzed in chunks of `sectionLength` duration.
+     * The beatmap is analyzed in chunks of `sectionLength` duration.
      * For each chunk the highest hitobject strains are added to
      * a list which is then collapsed into a weighted sum, much
      * like scores are weighted on a user's profile.
@@ -143,25 +146,34 @@ export class StarRating {
             oldStatistics: params.stats?.oldStatistics || false
         }).calculate({mode: mode});
 
+        this.speedMultiplier = stats.speedMultiplier;
+
+        const modWithoutSpeedMultiplier: string = mods.modbitsToString(convertedMod - (convertedMod & mods.osuMods.speed_changing));
+        const stats2: MapStats = new MapStats({
+            ar: params.stats?.ar ?? map.ar,
+            mods: modWithoutSpeedMultiplier
+        }).calculate({mode: mode});
+
+        this.objects.length = 0;
         this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
             objects: map.objects,
             circleSize: stats.cs as number,
-            speedMultiplier: stats.speedMultiplier
+            speedMultiplier: this.speedMultiplier
         }));
 
         const aimSkill: Aim = new Aim();
         const speedSkill: Speed = new Speed();
 
-        const sectionLength: number = this.sectionLength * stats.speedMultiplier;
+        const sectionLength: number = this.sectionLength * this.speedMultiplier;
         let currentSectionEnd: number = Math.ceil(map.objects[0].startTime / sectionLength) * sectionLength;
 
         this.objects.forEach(h => {
             while (h.object.startTime > currentSectionEnd) {
                 aimSkill.saveCurrentPeak();
-                aimSkill.startNewSectionFrom(currentSectionEnd);
+                aimSkill.startNewSectionFrom(currentSectionEnd / stats.speedMultiplier);
 
                 speedSkill.saveCurrentPeak();
-                speedSkill.startNewSectionFrom(currentSectionEnd);
+                speedSkill.startNewSectionFrom(currentSectionEnd / stats.speedMultiplier);
 
                 currentSectionEnd += sectionLength;
             }
@@ -173,6 +185,9 @@ export class StarRating {
         aimSkill.saveCurrentPeak();
         speedSkill.saveCurrentPeak();
 
+        this.aimStrainPeaks = aimSkill.unsortedStrainPeaks;
+        this.speedStrainPeaks = speedSkill.unsortedStrainPeaks;
+
         const aimRating: DifficultyValue = aimSkill.difficultyValue();
         const speedRating: DifficultyValue = speedSkill.difficultyValue();
 
@@ -182,7 +197,7 @@ export class StarRating {
 
         this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
         this.speedDifficulty = speedRating.total;
-        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
+        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, aimRating.total);
 
         if (convertedMod & mods.osuMods.td || mode === modes.droid) {
             this.aim = Math.pow(this.aim, 0.8);
@@ -190,7 +205,7 @@ export class StarRating {
 
         this.total = this.aim + this.speed;
 
-        // total stars mixes speed and aim in such a way that
+        // Total stars mixes speed and aim in such a way that
         // heavily aim or speed focused maps get a bonus
         switch (mode) {
             case modes.droid:
@@ -226,15 +241,22 @@ export class StarRating {
      * 
      * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
      */
-     getStrainChart(beatmapsetID?: number): Promise<Buffer> {
+     getStrainChart(beatmapsetID?: number): Promise<Buffer|null> {
         return new Promise(async resolve => {
+            if (this.aimStrainPeaks.length === 0 || this.speedStrainPeaks.length === 0 || this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
+                return resolve(null);
+            }
+
+            const sectionLength: number = this.sectionLength * this.speedMultiplier;
+            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
+
             const strainInformations: {
                 readonly time: number,
                 readonly strain: number
-            }[] = this.objects.map(o => {
+            }[] = this.aimStrainPeaks.map((v, i) => {
                 return {
-                    time: o.object.startTime / 1000,
-                    strain: Math.sqrt(Math.pow(o.aimStrain, 2) + Math.pow(o.speedStrain, 2))
+                    time: (currentSectionEnd + sectionLength * i) / 1000,
+                    strain: (v + this.speedStrainPeaks[i]) / 2
                 };
             });
 
@@ -256,10 +278,13 @@ export class StarRating {
                 maxY: Math.ceil(maxStrain / unitsPerTickY) * unitsPerTickY,
                 unitsPerTickX,
                 unitsPerTickY,
-                background: beatmapsetID ? await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`) : undefined
+                background: await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`).catch(() => {return undefined;}),
+                xLabel: "Time (seconds)",
+                yLabel: "Strain",
+                pointRadius: 0
             });
 
-            lineChart.drawLine(strainInformations.map(v => {return {x: v.time, y: v.strain};}), "#000000", 1);
+            lineChart.drawLine(strainInformations.map(v => {return {x: v.time, y: v.strain};}), "#000000", 1.5);
 
             resolve(lineChart.getBuffer());
         });

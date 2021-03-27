@@ -27,7 +27,12 @@ export abstract class Skill {
     /**
      * Strain peaks are stored here.
      */
-    private readonly strainPeaks: number[] = [];
+    readonly strainPeaks: number[] = [];
+
+    /**
+     * Unsorted strain peaks for strain chart.
+     */
+     readonly unsortedStrainPeaks: number[] = [];
 
     /**
      * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
@@ -52,6 +57,7 @@ export abstract class Skill {
     saveCurrentPeak(): void {
         if (this.previous.length > 0) {
             this.strainPeaks.push(this.currentSectionPeak);
+            this.unsortedStrainPeaks.push(this.currentSectionPeak);
         }
     }
 
