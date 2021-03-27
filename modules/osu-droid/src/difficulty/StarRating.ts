@@ -148,12 +148,6 @@ export class StarRating {
 
         this.speedMultiplier = stats.speedMultiplier;
 
-        const modWithoutSpeedMultiplier: string = mods.modbitsToString(convertedMod - (convertedMod & mods.osuMods.speed_changing));
-        const stats2: MapStats = new MapStats({
-            ar: params.stats?.ar ?? map.ar,
-            mods: modWithoutSpeedMultiplier
-        }).calculate({mode: mode});
-
         this.objects.length = 0;
         this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
             objects: map.objects,
@@ -170,10 +164,10 @@ export class StarRating {
         this.objects.forEach(h => {
             while (h.object.startTime > currentSectionEnd) {
                 aimSkill.saveCurrentPeak();
-                aimSkill.startNewSectionFrom(currentSectionEnd / stats.speedMultiplier);
+                aimSkill.startNewSectionFrom(currentSectionEnd / this.speedMultiplier);
 
                 speedSkill.saveCurrentPeak();
-                speedSkill.startNewSectionFrom(currentSectionEnd / stats.speedMultiplier);
+                speedSkill.startNewSectionFrom(currentSectionEnd / this.speedMultiplier);
 
                 currentSectionEnd += sectionLength;
             }
@@ -197,7 +191,7 @@ export class StarRating {
 
         this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
         this.speedDifficulty = speedRating.total;
-        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, aimRating.total);
+        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
 
         if (convertedMod & mods.osuMods.td || mode === modes.droid) {
             this.aim = Math.pow(this.aim, 0.8);
