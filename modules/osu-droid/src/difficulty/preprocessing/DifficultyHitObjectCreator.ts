@@ -71,6 +71,7 @@ export class DifficultyHitObjectCreator {
                 difficultyObject.deltaTime = (difficultyObject.object.startTime - difficultyObjects[i - 1].object.startTime) / params.speedMultiplier;
                 // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
                 difficultyObject.strainTime = Math.max(50, difficultyObject.deltaTime);
+                difficultyObject.startTime = difficultyObject.object.startTime / params.speedMultiplier;
     
                 if (i >= 2) {
                     const prev1: DifficultyHitObject = difficultyObjects[i - 1];

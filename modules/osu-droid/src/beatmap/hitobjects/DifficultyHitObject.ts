@@ -52,6 +52,11 @@ export class DifficultyHitObject {
     strainTime: number = 0;
 
     /**
+     * Adjusted start time of the hitobject, taking speed multiplier into account.
+     */
+    startTime: number = 0;
+
+    /**
      * The radius of the hitobject.
      */
     radius: number = 0;
