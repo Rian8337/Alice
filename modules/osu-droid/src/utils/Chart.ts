@@ -78,11 +78,11 @@ interface Data {
 }
 
 /**
- * Utility to draw a line graph with only node-canvas.
+ * Utility to draw a graph with only node-canvas.
  * 
  * Used for creating strain graph of beatmaps.
  */
-export class LineChart implements ChartInitializer {
+export class Chart implements ChartInitializer {
     /**
      * The canvas instance of this chart.
      */
@@ -197,6 +197,28 @@ export class LineChart implements ChartInitializer {
             c.beginPath();
             c.moveTo(point.x * this.scaleX, point.y * this.scaleY);
         }
+
+        c.restore();
+    }
+
+    /**
+     * Draws an area graph with specified data and color.
+     * 
+     * @param data The data to make the graph.
+     * @param color The color of the area.
+     */
+    drawArea(data: Data[], color: string): void {
+        const c: CanvasRenderingContext2D = this.context;
+        c.save();
+        this.transformContext();
+        c.strokeStyle = c.fillStyle = color;
+
+        c.beginPath();
+        data.forEach((d: Data) => c.lineTo(d.x * this.scaleX, d.y * this.scaleY));
+        c.stroke();
+        c.lineTo(data[data.length - 1].x * this.scaleX, 0);
+        c.lineTo(0, 0);
+        c.fill();
 
         c.restore();
     }

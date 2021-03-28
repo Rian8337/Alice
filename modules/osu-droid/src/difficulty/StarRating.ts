@@ -9,7 +9,7 @@ import { DifficultyHitObjectCreator } from '../difficulty/preprocessing/Difficul
 import { Aim } from './skills/Aim';
 import { Speed } from './skills/Speed';
 import { DifficultyValue } from './skills/Skill';
-import { LineChart } from '../utils/LineChart';
+import { Chart } from '../utils/Chart';
 
 export class StarRating {
     /**
@@ -234,8 +234,9 @@ export class StarRating {
      * Generates the strain chart of this beatmap and returns the chart as a buffer.
      * 
      * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
+     * @param color The color of the graph.
      */
-     getStrainChart(beatmapsetID?: number): Promise<Buffer|null> {
+    getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
             if (this.aimStrainPeaks.length === 0 || this.speedStrainPeaks.length === 0 || this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
                 return resolve(null);
@@ -263,7 +264,7 @@ export class StarRating {
             const unitsPerTickX: number = Math.ceil(maxTime / maxXUnits / 10) * 10;
             const unitsPerTickY: number = Math.ceil(maxStrain / maxYUnits / 20) * 20;
 
-            const lineChart: LineChart = new LineChart({
+            const chart: Chart = new Chart({
                 graphWidth: 900,
                 graphHeight: 250,
                 minX: 0,
@@ -278,9 +279,9 @@ export class StarRating {
                 pointRadius: 0
             });
 
-            lineChart.drawLine(strainInformations.map(v => {return {x: v.time, y: v.strain};}), "#000000", 1.5);
+            chart.drawArea(strainInformations.map(v => {return {x: v.time, y: v.strain};}), color);
 
-            resolve(lineChart.getBuffer());
+            resolve(chart.getBuffer());
         });
     }
 

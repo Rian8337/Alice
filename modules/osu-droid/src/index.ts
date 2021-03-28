@@ -2,6 +2,7 @@ import { Accuracy } from './utils/Accuracy';
 import { Aim } from './difficulty/skills/Aim';
 import { Beatmap } from './beatmap/Beatmap';
 import { BreakPoint } from './beatmap/timings/BreakPoint';
+import { Chart } from './utils/Chart';
 import { Circle } from './beatmap/hitobjects/Circle';
 import { CursorData } from './replay/data/CursorData';
 import { DifficultyHitObject } from './beatmap/hitobjects/DifficultyHitObject';
@@ -12,7 +13,6 @@ import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
 import { HitObject } from './beatmap/hitobjects/HitObject';
 import { hitResult } from './constants/hitResult';
-import { LineChart } from './utils/LineChart';
 import { MapInfo } from './tools/MapInfo';
 import { MapStars } from './tools/MapStars';
 import { MapStats } from './utils/MapStats';
@@ -65,6 +65,13 @@ export = {
      * Represents a break period in a beatmap.
      */
     BreakPoint,
+
+    /**
+     * Utility to draw a graph with only node-canvas.
+     * 
+     * Used for creating strain graph of beatmaps.
+     */
+    Chart,
 
     /**
      * Represents a circle in a beatmap.
@@ -122,13 +129,6 @@ export = {
      * The result of a hit in an osu!droid replay.
      */
     hitResult,
-
-    /**
-     * Utility to draw a line graph with only node-canvas.
-     * 
-     * Used for creating strain graph of beatmaps.
-     */
-    LineChart,
 
     /**
      * Represents a beatmap with general information.
