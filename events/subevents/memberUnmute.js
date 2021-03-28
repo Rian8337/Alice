@@ -35,9 +35,20 @@ module.exports.run = (oldMember, newMember, alicedb) => {
             return;
         }
 
-        if (muteEntry.muteEndTime > Math.floor(Date.now() / 1000)) {
-            newMember.roles.add(muteRole, `Mute time isn't over, please use ${prefix}unmute to unmute the user!`);
-        }
+        setTimeout(async () => {
+            const auditLogEntries = await newMember.guild.fetchAuditLogs({user: newMember, limit: 1, type: "MEMBER_ROLE_UPDATE"});
+            if (auditLogEntries.entries.size === 0) {
+                return;
+            }
+            const auditLogEntry = auditLogEntries.entries.first();
+            if (auditLogEntry.executor.bot) {
+                return;
+            }
+
+            if (muteEntry.muteEndTime > Math.floor(Date.now() / 1000)) {
+                newMember.roles.add(muteRole, `Mute time isn't over, please use ${prefix}unmute to unmute the user!`);
+            }
+        }, 1000);
     });
 };
 
