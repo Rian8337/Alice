@@ -300,7 +300,7 @@ export class Chart implements ChartInitializer {
             c.font = this.axisLabelFont;
             c.translate(0, this.graphHeight);
             c.rotate(-Math.PI / 2);
-            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2.25);
+            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2.5);
             c.restore();
         }
         c.beginPath();
