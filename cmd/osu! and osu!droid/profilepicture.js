@@ -126,7 +126,10 @@ async function drawImage(properties, template = false) {
         }
         c.stroke();
 
+        c.save();
         c.font = 'bold 12px Exo';
+        c.textAlign = "center";
+        c.textBaseline = "middle";
         for (let i = 0; i < 10; i++) {
             if (i / 5 < 1) {
                 c.fillText((i+1).toString(), 54.5 + i * 94, 353.5);
@@ -134,6 +137,7 @@ async function drawImage(properties, template = false) {
                 c.fillText((i+1).toString(), 54.5 + (i - 5) * 94, 439.5);
             }
         }
+        c.restore();
     } else {
         const badges = properties.pictureConfig.activeBadges ?? [];
         for (let i = 0; i < badges.length; i++) {
@@ -506,7 +510,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| Hey, please enter a valid badge slot!**");
                                 }
                                 if (badgeIndex < 1 || badgeIndex > 10) {
-                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 0 to 9!**");
+                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 1 to 10!**");
                                 }
 
                                 const activeBadges = pictureConfig.activeBadges ?? [];
@@ -547,7 +551,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| Hey, please enter a valid badge slot!**");
                                 }
                                 if (badgeIndex < 1 || badgeIndex > 10) {
-                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 0 to 9!**");
+                                    return message.channel.send("❎ **| I'm sorry, valid badge index is from 1 to 10!**");
                                 }
 
                                 const activeBadges = pictureConfig.activeBadges ?? [];
