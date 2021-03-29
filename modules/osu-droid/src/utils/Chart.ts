@@ -159,8 +159,8 @@ export class Chart implements ChartInitializer {
 
         // Draw background and X and Y axis tick marks
         this.setBackground();
-        this.drawXAxis();
-        this.drawYAxis();
+        this.drawXAxis(true);
+        this.drawYAxis(true);
     }
 
     /**
@@ -221,6 +221,13 @@ export class Chart implements ChartInitializer {
         c.fill();
 
         c.restore();
+
+        // Redraw axes since it gets
+        // overlapped by chart area
+        if (color !== this.axisColor) {
+            this.drawXAxis();
+            this.drawYAxis();
+        }
     }
 
     /**
@@ -232,13 +239,15 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the X axis of the graph.
+     * 
+     * @param drawLabel Whether or not to draw the axis label.
      */
-    private drawXAxis(): void {
+    private drawXAxis(drawLabel?: boolean): void {
         const c: CanvasRenderingContext2D = this.context;
         const labelOffset: number = this.xLabel ? this.baseLabelOffset : 0;
         const yLabelOffset: number = this.yLabel ? this.baseLabelOffset : 0;
         c.save();
-        if (this.xLabel) {
+        if (this.xLabel && drawLabel) {
             c.textAlign = "center";
             c.font = this.axisLabelFont;
             c.fillText(this.xLabel, this.x + this.width / 2, this.y + this.height + labelOffset);
@@ -278,18 +287,20 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the Y axis of the graph.
+     * 
+     * @param drawLabel Whether or not to draw the axis label.
      */
-    private drawYAxis(): void {
+    private drawYAxis(drawLabel?: boolean): void {
         const c: CanvasRenderingContext2D = this.context;
         const labelOffset: number = this.yLabel ? this.baseLabelOffset : 0;
         const xLabelOffset: number = this.xLabel ? this.baseLabelOffset : 0;
         c.save();
-        if (this.yLabel) {
+        if (this.yLabel && drawLabel) {
             c.textAlign = "center";
             c.font = this.axisLabelFont;
             c.translate(0, this.graphHeight);
             c.rotate(-Math.PI / 2);
-            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2);
+            c.fillText(this.yLabel, this.y + xLabelOffset + this.height / 2, this.x - labelOffset * 2.25);
             c.restore();
         }
         c.beginPath();
