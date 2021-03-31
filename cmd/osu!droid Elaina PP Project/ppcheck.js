@@ -11,13 +11,8 @@ function generateEmbed(res, page, footer, index, color) {
         .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **0.00 pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-		const pp = ppentry[i];
-        if (pp) {
-			let modstring = pp.mods ? `+${pp.mods}` : "";
-			if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
-				if (pp.mods) {
-					modstring += " ";
-				}
+		embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __0.00 pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+    }
     return embed;
 }
 
