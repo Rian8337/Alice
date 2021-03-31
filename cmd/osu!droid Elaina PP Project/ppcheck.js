@@ -12,7 +12,7 @@ function generateEmbed(res, page, footer, index, color) {
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
 		const pp = ppentry[i];
-		embed.addField(`${i+1}. ${pp.title} ${pp.mods}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __0.00 pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+		embed.addField(`${i+1}. ${pp.title} ${pp.mods}`, `${pp.combo}x | ${pp.accuracy}% | ${pp.miss} ❌ | __0.00 pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
     }
     return embed;
 }
