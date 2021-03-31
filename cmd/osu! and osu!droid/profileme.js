@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require('fs');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const { Db } = require('mongodb');
