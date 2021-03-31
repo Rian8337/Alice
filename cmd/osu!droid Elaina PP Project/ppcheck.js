@@ -5,11 +5,10 @@ const cd = new Set();
 
 function generateEmbed(res, page, footer, index, color) {
     const ppentry = res.pp ?? [];
-    const pptotal = res.pptotal ?? 0;
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
-        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
+        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **0.00 pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
 		const pp = ppentry[i];
@@ -19,23 +18,6 @@ function generateEmbed(res, page, footer, index, color) {
 				if (pp.mods) {
 					modstring += " ";
 				}
-				modstring += "(";
-				if (pp.forcedAR) {
-					modstring += `AR${pp.forcedAR}`;
-				}
-				if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
-					if (pp.forcedAR) {
-						modstring += ", ";
-					}
-					modstring += `${pp.speedMultiplier}x`;
-				}
-				modstring += ")";
-			}
-            embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
-        } else {
-            embed.addField(`${i+1}. -`, "-");
-        }
-    }
     return embed;
 }
 
@@ -44,9 +26,8 @@ function generateEmbed(res, page, footer, index, color) {
  * @param {Discord.Message} message 
  * @param {string[]} args 
  * @param {Db} maindb 
- * @param {Db} alicedb 
  */
-module.exports.run = (client, message, args, maindb, alicedb) => {
+module.exports.run = (client, message, args, maindb) => {
 	if (cd.has(message.author.id)) {
         return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
 	}
@@ -96,10 +77,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         } 
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
-        const color = message.member?.roles.color?.hexColor || "#000000";
+        const color = message.member?.displayHexColor ?? "#000000";
 
         let embed = generateEmbed(res, page, footer, index, color);
         const max_page = Math.ceil(res.pp.length / 5);
+		if (max_page === 0) {
+			return message.channel.send("❎ **| I'm sorry, you do not have any submitted plays!**");
+		}
         message.channel.send({embed: embed}).then(msg => {
             msg.react("⏮️").then(() => {
 				msg.react("⬅️").then(() => {
@@ -115,8 +99,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
             const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 120000});
             
             backward.on('collect', () => {
-				if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = 1;
+				if (page === 1) {
+					return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				} else {
+					page = 1;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -125,8 +112,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			back.on('collect', () => {
-				if (page === 1) page = max_page;
-				else page--;
+				if (page === 1) {
+					page = max_page;
+				} else {
+					page--;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -135,8 +125,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			next.on('collect', () => {
-				if (page === max_page) page = 1;
-				else page++;
+				if (page === max_page) {
+					page = 1;
+				} else {
+					page++;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
@@ -145,8 +138,11 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 			});
 
 			forward.on('collect', () => {
-				if (page === max_page) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
-				else page = max_page;
+				if (page === max_page) {
+					return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+				} else {
+					page = max_page;
+				}
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}

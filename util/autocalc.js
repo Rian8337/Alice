@@ -158,7 +158,7 @@ module.exports.run = async (client, message, args, current_map, mapset = false, 
 			});
 			const ppline = parseFloat(npp.toString().split(" ")[0]);
 			const pcppline = parseFloat(pcpp.toString().split(" ")[0]);
-			const entry = [mapinfo, starsline, pcstarsline, mapinfo.maxScore({mods: mod}), ppline, pcppline];
+			const entry = [mapinfo, starsline, pcstarsline, mapinfo.maxScore({mods: mod}), (ppline / 100).toFixed(2), (pcppline / 100).toFixed(2)];
 			map_entries.push(entry);
 			if (i === obj.length) {
 				map_entries.sort((a, b) => {return b[2] - a[2];});

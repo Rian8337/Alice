@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require('fs');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const { Db } = require('mongodb');
@@ -39,7 +40,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				weighted_accuracy /= weight;
 			}
 		}
-		const ppRank = res ? await bindDb.countDocuments({pptotal: {$gt: res.pptotal}}) + 1 : null;
 		const player = await osudroid.Player.getInformation({uid: uid});
 		if (player.error) {
 			return message.channel.send("❎ **| I'm sorry, I couldn't fetch the player's profile! Perhaps osu!droid server is down?**");
@@ -52,8 +52,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			const level = playerres?.level ?? 1;
-			const score = playerres?.score ?? 0;
+			const level = 1;
 			pointDb.findOne({discordid: res?.discordid ?? ""}, async (err, pointres) => {
 				if (err) {
 					console.log(err);
@@ -69,7 +68,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.drawImage(bg, 0, 0);
 
 				// player avatar
-				const avatar = await loadImage(player.avatarURL);
+				const badgeImages = await fs.promises.readdir(`${process.cwd()}/img/badges`);
+				const badgeImageIndex = Math.floor(Math.random() * badgeImages.length);
+				const avatar = await loadImage(`${process.cwd()}/img/badges/${badgeImages[badgeImageIndex]}`);
 				c.drawImage(avatar, 9, 9, 150, 150);
 
 				// area
@@ -92,8 +93,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// description box
 				c.globalAlpha = 0.85;
-				let bgColor = pictureConfig.bgColor;
-				if (!bgColor) bgColor = 'rgb(0,139,255)';
+				const bgColor = pictureConfig.bgColor ?? 'rgb(0,139,255)';
 				c.fillStyle = bgColor;
 				c.fillRect(9, 197, 482, 294);
 
@@ -145,12 +145,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(player.username, 169, 45, 243);
 
 				c.font = '18px Exo';
-				c.fillText(`Total Score: ${player.score.toLocaleString()}`, 169, 84);
-				c.fillText(`Ranked Score: ${score.toLocaleString()}`, 169, 104);
-				c.fillText(`Accuracy: ${player.accuracy}%${weighted_accuracy ? ` | ${weighted_accuracy.toFixed(2)}%` : ""}`, 169, 124);
-				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
+				c.fillText(`Total Score: 1/(0+)`, 169, 84);
+				c.fillText(`Ranked Score: 1^(i * ln(2) / 2π)`, 169, 104);
+				c.fillText(`Accuracy: arcsin(2)%`, 169, 124);
+				c.fillText(`Play Count: √(20 + √(20 + √(20 + ...)))`, 169, 144);
 				if (res?.pptotal) {
-					c.fillText(`Droid pp: ${res.pptotal.toFixed(2)}pp (#${ppRank.toLocaleString()})`, 169, 164);
+					c.fillText(`Droid pp: 0.00pp (#ln(0+))`, 169, 164);
 				}
 				if (res?.clan) {
 					c.fillText(`Clan: ${res.clan}`, 169, 184);
@@ -194,7 +194,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
 	name: "profileid",
-	description: "Retrieves an droid profile based on uid (detailed).",
+	description: "Retrieves an osu!droid profile based on uid (detailed).",
 	usage: "profileid <uid>",
 	detail: "`uid`: Uid to retrieve profile from [Integer]",
 	permission: "None"

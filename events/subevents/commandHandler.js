@@ -11,6 +11,148 @@ function timeConvert(num) {
 }
 
 /**
+ * @param {number} min 
+ * @param {number} max 
+ */
+function createRandomNumber(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.max(1, Math.floor(Math.random() * (max - min + 1)) + min);
+}
+
+/**
+ * @param {number} num 
+ */
+function isPrime(num) {
+    if (num < 2) {
+        return false;
+    }
+
+    let sqrt_num = Math.floor(Math.sqrt(num));
+    for (let i = 2; i < sqrt_num; i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+/**
+ * @param {number} level 
+ * @param {string} operator 
+ */
+function generateNumber(level, operator) {
+    switch (operator) {
+        case "+":
+        case "-":
+            return createRandomNumber(Math.random() * 2.5 * level, Math.max(2.5 * level, Math.random() * 7.5 * level));
+        case "/":
+        case "*":
+            return createRandomNumber(Math.random() * 5 * Math.max(1, Math.random() * level / 2), Math.random() * 10 * Math.max(1, Math.random() * level / 2));
+        case "!":
+            return createRandomNumber(Math.random() * (level - 10) / 5, Math.random() * 3 * Math.max(1 + (level - 10) / 5, Math.random() * (level - 10) / 5));
+    }
+}
+
+function generateEquation() {
+    const level = 1;
+    let operator_amount = 4;
+    const operators = ['/', '*', '+', '-'];
+    let prev_operator_amount = operator_amount;
+    let equation = '';
+    let real_equation = '';
+    let answer = Number.NaN;
+    let prime_count = 0;
+    let last_operator = '';
+    let attempts = 0;
+    const maxThreshold = 10 * level * operator_amount;
+    const minThreshold = maxThreshold / 2;
+
+    while (!Number.isInteger(answer)) {
+        if (attempts === 500) {
+            break;
+        }
+
+        while (operator_amount > 0) {
+            const index = Math.floor(Math.random() * operators.length);
+            const operator = operators[index];
+            let number = generateNumber(level, operator);
+            const mul_or_div = operator === '/' || operator === '*' || last_operator === '/' || last_operator === '*';
+            if (mul_or_div) {
+                while (!isPrime(number) && prime_count < Math.floor(level / 10)) {
+                    number = generateNumber(level, operator);
+                }
+                ++prime_count;
+            }
+
+            last_operator = operator;
+            equation += `${number} ${operator} `;
+            real_equation += `${number} ${operator} `;
+
+            --operator_amount;
+        }
+
+        let number = generateNumber(level, last_operator);
+        const mul_or_div = last_operator === '/' || last_operator === '*';
+        if (mul_or_div) {
+            while (!isPrime(number) && prime_count < Math.floor(level / 5)) {
+                number = generateNumber(level, last_operator);
+            }
+        }
+
+        equation += number;
+        real_equation += number;
+        answer = eval(equation);
+
+        if (
+            !Number.isInteger(answer) ||
+            // checks if min < answer < max for positive value
+            (answer > 0 && (answer > maxThreshold || answer < minThreshold)) ||
+            // checks if -max < answer < -min for negative value
+            (answer < 0 && (answer < -maxThreshold || answer > -minThreshold))
+        ) {
+            answer = Number.NaN;
+            equation = '';
+            real_equation = '';
+            operator_amount = prev_operator_amount;
+        }
+        ++attempts;
+    }
+
+    return [real_equation, answer];
+}
+
+/**
+ * @param {Discord.Message} message 
+ * @returns {Promise<boolean>}
+ */
+function generateMathQuestion(message) {
+    return new Promise(resolve => {
+        const [equation, answer] = generateEquation();
+
+        message.channel.send(`❗**| ${message.author}, solve this equation within 30 seconds to access the command:\n\`\`\`fix\n${equation} = ...\`\`\`**`).then(msg => {
+            const collector = message.channel.createMessageCollector(m => parseInt(m.content) === answer && m.author.id === message.author.id, {time: 30000, max: 1});
+
+            let correct = false;
+            collector.on('collect', () => {
+                msg.delete().catch(() => {});
+                correct = true;
+                collector.stop();
+            });
+
+            collector.on("end", () => {
+                if (!correct) {
+                    message.channel.send(`❎ **| ${message.author}, timed out. The correct answer is:\n\`\`\`fix\n${equation} = ${answer}\`\`\`**`)
+                        .then(m => m.delete({timeout: 5000}));
+                }
+                resolve(correct);
+            });
+        });
+    });
+}
+
+/**
  * @type {Map<string, number>}
  */
 const cd = new Map();
@@ -31,7 +173,7 @@ const cd = new Map();
  * @param {string} obj.maintenance_reason
  * @param {boolean} obj.main_bot
  */
-module.exports.run = obj => {
+module.exports.run = async obj => {
     const {
         client,
         message,
@@ -75,6 +217,9 @@ module.exports.run = obj => {
                 }
             }
         }
+    }
+    if (!message.isOwner && !(await generateMathQuestion(message))) {
+        return;
     }
     message.channel.startTyping().catch(console.error);
     setTimeout(() => {

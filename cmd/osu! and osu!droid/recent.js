@@ -182,7 +182,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 std_deviation += Math.pow(hit_object.accuracy - mean, 2);
             }
         }
-        unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+        unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 250;
         max_error = count ? total / count : 0;
         min_error = _count ? _total / _count : 0;
     }
@@ -195,7 +195,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
+        embed.setDescription(`▸ ${rank} ▸ ${(acc / 50).toFixed(2)}%\n‣ ${(score / 1e6).toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${(min_error * 10).toFixed(2)}ms - ${(max_error * 10).toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
         return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
     }
 
@@ -207,7 +207,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle} ${play.getCompleteModString()} [${starsline}★ | ${pcstarsline}★]`;
+    title = `${mapinfo.fullTitle} ${play.getCompleteModString()} [${(starsline / 10).toFixed(2)}★ | ${(pcstarsline / 10).toFixed(2)}★]`;
 
     embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
@@ -239,7 +239,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const ppline = parseFloat(npp.total.toFixed(2));
     const pcppline = parseFloat(pcpp.total.toFixed(2));
 
-    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** `;
+    let beatmapInformation = `▸ ${rank} ▸ **${(ppline / 20).toFixed(2)}DPP** | **${(pcppline / 20).toFixed(2)}PP** `;
     const fc_acc = new osudroid.Accuracy({
         n300: n300 + miss,
         n100,
@@ -269,7 +269,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        beatmapInformation += `(${dline}DPP, ${pline}PP for ${(fc_acc.value() * 100).toFixed(2)}% FC) `;
+        beatmapInformation += `(${(dline / 20).toFixed(2)}DPP, ${(pline / 20).toFixed(2)}PP for ${(fc_acc.value() * 2).toFixed(2)}% FC) `;
     }
 
     if (replay.penalty !== 1) {
@@ -281,7 +281,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             stats
         });
 
-        beatmapInformation += `(${noPenaltyDpp.total.toFixed(2)}DPP`;
+        beatmapInformation += `(${(noPenaltyDpp.total / 20).toFixed(2)}DPP`;
 
         if (notFullCombo) {
             const noPenaltyFCDpp = new osudroid.PerformanceCalculator().calculate({
@@ -292,13 +292,13 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 stats
             });
 
-            beatmapInformation += `, ${noPenaltyFCDpp.total.toFixed(2)}DPP (for FC)`;
+            beatmapInformation += `, ${(noPenaltyFCDpp.total / 20).toFixed(2)}DPP (for FC)`;
         }
 
         beatmapInformation += ` without speed penalty) `;
     }
 
-    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
+    beatmapInformation += `▸ ${(acc / 50).toFixed(2)}%\n▸ ${(score / 1e6).toLocaleString()} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${(min_error * 10).toFixed(2)}ms - ${(max_error * 10).toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
     embed.setDescription(beatmapInformation);
 
     message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
