@@ -66,8 +66,8 @@ function askQuestion(message) {
             embed.addField("Answers", answerString);
         }
 
-        message.channel.send(`❗**| ${message.author}, solve this trivia question within 15 seconds to access the command:**`, {embed: embed}).then(msg => {
-            const collector = message.channel.createMessageCollector(m => correctAnswers.map(v => v = v.toLowerCase()).includes(m.content.toLowerCase()), {time: 15000, max: 1});
+        message.channel.send(`❗**| ${message.author}, solve this trivia question within 20 seconds to access the command:**`, {embed: embed}).then(msg => {
+            const collector = message.channel.createMessageCollector(m => correctAnswers.map(v => v = v.toLowerCase()).includes(m.content.toLowerCase()), {time: 20000, max: 1});
             let correct = false;
 
             collector.on('collect', () => {
