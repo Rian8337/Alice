@@ -37,7 +37,7 @@ function askQuestion(message) {
         const data = await fs.promises.readFile(`${process.cwd()}/trivia/${file}`, {encoding: "utf-8"});
 
         const entries = data.split("\n");
-        const entryIndex = Math.floor(Math.random() * questions.length);
+        const entryIndex = Math.floor(Math.random() * entries.length);
         const entry = entries[entryIndex];
 
         const informations = entry.split("|").map(v => v = v.trim());
