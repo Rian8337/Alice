@@ -17,6 +17,45 @@ function shuffle(input) {
 }
 
 /**
+ * @param {string} fileName 
+ */
+function getCategory(fileName) {
+    switch (fileName.substring(0, fileName.length - 4)) {
+        case 'animal': return 'Animals';
+        case 'animemanga': return 'Entertainment: Japanese Anime & Manga';
+        case 'artnliterature': return 'Art and Literature';
+        case 'boardgame': return 'Entertainment: Board Games';
+        case 'cartoon': return 'Entertainment: Cartoon & Animations';  
+        case 'celeb': return 'Celebrities';
+        case 'comic': return 'Entertainment: Comics';  
+        case 'dota2': return 'Video Game: DotA 2';  
+        case 'ff': return 'Video Game: Final Fantasy';  
+        case 'computer': return 'Science: Computers'; 
+        case 'film': return 'Entertainment: Film'; 
+        case 'gadget': return 'Science: Gadgets';  
+        case 'general': return 'General Knowledge'; 
+        case 'geography': return 'Geography';  
+        case 'history': return 'History';
+        case 'leagueoflegends': return 'Video Game: League of Legends';
+        case 'math': return 'Science: Mathematics';
+        case 'music': return 'Entertainment: Music'; 
+        case 'myth': return 'Mythology';
+        case 'pokemon': return 'Video Game: Pokemon'; 
+        case 'science': return 'Science & Nature';
+        case 'slogan': return 'Company Slogans'; 
+        case 'sport': return 'Sports';
+        case 'starwars': return 'Film: Star Wars'; 
+        case 'television': return 'Entertainment: Television'; 
+        case 'test': return 'Non-categorized';
+        case 'theater': return 'Entertainment: Musicals & Theatres';
+        case 'vehicle': return 'Vehicles';
+        case 'videogame': return 'Entertainment: Video Games';
+        case 'english': return 'The English Language';
+        case 'logic': return 'Logical Reasoning';
+    }
+}
+
+/**
  * @param {number} num 
  */
 function timeConvert(num) {
@@ -33,6 +72,7 @@ function askQuestion(message) {
         const files = await fs.promises.readdir(`${process.cwd()}/trivia`);
         const fileIndex = Math.floor(Math.random() * files.length);
         const file = files[fileIndex];
+        console.log(files);
 
         const data = await fs.promises.readFile(`${process.cwd()}/trivia/${file}`, {encoding: "utf-8"});
 
@@ -40,6 +80,7 @@ function askQuestion(message) {
         const entryIndex = Math.floor(Math.random() * entries.length);
         const entry = entries[entryIndex];
 
+        const category = getCategory(file);
         const informations = entry.split("|").map(v => v = v.trim());
         const type = parseInt(informations[1]);
         const imageLink = informations[2];
@@ -60,7 +101,7 @@ function askQuestion(message) {
         const correctAnswerIndex = type === 2 ? -1 : answers.findIndex(v => v.toLowerCase() === correctAnswers[0].toLowerCase());
 
         const embed = new Discord.MessageEmbed()
-            .setAuthor(`Trivia question for ${message.author.tag}`, message.author.avatarURL({dynamic: true}))
+            .setAuthor(`Trivia question for ${message.author.tag} | Category: ${category}`, message.author.avatarURL({dynamic: true}))
             .setDescription(question)
             .setColor(message.member?.displayHexColor || "#000000");
 
