@@ -61,7 +61,8 @@ function askQuestion(message) {
 
         const embed = new Discord.MessageEmbed()
             .setAuthor(`Trivia question for ${message.author.tag}`, message.author.avatarURL({dynamic: true}))
-            .setDescription(question);
+            .setDescription(question)
+            .setColor(message.member?.displayHexColor || "#000000");
 
         if (type === 1 || type === 3) {
             embed.addField("Answers", answerString);
@@ -71,7 +72,7 @@ function askQuestion(message) {
         }
 
         message.channel.send(`❗**| ${message.author}, solve this trivia question within 20 seconds to access the command:**`, {embed: embed}).then(msg => {
-            const collector = message.channel.createMessageCollector(m => correctAnswers.map(v => v = v.toLowerCase()).includes(m.content.toLowerCase()), {time: 20000, max: 1});
+            const collector = message.channel.createMessageCollector(m => type === 2 ? correctAnswers.map(v => v = v.toLowerCase()).includes(m.content.toLowerCase()) : m.content.toLowerCase() === String.fromCharCode(65 + correctAnswerIndex).toLowerCase(), {time: 20000, max: 1});
             let correct = false;
 
             collector.on('collect', () => {
@@ -82,7 +83,7 @@ function askQuestion(message) {
             collector.on("end", () => {
                 msg.delete().catch(() => {});
                 if (!correct) {
-                    message.channel.send(`❎ **| ${message.author}, timed out. ${type === 1 || type === 3 ? `The correct answer is: ${String.fromCharCode(65 + correctAnswerIndex)}. ${correctAnswers[0]}` : `The correct ${correctAnswers.length === 1 ? "answer is" : "answers are"}: ${correctAnswers.join(", ")}`}**`)
+                    message.channel.send(`❎ **| ${message.author}, timed out. ${type === 1 || type === 3 ? `The correct answer is: \`${String.fromCharCode(65 + correctAnswerIndex)}. ${correctAnswers[0]}\`` : `The correct ${correctAnswers.length === 1 ? "answer is" : "answers are"}: \`${correctAnswers.join(", ")}\``}**`)
                         .then(m => m.delete({timeout: 10000}));
                 }
                 resolve(correct);
@@ -157,7 +158,8 @@ module.exports.run = async obj => {
             }
         }
     }
-    if (!message.isOwner && !(await askQuestion(message))) {
+    const excludedCommands = ["profilesearch", "verify", "tempmute", "mute", "settings"];
+    if (!message.isOwner && !excludedCommands.includes(cmd.config.name) && !(await askQuestion(message))) {
         return;
     }
     message.channel.startTyping().catch(console.error);
