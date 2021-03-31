@@ -71,12 +71,12 @@ function askQuestion(message) {
             let correct = false;
 
             collector.on('collect', () => {
-                msg.delete().catch(() => {});
                 correct = true;
                 collector.stop();
             });
 
             collector.on("end", () => {
+                msg.delete().catch(() => {});
                 if (!correct) {
                     message.channel.send(`❎ **| ${message.author}, timed out. ${type === 1 || type === 3 ? `The correct answer is: ${String.fromCharCode(65 + correctAnswerIndex)}. ${correctAnswers[0]}` : `The correct ${correctAnswers.length === 1 ? "answer is" : "answers are"}: ${correctAnswers.join(", ")}`}**`)
                         .then(m => m.delete({timeout: 10000}));
