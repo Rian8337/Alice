@@ -42,6 +42,7 @@ function askQuestion(message) {
 
         const informations = entry.split("|").map(v => v = v.trim());
         const type = parseInt(informations[1]);
+        const imageLink = informations[2];
 
         informations.splice(0, 3);
 
@@ -64,6 +65,9 @@ function askQuestion(message) {
 
         if (type === 1 || type === 3) {
             embed.addField("Answers", answerString);
+        }
+        if (imageLink !== "-") {
+            embed.setImage(imageLink);
         }
 
         message.channel.send(`❗**| ${message.author}, solve this trivia question within 20 seconds to access the command:**`, {embed: embed}).then(msg => {
