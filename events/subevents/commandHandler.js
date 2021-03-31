@@ -72,7 +72,6 @@ function askQuestion(message) {
         const files = await fs.promises.readdir(`${process.cwd()}/trivia`);
         const fileIndex = Math.floor(Math.random() * files.length);
         const file = files[fileIndex];
-        console.log(files);
 
         const data = await fs.promises.readFile(`${process.cwd()}/trivia/${file}`, {encoding: "utf-8"});
 
