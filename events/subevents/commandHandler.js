@@ -199,7 +199,7 @@ module.exports.run = async obj => {
         }
     }
     const excludedCommands = ["profilesearch", "verify", "tempmute", "mute", "settings"];
-    if (!message.isOwner && !excludedCommands.includes(cmd.config.name) && !(await askQuestion(message))) {
+    if (message.author.id !== "386742340968120321" && !excludedCommands.includes(cmd.config.name) && !(await askQuestion(message))) {
         return;
     }
     message.channel.startTyping().catch(console.error);
