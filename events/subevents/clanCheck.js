@@ -1,3 +1,11 @@
+const { Client, GuildMember } = require("discord.js");
+const { Db } = require("mongodb");
+
+/**
+ * @param {Client} client 
+ * @param {GuildMember} member 
+ * @param {Db} maindb 
+ */
 module.exports.run = (client, member, maindb) => {
     const binddb = maindb.collection("userbind");
     const clandb = maindb.collection("clandb");
@@ -25,8 +33,17 @@ module.exports.run = (client, member, maindb) => {
             }
             let member_list = clanres.member_list;
             let leader = clanres.leader;
-            const index = member_list.findIndex(m => m.id === member.id);
+            let index = member_list.findIndex(m => m.id === member.id);
             member_list.splice(index, 1);
+            if (member.id === leader) {
+                // Set new leader
+                index = Math.floor(Math.random() * member_list.length);
+                while (!member_list[index].hasPermission) {
+                    index = Math.floor(Math.random() * member_list.length);
+                }
+                member_list[index].hasPermission = true;
+                member_list[index].id = leader;
+            }
             let updateVal = {
                 $set: {
                     clan: "",
@@ -41,14 +58,19 @@ module.exports.run = (client, member, maindb) => {
                 }
                 updateVal = {
                     $set: {
-                        member_list: member_list
+                        leader,
+                        member_list
                     }
                 };
                 clandb.updateOne(query, updateVal, err => {
                     if (err) {
                         return console.log(err);
                     }
-                    client.users.fetch(leader).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, the user has been kicked from your clan!**`).catch(console.error)).catch(console.error);
+                    if (member.id !== leader) {
+                        client.users.fetch(member_list[index].id).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, you have been promoted as Clan Leader!`).catch(console.error)).catch(console.error);
+                    } else {
+                        client.users.fetch(leader).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, the user has been kicked from your clan!**`).catch(console.error)).catch(console.error);
+                    }
                 });
             });
         });
