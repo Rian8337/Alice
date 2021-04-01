@@ -1,59 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const { Db } = require('mongodb');
-const fs = require('fs');
-
-/**
- * @param {any[]} input 
- */
-function shuffle(input) {
-    let temp; let rpick;
-    for (var i = 0; i < input.length*2; i++) {
-        rpick = Math.floor(Math.random() * input.length);
-        temp = input[rpick];
-        input[rpick] = input[i % input.length];
-        input[i % input.length] = temp;
-    }
-}
-
-/**
- * @param {string} fileName 
- */
-function getCategory(fileName) {
-    switch (fileName.substring(0, fileName.length - 4)) {
-        case 'animal': return 'Animals';
-        case 'animemanga': return 'Entertainment: Japanese Anime & Manga';
-        case 'artnliterature': return 'Art and Literature';
-        case 'boardgame': return 'Entertainment: Board Games';
-        case 'cartoon': return 'Entertainment: Cartoon & Animations';  
-        case 'celeb': return 'Celebrities';
-        case 'comic': return 'Entertainment: Comics';  
-        case 'dota2': return 'Video Game: DotA 2';  
-        case 'ff': return 'Video Game: Final Fantasy';  
-        case 'computer': return 'Science: Computers'; 
-        case 'film': return 'Entertainment: Film'; 
-        case 'gadget': return 'Science: Gadgets';  
-        case 'general': return 'General Knowledge'; 
-        case 'geography': return 'Geography';  
-        case 'history': return 'History';
-        case 'leagueoflegends': return 'Video Game: League of Legends';
-        case 'math': return 'Science: Mathematics';
-        case 'music': return 'Entertainment: Music'; 
-        case 'myth': return 'Mythology';
-        case 'pokemon': return 'Video Game: Pokemon'; 
-        case 'science': return 'Science & Nature';
-        case 'slogan': return 'Company Slogans'; 
-        case 'sport': return 'Sports';
-        case 'starwars': return 'Film: Star Wars'; 
-        case 'television': return 'Entertainment: Television'; 
-        case 'test': return 'Non-categorized';
-        case 'theater': return 'Entertainment: Musicals & Theatres';
-        case 'vehicle': return 'Vehicles';
-        case 'videogame': return 'Entertainment: Video Games';
-        case 'english': return 'The English Language';
-        case 'logic': return 'Logical Reasoning';
-    }
-}
 
 /**
  * @param {number} num 
@@ -61,75 +8,6 @@ function getCategory(fileName) {
 function timeConvert(num) {
     num = Math.ceil(num);
     return [Math.floor(num / 60), Math.ceil(num - Math.floor(num / 60) * 60).toString().padStart(2, "0")].join(":");
-}
-
-/**
- * @param {Discord.Message} message 
- * @returns {Promise<boolean>}
- */
-function askQuestion(message) {
-    return new Promise(async resolve => {
-        const files = await fs.promises.readdir(`${process.cwd()}/trivia`);
-        const fileIndex = Math.floor(Math.random() * files.length);
-        const file = files[fileIndex];
-
-        const data = await fs.promises.readFile(`${process.cwd()}/trivia/${file}`, {encoding: "utf-8"});
-
-        const entries = data.split("\n");
-        const entryIndex = Math.floor(Math.random() * entries.length);
-        const entry = entries[entryIndex];
-
-        const category = getCategory(file);
-        const informations = entry.split("|").map(v => v = v.trim());
-        const type = parseInt(informations[1]);
-        const imageLink = informations[2];
-
-        informations.splice(0, 3);
-
-        const question = informations[0];
-        const correctAnswers = type === 2 ? informations.slice(1) : [informations[1]];
-        const answers = informations.slice(1);
-        shuffle(answers);
-        let answerString = "";
-        for (let i = 0; i < answers.length; ++i) {
-            if (type === 3 && i === 0) {
-                continue;
-            }
-            answerString += `${String.fromCharCode(65 + i)}. ${answers[i]}\n`;
-        }
-        const correctAnswerIndex = type === 2 ? -1 : answers.findIndex(v => v.toLowerCase() === correctAnswers[0].toLowerCase());
-
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Trivia question for ${message.author.tag} | Category: ${category}`, message.author.avatarURL({dynamic: true}))
-            .setDescription(question)
-            .setColor(message.member?.displayHexColor || "#000000");
-
-        if (type === 1 || type === 3) {
-            embed.addField("Answers", answerString);
-        }
-        if (imageLink !== "-") {
-            embed.setImage(imageLink);
-        }
-
-        message.channel.send(`❗**| ${message.author}, solve this trivia question within 20 seconds to access the command:**`, {embed: embed}).then(msg => {
-            const collector = message.channel.createMessageCollector(m => type === 2 ? correctAnswers.map(v => v = v.toLowerCase()).includes(m.content.toLowerCase()) : m.content.toLowerCase() === String.fromCharCode(65 + correctAnswerIndex).toLowerCase(), {time: 20000, max: 1});
-            let correct = false;
-
-            collector.on('collect', () => {
-                correct = true;
-                collector.stop();
-            });
-
-            collector.on("end", () => {
-                msg.delete().catch(() => {});
-                if (!correct) {
-                    message.channel.send(`❎ **| ${message.author}, timed out. ${type === 1 || type === 3 ? `The correct answer is: \`${String.fromCharCode(65 + correctAnswerIndex)}. ${correctAnswers[0]}\`` : `The correct ${correctAnswers.length === 1 ? "answer is" : "answers are"}: \`${correctAnswers.join(", ")}\``}**`)
-                        .then(m => m.delete({timeout: 10000}));
-                }
-                resolve(correct);
-            });
-        });
-    });
 }
 
 /**
@@ -197,10 +75,6 @@ module.exports.run = async obj => {
                 }
             }
         }
-    }
-    const excludedCommands = ["profilesearch", "verify", "tempmute", "mute", "settings"];
-    if (message.author.id !== "386742340968120321" && !excludedCommands.includes(cmd.config.name) && !(await askQuestion(message))) {
-        return;
     }
     message.channel.startTyping().catch(console.error);
     setTimeout(() => {
