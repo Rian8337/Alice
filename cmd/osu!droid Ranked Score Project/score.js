@@ -123,8 +123,6 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         return message.channel.send("❎ **| I'm sorry, this command is not allowed in here!**");
     }
 
-    message.channel.send("❎ **| I'm sorry, I've encountered an error while trying to submit your play(s)!**");
-
     let ufind = message.author.id;
     let offset = 1;
     let start = 1;
@@ -133,32 +131,33 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     if (isNaN(offset)) offset = 1;
     if (isNaN(start)) start = 1;
     if (offset < 1 || offset > 5) {
-        return;
+        return message.channel.send("❎ **| I cannot submit that many plays at once! I can only do up to 5!**");
     }
     if (offset + start - 1 > 50) {
-        return;
+        return message.channel.send('❎ **| I think you went over the limit. You can only submit up to 50 of your recent plays!**');
     }
     const binddb = maindb.collection("userbind");
     let query = {discordid: ufind};
     binddb.findOne(query, async (err, userres) => {
         if (err) {
             console.log(err);
-            return;
+            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
         }
         if (!userres) {
-            return;
+            return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         }
         const uid = userres.uid;
+        const discordid = userres.discordid;
         const username = userres.username;
         const player = await osudroid.Player.getInformation({uid: uid});
         if (player.error) {
-            return;
+            return message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
         }
         if (!player.username) {
-            return;
+            return message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
         }
         if (player.recentPlays.length === 0) {
-            return;
+            return message.channel.send("❎ **| I'm sorry, you haven't submitted any play!**");
         }
         const rplay = player.recentPlays;
         const playentry = [];
@@ -187,10 +186,12 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         scoredb.findOne(query, async (err, res) => {
             if (err) {
                 console.log(err);
-                return;
+                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
+            const prescore = res?.score ?? 0;
             const scorelist = res?.scorelist ?? [];
             const playc = res?.playc ?? 0;
+            const currentlevel = res?.level ?? 1;
             let score = 0;
             let i = 0;
             let submitted = 1;
@@ -199,39 +200,42 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 if (stopSign) {
                     if (submitted === 1) return;
                     for (i of scorelist) score += i[0];
+                    let scorediff = score - prescore;
                     const level = calculateLevel(score);
-                    embed.setDescription(`Ranked score: **0**\nScore gained: **0**\nCurrent level: **1 (0.00%)**\nScore needed to level up: **√i**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
-                    if (res) {
-                        const updateVal = {
-                            $set: {
+                    let levelremain = (level - Math.floor(level)) * 100;
+                        embed.setDescription(`Ranked score: **${score.toLocaleString()}**\nScore gained: **${scorediff.toLocaleString()}**\nCurrent level: **${Math.floor(level)} (${levelremain.toFixed(2)}%)${Math.floor(level) > Math.floor(currentlevel)?"\n🆙 Level up!":""}**\nScore needed to level up: **${(scoreRequirement(Math.floor(level) + 1) - score).toLocaleString()}**${!res ? "\nHey, looks like you are new to the system! You can ask a moderator or helper to enter all of your previous scores, or ignore this message if you want to start new!" : ""}`);
+                        message.channel.send('✅ **| <@' + discordid + '>, successfully submitted your play(s). More info in embed.**', {embed: embed});
+                        if (res) {
+                            const updateVal = {
+                                $set: {
+                                    level: level,
+                                    score: score,
+                                    playc: playc,
+                                    scorelist: scorelist
+                                }
+                            };
+                            scoredb.updateOne(query, updateVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
+                            });
+                        } else {
+                            const insertVal = {
+                                uid: uid,
+                                username: username,
                                 level: level,
                                 score: score,
                                 playc: playc,
                                 scorelist: scorelist
-                            }
-                        };
-                        scoredb.updateOne(query, updateVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return;
-                            }
-                        });
-                    } else {
-                        const insertVal = {
-                            uid: uid,
-                            username: username,
-                            level: level,
-                            score: score,
-                            playc: playc,
-                            scorelist: scorelist
-                        };
-                        scoredb.insertOne(insertVal, err => {
-                            if (err) {
-                                console.log(err);
-                                return;
-                            }
-                        });
-                    }
+                            };
+                            scoredb.insertOne(insertVal, err => {
+                                if (err) {
+                                    console.log(err);
+                                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                                }
+                            });
+                        }
                     return;
                 }
                 attempt++;

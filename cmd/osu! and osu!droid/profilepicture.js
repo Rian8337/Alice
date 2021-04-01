@@ -1,5 +1,4 @@
 const osudroid = require('osu-droid');
-const fs = require('fs');
 const { createCanvas, loadImage } = require('canvas');
 const { Client, Message, MessageEmbed } = require('discord.js');
 const config = require('../../config.json');
@@ -15,9 +14,7 @@ async function drawImage(properties, template = false) {
     c.drawImage(bg, 0, 0);
 
     // player avatar
-    const badgeImages = await fs.promises.readdir(`${process.cwd()}/img/badges`);
-    const badgeImageIndex = Math.floor(Math.random() * badgeImages.length);
-    const avatar = await loadImage(`${process.cwd()}/img/badges/${badgeImages[badgeImageIndex]}`);
+    const avatar = await loadImage(properties.player.avatarURL);
     c.drawImage(avatar, 9, 9, 150, 150);
 
     // area

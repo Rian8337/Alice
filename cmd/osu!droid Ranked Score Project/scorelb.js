@@ -14,7 +14,7 @@ function editscore(res, page) {
     let output = '#   | Username         | UID    | Play  | Score (Lv)\n';
     for (let i = 20 * (page - 1); i < 20 + 20 * (page - 1); i++) {
         if (res[i]) {
-            output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 6) + ' | ' + "0" + ' (' + "0" + ')\n';
+            output += spaceFill((i+1).toString(),4) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 6) + ' | ' + parseInt(res[i].score).toLocaleString() + ' (' + Math.floor(res[i].level).toString() + ')\n';
         } else {
             output += spaceFill("-", 4) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 6) + ' | -\n';
         }

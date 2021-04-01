@@ -14,7 +14,7 @@ function editpp(res, page) {
     let output = '#    | Username         | UID    | Play | PP \n';
     for (let i = page * 20; i < page * 20 + 20; i++) {
         if (res[i]) {
-            output += spaceFill((i+1).toString(), 5) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill("0", 5) + ' | ' + "0.00" + '\n';
+            output += spaceFill((i+1).toString(), 5) + ' | ' + spaceFill(res[i].username, 17) + ' | ' + spaceFill(res[i].uid, 7) + ' | ' + spaceFill(res[i].playc.toString(), 5) + ' | ' + res[i].pptotal.toFixed(2) + '\n';
         } else {
             output += spaceFill("-", 5) + ' | ' + spaceFill("-", 17) + ' | ' + spaceFill("-", 7) + ' | ' + spaceFill("-", 5) + ' | ' + "-" + '\n';
         }

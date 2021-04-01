@@ -62,7 +62,7 @@ module.exports.run = (message, args, alicedb) => {
                 .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
                 .setColor(rolecheck)
                 .setFooter("Alice Synthesis Thirty", footer[footerindex])
-                .setDescription(`**Q**: ${msg}\n**A**: no u`);
+                .setDescription(`**Q**: ${msg}\n**A**: ${answer}`);
 
             message.channel.send({embed: embed}).catch(console.error);
             if (askres) {
@@ -73,7 +73,7 @@ module.exports.run = (message, args, alicedb) => {
                 };
                 askdb.updateOne({discordid: message.author.id}, updateVal, err => {
                     if (err) return console.log(err);
-                })
+                });
             }
             else {
                 let insertVal = {

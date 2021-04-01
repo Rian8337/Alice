@@ -80,12 +80,12 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
         if (mapinfo.title) {
             embed.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                 .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
-                .setTitle(`${mapinfo.fullTitle} (${(globalStar.droidStars.total / 10).toFixed(2)}★ | ${(globalStar.pcStars.total / 10).toFixed(2)}★)`)
+                .setTitle(`${mapinfo.fullTitle} (${globalStar.droidStars.total.toFixed(2)}★ | ${globalStar.pcStars.total.toFixed(2)}★)`)
                 .setDescription(`${mapinfo.showStatistics("", 1)}\n\n${mapinfo.showStatistics("", 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
-                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${(topEntry.dpp / 20).toFixed(2)}DPP | ${(topEntry.pp / 20).toFixed(2)}PP** ▸ ${(topEntry.accuracy / 50).toFixed(2)}%\n▸ ${(topEntry.score / 1e6).toLocaleString()} ▸ ${topEntry.combo}x ▸ [${topEntry.hit300}/${topEntry.hit100}/${topEntry.hit50}/${topEntry.miss}]\n\`${topEntry.date.toUTCString()}\``);
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ **${topEntry.dpp.toFixed(2)}DPP | ${topEntry.pp.toFixed(2)}PP** ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ [${topEntry.hit300}/${topEntry.hit100}/${topEntry.hit50}/${topEntry.miss}]\n\`${topEntry.date.toUTCString()}\``);
         } else {
             embed.setTitle(entries[0].title)
-                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${(topEntry.accuracy / 50).toFixed(2)}%\n▸ ${(topEntry.score / 1e6).toLocaleString()} ▸ ${topEntry.combo}x ▸ [${topEntry.hit300}/${topEntry.hit100}/${topEntry.hit50}/${topEntry.miss}]\n\`${topEntry.date.toUTCString()}\``);
+                .addField("**Top Score**", `**${topEntry.name}${topEntry.mod ? ` (${topEntry.modstring})` : ""}**\n▸ ${client.emojis.cache.get(topEntry.rank)} ▸ ${topEntry.accuracy.toFixed(2)}%\n▸ ${topEntry.score.toLocaleString()} ▸ ${topEntry.combo}x ▸ [${topEntry.hit300}/${topEntry.hit100}/${topEntry.hit50}/${topEntry.miss}]\n\`${topEntry.date.toUTCString()}\``);
         }
 
         let i = 5 * (page - 1);
@@ -145,9 +145,9 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     stats
                 }).total;
 
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${(dpp / 20).toFixed(2)}DPP | ${(pp / 20).toFixed(2)}PP** ▸ ${(acc.value() * 2).toFixed(2)}%\n▸ ${(score / 1e6).toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ **${dpp.toFixed(2)}DPP | ${pp.toFixed(2)}PP** ▸ ${(acc.value() * 100).toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
             } else {
-                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${(acc.value() * 2).toFixed(2)}%\n▸ ${(score / 1e6).toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
+                embed.addField(`**#${5 * (pageLimit * 20) + i + 1} ${player}${mod ? ` (${entry.getCompleteModString()})` : ""}**`, `▸ ${client.emojis.cache.get(rank)} ▸ ${(acc.value() * 100).toFixed(2)}%\n▸ ${score.toLocaleString()} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]\n\`${date.toUTCString()}\``);
             }
         }
 

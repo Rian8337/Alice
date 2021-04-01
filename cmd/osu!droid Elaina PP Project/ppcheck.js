@@ -5,14 +5,36 @@ const cd = new Set();
 
 function generateEmbed(res, page, footer, index, color) {
     const ppentry = res.pp ?? [];
+    const pptotal = res.pptotal ?? 0;
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
-        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **0.00 pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
+        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
 		const pp = ppentry[i];
-		embed.addField(`${i+1}. ${pp.title} ${pp.mods}`, `${pp.combo}x | ${pp.accuracy}% | ${pp.miss} ❌ | __0.00 pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+        if (pp) {
+			let modstring = pp.mods ? `+${pp.mods}` : "";
+			if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
+				if (pp.mods) {
+					modstring += " ";
+				}
+				modstring += "(";
+				if (pp.forcedAR) {
+					modstring += `AR${pp.forcedAR}`;
+				}
+				if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
+					if (pp.forcedAR) {
+						modstring += ", ";
+					}
+					modstring += `${pp.speedMultiplier}x`;
+				}
+				modstring += ")";
+			}
+            embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+        } else {
+            embed.addField(`${i+1}. -`, "-");
+        }
     }
     return embed;
 }

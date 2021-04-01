@@ -159,16 +159,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000"), "chart.png")])
 		.setImage("attachment://chart.png")
 		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
-		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 2).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / [${realAcc.n300}/${realAcc.n100}/${realAcc.n50}/${realAcc.nmiss}]`)
-		.addField(`**Droid pp (Experimental)**: __${(ppline / 20).toFixed(2)} pp__${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${(starsline / 10).toFixed(2)} stars`, `**PC pp**: ${(pcppline / 20).toFixed(2)} pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${(pcstarsline / 10).toFixed(2)} stars`);
+		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / [${realAcc.n300}/${realAcc.n100}/${realAcc.n50}/${realAcc.nmiss}]`)
+		.addField(`**Droid pp (Experimental)**: __${ppline} pp__${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${starsline} stars`, `**PC pp**: ${pcppline} pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${pcstarsline} stars`);
 
 	let string = '';
-	// if (ndetail) {
-	// 	string += `Raw droid stars: ${star.droidStars.toString()}\nRaw droid pp: ${npp.toString()}\n`;
-	// }
-	// if (pcdetail) {
-	// 	string += `Raw PC stars: ${star.pcStars.toString()}\nRaw PC pp: ${pcpp.toString()}`;
-	// }
+	if (ndetail) {
+		string += `Raw droid stars: ${star.droidStars.toString()}\nRaw droid pp: ${npp.toString()}\n`;
+	}
+	if (pcdetail) {
+		string += `Raw PC stars: ${star.pcStars.toString()}\nRaw PC pp: ${pcpp.toString()}`;
+	}
 	message.channel.send(string, {embed: embed}).catch(console.error);
 
 	const map_index = current_map.findIndex(map => map[0] === message.channel.id);
