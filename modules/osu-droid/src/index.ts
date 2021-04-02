@@ -40,6 +40,7 @@ import { Spinner } from './beatmap/hitobjects/Spinner';
 import { StarRating } from './difficulty/StarRating';
 import { TailCircle } from './beatmap/hitobjects/sliderObjects/TailCircle';
 import { TimingPoint } from './beatmap/timings/TimingPoint';
+import { Utils } from './utils/Utils';
 import { Vector2 } from './mathutil/Vector2';
 
 import { config } from 'dotenv';
@@ -287,6 +288,11 @@ export = {
      * Represents a timing point in a beatmap.
      */
     TimingPoint,
+
+    /**
+     * Some utilities, no biggie.
+     */
+    Utils,
 
     /**
      * Based on `Vector2` class in C#.
