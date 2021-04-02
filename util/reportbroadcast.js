@@ -37,6 +37,7 @@ module.exports.run = async client => {
 
         const messagesPerSecondRatio = messages.size / Math.abs((messages.first().createdTimestamp - messages.last().createdTimestamp) / 1000);
         // At least 1 message every 5 seconds
+        console.log(`#${channel.name}: ${messagesPerSecondRatio}`);
         if (messagesPerSecondRatio < 0.2) {
             continue;
         }
