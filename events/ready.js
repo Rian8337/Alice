@@ -45,8 +45,9 @@ module.exports.run = async (client, maindb, alicedb) => {
 	// Utilities
 	setInterval(() => {
 		maintenance = require('./message').maintenance;
-		console.log("Utilities running");
 		if (!maintenance) {
+			console.log("Utilities running");
+			client.utils.get("reportbroadcast").run(client);
 			client.utils.get("trackfunc").run(client, maindb);
 			client.utils.get("clantrack").run(client, maindb, alicedb);
 			client.utils.get("dailytrack").run(client, maindb, alicedb);
