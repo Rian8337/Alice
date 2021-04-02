@@ -30,14 +30,14 @@ module.exports.run = async client => {
             continue;
         }
 
-        const messages = (await channel.messages.fetch({limit: 50, before: lastMessage.id}))?.filter(v => !v.author.bot);
+        const messages = (await channel.messages.fetch({limit: 100, before: lastMessage.id}))?.filter(v => !v.author.bot);
         if (!messages || messages.size < 10) {
             continue;
         }
 
-        const messagesPerSecondRatio = messages.size * 1000 / Math.abs(messages.first().createdTimestamp - messages.last().createdTimestamp);
-        // At least 1 message every 4 seconds
-        if (messagesPerSecondRatio < 0.25) {
+        const messagesPerSecondRatio = messages.size / Math.abs((messages.first().createdTimestamp - messages.last().createdTimestamp) / 1000);
+        // At least 1 message every 5 seconds
+        if (messagesPerSecondRatio < 0.2) {
             continue;
         }
 
