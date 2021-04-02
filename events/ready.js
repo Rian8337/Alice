@@ -47,7 +47,6 @@ module.exports.run = async (client, maindb, alicedb) => {
 		maintenance = require('./message').maintenance;
 		if (!maintenance) {
 			console.log("Utilities running");
-			client.utils.get("reportbroadcast").run(client);
 			client.utils.get("trackfunc").run(client, maindb);
 			client.utils.get("clantrack").run(client, maindb, alicedb);
 			client.utils.get("dailytrack").run(client, maindb, alicedb);
@@ -56,9 +55,12 @@ module.exports.run = async (client, maindb, alicedb) => {
 		}
 	}, 600000);
 	
-	// Clan rank update
+	// Clan rank update and occasional report broadcast
 	setInterval(() => {
-		if (!maintenance) client.utils.get("clanrankupdate").run(maindb);
+		if (!maintenance) {
+                        client.utils.get("reportbroadcast").run(client);
+                        client.utils.get("clanrankupdate").run(maindb);
+                }
 	}, 1200000);
 
 	// Mudae role assignment reaction-based on droid cafe
