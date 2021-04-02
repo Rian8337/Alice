@@ -13,8 +13,10 @@ module.exports.run = async client => {
         .setFooter("Alice Synthesis Thirty", Utils.getRandomArrayElement(config.avatar_list))
         .setDescription(`If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using \`${config.prefix}report\` command (more information is available using \`${config.prefix}help report\`).\n\nKeep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`);
 
+    const excludedChannels = ["360716684174032896"];
+
     for await (const [, channel] of guild.channels.cache.entries()) {
-        if (!(channel instanceof Discord.TextChannel) || channel.type !== "text") {
+        if (!(channel instanceof Discord.TextChannel) || channel.type !== "text" || excludedChannels.includes(channel.id)) {
             continue;
         }
 
