@@ -25,12 +25,12 @@ module.exports.run = async client => {
         if (!lastMessage) {
             continue;
         }
-        // Check if last message is too old; current threshold is 10 minutes
-        if (Date.now() - lastMessage.createdTimestamp > 600000) {
+        // Check if last message is too old; current threshold is 5 minutes
+        if (Date.now() - lastMessage.createdTimestamp > 300000) {
             continue;
         }
 
-        const messages = (await channel.messages.fetch({limit: 100, before: lastMessage.id}))?.filter(v => !v.author.bot);
+        const messages = (await channel.messages.fetch({limit: 50, before: lastMessage.id}))?.filter(v => !v.author.bot);
         if (!messages || messages.size < 10) {
             continue;
         }
