@@ -36,7 +36,7 @@ module.exports.run = async client => {
         }
 
         const messagesPerSecondRatio = messages.size / Math.abs((messages.first().createdTimestamp - messages.last().createdTimestamp) / 1000);
-        if (messagesPerSecondRatio < 0.01) {
+        if (messagesPerSecondRatio < 0.008) {
             continue;
         }
 
