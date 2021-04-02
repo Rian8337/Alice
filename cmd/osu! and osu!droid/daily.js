@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('old-osu-droid');
+const osudroid = require('osu-droid');
 const { Db } = require('mongodb');
 const request = require('request');
 const AdmZip = require('adm-zip');
