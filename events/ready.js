@@ -55,13 +55,19 @@ module.exports.run = async (client, maindb, alicedb) => {
 		}
 	}, 600000);
 	
-	// Clan rank update and occasional report broadcast
+	// Clan rank update and
 	setInterval(() => {
 		if (!maintenance) {
-                        client.utils.get("reportbroadcast").run(client);
-                        client.utils.get("clanrankupdate").run(maindb);
-                }
+			client.utils.get("clanrankupdate").run(maindb);
+		}
 	}, 1200000);
+
+	// Occasional report broadcast
+	setInterval(() => {
+		if (!maintenance) {
+			client.utils.get("reportbroadcast").run(client);
+		}
+	}, 3600000);
 
 	// Mudae role assignment reaction-based on droid cafe
 	client.subevents.get("mudaeRoleReaction").run(client);
