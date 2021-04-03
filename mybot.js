@@ -4,6 +4,7 @@ const mongodb = require('mongodb');
 require("dotenv").config();
 const elainadbkey = process.env.ELAINA_DB_KEY;
 const alicedbkey = process.env.ALICE_DB_KEY;
+process.env.UV_THREADPOOL_SIZE = 128;
 
 const client = new Discord.Client({
 	ws: {
