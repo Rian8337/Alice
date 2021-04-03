@@ -55,19 +55,27 @@ module.exports.run = async (client, maindb, alicedb) => {
 		}
 	}, 600000);
 	
-	// Clan rank update and
+	// Clan rank update
 	setInterval(() => {
 		if (!maintenance) {
 			client.utils.get("clanrankupdate").run(maindb);
 		}
 	}, 1200000);
 
-	// Occasional report broadcast
-	setInterval(() => {
+	// Occasional report command broadcast
+	const nextReportBroadcast = (await alicedb.collection("playerpoints").findOne({discordid: "386742340968120321"})).nextReportBroadcast;
+	setTimeout(() => {
 		if (!maintenance) {
 			client.utils.get("reportbroadcast").run(client);
 		}
-	}, 3600000);
+		setInterval(async () => {
+			await alicedb.collection("playerpoints").updateOne({discordid: "386742340968120321"}, {$inc: {nextReportBroadcast: 3600}});
+			if (!maintenance) {
+				client.utils.get("reportbroadcast").run(client);
+			}
+		}, 3600000);
+	}, Math.max(1, nextReportBroadcast * 1000 - Date.now()));
+	
 
 	// Mudae role assignment reaction-based on droid cafe
 	client.subevents.get("mudaeRoleReaction").run(client);
