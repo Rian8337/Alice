@@ -24,6 +24,9 @@ function timeConvert(num) {
  */
 function getMuteSeconds(arg = "") {
     let mutetime = 0;
+    if (!arg) {
+        return mutetime;
+    }
     const muteTimeEntry = arg.toLowerCase().split(/[dhms:]/g);
     
     if (muteTimeEntry.length > 1) {
