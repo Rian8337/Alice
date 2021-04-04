@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args) => {
     if (!isEligible(message.member)) {
         return message.channel.send("❎ **| You don't have permission to use this.**");
     }
-    const verifying = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch();
+    const verifying = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(() => {});
     if (!verifying) {
         return message.channel.send("❎ **| Hey, please mention a valid user to verify!**");
     }
