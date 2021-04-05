@@ -242,7 +242,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 .setImage("attachment://banner.png");
                         } catch (e) {}
                     }
-                    message.channel.send({embed: embed}).catch(console.error);
+                    message.channel.send({embed: embed}).catch(() => {});
                 });
             });
             cd.add(message.author.id);
@@ -289,7 +289,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         msg.react("⏮️").then(() => {
                             msg.react("⬅️").then(() => {
                                 msg.react("➡️").then(() => {
-                                    msg.react("⏭️").catch(console.error);
+                                    msg.react("⏭️").catch(() => {});
                                 });
                             });
                         });
@@ -300,35 +300,35 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         const forward = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏭️' && user.id === message.author.id, {time: 45000});
 
                         backward.on('collect', () => {
-                            if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            if (page === 1) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             else page = 1;
-                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             embed = editMember(clanres, page, color, footer, index, coin);
-                            msg.edit({embed: embed}).catch(console.error);
+                            msg.edit({embed: embed}).catch(() => {});
                         });
 
                         back.on('collect', () => {
                             if (page === 1) page = 5;
                             else page--;
-                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             embed = editMember(clanres, page, color, footer, index, coin);
-                            msg.edit({embed: embed}).catch(console.error);
+                            msg.edit({embed: embed}).catch(() => {});
                         });
 
                         next.on('collect', () => {
                             if (page === 5) page = 1;
                             else page++;
-                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             embed = editMember(clanres, page, color, footer, index, coin);
-                            msg.edit({embed: embed}).catch(console.error);
+                            msg.edit({embed: embed}).catch(() => {});
                         });
 
                         forward.on('collect', () => {
-                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            if (page === 5) return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             else page = 5;
-                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                            msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                             embed = editMember(clanres, page, color, footer, index, coin);
-                            msg.edit({embed: embed}).catch(console.error);
+                            msg.edit({embed: embed}).catch(() => {});
                         });
 
                         backward.on("end", () => {
@@ -364,7 +364,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     msg.react("⏮️").then(() => {
                         msg.react("⬅️").then(() => {
                             msg.react("➡️").then(() => {
-                                msg.react("⏭️").catch(console.error);
+                                msg.react("⏭️").catch(() => {});
                             });
                         });
                     });
@@ -377,31 +377,31 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     backward.on('collect', () => {
                         page = Math.max(1, page - 10);
                         output = editLeaderboard(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                        msg.edit('```c\n' + output + '```').catch(() => {});
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                     });
 
                     back.on('collect', () => {
                         if (page === 1) page = Math.ceil(clanres.length / 20);
                         else page--;
                         output = editLeaderboard(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                        msg.edit('```c\n' + output + '```').catch(() => {});
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                     });
 
                     next.on('collect', () => {
                         if (page * 20 >= clanres.length) page = 0;
                         else page++;
                         output = editLeaderboard(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                        msg.edit('```c\n' + output + '```').catch(() => {});
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                     });
 
                     forward.on('collect', () => {
                         page = Math.min(page + 10, Math.ceil(clanres.length / 20));
                         output = editLeaderboard(clanres, page);
-                        msg.edit('```c\n' + output + '```').catch(console.error);
-                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                        msg.edit('```c\n' + output + '```').catch(() => {});
+                        msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                     });
 
                     backward.on("end", () => {
@@ -468,7 +468,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
         // accepts a user as clan member
         case "accept": {
-            const toaccept = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+            const toaccept = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(() => {});
             if (!toaccept) {
                 return message.channel.send("❎ **| Hey, please enter a correct user!**");
             }
@@ -540,7 +540,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         }
 
                         message.channel.send(`❗**| ${toaccept}, are you sure you want to join \`${userres.clan}\`?**`).then(msg => {
-                            msg.react("✅").catch(console.error);
+                            msg.react("✅").catch(() => {});
                             let confirmation = false;
                             let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === toaccept.id, {time: 20000});
 
@@ -550,7 +550,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 const clanrole = message.guild.roles.cache.find((r) => r.name === userres.clan);
                                 if (clanrole) {
                                     const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                                    toaccept.roles.add([role, clanrole], "Accepted into clan").catch(console.error);
+                                    toaccept.roles.add([role, clanrole], "Accepted into clan").catch(() => {});
                                 }
                                 memberlist.push({
                                     id: toaccept.id,
@@ -605,7 +605,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // ===============================
             // for now this is only restricted
             // to clan leaders and server mods
-            const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+            const tokick = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(() => {});
             if (!tokick) {
                 return message.channel.send("❎ **| Hey, please enter a correct user!**");
             }
@@ -657,7 +657,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to kick the user out from ${perm?`\`${clan}\``:"your"} clan?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -666,7 +666,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                             if (clanrole) {
                                 const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                                tokick.roles.remove([role, clanrole], "Kicked from clan").catch(console.error);
+                                tokick.roles.remove([role, clanrole], "Kicked from clan").catch(() => {});
                             }
 
                             memberlist.splice(member_index, 1);
@@ -744,7 +744,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, you cannot leave as the leader of the clan!**");
                     }
                     message.channel.send(`❗**| ${message.author}, are you sure you want to leave your current clan?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -753,7 +753,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             const clanrole = message.guild.roles.cache.find((r) => r.name === clan);
                             if (clanrole) {
                                 const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
-                                message.member.roles.remove([role, clanrole], "Left the clan").catch(console.error);
+                                message.member.roles.remove([role, clanrole], "Left the clan").catch(() => {});
                             }
                             const memberlist = clanres.member_list;
                             const member_index = memberlist.findIndex(member => member.id === message.author.id);
@@ -854,7 +854,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             return message.channel.send("❎ **| I'm sorry, that name is already taken by other clan!**");
                         }
                         message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan named \`${clanname}\` for ${coin}\`7,500\` Alice coins?**`).then(msg => {
-                            msg.react("✅").catch(console.error);
+                            msg.react("✅").catch(() => {});
                             let confirmation = false;
                             const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                             confirm.on("collect", () => {
@@ -1016,7 +1016,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to clear ${perm && args[2] ? `\`${clan}\` clan's description` : "your clan's description"}?**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1091,7 +1091,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan's description?**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1137,7 +1137,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // co-leaders can do anything that a leader can
             // except changing clan name, disbanding it, changing
             // role color, and promoting other members
-            const topromote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+            const topromote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(() => {});
             if (!topromote) {
                 return message.channel.send("❎ **| Hey, please mention a valid user to promote!**");
             }
@@ -1183,7 +1183,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     member_list[member_index].hasPermission = true;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to promote ${topromote} to co-leader?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -1227,7 +1227,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             // moderators can demote a user to normal
             // member despite them being outside the
             // clan
-            const todemote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error);
+            const todemote = await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(() => {});
             if (!todemote) {
                 return message.channel.send("❎ **| Hey, please mention a valid user to demote!**");
             }
@@ -1273,7 +1273,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     member_list[member_index].hasPermission = false;
 
                     message.channel.send(`❗**| ${message.author}, are you sure you want to demote ${todemote} to normal member?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -1353,7 +1353,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, you don't have permission to use this.**");
                     }
                     message.channel.send(`❗**| ${message.author}, are you sure you want to disband ${perm && args[1]?`\`${clanname}\` clan`:"your clan"}?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -1361,18 +1361,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             msg.delete();
                             const clanrole = message.guild.roles.cache.find((r) => r.name === clanname);
                             if (clanrole) {
-                                clanrole.delete("Clan disbanded").catch(console.error);
+                                clanrole.delete("Clan disbanded").catch(() => {});
                                 const role = message.guild.roles.cache.find((r) => r.name === 'Clans');
                                 clanres.member_list.forEach(async (member) => {
-                                    const guildMember = await message.guild.members.fetch(member.id).catch(console.error);
+                                    const guildMember = await message.guild.members.fetch(member.id).catch(() => {});
                                     if (guildMember) {
-                                        guildMember.roles.remove(role, "Clan disbanded").catch(console.error);
+                                        guildMember.roles.remove(role, "Clan disbanded").catch(() => {});
                                     }
                                 });
                             }
                             const clanChannel = message.guild.channels.cache.find(c => c.name === clanname);
                             if (clanChannel) {
-                                clanChannel.delete("Clan disbanded").catch(console.error);
+                                clanChannel.delete("Clan disbanded").catch(() => {});
                             }
                             updateVal = {
                                 $set: {
@@ -1484,7 +1484,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`)
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan banner? You wouldn't be able to change it for 10 minutes!**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1560,7 +1560,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s banner?**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1645,7 +1645,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }
                     string += `\n\n${announcement_message}\n\n- ${message.author}`;
                     message.channel.send(`❗**| ${message.author}, are you sure you want to send an announcement for your clan?**`).then(msg => {
-                        msg.react("✅").catch(console.error);
+                        msg.react("✅").catch(() => {});
                         let confirmation = false;
                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                         confirm.on("collect", () => {
@@ -1729,7 +1729,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`);
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan icon? You wouldn't be able to change it for 5 minutes!**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1794,7 +1794,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
 
                             message.channel.send(`❗**| ${message.author}, are you sure you want to remove ${perm && args[2]?`\`${clan}\``:"your clan"}'s icon?**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -1868,7 +1868,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             for (const powerup of powerups) {
                                 embed.addField(capitalizeString(powerup.name), powerup.amount, true);
                             }
-                            message.channel.send({embed: embed}).catch(console.error);
+                            message.channel.send({embed: embed}).catch(() => {});
                         });
                     });
                     break;
@@ -1908,7 +1908,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 description_string += `**${i+1}. ${capitalizeString(activepowerups[i])}**\n`;
                             }
                             embed.setDescription(description_string);
-                            message.channel.send({embed: embed}).catch(console.error);
+                            message.channel.send({embed: embed}).catch(() => {});
                         });
                     });
                     break;
@@ -1972,7 +1972,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 return message.channel.send(`❎ **| I'm sorry, your clan currently has an active \`${powertype}\` powerup!**`);
                             }
                             message.channel.send(`❗**| ${message.author}, are you sure you want to activate \`${powertype}\` powerup for your clan?**`).then(msg => {
-                                msg.react("✅").catch(console.error);
+                                msg.react("✅").catch(() => {});
                                 let confirmation = false;
                                 const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                 confirm.on("collect", () => {
@@ -2075,18 +2075,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send(`❎ **| I'm sorry, your clan is still in cooldown! Please wait for ${time}.**`);
                                 }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to change your clan name to \`${newname}\` for ${coin}\`2,500\` Alice coins? You wouldn't be able to change it again for 3 days!**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
                                         const clanrole = message.guild.roles.cache.find(r => r.name === clan);
-                                        if (clanrole) clanrole.setName(newname, "Changed clan name").catch(console.error);
+                                        if (clanrole) clanrole.setName(newname, "Changed clan name").catch(() => {});
                                         const channel = message.guild.channels.cache.find(c => c.name === clan);
                                         if (channel) {
-                                            channel.setName(newname, "Clan leader bought clan rename").catch(console.error);
-                                            channel.setTopic(`Clan chat for ${newname} clan.`, "Clan leader bought clan rename").catch(console.error);
+                                            channel.setName(newname, "Clan leader bought clan rename").catch(() => {});
+                                            channel.setTopic(`Clan chat for ${newname} clan.`, "Clan leader bought clan rename").catch(() => {});
                                         }
                                         updateVal = {
                                             $set: {
@@ -2196,7 +2196,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                                 const memberlist = clanres.member_list;
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a custom clan role for ${coin}\`5,000\` Alice coins?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
@@ -2210,12 +2210,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                             position: clanrole.position
                                         }, reason: "Clan leader bought clan role"}).then(role => {
                                             memberlist.forEach(async (member) => {
-                                                const guildMember = await message.guild.members.fetch(member.id).catch(console.error);
+                                                const guildMember = await message.guild.members.fetch(member.id).catch(() => {});
                                                 if (guildMember) {
-                                                    guildMember.roles.add([clanrole, role], "Clan leader bought clan role").catch(console.error);
+                                                    guildMember.roles.add([clanrole, role], "Clan leader bought clan role").catch(() => {});
                                                 }
                                             });
-                                        }).catch(console.error);
+                                        }).catch(() => {});
                                         updateVal = {
                                             $inc: {
                                                 alicecoins: -5000
@@ -2297,13 +2297,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, you don't have permission to do this.**");
                                 }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a clan role color change for ${coin}\`500\` Alice coins?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
                                         confirmation = true;
                                         msg.delete();
-                                        clanrole.setColor(color, "Clan leader changed role color").catch(console.error);
+                                        clanrole.setColor(color, "Clan leader changed role color").catch(() => {});
                                         updateVal = {
                                             $inc: {
                                                 alicecoins: -500
@@ -2369,7 +2369,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
                                 const powerups = clanres.powerups;
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to buy a powerup for ${coin}\`100\` Alice coins?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
@@ -2502,7 +2502,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // changes the leader of a clan
                     // ============================
                     // only works for clan leaders
-                    const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const totransfer = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!totransfer) {
                         return message.channel.send("❎ **| Hey, please enter a valid user to transfer the clan leadership to!**");
                     }
@@ -2560,7 +2560,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 }
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to transfer clan leadership to ${totransfer} for ${coin}\`500\` Alice coins?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
@@ -2653,7 +2653,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, your clan must have a clan role to create a clan channel!**");
                                 }
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create a clan channel for ${coin}\`50,000\` Alice coins?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     let confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                     confirm.on("collect", () => {
@@ -2736,7 +2736,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // =======================================
                     // this must be carefully watched as abuse
                     // can be easily done
-                    const togive = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const togive = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!togive) {
                         return message.channel.send("❎ **| Hey, please give me a valid user to give power points to!**");
                     }
@@ -2790,7 +2790,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     // =========================================
                     // just like add cmd, this must be carefully
                     // watched as abuse can be easily done
-                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!totake) {
                         return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
                     }
@@ -2850,11 +2850,11 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     if (args.length < 4) {
                         return message.channel.send("❎ **| Hey, I need more input!**");
                     }
-                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const totake = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!totake) {
                         return message.channel.send("❎ **| Hey, please give me a valid user to take power points from!**");
                     }
-                    const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]).catch(console.error);
+                    const togive = await message.guild.members.fetch(message.mentions.users.last() || args[3]).catch(() => {});
                     if (totake.id === togive.id) {
                         return message.channel.send("❎ **| Hey, you cannot transfer power points to the same user!**");
                     }
@@ -3000,7 +3000,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     }
                                     const totalpower = Math.min(t_power, Math.floor(t_power * givemultiplier));
                                     message.channel.send(`❗**| ${message.author}, are you sure you want to transfer \`${totalpower.toLocaleString()}\` power points from \`${takeclan}\` clan to \`${giveclan}\` clan?**`).then(msg => {
-                                        msg.react("✅").catch(console.error);
+                                        msg.react("✅").catch(() => {});
                                         let confirmation = false;
                                         const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
                                         confirm.on("collect", () => {
@@ -3080,7 +3080,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             switch (args[1]) {
                 // add clan
                 case "add": {
-                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!tomatch) {
                         return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     }
@@ -3134,7 +3134,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 case "remove": {
                     // remove clan
-                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error);
+                    const tomatch = await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {});
                     if (!tomatch) {
                         return message.channel.send("❎ **| Hey, please give me a valid user!**");
                     }
@@ -3179,7 +3179,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         case "cooldown": {
             switch (args[1]) {
                 case "join": {
-                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(console.error) : message.author;
+                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[2]).catch(() => {}) : message.author;
                     if (!user) {
                         return message.channel.send("❎ **| Hey, please mention a valid user!**");
                     }
@@ -3219,7 +3219,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 case "battle": {
                     // views a user's cooldown in participating a clan battle
-                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(console.error) : message.author;
+                    const user = args[2] ? await message.guild.members.fetch(message.mentions.users.first() || args[1]).catch(() => {}) : message.author;
                     if (!user) {
                         return message.channel.send("❎ **| Hey, please mention a valid user!**");
                     }
@@ -3348,12 +3348,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 const cur_amount = bids[bid_index].amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
-                                        msg.delete().catch(console.error);
+                                        msg.delete().catch(() => {});
                                         confirmation = true;
 
                                         updateVal = {
@@ -3382,7 +3382,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
-                                            msg.delete().catch(console.error);
+                                            msg.delete().catch(() => {});
                                             message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
                                         }
                                     });
@@ -3475,12 +3475,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 powerups[powerup_index].amount -= amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to create the auction?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
-                                        msg.delete().catch(console.error);
+                                        msg.delete().catch(() => {});
                                         confirmation = true;
                                         insertVal = {
                                             name: name,
@@ -3518,7 +3518,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
-                                            msg.delete().catch(console.error);
+                                            msg.delete().catch(() => {});
                                             message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
                                         }
                                     });
@@ -3550,7 +3550,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             msg.react("⏮️").then(() => {
                                 msg.react("⬅️").then(() => {
                                     msg.react("➡️").then(() => {
-                                        msg.react("⏭️").catch(console.error);
+                                        msg.react("⏭️").catch(() => {});
                                     });
                                 });
                             });
@@ -3562,13 +3562,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                             backward.on('collect', () => {
                                 if (page === 1) {
-                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 } else {
                                     page = Math.max(1, page - 10);
                                 }
-                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
-                                msg.edit({embed: embed}).catch(console.error);
+                                msg.edit({embed: embed}).catch(() => {});
                             });
 
                             back.on('collect', () => {
@@ -3577,9 +3577,9 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 } else {
                                     --page;
                                 }
-                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
-                                msg.edit({embed: embed}).catch(console.error);
+                                msg.edit({embed: embed}).catch(() => {});
                             });
 
                             next.on('collect', () => {
@@ -3588,20 +3588,20 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 } else {
                                     ++page;
                                 }
-                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
-                                msg.edit({embed: embed}).catch(console.error);
+                                msg.edit({embed: embed}).catch(() => {});
                             });
 
                             forward.on('collect', () => {
                                 if (page === Math.ceil(auctionres.length / 5)) {
-                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                    return msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 } else {
                                     page = Math.min(page + 10, Math.ceil(auctionres.length / 5));
                                 }
-                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
+                                msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(() => {}));
                                 embed = editAuction(auctionres, coin, page, color, footer, index);
-                                msg.edit({embed: embed}).catch(console.error);
+                                msg.edit({embed: embed}).catch(() => {});
                             });
 
                             backward.on("end", () => {
@@ -3723,12 +3723,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                 powerups[powerup_index].amount += amount;
 
                                 message.channel.send(`❗**| ${message.author}, are you sure you want to cancel the auction?**`).then(msg => {
-                                    msg.react("✅").catch(console.error);
+                                    msg.react("✅").catch(() => {});
                                     let confirmation = false;
                                     const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 20000});
 
                                     confirm.on("collect", () => {
-                                        msg.delete().catch(console.error);
+                                        msg.delete().catch(() => {});
                                         confirmation = true;
 
                                         updateVal = {
@@ -3752,7 +3752,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     });
                                     confirm.on("end", () => {
                                         if (!confirmation) {
-                                            msg.delete().catch(console.error);
+                                            msg.delete().catch(() => {});
                                             message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
                                         }
                                     });
