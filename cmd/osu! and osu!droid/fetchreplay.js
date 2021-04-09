@@ -32,6 +32,9 @@ module.exports.run = async (client, message, args, maindb) => {
         if (!res) {
             return message.channel.send("❎ **| I'm sorry, your account is not binded. You need to use `a!userbind <uid>` first. To get uid, use `a!profilesearch <username>`.**");
         }
+        if (!args[0]) {
+            return message.channel.send("❎ **| Hey, please enter a beatmap ID and/or uid to fetch the replay from!**");
+        }
         uid = res.uid;
         if (args[0].startsWith("h:")) {
             hash = args[0].split(":")[1];
