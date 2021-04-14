@@ -1361,7 +1361,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     }).total;
 
                     let pass = false;
-                    const maxScore = mapinfo.maxScore(new osudroid.MapStats({mods: mod}));
+                    const maxScore = mapinfo.maxScore(new osudroid.MapStats({mods: data.convertedMods}));
                     const scorev2 = scoreCalc(score, maxScore, acc, miss);
                     switch (passreq.id) {
                         case "score":
