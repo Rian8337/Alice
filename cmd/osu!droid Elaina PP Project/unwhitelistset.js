@@ -59,11 +59,11 @@ module.exports.run = async (client, message, args, maindb) => {
         .setThumbnail(`https://b.ppy.sh/thumb/${firstMapinfo.beatmapsetID}.jpg`)
         .setColor(firstMapinfo.statusColor())
         .setAuthor("Map Found", "https://image.frl/p/aoeh1ejvz3zmv5p1.jpg")
-        .setTitle(firstMapinfo.showStatistics("", 0))
+        .setTitle(`${firstMapinfo.artist} - ${firstMapinfo.title} by ${firstMapinfo.creator}`)
         .setDescription(firstMapinfo.showStatistics("", 1))
         .setURL(`https://osu.ppy.sh/b/${firstMapinfo.beatmapID}`)
         .addField(firstMapinfo.showStatistics("", 2), firstMapinfo.showStatistics("", 3))
-        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- ${v.version} - **${v.totalDifficulty.toFixed(2)}**`;}).join("\n")}`);
+        .addField(firstMapinfo.showStatistics("", 4), `Star Rating:\n${mapinfos.map(v => {return `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID}) - **${v.totalDifficulty.toFixed(2)}**`;}).join("\n")}`);
 
     message.channel.send(embed).catch(console.error);
     client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
