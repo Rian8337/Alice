@@ -274,9 +274,10 @@ export class StarRating {
                 unitsPerTickX,
                 unitsPerTickY,
                 background: await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`).catch(() => {return undefined;}),
-                xLabel: "Time (seconds)",
+                xLabel: "Time",
                 yLabel: "Strain",
-                pointRadius: 0
+                pointRadius: 0,
+                xValueType: "time"
             });
 
             chart.drawArea(strainInformations.map(v => {return {x: v.time, y: v.strain};}), color);

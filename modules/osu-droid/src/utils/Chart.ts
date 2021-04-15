@@ -1,4 +1,7 @@
 import { Canvas, Image, createCanvas, CanvasRenderingContext2D } from 'canvas';
+import { Vector2 } from '../mathutil/Vector2';
+
+type AxisType = "time";
 
 interface ChartInitializer {
     /**
@@ -60,6 +63,16 @@ interface ChartInitializer {
      * The radius of a data point in the graph. Set to 0 to disable this.
      */
     readonly pointRadius?: number;
+
+    /**
+     * The value type for X axis.
+     */
+    readonly xValueType?: AxisType;
+
+    /**
+     * The value type for Y axis.
+     */
+    readonly yValueType?: AxisType;
 }
 
 /**
@@ -104,6 +117,8 @@ export class Chart implements ChartInitializer {
     readonly background?: Image;
     readonly xLabel?: string;
     readonly yLabel?: string;
+    readonly xValueType?: AxisType;
+    readonly yValueType?: AxisType;
     readonly pointRadius: number;
 
     private readonly padding: number = 10;
@@ -143,6 +158,8 @@ export class Chart implements ChartInitializer {
         this.background = values.background;
         this.xLabel = values.xLabel;
         this.yLabel = values.yLabel;
+        this.xValueType = values.xValueType;
+        this.yValueType = values.yValueType;
         this.pointRadius = Math.max(0, values.pointRadius ?? 1);
 
         // Relationships
@@ -170,7 +187,7 @@ export class Chart implements ChartInitializer {
      * @param color The color of the line.
      * @param width The width of the line.
      */
-    drawLine(data: Data[], color: string, width: number): void {
+    drawLine(data: (Data | Vector2)[], color: string, width: number): void {
         const c: CanvasRenderingContext2D = this.context;
         c.save();
         this.transformContext();
@@ -207,7 +224,7 @@ export class Chart implements ChartInitializer {
      * @param data The data to make the graph.
      * @param color The color of the area.
      */
-    drawArea(data: Data[], color: string): void {
+    drawArea(data: (Data | Vector2)[], color: string): void {
         const c: CanvasRenderingContext2D = this.context;
         c.save();
         this.transformContext();
@@ -275,10 +292,16 @@ export class Chart implements ChartInitializer {
         c.textBaseline = "middle";
 
         for (let n = 0; n < this.numXTicks; ++n) {
-            const label = Math.round((n + 1) * this.maxX / this.numXTicks);
+            const label: number = Math.round((n + 1) * this.maxX / this.numXTicks);
+            let stringLabel: string = label.toString();
+            switch (this.xValueType) {
+                case "time":
+                    stringLabel = this.timeString(label);
+                    break;
+            }
             c.save();
             c.translate((n + 1) * (this.width - yLabelOffset) / this.numXTicks + this.x + yLabelOffset, this.y + this.height + this.padding - labelOffset);
-            c.fillText(label.toString(), 0, 0);
+            c.fillText(stringLabel, 0, 0);
             c.restore();
         }
 
@@ -358,7 +381,13 @@ export class Chart implements ChartInitializer {
         let longestValueWidth: number = 0;
         for (let n = 0; n < this.numYTicks; ++n) {
             const value: number = this.maxY - n * this.unitsPerTickY;
-            longestValueWidth = Math.max(longestValueWidth, this.context.measureText(value.toString()).width);
+            let stringValue: string = value.toString();
+            switch (this.yValueType) {
+                case "time":
+                    stringValue = this.timeString(value);
+                    break;
+            }
+            longestValueWidth = Math.max(longestValueWidth, this.context.measureText(stringValue).width);
         }
         return longestValueWidth;
     }
@@ -381,5 +410,13 @@ export class Chart implements ChartInitializer {
         this.context.fillRect(0, 0, 900, 250);
         this.context.globalAlpha = 1;
         this.context.fillStyle = '#000000';
+    }
+
+    /**
+     * Time string parsing function for axis labels.
+     */
+    private timeString(second: number): string {
+        second = Math.ceil(second);
+        return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":");
     }
 }
