@@ -41,7 +41,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, I cannot find the beatmapset that you have specified!**");
     }
 
-    const osuBeatmaps = data.filter(v => parseInt(v.mode) === 0 && parseInt(v.approved) === osudroid.rankedStatus.GRAVEYARD && parseInt(mapinfo.difficultyrating) > 0);
+    const osuBeatmaps = data.filter(v => parseInt(v.mode) === 0 && parseInt(v.approved) === osudroid.rankedStatus.GRAVEYARD && parseInt(v.difficultyrating) > 0);
     if (osuBeatmaps.length === 0) {
         return message.channel.send("❎ **| I'm sorry, the beatmapset that you have sent doesn't have a valid osu!standard gamemode beatmap that is graveyarded!**");
     }
