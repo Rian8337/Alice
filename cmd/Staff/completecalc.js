@@ -134,7 +134,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             message.channel.send("✅ **| Calculating the user's account...**");
         }
         
-        const pplist = res.oldpp ?? [];
+        const pplist = respp ?? [];
         let page = 0;
 
         const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
@@ -294,9 +294,9 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 
         let updateVal = {
             $set: {
-                oldpptotal: totalPP,
-                oldpp: pplist,
-                oldplayc: playc,
+                pptotal: totalPP,
+                pp: pplist,
+                playc: playc,
                 hasAskedForRecalc: true
             }
         };
