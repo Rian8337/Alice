@@ -119,22 +119,22 @@ export class Score implements ScoreInformation {
     error: boolean = false;
 
     constructor(values?: ScoreInformation) {
-        this.uid = values?.uid || 0;
-        this.scoreID = values?.scoreID || 0;
-        this.username = values?.username || "";
-        this.title = values?.title || "";
-        this.combo = values?.combo || 0;
-        this.score = values?.score || 0;
-        this.rank = values?.rank || '';
-        this.date = new Date(values?.date || 0);
-        this.accuracy = values?.accuracy || 0;
-        this.miss = values?.miss || 0;
-        this.hash = values?.hash || '';
-        this.hit300 = values?.hit300 || 0;
-        this.hit100 = values?.hit100 || 0;
-        this.hit50 = values?.hit50 || 0;
+        this.uid = values?.uid ?? 0;
+        this.scoreID = values?.scoreID ?? 0;
+        this.username = values?.username ?? "";
+        this.title = values?.title ?? "";
+        this.combo = values?.combo ?? 0;
+        this.score = values?.score ?? 0;
+        this.rank = values?.rank ?? '';
+        this.date = new Date(values?.date ?? 0);
+        this.accuracy = values?.accuracy ?? 0;
+        this.miss = values?.miss ?? 0;
+        this.hash = values?.hash ?? '';
+        this.hit300 = values?.hit300 ?? 0;
+        this.hit100 = values?.hit100 ?? 0;
+        this.hit50 = values?.hit50 ?? 0;
 
-        const modstrings: string[] = (values?.mods || "").split("|");
+        const modstrings: string[] = (values?.mods ?? "").split("|");
         for (let i = 0; i < modstrings.length; ++i) {
             if (!modstrings[i]) {
                 continue;

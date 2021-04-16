@@ -5,7 +5,6 @@ import { HeadCircle } from './sliderObjects/HeadCircle';
 import { RepeatPoint } from './sliderObjects/RepeatPoint';
 import { SliderTick } from './sliderObjects/SliderTick';
 import { TailCircle } from './sliderObjects/TailCircle';
-import { Precision } from '../../utils/Precision';
 
 /**
  * Represents a slider in a beatmap.

@@ -49,10 +49,10 @@ export class Accuracy implements AccuracyInformation {
      * @param values Function parameters.
      */
     constructor(values: AccuracyInformation) {
-        this.nmiss = values.nmiss || 0;
-        this.n300 = values.n300 || -1;
-        this.n100 = values.n100 || 0;
-        this.n50 = values.n50 || 0;
+        this.nmiss = values.nmiss ?? 0;
+        this.n300 = values.n300 ?? -1;
+        this.n100 = values.n100 ?? 0;
+        this.n50 = values.n50 ?? 0;
 
         let nobjects: number;
 

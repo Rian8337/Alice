@@ -122,9 +122,9 @@ export class MapStats {
             this.droidMods += mods.osuMods.td;
         }
 
-        this.speedMultiplier = values.speedMultiplier || 1;
-        this.isForceAR = values.isForceAR || false;
-        this.oldStatistics = values.oldStatistics || false;
+        this.speedMultiplier = values.speedMultiplier ?? 1;
+        this.isForceAR = values.isForceAR ?? false;
+        this.oldStatistics = values.oldStatistics ?? false;
     }
 
     /**

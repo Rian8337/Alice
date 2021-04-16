@@ -46,14 +46,13 @@ export abstract class HitObject {
         type: number,
         endTime?: number
     }) {
-        this.startTime = values.startTime || 0;
-        this.endTime = values.endTime || values.startTime;
-        this.type = values.type || 0;
-        this.position = values.position || new Vector2({x: 0, y: 0});
+        this.startTime = values.startTime ?? 0;
+        this.endTime = values.endTime ?? values.startTime;
+        this.type = values.type ?? 0;
+        this.position = values.position ?? new Vector2({x: 0, y: 0});
         this.stackedPosition = this.position;
         this.isNewCombo = !!(this.type & 1 << 2);
         this.stackHeight = 0;
-
     }
 
     /**

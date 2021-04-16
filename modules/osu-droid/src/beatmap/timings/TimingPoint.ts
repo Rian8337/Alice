@@ -1,7 +1,7 @@
 /**
  * Represents a timing point in a beatmap.
  */
-export class TimingPoint {
+ export class TimingPoint {
     /**
      * The time of which the timing is applied in milliseconds.
      */
@@ -28,9 +28,9 @@ export class TimingPoint {
         change?: boolean,
         speedMultiplier: number
     }) {
-        this.time = values.time || 0;
-        this.msPerBeat = values.msPerBeat !== undefined ? values.msPerBeat : -600;
-        this.change = values.change !== undefined ? values.change : true;
+        this.time = values.time ?? 0;
+        this.msPerBeat = values.msPerBeat ?? -600;
+        this.change = values.change ?? true;
         this.speedMultiplier = values.speedMultiplier;
     }
 
