@@ -134,7 +134,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             message.channel.send("✅ **| Calculating the user's account...**");
         }
         
-        const pplist = respp ?? [];
+        const pplist = res.pp ?? [];
         let page = 0;
 
         const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
@@ -296,7 +296,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             $set: {
                 pptotal: totalPP,
                 pp: pplist,
-                playc: playc,
+                playc,
                 hasAskedForRecalc: true
             }
         };
@@ -306,7 +306,7 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            message.channel.send(`✅ **| ${message.author}, recalculated <@${ufind}>'s plays: 0.00 pp, 0 ranked score (level 1 (0.00%)).**`);
+            message.channel.send(`✅ **| ${message.author}, recalculated <@${ufind}>'s plays: ${totalPP.toFixed(2)} pp, ${totalScore.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%)).**`);
             queue.shift();
             if (queue.length > 0) {
                 const nextQueue = queue[0];
