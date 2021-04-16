@@ -16,6 +16,7 @@ import { hitResult } from './constants/hitResult';
 import { MapInfo } from './tools/MapInfo';
 import { MapStars } from './tools/MapStars';
 import { MapStats } from './utils/MapStats';
+import { MathUtils } from './mathutil/MathUtils';
 import { modes } from './constants/modes';
 import { mods } from './utils/mods';
 import { movementType } from './constants/movementType';
@@ -145,6 +146,11 @@ export = {
      * Holds general beatmap statistics for further modifications. 
      */
     MapStats,
+
+    /**
+     * Some math utility functions.
+     */
+    MathUtils,
 
     /**
      * Mode enum to switch things between osu!droid and osu!standard.
