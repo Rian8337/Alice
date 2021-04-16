@@ -11,6 +11,7 @@ import { Vector2 } from '../mathutil/Vector2';
 import { SliderPath } from '../utils/SliderPath';
 import { HitObject } from './hitobjects/HitObject';
 import { MapStats } from '../utils/MapStats';
+import { MathUtils } from '../mathutil/MathUtils';
 
 /**
  * A beatmap parser with just enough data for pp calculation.
@@ -249,7 +250,6 @@ export class Parser {
             return this.warn("Ignoring malformed timing point");
         }
         const msPerBeat: number = parseFloat(this.setPosition(s[1]));
-        // TODO: handle incredibly small (i.e. 1e-298) ms per beat
         const speedMultiplier = msPerBeat < 0 ? 100 / -msPerBeat : 1;
         this.map.timingPoints.push(new TimingPoint({
             time: parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0),
@@ -354,8 +354,8 @@ export class Parser {
                 type: type,
                 repetitions: parseInt(this.setPosition(s[6])),
                 path: path,
-                speedMultiplier: speedMultiplierTimingPoint.speedMultiplier,
-                msPerBeat: msPerBeatTimingPoint.msPerBeat,
+                speedMultiplier: MathUtils.round(MathUtils.clamp(speedMultiplierTimingPoint.speedMultiplier, 0.1, 10), 1),
+                msPerBeat: MathUtils.clamp(msPerBeatTimingPoint.msPerBeat, 6, 60000),
                 mapSliderVelocity: this.map.sv,
                 mapTickRate: this.map.tickRate
             });
