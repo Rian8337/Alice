@@ -16,6 +16,36 @@ const client = new Discord.Client({
 });
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 
+process.on("uncaughtException", err => {
+	console.log(err);
+	const channel = client.channels.cache.get("833903416475516939");
+	if (channel instanceof Discord.TextChannel) {
+		channel.send(err);
+	}
+	process.exit(1);
+});
+
+let loginAttempt = 0;
+
+process.on("unhandledRejection", reason => {
+	console.log(reason);
+	const channel = client.channels.cache.get("833903416475516939");
+	if (channel instanceof Discord.TextChannel) {
+		channel.send(reason);
+	}
+
+	// Relogin if we aren't logged in yet
+	if (client.uptime === null) {
+		console.log("Relogging to Discord API");
+		client.login(process.env.BOT_TOKEN);
+		++loginAttempt;
+		// If we can't login after 5 attempts, exit
+		if (loginAttempt > 5) {
+			process.exit();
+		}
+	}
+});
+
 client.commands = new Discord.Collection();
 client.utils = new Discord.Collection();
 client.aliases = new Discord.Collection();
@@ -106,7 +136,7 @@ elainadb.connect((err, db) => {
 	console.log("Elaina DB connection established");
 	if (maindb && alicedb) {
 		console.log("Connecting to Discord API");
-		client.login(process.env.BOT_TOKEN).catch(console.error);
+		client.login(process.env.BOT_TOKEN);
 	}
 });
 
@@ -116,7 +146,7 @@ alcdb.connect((err, db) => {
 	console.log("Alice DB connection established");
 	if (maindb && alicedb) {
 		console.log("Connecting to Discord API");
-		client.login(process.env.BOT_TOKEN).catch(console.error);
+		client.login(process.env.BOT_TOKEN);
 	}
 });
 
