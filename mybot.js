@@ -36,13 +36,13 @@ process.on("unhandledRejection", reason => {
 
 	// Relogin if we aren't logged in yet
 	if (client.uptime === null) {
+		if (loginAttempt > 5) {
+			process.exit();
+		}
 		console.log("Relogging to Discord API");
 		client.login(process.env.BOT_TOKEN);
 		++loginAttempt;
 		// If we can't login after 5 attempts, exit
-		if (loginAttempt > 5) {
-			process.exit();
-		}
 	}
 });
 
