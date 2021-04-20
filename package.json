@@ -5,11 +5,13 @@
   "main": "mybot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run heroku-postbuild && node mybot.js",
-    "heroku-postbuild": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "startDev": "npm run heroku-postbuild && node mybot.js",
+    "heroku-postbuild": "npm install -g pm2 && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">=14.x",
+    "npm": ">=7.10.0"
   },
   "keywords": [
     "discord.js"
@@ -27,6 +29,7 @@
     "java-deserialization": "^0.1.0",
     "mongodb": "^3.6.2",
     "osu-droid": "file:modules/osu-droid",
+    "pm2": "^4.5.6",
     "request": "^2.88.2",
     "unzipper": "^0.10.11",
     "utf-8-validate": "^5.0.4",
