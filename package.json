@@ -10,7 +10,8 @@
     "heroku-postbuild": "npm install -g pm2 && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
-    "node": "14.x"
+    "node": "14.x",
+    "npm": "7.10.0"
   },
   "keywords": [
     "discord.js"
