@@ -77,58 +77,77 @@ module.exports.run = async (client, message, args, maindb) => {
 				});
 				return;
 			}
-			binddb.findOne({discordid: message.author.id}, (err, bindres) => {
-				if (err) {
-					console.log(err);
-					return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-				}
-				if (bindres) {
-					const previous_bind = bindres.previous_bind ?? [];
-					if (previous_bind.length === 2) {
-						return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+			message.channel.send(`❗**| ${message.author}, are you sure you want to bind your account to ${player.username} (${player.uid})?**`).then(msg => {
+				msg.react("✅");
+
+				let confirmation = false;
+				const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 10000});
+
+				confirm.on("collect", () => {
+					confimation = true;
+					confirm.stop();
+				});
+
+				confirm.on("end", () => {
+					msg.delete();
+					if (!confirmation) {
+						return message.channel.send("❎ **| Timed out.**").then(m => m.delete({timeout: 5000}));
 					}
 
-					previous_bind.push(uid);
-					const updateVal = {
-						$set: {
-							username: player.username,
-							uid: uid,
-							previous_bind: previous_bind
-						}
-					};
-					binddb.updateOne({discordid: message.author.id}, updateVal, err => {
+					binddb.findOne({discordid: message.author.id}, (err, bindres) => {
 						if (err) {
 							console.log(err);
 							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 						}
-						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
-					});
-				} else {
-					const insertVal = {
-						discordid: message.author.id,
-						uid: uid,
-						username: player.username,
-						hasAskedForRecalc: false,
-						pptotal: 0,
-						playc: 0,
-						pp: [],
-						previous_bind: [uid],
-						clan: ""
-					};
-					binddb.insertOne(insertVal, err => {
-						if (err) {
-							console.log(err);
-							return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+						if (bindres) {
+							const previous_bind = bindres.previous_bind ?? [];
+							if (previous_bind.length === 2) {
+								return message.channel.send("❎ **| I'm sorry, you have reached the limit of 2 binded accounts!**");
+							}
+		
+							previous_bind.push(uid);
+							const updateVal = {
+								$set: {
+									username: player.username,
+									uid: uid,
+									previous_bind: previous_bind
+								}
+							};
+							binddb.updateOne({discordid: message.author.id}, updateVal, err => {
+								if (err) {
+									console.log(err);
+									return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+								}
+								message.channel.send(`✅ **| ${message.author}, successfully binded your account to uid ${uid}. You can bind ${2 - previous_bind.length} more osu!droid account${2 - previous_bind.length !== 1 ? "s" : ""}.**`);
+							});
+						} else {
+							const insertVal = {
+								discordid: message.author.id,
+								uid: uid,
+								username: player.username,
+								hasAskedForRecalc: false,
+								pptotal: 0,
+								playc: 0,
+								pp: [],
+								previous_bind: [uid],
+								clan: ""
+							};
+							binddb.insertOne(insertVal, err => {
+								if (err) {
+									console.log(err);
+									return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+								}
+								message.channel.send(`✅ **| ${message.author}, successfully binded your account to uid ${uid}. You can bind 1 more osu!droid account.**`);
+							});
 						}
-						message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
 					});
-				}
+				});
 			});
 			return;
 		}
 
 		if (res.discordid !== message.author.id) {
-			return message.channel.send("❎ **| I'm sorry, that uid has been previously binded by someone else!**");
+			return message.channel.send("❎ **| I'm sorry, that osu!droid account has been binded to another Discord account!**");
 		}
 		const updateVal = {
 			$set: {
@@ -142,7 +161,7 @@ module.exports.run = async (client, message, args, maindb) => {
 				console.log(err);
 				return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
 			}
-			message.channel.send(`✅ **| Haii <3, binded ${message.author} to uid ${uid}.**`);
+			message.channel.send(`✅ **| ${message.author}, successfully binded your account to uid ${uid}.**`);
 		});
 	});
 };
