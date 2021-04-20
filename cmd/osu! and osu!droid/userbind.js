@@ -84,7 +84,7 @@ module.exports.run = async (client, message, args, maindb) => {
 				const confirm = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id, {time: 10000});
 
 				confirm.on("collect", () => {
-					confimation = true;
+					confirmation = true;
 					confirm.stop();
 				});
 
