@@ -4,10 +4,7 @@ const config = require('../../config.json');
 const {Db} = require('mongodb');
 
 function hasUnicode(str = "") {
-    for (let i = 0; i < str.length; i++) {
-        if (str.charCodeAt(i) > 127) return true;
-    }
-    return false;
+    return [...str].some(v => v.charCodeAt(0) > 127);
 }
 
 function processEmbed(res, page, footer, index) {
@@ -383,7 +380,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         return message.channel.send("❎ **| I'm sorry, the username you have provided is already taken!**");
                     }
 
-                    name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\n\nUid: ${uid}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
+                    name_channel.send(`<@386742340968120321>\nName change request from <@${message.author.id}> (${message.author.id})\n\nUid: ${uid}\nOld username: ${player.username}\nNew username: ${new_name}\n\nCreated at ${new Date(curtime * 1000).toUTCString()}`, {files: [attachment]}).then(msg => {
                         if (nameres) {
                             updateVal = {
                                 $set: {
