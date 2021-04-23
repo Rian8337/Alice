@@ -20,7 +20,8 @@ process.on("uncaughtException", err => {
 	console.log(err);
 	const channel = client.channels.cache.get("833903416475516939");
 	if (channel instanceof Discord.TextChannel) {
-		channel.send(err);
+		const attachment = new Discord.MessageAttachment(Buffer.from(err.stack), "stack.txt");
+		channel.send(`[${new Date().toUTCString()}] Uncaught Exception: ${err.message}`, {files: [attachment]});
 	}
 	process.exit(1);
 });
@@ -31,7 +32,8 @@ process.on("unhandledRejection", reason => {
 	console.log(reason);
 	const channel = client.channels.cache.get("833903416475516939");
 	if (channel instanceof Discord.TextChannel) {
-		channel.send(reason);
+		const attachment = new Discord.MessageAttachment(Buffer.from(reason.stack), "stack.txt");
+		channel.send(`[${new Date().toUTCString()}] Unhandled Rejection: ${reason.message}`, {files: [attachment]});
 	}
 
 	// Relogin if we aren't logged in yet
