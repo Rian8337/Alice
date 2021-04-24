@@ -60,7 +60,7 @@ export class DifficultyHitObjectCreator {
                     scalingFactor *= 1 +
                         Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
                 }
-        } 
+        }
 
         const difficultyObjects: DifficultyHitObject[] = [];
 
