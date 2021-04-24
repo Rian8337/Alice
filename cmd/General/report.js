@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args) => {
 
     message.delete().catch(console.error);
 
-    const toreport = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch();
+    const toreport = await message.guild.members.fetch(message.mentions.users.first() || args[0]).catch(() => {});
     if (!toreport) {
         return message.channel.send("❎ **| Hey, please enter a valid user to report!**");
     }
