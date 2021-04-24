@@ -4,6 +4,7 @@ import { Vector2 } from "../../mathutil/Vector2";
 import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Precision } from "../../utils/Precision";
+import { modes } from "../../constants/modes";
 
 /**
  * A converter used to convert normal hitobjects into difficulty hitobjects.
@@ -15,9 +16,14 @@ export class DifficultyHitObjectCreator {
     private objects: HitObject[] = [];
 
     /**
-     * The threshold for small circle buff.
+     * The threshold for small circle buff for osu!droid.
      */
-    private readonly CIRCLESIZE_BUFF_THRESHOLD: number = 30;
+    private readonly DROID_CIRCLESIZE_BUFF_THRESHOLD: number = 52.5;
+
+     /**
+      * The threshold for small circle buff for osu!standard.
+      */
+    private readonly PC_CIRCLESIZE_BUFF_THRESHOLD: number = 30;
 
     /**
      * The radius of hitobjects.
@@ -30,7 +36,8 @@ export class DifficultyHitObjectCreator {
     generateDifficultyObjects(params: {
         objects: HitObject[]
         circleSize: number,
-        speedMultiplier: number
+        speedMultiplier: number,
+        mode: modes
     }): DifficultyHitObject[] {
         this.objects = params.objects;
         const circleSize: number = params.circleSize;
@@ -41,10 +48,20 @@ export class DifficultyHitObjectCreator {
         let scalingFactor: number = 52 / this.hitObjectRadius;
 
         // High circle size (small CS) bonus
-        if (this.hitObjectRadius < this.CIRCLESIZE_BUFF_THRESHOLD) {
-            scalingFactor *= 1 +
-                Math.min(this.CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
-        }
+        // high circle size (small CS) bonus
+        switch (params.mode) {
+            case modes.droid:
+                if (this.hitObjectRadius < this.DROID_CIRCLESIZE_BUFF_THRESHOLD) {
+                    scalingFactor *= 1 +
+                        Math.min(this.DROID_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 20) / 40;
+                }
+                break;
+            case modes.osu:
+                if (this.hitObjectRadius < this.PC_CIRCLESIZE_BUFF_THRESHOLD) {
+                    scalingFactor *= 1 +
+                        Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
+                }
+        } 
 
         const difficultyObjects: DifficultyHitObject[] = [];
 
@@ -103,7 +120,6 @@ export class DifficultyHitObjectCreator {
             return;
         }
         slider.lazyEndPosition = slider.stackedPosition;
-        slider.lazyTravelDistance = 0;
 
         // Stop here if the slider has too short duration due to float number limitation.
         // Incredibly close start and end time fluctuates travel distance and lazy
@@ -135,7 +151,7 @@ export class DifficultyHitObjectCreator {
                 diff.normalize(); // Obtain direction of diff
                 dist -= approxFollowCircleRadius;
                 slider.lazyEndPosition = (slider.lazyEndPosition as Vector2).add(diff.scale(dist));
-                (slider.lazyTravelDistance as number) += dist;
+                slider.lazyTravelDistance += dist;
             }
         });
     }

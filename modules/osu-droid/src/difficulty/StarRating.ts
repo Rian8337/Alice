@@ -152,7 +152,8 @@ export class StarRating {
         this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
             objects: map.objects,
             circleSize: stats.cs as number,
-            speedMultiplier: this.speedMultiplier
+            speedMultiplier: this.speedMultiplier,
+            mode: mode
         }));
 
         const aimSkill: Aim = new Aim();

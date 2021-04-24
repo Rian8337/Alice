@@ -50,7 +50,7 @@ export class Slider extends HitObject {
      * The distance travelled by the cursor upon completion of this slider if it was hit
      * with as few movements as possible. This is set and used by difficulty calculation.
      */
-    lazyTravelDistance?: number;
+    lazyTravelDistance: number = 0;
 
     /**
      * The length of one span of this slider.
