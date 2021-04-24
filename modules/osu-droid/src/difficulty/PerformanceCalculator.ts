@@ -362,7 +362,7 @@ export class PerformanceCalculator {
         const n50: number = this.computedAccuracy.n50;
 
         const nobjects: number = this.stars.objects.length;
-        const ncircles: number = this.stars.map.circles;
+        const ncircles: number = this.convertedMods & mods.osuMods.v2 ? nobjects : this.stars.map.circles;
 
         const realAccuracy: number = Math.max(
             ncircles > 0 ?
