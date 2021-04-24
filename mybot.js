@@ -16,12 +16,12 @@ const client = new Discord.Client({
 });
 const messageLog = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
 
-process.on("uncaughtException", err => {
+process.on("uncaughtException", async err => {
 	console.log(err);
 	const channel = client.channels.cache.get("833903416475516939");
 	if (channel instanceof Discord.TextChannel) {
 		const attachment = new Discord.MessageAttachment(Buffer.from(err.stack), "stack.txt");
-		channel.send(`[${new Date().toUTCString()}] Uncaught Exception: ${err.message}`, {files: [attachment]});
+		await channel.send(`[${new Date().toUTCString()}] Uncaught Exception: ${err.message}`, {files: [attachment]});
 	}
 	process.exit(1);
 });
