@@ -66,8 +66,8 @@ module.exports.run = (client, member, maindb) => {
                     if (err) {
                         return console.log(err);
                     }
-                    if (member.id !== leader) {
-                        client.users.fetch(member_list[index].id).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, you have been promoted as Clan Leader!`).catch(console.error)).catch(console.error);
+                    if (member.id === leader) {
+                        client.users.fetch(member_list[index].id).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, you have been promoted as Clan Leader!**`).catch(console.error)).catch(console.error);
                     } else {
                         client.users.fetch(leader).then(u => u.send(`❗**| Hey, unfortunately ${res.username} (uid ${res.uid}) has left the server! Therefore, the user has been kicked from your clan!**`).catch(console.error)).catch(console.error);
                     }
