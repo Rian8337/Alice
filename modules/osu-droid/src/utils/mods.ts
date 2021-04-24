@@ -48,7 +48,7 @@ export namespace mods {
         v2 = 1<<29,
         speed_changing = dt | ht | nc,
         map_changing = ez | hr | speed_changing,
-        unranked = rx | ap | v2
+        unranked = rx | ap
     }
 
     /**
