@@ -48,7 +48,6 @@ export class DifficultyHitObjectCreator {
         let scalingFactor: number = 52 / this.hitObjectRadius;
 
         // High circle size (small CS) bonus
-        // high circle size (small CS) bonus
         switch (params.mode) {
             case modes.droid:
                 if (this.hitObjectRadius < this.DROID_CIRCLESIZE_BUFF_THRESHOLD) {
