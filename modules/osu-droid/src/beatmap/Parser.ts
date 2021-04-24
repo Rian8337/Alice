@@ -12,6 +12,7 @@ import { SliderPath } from '../utils/SliderPath';
 import { HitObject } from './hitobjects/HitObject';
 import { MapStats } from '../utils/MapStats';
 import { MathUtils } from '../mathutil/MathUtils';
+import { ParserConstants } from '../constants/ParserConstants';
 
 /**
  * A beatmap parser with just enough data for pp calculation.
@@ -73,9 +74,9 @@ export class Parser {
     }
 
     /**
-     * Returns a string representative of the class.
+     * Logs the line at which an exception occurs.
      */
-    toString(): string {
+    private logError(): string {
         return (
             "at line " + this.line + "\n" +
             this.currentLine + "\n" +
@@ -150,7 +151,7 @@ export class Parser {
      */
     private warn(message: string): void {
         console.warn(message);
-        console.warn(this.toString());
+        console.warn(this.logError());
     }
 
     /**
@@ -249,10 +250,20 @@ export class Parser {
         } else if (s.length < 2) {
             return this.warn("Ignoring malformed timing point");
         }
+        const time: number = parseFloat(this.setPosition(s[0]));
+        if (!Parser.isNumberValid(time)) {
+            return this.warn("Ignoring malformed timing point: Value is too low or high");
+        }
+        
         const msPerBeat: number = parseFloat(this.setPosition(s[1]));
+        if (!Parser.isNumberValid(msPerBeat)) {
+            return this.warn("Ignoring malformed timing point: Value is too low or high");
+        }
         const speedMultiplier = msPerBeat < 0 ? 100 / -msPerBeat : 1;
+        
         this.map.timingPoints.push(new TimingPoint({
-            time: parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0),
+            // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
+            time: time + (this.map.formatVersion < 5 ? 24 : 0),
             msPerBeat: msPerBeat,
             change: msPerBeat >= 0,
             speedMultiplier: speedMultiplier
@@ -271,61 +282,72 @@ export class Parser {
         }
         const time: number = parseFloat(this.setPosition(s[2]));
         const type: number = parseInt(this.setPosition(s[3]));
-        if (isNaN(time) || isNaN(type)) {
-            return this.warn("Ignoring malformed hitobject");
+        if (!Parser.isNumberValid(time) || isNaN(type)) {
+            return this.warn("Ignoring malformed hitobject: Value is too low or high");
         }
         
         const position: Vector2 = new Vector2({
             x: parseFloat(this.setPosition(s[0])),
             y: parseFloat(this.setPosition(s[1]))
         });
+        if (!Parser.isVectorValid(position)) {
+            return this.warn("Ignoring malformed hitobject: Value is too low or high");
+        }
 
         if (type & objectTypes.circle) {
-            ++this.map.circles;
             const object = new Circle({
                 startTime: time,
                 type: type,
                 position: position
             });
-            if (isNaN(object.position.x) || isNaN(object.position.y)) {
-                return this.warn("Ignoring malformed circle");
-            }
+            ++this.map.circles;
             this.map.objects.push(object);
         }
         else if (type & objectTypes.slider) {
             if (s.length < 8) {
                 return this.warn("Ignoring malformed slider");
             }
-            ++this.map.sliders;
+            const repetitions: number = Math.max(parseInt(this.setPosition(s[6])), ParserConstants.MIN_REPETITIONS_VALUE);
+            
+            if (!Parser.isNumberValid(repetitions, ParserConstants.MAX_REPETITIONS_VALUE)) {
+                return this.warn("Ignoring malformed slider: Value is too low or high");
+            }
+
+            const distance: number = Math.max(ParserConstants.MIN_DISTANCE_VALUE, parseFloat(this.setPosition(s[7])));
+            if (!Parser.isNumberValid(distance, ParserConstants.MAX_DISTANCE_VALUE)) {
+                return this.warn("Ignoring malformed slider: Value is too low or high");
+            }
+
+            const speedMultiplierTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints);
+            const msPerBeatTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints.filter(v => v.change));
 
             let pathType: PathType = 0;
 
             const points: Vector2[] = [new Vector2({x: 0, y: 0})];
             const pointSplit: string[] = this.setPosition(s[5]).split("|");
+            const p: string = pointSplit.shift() as string;
+            switch (p) {
+                case "B":
+                    pathType = PathType.Bezier;
+                    break;
+                case "L":
+                    pathType = PathType.Linear;
+                    break;
+                case "P":
+                    pathType = PathType.PerfectCurve;
+                    break;
+                case "C":
+                default:
+                    pathType = PathType.Catmull;
+            }
 
-            pointSplit.forEach(point => {
-                if (point.length === 1) {
-                    switch (point) {
-                        case "B":
-                            pathType = PathType.Bezier;
-                            break;
-                        case "L":
-                            pathType = PathType.Linear;
-                            break;
-                        case "P":
-                            pathType = PathType.PerfectCurve;
-                            break;
-                        case "C":
-                        default:
-                            pathType = PathType.Catmull;
-                    }
-
-                    return;
-                }
-
+            for (const point of pointSplit) {
                 const temp: string[] = point.split(":");
-                points.push(new Vector2({x: +temp[0], y: +temp[1]}).subtract(position));
-            });
+                const vec: Vector2 = new Vector2({x: +temp[0], y: +temp[1]});
+                if (!Parser.isVectorValid(vec)) {
+                    return this.warn("Ignoring malformed slider: Value is too low or high");
+                }
+            }
 
             function isLinear(p: Vector2[]): boolean {
                 return Precision.almostEqualsNumber(0, (p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y));
@@ -335,46 +357,44 @@ export class Parser {
                 pathType = PathType.Linear;
             }
 
-            const distance: number = parseFloat(this.setPosition(s[7]));
-            if (isNaN(distance)) {
-                return this.warn("Ignoring malformed slider");
-            }
             const path: SliderPath = new SliderPath({
                 pathType: pathType,
                 controlPoints: points,
-                expectedDistance: Math.max(0, distance)
+                expectedDistance: distance
             });
-
-            const speedMultiplierTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints);
-            const msPerBeatTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints.filter(v => v.change));
 
             const object = new Slider({
                 position: position,
                 startTime: time,
                 type: type,
-                repetitions: parseInt(this.setPosition(s[6])),
+                repetitions: repetitions,
                 path: path,
-                speedMultiplier: MathUtils.round(MathUtils.clamp(speedMultiplierTimingPoint.speedMultiplier, 0.1, 10), 1),
-                msPerBeat: MathUtils.clamp(msPerBeatTimingPoint.msPerBeat, 6, 60000),
+                speedMultiplier: MathUtils.round(
+                    MathUtils.clamp(
+                        speedMultiplierTimingPoint.speedMultiplier,
+                        ParserConstants.MIN_SPEEDMULTIPLIER_VALUE,
+                        ParserConstants.MAX_SPEEDMULTIPLIER_VALUE
+                    ),
+                    1
+                ),
+                msPerBeat: MathUtils.clamp(msPerBeatTimingPoint.msPerBeat,
+                    ParserConstants.MIN_MSPERBEAT_VALUE, ParserConstants.MAX_MSPERBEAT_VALUE),
                 mapSliderVelocity: this.map.sv,
                 mapTickRate: this.map.tickRate
             });
-            if (isNaN(object.position.x) || isNaN(object.position.y) || isNaN(object.repetitions)) {
-                return this.warn("Ignoring malformed slider");
-            }
+            ++this.map.sliders;
             this.map.objects.push(object);
         }
         else if (type & objectTypes.spinner) {
-            ++this.map.spinners;
             const object = new Spinner({
                 startTime: time,
                 type: type,
-                duration: parseFloat(s[5]) - parseFloat(s[2])
+                duration: parseInt(this.setPosition(s[5])) - time
             });
-            this.setPosition(s[5]);
-            if (isNaN(object.duration)) {
-                return this.warn("Ignoring malformed spinner");
+            if (!Parser.isNumberValid(object.duration)) {
+                return this.warn("Ignoring malformed spinner: Value is too low or high");
             }
+            ++this.map.spinners;
             this.map.objects.push(object);
         }
     }
@@ -412,10 +432,11 @@ export class Parser {
         const stackDistance: number = 3;
 
         let timePreempt: number = 600;
-        if (this.map.ar as number > 5) {
-            timePreempt = 1200 + (450 - 1200) * (this.map.ar as number - 5) / 5;
-        } else if (this.map.ar as number < 5) {
-            timePreempt = 1200 - (1200 - 1800) * (5 - (this.map.ar as number)) / 5;
+        const ar: number = this.map.ar as number;
+        if (ar > 5) {
+            timePreempt = 1200 + (450 - 1200) * (ar - 5) / 5;
+        } else if (ar < 5) {
+            timePreempt = 1200 - (1200 - 1800) * (5 - ar) / 5;
         } else {
             timePreempt = 1200;
         }
@@ -580,5 +601,25 @@ export class Parser {
                 }
             }
         }
+    }
+
+    /**
+     * Checks if a number is within a given threshold.
+     * 
+     * @param num The number to check.
+     * @param limit The threshold. Defaults to `ParserConstants.MAX_PARSE_VALUE`.
+     */
+    private static isNumberValid(num: number, limit: number = ParserConstants.MAX_PARSE_VALUE): boolean {
+        return !isNaN(num) && num >= -limit && num <= limit;
+    }
+
+    /**
+     * Checks if each coordinates of a vector is within a given threshold.
+     * 
+     * @param vec The vector to check.
+     * @param limit The threshold. Defaults to `ParserConstants.MAX_COORDINATE_VALUE`.
+     */
+    private static isVectorValid(vec: Vector2, limit: number = ParserConstants.MAX_COORDINATE_VALUE): boolean {
+        return !isNaN(vec.x) && !isNaN(vec.y) && vec.x >= -limit && vec.x <= limit && vec.y >= -limit && vec.y <= limit;
     }
 }
