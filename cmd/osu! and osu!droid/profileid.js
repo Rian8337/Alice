@@ -175,7 +175,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 						if (!badges[i]) {
 							continue;
 						}
-						const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i]}.png`);
+						const badge = await loadImage(`${process.cwd()}/img/badges/${badges[i].id}.png`);
 						if (i / 5 < 1) {
 							c.drawImage(badge, i * 94 + 19.5, 312, 85, 85);
 						} else {
