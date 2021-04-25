@@ -249,13 +249,13 @@ export class Score implements ScoreInformation {
     getCompleteModString(): string {
         let finalString: string = `+${this.mods ? this.mods : "No Mod"}`;
 
-        if (this.forcedAR || this.speedMultiplier !== 1) {
+        if (this.forcedAR !== undefined || this.speedMultiplier !== 1) {
             finalString += " (";
-            if (this.forcedAR) {
+            if (this.forcedAR !== undefined) {
                 finalString += `AR${this.forcedAR}`;
             }
             if (this.speedMultiplier !== 1) {
-                if (this.forcedAR) {
+                if (this.forcedAR !== undefined) {
                     finalString += ", ";
                 }
                 finalString += `${this.speedMultiplier}x`;
