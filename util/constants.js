@@ -1,4 +1,7 @@
 module.exports = {
+    config: {
+        name: "constants"
+    },
     /**
      * @type {boolean}
      */
