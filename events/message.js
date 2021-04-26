@@ -2,9 +2,6 @@ const Discord = require('discord.js');
 const { Db } = require('mongodb');
 const config = require('../config.json');
 
-let maintenance = false;
-let maintenance_reason = '';
-
 /**
  * @param {string[] | undefined} disabledUtils 
  * @param {string} utilName 
