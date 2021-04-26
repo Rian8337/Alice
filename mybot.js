@@ -54,7 +54,6 @@ client.aliases = new Discord.Collection();
 client.events = new Discord.Collection();
 client.subevents = new Discord.Collection();
 client.help = [];
-let maintenance = false;
 
 // Events loading
 fs.readdir('./events', (err, files) => {
@@ -154,11 +153,15 @@ alcdb.connect((err, db) => {
 
 // Client events
 client.on("ready", () => {
-	client.events.get("ready").run(client, maindb, alicedb, maintenance);
+	client.events.get("ready").run(client, maindb, alicedb);
 });
 
 client.on("message", message => {
-	client.events.get("message").run(client, message, maindb, alicedb, maintenance);
+	client.events.get("message").run(client, message, maindb, alicedb);
+});
+
+client.on("interaction", interaction => {
+	client.events.get("interaction").run(client, interaction, maindb, alicedb);
 });
 
 client.on("guildMemberAdd", member => {

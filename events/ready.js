@@ -11,9 +11,9 @@ module.exports.run = async (client, maindb, alicedb) => {
 	console.log("Discord API connection established\nAlice Synthesis Thirty is up and running");
 	
 	const disabledCommandsAndUtils = await alicedb.collection("channelsettings").find({}, {projection: {_id: 0, channelID: 1, disabledCommands: 1, disabledUtils: 1}}).toArray();
-	require('./message').setDisabledCommandsAndUtils(disabledCommandsAndUtils);
+	client.utils.get("constants").setDisabledCommandsAndUtils(disabledCommandsAndUtils);
 
-	let maintenance = require('./message').maintenance;
+	let maintenance = client.utils.get("constants").maintenance;
 	
 	const activity_list = [
 		["Underworld Console", "PLAYING"],
@@ -31,7 +31,7 @@ module.exports.run = async (client, maindb, alicedb) => {
 
 	// Custom activity, daily reset, and unverified prune
 	setInterval(() => {
-		maintenance = require('./message').maintenance;
+		maintenance = client.utils.get("constants").maintenance;
 		client.utils.get("unverified").run(client, alicedb);
 		if (maintenance) {
 			return;
@@ -44,7 +44,7 @@ module.exports.run = async (client, maindb, alicedb) => {
 	
 	// Utilities
 	setInterval(() => {
-		maintenance = require('./message').maintenance;
+		maintenance = client.utils.get("constants").maintenance;
 		if (!maintenance) {
 			console.log("Utilities running");
 			client.utils.get("trackfunc").run(client, maindb);

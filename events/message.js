@@ -4,11 +4,6 @@ const config = require('../config.json');
 
 let maintenance = false;
 let maintenance_reason = '';
-const current_map = [];
-const globally_disabled_commands = [];
-const channel_disabled_commands = [];
-const channel_disabled_utils = [];
-let command_cooldown = 0;
 
 /**
  * @param {string[] | undefined} disabledUtils 
@@ -26,8 +21,10 @@ function isUtilDisabled(disabledUtils, utilName) {
  */
 module.exports.run = (client, message, maindb, alicedb) => {
 	message.isOwner = message.author.id === '132783516176875520' || message.author.id === '386742340968120321';
-	const disabledUtilConfiguration = channel_disabled_utils.find(v => v.channelID === message.channel.id);
+	const disabledUtilConfiguration = client.utils.get("constants").setChannelDisabledUtils.find(v => v.channelID === message.channel.id);
 	const disabledUtils = disabledUtilConfiguration?.disabledUtils;
+
+	const current_map = client.utils.get("constants").currentMap;
 	
 	if (message.embeds.length > 0) {
 		// owo bot support
@@ -94,18 +91,19 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	
 	// commands
 	if (message.author.id === '386742340968120321' && command === config.prefix + 'maintenance') {
-		maintenance_reason = args.join(" ");
+		let maintenance = client.utils.get("constants").maintenance;
+		let maintenance_reason = args.join(" ");
 		if (!maintenance_reason) {
 			maintenance_reason = 'Unknown';
 		}
 		maintenance = !maintenance;
 		if (maintenance) {
 			client.user.setActivity("Maintenance mode").catch(console.error);
-		}
-		else {
+		} else {
 			client.user.setActivity(config.prefix + "help", {type: "LISTENING"}).catch(console.error);
 		}
-		this.maintenance = maintenance;
+		client.utils.get("constants").maintenance = maintenance;
+		client.utils.get("constants").maintenanceReason = maintenance_reason;
 		message.channel.send(`✅ **| Maintenance mode has been set to \`${maintenance}\` for \`${maintenance_reason}\`.**`).catch(console.error);
 	}
 
@@ -114,11 +112,12 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		if (isNaN(seconds) || seconds < 0) {
 			return message.channel.send("❎ **| Hey, please enter a valid cooldown period!**");
 		}
-		command_cooldown = parseFloat(seconds.toFixed(1));
+		client.utils.get("constants").commandCooldown = parseFloat(seconds.toFixed(1));
 		message.channel.send(`✅ **| Successfully set command cooldown to ${seconds} ${seconds === 1 ? "second" : "seconds"}.**`);
 	}
 
 	if (message.author.id === "386742340968120321" && (command === config.prefix + 'cmd' || command === config.prefix + 'command')) {
+		const globally_disabled_commands = client.utils.get("constants").globallyDisabledCommands;
 		if (args[0] === "list") {
 			if (globally_disabled_commands.length === 0) {
 				return message.channel.send("❎ **| I'm sorry, there are no disabled commands now!**");
@@ -147,83 +146,8 @@ module.exports.run = (client, message, maindb, alicedb) => {
 		let cmd = client.commands.get("malodychart");
 		cmd.run(client, message, args);
 	}
-	
-	const obj = {
-		client,
-		message,
-		args,
-		maindb,
-		alicedb,
-		command,
-		current_map,
-		globally_disabled_commands,
-		channel_disabled_commands,
-		command_cooldown,
-		maintenance,
-		maintenance_reason,
-		main_bot: message.content.startsWith(config.prefix)
-	};
-
-	if (message.content.startsWith(config.prefix) || message.content.startsWith("&")) {
-		client.subevents.get("commandHandler").run(obj);
-	}
 };
 
 module.exports.config = {
     name: "message"
-};
-
-module.exports.maintenance = maintenance;
-
-/**
- * Called upon bot start.
- * 
- * @param {{channelID: string, disabledCommands: {name: string, cooldown: number}[], disabledUtils: string[]}[]} disabledCommandsAndUtils
- */
-module.exports.setDisabledCommandsAndUtils = disabledCommandsAndUtils => {
-	disabledCommandsAndUtils.forEach(d => {
-		channel_disabled_commands.push({
-			channelID: d.channelID,
-			disabledCommands: d.disabledCommands
-		});
-
-		channel_disabled_utils.push({
-			channelID: d.channelID,
-			disabledUtils: d.disabledUtils
-		});
-	});
-};
-
-/**
- * Called when a command is disabled/enabled in a channel.
- * 
- * @param {{channelID: string, disabledCommands: {name: string, cooldown: number}[]}} disabledCommand 
- */
-module.exports.setChannelDisabledCommands = disabledCommand => {
-	const channelSettingIndex = channel_disabled_commands.findIndex(v => v.channelID === disabledCommand.channelID);
-	if (channelSettingIndex === -1) {
-		channel_disabled_commands.push(disabledCommand);
-	} else {
-		channel_disabled_commands[channelSettingIndex] = disabledCommand;
-	}
-};
-
-/**
- * Called when a utility is disabled/enabled in a channel.
- * 
- * @param {{channelID: string, disabledUtils: string[]}} disabledUtil 
- */
-module.exports.setChannelDisabledUtils = disabledUtil => {
-	const channelSettingIndex = channel_disabled_utils.findIndex(v => v.channelID === disabledUtil.channelID);
-	if (channelSettingIndex === -1) {
-		channel_disabled_utils.push({
-			channelID: disabledUtil.channelID,
-			disabledUtils: disabledUtil.disabledUtils
-		});
-	} else {
-		channel_disabled_utils[channelSettingIndex] = {
-			channelID: disabledUtil.channelID,
-			disabledUtils: disabledUtil.disabledUtils
-		};
-	}
 };
