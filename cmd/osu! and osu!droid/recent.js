@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../config.json');
-const osudroid = require('osu-droid');
+const osudroid = require('old-osu-droid');
 const { Db } = require('mongodb');
-const cd = new Set();
 
 function rankEmote(input) {
 	if (!input) return;
@@ -15,88 +14,63 @@ function rankEmote(input) {
 		case 'X': return '611559473492000769';
 		case 'SH': return '611559473361846274';
 		case 'XH': return '611559473479155713';
-		default : return;
+		default: return;
 	}
 }
 
 /**
  * @param {Discord.Client} client 
- * @param {Discord.Message} message 
- * @param {string[]} args 
+ * @param {Discord.CommandInteraction} interaction
+ * @param {string[]} subCommands
+ * @param {Array<Discord.Channel|Discord.User|Discord.Role|string|number|boolean>} args
  * @param {Db} maindb 
  * @param {Db} alicedb 
  * @param {[string, string][]} current_map 
  */
-module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
-    if (cd.has(message.author.id)) {
-        return message.channel.send("❎ **| Hey, calm down with the command! I need to rest too, you know.**");
-    }
-
+module.exports.run = async (client, interaction, subCommands, args, maindb, alicedb, current_map) => {
     const bindDb = maindb.collection("userbind");
-    let uid = 0;
+    const subName = subCommands[0];
 
-    if (args[0]) {
-        if (args[0].length < 18) {
-            uid = parseInt(args[0]);
-            if (isNaN(uid)) {
-                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
-            }
-            if (uid <= 2417) {
-                return message.channel.send("❎ **| Hey, that uid is too small!**");
-            }
-            if (uid >= 500000) {
-                return message.channel.send("❎ **| Hey, that uid is too big!**");
-            }
-        } else {
-            const ufind = args[0].replace(/[<@!>]/g, "");
-            if (ufind.length !== 18) {
-                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
-            }
-            uid = await bindDb.findOne({discordid: ufind});
-            if (!uid) {
-                if (args[0]) {
-                    message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-                } else {
-                    message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
-                }
+    let uid;
+    switch (subName) {
+        case "user":
+            const user = args[0];
+            if (!(user instanceof Discord.User)) {
                 return;
             }
-            uid = uid.uid;
-        }
-    }
-
-    if (!uid) {
-        uid = await bindDb.findOne({discordid: message.author.id});
-        if (!uid) {
-            if (args[0]) {
-                message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
-            } else {
-                message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+            uid = await bindDb.findOne({discordid: user.id});
+            if (!uid) {
+                return interaction.editReply("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
             }
-            return;
-        }
-        uid = uid.uid;
+            uid = uid.uid;
+            break;
+        case "uid":
+            uid = args[0];
+            if (uid <= 2417) {
+                return interaction.editReply("❎ **| Hey, that uid is too small!**");
+            }
+            if (uid >= 500000) {
+                return interaction.editReply("❎ **| Hey, that uid is too big!**");
+            }
+            break;
+        case "self":
+            uid = await bindDb.findOne({discordid: interaction.user.id});
+            if (!uid) {
+                return interaction.editReply("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+            }
+            uid = uid.uid;
+            break;
     }
 
     const player = await osudroid.Player.getInformation({uid: uid});
     if (player.error) {
-        if (args[0]) {
-            message.channel.send("❎ **| I'm sorry, I couldn't fetch the user's profile! Perhaps osu!droid server is down?**");
-        } else {
-            message.channel.send("❎ **| I'm sorry, I couldn't fetch your profile! Perhaps osu!droid server is down?**");
-        }
-        return;
+        return interaction.editReply(`❎ **| I'm sorry, I couldn't fetch ${subName === "self" ? "your" : "the user's"} profile! Perhaps osu!droid server is down?**`);
     }
     if (!player.username) {
-        if (args[0]) {
-            message.channel.send("❎ **| I'm sorry, I couldn't find the user's profile!**");
-        } else {
-            message.channel.send("❎ **| I'm sorry, I couldn't find your profile!**");
-        }
-        return;
+        return interaction.editReply(`❎ **| I'm sorry, I couldn't find ${subName === "self" ? "your" : "the user's"} profile!**`)
     }
     if (player.recentPlays.length === 0) {
-        return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
+        return interaction.editReply(`❎ **| I'm sorry, ${subName === "self" ? "you haven't" : "this player hasn't"} submitted any play!**`);
     }
 
     const name = player.username;
@@ -115,11 +89,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()
         .setAuthor(title, player.avatarURL)
-        .setColor(message.member?.roles.color?.hexColor || 8311585)
+        .setColor(8311585)
         .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
 
-    const entry = [message.channel.id, hash];
-    const map_index = current_map.findIndex(map => map[0] === message.channel.id);
+    const entry = [interaction.channel.id, hash];
+    const map_index = current_map.findIndex(map => map[0] === interaction.channel.id);
     if (map_index === -1) {
         current_map.push(entry);
     } else {
@@ -186,17 +160,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         max_error = count ? total / count : 0;
         min_error = _count ? _total / _count : 0;
     }
-
-    if (!message.isOwner) {
-        cd.add(message.author.id);
-        setTimeout(() => {
-            cd.delete(message.author.id);
-        }, 15000);
-    }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
         embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
-        return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
+        return interaction.editReply(`✅ **| Most recent play for ${name}:**`, {embeds: [embed]});
     }
 
     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
@@ -301,7 +268,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
     embed.setDescription(beatmapInformation);
 
-    message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
+    interaction.editReply(`✅ **| Most recent play for ${name}:**`, {embeds: [embed]});
 };
 
 module.exports.config = {
@@ -311,4 +278,46 @@ module.exports.config = {
     usage: "recent [uid/user]",
     detail: "`uid`: The uid to retrieve [Integer]\n`user`: The user to retrieve [UserResolvable (mention or user ID)]",
     permission: "None"
+};
+
+/**
+ * @type {Discord.ApplicationCommandData}
+ */
+ module.exports.slashCommandData = {
+    name: "recent",
+    description: "Gets the most recent play of a Discord user, osu!droid account, or uid.",
+    defaultPermission: true,
+    options: [
+        {
+            name: "user",
+            description: "Gets the most recent play of a Discord user.",
+            type: "SUB_COMMAND",
+            options: [
+                {
+                    name: "user",
+                    description: "The user to get the most recent play from.",
+                    type: "USER",
+                    required: true
+                }
+            ]
+        },
+        {
+            name: "uid",
+            description: "Gets the most recent play of an osu!droid account.",
+            type: "SUB_COMMAND",
+            options: [
+                {
+                    name: "uid",
+                    description: "The uid to get the most recent play from.",
+                    type: "INTEGER",
+                    required: true
+                }
+            ]
+        },
+        {
+            name: "self",
+            description: "Gets your most recent play.",
+            type: "SUB_COMMAND"
+        }
+    ]
 };
