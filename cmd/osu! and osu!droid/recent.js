@@ -195,7 +195,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x\n**Accuracy**: ${acc}% [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+        embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x\n**Accuracy**: ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
         return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
     }
 
@@ -207,9 +207,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    title = `${mapinfo.fullTitle} ${play.getCompleteModString()} [${starsline}★ | ${pcstarsline}★]`;
-
-    embed.setAuthor(title, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
+    embed.setAuthor(`${mapinfo.fullTitle} ${play.getCompleteModString()}`, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
     const realAcc = new osudroid.Accuracy({
@@ -246,7 +244,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: 0
     });
     const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
-    embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x/${mapinfo.maxCombo}x\n**Accuracy**: ${acc}% [${n300}/${n100}/${n50}/${miss}] ${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+    embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x/${mapinfo.maxCombo}x\n**Accuracy**: ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
     let performanceInformation = "";
 
     if (notFullCombo) {
@@ -270,9 +268,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        performanceInformation += `**Droid**: **${ppline} (FC: ${dline})**\n**PC**: **${pcppline} (FC: ${pline})**\n`;
+        performanceInformation += `**Droid**: ${starsline}★ ▧ **${ppline} (FC: ${dline})**\n**PC**: ${pcstarsline}★ ▧ **${pcppline} (FC: ${pline})**\n`;
     } else {
-        performanceInformation += `**Droid**: **${ppline}**\n**PC**: **${pcppline}**\n`;
+        performanceInformation += `**Droid**: ${starsline}★ ▧ **${ppline}**\n**PC**: ${pcstarsline}★ ▧ **${pcppline}**\n`;
     }
 
     if (replay.penalty !== 1) {
@@ -301,7 +299,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         performanceInformation += "**";
     }
 
-    embed.addField("🔼 | **Performance**", performanceInformation);
+    embed.addField("🔼 | **Difficulty and Performance**", performanceInformation);
 
     message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
 };
