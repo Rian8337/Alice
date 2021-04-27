@@ -183,7 +183,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x\n**Accuracy**: ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+        embed.addField("📈 | **Information**", `🏆 ▣ ${rank} ▧ ${score} ▧ ${combo}x\n🎯 ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
         return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     }
     
@@ -231,7 +231,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: 0
     });
     const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
-    embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x/${mapinfo.maxCombo}x\n**Accuracy**: ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+    embed.addField("📈 | **Information**", `🏆 ▣ ${rank} ▧ ${score} ▧ ${combo}x/${mapinfo.maxCombo}x\n🎯 ▣ ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
     let performanceInformation = "";
 
     if (notFullCombo) {
@@ -269,7 +269,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             stats
         });
 
-        performanceInformation += `**Droid (no penalty)**: **${noPenaltyDpp.total.toFixed(2)}`;
+        performanceInformation += `**📱 (no penalty)** ▣ **${noPenaltyDpp.total.toFixed(2)}pp`;
 
         if (notFullCombo) {
             const noPenaltyFCDpp = new osudroid.PerformanceCalculator().calculate({
@@ -280,7 +280,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 stats
             });
 
-            performanceInformation += ` (FC: ${noPenaltyFCDpp.total.toFixed(2)})`;
+            performanceInformation += ` (FC: ${noPenaltyFCDpp.total.toFixed(2)}pp)`;
         }
 
         performanceInformation += "**";
