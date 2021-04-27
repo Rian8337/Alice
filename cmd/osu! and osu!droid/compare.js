@@ -183,7 +183,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
+        embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x\n**Accuracy**: ${acc}% [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
         return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     }
     
@@ -226,7 +226,6 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const ppline = parseFloat(npp.total.toFixed(2));
     const pcppline = parseFloat(pcpp.total.toFixed(2));
 
-    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP** | **${pcppline}PP** `;
     const fc_acc = new osudroid.Accuracy({
         n300: n300 + miss,
         n100,
@@ -234,6 +233,8 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: 0
     });
     const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
+    embed.addField("📈 | **Information**", `**Rank**: ${rank}\n**Score**: ${score}\n**Combo**: ${combo}x/${mapinfo.maxCombo}x\n**Accuracy**: ${acc}% [${n300}/${n100}/${n50}/${miss}] ${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n**Error**: ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+    let performanceInformation = "";
 
     if (notFullCombo) {
         const fc_dpp = new osudroid.PerformanceCalculator().calculate({
@@ -256,7 +257,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        beatmapInformation += `(${dline}DPP, ${pline}PP for ${(fc_acc.value() * 100).toFixed(2)}% FC) `;
+        performanceInformation += `**Droid**: **${ppline} (FC: ${dline})**\n**PC**: **${pcppline} (FC: ${pline})**\n`;
+    } else {
+        performanceInformation += `**Droid**: **${ppline}**\n**PC**: **${pcppline}**\n`;
     }
 
     if (replay.penalty !== 1) {
@@ -268,7 +271,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             stats
         });
 
-        beatmapInformation += `(${noPenaltyDpp.total.toFixed(2)}DPP`;
+        performanceInformation += `**Droid (no penalty)**: **${noPenaltyDpp.total.toFixed(2)}`;
 
         if (notFullCombo) {
             const noPenaltyFCDpp = new osudroid.PerformanceCalculator().calculate({
@@ -279,14 +282,13 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                 stats
             });
 
-            beatmapInformation += `, ${noPenaltyFCDpp.total.toFixed(2)}DPP (for FC)`;
+            performanceInformation += ` (FC: ${noPenaltyFCDpp.total.toFixed(2)})`;
         }
 
-        beatmapInformation += ` without speed penalty) `;
+        performanceInformation += "**";
     }
 
-    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
-    embed.setDescription(beatmapInformation);
+    embed.addField("🔼 | **Performance**", performanceInformation);
 
     message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
 };
