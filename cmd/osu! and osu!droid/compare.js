@@ -255,9 +255,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        performanceInformation += `**Droid**: ${starsline}★ ▧ **${ppline} (FC: ${dline})**\n**PC**: ${pcstarsline}★ ▧ **${pcppline} (FC: ${pline})**\n`;
+        performanceInformation += `📱 ▣ ${starsline}★ ▧ **${ppline}pp (FC: ${dline}pp)**\n🖥️ ▣ ${pcstarsline}★ ▧ **${pcppline}pp (FC: ${pline}pp)**\n`;
     } else {
-        performanceInformation += `**Droid**: ${starsline}★ ▧ **${ppline}**\n**PC**: ${pcstarsline}★ ▧ **${pcppline}**\n`;
+        performanceInformation += `📱 ▣ ${starsline}★ ▧ **${ppline}pp**\n🖥️ ▣ ${pcstarsline}★ ▧ **${pcppline}pp**\n`;
     }
 
     if (replay.penalty !== 1) {
