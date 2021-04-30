@@ -23,7 +23,6 @@ process.on("uncaughtException", async err => {
 		const attachment = new Discord.MessageAttachment(Buffer.from(err.stack), "stack.txt");
 		await channel.send(`[${new Date().toUTCString()}] Uncaught Exception: ${err.message}`, {files: [attachment]});
 	}
-	process.exit(1);
 });
 
 let loginAttempt = 0;
