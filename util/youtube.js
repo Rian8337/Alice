@@ -43,9 +43,9 @@ module.exports.run = (client, message, video_id, current_map) => {
                 }
                 ++count;
                 if (msg.indexOf("#osu/") !== -1 || msg.indexOf("/b/") !== -1 || msg.indexOf("/beatmaps/") !== -1) {
-                    client.utils.get("autocalc").run(client, message, [msg], current_map);
+                    client.utils.get("autocalc").run(client, message, [msg], current_map, false, true);
                 } else if (msg.indexOf("/beatmapsets/") !== -1 || msg.indexOf("/s/") !== -1) {
-                    client.utils.get("autocalc").run(client, message, [msg], current_map, true);
+                    client.utils.get("autocalc").run(client, message, [msg], current_map, true, true);
                 }
             }
         }
