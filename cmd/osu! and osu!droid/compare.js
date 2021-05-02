@@ -230,7 +230,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         n50,
         nmiss: 0
     });
-    const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
+    const notFullCombo = miss > 0 || data?.isFullCombo;
     let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP**${replay.penalty !== 1 ? " (*penalized*)" : ""} | **${pcppline}PP** `;
 
     if (notFullCombo) {
