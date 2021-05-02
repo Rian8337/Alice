@@ -195,7 +195,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.addField("📈 | **Information**", `🏆 ▣ ${rank} ▧ ${score} ▧ ${combo}x\n🎯 ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${unstable_rate ? `\n${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
+        embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
         return message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
     }
 
@@ -207,7 +207,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const starsline = parseFloat(star.droidStars.total.toFixed(2));
     const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
 
-    embed.setAuthor(`${mapinfo.fullTitle} ${play.getCompleteModString()}`, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
+    embed.setAuthor(`${mapinfo.fullTitle} ${play.getCompleteModString()} [${starsline}★ | ${pcstarsline}★]`, player.avatarURL, `https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
         .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`);
 
     const realAcc = new osudroid.Accuracy({
@@ -244,8 +244,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: 0
     });
     const notFullCombo = miss > 0 || combo < mapinfo.maxCombo;
-    embed.addField("📈 | **Information**", `🏆 ▣ ${rank} ▧ ${score} ▧ ${combo}x/${mapinfo.maxCombo}x\n🎯 ▣ ${acc}% ▧ [${n300}/${n100}/${n50}/${miss}]${notFullCombo ? ` **(FC: ${(fc_acc.value() * 100).toFixed(2)}%)**` : ""}${unstable_rate ? `\n${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms (${unstable_rate.toFixed(2)} UR)` : ""}`);
-    let performanceInformation = "";
+    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP**${replay.penalty !== 1 ? " (*penalized*)" : ""} | **${pcppline}PP** `;
 
     if (notFullCombo) {
         const fc_dpp = new osudroid.PerformanceCalculator().calculate({
@@ -268,38 +267,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         const dline = parseFloat(fc_dpp.total.toFixed(2));
         const pline = parseFloat(fc_pp.total.toFixed(2));
 
-        performanceInformation += `📱 ▣ ${starsline}★ ▧ **${ppline}pp (FC: ${dline}pp)**\n🖥️ ▣ ${pcstarsline}★ ▧ **${pcppline}pp (FC: ${pline}pp)**\n`;
-    } else {
-        performanceInformation += `📱 ▣ ${starsline}★ ▧ **${ppline}pp**\n🖥️ ▣ ${pcstarsline}★ ▧ **${pcppline}pp**\n`;
+        beatmapInformation += `(${dline}DPP, ${pline}PP for ${(fc_acc.value() * 100).toFixed(2)}% FC) `;
     }
 
-    if (replay.penalty !== 1) {
-        const noPenaltyDpp = new osudroid.PerformanceCalculator().calculate({
-            stars: star.droidStars,
-            combo,
-            accPercent: realAcc,
-            mode: osudroid.modes.droid,
-            stats
-        });
-
-        performanceInformation += `**📱 (no penalty)** ▣ **${noPenaltyDpp.total.toFixed(2)}pp`;
-
-        if (notFullCombo) {
-            const noPenaltyFCDpp = new osudroid.PerformanceCalculator().calculate({
-                stars: star.droidStars,
-                combo: mapinfo.maxCombo,
-                accPercent: fc_acc,
-                mode: osudroid.modes.droid,
-                stats
-            });
-
-            performanceInformation += ` (FC: ${noPenaltyFCDpp.total.toFixed(2)}pp)`;
-        }
-
-        performanceInformation += "**";
-    }
-
-    embed.addField("🔼 | **Difficulty and Performance**", performanceInformation);
+    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
+    embed.setDescription(beatmapInformation);
 
     message.channel.send(`✅ **| Most recent play for ${name}:**`, {embed: embed});
 };
