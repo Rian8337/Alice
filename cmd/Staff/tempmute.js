@@ -116,6 +116,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         return message.channel.send("❎ **| I'm sorry, your mute reason must be less than or equal to 1800 characters!**");
     }
 
+    if (typeof args[1] !== "string") {
+        return message.channel.send("❎ **| Hey, please tell me how long do I need to mute and who do I need to mute!**");
+    }
+
     const mutetime = getMuteSeconds(args[1]);
 
     if (!mutetime) {
