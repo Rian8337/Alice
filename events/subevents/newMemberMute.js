@@ -29,9 +29,15 @@ module.exports.run = (member, alicedb) => {
             await punishmentDb.updateOne(guildQuery, {$pull: {currentMutes: {userID: member.id}}});
             return;
         }
+        
+        const endTime = mute.muteEndTime;
+
+        if (endTime === Number.POSITIVE_INFINITY) {
+            await member.roles.add(muteRole);
+            return;
+        }
 
         // Just end mute if time left is less than 5 seconds
-        const endTime = mute.muteEndTime;
         if (endTime - Math.floor(Date.now() / 1000) < 5) {
             await punishmentDb.updateOne(guildQuery, {$pull: {currentMutes: {userID: member.id}}});
             return;
@@ -49,6 +55,7 @@ module.exports.run = (member, alicedb) => {
             return;
         }
 
+        await member.roles.add(muteRole);
         const muteEmbed = logMessage.embeds[0];
         setTimeout(async () => {
             await member.roles.remove(muteRole);
