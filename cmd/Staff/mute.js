@@ -106,36 +106,46 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             tomute.voice.kick("User muted");
         }
 
-        channel.send({embed: muteembed});
+        channel.send({embed: muteembed}).then(async msg => {
+            tomute.roles.add(muterole.id)
+                .catch(console.error);
 
-        tomute.roles.add(muterole.id).catch(console.error);
-
-        if (message.guild.id === "316545691545501706") {
-            const loungedb = alicedb.collection("loungelock");
-            loungedb.findOne({discordid: tomute.id}, (err, res) => {
-                if (err) {
-                    console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                }
-                if (res) {
-                    loungedb.updateOne({discordid: tomute.id}, {$set: {reason: "Muted permanently", expiration: Number.POSITIVE_INFINITY}}, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                        }
-                        channel.send("✅ **| Successfully locked user from lounge permanently.**");
-                    });
-                } else {
-                    loungedb.insertOne({discordid: tomute.id, reason: "Muted permanently", expiration: Number.POSITIVE_INFINITY}, err => {
-                        if (err) {
-                            console.log(err);
-                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                        }
-                        channel.send("✅ **| Successfully locked user from lounge permanently.**");
-                    });
-                }
+            const currentMutes = res.currentMutes ?? [];
+            currentMutes.push({
+                userID: tomute.id,
+                logChannelID: channel.id,
+                logMessageID: msg.id,
+                muteEndTime: Number.POSITIVE_INFINITY
             });
-        }
+            await channelDb.updateOne({guildID: message.guild.id}, {$set: {currentMutes}});
+            
+            if (message.guild.id === "316545691545501706") {
+                const loungedb = alicedb.collection("loungelock");
+                loungedb.findOne({discordid: tomute.id}, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                    }
+                    if (res) {
+                        loungedb.updateOne({discordid: tomute.id}, {$set: {reason: "Muted permanently", expiration: Number.POSITIVE_INFINITY}}, err => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                            }
+                            channel.send("✅ **| Successfully locked user from lounge permanently.**");
+                        });
+                    } else {
+                        loungedb.insertOne({discordid: tomute.id, reason: "Muted permanently", expiration: Number.POSITIVE_INFINITY}, err => {
+                            if (err) {
+                                console.log(err);
+                                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                            }
+                            channel.send("✅ **| Successfully locked user from lounge permanently.**");
+                        });
+                    }
+                });
+            }
+        });
     });
 };
 
