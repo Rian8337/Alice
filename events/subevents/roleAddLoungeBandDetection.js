@@ -20,7 +20,10 @@ module.exports.run = (newMember, alicedb) => {
 			console.log(err);
 			console.log("Unable to retrieve lounge ban data");
 		}
-		if (!res || res.expiration < Date.now()) {
+		if (!res) {
+			return;
+		}
+		if (res.expiration < Date.now()) {
 			// Delete lock permission if the lock is already expired
 			newMember.guild.channels.cache.get("667400988801368094").permissionOverwrites.get(newMember.id).delete();
 			return;
