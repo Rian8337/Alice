@@ -33,24 +33,29 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
 
     const bindDb = maindb.collection("userbind");
-    let uid = 0;
+    let uid = 0, index = 0;
 
     if (args[0]) {
         if (args[0].length < 18) {
-            uid = parseInt(args[0]);
-            if (isNaN(uid)) {
-                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+            const number = parseInt(args[0]);
+            if (isNaN(number)) {
+                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, user ID, or play index!**");
             }
-            if (uid <= 2417) {
-                return message.channel.send("❎ **| Hey, that uid is too small!**");
-            }
-            if (uid >= 500000) {
-                return message.channel.send("❎ **| Hey, that uid is too big!**");
+            if (number >= 1 && number <= 50) {
+                index = number;
+            } else {
+                uid = number;
+                if (uid <= 2417) {
+                    return message.channel.send("❎ **| Hey, that uid is too small!**");
+                }
+                if (uid >= 500000) {
+                    return message.channel.send("❎ **| Hey, that uid is too big!**");
+                }
             }
         } else {
             const ufind = args[0].replace(/[<@!>]/g, "");
             if (ufind.length !== 18) {
-                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, or user ID!**");
+                return message.channel.send("❎ **| I'm sorry, your first argument is invalid! Please enter a uid, user, user ID, or play index!**");
             }
             uid = await bindDb.findOne({discordid: ufind});
             if (!uid) {
@@ -63,6 +68,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             }
             uid = uid.uid;
         }
+    }
+
+    if (args[1]) {
+        index = osudroid.MathUtils.clamp(parseInt(args[1]) || 1, 1, 50);
     }
 
     if (!uid) {
@@ -98,9 +107,12 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     if (player.recentPlays.length === 0) {
         return message.channel.send("❎ **| I'm sorry, this player hasn't submitted any play!**");
     }
+    if (player.recentPlays.length < index) {
+        return message.channel.send("❎ **| I'm sorry, I cannot find the player's recent play in that index!**");
+    }
 
     const name = player.username;
-    const play = player.recentPlays[0];
+    const play = player.recentPlays[index - 1];
     const score = play.score.toLocaleString();
     const combo = play.combo;
     const rank = client.emojis.cache.get(rankEmote(play.rank));
@@ -111,12 +123,10 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     const hash = play.hash;
     let title = `${play.title} ${play.getCompleteModString()}`;
     
-    const footer = config.avatar_list;
-    const index = Math.floor(Math.random() * footer.length);
     const embed = new Discord.MessageEmbed()
         .setAuthor(title, player.avatarURL)
-        .setColor(message.member?.roles.color?.hexColor || 8311585)
-        .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, footer[index]);
+        .setColor(message.member?.displayHexColor || 8311585)
+        .setFooter(`Achieved on ${ptime.toUTCString()} | Alice Synthesis Thirty`, osudroid.Utils.getRandomArrayElement(config.avatar_list));
 
     const entry = [message.channel.id, hash];
     const map_index = current_map.findIndex(map => map[0] === message.channel.id);
@@ -280,7 +290,7 @@ module.exports.config = {
     name: "recent",
     aliases: "rs",
     description: "Retrieves a uid or user's most recent play.",
-    usage: "recent [uid/user]",
-    detail: "`uid`: The uid to retrieve [Integer]\n`user`: The user to retrieve [UserResolvable (mention or user ID)]",
+    usage: "recent [index/uid/user] [index]",
+    detail: "`index`: The index of the play. If specified in second argument, it will override the first argument if it's also an index. Ranging from 1-50, default is 1. Any number out of this range will be considered as uid [Integer]\n`uid`: The uid to retrieve [Integer]\n`user`: The user to retrieve [UserResolvable (mention or user ID)]",
     permission: "None"
 };
