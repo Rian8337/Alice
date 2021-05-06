@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
 
     const bindDb = maindb.collection("userbind");
-    let uid = 0, index = 0;
+    let uid = 0, index = 1;
 
     if (args[0]) {
         if (args[0].length < 18) {
