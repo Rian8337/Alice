@@ -416,7 +416,6 @@ export class Chart implements ChartInitializer {
      * Time string parsing function for axis labels.
      */
     private timeString(second: number): string {
-        second = Math.ceil(second);
-        return [Math.floor(second / 60), Math.ceil(second - Math.floor(second / 60) * 60).toString().padStart(2, "0")].join(":");
+        return new Date(1000 * Math.ceil(second)).toISOString().substr(11, 8).replace(/^[0:]+/, "");
     }
 }
