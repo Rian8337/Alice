@@ -1,5 +1,6 @@
 const { Client } = require("discord.js");
 const { Db } = require("mongodb");
+const { prefix } = require('../../config.json');
 
 /**
  * @param {Client} client 
@@ -42,7 +43,11 @@ module.exports.run = async (client, alicedb) => {
                 continue;
             }
 
-            client.commands.get("tempmute").addTemporaryMute(guildMember, alicedb, endTime * 1000 - Date.now(), currentMute.logChannelID, currentMute.logMessageID);
+            await guildMember.roles.add(muteRole, `User is still muted. Use \`${prefix}unmute\` to unmute the user.`);
+
+            if (endTime !== Number.POSITIVE_INFINITY) {
+                client.commands.get("tempmute").addTemporaryMute(guildMember, alicedb, endTime * 1000 - Date.now(), currentMute.logChannelID, currentMute.logMessageID);
+            }
         }
     }
 };
