@@ -30,6 +30,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     }
 
     const loungedb = alicedb.collection("loungelock");
+    const channel = message.guild.channels.cache.get("667400988801368094");
     const query = {discordid: user.id};
     loungedb.findOne(query, (err, res) => {
         if (err) {
@@ -39,23 +40,32 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         if (!res) {
             return message.channel.send("❎ **| I'm sorry, this user is not locked from the channel!**");
         }
+        // Only clear database entry without sending further message notifications if the lock has expired.
+        const hasExpired = (res.expiration ?? Number.POSITIVE_INFINITY) < Date.now();
+        if (hasExpired) {
+            return message.channel.send("❎ **| I'm sorry, the user's lock has expired!**");
+        }
+
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const embed = new Discord.MessageEmbed()
             .setAuthor(message.author.tag, message.author.avatarURL({dynamic: true}))
             .setFooter(`User ID: ${user.id}`, footer[index])
-            .setColor(message.member.roles.color.hexColor)
-            .setDescription(`${user} has been unlocked from <#667400988801368094>.\nReason: ${reason}`);
+            .setColor(message.member.displayHexColor)
+            .setDescription(`${user} has been unlocked from ${channel}.\nReason: ${reason}`);
 
-        const channel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
+        const managementChannel = message.guild.channels.cache.find((c) => c.name === config.management_channel);
+        channel.permissionOverwrites.get(user.id).delete();
 
         loungedb.deleteOne(query, err => {
             if (err) {
                 console.log(err);
                 return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
             }
-            message.channel.send("✅ **| User has been unlocked from <#667400988801368094>.**");
-            channel.send({embed: embed});
+            if (!hasExpired) {
+                message.channel.send(`✅ **| User has been unlocked from ${channel}.**`);
+                managementChannel.send({embed: embed});
+            }
             console.log("Lounge ban data updated");
         });
     });

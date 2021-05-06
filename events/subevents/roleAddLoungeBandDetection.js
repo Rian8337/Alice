@@ -1,26 +1,35 @@
 const Discord = require('discord.js');
+const { Db } = require('mongodb');
+const { Utils } = require('old-osu-droid');
 const config = require('../../config.json');
 
+/**
+ * @param {Discord.GuildMember} newMember 
+ * @param {Db} alicedb 
+ */
 module.exports.run = (newMember, alicedb) => {
-    if (newMember.guild.id != '316545691545501706' || newMember.roles == null) {
+    if (newMember.guild.id !== '316545691545501706') {
 		return;
 	}
-	let role = newMember.roles.cache.find((r) => r.name === 'Lounge Pass');
-	if (!role) return;
+	const role = newMember.roles.cache.find((r) => r.name === 'Lounge Pass');
+	if (!role) {
+		return;
+	}
 	alicedb.collection("loungelock").findOne({discordid: newMember.id}, (err, res) => {
 		if (err) {
 			console.log(err);
 			console.log("Unable to retrieve lounge ban data");
 		}
-		if (!res) {
+		if (!res || res.expiration < Date.now()) {
+			// Delete lock permission if the lock is already expired
+			newMember.guild.channels.cache.get("667400988801368094").permissionOverwrites.get(newMember.id).delete();
 			return;
 		}
-		newMember.roles.remove(role, "Locked from lounge channel").catch(console.error);
-		const footer = config.avatar_list;
-		const index = Math.floor(Math.random() * footer.length);
-		let embed = new Discord.MessageEmbed()
-			.setDescription(`${newMember} is locked from lounge channel!`)
-			.setFooter(`User ID: ${newMember.id}`, footer[index])
+		const { expiration } = res;
+		newMember.roles.remove(role, `Locked from lounge channel for \`${res.reason ?? "not specified"}\``).catch(console.error);
+		const embed = new Discord.MessageEmbed()
+			.setDescription(`${newMember} is locked from lounge channel!\nReason: ${res.reason ?? "Not specified"}.\n\nThis lock will ${(expiration ?? Number.POSITIVE_INFINITY) === Number.POSITIVE_INFINITY ? "not expire" : `expire at ${new Date(expiration).toUTCString()}`}.`)
+			.setFooter(`User ID: ${newMember.id}`, Utils.getRandomArrayElement(config.avatar_list))
 			.setColor("#b58d3c");
 		newMember.guild.channels.cache.find(c => c.name === config.management_channel).send({embed: embed});
 	});

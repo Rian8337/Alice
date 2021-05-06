@@ -228,13 +228,25 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                if (!res) {
-                    loungedb.insertOne({discordid: tomute.id}, err => {
+                const expirationExtend = 60 * 60 * 24 * 30 * 1000;
+                if (res) {
+                    const newExpiration = Math.max(Date.now() + expirationExtend, res.expiration + expirationExtend);
+                    loungedb.updateOne({discordid: tomute.id}, {$set: {expiration: newExpiration}}, err => {
                         if (err) {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        channel.send("✅ **| Successfully locked user from lounge.**");
+                        if (newExpiration < Number.POSITIVE_INFINITY) {
+                            channel.send("✅ **| Successfully extended user lock from lounge for 30 days.**");
+                        }
+                    });
+                } else {
+                    loungedb.insertOne({discordid: tomute.id, reason: "Muted for 6 hours or longer", expiration: Date.now() + expirationExtend}, err => {
+                        if (err) {
+                            console.log(err);
+                            return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
+                        }
+                        channel.send("✅ **| Successfully locked user from lounge for 30 days.**");
                     });
                 }
             });
