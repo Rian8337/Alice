@@ -1,4 +1,4 @@
-const { Client, TextChannel } = require("discord.js");
+const { Client } = require("discord.js");
 const { Db } = require("mongodb");
 
 /**
