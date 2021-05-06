@@ -23,7 +23,7 @@ module.exports.run = (newMember, alicedb) => {
 		if (!res) {
 			return;
 		}
-		if (res.expiration < Date.now()) {
+		if ((res.expiration ?? Number.POSITIVE_INFINITY) < Date.now()) {
 			// Delete lock permission if the lock is already expired
 			newMember.guild.channels.cache.get("667400988801368094").permissionOverwrites.get(newMember.id).delete();
 			return;
