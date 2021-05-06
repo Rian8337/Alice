@@ -157,7 +157,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-	client.events.get("message").run(client, message, maindb, alicedb, maintenance);
+	client.events.get("message").run(client, message, maindb, alicedb);
 });
 
 client.on("guildMemberAdd", member => {
