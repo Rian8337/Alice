@@ -1,7 +1,8 @@
 import { Slider } from './hitobjects/Slider';
 import { HitObject } from './hitobjects/HitObject';
 import { BreakPoint } from './timings/BreakPoint';
-import { TimingPoint } from './timings/TimingPoint';
+import { TimingControlPoint } from './timings/TimingControlPoint';
+import { DifficultyControlPoint } from './timings/DifficultyControlPoint';
 
 /**
  * Represents a beatmap with advanced information.
@@ -95,7 +96,12 @@ export class Beatmap {
     /**
      * The timing points of the beatmap.
      */
-    readonly timingPoints: TimingPoint[] = [];
+    readonly timingPoints: TimingControlPoint[] = [];
+
+    /**
+     * The difficulty timing points of the beatmap.
+     */
+    readonly difficultyTimingPoints: DifficultyControlPoint[] = [];
 
     /**
      * The break points of the beatmap.

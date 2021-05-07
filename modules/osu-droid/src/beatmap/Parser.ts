@@ -1,5 +1,7 @@
 import { Beatmap } from './Beatmap';
 import { TimingPoint } from './timings/TimingPoint';
+import { TimingControlPoint } from './timings/TimingControlPoint';
+import { DifficultyControlPoint } from './timings/DifficultyControlPoint';
 import { BreakPoint } from './timings/BreakPoint';
 import { Circle } from './hitobjects/Circle';
 import { Slider } from './hitobjects/Slider';
@@ -250,7 +252,8 @@ export class Parser {
         } else if (s.length < 2) {
             return this.warn("Ignoring malformed timing point");
         }
-        const time: number = parseFloat(this.setPosition(s[0]));
+        // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
+        const time: number = parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0);
         if (!Parser.isNumberValid(time)) {
             return this.warn("Ignoring malformed timing point: Value is too low or high");
         }
@@ -260,12 +263,16 @@ export class Parser {
             return this.warn("Ignoring malformed timing point: Value is too low or high");
         }
         const speedMultiplier = msPerBeat < 0 ? 100 / -msPerBeat : 1;
+
+        if (msPerBeat >= 0) {
+            this.map.timingPoints.push(new TimingControlPoint({
+                time: time,
+                msPerBeat: msPerBeat
+            }));
+        }
         
-        this.map.timingPoints.push(new TimingPoint({
-            // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
+        this.map.difficultyTimingPoints.push(new DifficultyControlPoint({
             time: time + (this.map.formatVersion < 5 ? 24 : 0),
-            msPerBeat: msPerBeat,
-            change: msPerBeat >= 0,
             speedMultiplier: speedMultiplier
         }));
     }
@@ -318,8 +325,8 @@ export class Parser {
                 return this.warn("Ignoring malformed slider: Value is too low or high");
             }
 
-            const speedMultiplierTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints);
-            const msPerBeatTimingPoint: TimingPoint = this.getTimingPointIndex(time, this.map.timingPoints.filter(v => v.change));
+            const speedMultiplierTimingPoint: DifficultyControlPoint = this.getTimingPoint(time, this.map.difficultyTimingPoints);
+            const msPerBeatTimingPoint: TimingControlPoint = this.getTimingPoint(time, this.map.timingPoints);
 
             let pathType: PathType = 0;
 
@@ -400,12 +407,12 @@ export class Parser {
     }
 
     /**
-     * Gets the index of the time at given timing points.
+     * Gets the timing point that applies at given time.
      * 
      * @param time The time to search.
      * @param timingPoints The timing points to search in.
      */
-    private getTimingPointIndex(time: number, timingPoints: TimingPoint[]): TimingPoint {
+    private getTimingPoint<T extends TimingPoint>(time: number, timingPoints: T[]): T {
         let currentTimingPoint: number|undefined = undefined;
 
         for (let i = 0; i < timingPoints.length; i++) {

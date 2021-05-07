@@ -9,8 +9,8 @@ import { HitObject } from '../beatmap/hitobjects/HitObject';
 import { Slider } from '../beatmap/hitobjects/Slider';
 import { SliderTick } from '../beatmap/hitobjects/sliderObjects/SliderTick';
 import { OsuAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
-import { TimingPoint } from '../beatmap/timings/TimingPoint';
 import { Precision } from '../utils/Precision';
+import { TimingControlPoint } from '../beatmap/timings/TimingControlPoint';
 
 interface OsuAPIResponse {
     readonly approved: string;
@@ -488,7 +488,7 @@ export class MapInfo {
                 const convertedBPM: number = this.convertBPM(mapStatistics);
                 let string = "**BPM**: ";
                 if (this.map) {    
-                    const uninheritedTimingPoints: TimingPoint[] = this.map.timingPoints.filter(t => t.change);
+                    const uninheritedTimingPoints: TimingControlPoint[] = this.map.timingPoints;
 
                     if (uninheritedTimingPoints.length === 1) {
                         string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
