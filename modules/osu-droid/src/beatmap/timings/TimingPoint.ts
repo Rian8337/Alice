@@ -1,44 +1,23 @@
 /**
  * Represents a timing point in a beatmap.
  */
- export class TimingPoint {
+ export abstract class TimingPoint {
     /**
-     * The time of which the timing is applied in milliseconds.
+     * The time at which the timing point takes effect in milliseconds.
      */
     readonly time: number;
 
-    /**
-     * The amount of milliseconds passed for each beat.
-     */
-    readonly msPerBeat: number;
-
-    /**
-     * The slider speed multiplier of the timing point.
-     */
-    readonly speedMultiplier: number;
-
-    /** 
-     * Whether or not the timing point does not inherit from the previous timing point.
-     */
-    readonly change: boolean;
-
     constructor(values: {
-        time: number,
-        msPerBeat?: number,
-        change?: boolean,
-        speedMultiplier: number
+        /**
+         * The time at which the timing point takes effect in milliseconds.
+         */
+        time: number
     }) {
-        this.time = values.time ?? 0;
-        this.msPerBeat = values.msPerBeat ?? -600;
-        this.change = values.change ?? true;
-        this.speedMultiplier = values.speedMultiplier;
+        this.time = values.time;
     }
 
     /**
      * Returns a string representative of the class.
      */
-    toString(): string {
-        return "{ time: " + this.time.toFixed(2) + ", "
-            + "ms_per_beat: " + this.msPerBeat.toFixed(2) + " }";
-    }
+    abstract toString(): string;
 }
