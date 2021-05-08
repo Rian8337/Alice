@@ -20,7 +20,11 @@ module.exports.run = async (client, message, args) => {
     }
 
     if (message.member.roles.highest.comparePositionTo(tokick.roles.highest) <= 0) {
-        return message.channel.send("❎ **| I'm sorry, this user cannot be kicked!**");
+        return message.channel.send("❎ **| I'm sorry, this user cannot be kicked since your role is lower than or equal to the user's highest role!**");
+    }
+
+    if (message.member.roles.highest.comparePositionTo(message.guild.members.resolve(client.user).roles.highest) <= 0) {
+        return message.channel.send("❎ **| I'm sorry, I cannot kick the user since my highest role is lower than or equal to the user's highest role!**");
     }
 
     const reason = args.slice(1).join(" ") || "Not specified.";
