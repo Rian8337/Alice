@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
         return message.channel.send("❎ **| I can't find the user. Can you make sure you have entered a correct one?**");
     }
 
-    if (message.member.roles.highest.comparePositionTo(tokick.roles.highest) < 0) {
+    if (message.member.roles.highest.comparePositionTo(tokick.roles.highest) <= 0) {
         return message.channel.send("❎ **| I'm sorry, this user cannot be kicked!**");
     }
 
