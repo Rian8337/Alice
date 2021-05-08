@@ -367,6 +367,12 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                                     return message.channel.send("❎ **| I'm sorry, you have already owned the badge!**");
                                 }
 
+                                try {
+                                    new RegExp(badgeID, "i");
+                                } catch (e) {
+                                    return message.channel.send("❎ **| I'm sorry, I cannot find a badge with that ID!**");
+                                }
+
                                 const badge = await badgeDb.findOne({id: new RegExp(badgeID, "i")});
                                 if (!badge) {
                                     return message.channel.send("❎ **| I'm sorry, I cannot find a badge with that ID!**");
