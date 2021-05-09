@@ -60,6 +60,11 @@ export class Parser {
             this.processLine(lines[i]);
         }
 
+        // Objects may be out of order *only* if a user has manually edited an .osu file.
+        // Unfortunately there are "ranked" maps in this state (example: https://osu.ppy.sh/s/594828).
+        // Sort is used to guarantee that the parsing order of hitobjects with equal start times is maintained (stably-sorted).
+        this.map.objects.sort((a, b) => {return a.startTime - b.startTime;});
+
         if (this.map.formatVersion >= 6) {
             this.applyStacking(0, this.map.objects.length - 1);
         } else {
