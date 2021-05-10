@@ -225,38 +225,35 @@ export class TwoHandChecker {
     }
 
     /**
-     * Applies penalty to difficulty hitobjects and determines
-     * whether or not the score is penalized.
+     * Applies penalty to the original star rating instance.
      */
     private applyPenalty(): void {
         const newDiffHitObjects: DifficultyHitObject[] = [];
-        const beatmaps: Beatmap[] = [];
+        const beatmaps: Beatmap[] = new Array(this.downMoveCursorInstances.length);
 
-        for (let i = 0; i < this.downMoveCursorInstances.length; ++i) {
-            const beatmap: Beatmap = Utils.deepCopy(this.map.map);
-            beatmap.objects.length = 0;
-            beatmaps.push(beatmap);
-        }
-
-        for (let i = 0; i < this.indexedHitObjects.length; ++i) {
-            const o: IndexedHitObject = this.indexedHitObjects[i];
-            beatmaps[o.cursorIndex].objects.push(o.object.object);
-        }
-
-        for (let i = 0; i < this.downMoveCursorInstances.length; ++i) {
-            if (beatmaps[i].objects.length === 0) {
-                continue;
+        this.indexedHitObjects.forEach(o => {
+            if (!beatmaps[o.cursorIndex]) {
+                const map: Beatmap = Utils.deepCopy(this.map.map);
+                map.objects.length = 0;
+                beatmaps[o.cursorIndex] = map;
             }
-            
+
+            beatmaps[o.cursorIndex].objects.push(o.object.object);
+        });
+
+        beatmaps.forEach(beatmap => {
+            if (!beatmap) {
+                return;
+            }
+
             const starRating: StarRating = Utils.deepCopy(this.map);
-            starRating.map = beatmaps[i];
+            starRating.map = beatmap;
             starRating.generateDifficultyHitObjects();
             newDiffHitObjects.push(...starRating.objects);
-        }
+        });
 
-        newDiffHitObjects.sort((a, b) => {return a.startTime - b.startTime;});
         this.map.objects.length = 0;
-        this.map.objects.push(...newDiffHitObjects);
+        this.map.objects.push(...newDiffHitObjects.sort((a, b) => {return a.startTime - b.startTime;}));
         this.map.calculateAll();
     }
 }
