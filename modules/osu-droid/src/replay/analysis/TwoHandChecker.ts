@@ -125,10 +125,9 @@ export class TwoHandChecker {
      * 
      * @param object The object to check.
      * @param data The replay data of the object.
-     * @param showLog Whether or not to show debug logs.
-     * @returns The cursor index that hits the given object, -1 if not found.
+     * @returns The cursor index that hits the given object, 0 if not found.
      */
-    private getCursorIndex(object: DifficultyHitObject, data: ReplayObjectData, showLog: boolean = false): number {
+    private getCursorIndex(object: DifficultyHitObject, data: ReplayObjectData): number {
         if (object.object instanceof Spinner || data.result === hitResult.RESULT_0) {
             return 0;
         }
@@ -167,10 +166,6 @@ export class TwoHandChecker {
                     continue;
                 }
 
-                if (showLog) {
-                    console.log(c.time[j], c.id[j], object.object.startTime, data.accuracy, maximumHitTime);
-                }
-
                 if (c.time[j - 1] > maximumHitTime) {
                     break;
                 }
@@ -201,10 +196,6 @@ export class TwoHandChecker {
 
                         hitPosition = initialPosition.add(displacement.scale(progress));
                         minDistance = Math.min(minDistance, object.object.stackedPosition.getDistance(hitPosition));
-                        
-                        if (showLog) {
-                            console.log(c.time[j], c.id[j], object.object.startTime, data.accuracy);
-                        }
                     }
                 }
             }
