@@ -60,7 +60,7 @@ export class TwoHandChecker {
     }
 
     /**
-     * Checks if a beatmap is 1-handed.
+     * Checks if a beatmap is two-handed.
      */
     check(): boolean {
         this.filterCursorInstances();
