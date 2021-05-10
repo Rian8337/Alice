@@ -1,17 +1,19 @@
-import { Circle } from "../beatmap/hitobjects/Circle";
-import { DifficultyHitObject } from "../beatmap/hitobjects/DifficultyHitObject";
-import { Spinner } from "../beatmap/hitobjects/Spinner";
-import { hitResult } from "../constants/hitResult";
-import { modes } from "../constants/modes";
-import { movementType } from "../constants/movementType";
-import { StarRating } from "../difficulty/StarRating";
-import { Vector2 } from "../mathutil/Vector2";
-import { DroidHitWindow } from "../utils/HitWindow";
-import { MapStats } from "../utils/MapStats";
-import { mods } from "../utils/mods";
-import { CursorData } from "./data/CursorData";
-import { ReplayData } from "./data/ReplayData";
-import { ReplayObjectData } from "./data/ReplayObjectData";
+import { Circle } from "../../beatmap/hitobjects/Circle";
+import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
+import { Spinner } from "../../beatmap/hitobjects/Spinner";
+import { hitResult } from "../../constants/hitResult";
+import { modes } from "../../constants/modes";
+import { movementType } from "../../constants/movementType";
+import { StarRating } from "../../difficulty/StarRating";
+import { Vector2 } from "../../mathutil/Vector2";
+import { DroidHitWindow } from "../../utils/HitWindow";
+import { MapStats } from "../../utils/MapStats";
+import { mods } from "../../utils/mods";
+import { CursorData } from "../data/CursorData";
+import { ReplayData } from "../data/ReplayData";
+import { ReplayObjectData } from "../data/ReplayObjectData";
+import { BeatmapSection } from "./data/BeatmapSection";
+import { BeatmapSectionGenerator } from './BeatmapSectionGenerator';
 
 /**
  * Information about the result of a check.
@@ -72,17 +74,7 @@ interface NerfFactor {
 /**
  * A section of a beatmap. This is used to detect dragged sections.
  */
-interface BeatmapSection {
-    /**
-     * The index of the first `DifficultyHitObject` of this beatmap section.
-     */
-    readonly firstObjectIndex: number;
-
-    /**
-     * The index of the last `DifficultyHitObject` of this beatmap section.
-     */
-    readonly lastObjectIndex: number;
-
+class ThreeFingerBeatmapSection extends BeatmapSection {
     /**
      * Whether or not this beatmap section is dragged.
      */
@@ -92,6 +84,17 @@ interface BeatmapSection {
      * The index of the cursor that is dragging this section.
      */
     dragFingerIndex: number;
+
+    constructor(values: {
+        firstObjectIndex: number,
+        lastObjectIndex: number,
+        isDragged: boolean,
+        dragFingerIndex: number
+    }) {
+        super(values.firstObjectIndex, values.lastObjectIndex);
+        this.isDragged = values.isDragged;
+        this.dragFingerIndex = values.dragFingerIndex;
+    }
 }
 
 /**
@@ -148,7 +151,7 @@ export class ThreeFingerChecker {
     /**
      * The sections of the beatmap that was cut based on `maxSectionDeltaTime` and `minSectionObjectCount`.
      */
-    private readonly beatmapSections: BeatmapSection[] = [];
+    private readonly beatmapSections: ThreeFingerBeatmapSection[] = [];
 
     /**
      * This threshold is used to filter out accidental taps.
@@ -393,40 +396,14 @@ export class ThreeFingerChecker {
      * detect dragged sections and improve detection speed.
      */
     private getBeatmapSections(): void {
-        let firstObjectIndex: number = 0;
-
-        for (let i = 0; i < this.map.objects.length - 1; ++i) {
-            const current: DifficultyHitObject = this.map.objects[i];
-            const next: DifficultyHitObject = this.map.objects[i + 1];
-
-            const realDeltaTime: number = next.object.startTime - current.object.endTime;
-
-            if (realDeltaTime >= this.maxSectionDeltaTime) {
-                // Ignore sections that don't meet object count requirement.
-                if (i - firstObjectIndex < this.minSectionObjectCount) {
-                    firstObjectIndex = i + 1;
-                    continue;
-                }
-
-                this.beatmapSections.push({
-                    firstObjectIndex,
-                    lastObjectIndex: i,
-                    isDragged: false,
-                    dragFingerIndex: -1
-                });
-
-                firstObjectIndex = i + 1;
-            }
-        }
-
-        // Don't forget to manually add the last beatmap section, which would otherwise be ignored.
-        if (this.map.objects.length - firstObjectIndex > this.minSectionObjectCount) {
-            this.beatmapSections.push({
-                firstObjectIndex,
-                lastObjectIndex: this.map.objects.length - 1,
+        const beatmapSections: BeatmapSection[] = BeatmapSectionGenerator.generateSections(this.map, this.minSectionObjectCount, this.maxSectionDeltaTime);
+        for (const beatmapSection of beatmapSections) {
+            this.beatmapSections.push(new ThreeFingerBeatmapSection({
+                firstObjectIndex: beatmapSection.firstObjectIndex,
+                lastObjectIndex: beatmapSection.lastObjectIndex,
                 isDragged: false,
                 dragFingerIndex: -1
-            });
+            }));
         }
     }
 
@@ -605,7 +582,7 @@ export class ThreeFingerChecker {
      */
     private getDetailedBeatmapSections(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
-        const newBeatmapSections: BeatmapSection[] = [];
+        const newBeatmapSections: ThreeFingerBeatmapSection[] = [];
         
         for (const beatmapSection of this.beatmapSections) {
             let inSpeedSection: boolean = false;

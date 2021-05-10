@@ -3,12 +3,11 @@ import { objectTypes } from '../constants/objectTypes';
 import { Beatmap } from '../beatmap/Beatmap';
 import { modes } from '../constants/modes';
 import { MapStats } from '../utils/MapStats';
-import { mods } from '../utils/mods';
 import { DifficultyHitObject } from '../beatmap/hitobjects/DifficultyHitObject';
 import { DifficultyHitObjectCreator } from '../difficulty/preprocessing/DifficultyHitObjectCreator';
 import { Aim } from './skills/Aim';
 import { Speed } from './skills/Speed';
-import { DifficultyValue } from './skills/Skill';
+import { Skill, DifficultyValue } from './skills/Skill';
 import { Chart } from '../utils/Chart';
 
 export class StarRating {
@@ -16,6 +15,11 @@ export class StarRating {
      * The calculated beatmap.
      */
     map: Beatmap = new Beatmap();
+
+    /**
+     * The gamemode this calculator is calculating for.
+     */
+    mode: modes = modes.osu;
 
     /**
      * The difficulty objects of the beatmap.
@@ -77,11 +81,23 @@ export class StarRating {
      */
     singlesThreshold: number = 0;
 
+    /**
+     * The map statistics of the beatmap after modifications are applied.
+     */
+    stats: MapStats = new MapStats();
+
+    /**
+     * The strain peaks of aim difficulty.
+     */
+    aimStrainPeaks: number[] = [];
+    
+    /**
+     * The strain peaks of speed difficulty.
+     */
+    speedStrainPeaks: number[] = [];
+    
     private readonly sectionLength: number = 400;
     private readonly difficultyMultiplier: number = 0.0675;
-    private aimStrainPeaks: number[] = [];
-    private speedStrainPeaks: number[] = [];
-    private speedMultiplier: number = 1;
 
     /**
      * Calculates the star rating of the specified beatmap.
@@ -136,79 +152,17 @@ export class StarRating {
         const singletapThreshold: number = this.singletapThreshold =
             params.singletapThreshold || this.singletapThreshold;
 
-        const mode: modes = params.mode || modes.osu;
-        const convertedMod: number = mods.modbitsFromString(mod);
+        this.mode = params.mode || modes.osu;
 
-        const stats: MapStats = new MapStats({
+        this.stats = new MapStats({
             cs: map.cs,
             mods: mod,
             speedMultiplier: params.stats?.speedMultiplier || 1,
             oldStatistics: params.stats?.oldStatistics || false
-        }).calculate({mode: mode});
+        }).calculate({mode: this.mode});
 
-        this.speedMultiplier = stats.speedMultiplier;
-
-        this.objects.length = 0;
-        this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
-            objects: map.objects,
-            circleSize: stats.cs as number,
-            speedMultiplier: this.speedMultiplier,
-            mode: mode
-        }));
-
-        const aimSkill: Aim = new Aim();
-        const speedSkill: Speed = new Speed();
-
-        const sectionLength: number = this.sectionLength * this.speedMultiplier;
-        let currentSectionEnd: number = Math.ceil(map.objects[0].startTime / sectionLength) * sectionLength;
-
-        this.objects.forEach(h => {
-            while (h.object.startTime > currentSectionEnd) {
-                aimSkill.saveCurrentPeak();
-                aimSkill.startNewSectionFrom(currentSectionEnd / this.speedMultiplier);
-
-                speedSkill.saveCurrentPeak();
-                speedSkill.startNewSectionFrom(currentSectionEnd / this.speedMultiplier);
-
-                currentSectionEnd += sectionLength;
-            }
-
-            aimSkill.process(h);
-            speedSkill.process(h);
-        });
-
-        aimSkill.saveCurrentPeak();
-        speedSkill.saveCurrentPeak();
-
-        this.aimStrainPeaks = aimSkill.unsortedStrainPeaks;
-        this.speedStrainPeaks = speedSkill.unsortedStrainPeaks;
-
-        const aimRating: DifficultyValue = aimSkill.difficultyValue();
-        const speedRating: DifficultyValue = speedSkill.difficultyValue();
-
-        this.aim = Math.sqrt(aimRating.difficulty) * this.difficultyMultiplier;
-        this.aimDifficulty = aimRating.total;
-        this.aimLengthBonus = this.lengthBonus(aimRating.difficulty, aimRating.total);
-
-        this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
-        this.speedDifficulty = speedRating.total;
-        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
-
-        if (convertedMod & mods.osuMods.td || mode === modes.droid) {
-            this.aim = Math.pow(this.aim, 0.8);
-        }
-
-        this.total = this.aim + this.speed;
-
-        // Total stars mixes speed and aim in such a way that
-        // heavily aim or speed focused maps get a bonus
-        switch (mode) {
-            case modes.droid:
-                this.total += Math.abs(this.speed - this.aim) * 0.4;
-                break;
-            case modes.osu:
-                this.total += Math.abs(this.speed - this.aim) * 0.5;
-        }
+        this.generateDifficultyHitObjects();
+        this.calculateAll();
 
         for (let i = 1; i < this.objects.length; ++i) {
             const obj: DifficultyHitObject = this.objects[i];
@@ -222,13 +176,136 @@ export class StarRating {
                 continue;
             }
 
-            const interval: number = (obj.object.startTime - prev.object.startTime) / stats.speedMultiplier;
+            const interval: number = (obj.object.startTime - prev.object.startTime) / this.stats.speedMultiplier;
             if (interval >= singletapThreshold) {
                 ++this.singlesThreshold;
             }
         }
 
         return this;
+    }
+
+    /**
+     * Generates difficulty hitobjects for this calculator.
+     * 
+     * @param stats Custom map statistics to apply custom speed multiplier as well as old statistics.
+     */
+    generateDifficultyHitObjects(): void {
+        this.objects.length = 0;
+        this.objects.push(...new DifficultyHitObjectCreator().generateDifficultyObjects({
+            objects: this.map.objects,
+            circleSize: this.stats.cs as number,
+            speedMultiplier: this.stats.speedMultiplier,
+            mode: this.mode
+        }));
+    }
+
+    /**
+     * Calculates the skills provided.
+     * 
+     * @param skills The skills to calculate.
+     */
+    calculateSkills(skills: Skill[]): void {
+        const sectionLength: number = this.sectionLength * this.stats.speedMultiplier;
+        let currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
+
+        this.objects.forEach(h => {
+            while (h.object.startTime > currentSectionEnd) {
+                skills.forEach(skill => {
+                    skill.saveCurrentPeak();
+                    skill.startNewSectionFrom(currentSectionEnd / this.stats.speedMultiplier);
+                });
+                currentSectionEnd += sectionLength;
+            }
+
+            skills.forEach(skill => {
+                skill.process(h);
+            });
+        });
+
+        skills.forEach(skill => {
+            skill.saveCurrentPeak();
+        });
+    }
+
+    /**
+     * Calculates the aim star rating of the beatmap and stores it in this instance.
+     */
+    calculateAim(): void {
+        const aimSkill: Aim = new Aim();
+        this.calculateSkills([aimSkill]);
+        const aimRating: DifficultyValue = aimSkill.difficultyValue();
+
+        this.aimStrainPeaks = aimSkill.unsortedStrainPeaks;
+
+        this.aim = Math.sqrt(aimRating.difficulty) * this.difficultyMultiplier;
+        this.aimDifficulty = aimRating.total;
+        this.aimLengthBonus = this.lengthBonus(aimRating.difficulty, aimRating.total);
+
+        if (this.mods.includes("TD") || this.mode === modes.droid) {
+            this.aim = Math.pow(this.aim, 0.8);
+        }
+    }
+
+    /**
+     * Calculates the speed star rating of the beatmap and stores it in this instance.
+     */
+    calculateSpeed(): void {
+        const speedSkill: Speed = new Speed();
+        this.calculateSkills([speedSkill]);
+        const speedRating: DifficultyValue = speedSkill.difficultyValue();
+
+        this.speedStrainPeaks = speedSkill.unsortedStrainPeaks;
+
+        this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
+        this.speedDifficulty = speedRating.total;
+        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
+    }
+
+    /**
+     * Calculates the total star rating of the beatmap and stores it in this instance.
+     */
+    calculateTotal(): void {
+        this.total = this.aim + this.speed;
+
+        // Total stars mixes speed and aim in such a way that
+        // heavily aim or speed focused maps get a bonus
+        switch (this.mode) {
+            case modes.droid:
+                this.total += Math.abs(this.speed - this.aim) * 0.4;
+                break;
+            case modes.osu:
+                this.total += Math.abs(this.speed - this.aim) * 0.5;
+        }
+    }
+
+    /**
+     * Calculates every star rating of the beatmap and stores it in this instance.
+     */
+    calculateAll(): void {
+        const aimSkill: Aim = new Aim();
+        const speedSkill: Speed = new Speed();
+        this.calculateSkills([aimSkill, speedSkill]);
+
+        const aimRating: DifficultyValue = aimSkill.difficultyValue();
+        const speedRating: DifficultyValue = speedSkill.difficultyValue();
+
+        this.aimStrainPeaks = aimSkill.unsortedStrainPeaks;
+        this.speedStrainPeaks = speedSkill.unsortedStrainPeaks;
+
+        this.aim = Math.sqrt(aimRating.difficulty) * this.difficultyMultiplier;
+        this.aimDifficulty = aimRating.total;
+        this.aimLengthBonus = this.lengthBonus(aimRating.difficulty, aimRating.total);
+
+        this.speed = Math.sqrt(speedRating.difficulty) * this.difficultyMultiplier;
+        this.speedDifficulty = speedRating.total;
+        this.speedLengthBonus = this.lengthBonus(speedRating.difficulty, speedRating.total);
+
+        if (this.mods.includes("TD") || this.mode === modes.droid) {
+            this.aim = Math.pow(this.aim, 0.8);
+        }
+
+        this.calculateTotal();
     }
 
     /**
@@ -243,7 +320,7 @@ export class StarRating {
                 return resolve(null);
             }
 
-            const sectionLength: number = this.sectionLength * this.speedMultiplier;
+            const sectionLength: number = this.sectionLength * this.stats.speedMultiplier;
             const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
 
             const strainInformations: {

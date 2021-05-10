@@ -11,7 +11,7 @@ import { movementType } from '../constants/movementType';
 import { HitObject } from '../beatmap/hitobjects/HitObject';
 import { hitResult } from '../constants/hitResult';
 import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
-import { ThreeFingerChecker, ThreeFingerInformation } from './ThreeFingerChecker';
+import { ThreeFingerChecker, ThreeFingerInformation } from './analysis/ThreeFingerChecker';
 
 /**
  * A replay analyzer that analyzes a replay from osu!droid.
