@@ -219,7 +219,6 @@ export class TwoHandChecker {
      * Applies penalty to the original star rating instance.
      */
     private applyPenalty(): void {
-        const newDiffHitObjects: DifficultyHitObject[] = [];
         const beatmaps: Beatmap[] = new Array(this.downMoveCursorInstances.length);
 
         this.indexedHitObjects.forEach(o => {
@@ -232,6 +231,8 @@ export class TwoHandChecker {
             beatmaps[o.cursorIndex].objects.push(o.object.object);
         });
 
+        this.map.objects.length = 0;
+
         beatmaps.forEach(beatmap => {
             if (!beatmap) {
                 return;
@@ -240,11 +241,10 @@ export class TwoHandChecker {
             const starRating: StarRating = Utils.deepCopy(this.map);
             starRating.map = beatmap;
             starRating.generateDifficultyHitObjects();
-            newDiffHitObjects.push(...starRating.objects);
+            this.map.objects.push(...starRating.objects);
         });
 
-        this.map.objects.length = 0;
-        this.map.objects.push(...newDiffHitObjects.sort((a, b) => {return a.startTime - b.startTime;}));
+        this.map.objects.sort((a, b) => {return a.startTime - b.startTime;});
         this.map.calculateAll();
     }
 }
