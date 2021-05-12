@@ -15,6 +15,8 @@ export class ReplayObjectData {
 
     /**
      * The tickset of the hitobject.
+     * 
+     * This is used to determine whether or not a slider tick is hit.
      */
     tickset: boolean[];
 
@@ -30,7 +32,9 @@ export class ReplayObjectData {
         accuracy: number,
 
         /**
-         * THe tickset of the hitobject.
+         * The tickset of the hitobject.
+         * 
+         * This is used to determine whether or not a slider tick is hit.
          */
         tickset: boolean[],
 
