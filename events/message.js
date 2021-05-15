@@ -29,7 +29,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	const disabledUtilConfiguration = channel_disabled_utils.find(v => v.channelID === message.channel.id);
 	const disabledUtils = disabledUtilConfiguration?.disabledUtils;
 	
-	if (message.embeds.length > 0) {
+	if (message.embeds.length > 0 && !maintenance) {
 		// owo bot support
 		if (message.author.id === "289066747443675143") {
 			client.subevents.get("updateMap").run(message, current_map);
@@ -54,14 +54,14 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	// 8ball
 	if (
 		(message.content.startsWith("Alice, ") || (message.author.id == '386742340968120321' && message.content.startsWith("Dear, "))) &&
-		message.content.endsWith("?") &&
+		message.content.endsWith("?") && !maintenance &&
 		(!isUtilDisabled(disabledUtils, "8ball") || message.member?.hasPermission("ADMINISTRATOR"))
 	) {
 		client.subevents.get("8ball").run(client, message, msgArray, alicedb);
 	}
 	
 	// osu! beatmap link and osu!droid profile recognition
-	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%")) {
+	if (!message.content.startsWith("&") && !message.content.startsWith(config.prefix) && !message.content.startsWith("a%") && !maintenance) {
 		client.subevents.get("osuRecognition").run(client, message, current_map, !isUtilDisabled(disabledUtils, "osuRecognition") || message.member?.hasPermission("ADMINISTRATOR"));
 		if (!isUtilDisabled(disabledUtils, "profileFetch") || message.member?.hasPermission("ADMINISTRATOR")) {
 			client.subevents.get("profileFetch").run(client, message, maindb, alicedb);
@@ -72,6 +72,7 @@ module.exports.run = (client, message, maindb, alicedb) => {
 	if (
 		!message.content.startsWith("&") &&
 		!message.content.startsWith(config.prefix) &&
+		!maintenance &&
 		(!isUtilDisabled(disabledUtils, "youtubeRecognition") || message.member?.hasPermission("ADMINISTRATOR"))
 	) {
 		client.subevents.get("youtubeRecognition").run(client, message, current_map);
