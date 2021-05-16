@@ -552,7 +552,7 @@ export class MapInfo {
     }
 
     /**
-     * Calculates the droid maximum score of the beatmap.
+     * Calculates the osu!droid maximum score of the beatmap.
      * 
      * This requires .osu file to be downloaded.
      */
