@@ -268,9 +268,9 @@ export class ReplayAnalyzer {
                     bytes.push(replayDataBuffer.readInt8(bufferCounter));
                     bufferCounter += this.BYTE_LENGTH;
                 }
-
+                // Int/int division in Java; numbers must be truncated to get actual number
                 for (let j = 0; j < len * 8; j++) {
-                    replayObjectData.tickset[j] = (bytes[len - j / 8 - 1] & 1 << (j % 8)) !== 0;
+                    replayObjectData.tickset[j] = (bytes[len - Math.trunc(j / 8) - 1] & 1 << Math.trunc(j % 8)) !== 0;
                 }
             }
 
