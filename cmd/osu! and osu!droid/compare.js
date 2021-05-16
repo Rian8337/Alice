@@ -270,7 +270,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         } else {
             // comboWithoutReset accounts for how many objects 
             // (including nested objects) were hit
-            let comboWithoutReset = collectedSliderTicks;
+            let comboWithoutReset = 0;
             let sliderMissed = 0;
     
             for (let i = 0; i < data.hitObjectData.length; ++i) {
@@ -292,7 +292,9 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                     // The first tickset is always true, even if there are no slider ticks
                     const sliderTicks = object.nestedHitObjects.filter(v => v instanceof osudroid.SliderTick).length;
                     if (sliderTicks > 0) {
-                        collectedSliderTicks += objectData.tickset.filter(Boolean).length - 1;
+                        const currentCollectedSliderTicks = Math.min(sliderTicks, objectData.tickset.filter(Boolean).length - 1);
+                        collectedSliderTicks += currentCollectedSliderTicks;
+                        comboWithoutReset += currentCollectedSliderTicks;
                     }
                 }
             }
