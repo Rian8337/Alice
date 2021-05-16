@@ -291,22 +291,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             // Full combo = all objects hit and slider ticks collected
             // Have to do all this consideration since droid has combo bug
             collectedSliderEnds = Math.max(0, mapinfo.map.sliderEnds - Math.abs(mapinfo.maxCombo - combo));
-
-            for (let i = 0; i < data.hitObjectData.length; ++i) {
-                const object = mapinfo.map.objects[i];
-                const objectData = data.hitObjectData[i];
-                if (objectData.result === osudroid.hitResult.RESULT_0) {
-                    continue;
-                }
-    
-                if (object instanceof osudroid.Slider) {
-                    // The first tickset is always true, even if there are no slider ticks
-                    const sliderTicks = object.nestedHitObjects.filter(v => v instanceof osudroid.SliderTick).length;
-                    if (sliderTicks > 0) {
-                        collectedSliderTicks += objectData.tickset.filter(Boolean).length - 1;
-                    }
-                }
-            }
+            collectedSliderTicks = mapinfo.map.sliderTicks;
         } else {
             // comboWithoutReset accounts for how many objects 
             // (including nested objects) were hit
