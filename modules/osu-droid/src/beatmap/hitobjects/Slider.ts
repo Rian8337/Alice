@@ -36,7 +36,7 @@ export class Slider extends HitObject {
     readonly velocity: number;
 
     /**
-     * The spacing between sliderticks of this slider.
+     * The spacing between slider ticks of this slider.
      */
     readonly tickDistance: number;
 
@@ -68,9 +68,23 @@ export class Slider extends HitObject {
     readonly tailCircle: TailCircle;
 
     /**
-     * The duration of the slider.
+     * The duration of this slider.
      */
     readonly duration: number;
+
+    /**
+     * The amount of slider ticks in this slider.
+     */
+    get ticks(): number {
+        return this.nestedHitObjects.filter(v => v instanceof SliderTick).length;
+    }
+
+    /**
+     * The amount of repeat points in this slider.
+     */
+    get repeatPoints(): number {
+        return this.nestedHitObjects.filter(v => v instanceof RepeatPoint).length;
+    }
 
     private readonly legacyLastTickOffset: number = 36;
     
