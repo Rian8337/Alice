@@ -313,7 +313,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                     collectedSliderEnds = mapinfo.map.sliderEnds - sliderMissed;
                 }
             } else {
-                collectedSliderEnds = mapinfo.map.sliderEnds;
+                collectedSliderEnds = Math.max(0, mapinfo.map.sliderEnds - Math.abs(mapinfo.maxCombo - combo));
             }
         }
     }
