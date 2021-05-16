@@ -140,18 +140,19 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 
         stats.oldStatistics = data.replayVersion <= 3;
 
-        const hit_object_data = data.hitObjectData;
+        const { hitObjectData } = data;
         let hit_error_total = 0;
         let total = 0;
         let _total = 0;
         let count = 0;
         let _count = 0;
 
-        for (const hit_object of hit_object_data) {
-            if (hit_object.result === osudroid.hitResult.RESULT_0) {
+        for (let i = 0; i < hitObjectData.length; ++i) {
+            const objectData = hitObjectData[i];
+            if (objectData.result === osudroid.hitResult.RESULT_0) {
                 continue;
             }
-            const accuracy = hit_object.accuracy;
+            const accuracy = objectData.accuracy;
             hit_error_total += accuracy;
             if (accuracy >= 0) {
                 total += accuracy;
@@ -162,15 +163,15 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             }
         }
         
-        const mean = hit_error_total / hit_object_data.length;
+        const mean = hit_error_total / hitObjectData.length;
 
         let std_deviation = 0;
-        for (const hit_object of hit_object_data) {
-            if (hit_object.result !== osudroid.hitResult.RESULT_0) {
-                std_deviation += Math.pow(hit_object.accuracy - mean, 2);
+        for (const hitObject of hitObjectData) {
+            if (hitObject.result !== osudroid.hitResult.RESULT_0) {
+                std_deviation += Math.pow(hitObject.accuracy - mean, 2);
             }
         }
-        unstable_rate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
+        unstable_rate = Math.sqrt(std_deviation / hitObjectData.length) * 10;
         max_error = count ? total / count : 0;
         min_error = _count ? _total / _count : 0;
     }
@@ -183,7 +184,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     }
     
     if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
-        embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
+        embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]${data ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
         return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     }
     
@@ -257,7 +258,80 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         beatmapInformation += `(${dline}DPP, ${pline}PP for ${(fc_acc.value() * 100).toFixed(2)}% FC) `;
     }
 
-    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}] ${unstable_rate ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
+    let collectedSliderTicks = 0;
+    let collectedSliderEnds = 0;
+    if (data) {
+        // Get amount of slider ticks and ends hit
+        if (data.isFullCombo) {
+            // Full combo = all objects hit and slider ticks collected
+            // Have to do all this consideration since droid has combo bug
+            collectedSliderEnds = Math.max(0, mapinfo.map.sliderEnds - Math.abs(mapinfo.maxCombo - combo));
+
+            for (let i = 0; i < data.hitObjectData.length; ++i) {
+                const object = mapinfo.map.objects[i];
+                const objectData = data.hitObjectData[i];
+                if (objectData.result === osudroid.hitResult.RESULT_0) {
+                    continue;
+                }
+    
+                if (object instanceof osudroid.Slider) {
+                    // The first tickset is always true, even if there are no slider ticks
+                    const sliderTicks = object.nestedHitObjects.filter(v => v instanceof osudroid.SliderTick).length;
+                    if (sliderTicks > 0) {
+                        collectedSliderTicks += objectData.tickset.filter(Boolean).length - 1;
+                    }
+                }
+            }
+        } else {
+            // comboWithoutReset accounts for how many objects 
+            // (including nested objects) were hit
+            let comboWithoutReset = collectedSliderTicks;
+            let sliderMissed = 0;
+    
+            for (let i = 0; i < data.hitObjectData.length; ++i) {
+                const object = mapinfo.map.objects[i];
+                const objectData = data.hitObjectData[i];
+                if (objectData.result === osudroid.hitResult.RESULT_0) {
+                    if (object instanceof osudroid.Slider) {
+                        ++sliderMissed;
+                    }
+                    continue;
+                }
+    
+                ++comboWithoutReset;
+
+                if (object instanceof osudroid.Slider) {
+                    // Account for slider repeats and ends
+                    comboWithoutReset += 1 + object.repeatPoints;
+
+                    // The first tickset is always true, even if there are no slider ticks
+                    const sliderTicks = object.nestedHitObjects.filter(v => v instanceof osudroid.SliderTick).length;
+                    if (sliderTicks > 0) {
+                        collectedSliderTicks += objectData.tickset.filter(Boolean).length - 1;
+                    }
+                }
+            }
+    
+            let comboDiff = mapinfo.maxCombo - comboWithoutReset;
+            if (comboDiff > 0) {
+                // Count misses in combo difference
+                comboDiff -= miss;
+                if (comboDiff > 0) {
+                    // If misses weren't enough, the only thing left that can deduct combo is uncollected slider ticks
+                    comboDiff = Math.max(0, comboDiff - (mapinfo.map.sliderTicks - collectedSliderTicks));
+                    // After uncollected slider ticks and misses are handled, only uncollected slider ends remain
+                    collectedSliderEnds = mapinfo.map.sliderEnds - comboDiff;
+                } else {
+                    // Missed sliders don't have their sliderends picked
+                    collectedSliderEnds = mapinfo.map.sliderEnds - sliderMissed;
+                }
+            } else {
+                collectedSliderEnds = mapinfo.map.sliderEnds;
+            }
+        }
+    }
+
+    beatmapInformation += `▸ ${acc}%\n▸ ${score} ▸ ${combo}x/${mapinfo.maxCombo}x ▸ [${n300}/${n100}/${n50}/${miss}]${data ? `\n▸ ${collectedSliderTicks}/${mapinfo.map.sliderTicks} slider ticks ▸ ${collectedSliderEnds}/${mapinfo.map.sliderEnds} slider ends\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`;
     embed.setDescription(beatmapInformation);
 
     message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
