@@ -287,58 +287,26 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let collectedSliderEnds = 0;
     if (data) {
         // Get amount of slider ticks and ends hit
-        if (data.isFullCombo) {
-            // Full combo = all objects hit and slider ticks collected
-            // Have to do all this consideration since droid has combo bug
-            collectedSliderEnds = Math.max(0, mapinfo.map.sliderEnds - Math.abs(mapinfo.maxCombo - combo));
-            collectedSliderTicks = mapinfo.map.sliderTicks;
-        } else {
-            // comboWithoutReset accounts for how many objects 
-            // (including nested objects) were hit
-            let comboWithoutReset = collectedSliderTicks;
-            let sliderMissed = 0;
-    
-            for (let i = 0; i < data.hitObjectData.length; ++i) {
-                const object = mapinfo.map.objects[i];
-                const objectData = data.hitObjectData[i];
-                if (objectData.result === osudroid.hitResult.RESULT_0) {
-                    if (object instanceof osudroid.Slider) {
-                        ++sliderMissed;
-                    }
+        for (let i = 0; i < data.hitObjectData.length; ++i) {
+            const object = mapinfo.map.objects[i];
+            const objectData = data.hitObjectData[i];
+            if (objectData.result === osudroid.hitResult.RESULT_0 || !(object instanceof osudroid.Slider)) {
+                continue;
+            }
+
+            // Exclude head circle
+            const nestedObjects = object.nestedHitObjects.slice(1);
+
+            for (let i = 0; i < nestedObjects.length; i++) {
+                if (!objectData.tickset[i]) {
                     continue;
                 }
-    
-                ++comboWithoutReset;
 
-                if (object instanceof osudroid.Slider) {
-                    // Account for slider repeats and ends
-                    comboWithoutReset += 1 + object.repeatPoints;
-
-                    // The first tickset is always true, even if there are no slider ticks
-                    const sliderTicks = object.nestedHitObjects.filter(v => v instanceof osudroid.SliderTick).length;
-                    if (sliderTicks > 0) {
-                        const currentCollectedSliderTicks = Math.min(sliderTicks, objectData.tickset.filter(Boolean).length - 1);
-                        collectedSliderTicks += currentCollectedSliderTicks;
-                        comboWithoutReset += currentCollectedSliderTicks;
-                    }
+                if (nestedObjects[i] instanceof osudroid.SliderTick) {
+                    ++collectedSliderTicks;    
+                } else if (nestedObjects[i] instanceof osudroid.TailCircle) {
+                    ++collectedSliderEnds;
                 }
-            }
-    
-            let comboDiff = mapinfo.maxCombo - comboWithoutReset;
-            if (comboDiff > 0) {
-                // Count misses in combo difference
-                comboDiff -= miss;
-                if (comboDiff > 0) {
-                    // If misses weren't enough, the only thing left that can deduct combo is uncollected slider ticks
-                    comboDiff = Math.max(0, comboDiff - (mapinfo.map.sliderTicks - collectedSliderTicks));
-                    // After uncollected slider ticks and misses are handled, only uncollected slider ends remain
-                    collectedSliderEnds = mapinfo.map.sliderEnds - comboDiff;
-                } else {
-                    // Missed sliders don't have their sliderends picked
-                    collectedSliderEnds = mapinfo.map.sliderEnds - sliderMissed;
-                }
-            } else {
-                collectedSliderEnds = Math.max(0, mapinfo.map.sliderEnds - Math.abs(mapinfo.maxCombo - combo));
             }
         }
     }
