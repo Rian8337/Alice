@@ -16,7 +16,7 @@ export class ReplayObjectData {
     /**
      * The tickset of the hitobject.
      * 
-     * This is used to determine whether or not a slider tick is hit.
+     * This is used to determine whether or not a slider event (tick/repeat/end) is hit based on the order they appear.
      */
     tickset: boolean[];
 
@@ -34,7 +34,7 @@ export class ReplayObjectData {
         /**
          * The tickset of the hitobject.
          * 
-         * This is used to determine whether or not a slider tick is hit.
+         * This is used to determine whether or not a slider event (tick/repeat/end) is hit based on the order they appear.
          */
         tickset: boolean[],
 
