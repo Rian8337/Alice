@@ -35,7 +35,7 @@ module.exports.run = async (client, message, args, maindb) => {
 		return message.channel.send("❎ **| I'm sorry, it looks like a player with such uid or username doesn't exist!**");
 	}
 
-	uid = player.uid.toString();
+	uid = player.uid;
 
 	binddb.findOne({previous_bind: {$all: [uid]}}, async (err, res) => {
 		if (err) {
