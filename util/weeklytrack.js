@@ -133,7 +133,7 @@ module.exports.run = (client, maindb, alicedb) => {
         if (!entries) {
             return;
         }
-        let bonus_winner_uid = entries[0].split(" ")[1];
+        let bonus_winner_uid = parseInt(entries[0].split(" ")[1]);
         let coin = client.emojis.cache.get("669532330980802561");
         binddb.findOne({uid: bonus_winner_uid}, (err, userres) => {
             if (err) {

@@ -53,7 +53,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| Hey, that's an invalid uid!**");
             }
 
-            query = {uid: uid.toString()};
+            query = {uid: uid};
             namedb.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);
@@ -164,7 +164,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                 return message.channel.send("❎ **| Hey, please enter a denial reason!**");
             }
             
-            query = {uid: uid.toString()};
+            query = {uid: uid};
             namedb.findOne(query, async (err, res) => {
                 if (err) {
                     console.log(err);

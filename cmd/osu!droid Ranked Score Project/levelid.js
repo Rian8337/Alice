@@ -17,7 +17,7 @@ function levelBar(levelprogress) {
  * @param {Db} alicedb 
  */
 module.exports.run = (client, message, args, maindb, alicedb) => {
-    const uid = args[0];
+    const uid = parseInt(args[0]);
     if (!uid) {
         return message.channel.send("❎ **| Hey, I don't know what uid to view!**");
     }

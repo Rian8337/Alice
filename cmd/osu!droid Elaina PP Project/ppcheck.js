@@ -63,7 +63,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (uid >= 500000) {
 					return message.channel.send("❎ **| Hey, that uid is too big!**");
 				}
-				query = {previous_bind: {$all: [uid.toString()]}};
+				query = {previous_bind: {$all: [uid]}};
 			} else {
 				const ufind = args[0].replace(/[<@!>]/g, "");
 				if (ufind.length !== 18) {

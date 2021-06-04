@@ -25,7 +25,7 @@ module.exports.run = async (client, message, args, maindb) => {
     }
 
     const binddb = maindb.collection("userbind");
-    const query = {previous_bind: {$all: [uid.toString()]}};
+    const query = {previous_bind: {$all: [uid]}};
 
     binddb.findOne(query, (err, res) => {
         if (err) {
@@ -42,7 +42,7 @@ module.exports.run = async (client, message, args, maindb) => {
         const previousBind = res.previous_bind;
 
         if (previousBind.length > 0) {
-            const index = previousBind.findIndex(v => v === uid.toString());
+            const index = previousBind.findIndex(v => v === uid);
             const removedUid = previousBind.splice(index, 1);
 
             const updateVal = {
@@ -60,7 +60,7 @@ module.exports.run = async (client, message, args, maindb) => {
                     console.log(err);
                     return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                 }
-                binddb.updateOne({discordid: user.id}, {$addToSet: {previous_bind: uid.toString()}}, err => {
+                binddb.updateOne({discordid: user.id}, {$addToSet: {previous_bind: uid}}, err => {
                     if (err) {
                         console.log(err);
                         return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");

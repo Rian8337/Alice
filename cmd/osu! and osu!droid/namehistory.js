@@ -34,7 +34,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
     }
 
     const namedb = alicedb.collection("namechange");
-    namedb.findOne({uid: uid.toString()}, (err, res) => {
+    namedb.findOne({uid: uid}, (err, res) => {
         if (err) {
             console.log(err);
             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");

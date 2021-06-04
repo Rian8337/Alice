@@ -12,7 +12,7 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have enough permission to use this command.**");
     }
 
-    const uid = args[0];
+    const uid = parseInt(args[0]);
     if (isNaN(uid)) {
         return message.channel.send("❎ **| I'm sorry, please specify a valid uid!**");
     }
