@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, maindb) => {
 	username = player.username;
 	let uid = player.uid;
 
-	maindb.collection("userbind").findOne({previous_bind: {$all: [uid.toString()]}}, (err, res) => {
+	maindb.collection("userbind").findOne({previous_bind: {$all: [uid]}}, (err, res) => {
 		if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
