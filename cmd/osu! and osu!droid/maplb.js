@@ -133,6 +133,7 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     combo,
                     accPercent: acc,
                     mode: osudroid.modes.droid,
+                    miss,
                     stats
                 }).total;
 
