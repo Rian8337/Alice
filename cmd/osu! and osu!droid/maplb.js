@@ -133,7 +133,6 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     combo,
                     accPercent: acc,
                     mode: osudroid.modes.droid,
-                    miss,
                     stats
                 }).total;
 
@@ -141,7 +140,6 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                     stars: star.pcStars,
                     combo,
                     accPercent: acc,
-                    miss,
                     mode: osudroid.modes.osu,
                     stats
                 }).total;
