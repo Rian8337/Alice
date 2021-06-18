@@ -91,9 +91,9 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
         }
         if (!res) {
 			if (args[0]) {
-				message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**")
+				message.channel.send("❎ **| I'm sorry, I cannot find any prototype pp data for that account!**")
 			} else {
-				message.channel.send("❎ **| I'm sorry, your account is not binded. You need to bind your account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
+				message.channel.send("❎ **| I'm sorry, I cannot find any prototype pp data for your account!**");
 			}
 			return;
         } 
