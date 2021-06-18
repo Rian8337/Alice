@@ -257,7 +257,6 @@ export class ThreeFingerChecker {
         this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
 
-
         this.calculateNerfFactors();
 
         const finalPenalty: number = this.calculateFinalPenalty();
