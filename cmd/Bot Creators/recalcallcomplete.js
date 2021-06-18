@@ -53,9 +53,8 @@ function isEligible(member) {
  * @param {string[]} args 
  * @param {Db} maindb 
  * @param {Db} alicedb 
- * @param {[string, string][]} current_map
  */
-module.exports.run = async (client, message, args, maindb, alicedb, current_map) => {
+module.exports.run = async (client, message, args, maindb, alicedb) => {
     if (!message.isOwner) {
         return;
     }
@@ -88,6 +87,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             let playc = 0;
 
             for await (const uid of accounts) {
+                console.log(`Now calculating uid ${uid}`);
                 const player = await osudroid.Player.getInformation({uid: uid});
 
                 const isBanned = await banDb.findOne({uid: uid});
@@ -128,7 +128,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
                             continue;
                         }
                         if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                            const isWhitelist = await whitelistDb.findOne({hashid: hash});
+                            const isWhitelist = await whitelistDb.findOne({hashid: entry.hash});
                             if (!isWhitelist) {
                                 console.log("Map is not ranked, approved, or whitelisted");
                                 continue;
