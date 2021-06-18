@@ -1,14 +1,18 @@
 import { Accuracy } from './utils/Accuracy';
-import { Aim } from './difficulty/skills/Aim';
 import { Beatmap } from './beatmap/Beatmap';
 import { BreakPoint } from './beatmap/timings/BreakPoint';
 import { Chart } from './utils/Chart';
 import { Circle } from './beatmap/hitobjects/Circle';
 import { CursorData } from './replay/data/CursorData';
-import { DifficultyHitObject } from './beatmap/hitobjects/DifficultyHitObject';
+import { DifficultyHitObject } from './difficulty/preprocessing/DifficultyHitObject';
 import { DifficultyHitObjectCreator } from './difficulty/preprocessing/DifficultyHitObjectCreator';
+import { DroidAim } from './difficulty/skills/DroidAim';
 import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
+import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
+import { DroidStarRating } from './difficulty/DroidStarRating';
+import { DroidRhythm } from './difficulty/skills/DroidRhythm';
+import { DroidTap } from './difficulty/skills/DroidTap';
 import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
 import { HitObject } from './beatmap/hitobjects/HitObject';
@@ -20,12 +24,15 @@ import { MathUtils } from './mathutil/MathUtils';
 import { modes } from './constants/modes';
 import { mods } from './utils/mods';
 import { movementType } from './constants/movementType';
+import { OsuAim } from './difficulty/skills/OsuAim';
+import { OsuPerformanceCalculator } from './difficulty/OsuPerformanceCalculator';
+import { OsuSpeed } from './difficulty/skills/OsuSpeed';
+import { OsuStarRating } from './difficulty/OsuStarRating';
 import { objectTypes } from './constants/objectTypes';
 import { Parser } from './beatmap/Parser';
 import { PathApproximator } from './utils/PathApproximator';
 import { PathType } from './constants/PathType';
 import { Precision } from './utils/Precision';
-import { PerformanceCalculator } from './difficulty/PerformanceCalculator';
 import { Player } from './osu!droid/Player';
 import { RepeatPoint } from './beatmap/hitobjects/sliderObjects/RepeatPoint';
 import { ReplayAnalyzer } from './replay/ReplayAnalyzer';
@@ -38,7 +45,6 @@ import { Slider } from './beatmap/hitobjects/Slider';
 import { SliderPath } from './utils/SliderPath';
 import { SliderTick } from './beatmap/hitobjects/sliderObjects/SliderTick';
 import { Spinner } from './beatmap/hitobjects/Spinner';
-import { StarRating } from './difficulty/StarRating';
 import { TailCircle } from './beatmap/hitobjects/sliderObjects/TailCircle';
 import { TimingPoint } from './beatmap/timings/TimingPoint';
 import { Utils } from './utils/Utils';
@@ -52,11 +58,6 @@ export = {
      * An accuracy calculator that calculates accuracy based on given parameters.
      */
     Accuracy,
-
-    /**
-     * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
-     */
-    Aim,
 
     /**
      * Represents a beatmap with advanced information.
@@ -104,6 +105,11 @@ export = {
     DifficultyHitObjectCreator,
 
     /**
+     * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
+     */
+    DroidAim,
+
+    /**
      * API request builder for osu!droid.
      */
     DroidAPIRequestBuilder,
@@ -112,6 +118,26 @@ export = {
      * Represents the hit window of osu!droid.
      */
     DroidHitWindow,
+
+    /**
+     * A performance points calculator that calculates performance points for osu!standard gamemode.
+     */
+    DroidPerformanceCalculator,
+
+    /**
+     * Represents the skill required to correctly process rhythm.
+     */
+    DroidRhythm,
+
+    /**
+     * Difficulty calculator for osu!droid gamemode.
+     */
+    DroidStarRating,
+
+    /**
+     * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
+     */
+    DroidTap,
 
     /**
      * Bitwise enum for gamemodes.
@@ -168,6 +194,11 @@ export = {
     movementType,
 
     /**
+     * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
+     */
+    OsuAim,
+
+    /**
      * API request builder for osu!standard.
      */
     OsuAPIRequestBuilder,
@@ -176,6 +207,21 @@ export = {
      * Represents the hit window of osu!standard.
      */
     OsuHitWindow,
+
+    /**
+     * A performance points calculator that calculates performance points for osu!standard gamemode.
+     */
+    OsuPerformanceCalculator,
+
+    /**
+     * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
+     */
+    OsuSpeed,
+
+    /**
+     * Difficulty calculator for osu!standard gamemode.
+     */
+    OsuStarRating,
 
     /**
      * Bitmask constant of object types. This is needed as osu! uses bits to determine object types.
@@ -201,11 +247,6 @@ export = {
      * Precision utilities.
      */
     Precision,
-
-    /**
-     * A performance points calculator that calculates performance points for osu!standard gamemode.
-     */
-    PerformanceCalculator,
 
     /**
      * Represents an osu!droid player.
@@ -279,11 +320,6 @@ export = {
      * position of a spinner is always at 256x192.
      */
     Spinner,
-    
-    /**
-     * An osu!standard difficulty calculator.
-     */
-    StarRating,
     
     /**
      * Represents the tailcircle of a slider (sliderend).

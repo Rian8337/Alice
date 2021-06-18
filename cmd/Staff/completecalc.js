@@ -75,7 +75,7 @@ function calculateLevel(score) {
  * @param {[string, string][]} current_map
  * @param {boolean} repeated
  */
-module.exports.run = (client, message, args, maindb, alicedb, current_map, repeated = false) => {
+module.exports.run = async (client, message, args, maindb, alicedb, current_map, repeated = false) => {
     if (message.channel.type !== "text") {
         return message.channel.send("❎ **| I'm sorry, this command is not available in DMs.**");
     }
@@ -85,12 +85,20 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
     if (!args[0]) {
         return message.channel.send("❎ **| Hey, please enter a valid user to recalculate!**");
     }
+
+    const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
+    if (hasRequestedIndex && !repeated) {
+        return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
+    }
+
     const ufind = args[0].replace(/[<@!>]/g, "");
     const query = {discordid: ufind};
     const bindDb = maindb.collection("userbind");
     const banDb = maindb.collection("ppban");
     const scoreDb = alicedb.collection("playerscore");
     const blacklistDb = maindb.collection("mapblacklist");
+    const whitelistDb = maindb.collection("mapwhitelist");
+
     bindDb.findOne(query, async (err, res) => {
         if (err) {
             console.log(err);
@@ -100,17 +108,6 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             return message.channel.send("❎ **| I'm sorry, that account is not binded. The user needs to bind his/her account using `a!userbind <uid/username>` first. To get uid, use `a!profilesearch <username>`.**");
         }
 
-        const uid = res.uid;
-        const username = res.username;
-        const isBanned = await banDb.findOne({uid: uid});
-        if (isBanned) {
-            return message.channel.send(`❎ **| I'm sorry, your currently binded account has been disallowed from submitting pp due to \`${isBanned.reason}\`**`);
-        }
-
-        const hasRequestedIndex = queue.findIndex(q => q.args.includes(ufind)) + 1;
-        if (hasRequestedIndex && !repeated) {
-            return message.channel.send(`❎ **| I'm sorry, this user is already in queue! Please wait for ${hasRequestedIndex} more ${hasRequestedIndex === 1 ? "player" : "players"} to be recalculated!**`);
-        }
         if (res.hasAskedForRecalc) {
             queue.shift();
             message.channel.send(`❎ **| ${message.author}, the user has requested a recalculation before!**`);
@@ -133,166 +130,182 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             }
             message.channel.send("✅ **| Calculating the user's account...**");
         }
-        
-        const pplist = res.pp ?? [];
-        let page = 0;
 
         const blacklists = await blacklistDb.find({}, {projection: {_id: 0, beatmapID: 1}}).toArray();
+        const previousBind = res.previous_bind ?? [res.uid];
 
-        await scoreDb.deleteOne({uid});
-        await scoreDb.insertOne({
-            uid,
-            username,
-            score: 0,
-            playc: 0,
-            scorelist: []
-        });
-
+        const pplist = res.pp ?? [];
         const ppEntries = [];
-        let totalScore = 0;
         let playc = 0;
-        while (true) {
-            const entries = await retrievePlays(uid, page);
-            ++page;
-            if (entries.length === 0) {
-                break;
+        let totalScore = 0;
+
+        for await (const uid of previousBind) {
+            const player = await osudroid.Player.getInformation({uid: uid});
+
+            const isBanned = await banDb.findOne({uid: uid});
+            if (isBanned) {
+                continue;
             }
 
-            const scoreEntries = [];
-            let score = 0;
-            for await (const entry of entries) {
-                const mapinfo = await osudroid.MapInfo.getInformation({hash: entry.hash});
-                if (mapinfo.error) {
-                    console.log("osu! API fetch error");
-                    continue;
-                }
-                if (!mapinfo.title) {
-                    continue;
-                }
-                if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
-                    console.log("Map is not ranked, approved, or loved");
-                    continue;
-                }
-                score += entry.score;
-                totalScore += entry.score;
-                scoreEntries.push([entry.score, entry.hash]);
-                if (!mapinfo.osuFile) {
-                    console.log("No osu file found");
-                    continue;
-                }
-                if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
-                    console.log("Map is blacklisted");
-                    continue;
-                }
-                if (entry.forcedAR !== undefined || entry.speedMultiplier !== 1) {
-                    continue;
-                }
-                const { mods, combo, miss, scoreID, accuracy } = entry;
+            const { username } = player;
 
-                const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
-                const { data } = replay;
-                if (!data) {
-                    continue;
-                }
-                await sleep(0.2);
+            let page = 0;
 
-                const stats = new osudroid.MapStats({
-                    ar: entry.forcedAR,
-                    speedMultiplier: entry.speedMultiplier,
-                    isForceAR: !isNaN(entry.forcedAR),
-                    oldStatistics: data.replayVersion <= 3
+            await scoreDb.deleteOne({uid});
+            await scoreDb.insertOne({
+                uid,
+                username,
+                score: 0,
+                playc: 0,
+                scorelist: []
+            });
+
+            while (true) {
+                const entries = await retrievePlays(uid, page);
+                ++page;
+                if (entries.length === 0) {
+                    break;
+                }
+
+                const scoreEntries = [];
+                let score = 0;
+
+                for await (const entry of entries) {
+                    const mapinfo = await osudroid.MapInfo.getInformation({hash: entry.hash});
+                    if (mapinfo.error) {
+                        console.log("osu! API fetch error");
+                        continue;
+                    }
+                    if (!mapinfo.title) {
+                        continue;
+                    }
+                    if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
+                        const isWhitelist = await whitelistDb.findOne({hashid: hash});
+                        if (!isWhitelist) {
+                            console.log("Map is not ranked, approved, or whitelisted");
+                            continue;
+                        }
+                    }
+                    score += entry.score;
+                    totalScore += entry.score;
+                    scoreEntries.push([entry.score, entry.hash]);
+                    if (!mapinfo.osuFile) {
+                        console.log("No osu file found");
+                        continue;
+                    }
+                    if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
+                        console.log("Map is blacklisted");
+                        continue;
+                    }
+                    if (entry.forcedAR !== undefined || entry.speedMultiplier !== 1) {
+                        continue;
+                    }
+                    const { mods, combo, miss, scoreID, accuracy } = entry;
+                    
+                    const replay = await new osudroid.ReplayAnalyzer({scoreID, map: mapinfo.map}).analyze();
+                    const { data } = replay;
+                    if (!data) {
+                        continue;
+                    }
+                    ++playc;
+                    await sleep(0.2);
+
+                    const stats = new osudroid.MapStats({
+                        ar: entry.forcedAR,
+                        speedMultiplier: entry.speedMultiplier,
+                        isForceAR: !isNaN(entry.forcedAR),
+                        oldStatistics: data.replayVersion <= 3
+                    });
+
+                    const realAcc = new osudroid.Accuracy({
+                        n300: data.hit300,
+                        n100: data.hit100,
+                        n50: data.hit50,
+                        nmiss: miss
+                    });
+
+                    const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
+
+                    replay.map = star.droidStars;
+                    replay.checkFor3Finger();
+
+                    const npp = new osudroid.DroidPerformanceCalculator().calculate({
+                        stars: star.droidStars,
+                        combo: combo,
+                        accPercent: realAcc,
+                        tapPenalty: replay.penalty,
+                        stats
+                    });
+                    const pp = parseFloat(npp.total.toFixed(2));
+                    const ppEntry = {
+                        hash: entry.hash,
+                        title: mapinfo.fullTitle,
+                        mods,
+                        pp,
+                        combo,
+                        accuracy,
+                        miss,
+                        scoreID
+                    };
+                    if (stats.isForceAR) {
+                        ppEntry.forcedAR = stats.ar;
+                    }
+                    if (entry.speedMultiplier !== 1) {
+                        ppEntry.speedMultiplier = stats.speedMultiplier;
+                    }
+                    if (!isNaN(pp)) {
+                        ppEntries.push(ppEntry);
+                    }
+                    ++playc;
+                }
+
+                ppEntries.sort((a, b) => {
+                    return b.pp - a.pp;
                 });
 
-                const realAcc = new osudroid.Accuracy({
-                    n300: data.hit300,
-                    n100: data.hit100,
-                    n50: data.hit50,
-                    nmiss: miss
+                if (ppEntries.length > 75) {
+                    ppEntries.splice(75);
+                }
+
+                await scoreDb.updateOne({uid}, {
+                    $inc: {
+                        score,
+                        playc: scoreEntries.length
+                    },
+                    $addToSet: {
+                        scorelist: {
+                            $each: scoreEntries
+                        }
+                    }
                 });
-
-                const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
-
-                replay.map = star.droidStars;
-                replay.checkFor3Finger();
-
-                const npp = new osudroid.PerformanceCalculator().calculate({
-                    stars: star.droidStars,
-                    combo: combo,
-                    accPercent: realAcc,
-                    mode: osudroid.modes.droid,
-                    speedPenalty: replay.penalty,
-                    stats
-                });
-                const pp = parseFloat(npp.total.toFixed(2));
-                const ppEntry = {
-                    hash: entry.hash,
-                    title: mapinfo.fullTitle,
-                    mods,
-                    pp,
-                    combo,
-                    accuracy,
-                    miss,
-                    scoreID
-                };
-                if (stats.isForceAR) {
-                    ppEntry.forcedAR = stats.ar;
-                }
-                if (entry.speedMultiplier !== 1) {
-                    ppEntry.speedMultiplier = stats.speedMultiplier;
-                }
-                if (!isNaN(pp)) {
-                    ppEntries.push(ppEntry);
-                }
-                ++playc;
             }
 
-            ppEntries.sort((a, b) => {
+            console.log("COMPLETED!");
+            ppEntries.forEach(ppEntry => {
+                const index = pplist.findIndex(v => v.title === ppEntry.title);
+                const duplicate = index !== -1;
+
+                if (duplicate) {
+                    pplist[index] = ppEntry;
+                } else {
+                    pplist.push(ppEntry);
+                }
+            });
+
+            pplist.sort((a, b) => {
                 return b.pp - a.pp;
             });
 
-            if (ppEntries.length > 75) {
-                ppEntries.splice(75);
+            if (pplist.length > 75) {
+                pplist.splice(75);
             }
-
-            await scoreDb.updateOne({uid}, {
-                $inc: {
-                    score,
-                    playc: scoreEntries.length
-                },
-                $addToSet: {
-                    scorelist: {
-                        $each: scoreEntries
-                    }
-                }
-            });
         }
-
-        console.log("COMPLETED!");
-        ppEntries.forEach(ppEntry => {
-            const index = pplist.findIndex(v => v.title === ppEntry.title);
-            const duplicate = index !== -1;
-
-            if (duplicate) {
-                pplist[index] = ppEntry;
-            } else {
-                pplist.push(ppEntry);
-            }
-        });
-
-        pplist.sort((a, b) => {
-            return b.pp - a.pp;
-        });
-
-        if (pplist.length > 75) {
-            pplist.splice(75);
-        }
-        
         const level = calculateLevel(totalScore);
         const totalPP = pplist.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index), 0);
 
         console.log(`${totalPP.toFixed(2)} pp, ${totalScore.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%))`);
                 
-        let updateVal = {
+        const updateVal = {
             $set: {
                 pptotal: totalPP,
                 pp: pplist,
@@ -301,18 +314,14 @@ module.exports.run = (client, message, args, maindb, alicedb, current_map, repea
             }
         };
 
-        bindDb.updateOne(query, updateVal, async err => {
-            if (err) {
-                console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-            }
-            message.channel.send(`✅ **| ${message.author}, recalculated <@${ufind}>'s plays: ${totalPP.toFixed(2)} pp, ${totalScore.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%)).**`);
-            queue.shift();
-            if (queue.length > 0) {
-                const nextQueue = queue[0];
-                this.run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
-            }
-        });
+        await bindDb.updateOne(query, updateVal);
+
+        message.channel.send(`✅ **| ${message.author}, recalculated <@${ufind}>'s plays: ${totalPP.toFixed(2)} pp, ${totalScore.toLocaleString()} ranked score (level ${Math.floor(level)} (${((level - Math.floor(level)) * 100).toFixed(2)}%)).**`);
+        queue.shift();
+        if (queue.length > 0) {
+            const nextQueue = queue[0];
+            this.run(nextQueue.client, nextQueue.message, nextQueue.args, nextQueue.maindb, nextQueue.alicedb, current_map, true);
+        }
     });
 };
 

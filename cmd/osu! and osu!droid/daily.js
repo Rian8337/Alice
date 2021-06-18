@@ -764,20 +764,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                                 unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                             }
-                            const npp = new osudroid.PerformanceCalculator().calculate({
+                            const npp = new osudroid.DroidPerformanceCalculator().calculate({
                                 stars: star.droidStars,
                                 combo: combo,
                                 accPercent: realAcc,
-                                mode: osudroid.modes.droid,
-                                speedPenalty: replay.penalty,
+                                tapPenalty: replay.penalty,
                                 stats
                             });
-                            const pcpp = new osudroid.PerformanceCalculator().calculate({
+                            const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
                                 stars: star.pcStars,
                                 combo: combo,
                                 accPercent: realAcc,
                                 miss: miss,
-                                mode: osudroid.modes.osu,
                                 stats
                             });
                             const dpp = parseFloat(npp.total.toFixed(2));
@@ -1343,20 +1341,18 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         n50: h50,
                         nmiss: miss
                     });
-                    const dpp = new osudroid.PerformanceCalculator().calculate({
+                    const dpp = new osudroid.DroidPerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
-                        mode: osudroid.modes.droid,
-                        speedPenalty: replay.penalty,
+                        tapPenalty: replay.penalty,
                         stats
                     }).total;
 
-                    const pp = new osudroid.PerformanceCalculator().calculate({
+                    const pp = new osudroid.OsuPerformanceCalculator().calculate({
                         stars: star.pcStars,
                         combo: combo,
                         accPercent: realAcc,
-                        mode: osudroid.modes.osu,
                         stats
                     }).total;
 
@@ -1772,19 +1768,17 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             unstableRate = Math.sqrt(std_deviation / hit_object_data.length) * 10;
                         }
 
-                        const npp = new osudroid.PerformanceCalculator().calculate({
+                        const npp = new osudroid.DroidPerformanceCalculator().calculate({
                             stars: star.droidStars,
                             combo: combo,
                             accPercent: realAcc,
-                            mode: osudroid.modes.droid,
-                            speedPenalty: replay.penalty,
+                            tapPenalty: replay.penalty,
                             stats
                         });
-                        const pcpp = new osudroid.PerformanceCalculator().calculate({
+                        const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
                             stars: star.pcStars,
                             combo: combo,
                             accPercent: realAcc,
-                            mode: osudroid.modes.osu,
                             stats
                         });
                         const dpp = parseFloat(npp.total.toFixed(2));

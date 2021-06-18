@@ -1,19 +1,11 @@
-import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
-
-export interface DifficultyValue {
-    readonly difficulty: number;
-    readonly total: number;
-}
+import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
+import { Skill } from "../base/Skill";
 
 /**
- * Base class for skill aspects.
+ * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
+ * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
  */
-export abstract class Skill {
-    /**
-     * The previous hitobjects during a section.
-     */
-    protected readonly previous: DifficultyHitObject[] = [];
-
+export abstract class OsuSkill extends Skill {
     /**
      * The strain of currently calculated hitobject.
      */
@@ -30,11 +22,6 @@ export abstract class Skill {
     readonly strainPeaks: number[] = [];
 
     /**
-     * Unsorted strain peaks for strain chart.
-     */
-    readonly unsortedStrainPeaks: number[] = [];
-
-    /**
      * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
      */
     protected abstract readonly skillMultiplier: number;
@@ -46,18 +33,41 @@ export abstract class Skill {
      */
     protected abstract readonly strainDecayBase: number;
 
+    private readonly sectionLength: number = 400;
+
+    private currentSectionEnd: number = 0;
+
     /**
-     * Angle threshold to start giving bonus.
+     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
+     * 
+     * @param current The hitobject to process.
      */
-    protected abstract readonly angleBonusBegin: number;
+    protected process(current: DifficultyHitObject): void {
+        // The first object doesn't generate a strain, so we begin with an incremented section end
+        if (this.previous.length === 0) {
+            this.currentSectionEnd = Math.ceil(current.startTime / this.sectionLength) * this.sectionLength;
+        }
+
+        while (current.startTime > this.currentSectionEnd) {
+            this.saveCurrentPeak();
+            this.startNewSectionFrom(this.currentSectionEnd);
+            this.currentSectionEnd += this.sectionLength;
+        }
+
+        this.currentStrain *= this.strainDecay(current.deltaTime);
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+
+        this.saveToHitObject(current);
+
+        this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
+    }
 
     /**
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
-    saveCurrentPeak(): void {
+    private saveCurrentPeak(): void {
         if (this.previous.length > 0) {
             this.strainPeaks.push(this.currentSectionPeak);
-            this.unsortedStrainPeaks.push(this.currentSectionPeak);
         }
     }
 
@@ -66,7 +76,7 @@ export abstract class Skill {
      * 
      * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
      */
-    startNewSectionFrom(offset: number): void {
+    private startNewSectionFrom(offset: number): void {
         // The maximum strain of the new section is not zero by default, strain decays as usual regardless of section boundaries.
         // This means we need to capture the strain level at the beginning of the new section, and use that as the initial peak level.
         if (this.previous.length > 0) {
@@ -75,55 +85,33 @@ export abstract class Skill {
     }
 
     /**
-     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-     * 
-     * @param currentObject The hitobject to process.
-     */
-    process(currentObject: DifficultyHitObject): void {
-        this.currentStrain *= this.strainDecay(currentObject.deltaTime);
-        this.currentStrain += this.strainValueOf(currentObject) * this.skillMultiplier;
-        this.saveToHitObject(currentObject);
-
-        this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
-
-        this.previous.unshift(currentObject);
-        if (this.previous.length > 2) {
-            this.previous.pop();
-        }
-    }
-
-    /**
      * Calculates the difficulty value.
      */
-    difficultyValue(): DifficultyValue {
+    difficultyValue(): number {
+        let difficulty: number = 0;
+        let weight: number = 1;
+        
         // Difficulty is the weighted sum of the highest strains from every section.
         // We're sorting from highest to lowest strain.
-        this.strainPeaks.sort((a, b) => {
+        this.strainPeaks.slice().sort((a, b) => {
             return b - a;
-        });
-
-        let difficulty: number = 0;
-        let total: number = 0;
-        let weight: number = 1;
-
-        this.strainPeaks.forEach(strain => {
-            total += Math.pow(strain, 1.2);
+        }).forEach(strain => {
             difficulty += strain * weight;
             weight *= 0.9;
         });
 
-        return {difficulty, total};
+        return difficulty;
     }
 
     /**
      * Calculates the strain value of a hitobject.
      */
-    protected abstract strainValueOf(currentObject: DifficultyHitObject): number;
+    protected abstract strainValueOf(current: DifficultyHitObject): number;
 
     /**
      * Saves the current strain to a hitobject.
      */
-    protected abstract saveToHitObject(currentObject: DifficultyHitObject): void;
+    protected abstract saveToHitObject(current: DifficultyHitObject): void;
 
     /**
      * Calculates strain decay for a specified time frame.

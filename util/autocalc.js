@@ -142,18 +142,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false, 
 			const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 			const starsline = parseFloat(star.droidStars.toString().split(" ")[0]);
 			const pcstarsline = parseFloat(star.pcStars.toString().split(" ")[0]);
-			const npp = new osudroid.PerformanceCalculator().calculate({
+			const npp = new osudroid.DroidPerformanceCalculator().calculate({
 				stars: star.droidStars,
 				combo: combo,
 				accPercent: realAcc,
-				mode: osudroid.modes.droid,
 				stats
 			});
-			const pcpp = new osudroid.PerformanceCalculator().calculate({
+			const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
 				stars: star.pcStars,
 				combo: combo,
 				accPercent: realAcc,
-				mode: osudroid.modes.osu,
 				stats
 			});
 			const ppline = parseFloat(npp.toString().split(" ")[0]);
@@ -236,18 +234,16 @@ module.exports.run = async (client, message, args, current_map, mapset = false, 
 	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 	const starsline = parseFloat(star.droidStars.toString().split(" ")[0]);
 	const pcstarsline = parseFloat(star.pcStars.toString().split(" ")[0]);
-	const npp = new osudroid.PerformanceCalculator().calculate({
+	const npp = new osudroid.DroidPerformanceCalculator().calculate({
 		stars: star.droidStars,
 		combo: combo,
 		accPercent: realAcc,
-		mode: osudroid.modes.droid,
 		stats
 	});
-	const pcpp = new osudroid.PerformanceCalculator().calculate({
+	const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: realAcc,
-		mode: osudroid.modes.osu,
 		stats
 	});
 	const ppline = parseFloat(npp.toString().split(" ")[0]);
@@ -271,10 +267,10 @@ module.exports.run = async (client, message, args, current_map, mapset = false, 
 
 	let string = '';
 	if (ndetail) {
-		string += `Raw droid pp: ${npp.toString()}\n`;
+		string += `Raw droid stars: ${star.droidStars.toString()}\nRaw droid pp: ${npp.toString()}\n`;
 	}
 	if (pcdetail) {
-		string += `Raw PC pp: ${pcpp.toString()}`;
+		string += `Raw PC stars: ${star.pcStars.toString()}\nRaw PC pp: ${pcpp.toString()}`;
 	}
 	message.channel.send(string, {embed: embed}).catch(console.error);
 };

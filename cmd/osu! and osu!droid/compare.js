@@ -205,20 +205,18 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: miss
     });
 
-    const npp = new osudroid.PerformanceCalculator().calculate({
+    const npp = new osudroid.DroidPerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.droid,
-        speedPenalty: replay.penalty,
+        tapPenalty: replay.penalty,
         stats
     });
 
-    const pcpp = new osudroid.PerformanceCalculator().calculate({
+    const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: combo,
         accPercent: realAcc,
-        mode: osudroid.modes.osu,
         stats
     });
 
@@ -235,20 +233,18 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
     let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP**${replay.penalty !== 1 ? " (*penalized*)" : ""} | **${pcppline}PP** `;
 
     if (notFullCombo) {
-        const fc_dpp = new osudroid.PerformanceCalculator().calculate({
+        const fc_dpp = new osudroid.DroidPerformanceCalculator().calculate({
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            mode: osudroid.modes.droid,
-            speedPenalty: replay.penalty,
+            tapPenalty: replay.penalty,
             stats
         });
 
-        const fc_pp = new osudroid.PerformanceCalculator().calculate({
+        const fc_pp = new osudroid.OsuPerformanceCalculator().calculate({
             stars: star.pcStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            mode: osudroid.modes.osu,
             stats
         });
 

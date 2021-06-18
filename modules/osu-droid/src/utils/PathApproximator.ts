@@ -131,9 +131,9 @@ export class PathApproximator {
         const b: Vector2 = controlPoints[1];
         const c: Vector2 = controlPoints[2];
 
-        const aSq: number = Math.pow(b.subtract(c).getLength(), 2);
-        const bSq: number = Math.pow(a.subtract(c).getLength(), 2);
-        const cSq: number = Math.pow(a.subtract(b).getLength(), 2);
+        const aSq: number = Math.pow(b.subtract(c).length, 2);
+        const bSq: number = Math.pow(a.subtract(c).length, 2);
+        const cSq: number = Math.pow(a.subtract(b).length, 2);
 
         // If we have a degenerate triangle where a side-length is almost zero, then give up and fall
         // back to a more numerically stable method.
@@ -157,7 +157,7 @@ export class PathApproximator {
         const dA: Vector2 = a.subtract(center);
         const dC: Vector2 = c.subtract(center);
 
-        const r: number = dA.getLength();
+        const r: number = dA.length;
 
         const thetaStart: number = Math.atan2(dA.y, dA.x);
         let thetaEnd: number = Math.atan2(dC.y, dC.x);
@@ -228,7 +228,7 @@ export class PathApproximator {
 
             const final: Vector2 = prev.subtract(current.scale(2)).add(next);
 
-            if (Math.pow(final.getLength(), 2) > Math.pow(this.bezierTolerance, 2) * 4) {
+            if (Math.pow(final.length, 2) > Math.pow(this.bezierTolerance, 2) * 4) {
                 return false;
             }
         }

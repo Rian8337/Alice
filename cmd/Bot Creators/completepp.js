@@ -81,13 +81,12 @@ async function calculatePP(ppentries, entry, cb) {
     replay.checkFor3Finger();
     const accPercent = entry.accuracy;
     
-    const npp = new osudroid.PerformanceCalculator().calculate({
+    const npp = new osudroid.DroidPerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
         miss: miss,
-        mode: osudroid.modes.droid,
-        speedPenalty: replay.penalty,
+        tapPenalty: replay.penalty,
         stats
     });
     

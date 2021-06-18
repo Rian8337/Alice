@@ -1,18 +1,17 @@
-import { Skill } from './Skill';
-import { modes } from '../../constants/modes';
-import { DifficultyHitObject } from '../../beatmap/hitobjects/DifficultyHitObject';
+import { OsuSkill } from './OsuSkill';
+import { DifficultyHitObject } from '../preprocessing/DifficultyHitObject';
 import { Spinner } from '../../beatmap/hitobjects/Spinner';
 
 /**
  * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
  */
-export class Speed extends Skill {
+export class OsuSpeed extends OsuSkill {
     /**
      * Spacing threshold for a single hitobject spacing.
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
-    protected readonly angleBonusBegin: number = 5 * Math.PI / 6;
+    private readonly angleBonusBegin: number = 5 * Math.PI / 6;
     protected readonly skillMultiplier: number = 1400;
     protected readonly strainDecayBase: number = 0.3;
 

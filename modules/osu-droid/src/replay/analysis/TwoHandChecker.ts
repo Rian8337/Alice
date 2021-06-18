@@ -1,10 +1,10 @@
 import { Vector2 } from "../../mathutil/Vector2";
-import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
+import { DifficultyHitObject } from "../../difficulty/preprocessing/DifficultyHitObject";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { hitResult } from "../../constants/hitResult";
 import { modes } from "../../constants/modes";
 import { movementType } from "../../constants/movementType";
-import { StarRating } from "../../difficulty/StarRating";
+import { DroidStarRating } from "../../difficulty/DroidStarRating";
 import { DroidHitWindow } from "../../utils/HitWindow";
 import { MapStats } from "../../utils/MapStats";
 import { mods } from "../../utils/mods";
@@ -15,6 +15,11 @@ import { IndexedHitObject } from "./objects/IndexedHitObject";
 import { Beatmap } from "../../beatmap/Beatmap";
 import { Utils } from "../../utils/Utils";
 
+interface CursorInformation {
+    readonly cursorIndex: number;
+    readonly hitTimeDiff: number;
+}
+
 /**
  * Utility to check whether or not a beatmap is two-handed.
  */
@@ -22,7 +27,7 @@ export class TwoHandChecker {
     /**
      * The beatmap that is being analyzed.
      */
-    readonly map: StarRating;
+    readonly map: DroidStarRating;
 
     /**
      * The data of the replay.
@@ -45,10 +50,18 @@ export class TwoHandChecker {
     private readonly hitWindow: DroidHitWindow;
 
     /**
+     * The minimum count of a cursor index occurrence to be valid.
+     * 
+     * This is used to prevent excessive penalty by splitting the beatmap into
+     * those that do not worth any strain.
+     */
+    private readonly minCursorIndexCount: number = 5;
+
+    /**
      * @param map The beatmap to analyze.
      * @param data The data of the replay.
      */
-    constructor(map: StarRating, data: ReplayData) {
+    constructor(map: DroidStarRating, data: ReplayData) {
         this.map = map;
         this.data = data;
 
@@ -111,12 +124,43 @@ export class TwoHandChecker {
     private indexHitObjects(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
+        const indexes: number[] = [];
 
         for (let i = 0; i < this.map.objects.length; ++i) {
             const current: DifficultyHitObject = objects[i];
             const currentData: ReplayObjectData = objectData[i];
+            const index: number = this.getCursorIndex(current, currentData);
             
-            this.indexedHitObjects.push(new IndexedHitObject(current, this.getCursorIndex(current, currentData)));
+            indexes.push(index);
+            this.indexedHitObjects.push(new IndexedHitObject(current, index));
+        }
+
+        console.log(indexes.filter(v => v !== -1).length, "cursors found,", indexes.filter(v => v === -1).length, "not found");
+
+        const indexCounts: number[] = Utils.initializeArray(this.downMoveCursorInstances.length, 0);
+        for (const index of indexes) {
+            if (index === -1) {
+                continue;
+            }
+            ++indexCounts[index];
+        }
+        
+        const mainCursorIndex = indexCounts.indexOf(Math.max(...indexCounts));
+        const ignoredCursorIndexes: number[] = [];
+        for (let i = 0; i < indexCounts.length; ++i) {
+            if (indexCounts[i] < this.minCursorIndexCount) {
+                ignoredCursorIndexes.push(i);
+            }
+        }
+
+        this.indexedHitObjects.forEach(indexedHitObject => {
+            if (indexedHitObject.cursorIndex === -1 || ignoredCursorIndexes.includes(indexedHitObject.cursorIndex)) {
+                indexedHitObject.cursorIndex = mainCursorIndex;
+            }
+        });
+
+        for (let i = 0; i < this.downMoveCursorInstances.length; ++i) {
+            console.log("Index", i, "count:", indexes.filter(v => v === i).length);
         }
     }
 
@@ -125,11 +169,11 @@ export class TwoHandChecker {
      * 
      * @param object The object to check.
      * @param data The replay data of the object.
-     * @returns The cursor index that hits the given object, 0 if not found.
+     * @returns The cursor index that hits the given object, -1 if the index is not found, the object is a spinner, or the object was missed.
      */
     private getCursorIndex(object: DifficultyHitObject, data: ReplayObjectData): number {
         if (object.object instanceof Spinner || data.result === hitResult.RESULT_0) {
-            return 0;
+            return -1;
         }
 
         const isPrecise: boolean = this.data.convertedMods.includes("PR");
@@ -145,15 +189,16 @@ export class TwoHandChecker {
                 hitWindowLength = this.hitWindow.hitWindowFor50(isPrecise);
         }
 
-        const maximumHitTime: number = object.object.startTime + hitWindowLength;
-        const minimumHitTime: number = object.object.startTime - hitWindowLength;
+        const hitTime: number = object.object.startTime;
+        const maximumHitTime: number = hitTime + hitWindowLength;
+        const minimumHitTime: number = hitTime - hitWindowLength;
 
-        const cursorDistances: number[] = [];
-
+        const cursorInformations: CursorInformation[] = [];
         for (let i = 0; i < this.downMoveCursorInstances.length; ++i) {
             const c: CursorData = this.downMoveCursorInstances[i];
 
             let minDistance: number = Number.POSITIVE_INFINITY;
+            let minHitTime: number = 0;
 
             for (let j = 0; j < c.size; ++j) {
                 if (c.time[j] < minimumHitTime) {
@@ -175,6 +220,12 @@ export class TwoHandChecker {
                     y: c.y[j]
                 });
 
+                let distanceToObject: number = object.object.stackedPosition.getDistance(hitPosition);
+                if (minDistance > distanceToObject) {
+                    minDistance = distanceToObject;
+                    minHitTime = c.time[j];
+                }
+
                 minDistance = Math.min(minDistance, object.object.stackedPosition.getDistance(hitPosition));
 
                 if (c.id[j + 1] === movementType.MOVE || c.id[j] === movementType.MOVE) {
@@ -195,24 +246,30 @@ export class TwoHandChecker {
                         const progress: number = (mSecPassed - c.time[j]) / (c.time[j + 1] - c.time[j]);
 
                         hitPosition = initialPosition.add(displacement.scale(progress));
-                        minDistance = Math.min(minDistance, object.object.stackedPosition.getDistance(hitPosition));
+                        distanceToObject = object.object.stackedPosition.getDistance(hitPosition);
+                        if (minDistance > distanceToObject) {
+                            minDistance = distanceToObject;
+                            minHitTime = mSecPassed;
+                        }
                     }
                 }
             }
 
-            cursorDistances.push(minDistance);
-        }
-
-        let minDistance: number = Number.POSITIVE_INFINITY;
-        let hitIndex: number = -1;
-        for (let i = 0; i < cursorDistances.length; ++i) {
-            if (minDistance > cursorDistances[i]) {
-                minDistance = cursorDistances[i];
-                hitIndex = i;
+            if (minDistance <= object.radius) {
+                cursorInformations.push({
+                    cursorIndex: i,
+                    hitTimeDiff: Math.abs(minHitTime - hitTime)
+                });
             }
         }
 
-        return hitIndex;
+        if (cursorInformations.length === 0) {
+            return -1;
+        }
+
+        // Now we look at which cursor is closest to hit time
+        const minHitTimeDiff: number = Math.min(...cursorInformations.map(v => {return v.hitTimeDiff;}));
+        return <number> cursorInformations.find(c => c.hitTimeDiff === minHitTimeDiff)?.cursorIndex;
     }
 
     /**
@@ -238,9 +295,11 @@ export class TwoHandChecker {
                 return;
             }
 
-            const starRating: StarRating = Utils.deepCopy(this.map);
+            const starRating: DroidStarRating = Utils.deepCopy(this.map);
             starRating.map = beatmap;
-            starRating.generateDifficultyHitObjects();
+            starRating.generateDifficultyHitObjects(modes.droid);
+            starRating.objects[0].deltaTime = starRating.objects[0].object.startTime - this.indexedHitObjects[0].object.object.startTime;
+            starRating.objects[0].strainTime = Math.max(50, starRating.objects[0].deltaTime);
             this.map.objects.push(...starRating.objects);
         });
 

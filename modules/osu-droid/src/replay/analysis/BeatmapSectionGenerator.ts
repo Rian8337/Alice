@@ -1,5 +1,5 @@
-import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
-import { StarRating } from "../../difficulty/StarRating";
+import { DifficultyHitObject } from "../../difficulty/preprocessing/DifficultyHitObject";
+import { StarRating } from "../../difficulty/base/StarRating";
 import { BeatmapSection } from "./data/BeatmapSection";
 
 /**

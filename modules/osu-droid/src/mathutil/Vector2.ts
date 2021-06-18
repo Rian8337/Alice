@@ -49,9 +49,9 @@ export class Vector2 {
     }
 
     /**
-     * Gets the length of the vector.
+     * The length of the vector.
      */
-    getLength(): number {
+    get length(): number {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
@@ -82,7 +82,7 @@ export class Vector2 {
      * Normalizes the vector.
      */
     normalize(): void {
-        const length: number = this.getLength();
+        const length: number = this.length;
         this.x /= length;
         this.y /= length;
     }

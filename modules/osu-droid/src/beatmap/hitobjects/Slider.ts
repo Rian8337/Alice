@@ -97,7 +97,8 @@ export class Slider extends HitObject {
         speedMultiplier: number,
         msPerBeat: number,
         mapSliderVelocity: number,
-        mapTickRate: number
+        mapTickRate: number,
+        tickDistanceMultiplier: number
     }) {
         super(values);
         // Basically equal to span count
@@ -107,7 +108,7 @@ export class Slider extends HitObject {
 
         const scoringDistance: number = 100 * values.mapSliderVelocity * values.speedMultiplier;
         this.velocity = scoringDistance / values.msPerBeat;
-        this.tickDistance = scoringDistance / values.mapTickRate;
+        this.tickDistance = scoringDistance / values.mapTickRate * values.tickDistanceMultiplier;
 
         this.endTime = this.startTime + this.repetitions * this.path.expectedDistance / this.velocity;
         this.duration = this.endTime - this.startTime;

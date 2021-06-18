@@ -1,10 +1,10 @@
 import { Circle } from "../../beatmap/hitobjects/Circle";
-import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
+import { DifficultyHitObject } from "../../difficulty/preprocessing/DifficultyHitObject";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { hitResult } from "../../constants/hitResult";
 import { modes } from "../../constants/modes";
 import { movementType } from "../../constants/movementType";
-import { StarRating } from "../../difficulty/StarRating";
+import { DroidStarRating } from "../../difficulty/DroidStarRating";
 import { Vector2 } from "../../mathutil/Vector2";
 import { DroidHitWindow } from "../../utils/HitWindow";
 import { MapStats } from "../../utils/MapStats";
@@ -12,8 +12,8 @@ import { mods } from "../../utils/mods";
 import { CursorData } from "../data/CursorData";
 import { ReplayData } from "../data/ReplayData";
 import { ReplayObjectData } from "../data/ReplayObjectData";
+import { BeatmapSectionGenerator } from "./BeatmapSectionGenerator";
 import { BeatmapSection } from "./data/BeatmapSection";
-import { BeatmapSectionGenerator } from './BeatmapSectionGenerator';
 
 /**
  * Information about the result of a check.
@@ -47,6 +47,16 @@ interface AccurateBreakPoint {
 }
 
 /**
+ * Used to store cursor informations that are placed in a relatively same position.
+ */
+interface CursorVectorSimilarity {
+    vector: Vector2;
+    count: number;
+
+    lastTime: number;
+}
+
+/**
  * Contains information about factors to nerf, which will be summed in the end.
  */
 interface NerfFactor {
@@ -64,11 +74,6 @@ interface NerfFactor {
      * Nerf factor based on how much a section is 3-fingered.
      */
     readonly fingerFactor: number;
-    
-    /**
-     * The amount of objects that were 3-fingered.
-     */
-    readonly objectCount: number;
 }
 
 /**
@@ -104,7 +109,7 @@ export class ThreeFingerChecker {
     /**
      * The beatmap to analyze.
      */
-    readonly map: StarRating;
+    readonly map: DroidStarRating;
 
     /**
      * The data of the replay.
@@ -116,10 +121,32 @@ export class ThreeFingerChecker {
      * 
      * Increasing this number will result in less sections being flagged.
      */
-    private readonly strainThreshold: number = 200;
+    private readonly strainThreshold: number = 30;
 
     /**
-     * The amount of notes that has a speed strain exceeding `strainThreshold`.
+     * The distance threshold between cursors to assume that two cursors are
+     * actually pressed with 1 finger in osu!pixels.
+     * 
+     * This is used to prevent cases where a player would lift their finger
+     * too fast to the point where the 4th cursor instance or beyond is recorded
+     * as 1st, 2nd, or 3rd cursor instance.
+     */
+    private readonly cursorDistancingDistanceThreshold: number = 60;
+
+    /**
+     * The threshold for the amount of cursors that are assumed to be pressed
+     * by a single finger.
+     */
+    private readonly cursorDistancingCountThreshold: number = 10;
+
+    /**
+     * The threshold for the time difference of cursors that are assumed to be pressed
+     * by a single finger, in milliseconds.
+     */
+    private readonly cursorDistancingTimeThreshold: number = 1000;
+
+    /**
+     * The amount of notes that has a tap strain exceeding `strainThreshold`.
      */
     private readonly strainNoteCount: number;
 
@@ -160,7 +187,7 @@ export class ThreeFingerChecker {
      * will also increase the chance of 3-fingered plays getting out from
      * being flagged.
      */
-    private readonly accidentalTapThreshold: number = 400;
+    private readonly accidentalTapThreshold: number = 500;
 
     /**
      * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
@@ -189,7 +216,7 @@ export class ThreeFingerChecker {
      * @param map The beatmap to analyze.
      * @param data The data of the replay.
      */
-    constructor(map: StarRating, data: ReplayData) {
+    constructor(map: DroidStarRating, data: ReplayData) {
         this.map = map;
         this.data = data;
 
@@ -197,8 +224,10 @@ export class ThreeFingerChecker {
         const droidModNoSpeedMod: string = mods.pcToDroid(this.map.mods).replace(speedModRegex, "");
         const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
 
-        this.hitWindow = new DroidHitWindow(stats.od as number);
-        this.strainNoteCount = map.objects.filter(v => v.speedStrain >= this.strainThreshold).length;
+        this.hitWindow = new DroidHitWindow(<number> stats.od);
+
+        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.tapStrain >= this.strainThreshold);
+        this.strainNoteCount = strainNotes.length;
     }
 
     /**
@@ -228,11 +257,6 @@ export class ThreeFingerChecker {
         this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
 
-        // Recheck if there are less than
-        // or equal to 3 filled cursor instances.
-        if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
-            return { is3Finger: false, penalty: 1 };
-        }
 
         this.calculateNerfFactors();
 
@@ -242,7 +266,7 @@ export class ThreeFingerChecker {
     }
 
     /**
-     * Gets the accurate break points.
+     * Generates a new set of "accurate break points".
      * 
      * This is done to increase detection accuracy since break points do not start right at the
      * start of the hitobject before it and do not end right at the first hitobject after it.
@@ -585,18 +609,18 @@ export class ThreeFingerChecker {
         const newBeatmapSections: ThreeFingerBeatmapSection[] = [];
         
         for (const beatmapSection of this.beatmapSections) {
-            let inSpeedSection: boolean = false;
+            let inTapSection: boolean = false;
             let newFirstObjectIndex = beatmapSection.firstObjectIndex;
 
             for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
-                if (!inSpeedSection && objects[i].speedStrain >= this.strainThreshold) {
-                    inSpeedSection = true;
+                if (!inTapSection && objects[i].tapStrain >= this.strainThreshold) {
+                    inTapSection = true;
                     newFirstObjectIndex = i;
                     continue;
                 }
 
-                if (inSpeedSection && objects[i].speedStrain < this.strainThreshold) {
-                    inSpeedSection = false;
+                if (inTapSection && objects[i].tapStrain < this.strainThreshold) {
+                    inTapSection = false;
                     newBeatmapSections.push({
                         firstObjectIndex: newFirstObjectIndex,
                         lastObjectIndex: i,
@@ -607,7 +631,7 @@ export class ThreeFingerChecker {
             }
 
             // Don't forget to manually add the last beatmap section, which would otherwise be ignored.
-            if (inSpeedSection) {
+            if (inTapSection) {
                 newBeatmapSections.push({
                     firstObjectIndex: newFirstObjectIndex,
                     lastObjectIndex: beatmapSection.lastObjectIndex,
@@ -648,11 +672,11 @@ export class ThreeFingerChecker {
             if (cursorInstance.size <= Math.ceil(objects.length / this.accidentalTapThreshold) && cursorInstance.size / totalCursorAmount < this.threeFingerRatioThreshold * 2) {
                 --filledCursorAmount;
                 for (const property in cursorInstance) {
-                    const prop = property as keyof CursorData;
+                    const prop = <keyof CursorData> property;
                     if (Array.isArray(cursorInstance[prop])) {
-                        (cursorInstance[prop] as number[]).length = 0;
+                        (<number[]> cursorInstance[prop]).length = 0;
                     } else {
-                        (cursorInstance[prop] as number) = 0;
+                        (<number> cursorInstance[prop]) = 0;
                     }
                 }
             }
@@ -670,8 +694,8 @@ export class ThreeFingerChecker {
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
         const isPrecise: boolean = this.data.convertedMods.includes("PR");
 
-        // In here, we only filter cursor instances that are above the strain threshold
-        // this minimalizes the amount of cursor instances to analyze.
+        // We only filter cursor instances that are above the strain threshold.
+        // This minimalizes the amount of cursor instances to analyze.
         for (const beatmapSection of this.beatmapSections) {
             const dragIndex: number = beatmapSection.dragFingerIndex;
 
@@ -701,6 +725,10 @@ export class ThreeFingerChecker {
                 }
             });
             const cursorAmounts: number[] = [];
+            const cursorVectorTimes: {
+                vector: Vector2,
+                time: number
+            }[] = [];
             for (let i = 0; i < this.downCursorInstances.length; ++i) {
                 // Do not include drag cursor instance.
                 if (i === dragIndex) {
@@ -711,6 +739,10 @@ export class ThreeFingerChecker {
                 for (let j: number = 0; j < cursorData.size; ++j) {
                     if (cursorData.time[j] >= startTime && cursorData.time[j] <= endTime) {
                         ++amount;
+                        cursorVectorTimes.push({
+                            vector: new Vector2({x: cursorData.x[j], y: cursorData.y[j]}),
+                            time: cursorData.time[j]
+                        });
                     }
                 }
                 cursorAmounts.push(amount);
@@ -727,14 +759,46 @@ export class ThreeFingerChecker {
                 cursorAmounts.slice(fingerSplitIndex).reduce((acc, value) => acc + value, 0) /
                 cursorAmounts.slice(0, fingerSplitIndex).reduce((acc, value) => acc + value, 0);
 
-            if (threeFingerRatio > this.threeFingerRatioThreshold) {
-                // Strain factor applies more penalty for high strain sections.
+            const similarPresses: CursorVectorSimilarity[] = [];
+
+            for (const cursorVectorTime of cursorVectorTimes) {
+                const pressIndex: number = similarPresses.findIndex(v => v.vector.getDistance(cursorVectorTime.vector) <= this.cursorDistancingDistanceThreshold);
+
+                if (pressIndex !== -1) {
+                    if (cursorVectorTime.time - similarPresses[pressIndex].lastTime >= this.cursorDistancingTimeThreshold) {
+                        similarPresses.splice(pressIndex, 1);
+                        similarPresses.push({
+                            vector: cursorVectorTime.vector,
+                            count: 1,
+                            lastTime: cursorVectorTime.time
+                        });
+                        continue;
+                    }
+                    similarPresses[pressIndex].vector = cursorVectorTime.vector;
+                    ++similarPresses[pressIndex].count;
+                } else {
+                    similarPresses.push({
+                        vector: cursorVectorTime.vector,
+                        count: 1,
+                        lastTime: cursorVectorTime.time
+                    });
+                }
+            }
+
+            // Sort by highest count; assume the order is 3rd, 4th, 5th, ... finger
+            const validPresses: CursorVectorSimilarity[] = similarPresses
+                .filter(v => v.count >= this.cursorDistancingCountThreshold)
+                .sort((a, b) => {return b.count - a.count;})
+                .slice(2);
+
+            if (threeFingerRatio > this.threeFingerRatioThreshold || validPresses.length > 0) {
+                // Strain factor
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
                 const strainFactor: number = Math.sqrt(
                     objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex)
-                    .map(v => {return v.speedStrain;})
+                    .map(v => {return v.tapStrain;})
                     .sort((a, b) => {return b - a;})
-                    .reduce((acc, value, index) => acc + value * Math.pow(0.9, index) / this.strainThreshold, 0)
+                    .reduce((acc, value) => acc + value / this.strainThreshold, 0)
                 );
 
                 // We can ignore the first 3 (2 for drag) filled cursor instances
@@ -742,10 +806,18 @@ export class ThreeFingerChecker {
                 const threeFingerCursorAmounts: number[] = cursorAmounts.slice(fingerSplitIndex).filter(amount => amount > 0);
 
                 // Finger factor applies more penalty if more fingers were used.
-                const fingerFactor: number = threeFingerCursorAmounts.reduce((acc, value, index) =>
-                    acc + Math.pow((index + 1) * value * objectCount / this.strainNoteCount, 0.8),
-                    1
-                );
+                const fingerFactor: number = threeFingerRatio > this.threeFingerRatioThreshold ?
+                    threeFingerCursorAmounts.reduce((acc, value, index) =>
+                        acc + Math.pow((index + 1) * value * objectCount / this.strainNoteCount, 0.8),
+                        1
+                    ) :
+                    Math.pow(
+                        validPresses.reduce((acc, value, index) =>
+                            acc + Math.pow((index + 1) * (value.count / (this.cursorDistancingCountThreshold * 2)) * objectCount / this.strainNoteCount, 0.2),
+                            1
+                        ),
+                        0.2
+                    );
 
                 // Length factor applies more penalty if there are more 3-fingered object.
                 const lengthFactor: number = 1 + Math.pow(objectCount / this.strainNoteCount, 1.2);
@@ -753,8 +825,7 @@ export class ThreeFingerChecker {
                 this.nerfFactors.push({
                     strainFactor: Math.max(1, strainFactor),
                     fingerFactor,
-                    lengthFactor,
-                    objectCount
+                    lengthFactor
                 });
             }
         }
@@ -763,30 +834,7 @@ export class ThreeFingerChecker {
     /**
      * Calculates the final penalty.
      */
-     private calculateFinalPenalty(): number {
-        let semifinalNerfFactor: number = 1;
-
-        this.nerfFactors.forEach(n => {
-            semifinalNerfFactor += 0.125 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1);
-        });
-
-        // Difficulty factor nerfs heavily speed-based maps.
-        //
-        // While difficulty calculation buffs heavily
-        // speed-based maps, they tend to be mashed more.
-        const difficultyFactor: number = Math.max(1, Math.pow(this.map.speed / Math.pow(this.map.aim, 1.25), 0.2));
-
-        // Three finger note factor nerfs based on how
-        // many objects were 3-fingered in contrast of the amount
-        // of notes that exceed strain threshold.
-        //
-        // Realistically, overall object count should never exceed strainNoteCount,
-        // therefore further checking is unnecessary.
-        const overallObjectCount: number = this.nerfFactors.map(n => {return n.objectCount;}).reduce((acc, value) => acc + value, 0);
-        const threeFingerAmountFactor: number = 1 + Math.pow(overallObjectCount / this.strainNoteCount, 0.8);
-
-        const finalNerfFactor: number = Math.pow(semifinalNerfFactor * difficultyFactor * threeFingerAmountFactor, 0.25);
-
-        return Math.max(1, finalNerfFactor);
+    private calculateFinalPenalty(): number {
+        return 1 + this.nerfFactors.reduce((a, n) => a + 0.05 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1), 0);
     }
 }

@@ -1,10 +1,11 @@
-import { objectTypes } from "../../constants/objectTypes";
 import { HitObject } from "../../beatmap/hitobjects/HitObject";
 import { Vector2 } from "../../mathutil/Vector2";
-import { DifficultyHitObject } from "../../beatmap/hitobjects/DifficultyHitObject";
+import { DifficultyHitObject } from "./DifficultyHitObject";
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Precision } from "../../utils/Precision";
 import { modes } from "../../constants/modes";
+import { MathUtils } from "../../mathutil/MathUtils";
+import { Spinner } from "../../beatmap/hitobjects/Spinner";
 
 /**
  * A converter used to convert normal hitobjects into difficulty hitobjects.
@@ -20,15 +21,20 @@ export class DifficultyHitObjectCreator {
      */
     private readonly DROID_CIRCLESIZE_BUFF_THRESHOLD: number = 52.5;
 
-     /**
-      * The threshold for small circle buff for osu!standard.
-      */
+    /**
+     * The threshold for small circle buff for osu!standard.
+     */
     private readonly PC_CIRCLESIZE_BUFF_THRESHOLD: number = 30;
 
     /**
      * The radius of hitobjects.
      */
     private hitObjectRadius: number = 0;
+
+    /**
+     * The base normalized radius of hitobjects.
+     */
+    private readonly normalizedRadius: number = 52;
 
     /**
      * Generates difficulty hitobjects for difficulty calculation.
@@ -44,68 +50,55 @@ export class DifficultyHitObjectCreator {
 
         this.hitObjectRadius = 32 * (1 - 0.7 * (circleSize - 5) / 5);
 
-        // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
-        let scalingFactor: number = 52 / this.hitObjectRadius;
-
-        // High circle size (small CS) bonus
-        switch (params.mode) {
-            case modes.droid:
-                if (this.hitObjectRadius < this.DROID_CIRCLESIZE_BUFF_THRESHOLD) {
-                    scalingFactor *= 1 +
-                        Math.min(this.DROID_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 20) / 40;
-                }
-                break;
-            case modes.osu:
-                if (this.hitObjectRadius < this.PC_CIRCLESIZE_BUFF_THRESHOLD) {
-                    scalingFactor *= 1 +
-                        Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
-                }
-        }
-
+        const scalingFactor: number = this.getScalingFactor(params.mode, this.hitObjectRadius);
+        
         const difficultyObjects: DifficultyHitObject[] = [];
 
         for (let i = 0; i < this.objects.length; ++i) {
-            const difficultyObject: DifficultyHitObject = new DifficultyHitObject(this.objects[i]);
-            difficultyObject.radius = this.hitObjectRadius;
+            const object: DifficultyHitObject = new DifficultyHitObject(this.objects[i]);
+            object.radius = this.hitObjectRadius;
 
-            if (i > 0) {
-                const lastObject: DifficultyHitObject = difficultyObjects[i - 1];
+            const lastObject: DifficultyHitObject = difficultyObjects[i - 1];
+            const lastLastObject: DifficultyHitObject = difficultyObjects[i - 2];
+
+            if (lastObject) {
                 if (lastObject.object instanceof Slider) {
                     this.calculateSliderCursorPosition(lastObject.object);
-                    difficultyObject.travelDistance = lastObject.object.lazyTravelDistance as number * scalingFactor;
+                    object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
                 }
     
-                const lastCursorPosition: Vector2 = this.getEndCursorPosition(this.objects[i - 1]);
+                const lastCursorPosition: Vector2 = this.getEndCursorPosition(lastObject.object);
 
                 // Don't need to jump to reach spinners
-                if (!(difficultyObject.object.type & objectTypes.spinner)) {
-                    difficultyObject.jumpDistance = difficultyObject.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor))
-                        .getLength();
+                if (!(object.object instanceof Spinner)) {
+                    object.distanceVector = object.object.stackedPosition.scale(scalingFactor)
+                        .subtract(lastCursorPosition.scale(scalingFactor));
+                    object.jumpDistance = object.distanceVector.length;
                 }
-    
-                difficultyObject.deltaTime = (difficultyObject.object.startTime - difficultyObjects[i - 1].object.startTime) / params.speedMultiplier;
+
+                object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
                 // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
-                difficultyObject.strainTime = Math.max(50, difficultyObject.deltaTime);
-                difficultyObject.startTime = difficultyObject.object.startTime / params.speedMultiplier;
-    
-                if (i >= 2) {
-                    const prev1: DifficultyHitObject = difficultyObjects[i - 1];
-                    const prev2: DifficultyHitObject = difficultyObjects[i - 2];
-    
-                    const prev2CursorPosition: Vector2 = this.getEndCursorPosition(prev2.object);
-    
-                    const v1: Vector2 = prev2CursorPosition.subtract(prev1.object.stackedPosition);
-                    const v2: Vector2 = difficultyObject.object.stackedPosition.subtract(lastCursorPosition);
+                object.strainTime = Math.max(50, object.deltaTime);
+                object.startTime = object.object.startTime / params.speedMultiplier;
+
+                if (lastLastObject) {
+                    const lastLastCursorPosition: Vector2 = this.getEndCursorPosition(lastLastObject.object);
+
+                    const v1: Vector2 = lastLastCursorPosition.subtract(lastObject.object.stackedPosition);
+                    const v2: Vector2 = object.object.stackedPosition.subtract(lastCursorPosition);
                     const dot: number = v1.dot(v2);
                     const det: number = v1.x * v2.y - v1.y * v2.x;
-                    difficultyObject.angle = Math.abs(Math.atan2(det, dot));
-                } else {
-                    difficultyObject.angle = null;
+
+                    object.angle = Math.abs(Math.atan2(det, dot));
                 }
+
+                const angleOffset: number = 10 * Math.sin(1.5 * (Math.PI / 2 - MathUtils.clamp(object.angle, Math.PI / 6, Math.PI / 2)));
+                const distanceOffset: number = Math.pow(object.jumpDistance, 1.7) / 325;
+
+                object.flowProbability = 1 / (1 + Math.pow(Math.E, object.deltaTime - 126 + distanceOffset + angleOffset));
             }
 
-            difficultyObjects.push(difficultyObject);
+            difficultyObjects.push(object);
         }
 
         return difficultyObjects;
@@ -124,7 +117,7 @@ export class DifficultyHitObjectCreator {
         // Incredibly close start and end time fluctuates travel distance and lazy
         // end position heavily, which we do not want to happen.
         //
-        // In the real game, this shouldn't happen--perhaps need to reinvestigate this
+        // In the real game, this shouldn't happen. Perhaps we need to reinvestigate this
         // in the future.
         if (Precision.almostEqualsNumber(slider.startTime, slider.endTime)) {
             return;
@@ -143,7 +136,7 @@ export class DifficultyHitObjectCreator {
             }
 
             const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition as Vector2);
-            let dist: number = diff.getLength();
+            let dist: number = diff.length;
 
             if (dist > approxFollowCircleRadius) {
                 // The cursor would be outside the follow circle, we need to move it
@@ -153,6 +146,34 @@ export class DifficultyHitObjectCreator {
                 slider.lazyTravelDistance += dist;
             }
         });
+    }
+
+    /**
+     * Gets the scaling factor of a radius.
+     * 
+     * @param mode The mode to get the scaling factor from.
+     * @param radius The radiust to get the scaling factor from.
+     */
+    private getScalingFactor(mode: modes, radius: number): number {
+        // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
+        let scalingFactor: number = this.normalizedRadius / radius;
+
+        // High circle size (small CS) bonus
+        switch (mode) {
+            case modes.droid:
+                if (this.hitObjectRadius < this.DROID_CIRCLESIZE_BUFF_THRESHOLD) {
+                    scalingFactor *= 1 +
+                        Math.min(this.DROID_CIRCLESIZE_BUFF_THRESHOLD - radius, 20) / 40;
+                }
+                break;
+            case modes.osu:
+                if (this.hitObjectRadius < this.PC_CIRCLESIZE_BUFF_THRESHOLD) {
+                    scalingFactor *= 1 +
+                        Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - radius, 5) / 50;
+                }
+        }
+
+        return scalingFactor;
     }
 
     /**

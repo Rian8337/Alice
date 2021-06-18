@@ -171,21 +171,17 @@ module.exports.run = async (client, message, args, maindb) => {
     });
 	const starsline = parseFloat(star.droidStars.total.toFixed(2));
 	const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
-    const npp = new osudroid.PerformanceCalculator().calculate({
+    const npp = new osudroid.DroidPerformanceCalculator().calculate({
         stars: star.droidStars,
         combo: play.combo,
         accPercent: realAcc,
-        miss: play.miss,
-        mode: osudroid.modes.droid,
-        speedPenalty: replay.penalty,
+        tapPenalty: replay.penalty,
         stats
     });
-	const pcpp = new osudroid.PerformanceCalculator().calculate({
+	const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
         stars: star.pcStars,
         combo: play.combo,
         accPercent: realAcc,
-        miss: play.miss,
-        mode: osudroid.modes.osu,
         stats
     });
 	const ppline = parseFloat(npp.total.toFixed(2));

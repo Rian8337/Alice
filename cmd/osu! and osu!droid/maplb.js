@@ -128,19 +128,17 @@ function createEmbed(client, hash, cache, color, page, mapinfo, topEntry, footer
                 });
                 const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 
-                const dpp = new osudroid.PerformanceCalculator().calculate({
+                const dpp = new osudroid.DroidPerformanceCalculator().calculate({
                     stars: star.droidStars,
                     combo,
                     accPercent: acc,
-                    mode: osudroid.modes.droid,
                     stats
                 }).total;
 
-                const pp = new osudroid.PerformanceCalculator().calculate({
+                const pp = new osudroid.OsuPerformanceCalculator().calculate({
                     stars: star.pcStars,
                     combo,
                     accPercent: acc,
-                    mode: osudroid.modes.osu,
                     stats
                 }).total;
 
@@ -238,24 +236,27 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             speedMultiplier: topScore.speedMultiplier,
             isForceAR: !isNaN(topScore.forcedAR)
         });
+
+        const realAcc = new osudroid.Accuracy({
+            n300: topScore.hit300,
+            n100: topScore.hit100,
+            n50: topScore.hit50,
+            nmiss: topScore.miss
+        });
         
         const topStar = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 
-        const topDpp = new osudroid.PerformanceCalculator().calculate({
+        const topDpp = new osudroid.DroidPerformanceCalculator().calculate({
             stars: topStar.droidStars,
             combo,
-            accPercent: acc,
-            miss,
-            mode: osudroid.modes.droid,
+            accPercent: realAcc,
             stats
         }).total;
 
-        const topPP = new osudroid.PerformanceCalculator().calculate({
+        const topPP = new osudroid.OsuPerformanceCalculator().calculate({
             stars: topStar.pcStars,
             combo,
-            accPercent: acc,
-            miss,
-            mode: osudroid.modes.osu,
+            accPercent: realAcc,
             stats
         }).total;
 
@@ -335,7 +336,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
             if (message.channel.type === "text") {
                 msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
             }
-            msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id));
+            msg.reactions.cache.forEach((reaction) => reaction.users.remove(client.user.id))
         });
     });
     cd.add(message.author.id);

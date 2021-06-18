@@ -79,19 +79,17 @@ module.exports.run = (client, maindb) => {
 					.setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
 					.setImage(`https://assets.ppy.sh/beatmaps/${mapinfo.beatmapsetID}/covers/cover.jpg`);
 
-				const npp = new osudroid.PerformanceCalculator().calculate({
+				const npp = new osudroid.DroidPerformanceCalculator().calculate({
 					stars: star.droidStars,
 					combo: combo,
 					accPercent: realAcc,
-					mode: osudroid.modes.droid,
 					stats
 				});
 
-				const pcpp = new osudroid.PerformanceCalculator().calculate({
+				const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
 					stars: star.pcStars,
 					combo: combo,
 					accPercent: realAcc,
-					mode: osudroid.modes.osu,
 					stats
 				});
 
@@ -107,21 +105,17 @@ module.exports.run = (client, maindb) => {
 						nobjects: mapinfo.objects
 					}).value() * 100;
 		
-					const fc_dpp = new osudroid.PerformanceCalculator().calculate({
+					const fc_dpp = new osudroid.DroidPerformanceCalculator().calculate({
 						stars: star.droidStars,
 						combo: mapinfo.maxCombo,
 						accPercent: fc_acc,
-						miss: 0,
-						mode: osudroid.modes.droid,
 						stats
 					});
 		
-					const fc_pp = new osudroid.PerformanceCalculator().calculate({
+					const fc_pp = new osudroid.OsuPerformanceCalculator().calculate({
 						stars: star.pcStars,
 						combo: mapinfo.maxCombo,
 						accPercent: fc_acc,
-						miss: 0,
-						mode: osudroid.modes.osu,
 						stats
 					});
 		

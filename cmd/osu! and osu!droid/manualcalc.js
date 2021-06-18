@@ -130,18 +130,16 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 	const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mod, stats});
 	const starsline = parseFloat(star.droidStars.total.toFixed(2));
 	const pcstarsline = parseFloat(star.pcStars.total.toFixed(2));
-	const npp = new osudroid.PerformanceCalculator().calculate({
+	const npp = new osudroid.DroidPerformanceCalculator().calculate({
 		stars: star.droidStars,
 		combo: combo,
 		accPercent: realAcc,
-		mode: osudroid.modes.droid,
 		stats: stats
 	});
-	const pcpp = new osudroid.PerformanceCalculator().calculate({
+	const pcpp = new osudroid.OsuPerformanceCalculator().calculate({
 		stars: star.pcStars,
 		combo: combo,
 		accPercent: realAcc,
-		mode: osudroid.modes.osu,
 		stats: stats
 	});
 	const ppline = parseFloat(npp.total.toFixed(2));

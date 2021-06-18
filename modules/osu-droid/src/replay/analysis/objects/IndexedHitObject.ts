@@ -1,4 +1,4 @@
-import { DifficultyHitObject } from "../../../beatmap/hitobjects/DifficultyHitObject";
+import { DifficultyHitObject } from "../../../difficulty/preprocessing/DifficultyHitObject";
 
 /**
  * Contains information about which cursor index hits a hitobject.
@@ -7,7 +7,7 @@ export class IndexedHitObject {
     /**
      * The index of the cursor that hits the hitobject.
      */
-    readonly cursorIndex: number;
+    cursorIndex: number;
     
     /**
      * The underlying difficulty hitobject.

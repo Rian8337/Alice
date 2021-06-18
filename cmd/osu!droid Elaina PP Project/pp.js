@@ -142,12 +142,11 @@ module.exports.run = (client, message, args, maindb) => {
                     nmiss: miss
                 });
 
-                const npp = new osudroid.PerformanceCalculator().calculate({
+                const npp = new osudroid.DroidPerformanceCalculator().calculate({
                     stars: star.droidStars,
                     combo: combo,
                     accPercent: realAcc,
-                    mode: osudroid.modes.droid,
-                    speedPenalty: replay.penalty,
+                    tapPenalty: replay.penalty,
                     stats
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
@@ -344,12 +343,11 @@ module.exports.run = (client, message, args, maindb) => {
                     replay.map = star.droidStars;
                     replay.checkFor3Finger();
 
-                    const npp = new osudroid.PerformanceCalculator().calculate({
+                    const npp = new osudroid.DroidPerformanceCalculator().calculate({
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
-                        mode: osudroid.modes.droid,
-                        speedPenalty: replay.penalty,
+                        tapPenalty: replay.penalty,
                         stats
                     });
                     const pp = parseFloat(npp.total.toFixed(2));

@@ -145,7 +145,7 @@ export class SliderPath {
 
         for (let i = 0; i < this.calculatedPath.length - 1; ++i) {
             const diff: Vector2 = this.calculatedPath[i + 1].subtract(this.calculatedPath[i]);
-            calculatedLength += diff.getLength();
+            calculatedLength += diff.length;
             this.cumulativeLength.push(calculatedLength);
         }
 

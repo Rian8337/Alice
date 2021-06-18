@@ -2,7 +2,7 @@ import { Parse } from 'unzipper';
 import * as javaDeserialization from 'java-deserialization';
 import { Readable } from 'stream';
 import { Beatmap } from '../beatmap/Beatmap';
-import { StarRating } from '../difficulty/StarRating';
+import { DroidStarRating } from '../difficulty/DroidStarRating';
 import { ReplayData, ReplayInformation } from './data/ReplayData';
 import { CursorData } from './data/CursorData';
 import { ReplayObjectData } from './data/ReplayObjectData';
@@ -12,6 +12,7 @@ import { HitObject } from '../beatmap/hitobjects/HitObject';
 import { hitResult } from '../constants/hitResult';
 import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
 import { ThreeFingerChecker, ThreeFingerInformation } from './analysis/ThreeFingerChecker';
+import { TwoHandChecker } from './analysis/TwoHandChecker';
 
 /**
  * A replay analyzer that analyzes a replay from osu!droid.
@@ -42,9 +43,14 @@ export class ReplayAnalyzer {
     is3Finger?: boolean;
 
     /**
-     * The beatmap that is being analyzed. `StarRating` is required for penalty analyzing.
+     * Whether or not the play is considered 2-handed.
      */
-    map?: Beatmap|StarRating;
+    is2Hand?: boolean;
+
+    /**
+     * The beatmap that is being analyzed. `DroidStarRating` is required for penalty analyzing.
+     */
+    map?: Beatmap|DroidStarRating;
 
     /**
      * The results of the analyzer. `null` when initialized.
@@ -52,9 +58,14 @@ export class ReplayAnalyzer {
     data: ReplayData|null = null;
 
     /**
-     * Penalty value used to penaltize dpp for 3 finger abuse.
+     * Penalty value used to penalize dpp for 2-hand.
      */
-    penalty: number = 1;
+    aimPenalty: number = 1;
+
+    /**
+     * Penalty value used to penalize dpp for 3 finger abuse.
+     */
+    tapPenalty: number = 1;
 
     private readonly BYTE_LENGTH = 1;
     private readonly SHORT_LENGTH = 2;
@@ -70,9 +81,9 @@ export class ReplayAnalyzer {
         /**
          * The beatmap to analyze.
          * 
-         * Using `StarRating` is required to analyze for 3 finger play.
+         * Using `DroidStarRating` is required to analyze for 3 finger play.
          */
-        map?: Beatmap|StarRating
+        map?: Beatmap|DroidStarRating
     }) {
         this.scoreID = values.scoreID;
         this.map = values.map;
@@ -91,7 +102,7 @@ export class ReplayAnalyzer {
         }
 
         if (!this.fixedODR) {
-            this.fixedODR = await this.decompress().catch(() => {return null});
+            this.fixedODR = await this.decompress().catch(() => {return null;});
         }
 
         if (!this.fixedODR) {
@@ -283,7 +294,7 @@ export class ReplayAnalyzer {
         }
 
         // parse hit results and accuracy in old replay version
-        if (resultObject.replayVersion < 3 && (this.map instanceof StarRating || this.map instanceof Beatmap)) {
+        if (resultObject.replayVersion < 3 && (this.map instanceof DroidStarRating || this.map instanceof Beatmap)) {
             let hit300: number = 0;
             let hit300k: number = 0;
             let hit100: number = 0;
@@ -292,7 +303,7 @@ export class ReplayAnalyzer {
             let hit0: number = 0;
             let grantsGekiOrKatu: boolean = true;
 
-            const objects: HitObject[] = this.map instanceof StarRating ? (this.map?.map?.objects as HitObject[]) : this.map?.objects;
+            const objects: HitObject[] = this.map instanceof DroidStarRating ? (this.map?.map?.objects as HitObject[]) : this.map?.objects;
 
             for (let i = 0; i < resultObject.hitObjectData.length; ++i) {
                 const hitObjectData: ReplayObjectData = resultObject.hitObjectData[i];
@@ -388,17 +399,31 @@ export class ReplayAnalyzer {
     /**
      * Checks if a play is using 3 fingers.
      * 
-     * Requires `analyze()` to be called first and `map` to be defined as `StarRating`.
+     * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
      */
     checkFor3Finger(): void {
-        if (!(this.map instanceof StarRating) || !this.data) {
-            return;
+        if (!(this.map instanceof DroidStarRating) || !this.data) {
+            throw new Error("Map must be defined");
         }
         
         const threeFingerChecker: ThreeFingerChecker = new ThreeFingerChecker(this.map, this.data);
         const result: ThreeFingerInformation = threeFingerChecker.check();
 
         this.is3Finger = result.is3Finger;
-        this.penalty = result.penalty;
+        this.tapPenalty = result.penalty;
+    }
+
+    /**
+     * Checks if a play is using 2 hands.
+     * 
+     * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
+     */
+    checkFor2Hand(): void {
+        if (!(this.map instanceof DroidStarRating) || !this.data) {
+            return;
+        }
+
+        const twoHandChecker: TwoHandChecker = new TwoHandChecker(this.map, this.data);
+        this.is2Hand = twoHandChecker.check();
     }
 }
