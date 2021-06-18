@@ -175,7 +175,7 @@ module.exports.run = async (client, message, args, maindb) => {
         stars: star.droidStars,
         combo: play.combo,
         accPercent: realAcc,
-        tapPenalty: replay.penalty,
+        tapPenalty: replay.tapPenalty,
         stats
     });
 	const pcpp = new osudroid.OsuPerformanceCalculator().calculate({

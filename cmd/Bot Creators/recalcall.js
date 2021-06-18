@@ -98,7 +98,7 @@ module.exports.run = (client, message, args, maindb) => {
                                 stars: star.droidStars,
                                 combo: replay.data.maxCombo,
                                 accPercent: realAcc,
-                                tapPenalty: replay.penalty,
+                                tapPenalty: replay.tapPenalty,
                                 stats
                             });
                             const new_pp = parseFloat(npp.total.toFixed(2));

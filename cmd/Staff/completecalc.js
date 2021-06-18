@@ -233,7 +233,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map,
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
-                        tapPenalty: replay.penalty,
+                        tapPenalty: replay.tapPenalty,
                         stats
                     });
                     const pp = parseFloat(npp.total.toFixed(2));

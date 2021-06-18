@@ -86,7 +86,7 @@ async function calculatePP(ppentries, entry, cb) {
         combo: combo,
         accPercent: realAcc,
         miss: miss,
-        tapPenalty: replay.penalty,
+        tapPenalty: replay.tapPenalty,
         stats
     });
     

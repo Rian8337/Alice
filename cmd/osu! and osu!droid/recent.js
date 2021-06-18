@@ -234,7 +234,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         stars: star.droidStars,
         combo: combo,
         accPercent: realAcc,
-        tapPenalty: replay.penalty,
+        tapPenalty: replay.tapPenalty,
         stats
     });
 
@@ -255,14 +255,14 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         nmiss: 0
     });
     const notFullCombo = miss > 0 || data?.isFullCombo;
-    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP**${replay.penalty !== 1 ? " (*penalized*)" : ""} | **${pcppline}PP** `;
+    let beatmapInformation = `▸ ${rank} ▸ **${ppline}DPP**${replay.tapPenalty !== 1 ? " (*penalized*)" : ""} | **${pcppline}PP** `;
 
     if (notFullCombo) {
         const fc_dpp = new osudroid.DroidPerformanceCalculator().calculate({
             stars: star.droidStars,
             combo: mapinfo.maxCombo,
             accPercent: fc_acc,
-            tapPenalty: replay.penalty,
+            tapPenalty: replay.tapPenalty,
             stats
         });
 

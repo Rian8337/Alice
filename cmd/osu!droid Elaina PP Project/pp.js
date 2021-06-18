@@ -146,7 +146,7 @@ module.exports.run = (client, message, args, maindb) => {
                     stars: star.droidStars,
                     combo: combo,
                     accPercent: realAcc,
-                    tapPenalty: replay.penalty,
+                    tapPenalty: replay.tapPenalty,
                     stats
                 });
                 const pp = parseFloat(npp.total.toFixed(2));
@@ -347,7 +347,7 @@ module.exports.run = (client, message, args, maindb) => {
                         stars: star.droidStars,
                         combo: combo,
                         accPercent: realAcc,
-                        tapPenalty: replay.penalty,
+                        tapPenalty: replay.tapPenalty,
                         stats
                     });
                     const pp = parseFloat(npp.total.toFixed(2));
