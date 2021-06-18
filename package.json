@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "startDev": "npm run heroku-postbuild && node mybot.js",
-    "heroku-postbuild": "npm install -g pm2 && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
+    "heroku-postbuild": "npm install -g pm2 && npm run build-osu-droid",
+    "build-osu-droid": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
     "node": "14.x",
