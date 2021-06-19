@@ -80,7 +80,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         }
 
         for await (const databaseEntry of databaseEntries) {
-            const accounts = databaseEntry.previous_bind ?? [entry.uid];
+            const accounts = databaseEntry.previous_bind ?? [databaseEntry.uid];
 
             const pplist = databaseEntry.pp ?? [];
             const ppEntries = [];
