@@ -82,7 +82,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         for await (const databaseEntry of databaseEntries) {
             const accounts = databaseEntry.previous_bind ?? [databaseEntry.uid];
 
-            const pplist = databaseEntry.pp ?? [];
             const ppEntries = [];
             let playc = 0;
 
@@ -180,7 +179,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             stars: star.droidStars,
                             combo: combo,
                             accPercent: realAcc,
-                            tapPenalty: replay.tapPenalty,
+                            tapPenalty: replay.penalty,
                             stats
                         });
                         const pp = parseFloat(npp.total.toFixed(2));
@@ -226,29 +225,10 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         }
                     });
                 }
-
                 console.log("COMPLETED!");
-                ppEntries.forEach(ppEntry => {
-                    const index = pplist.findIndex(v => v.title === ppEntry.title);
-                    const duplicate = index !== -1;
-
-                    if (duplicate) {
-                        pplist[index] = ppEntry;
-                    } else {
-                        pplist.push(ppEntry);
-                    }
-                });
-
-                pplist.sort((a, b) => {
-                    return b.pp - a.pp;
-                });
-
-                if (pplist.length > 75) {
-                    pplist.splice(75);
-                }
             }
 
-            const totalPP = pplist.map(v => {return v.pp;}).reduce((acc, value, index) => acc + value * Math.pow(0.95, index), 0);
+            const totalPP = ppEntries.reduce((acc, value, index) => acc + value.pp * Math.pow(0.95, index), 0);
             const updateVal = {
                 $set: {
                     pptotal: totalPP,
