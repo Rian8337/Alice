@@ -154,7 +154,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             continue;
                         }
                         ++playc;
-                        await sleep(0.2);
+                        await sleep(0.1);
 
                         const stats = new osudroid.MapStats({
                             ar: entry.forcedAR,
