@@ -198,7 +198,13 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             ppEntry.speedMultiplier = stats.speedMultiplier;
                         }
                         if (!isNaN(pp)) {
-                            currentPPEntries.push(ppEntry);
+                            const duplicate = currentPPEntries.findIndex(v => v.hash === ppEntry.hash);
+                            if (duplicate === -1) {
+                                currentPPEntries.push(ppEntry);
+                            } else if (currentPPEntries[duplicate].pp < ppEntry.pp) {
+                                currentPPEntries.splice(duplicate, 1);
+                                currentPPEntries.push(ppEntry);
+                            }
                         }
                         ++playc;
                     }
