@@ -1,6 +1,7 @@
 const { Client, Message } = require("discord.js");
 const { Db } = require("mongodb");
 const osudroid = require('osu-droid');
+const currentPPEntries = [];
 
 function sleep(seconds) {
     return new Promise(resolve => {
@@ -35,16 +36,6 @@ function retrievePlays(uid, page) {
         }
         resolve(entries);
     });
-}
-
-function isEligible(member) {
-    let res = 0;
-    let eligibleRoleList = config.mute_perm; //mute_permission
-    for (const id of eligibleRoleList) {
-        if (res === -1) break;
-        if (member.roles.cache.has(id[0])) res = id[1];
-    }
-    return res;
 }
 
 /**
@@ -82,7 +73,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         for await (const databaseEntry of databaseEntries) {
             const accounts = databaseEntry.previous_bind ?? [databaseEntry.uid];
 
-            const ppEntries = [];
             let playc = 0;
 
             for await (const uid of accounts) {
@@ -97,6 +87,14 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 const { username } = player;
 
                 let page = 0;
+
+                if (databaseEntry.calcInfo) {
+                    if (uid !== databaseEntry.calcInfo.uid) {
+                        continue;
+                    }
+
+                    page = databaseEntry.calcInfo.page - 1;
+                }
 
                 await scoreDb.deleteOne({uid});
                 await scoreDb.insertOne({
@@ -200,17 +198,17 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             ppEntry.speedMultiplier = stats.speedMultiplier;
                         }
                         if (!isNaN(pp)) {
-                            ppEntries.push(ppEntry);
+                            currentPPEntries.push(ppEntry);
                         }
                         ++playc;
                     }
 
-                    ppEntries.sort((a, b) => {
+                    currentPPEntries.sort((a, b) => {
                         return b.pp - a.pp;
                     });
 
-                    if (ppEntries.length > 75) {
-                        ppEntries.splice(75);
+                    if (currentPPEntries.length > 75) {
+                        currentPPEntries.splice(75);
                     }
 
                     await scoreDb.updateOne({uid}, {
@@ -224,23 +222,35 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             }
                         }
                     });
+
+                    await bindDb.updateOne({discordid: databaseEntry.discordid}, {$set: {
+                        calcInfo: {
+                            uid: uid,
+                            page: page
+                        }
+                    }});
                 }
                 console.log("COMPLETED!");
             }
 
-            const totalPP = ppEntries.reduce((acc, value, index) => acc + value.pp * Math.pow(0.95, index), 0);
+            const totalPP = currentPPEntries.reduce((acc, value, index) => acc + value.pp * Math.pow(0.95, index), 0);
             const updateVal = {
                 $set: {
                     pptotal: totalPP,
-                    pp: ppEntries,
+                    pp: pplist,
                     playc,
                     calcDone: true,
                     hasAskedForRecalc: true
+                },
+                $unset: {
+                    calcInfo: ""
                 }
             };
 
             await bindDb.updateOne({discordid: databaseEntry.discordid}, updateVal);
             await msg.edit(`❗**| Recalculating user accounts... (${++i}/${count})**`);
+
+            currentPPEntries.length = 0;
         }
     }
 
