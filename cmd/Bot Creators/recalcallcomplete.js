@@ -237,7 +237,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
             const updateVal = {
                 $set: {
                     pptotal: totalPP,
-                    pp: pplist,
+                    pp: ppEntries,
                     playc,
                     calcDone: true,
                     hasAskedForRecalc: true
