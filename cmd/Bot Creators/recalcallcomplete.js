@@ -3,12 +3,6 @@ const { Db } = require("mongodb");
 const osudroid = require('osu-droid');
 const currentPPEntries = [];
 
-function sleep(seconds) {
-    return new Promise(resolve => {
-        setTimeout(resolve, 1000 * seconds);
-    });
-}
-
 /**
  * @param {number} uid 
  * @param {number} page 
@@ -152,7 +146,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             continue;
                         }
                         ++playc;
-                        await sleep(0.1);
 
                         const stats = new osudroid.MapStats({
                             ar: entry.forcedAR,
