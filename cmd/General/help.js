@@ -21,10 +21,7 @@ function generateEmbed(client, page, footer, index, color) {
 		.setFooter(`Alice Synthesis Thirty | Page ${page}/2`, footer[index]);
 
 	for (const section of sections) {
-		let string = '';
-		for (const command of section.commands) string += `\`${command}\` `;
-		string = string.trimEnd();
-		embed.addField(section.section, string);
+		embed.addField(section.section, section.commands.map(v => `\`${v}\``).join(" • "));
 	}
 
 	return embed;
