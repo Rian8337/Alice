@@ -95,7 +95,7 @@ export class DifficultyHitObjectCreator {
                 const angleOffset: number = 10 * Math.sin(1.5 * (Math.PI / 2 - MathUtils.clamp(object.angle, Math.PI / 6, Math.PI / 2)));
                 const distanceOffset: number = Math.pow(object.jumpDistance, 1.7) / 325;
 
-                object.flowProbability = 1 / (1 + Math.pow(Math.E, object.deltaTime - 126 + distanceOffset + angleOffset));
+                object.flowProbability = 1 / (1 + Math.exp(object.deltaTime - 126 + distanceOffset + angleOffset));
             }
 
             difficultyObjects.push(object);
