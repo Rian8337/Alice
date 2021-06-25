@@ -130,7 +130,21 @@ export class Parser {
             case "Difficulty": this.difficulty(); break;
             case "Events": this.events(); break;
             case "TimingPoints": this.timingPoints(); break;
-            case "HitObjects": this.objects(); break;
+            case "HitObjects":
+                // Need to check if the beatmap doesn't have an uninherited timing point.
+                // This exists in cases such as /b/2290233 where the beatmap has been
+                // edited by the user.
+                //
+                // In lazer, the default BPM is set to 60.
+                if (this.map.timingPoints.length === 0) {
+                    this.map.timingPoints.push(new TimingControlPoint({
+                        time: Number.NEGATIVE_INFINITY,
+                        msPerBeat: 1000
+                    }));
+                }
+
+                this.objects();
+                break;
             default:
                 const fmtpos = line.indexOf("file format v");
                 if (fmtpos < 0) {
