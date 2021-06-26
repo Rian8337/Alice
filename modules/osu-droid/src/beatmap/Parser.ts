@@ -171,8 +171,8 @@ export class Parser {
      * Logs any syntax errors into the console.
      */
     private warn(message: string): void {
-        console.warn(message);
-        console.warn(this.logError());
+        // console.warn(message);
+        // console.warn(this.logError());
     }
 
     /**
