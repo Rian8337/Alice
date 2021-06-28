@@ -277,6 +277,11 @@ export class ThreeFingerChecker {
         const isPrecise: boolean = this.map.mods.includes("PR");
 
         for (const breakPoint of this.map.map.breakPoints) {
+            // This line exists to combat beatmaps such as /b/2055234
+            if (breakPoint.startTime >= objects[objects.length - 1].object.endTime) {
+                continue;
+            }
+
             const beforeIndex: number = objects.findIndex(o => o.object.endTime > breakPoint.startTime) - 1;
             let timeBefore: number = objects[beforeIndex].object.endTime;
 
