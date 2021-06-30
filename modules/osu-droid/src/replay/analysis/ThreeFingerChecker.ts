@@ -14,6 +14,7 @@ import { ReplayData } from "../data/ReplayData";
 import { ReplayObjectData } from "../data/ReplayObjectData";
 import { BeatmapSectionGenerator } from "./BeatmapSectionGenerator";
 import { BeatmapSection } from "./data/BeatmapSection";
+import { MathUtils } from "../../mathutil/MathUtils";
 
 /**
  * Information about the result of a check.
@@ -277,12 +278,7 @@ export class ThreeFingerChecker {
         const isPrecise: boolean = this.map.mods.includes("PR");
 
         for (const breakPoint of this.map.map.breakPoints) {
-            // This line exists to combat beatmaps such as /b/2055234
-            if (breakPoint.startTime >= objects[objects.length - 1].object.endTime) {
-                continue;
-            }
-
-            const beforeIndex: number = objects.findIndex(o => o.object.endTime > breakPoint.startTime) - 1;
+            const beforeIndex: number = MathUtils.clamp(objects.findIndex(o => o.object.endTime >= breakPoint.startTime) - 1, 0, objects.length - 2);
             let timeBefore: number = objects[beforeIndex].object.endTime;
 
             // For sliders and spinners, automatically set hit window length to be as lenient as possible.
