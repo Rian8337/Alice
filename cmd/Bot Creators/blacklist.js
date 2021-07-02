@@ -28,6 +28,7 @@ module.exports.run = (client, message, args, maindb) => {
         return message.channel.send("❎ **| Hey, please enter your reason for blacklisting the beatmap!**");
     }
 
+    const bindDb = maindb.collection("userbind");
     const blacklistDb = maindb.collection("mapblacklist");
     const whitelistDb = maindb.collection("mapwhitelist");
 
@@ -68,20 +69,22 @@ module.exports.run = (client, message, args, maindb) => {
             reason: reason
         };
 
-        blacklistDb.insertOne(insertVal, err => {
-            if (err) {
-                console.log(err);
-                return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-            }
-            whitelistDb.deleteOne({mapid: beatmapID}, err => {
-                if (err) {
-                    console.log(err);
-                    return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
-                }
-                message.channel.send({embed: embed});
-                message.channel.send(`✅ **| Successfully blacklisted \`${mapinfo.fullTitle}\`.**`);
-            });
-        });
+        await blacklistDb.insertOne(insertVal);
+
+        await whitelistDb.deleteOne({mapid: beatmapID});
+
+        // Clear beatmap from users' pp entries
+        const bindInformations = await bindDb.find({ "pp.hash": mapinfo.hash }).toArray();
+
+        for await (const bindInfo of bindInformations) {
+            bindInfo.pp.splice(bindInfo.pp.findIndex(v => v.hash === mapinfo.hash), 1);
+
+            const totalPP = bindInfo.pp.reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0);
+            await bindDb.updateOne({ discordid: bindInfo.discordid }, { $set: { pp: bindInfo.pp, pptotal: totalPP }, $inc: { playc: -1 } });
+        }
+
+        message.channel.send({embed: embed});
+        message.channel.send(`✅ **| Successfully blacklisted \`${mapinfo.fullTitle}\`.**`);
     });
 };
 
@@ -90,5 +93,5 @@ module.exports.config = {
     description: "Blacklists a beatmap. Used to unrank ranked or loved beatmaps locally inside droid pp system.\n\nBlacklisting a beatmap will automatically unwhitelist it if it is whitelisted.",
     usage: "blacklist <beatmap link/ID> <reason>",
     detail: "`beatmap link/ID`: The beatmap link or ID to blacklist [Integer/String]\n`reason`: Reason for blacklisting [String]",
-    permission: "Bot Creators"
+    permission: "Specific person (<@132783516176875520> and <@386742340968120321>)"
 };
