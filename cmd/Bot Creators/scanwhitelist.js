@@ -9,6 +9,35 @@ function sleep(seconds) {
 }
 
 /**
+ * Deletes a play with specific hash from all players.
+ * 
+ * @param {import('mongodb').Collection} bindDb 
+ * @param {string} hash 
+ */
+async function deletePlays(bindDb, hash) {
+    const toUpdateList = await bindDb.find({ "pp.hash": hash }).toArray();
+
+    for await (const toUpdate of toUpdateList) {
+        toUpdate.pp.splice(toUpdate.pp.findIndex(v => v.hash === hash), 1);
+
+        const totalPP = toUpdate.pp.reduce((a, v, i) => a + v * Math.pow(0.95, i), 0);
+
+        await bindDb.updateOne(
+            { discordid: toUpdate.discordid },
+            {
+                $set: {
+                    pp: toUpdate.pp,
+                    pptotal: totalPP
+                },
+                $inc: {
+                    playc: -1
+                }
+            }
+        );
+    }
+}
+
+/**
  * @param {Discord.Client} client 
  * @param {Discord.Message} message 
  * @param {string[]} args 
@@ -20,6 +49,7 @@ module.exports.run = async (client, message, args, maindb) => {
     }
 
     const whitelistDb = maindb.collection("mapwhitelist");
+    const bindDb = maindb.collection("userbind");
 
     let outdatedCount = 0;
     let notAvailableCount = 0;
@@ -43,36 +73,36 @@ module.exports.run = async (client, message, args, maindb) => {
             if (!mapinfo.title) {
                 console.log("Whitelist entry not available");
                 ++notAvailableCount;
+                await deletePlays(bindDb, entry.hashid);
                 await whitelistDb.deleteOne({mapid: entry.mapid});
                 continue;
             }
             if (mapinfo.approved !== osudroid.rankedStatus.GRAVEYARD) {
                 console.log("Map not graveyarded");
                 ++deletedCount;
+                await deletePlays(bindDb, entry.hashid);
                 await whitelistDb.deleteOne({mapid: entry.mapid});
                 continue;
             }
-            const updateQuery = {
-                $set: {
-                    checkDone: true,
-                    hashid: mapinfo.hash,
-                    diffstat: {
-                        cs: mapinfo.cs,
-                        ar: mapinfo.ar,
-                        od: mapinfo.od,
-                        hp: mapinfo.hp,
-                        sr: parseFloat(mapinfo.totalDifficulty.toFixed(2)),
-                        bpm: mapinfo.bpm
-                    }
-                },
-                $unset: {
-                    hash: ""
-                }
-            };
-            await whitelistDb.updateOne({mapid: entry.mapid}, updateQuery);
             if (entry.hashid !== mapinfo.hash) {
                 console.log("Hash outdated");
                 ++outdatedCount;
+                const updateQuery = {
+                    $set: {
+                        checkDone: true,
+                        hashid: mapinfo.hash,
+                        diffstat: {
+                            cs: mapinfo.cs,
+                            ar: mapinfo.ar,
+                            od: mapinfo.od,
+                            hp: mapinfo.hp,
+                            sr: parseFloat(mapinfo.totalDifficulty.toFixed(2)),
+                            bpm: mapinfo.bpm
+                        }
+                    }
+                };
+                await deletePlays(bindDb, entry.hashid);
+                await whitelistDb.updateOne({mapid: entry.mapid}, updateQuery);
             }
         }
     }
