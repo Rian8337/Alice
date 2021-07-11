@@ -20,7 +20,7 @@ async function deletePlays(bindDb, hash) {
     for await (const toUpdate of toUpdateList) {
         toUpdate.pp.splice(toUpdate.pp.findIndex(v => v.hash === hash), 1);
 
-        const totalPP = toUpdate.pp.reduce((a, v, i) => a + v * Math.pow(0.95, i), 0);
+        const totalPP = toUpdate.pp.reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0);
 
         await bindDb.updateOne(
             { discordid: toUpdate.discordid },
