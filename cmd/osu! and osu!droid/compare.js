@@ -183,7 +183,7 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
         }, 15000);
     }
     
-    if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile) {
+    if (mapinfo.error || !mapinfo.title || !mapinfo.objects || !mapinfo.osuFile || !data) {
         embed.setDescription(`▸ ${rank} ▸ ${acc}%\n‣ ${score} ▸ ${combo}x ▸ [${n300}/${n100}/${n50}/${miss}]${data ? `\n▸ ${min_error.toFixed(2)}ms - ${max_error.toFixed(2)}ms hit error avg ▸ ${unstable_rate.toFixed(2)} UR` : ""}`);
         return message.channel.send(`✅ **| Comparison play for ${name}:**`, {embed: embed});
     }
