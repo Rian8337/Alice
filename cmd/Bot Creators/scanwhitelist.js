@@ -103,7 +103,9 @@ module.exports.run = async (client, message, args, maindb) => {
                 };
                 await deletePlays(bindDb, entry.hashid);
                 await whitelistDb.updateOne({mapid: entry.mapid}, updateQuery);
+                continue;
             }
+            await whitelistDb.updateOne({mapid: entry.mapid}, { $set: { checkDone: true } });
         }
     }
 
