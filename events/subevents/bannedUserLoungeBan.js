@@ -7,7 +7,7 @@ const config = require('../../config.json');
  * @param {Discord.User} user 
  * @param {Db} alicedb 
  */
-module.exports.run = (guild, user, alicedb) => {
+module.exports.run = async (guild, user, alicedb) => {
 	const banInfo = await guild.fetchBan(user);
 
 	const reason = banInfo.reason || "Not specified.";
