@@ -1,7 +1,6 @@
 const { Client, Message } = require("discord.js");
 const { Db } = require("mongodb");
 const osudroid = require('osu-droid');
-const currentPPEntries = [];
 
 function sleep(seconds) {
     return new Promise(resolve => {
@@ -88,22 +87,26 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
                 let page = 0;
 
+                const currentPPEntries = [];
+
                 if (databaseEntry.calcInfo) {
                     if (uid !== databaseEntry.calcInfo.uid) {
                         continue;
                     }
 
                     page = databaseEntry.calcInfo.page - 1;
+                    currentPPEntries.length = 0;
+                    currentPPEntries.push(...databaseEntry.calcInfo.currentPPEntries);
+                } else {
+                    await scoreDb.deleteOne({uid});
+                    await scoreDb.insertOne({
+                        uid,
+                        username,
+                        score: 0,
+                        playc: 0,
+                        scorelist: []
+                    });
                 }
-
-                await scoreDb.deleteOne({uid});
-                await scoreDb.insertOne({
-                    uid,
-                    username,
-                    score: 0,
-                    playc: 0,
-                    scorelist: []
-                });
 
                 while (true) {
                     const entries = await retrievePlays(uid, page);
@@ -232,7 +235,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     await bindDb.updateOne({discordid: databaseEntry.discordid}, {$set: {
                         calcInfo: {
                             uid: uid,
-                            page: page
+                            page: page,
+                            currentPPEntries: currentPPEntries
                         }
                     }});
                 }
@@ -255,8 +259,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
             await bindDb.updateOne({discordid: databaseEntry.discordid}, updateVal);
             await msg.edit(`❗**| Recalculating user accounts... (${++i}/${count})**`);
-
-            currentPPEntries.length = 0;
         }
     }
 
