@@ -149,7 +149,7 @@ export abstract class StarRating {
      */
     getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
-            if (this.aimStrainPeaks.length === 0 || this.speedStrainPeaks.length === 0 || this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
+            if (this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
                 return resolve(null);
             }
 
@@ -166,8 +166,8 @@ export abstract class StarRating {
                 };
             });
 
-            const maxTime: number = strainInformations[strainInformations.length - 1].time;
-            const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}));
+            const maxTime: number = strainInformations[strainInformations.length - 1]?.time ?? this.objects[this.objects.length - 1].object.endTime / 1000;
+            const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}), 1);
 
             const maxXUnits: number = 10;
             const maxYUnits: number = 10;
