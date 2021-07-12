@@ -150,16 +150,11 @@ module.exports.run = async (client, message, args, maindb, alicedb, current_map)
 		.setTitle(mapinfo.showStatistics(mod, 0, stats))
 		.setDescription(mapinfo.showStatistics(mod, 1, stats))
 		.setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
+		.attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000"), "chart.png")])
+		.setImage("attachment://chart.png")
 		.addField(mapinfo.showStatistics(mod, 2, stats), mapinfo.showStatistics(mod, 3, stats))
 		.addField(mapinfo.showStatistics(mod, 4, stats), `${mapinfo.showStatistics(mod, 5, stats)}\n**Result**: ${combo}/${mapinfo.maxCombo}x / ${(realAcc.value(mapinfo.objects) * 100).toFixed(2)}%${acc_estimation ? " (estimated)" : ""} / [${realAcc.n300}/${realAcc.n100}/${realAcc.n50}/${realAcc.nmiss}]`)
 		.addField(`**Droid pp (Experimental)**: __${ppline} pp__${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${starsline} stars`, `**PC pp**: ${pcppline} pp${isEstimatedValue && acc !== 100 ? " (estimated)" : ""} - ${pcstarsline} stars`);
-
-	const graph = await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000");
-
-	if (graph) {
-		embed.attachFiles([new Discord.MessageAttachment(graph, "chart.png")])
-			.setImage("attachment://chart.png");
-	}
 
 	let string = '';
 	if (ndetail) {
