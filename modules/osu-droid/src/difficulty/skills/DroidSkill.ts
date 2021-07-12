@@ -52,25 +52,6 @@ export abstract class DroidSkill extends Skill {
         this.saveToHitObject(current);
     }
 
-    /**
-     * The peak difficulty value of the map. Used to calculate the total star rating.
-     */
-    displayDifficultyValue(): number {
-        let difficulty: number = 0;
-        let weight: number = 1;
-
-        // Display difficulty is the weighted sum of the highest strains from every section.
-        // We're sorting from highest to lowest strain.
-        this.strains.slice().sort((a, b) => {
-            return b - a;
-        }).forEach(strain => {
-            difficulty += strain * weight;
-            weight *= 0.9;
-        });
-
-        return difficulty;
-    }
-
     difficultyValue(): number {
         if (this.strains.length === 0) {
             return 0;

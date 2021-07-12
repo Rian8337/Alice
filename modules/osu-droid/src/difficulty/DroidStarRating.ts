@@ -27,10 +27,6 @@ export class DroidStarRating extends StarRating {
     rhythm: number = 0;
 
     protected readonly difficultyMultiplier: number = 0.18;
-    private readonly displayDifficultyMultiplier: number = 0.605;
-
-    private displayAim: number = 0;
-    private displayTap: number = 0;
 
     /**
      * Calculates the star rating of the specified beatmap.
@@ -93,7 +89,6 @@ export class DroidStarRating extends StarRating {
         this.aimStrainPeaks = aimSkill.strains;
 
         this.aim = this.baseRatingValue(aimSkill.difficultyValue());
-        this.displayAim = this.baseDisplayRatingValue(aimSkill.displayDifficultyValue());
     }
 
     /**
@@ -107,7 +102,6 @@ export class DroidStarRating extends StarRating {
         this.speedStrainPeaks = tapSkill.strains;
 
         this.tap = this.baseRatingValue(tapSkill.difficultyValue());
-        this.displayTap = this.baseDisplayRatingValue(tapSkill.displayDifficultyValue());
     }
 
     calculateRhythm(): void {
@@ -122,16 +116,7 @@ export class DroidStarRating extends StarRating {
      * Calculates the total star rating of the beatmap and stores it in this instance.
      */
     calculateTotal(): void {
-        const displayAimPerformance: number = this.basePerformanceValue(this.displayAim);
-        const displayTapPerformance: number = this.basePerformanceValue(this.displayTap);
-
-        const totalPerformance: number = Math.pow(
-            Math.pow(displayAimPerformance, 1.1) +
-            Math.pow(displayTapPerformance, 1.1),
-            1 / 1.1
-        );
-
-        this.total = 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * totalPerformance) + 4);
+        this.total = this.aim + this.tap + Math.pow(this.rhythm, 0.4);
     }
 
     /**
@@ -150,10 +135,8 @@ export class DroidStarRating extends StarRating {
         this.speedStrainPeaks = tapSkill.strains;
 
         this.aim = this.baseRatingValue(aimSkill.difficultyValue());
-        this.displayAim = this.baseDisplayRatingValue(aimSkill.displayDifficultyValue());
 
         this.tap = this.baseRatingValue(tapSkill.difficultyValue());
-        this.displayTap = this.baseDisplayRatingValue(tapSkill.displayDifficultyValue());
 
         this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
 
@@ -187,19 +170,5 @@ export class DroidStarRating extends StarRating {
      */
     private baseRatingValue(difficulty: number): number {
         return Math.pow(difficulty, 0.75) * this.difficultyMultiplier;
-    }
-
-    /**
-     * Calculates the base display rating value of a difficulty.
-     */
-    private baseDisplayRatingValue(difficulty: number): number {
-        return Math.pow(difficulty, 0.75) * this.displayDifficultyMultiplier;
-    }
-
-    /**
-     * Calculates the base performance value of a star rating.
-     */
-    private basePerformanceValue(stars: number): number {
-        return Math.pow(5 * Math.max(1, stars) - 4, 3) / 100000;
     }
 }
