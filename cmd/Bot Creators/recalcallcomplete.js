@@ -74,6 +74,8 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
 
             let playc = 0;
 
+            const currentPPEntries = [];
+
             for await (const uid of accounts) {
                 console.log(`Now calculating uid ${uid}`);
                 const player = await osudroid.Player.getInformation({uid: uid});
@@ -86,8 +88,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                 const { username } = player;
 
                 let page = 0;
-
-                const currentPPEntries = [];
 
                 if (databaseEntry.calcInfo) {
                     if (uid !== databaseEntry.calcInfo.uid) {
