@@ -517,10 +517,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
-                    .attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000"), "chart.png")])
-                    .setImage("attachment://chart.png")
                     .addField("**Map Info**", `${mapinfo.showStatistics(constrain, 2)}\n${mapinfo.showStatistics(constrain, 3)}\n${mapinfo.showStatistics(constrain, 4)}\n${mapinfo.showStatistics(constrain, 5)}`)
                     .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\nUse \`a!daily challenges\` to check bonuses.`);
+
+                const graph = await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000");
+
+                if (graph) {
+                    embed.attachFiles([new Discord.MessageAttachment(graph, "chart.png")])
+                        .setImage("attachment://chart.png");
+                }
 
                 message.channel.send({embed: embed}).catch(console.error);
                 cd.add(message.author.id);
@@ -564,10 +569,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit)}`, footer[index])
                             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
-                            .attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000"), "chart.png")])
-                            .setImage("attachment://chart.png")
                             .addField("**Map Info**", `${mapinfo.showStatistics(constrain, 2)}\n${mapinfo.showStatistics(constrain, 3)}\n${mapinfo.showStatistics(constrain, 4)}\n${mapinfo.showStatistics(constrain, 5)}`)
                             .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\nUse \`a!daily bounty challenges\` to check bonuses.`);
+
+                        const graph = await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000");
+
+                        if (graph) {
+                            embed.attachFiles([new Discord.MessageAttachment(graph, "chart.png")])
+                                .setImage("attachment://chart.png");
+                        }
 
                         message.channel.send({embed: embed}).catch(console.error);
                         cd.add(message.author.id);
@@ -1025,11 +1035,16 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     .setColor(mapinfo.statusColor())
                     .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid} | Time left: ${timeConvert(timelimit - Math.floor(Date.now() / 1000))}`, footer[index])
                     .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
-                    .attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000"), "chart.png")])
-                    .setImage("attachment://chart.png")
                     .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
                     .addField("**Map Info**", `${mapinfo.showStatistics(constrain, 2)}\n${mapinfo.showStatistics("", 3)}\n${mapinfo.showStatistics("", 4)}\n${mapinfo.showStatistics("", 5)}`)
                     .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod must be used` : "Any rankable mod except EZ, NF, and HT"}\n\nUse  \`${challengeid.includes("w") ? "a!daily bounty challenges" : "a!daily challenges"}\` to check bonuses.`);
+
+                const graph = await star.pcStars.getStrainChart(mapinfo.beatmapsetID, message.member?.displayHexColor || "#000000");
+
+                if (graph) {
+                    embed.attachFiles([new Discord.MessageAttachment(graph, "chart.png")])
+                        .setImage("attachment://chart.png");
+                }
 
                 message.channel.send(`✅ **| Successfully started challenge \`${challengeid}\`.**`, {embed: embed}).catch(console.error);
                 client.channels.cache.get("669221772083724318").send(`✅ **| Successfully started challenge \`${challengeid}\`.\n<@&674918022116278282>**`, {embed: embed});

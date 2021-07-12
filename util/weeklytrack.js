@@ -108,10 +108,15 @@ module.exports.run = (client, maindb, alicedb) => {
             .setFooter(`Alice Synthesis Thirty | Challenge ID: ${challengeid}`, footer[index])
             .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
             .setDescription(`**[${mapinfo.showStatistics("", 0)}](https://osu.ppy.sh/b/${beatmapid})**\nFeatured by <@${featured}>\nDownload: [Google Drive](${dailyres.link[0]})${dailyres.link[1] ? `- [OneDrive](${dailyres.link[1]})` : ""}`)
-            .attachFiles([new Discord.MessageAttachment(await star.pcStars.getStrainChart(mapinfo.beatmapsetID, challengeid.includes("w") ? "#af46db" : "#e3b32d"), "chart.png")])
-            .setImage("attachment://chart.png")
             .addField("**Map Info**", `${mapinfo.showStatistics(constrain, 2)}\n${mapinfo.showStatistics(constrain, 3)}\n${mapinfo.showStatistics(constrain, 4)}\n${mapinfo.showStatistics(constrain, 5)}`)
             .addField(`**Star Rating**\n${"★".repeat(Math.min(10, Math.floor(star.droidStars.total)))} ${star.droidStars.total.toFixed(2)} droid stars\n${"★".repeat(Math.min(10, Math.floor(star.pcStars.total)))} ${star.pcStars.total.toFixed(2)} PC stars`, `**${dailyres.points == 1?"Point":"Points"}**: ${dailyres.points} ${dailyres.points == 1?"point":"points"}\n**Pass Condition**: ${pass_string}\n**Constrain**: ${constrain ? `${constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}`);
+
+        const graph = await star.pcStars.getStrainChart(mapinfo.beatmapsetID, challengeid.includes("w") ? "#af46db" : "#e3b32d");
+
+        if (graph) {
+            embed.attachFiles([new Discord.MessageAttachment(graph, "chart.png")])
+                .setImage("attachment://chart.png");
+        }
 
         client.channels.cache.get("669221772083724318").send("✅ **| Weekly challenge ended!**", {embed: embed});
 
