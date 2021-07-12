@@ -72,6 +72,10 @@ export abstract class DroidSkill extends Skill {
     }
 
     difficultyValue(): number {
+        if (this.strains.length === 0) {
+            return 0;
+        }
+
         let starRating: number = 0;
 
         // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x * starsPerDouble
