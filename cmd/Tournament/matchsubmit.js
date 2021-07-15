@@ -19,10 +19,11 @@ function scoreCalc(score, maxscore, accuracy, misscount, comboPortion, accPortio
 /**
  * @param {string} mod 
  * @param {string} requirement 
+ * @param {boolean} forcePR
  */
-function playValidation(mod, requirement) {
+function playValidation(mod, requirement, forcePR) {
     let tempMod = mod.toLowerCase();
-    if (!tempMod.includes("nf")) {
+    if (!tempMod.includes("nf") || (forcePR && !tempMod.includes("pr"))) {
         return false;
     }
     tempMod = tempMod.replace("nf", "");
@@ -149,7 +150,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score = playerList[i].recentPlays[0];
         let scorev2 = 0;
-        if (score.hash === hash && playValidation(score.mods, requirement)) {
+        if (score.hash === hash && playValidation(score.mods, requirement, matchres.forcePR)) {
             scorev2 = scoreCalc(score.score, maxScore, score.accuracy, score.miss, comboPortion, accPortion);
             if (score.mods.includes("HDDT")) {
                 scorev2 /= 0.59 / 0.56;
