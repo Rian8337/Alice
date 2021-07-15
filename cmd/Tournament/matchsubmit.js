@@ -13,7 +13,7 @@ const config = require('../../config.json');
 function scoreCalc(score, maxscore, accuracy, misscount, comboPortion, accPortion) {
 	let newScore = score / maxscore * 1000000 * comboPortion + Math.pow(accuracy / 100, 4) * 1000000 * accPortion;
     newScore -= misscount * 0.005 * newScore;
-    return newScore;
+    return Math.max(0, newScore);
 }
 
 /**
