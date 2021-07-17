@@ -17,6 +17,7 @@ module.exports.run = async (client, message, args, maindb) => {
         return message.channel.send("❎ **| I'm sorry, you don't have the permission to use this command.**");
     }
 
+    const bindDb = maindb.collection("userbind");
     const whitelistDb = maindb.collection("mapwhitelist");
     
     const link = args[0];
@@ -63,6 +64,17 @@ module.exports.run = async (client, message, args, maindb) => {
     client.channels.cache.get("638671295470370827").send(embed).catch(console.error);
 
     await whitelistDb.deleteOne({mapid: mapinfo.beatmapID});
+
+    // Clear beatmap from users' pp entries
+    const bindInformations = await bindDb.find({ "pp.hash": mapinfo.hash }).toArray();
+
+    for await (const bindInfo of bindInformations) {
+        bindInfo.pp.splice(bindInfo.pp.findIndex(v => v.hash === mapinfo.hash), 1);
+
+        const totalPP = bindInfo.pp.reduce((a, v, i) => a + v.pp * Math.pow(0.95, i), 0);
+        await bindDb.updateOne({ discordid: bindInfo.discordid }, { $set: { pp: bindInfo.pp, pptotal: totalPP }, $inc: { playc: -1 } });
+    }
+
     message.channel.send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`);
     client.channels.cache.get("638671295470370827").send(`✅ **| Successfully unwhitelisted \`${mapinfo.fullTitle}\`.**`).catch(console.error);
 };
