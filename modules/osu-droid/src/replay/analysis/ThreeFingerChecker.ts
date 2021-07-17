@@ -791,7 +791,7 @@ export class ThreeFingerChecker {
                 .sort((a, b) => {return b.count - a.count;})
                 .slice(2);
 
-            if (threeFingerRatio > this.threeFingerRatioThreshold || validPresses.length > 0) {
+            if ((threeFingerRatio > this.threeFingerRatioThreshold && cursorAmounts.filter(v => v > 0).length > 3) || validPresses.length > 0) {
                 // Strain factor
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
                 const strainFactor: number = Math.sqrt(
