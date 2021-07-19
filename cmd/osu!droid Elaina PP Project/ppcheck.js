@@ -3,13 +3,17 @@ const config = require('../../config.json');
 const { Db } = require("mongodb");
 const cd = new Set();
 
-function generateEmbed(res, page, footer, index, color) {
+/**
+ * @param {any} res 
+ * @param {number} page 
+ * @param {Discord.MessageEmbed} embed 
+ */
+function generateEmbed(res, page, embed) {
     const ppentry = res.pp ?? [];
     const pptotal = res.pptotal ?? 0;
-    const embed = new Discord.MessageEmbed()
-        .setColor(color)
-        .setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
-        .setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
+
+    embed.spliceFields(0, embed.fields.length)
+		.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, embed.footer.iconURL);
 
     for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
 		const pp = ppentry[i];
@@ -83,7 +87,7 @@ module.exports.run = (client, message, args, maindb) => {
 	}
 
     const binddb = maindb.collection("userbind");
-    binddb.findOne(query, (err, res) => {
+    binddb.findOne(query, async (err, res) => {
         if (err) {
 			console.log(err);
 			return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
@@ -96,8 +100,14 @@ module.exports.run = (client, message, args, maindb) => {
         const footer = config.avatar_list;
         const index = Math.floor(Math.random() * footer.length);
         const color = message.member?.displayHexColor ?? "#000000";
+		const ppRank = await binddb.countDocuments({pptotal: {$gt: res.pptotal}}) + 1;
 
-        let embed = generateEmbed(res, page, footer, index, color);
+		const embed = new Discord.MessageEmbed()
+			.setColor(color)
+			.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
+			.setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp (#${ppRank.toLocaleString()})**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
+
+        generateEmbed(res, page, embed);
         const max_page = Math.ceil(res.pp.length / 5);
 		if (max_page === 0) {
 			return message.channel.send("❎ **| I'm sorry, you do not have any submitted plays!**");
@@ -125,7 +135,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
-				embed = generateEmbed(res, page, footer, index, color);
+				generateEmbed(res, page, embed);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -138,7 +148,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
-				embed = generateEmbed(res, page, footer, index, color);
+				generateEmbed(res, page, embed);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -151,7 +161,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
-				embed = generateEmbed(res, page, footer, index, color);
+				generateEmbed(res, page, embed);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
@@ -164,7 +174,7 @@ module.exports.run = (client, message, args, maindb) => {
 				if (message.channel.type === "text") {
 					msg.reactions.cache.forEach((reaction) => reaction.users.remove(message.author.id).catch(console.error));
 				}
-				embed = generateEmbed(res, page, footer, index, color);
+				generateEmbed(res, page, embed);
 				msg.edit({embed: embed}).catch(console.error);
 			});
 
