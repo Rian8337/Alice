@@ -104,7 +104,7 @@ module.exports.run = (client, message, args, maindb) => {
 
 		const embed = new Discord.MessageEmbed()
 			.setColor(color)
-			.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(ppentry.length / 5)}`, footer[index])
+			.setFooter(`Alice Synthesis Thirty | Page ${page}/${Math.ceil(res.pp.length / 5)}`, footer[index])
 			.setDescription(`**PP Profile for <@${res.discordid}> (${res.username})**\nTotal PP: **${pptotal.toFixed(2)} pp (#${ppRank.toLocaleString()})**\n[PP Profile](https://ppboard.herokuapp.com/profile?uid=${res.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${res.uid})`);
 
         generateEmbed(res, page, embed);
