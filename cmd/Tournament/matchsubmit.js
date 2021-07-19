@@ -24,17 +24,39 @@ function scoreCalc(score, maxscore, accuracy, misscount, comboPortion, accPortio
 function playValidation(mod, requirement, forcePR) {
     let tempMod = mod.toLowerCase();
     if (!tempMod.includes("nf") || (forcePR && !tempMod.includes("pr"))) {
-        return false;
+        return forcePR ? "NFPR is not used" : "NF is not used";
     }
     tempMod = tempMod.replace("nf", "");
 	switch (requirement) {
-		case "nm": return tempMod === "";
-		case "hd": return tempMod === "hd";
-		case "hr": return tempMod === "hr";
-		case "dt": return tempMod === 'dt' || tempMod === 'hddt';
-		case "fm": return (tempMod.includes("hd") || tempMod.includes("hr") || tempMod.includes("ez")) && (!tempMod.includes("pr") && !tempMod.includes("ht") && !tempMod.includes("dt") && !tempMod.includes("nc"));
-		case "tb": return !tempMod.includes("dt") && !tempMod.includes("nc") && !tempMod.includes("ht");
-		default: return true;
+		case "nm": return tempMod === "" ? "" : `Other mods except ${forcePR ? "NFPR" : "NF"} was used`;
+		case "hd": return tempMod === "hd" ? "" : `Other mods except ${forcePR ? "NFHDPR" : "NFHD"} was used`;
+		case "hr": return tempMod === "hr" ? "" : `Other mods except ${forcePR ? "NFHRPR" : "NFHR"} was used`;
+		case "dt": return tempMod === 'dt' || tempMod === 'hddt' ? "" : `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${forcePR ? "NFHDDTPR" : "NFHDDT"} was used`;
+		case "fm": {
+            let illegallyUsedMods = tempMod
+                .replace("hd", "")
+                .replace("hr", "")
+                .replace("ez", "");
+
+            if (forcePR) {
+                illegallyUsedMods = illegallyUsedMods.replace("pr", "");
+            }
+
+            return illegallyUsedMods ? `${illegallyUsedMods.toUpperCase()} was used` : "";
+        }
+		case "tb": {
+            let illegallyUsedMods = tempMod
+                .replace("hd", "")
+                .replace("hr", "")
+                .replace("ez", "");
+
+            if (forcePR) {
+                illegallyUsedMods = illegallyUsedMods.replace("pr", "");
+            }
+
+            return illegallyUsedMods ? `${illegallyUsedMods.toUpperCase()} was used` : "";
+        }
+		default: return "";
 	}
 }
 
@@ -150,12 +172,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score = playerList[i].recentPlays[0];
         let scorev2 = 0;
-        if (score.hash === hash && playValidation(score.mods, requirement, matchres.forcePR)) {
+        let invalidReason = playValidation(score.mods, requirement, matchres.forcePR);
+        if (score.hash === hash && !invalidReason) {
             scorev2 = scoreCalc(score.score, maxScore, score.accuracy, score.miss, comboPortion, accPortion);
             if (score.mods.includes("HDDT")) {
                 scorev2 /= 0.59 / 0.56;
             }
 			scorev2 = Math.round(scorev2);
+        } else if (score.hash !== hash) {
+            invalidReason = "Score not found";
         }
         scoreList.push(scorev2);
 
@@ -163,7 +188,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
         const playerName = players[i][0] === "Score" ? teams[remainder][0] : players[i][0];
 
         const scoreString = `${playerName} - (${osudroid.mods.pcToDetail(score.mods)}): **${scorev2}** - ${client.emojis.cache.get(rankEmote(score.rank))} - ${score.accuracy}% - ${score.miss} ❌\n`;
-        const failString = `${playerName} - (N/A): **${scorev2}** - Failed\n`;
+        const failString = `${playerName} - (N/A): **${scorev2}** - **${invalidReason}**\n`;
         
         if (remainder === 0) {
             team_1_score += scorev2;
