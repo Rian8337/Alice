@@ -175,7 +175,7 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score = playerList[i].recentPlays[0];
         let scorev2 = 0;
-        let invalidReason = playValidation(score.mods, requirement, matchres.forcePR);
+        let invalidReason = playValidation(score.mods, requirement, poolres.forcePR);
         if (score.hash === hash && !invalidReason) {
             scorev2 = scoreCalc(score.score, maxScore, score.accuracy, score.miss, comboPortion, accPortion);
             if (score.mods.includes("HDDT")) {
