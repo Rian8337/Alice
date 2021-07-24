@@ -27,6 +27,9 @@ function playValidation(mod, requirement, forcePR) {
         return forcePR ? "NFPR is not used" : "NF is not used";
     }
     tempMod = tempMod.replace("nf", "");
+    if (forcePR) {
+        tempMod = tempMod.replace("pr", "");
+    }
 	switch (requirement) {
 		case "nm": return tempMod === "" ? "" : `Other mods except ${forcePR ? "NFPR" : "NF"} was used`;
 		case "hd": return tempMod === "hd" ? "" : `Other mods except ${forcePR ? "NFHDPR" : "NFHD"} was used`;
