@@ -90,7 +90,8 @@ module.exports.run = async obj => {
     } else {
         console.log(`${message.author.tag} (DM): ${message.content}`);
     }
-    cmd.run(client, message, args, maindb, alicedb, current_map);
+    cmd.run(client, message, args, maindb, alicedb, current_map)
+        .catch(e => message.channel.send(`❎ **| I'm sorry, I'm unable to execute the command: ${e.message}**`));
     if (finalCommandCooldown && !message.isOwner) {
         cd.set(cooldownMapKey, finalCommandCooldown);
         const interval = setInterval(() => {
