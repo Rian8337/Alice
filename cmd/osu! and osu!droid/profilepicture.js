@@ -25,10 +25,6 @@ async function drawImage(properties, template = false) {
 
     // player flag
     c.globalAlpha = 1;
-    const flag = properties.player.location !== "LL" ? await loadImage(`https://osu.ppy.sh/images/flags/${properties.player.location}.png`) : undefined;
-    if (flag) {
-        c.drawImage(flag, 440, 15, flag.width / 1.5, flag.height / 1.5);
-    }
 
     // player rank
     c.globalAlpha = 0.9;
@@ -98,9 +94,7 @@ async function drawImage(properties, template = false) {
     if (properties.res?.clan) {
         c.fillText(`Clan: ${properties.res.clan}`, 169, 184);
     }
-    if (flag) {
-        c.fillText(properties.player.location, 451, flag.height + 20);
-    }
+    c.fillText(properties.player.location, 451, flag.height + 20);
 
     // ranked level
     c.fillStyle = properties.pictureConfig.textColor ?? "#000000";
