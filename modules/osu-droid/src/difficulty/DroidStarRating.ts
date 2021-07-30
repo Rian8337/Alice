@@ -66,19 +66,6 @@ export class DroidStarRating extends StarRating {
     }
 
     /**
-     * Calculates the skills provided.
-     * 
-     * @param skills The skills to calculate.
-     */
-    calculateSkills(...skills: DroidSkill[]): void {
-        this.objects.slice(1).forEach(h => {
-            skills.forEach(skill => {
-                skill.processInternal(h);
-            });
-        });
-    }
-
-    /**
      * Calculates the aim star rating of the beatmap and stores it in this instance.
      */
     calculateAim(): void {
