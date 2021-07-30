@@ -10,10 +10,13 @@ export class OsuAim extends OsuSkill {
      * Minimum timing threshold.
      */
     private readonly timingThreshold: number = 107;
-
+    
     private readonly angleBonusBegin: number = Math.PI / 3;
     protected readonly skillMultiplier: number = 26.25;
     protected readonly strainDecayBase: number = 0.15;
+    protected readonly reducedSectionCount: number = 10;
+    protected readonly reducedSectionBaseline: number = 0.75;
+    protected readonly difficultyMultiplier: number = 1.06;
 
     /**
      * @param currentObject The hitobject to calculate.

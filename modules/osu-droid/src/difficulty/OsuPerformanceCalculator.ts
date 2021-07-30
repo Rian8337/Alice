@@ -111,14 +111,17 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         // Combo scaling
         this.aim *= this.comboPenalty;
 
+        // AR scaling
         let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            arFactor += 0.4 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         } else if (calculatedAR < 8) {
-            arFactor += 0.01 * (8 - calculatedAR);
+            arFactor += 0.025 * (8 - calculatedAR);
         }
 
-        this.aim *= 1 + Math.min(arFactor, arFactor * objectCount / 1000);
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
+
+        const arBonus: number = 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
         // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
         let hiddenBonus: number = 1;
@@ -128,17 +131,19 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         this.aim *= hiddenBonus;
 
+        let flBonus: number = 1;
         if (this.convertedMods & mods.osuMods.fl) {
             // Apply object-based bonus for flashlight.
-            let flBonus: number = 1 + 0.35 * Math.min(1, objectCount / 200);
+            flBonus += 0.35 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
                 flBonus += 0.3 * Math.min(1, (objectCount - 200) / 300);
             }
             if (objectCount > 500) {
                 flBonus += (objectCount - 500) / 1200;
             }
-            this.aim *= flBonus;
         }
+
+        this.aim *= Math.max(arBonus, flBonus);
 
         // Scale the aim value with accuracy slightly.
         this.aim *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
@@ -175,12 +180,15 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         // Combo scaling
         this.speed *= this.comboPenalty;
 
+        // AR scaling
         let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            arFactor += 0.4 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         }
 
-        this.speed *= 1 + Math.min(arFactor, arFactor * objectCount / 1000);
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
+
+        this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
         if (this.convertedMods & mods.osuMods.hd) {
             this.speed *= 1 + 0.04 * (12 - calculatedAR);

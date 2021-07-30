@@ -1,5 +1,7 @@
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { Skill } from "../base/Skill";
+import { Interpolation } from "../../mathutil/Interpolation";
+import { MathUtils } from "../../mathutil/MathUtils";
 
 /**
  * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
@@ -32,6 +34,22 @@ export abstract class OsuSkill extends Skill {
      * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
      */
     protected abstract readonly strainDecayBase: number;
+
+    /**
+     * The number of sections with the highest strains, which the peak strain reductions will apply to.
+     * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
+     */
+    protected abstract readonly reducedSectionCount: number;
+
+    /**
+     * The baseline multiplier applied to the section with the biggest strain.
+     */
+    protected abstract readonly reducedSectionBaseline: number;
+
+    /**
+     * The final multiplier to be applied to the final difficulty value after all other calculations.
+     */
+    protected abstract readonly difficultyMultiplier: number;
 
     private readonly sectionLength: number = 400;
 
@@ -90,17 +108,28 @@ export abstract class OsuSkill extends Skill {
     difficultyValue(): number {
         let difficulty: number = 0;
         let weight: number = 1;
-        
+
+        const sortedStrains: number[] = this.strainPeaks.slice().sort((a, b) => {
+            return b - a;
+        });
+
+        // We are reducing the highest strains first to account for extreme difficulty spikes.
+        for (let i = 0; i < Math.min(sortedStrains.length, this.reducedSectionCount); ++i) {
+            const scale: number = Math.log10(Interpolation.lerp(1, 10, MathUtils.clamp(i / this.reducedSectionCount, 0, 1)));
+
+            sortedStrains[i] *= Interpolation.lerp(this.reducedSectionBaseline, 1, scale);
+        }
+
         // Difficulty is the weighted sum of the highest strains from every section.
         // We're sorting from highest to lowest strain.
-        this.strainPeaks.slice().sort((a, b) => {
+        sortedStrains.sort((a, b) => {
             return b - a;
         }).forEach(strain => {
             difficulty += strain * weight;
             weight *= 0.9;
         });
 
-        return difficulty;
+        return difficulty * this.difficultyMultiplier;
     }
 
     /**
