@@ -79,13 +79,15 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// player flag
 				c.globalAlpha = 1;
-				const flagPath = `${process.cwd()}/files/flags/${player.location}.png`;
-				const flagStats = await promises.stat(flagPath);
 				let flagImage;
-				if (flagStats.isFile()) {
-					flagImage = await loadImage(flagPath);
-					c.drawImage(flagImage, 440, 15, flagImage.width / 1.5, flagImage.height / 1.5)
-				}
+				try {
+					const flagPath = `${process.cwd()}/files/flags/${player.location}.png`;
+					const flagStats = await promises.stat(flagPath);
+					if (flagStats.isFile()) {
+						flagImage = await loadImage(flagPath);
+						c.drawImage(flagImage, 440, 15, flagImage.width / 1.5, flagImage.height / 1.5);
+					}
+				} catch (ignored) {}
 
 				// player rank
 				c.globalAlpha = 0.9;
