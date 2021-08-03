@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { promises } = require('fs');P
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const { Db } = require('mongodb');
@@ -95,6 +96,13 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 				// player flag
 				c.globalAlpha = 1;
+				const flagPath = `${process.cwd()}/files/flags/${player.location}.png`;
+				const flagStats = await promises.stat(flagPath);
+				let flagImage;
+				if (flagStats.isFile()) {
+					flagImage = await loadImage(flagPath);
+					c.drawImage(flagImage, 440, 15, flagImage.width / 1.5, flagImage.height / 1.5)
+				}
 
 				// player rank
 				c.globalAlpha = 0.9;
@@ -160,7 +168,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 				c.fillText(`Play Count: ${player.playCount.toLocaleString()}`, 169, 144);
 				c.fillText(`Droid pp: ${pp.toFixed(2)}pp (#${ppRank.toLocaleString()})`, 169, 164);
 				if (res.clan) c.fillText(`Clan: ${res.clan}`, 169, 184);
-				c.fillText(player.location, 451, 80);
+				if (flagImage) c.fillText(player.location, 451, flagImage.height + 20);
 
 				// ranked level
 				c.fillStyle = pictureConfig.textColor ?? "#000000";
