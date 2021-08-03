@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { promises } = require('fs');P
+const { promises } = require('fs');
 const osudroid = require('osu-droid');
 const {createCanvas, loadImage} = require('canvas');
 const { Db } = require('mongodb');
