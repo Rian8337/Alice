@@ -162,7 +162,12 @@ export class ReplayAnalyzer {
     private parseReplay(): void {
         // javaDeserialization can only somewhat parse some string field
         // the rest will be a buffer that we need to manually parse
-        const rawObject: any[] = javaDeserialization.parse(this.fixedODR);
+        let rawObject: any[];
+        try {
+            rawObject = javaDeserialization.parse(this.fixedODR);
+        } catch (ignored) {
+            return;
+        }
 
         const resultObject: ReplayInformation = {
             replayVersion: rawObject[0].version,
