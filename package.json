@@ -11,7 +11,7 @@
     "build-osu-droid": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
   },
   "engines": {
-    "node": "14.x",
+    "node": "16.x",
     "npm": "7.10.0"
   },
   "keywords": [
@@ -22,7 +22,7 @@
   "dependencies": {
     "adm-zip": "^0.4.16",
     "bufferutil": "^4.0.3",
-    "canvas": "^2.6.1",
+    "canvas": "^2.8.0",
     "crypto-js": "^4.0.0",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
