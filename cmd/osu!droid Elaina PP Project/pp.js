@@ -333,9 +333,9 @@ module.exports.run = (client, message, args, maindb) => {
                     });
 
                     const realAcc = new osudroid.Accuracy({
-                        n300: data.hit300,
-                        n100: data.hit100,
-                        n50: data.hit50,
+                        n300: play.hit300,
+                        n100: play.hit100,
+                        n50: play.hit50,
                         nmiss: miss
                     });
                     const star = new osudroid.MapStars().calculate({file: mapinfo.osuFile, mods: mods, stats});
