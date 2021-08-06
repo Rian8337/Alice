@@ -219,7 +219,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                     }
                     const submitter = await message.guild.members.fetch(res.submitter).catch(console.error);
                     const summary = res.summary;
-                    let coins = 20 * Math.floor(summary.split(" ").length / 50);
+                    let coins = 200 * Math.floor(summary.split(" ").length / 50);
                     const mapinfo = await osudroid.MapInfo.getInformation({beatmapID: beatmap_id});
                     if (mapinfo.error) return message.channel.send("❎ **| I'm sorry, I couldn't fetch beatmap info from osu! API! Perhaps it is down?**");
                     if (!mapinfo.title) {
@@ -248,7 +248,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                         .setTitle(mapinfo.showStatistics('', 0))
                         .setURL(`https://osu.ppy.sh/b/${mapinfo.beatmapID}`)
                         .setColor(mapinfo.statusColor())
-			            .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
+                        .setThumbnail(`https://b.ppy.sh/thumb/${mapinfo.beatmapsetID}l.jpg`)
                         .setDescription(mapinfo.showStatistics('', 1))
                         .addField(mapinfo.showStatistics('', 2), mapinfo.showStatistics('', 3))
                         .addField(mapinfo.showStatistics('', 4), mapinfo.showStatistics('', 5))
@@ -869,7 +869,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
 
 module.exports.config = {
 	name: "mapshare",
-	description: "Main command for map sharing.\n\nEach day, you can submit a beatmap recommendation via DM to <@627321230902689813> to be reviewed by a <@&715219617303232542>. If your recommendation is accepted, it will be queued for posting in <#430002296160649229> and you will receive 20 Alice coins for each 50 words in your summary in return.\n\n__**General Rules**__\n▸ Abuse of the map sharing system of any kind will lead to a mute or at worst a ban.\n\n**Beatmap**:\n▸ The beatmap must have less than 300,000 plays and 250 favorites.\n▸ The beatmap cannot be in WIP and qualified status.\n▸ The beatmap must be submitted for at least a week. If the beatmap was deleted, the submission will automatically be deleted.\n▸ The beatmap's drain length must be longer than 20 seconds.\n▸ The beatmap's star rating must be above 3\*.\n▸ The beatmap must not be updated for at least 3 days. If the beatmap was updated after map share submission, the submission will automatically be deleted.\n\n**Summary**:\n▸ The summary must be written in English. Any non-English summaries will be automatically denied.\n▸ The summary must be at least 50 words and must not exceed 120 words or 900 characters.",
+	description: "Main command for map sharing.\n\nEach day, you can submit a beatmap recommendation via DM to <@627321230902689813> to be reviewed by a <@&715219617303232542>. If your recommendation is accepted, it will be queued for posting in <#430002296160649229> and you will receive 200 Alice coins for each 50 words in your summary in return.\n\n__**General Rules**__\n▸ Abuse of the map sharing system of any kind will lead to a mute or at worst a ban.\n\n**Beatmap**:\n▸ The beatmap must have less than 300,000 plays and 250 favorites.\n▸ The beatmap cannot be in WIP and qualified status.\n▸ The beatmap must be submitted for at least a week. If the beatmap was deleted, the submission will automatically be deleted.\n▸ The beatmap's drain length must be longer than 20 seconds.\n▸ The beatmap's star rating must be above 3\*.\n▸ The beatmap must not be updated for at least 3 days. If the beatmap was updated after map share submission, the submission will automatically be deleted.\n\n**Summary**:\n▸ The summary must be written in English. Any non-English summaries will be automatically denied.\n▸ The summary must be at least 50 words and must not exceed 120 words or 900 characters.",
 	usage: "mapshare <map link/map ID> <summary>\nmapshare accept <map link/map ID>\nmapshare ban <user>\nmapshare deny <map link/map ID>\nmapshare list [status/page] [page]\nmapshare post <map link/map ID>\nmapshare unban <user>\nmapshare view <map link/map ID>",
 	detail: "`map link/map ID`: The link or beatmap ID of the map [Integer/String]\n`page`: The page to view [Integer]\n`status`: The status of submission to view. Accepted arguments are `accepted`, `denied`, `pending`, and `posted` [String]\n`user`: The user to ban or unban [UserResolvable (mention or user ID)]\n`summary`: Overall summary of the specified map [String]",
     permission: "None | Map-share Manager | Helper | Moderator | Bot Creators"
