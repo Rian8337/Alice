@@ -121,7 +121,6 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                     for await (const entry of entries) {
                         const mapinfo = await osudroid.MapInfo.getInformation({hash: entry.hash});
                         if (mapinfo.error) {
-                            console.log("osu! API fetch error");
                             continue;
                         }
                         if (!mapinfo.title) {
@@ -130,18 +129,15 @@ module.exports.run = async (client, message, args, maindb, alicedb) => {
                         if (mapinfo.approved === osudroid.rankedStatus.QUALIFIED || mapinfo.approved <= osudroid.rankedStatus.PENDING) {
                             const isWhitelist = await whitelistDb.findOne({hashid: entry.hash});
                             if (!isWhitelist) {
-                                console.log("Map is not ranked, approved, or whitelisted");
                                 continue;
                             }
                         }
                         score += entry.score;
                         scoreEntries.push([entry.score, entry.hash]);
                         if (!mapinfo.osuFile) {
-                            console.log("No osu file found");
                             continue;
                         }
                         if (blacklists.find(v => v.beatmapID === mapinfo.beatmapID)) {
-                            console.log("Map is blacklisted");
                             continue;
                         }
                         if (entry.forcedAR !== undefined || entry.speedMultiplier !== 1) {
