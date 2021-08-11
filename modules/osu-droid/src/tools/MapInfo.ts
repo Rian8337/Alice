@@ -278,17 +278,14 @@ export class MapInfo {
             const map: MapInfo = new MapInfo();
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
-                console.log("API error");
                 map.error = true;
                 return resolve(map);
             }
             const mapinfo: OsuAPIResponse = JSON.parse(result.data.toString("utf-8"))[0];
             if (!mapinfo) {
-                console.log("Map not found");
                 return resolve(map);
             }
             if (parseInt(mapinfo.mode) !== 0) {
-                console.log("Mode not supported");
                 return resolve(map);
             }
 
