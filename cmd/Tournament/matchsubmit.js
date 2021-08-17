@@ -36,14 +36,20 @@ function playValidation(mod, requirement, forcePR) {
 		case "hr": return tempMod === "hr" ? "" : `Other mods except ${forcePR ? "NFHRPR" : "NFHR"} was used`;
 		case "dt": return tempMod === 'dt' || tempMod === 'hddt' ? "" : `Other mods except ${forcePR ? "NFDTPR" : "NFDT"} or ${forcePR ? "NFHDDTPR" : "NFHDDT"} was used`;
 		case "fm": {
-            let illegallyUsedMods = tempMod
-                .replace("hd", "")
-                .replace("hr", "")
-                .replace("ez", "");
+            let illegallyUsedMods = tempMod;
 
             if (forcePR) {
                 illegallyUsedMods = illegallyUsedMods.replace("pr", "");
             }
+
+            if (!illegallyUsedMods) {
+                return `NM was used`;
+            }
+
+            let illegallyUsedMods = tempMod
+                .replace("hd", "")
+                .replace("hr", "")
+                .replace("ez", "");
 
             return illegallyUsedMods ? `${illegallyUsedMods.toUpperCase()} was used` : "";
         }
