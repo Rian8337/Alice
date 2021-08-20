@@ -269,7 +269,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                             console.log(err);
                             return message.channel.send("❎ **| I'm sorry, I'm having trouble receiving response from database. Please try again!**");
                         }
-                        query = {discordid: res.submitter};
+                        query = {discordid: res.id};
                         pointdb.findOne(query, (err, pres) => {
                             if (err) {
                                 console.log(err);
@@ -293,7 +293,7 @@ module.exports.run = (client, message, args, maindb, alicedb) => {
                                 insertVal = {
                                     username: userres.username,
                                     uid: userres.uid,
-                                    discordid: message.author.id,
+                                    discordid: res.id,
                                     challenges: [],
                                     points: 0,
                                     transferred: 0,
