@@ -46,7 +46,7 @@ function playValidation(mod, requirement, forcePR) {
                 return `NM was used`;
             }
 
-            let illegallyUsedMods = tempMod
+            illegallyUsedMods = illegallyUsedMods
                 .replace("hd", "")
                 .replace("hr", "")
                 .replace("ez", "");
