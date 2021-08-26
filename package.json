@@ -10,7 +10,7 @@
     "compile-build": "tsc --build tsconfig.json",
     "build-osu-droid-windows": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
     "build-osu-droid-linux": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json",
-    "startDev": "node --trace-warnings dist/main.js",
+    "startDebug": "node --trace-warnings --inspect dist/main.js",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "heroku-postbuild": "npm run compile-linux"
   },

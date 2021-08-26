@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises';
+import { url } from "inspector";
 import { ApplicationCommandData, Client, Collection, Intents, Snowflake } from "discord.js";
 import { MongoClient } from "mongodb";
 import consola, { Consola } from 'consola';
@@ -78,10 +79,8 @@ export class Bot extends Client {
 
     /**
      * Initializes the bot.
-     * 
-     * @param debugMode Whether to start the bot in debug mode. Defaults to `false`.
      */
-    async start(debugMode?: boolean): Promise<void> {
+    async start(): Promise<void> {
         if (this.isInitialized) {
             return;
         }
@@ -90,11 +89,7 @@ export class Bot extends Client {
 
         this.logger.wrapAll();
 
-        Config.isDebug = !!debugMode;
-
-        if (Config.isDebug) {
-            this.logger.warn("Starting bot in debug mode");
-        }
+        Config.isDebug = !!url();
 
         await this.connectToDatabase();
         await this.loadCommands();
