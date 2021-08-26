@@ -8,8 +8,8 @@
     "compile-windows": "rmdir dist /s /q & npm run compile-build && npm run build-osu-droid-windows",
     "compile-linux": "rm -rf dist & npm run compile-build && npm run build-osu-droid-linux",
     "compile-build": "tsc --build tsconfig.json",
-    "build-osu-droid-windows": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
-    "build-osu-droid-linux": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd modules/osu-droid & rm -rf dist & tsc --build tsconfig.json",
+    "build-osu-droid-windows": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
+    "build-osu-droid-linux": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid & rm -rf dist & tsc --build tsconfig.json",
     "startDev": "node --trace-warnings dist/main.js",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "heroku-postbuild": "npm run compile-linux"
