@@ -1,6 +1,6 @@
 {
   "name": "alice",
-  "version": "2.5.0",
+  "version": "1.5.0",
   "description": "A multipurpose Discord bot mainly made for osu!droid and Malody.",
   "main": "mybot.js",
   "scripts": {
