@@ -292,8 +292,8 @@ export class Bot extends Client {
             await this.application?.fetch();
         }
 
-        const deployCommandID: Snowflake = "863275131291303936";
-        const undeployCommandID: Snowflake = "863285368773935136";
+        const deployCommandID: Snowflake = <Snowflake> (Config.isDebug ? process.env.DEBUG_BOT_DEPLOY_ID : process.env.BOT_DEPLOY_ID);
+        const undeployCommandID: Snowflake = <Snowflake> (Config.isDebug ? process.env.DEBUG_BOT_UNDEPLOY_ID : process.env.BOT_UNDEPLOY_ID);
 
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
