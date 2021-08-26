@@ -6,4 +6,4 @@ config();
 
 const bot: Bot = new Bot();
 
-bot.start(true);
+bot.start();
