@@ -100,7 +100,7 @@ export class Bot extends Client {
         await this.loadCommands();
         await this.loadEvents();
 
-        await super.login(process.env.BOT_TOKEN);
+        await super.login(Config.isDebug ? process.env.DEBUG_BOT_TOKEN : process.env.BOT_TOKEN);
 
         await this.initUtils();
         await this.registerDeployCommands();
