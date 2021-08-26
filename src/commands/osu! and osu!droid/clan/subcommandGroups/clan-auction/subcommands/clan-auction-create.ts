@@ -31,13 +31,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (!NumberHelper.isNumberInRange(amount, 1, Number.POSITIVE_INFINITY, true)) {
+    if (!NumberHelper.isPositive(amount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(clanStrings.invalidClanAuctionAmount)
         });
     }
 
-    if (!NumberHelper.isNumberInRange(minBidAmount, 1, Number.POSITIVE_INFINITY, true)) {
+    if (!NumberHelper.isPositive(minBidAmount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(clanStrings.invalidClanAuctionMinimumBid)
         });

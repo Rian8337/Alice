@@ -51,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (!NumberHelper.isNumberInRange(page, 1, Number.POSITIVE_INFINITY, true)) {
+    if (!NumberHelper.isPositive(page)) {
         return interaction.editReply({
             content: MessageCreator.createReject(leaderboardStrings.invalidPage)
         });

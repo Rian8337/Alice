@@ -14,7 +14,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap", true))[0];
 
-    if (isNaN(beatmapID) || !NumberHelper.isNumberInRange(beatmapID, 0, Number.POSITIVE_INFINITY)) {
+    if (isNaN(beatmapID) || !NumberHelper.isPositive(beatmapID)) {
         return interaction.editReply({
             content: MessageCreator.createReject(manualcalcStrings.noBeatmapProvided)
         });

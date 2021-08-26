@@ -30,4 +30,14 @@ export abstract class NumberHelper extends MathUtils {
     static isNumeric(value: any): boolean {
         return !isNaN(value - parseFloat(value));
     }
+
+    /**
+     * Checks whether a number is positive.
+     * 
+     * @param num The number.
+     * @returns Whether the number is positive.
+     */
+    static isPositive(num: number): boolean {
+        return this.isNumberInRange(num, 0, Number.POSITIVE_INFINITY);
+    }
 }

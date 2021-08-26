@@ -40,7 +40,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const transferAmount: number = <number> interaction.options.getInteger("amount");
 
-    if (!NumberHelper.isNumberInRange(transferAmount, 0, Number.POSITIVE_INFINITY)) {
+    if (!NumberHelper.isPositive(transferAmount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(coinsStrings.transferAmountInvalid)
         });

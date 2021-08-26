@@ -35,7 +35,7 @@ async function retrieveLeaderboard(page: number): Promise<string[]> {
 export const run: Subcommand["run"] = async (_, interaction) => {
     const page: number = interaction.options.getInteger("page") ?? 1;
 
-    if (!NumberHelper.isNumberInRange(page, 1, Number.POSITIVE_INFINITY, true)) {
+    if (!NumberHelper.isPositive(page)) {
         return interaction.editReply({
             content: MessageCreator.createReject(leaderboardStrings.invalidPage)
         });

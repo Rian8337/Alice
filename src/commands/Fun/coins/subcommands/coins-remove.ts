@@ -13,7 +13,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const removeAmount: number = interaction.options.getInteger("amount", true);
 
-    if (!NumberHelper.isNumberInRange(removeAmount, 0, Number.POSITIVE_INFINITY)) {
+    if (!NumberHelper.isPositive(removeAmount)) {
         return interaction.editReply({
             content: MessageCreator.createReject(coinsStrings.removeAmountInvalid)
         });
