@@ -37,6 +37,7 @@ export enum clanStrings {
     clanAuctionAmountOutOfBounds = "Hey, you don't have that many powerup of that type! You only have %s!",
     invalidClanAuctionMinimumBid = "Hey, please enter a valid minimum price for other clans to bid!",
     invalidClanAuctionDuration = "I'm sorry, auctions can only last between a minute and a day!",
+    invalidClanAuctionBidAmount = "Hey, please enter a valid amount of Alice coins to bid!",
     buyShopItemConfirmation = "Are you sure you want to buy a %s for %s Alice coins?",
     announcementMessageConfirmation = "Are you sure you want to send an announcement for your clan?",
     createClanConfirmation = "Are you sure you want to create a clan named `%s` for %s Alice coins?",
@@ -53,6 +54,7 @@ export enum clanStrings {
     activatePowerupConfirmation = "Are you sure you want to activate the `%s` powerup for your clan?",
     clanAuctionCancelConfirmation = "Are you sure you want to cancel this auction?",
     clanAuctionCreateConfirmation = "Are you sure you want to create a new auction?",
+    clanAuctionBidConfirmation = "Are you sure you want to bid to this auction?",
     clanNameIsTooLong = "I'm sorry, clan names can only be 25 characters long!",
     clanAuctionNameIsTooLong = "I'm sorry, clan auction names can only be 20 characters long!",
     clanNameHasUnicode = "I'm sorry, clan name must not contain any unicode characters!",
@@ -100,5 +102,7 @@ export enum clanStrings {
     clanAuctionCancelFailed = "I'm sorry, I couldn't cancel the auction: %s.",
     clanAuctionCancelSuccessful = "Successfully canceled the auction.",
     clanAuctionCreateFailed = "I'm sorry, I couldn't create the auction: %s.",
-    clanAuctionCreateSuccessful = "Successfully created the auction."
+    clanAuctionCreateSuccessful = "Successfully created the auction.",
+    clanAuctionBidFailed = "I'm sorry, I couldn't process your bid: %s.",
+    clanAuctionBidSuccessful = "Successfully bid to the auction."
 };

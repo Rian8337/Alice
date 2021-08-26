@@ -2,16 +2,16 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
 import { AuctionOperationResult } from "@alice-interfaces/clan/AuctionOperationResult";
 import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
-import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
 import { Manager } from "@alice-utils/base/Manager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ObjectId } from "bson";
-import { Collection } from "discord.js";
+import { Collection, Snowflake } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
 import { Bot } from "@alice-core/Bot";
 import { PowerupType } from "@alice-types/clan/PowerupType";
+import { PlayerInfo } from "./PlayerInfo";
 
 /**
  * Represents a clan auction.
@@ -79,13 +79,24 @@ export class ClanAuction extends Manager {
     /**
      * Bids to the auction.
      * 
-     * @param clan The clan who bids.
+     * @param clan The clan who bid.
+     * @param amount The amount of Alice coins to bid.
      * @returns An object containing information about the operation.
      */
-    bid(clan: Clan): Promise<AuctionOperationResult> {
-        return new Promise(async resolve => {
-            // TODO: clan bidding
+    bid(clan: Clan, amount: number): AuctionOperationResult {
+        this.bids.set(
+            clan.name,
+            {
+                clan: clan.name,
+                amount: (this.bids.get(clan.name)?.amount ?? 0) + amount
+            }
+        );
+
+        this.bids.sort((a, b) => {
+            return b.amount - a.amount;
         });
+
+        return this.createOperationResult(true);
     }
 
     /**
@@ -159,5 +170,30 @@ export class ClanAuction extends Manager {
         clan.powerups.set(this.powerup, powerup);
 
         return clan.updateClan();
+    }
+
+    /**
+     * Updates the auction in auction database.
+     * 
+     * This should only be called after changing everything needed
+     * as this will perform a database operation.
+     * 
+     * @returns An object containing information about the operation.
+     */
+    async updateAuction(): Promise<AuctionOperationResult> {
+        return DatabaseManager.aliceDb.collections.clanAuction.update(
+            { name: this.name },
+            {
+                $set: {
+                    auctioneer: this.auctioneer,
+                    creationdate: this.creationdate,
+                    expirydate: this.expirydate,
+                    min_price: this.min_price,
+                    powerup: this.powerup,
+                    amount: this.amount,
+                    bids: [...this.bids.values()]
+                }
+            }
+        );
     }
 }
