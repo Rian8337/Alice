@@ -1,0 +1,325 @@
+import * as fs from 'fs/promises';
+import { ApplicationCommandData, Client, Collection, Intents, Snowflake } from "discord.js";
+import { MongoClient } from "mongodb";
+import consola, { Consola } from 'consola';
+import { Command } from "@alice-interfaces/core/Command";
+import { Event } from '@alice-interfaces/core/Event';
+import { MuteManager } from '@alice-utils/managers/MuteManager';
+import { LoungeLockManager } from '@alice-utils/managers/LoungeLockManager';
+import { ProfileManager } from '@alice-utils/managers/ProfileManager';
+import { WhitelistManager } from '@alice-utils/managers/WhitelistManager';
+import { DatabaseManager } from '@alice-database/DatabaseManager';
+import { CommandUtilManager } from '@alice-utils/managers/CommandUtilManager';
+import { EventUtil } from '@alice-interfaces/core/EventUtil';
+import { Config } from './Config';
+import { StringHelper } from '@alice-utils/helpers/StringHelper';
+import { Manager } from '@alice-utils/base/Manager';
+import { Subcommand } from '@alice-interfaces/core/Subcommand';
+
+/**
+ * The starting point of the bot.
+ * 
+ * Upon initialization, the bot will automatically log in.
+ */
+export class Bot extends Client {
+    /**
+     * The logger of this bot.
+     */
+    readonly logger: Consola = consola;
+
+    /**
+     * The commands that this bot has, mapped by the name of the command.
+     */
+    readonly commands: Collection<string, Command> = new Collection();
+
+    /**
+     * The subcommand groups that this bot has, mapped by the name of the command,
+     * and each subcommand group mapped by its name.
+     */
+    readonly subcommandGroups: Collection<string, Collection<string, Subcommand>> = new Collection();
+
+    /**
+     * The subcommands that this bot has, either mapped by the
+     * name of the command or the name of the subcommand group,
+     * and each subcommand mapped by its name.
+     */
+    readonly subcommands: Collection<string, Collection<string, Subcommand>> = new Collection();
+
+    /**
+     * The event utilities that this bot has, mapped by the event's name, and each utility mapped by its name.
+     */
+    readonly eventUtilities: Collection<string, Collection<string, EventUtil>> = new Collection();
+
+    /**
+     * Whether the bot has been initialized.
+     */
+    private isInitialized: boolean = false;
+
+    constructor() {
+        super({
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_MEMBERS,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.GUILD_BANS,
+                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+                Intents.FLAGS.DIRECT_MESSAGES
+            ],
+            partials: [
+                "CHANNEL",
+                "GUILD_MEMBER",
+                "USER",
+                "MESSAGE",
+                "REACTION"
+            ]
+        });
+    }
+
+    /**
+     * Initializes the bot.
+     * 
+     * @param debugMode Whether to start the bot in debug mode. Defaults to `false`.
+     */
+    async start(debugMode?: boolean): Promise<void> {
+        if (this.isInitialized) {
+            return;
+        }
+
+        this.isInitialized = true;
+
+        this.logger.wrapAll();
+
+        Config.isDebug = !!debugMode;
+
+        if (Config.isDebug) {
+            this.logger.warn("Starting bot in debug mode");
+        }
+
+        await this.connectToDatabase();
+        await this.loadCommands();
+        await this.loadEvents();
+
+        await super.login(process.env.BOT_TOKEN);
+
+        await this.initUtils();
+        await this.registerDeployCommands();
+
+        this.logger.success("Discord API connection established");
+        this.logger.success("Alice Synthesis Thirty is up and running");
+    }
+
+    /**
+     * Connects to the bot's databases.
+     */
+    private async connectToDatabase(): Promise<void> {
+        // Elaina DB
+        const elainaURI: string = 'mongodb://' + process.env.ELAINA_DB_KEY + '@elainadb-shard-00-00-r6qx3.mongodb.net:27017,elainadb-shard-00-01-r6qx3.mongodb.net:27017,elainadb-shard-00-02-r6qx3.mongodb.net:27017/test?ssl=true&replicaSet=ElainaDB-shard-0&authSource=admin&retryWrites=true';
+        const elainaDb: MongoClient = await new MongoClient(elainaURI, { useNewUrlParser: true, useUnifiedTopology: true }).connect();
+        this.logger.success("Connection to Elaina DB established");
+
+        // Alice DB
+        const aliceURI: string = 'mongodb+srv://' + process.env.ALICE_DB_KEY + '@alicedb-hoexz.gcp.mongodb.net/test?retryWrites=true&w=majority';
+        const aliceDb: MongoClient = await new MongoClient(aliceURI, { useNewUrlParser: true, useUnifiedTopology: true }).connect();
+        this.logger.success("Connection to Alice DB established");
+
+        DatabaseManager.init(
+            this,
+            elainaDb.db("ElainaDB"),
+            aliceDb.db("AliceDB")
+        );
+    }
+
+    /**
+     * Loads commands from `commands` directory.
+     */
+    private async loadCommands(): Promise<void> {
+        this.logger.info("Loading commands");
+
+        const commandPath: string = `${__dirname}/../commands`;
+
+        const folders: string[] = await fs.readdir(commandPath);
+
+        let i = 0;
+
+        for await (const folder of folders) {
+            this.logger.info("%d. Loading folder %s", ++i, folder);
+
+            const commands: string[] = await fs.readdir(`${commandPath}/${folder}`);
+
+            let j = 0;
+
+            for await (const command of commands) {
+                this.logger.success("%d.%d. %s loaded", i, ++j, command);
+
+                const filePath: string = `${commandPath}/${folder}/${command}`;
+
+                const file: Command = await import(`${filePath}/${command}`);
+
+                this.commands.set(command, file);
+
+                await this.loadSubcommandGroups(command, filePath);
+
+                await this.loadSubcommands(command, filePath);
+            }
+        }
+    }
+
+    /**
+     * Loads subcommand groups from the specified directory and caches them.
+     * 
+     * @param commandName The name of the command.
+     * @param commandDirectory The directory of the command.
+     */
+    private async loadSubcommandGroups(commandName: string, commandDirectory: string): Promise<void> {
+        const subcommandGroupPath: string = `${commandDirectory}/subcommandGroups`;
+
+        let subcommandGroups: string[];
+
+        try {
+            subcommandGroups = await fs.readdir(subcommandGroupPath);
+        } catch (ignored) {
+            return;
+        }
+
+        const collection: Collection<string, Subcommand> = new Collection();
+
+        for await (const subcommandGroup of subcommandGroups) {
+            const filePath: string = `${subcommandGroupPath}/${subcommandGroup}`;
+
+            const file: Subcommand = await import(`${filePath}/${subcommandGroup}`);
+
+            collection.set(subcommandGroup, file);
+
+            await this.loadSubcommands(subcommandGroup, filePath);
+        }
+
+        this.subcommandGroups.set(commandName, collection);
+    }
+
+    /**
+     * Loads subcommands from the specified directory and caches them.
+     * 
+     * @param commandName The name of the command.
+     * @param commandDirectory The directory of the command.
+     */
+    private async loadSubcommands(commandName: string, commandDirectory: string): Promise<void> {
+        const subcommandPath: string = `${commandDirectory}/subcommands`;
+
+        let subcommands: string[];
+
+        try {
+            subcommands = await fs.readdir(subcommandPath);
+        } catch (ignored) {
+            return;
+        }
+
+        const collection: Collection<string, Subcommand> = new Collection();
+
+        for await (const subcommand of subcommands) {
+            const filePath: string = `${subcommandPath}/${subcommand}`;
+
+            const fileStat = await fs.lstat(filePath);
+
+            if (fileStat.isDirectory()) {
+                continue;
+            }
+
+            const file: Subcommand = await import(filePath);
+
+            collection.set(subcommand.substring(0, subcommand.length - 3), file);
+        }
+
+        this.subcommands.set(commandName, collection);
+    }
+
+    /**
+     * Loads events and event utilities from `events` directory.
+     */
+    private async loadEvents(): Promise<void> {
+        this.logger.info("Loading events and event utilities");
+
+        const eventsPath: string = `${__dirname}/../events`;
+
+        const events: string[] = await fs.readdir(eventsPath);
+
+        let i = 0;
+
+        for await (const event of events) {
+            const file: Event = await import(`${eventsPath}/${event}/${event}`);
+
+            super.on(event, file.run.bind(null, this));
+
+            const eventUtils: string[] = await fs.readdir(`${eventsPath}/${event}/utils`);
+
+            this.eventUtilities.set(event, new Collection());
+
+            ++i;
+
+            let j = 0;
+
+            for await (const eventUtil of eventUtils) {
+                this.logger.success("%d.%d. %s :: %s event utility loaded", i, ++j, event, eventUtil.substring(0, eventUtil.length - 3));
+
+                const eventUtility: EventUtil = await import(`${eventsPath}/${event}/utils/${eventUtil}`);
+
+                this.eventUtilities.get(event)!.set(eventUtil, eventUtility);
+            }
+        }
+    }
+
+    /**
+     * Initializes utilities.
+     * 
+     * @param client The instance of the bot.
+     */
+    private async initUtils(): Promise<void> {
+        Manager.init(this);
+        ProfileManager.init();
+        await CommandUtilManager.init();
+        await LoungeLockManager.init();
+        await MuteManager.init();
+        await WhitelistManager.init();
+    }
+
+    /**
+     * Registers deploy and undeploy commands to register other commands.
+     * 
+     * @param forceRegister Whether to force register the commands.
+     */
+    private async registerDeployCommands(forceRegister?: boolean): Promise<void> {
+        if (!this.application?.owner) {
+            await this.application?.fetch();
+        }
+
+        const deployCommandID: Snowflake = "863275131291303936";
+        const undeployCommandID: Snowflake = "863285368773935136";
+
+        const registerCommand = async (name: string): Promise<void> => {
+            this.logger.info(`Registering ${name} command`);
+
+            const command: Command = <Command> this.commands.get(name);
+
+            const data: ApplicationCommandData = {
+                name: command.config.name,
+                description: command.config.description,
+                options: command.config.options,
+                defaultPermission: true
+            };
+
+            const applicationCommand = await this.application?.commands.create(data);
+
+            this.logger.info(`Command ${name} registered with ID ${applicationCommand?.id}`);
+
+            this.logger.info(`${StringHelper.capitalizeString(name)} command registered`);
+        };
+
+        if (!(await this.application!.commands.fetch(deployCommandID)) || forceRegister) {
+            await registerCommand("deploy");
+        }
+
+        if (!(await this.application!.commands.fetch(undeployCommandID)) || forceRegister) {
+            await registerCommand("undeploy");
+        }
+    }
+};

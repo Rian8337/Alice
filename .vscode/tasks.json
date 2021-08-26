@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "compile-windows",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: compile-windows",
+			"detail": "rmdir dist /s /q & npm run compile-build && npm run build-osu-droid"
+		}
+	]
+}

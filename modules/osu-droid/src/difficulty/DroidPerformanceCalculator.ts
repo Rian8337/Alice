@@ -2,15 +2,19 @@ import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
 import { DroidStarRating } from './DroidStarRating';
 import { MapStats } from '../utils/MapStats';
-import { mods } from '../utils/mods';
 import { OsuHitWindow } from '../utils/HitWindow';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
+import { ModNoFail } from '../mods/ModNoFail';
+import { ModSpunOut } from '../mods/ModSpunOut';
+import { ModHidden } from '../mods/ModHidden';
+import { ModFlashlight } from '../mods/ModFlashlight';
+import { ModScoreV2 } from '../mods/ModScoreV2';
 
 /**
  * A performance points calculator that calculates performance points for osu!droid gamemode.
  */
 export class DroidPerformanceCalculator extends PerformanceCalculator {
-    protected stars: DroidStarRating = new DroidStarRating();
+    stars: DroidStarRating = new DroidStarRating();
 
     /**
      * The aim performance value.
@@ -75,27 +79,12 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // Custom multiplier for SO and NF.
         // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
         let finalMultiplier: number = 1.24;
-        if (this.convertedMods & mods.osuMods.nf) {
+        if (this.stars.mods.some(m => m instanceof ModNoFail)) {
             finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
         }
-        if (this.convertedMods & mods.osuMods.so) {
+        if (this.stars.mods.some(m => m instanceof ModSpunOut)) {
             finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / objectCount, 0.85);
         }
-
-        // Extreme penalty
-        // =======================================================
-        // Added to penalize map with little aim but ridiculously
-        // high tap value (which is easily abusable by using more than 2 fingers).
-        // let extremePenalty = Math.pow(
-        //     1 - Math.abs(this.tap - Math.pow(this.aim, 1.05)) /
-        //     Math.max(this.tap, Math.pow(this.aim, 1.05)),
-        //     0.2
-        // );
-        // extremePenalty = Math.max(
-        //     Math.pow(extremePenalty, 2),
-        //     -2 * Math.pow(1 - extremePenalty, 2) + 1
-        // );
-        // finalMultiplier *= extremePenalty;
 
         // Apply tap penalty for penalized plays.
         this.tap /= (params.tapPenalty ?? 1);
@@ -129,7 +118,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
         let hiddenBonus: number = 1;
-        if (this.convertedMods & mods.osuMods.hd) {
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
             // The bonus starts decreasing twice as fast
             // beyond AR10 and reaches 1 at AR11.
             if (calculatedAR > 10) {
@@ -150,7 +139,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // Scale aim with AR, sensitive to object count.
         this.aim *= 1 + arFactor * (0.33 + 0.66 * Math.min(1, objectCount / 1250));
 
-        if (this.convertedMods & mods.osuMods.fl) {
+        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
             // Apply object-based bonus for flashlight.
             let flBonus: number = 1 + 0.25 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
@@ -162,7 +151,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             this.aim *= flBonus;
         }
 
-        if (this.convertedMods & (mods.osuMods.hd | mods.osuMods.fl)) {
+        if (this.stars.mods.some(m => m instanceof ModHidden) && this.stars.mods.some(m => m instanceof ModFlashlight)) {
             this.aim *= 1.2;
         }
 
@@ -216,7 +205,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      */
     protected calculateAccuracyValue(): void {
         // Global variables
-        const ncircles: number = this.convertedMods & mods.osuMods.v2 ? this.stars.objects.length - this.stars.map.spinners : this.stars.map.circles;
+        const ncircles: number = this.stars.mods.some(m => m instanceof ModScoreV2) ? this.stars.objects.length - this.stars.map.spinners : this.stars.map.circles;
 
         if (ncircles === 0) {
             return;
@@ -254,11 +243,11 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 2400) / 1500));
         this.accuracy *= lengthScaling;
 
-        if (this.convertedMods & mods.osuMods.hd) {
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.accuracy *= 1.08;
         }
 
-        if (this.convertedMods & mods.osuMods.fl) {
+        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
             this.accuracy *= 1.02;
         }
     }

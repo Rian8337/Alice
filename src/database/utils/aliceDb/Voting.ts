@@ -1,0 +1,38 @@
+import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
+import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
+import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { Manager } from "@alice-utils/base/Manager";
+import { ObjectId } from "bson";
+import { Snowflake } from "discord.js";
+
+/**
+ * Represents a voting entry.
+ */
+export class Voting extends Manager implements DatabaseVoting {
+    initiator: Snowflake;
+    topic: string;
+    channel: Snowflake;
+    choices: VoteChoice[];
+    readonly _id?: ObjectId;
+
+    constructor(client: Bot, data: DatabaseVoting) {
+        super(client);
+
+        this._id = data._id;
+        this.initiator = data.initiator;
+        this.topic = data.topic;
+        this.channel = data.channel;
+        this.choices = data.choices ?? [];
+    }
+
+    /**
+     * Ends this vote.
+     * 
+     * @returns An object containing information about the operation.
+     */
+    async end(): Promise<DatabaseOperationResult> {
+        return DatabaseManager.aliceDb.collections.voting.delete({ channel: this.channel });
+    }
+}

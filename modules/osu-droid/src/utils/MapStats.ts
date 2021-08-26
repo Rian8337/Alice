@@ -1,6 +1,15 @@
-import { mods } from './mods';
 import { modes } from '../constants/modes';
 import { DroidHitWindow } from '../utils/HitWindow';
+import { Mod } from '../mods/Mod';
+import { ModDoubleTime } from '../mods/ModDoubleTime';
+import { ModHalfTime } from '../mods/ModHalfTime';
+import { ModNightCore } from '../mods/ModNightCore';
+import { ModHardRock } from '../mods/ModHardRock';
+import { ModEasy } from '../mods/ModEasy';
+import { ModPrecise } from '../mods/ModPrecise';
+import { ModSmallCircle } from '../mods/ModSmallCircle';
+import { ModReallyEasy } from '../mods/ModReallyEasy';
+import { ModUtil } from '../mods/ModUtil';
 
 /**
  * Holds general beatmap statistics for further modifications. 
@@ -27,19 +36,9 @@ export class MapStats {
     hp?: number;
 
     /**
-     * The enabled modifications in osu!standard string.
+     * The enabled modifications.
      */
-    mods: string;
-
-    /**
-     * The bitwise enum of enabled modifications for osu!droid.
-     */
-    droidMods: number;
-
-    /**
-     * The bitwise enum of enabled modifications for osu!standard.
-     */
-    pcMods: number;
+    mods: Mod[];
 
     /**
      * The speed multiplier applied from all modifications.
@@ -88,9 +87,9 @@ export class MapStats {
         hp?: number,
 
         /**
-         * Applied modifications in osu!standard format.
+         * Applied modifications.
          */
-        mods?: string,
+        mods?: Mod[],
         
         /**
          * The speed multiplier to calculate for.
@@ -111,16 +110,7 @@ export class MapStats {
         this.ar = values.ar;
         this.od = values.od;
         this.hp = values.hp;
-        this.mods = values.mods?.toUpperCase() || "";
-
-        this.droidMods = this.mods ? mods.modbitsFromString(this.mods) : 0;
-        this.pcMods = this.droidMods;
-
-        // apply TD mod to droid bitwise enum if it hasn't
-        // been applied
-        if (!(this.droidMods & mods.osuMods.td)) {
-            this.droidMods += mods.osuMods.td;
-        }
+        this.mods = values.mods ?? [];
 
         this.speedMultiplier = values.speedMultiplier ?? 1;
         this.isForceAR = values.isForceAR ?? false;
@@ -153,7 +143,7 @@ export class MapStats {
     }): MapStats {
         if (params) {
             if (params.mods) {
-                this.mods = params.mods;
+                this.mods = ModUtil.pcStringToMods(params.mods);
             }
             if (params.speedMultiplier) {
                 this.speedMultiplier = params.speedMultiplier;
@@ -164,30 +154,27 @@ export class MapStats {
         }
 
         let statisticsMultiplier: number = 1;
-        
-        if (this.pcMods & mods.osuMods.dt) {
+
+        if (this.mods.some(m => m instanceof ModDoubleTime)) {
             this.speedMultiplier *= 1.5;
         }
-        if (this.pcMods & mods.osuMods.ht) {
+        if (this.mods.some(m => m instanceof ModHalfTime)) {
             this.speedMultiplier *= 0.75;
         }
-        if (this.pcMods & mods.osuMods.nc) {
+        if (this.mods.some(m => m instanceof ModNightCore)) {
             this.speedMultiplier *= 1.5;
         }
-        if (this.mods.includes("SU")) {
-            this.speedMultiplier *= 1.25;
-        }
-        if (this.pcMods & mods.osuMods.hr) {
+        if (this.mods.some(m => m instanceof ModHardRock)) {
             statisticsMultiplier *= 1.4;
         }
-        if (this.pcMods & mods.osuMods.ez) {
+        if (this.mods.some(m => m instanceof ModEasy)) {
             statisticsMultiplier *= 0.5;
         }
 
         switch (params?.mode || modes.osu) {
             case modes.droid: {
                 // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
-                if ((this.droidMods & mods.osuMods.nc) && this.oldStatistics) {
+                if ((this.mods.some(m => m instanceof ModNightCore)) && this.oldStatistics) {
                     this.speedMultiplier *= 1.39 / 1.5;
                 }
 
@@ -199,7 +186,7 @@ export class MapStats {
                     this.od = Math.min(this.od * statisticsMultiplier, 10);
 
                     // convert original OD to droid OD
-                    const droidToMS: number = new DroidHitWindow(this.od).hitWindowFor300(this.mods.includes("PR")) / this.speedMultiplier;
+                    const droidToMS: number = new DroidHitWindow(this.od).hitWindowFor300(this.mods.some(m => m instanceof ModPrecise)) / this.speedMultiplier;
                     this.od = 5 - (droidToMS - 50) / 6;
                 }
 
@@ -217,15 +204,16 @@ export class MapStats {
                         * 2 / 128)
                         + 0.5 * (11 - 5.2450170716245195) / 5;
                     
-                    if (this.droidMods & mods.osuMods.hr) {
-                        this.droidMods -= mods.osuMods.hr;
+                    if (this.mods.some(m => m instanceof ModHardRock)) {
                         scale -= 0.125;
                     }
-                    if (this.droidMods & mods.osuMods.ez) {
-                        this.droidMods -= mods.osuMods.ez;
+                    if (this.mods.some(m => m instanceof ModEasy)) {
                         scale += 0.125;
                     }
-                    if (this.mods.includes("SC")) {
+                    if (this.mods.some(m => m instanceof ModReallyEasy)) {
+                        scale += 0.125;
+                    }
+                    if (this.mods.some(m => m instanceof ModSmallCircle)) {
                         scale -= ((assumedHeight / 480)
                         * (4 * 4.48)
                         * 2 / 128);
@@ -240,8 +228,8 @@ export class MapStats {
 
                 if (this.ar !== undefined && !this.isForceAR) {
                     this.ar *= statisticsMultiplier;
-                    if (this.mods.includes("RE")) {
-                        if (this.droidMods & mods.osuMods.ez) {
+                    if (this.mods.some(m => m instanceof ModReallyEasy)) {
+                        if (this.mods.some(m => m instanceof ModEasy)) {
                             this.ar *= 2;
                             this.ar -= 0.5;
                         }
@@ -253,15 +241,15 @@ export class MapStats {
                 break;
             }
             case modes.osu: {
-                if (!(this.pcMods & mods.osuMods.map_changing) && this.speedMultiplier === 1) {
+                if (!this.mods.some(m => ModUtil.mapChangingMods.find(mod => mod.acronym === m.acronym)) && this.speedMultiplier === 1) {
                     break;
                 }
 
                 if (this.cs !== undefined) {
-                    if (this.pcMods & mods.osuMods.hr) {
+                    if (this.mods.some(m => m instanceof ModHardRock)) {
                         this.cs *= 1.3;
                     }
-                    if (this.pcMods & mods.osuMods.ez) {
+                    if (this.mods.some(m => m instanceof ModEasy)) {
                         this.cs *= 0.5;
                     }
                     this.cs = Math.min(this.cs, 10);

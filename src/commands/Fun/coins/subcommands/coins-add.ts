@@ -1,0 +1,58 @@
+import { GuildEmoji, User } from "discord.js";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Subcommand } from "@alice-interfaces/core/Subcommand";
+import { Constants } from "@alice-core/Constants";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { coinsStrings } from "../coinsStrings";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+
+export const run: Subcommand["run"] = async (client, interaction) => {
+    if (!CommandHelper.isExecutedByBotOwner(interaction)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(Constants.noPermissionReject)
+        });
+    }
+
+    const userToAdd: User = interaction.options.getUser("user", true);
+
+    const addAmount: number = interaction.options.getInteger("amount", true);
+
+    if (!NumberHelper.isNumberInRange(addAmount, 0, Number.POSITIVE_INFINITY)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(coinsStrings.addAmountInvalid)
+        });
+    }
+
+    const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(userToAdd);
+
+    if (!playerInfo) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(coinsStrings.otherUserDoesntHaveCoinsInfo)
+        });
+    }
+
+    const result: DatabaseOperationResult = await playerInfo.incrementCoins(addAmount);
+
+    if (!result.success) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(coinsStrings.addCoinFailed, <string> result.reason)
+        });
+    }
+
+    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
+
+    interaction.editReply(MessageCreator.createAccept(
+        coinsStrings.addCoinSuccess,
+        coin.toString(),
+        addAmount.toLocaleString(),
+        coin.toString(),
+        (playerInfo.alicecoins + addAmount).toLocaleString()
+    ));
+};
+
+export const config: Subcommand["config"] = {
+    permissions: ["BOT_OWNER"]
+};

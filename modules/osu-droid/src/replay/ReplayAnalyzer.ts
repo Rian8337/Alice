@@ -6,13 +6,24 @@ import { DroidStarRating } from '../difficulty/DroidStarRating';
 import { ReplayData, ReplayInformation } from './data/ReplayData';
 import { CursorData } from './data/CursorData';
 import { ReplayObjectData } from './data/ReplayObjectData';
-import { mods } from '../utils/mods';
 import { movementType } from '../constants/movementType';
 import { HitObject } from '../beatmap/hitobjects/HitObject';
 import { hitResult } from '../constants/hitResult';
 import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
 import { ThreeFingerChecker, ThreeFingerInformation } from './analysis/ThreeFingerChecker';
 import { TwoHandChecker } from './analysis/TwoHandChecker';
+import { MathUtils } from '../mathutil/MathUtils';
+import { ModUtil } from '../mods/ModUtil';
+import { Mod } from '../mods/Mod';
+import { Accuracy } from '../utils/Accuracy';
+import { ModHidden } from '../mods/ModHidden';
+import { ModFlashlight } from '../mods/ModFlashlight';
+
+interface HitErrorInformation {
+    negativeAvg: number;
+    positiveAvg: number;
+    unstableRate: number;
+};
 
 /**
  * A replay analyzer that analyzes a replay from osu!droid.
@@ -181,19 +192,53 @@ export class ReplayAnalyzer {
         if (resultObject.replayVersion >= 3) {
             resultObject.time = new Date(Number(rawObject[4].readBigUInt64BE(0)));
             resultObject.hit300k = rawObject[4].readInt32BE(8);
-            resultObject.hit300 = rawObject[4].readInt32BE(12);
             resultObject.hit100k = rawObject[4].readInt32BE(16);
-            resultObject.hit100 = rawObject[4].readInt32BE(20);
-            resultObject.hit50 = rawObject[4].readInt32BE(24);
-            resultObject.hit0 = rawObject[4].readInt32BE(28);
             resultObject.score = rawObject[4].readInt32BE(32);
             resultObject.maxCombo = rawObject[4].readInt32BE(36);
-            resultObject.accuracy = rawObject[4].readFloatBE(40);
+            resultObject.accuracy = new Accuracy({
+                n300: rawObject[4].readInt32BE(12),
+                n100: rawObject[4].readInt32BE(20),
+                n50: rawObject[4].readInt32BE(24),
+                nmiss: rawObject[4].readInt32BE(28)
+            });
             resultObject.isFullCombo = !!(rawObject[4][44]);
             resultObject.playerName = rawObject[5];
             resultObject.rawMods = rawObject[6].elements;
-            resultObject.droidMods = this.convertDroidMods(rawObject[6].elements);
             resultObject.convertedMods = this.convertMods(rawObject[6].elements);
+
+            // Determine rank
+            const totalHits: number = resultObject.accuracy.n300 + resultObject.accuracy.n100 + resultObject.accuracy.n50 + resultObject.accuracy.nmiss;
+            const isHidden: boolean = resultObject.convertedMods.some(m => m instanceof ModHidden || m instanceof ModFlashlight);
+
+            const hit300Ratio: number = resultObject.accuracy.n300 / totalHits;
+
+            switch (true) {
+                case resultObject.accuracy.value() === 1:
+                    if (isHidden) {
+                        resultObject.rank = "XH";
+                    } else {
+                        resultObject.rank = "X";
+                    }
+                    break;
+                case hit300Ratio > 0.9 && resultObject.accuracy.n50 / totalHits < 0.01 && !resultObject.accuracy.nmiss:
+                    if (isHidden) {
+                        resultObject.rank = "SH";
+                    } else {
+                        resultObject.rank = "S";
+                    }
+                    break;
+                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.9:
+                    resultObject.rank = "A";
+                    break;
+                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.8:
+                    resultObject.rank = "B";
+                    break;
+                case hit300Ratio > 0.6:
+                    resultObject.rank = "C";
+                    break;
+                default:
+                    resultObject.rank = "D";
+            }
         }
 
         if (resultObject.replayVersion >= 4) {
@@ -224,14 +269,14 @@ export class ReplayAnalyzer {
             replayDataBufferArray.push(rawObject[bufferIndex]);
         }
 
-        // merge all cursor movement and hit object data section into one for better control when parsing
+        // Merge all cursor movement and hit object data section into one for better control when parsing
         const replayDataBuffer: Buffer = Buffer.concat(replayDataBufferArray);
         let bufferCounter: number = 0;
 
         const size: number = replayDataBuffer.readInt32BE(bufferCounter);
         bufferCounter += this.INT_LENGTH;
 
-        // parse movement data
+        // Parse movement data
         for (let x = 0; x < size; x++) {
             const moveSize: number = replayDataBuffer.readInt32BE(bufferCounter);
             bufferCounter += this.INT_LENGTH;
@@ -264,7 +309,7 @@ export class ReplayAnalyzer {
         const replayObjectLength: number = replayDataBuffer.readInt32BE(bufferCounter);
         bufferCounter += this.INT_LENGTH;
 
-        // parse result data
+        // Parse result data
         for (let i = 0; i < replayObjectLength; i++) {
             const replayObjectData: ReplayObjectData = {
                 accuracy: 0,
@@ -298,7 +343,7 @@ export class ReplayAnalyzer {
             resultObject.hitObjectData.push(replayObjectData);
         }
 
-        // parse hit results and accuracy in old replay version
+        // Parse max combo, hit results, and accuracy in old replay version
         if (resultObject.replayVersion < 3 && (this.map instanceof DroidStarRating || this.map instanceof Beatmap)) {
             let hit300: number = 0;
             let hit300k: number = 0;
@@ -308,9 +353,10 @@ export class ReplayAnalyzer {
             let hit0: number = 0;
             let grantsGekiOrKatu: boolean = true;
 
-            const objects: HitObject[] = this.map instanceof DroidStarRating ? (this.map?.map?.objects as HitObject[]) : this.map?.objects;
+            const objects: HitObject[] = this.map instanceof DroidStarRating ? (<HitObject[]> this.map.map.objects) : this.map.objects;
 
             for (let i = 0; i < resultObject.hitObjectData.length; ++i) {
+                // Hit result
                 const hitObjectData: ReplayObjectData = resultObject.hitObjectData[i];
                 const isNextNewCombo: boolean = i + 1 !== objects.length ? objects[i + 1].isNewCombo : true;
 
@@ -343,17 +389,91 @@ export class ReplayAnalyzer {
             }
 
             resultObject.hit300k = hit300k;
-            resultObject.hit300 = hit300;
             resultObject.hit100k = hit100k;
-            resultObject.hit100 = hit100;
-            resultObject.hit50 = hit50;
-            resultObject.hit0 = hit0;
 
-            const totalHits = hit300 + hit100 + hit50 + hit0;
-            resultObject.accuracy = (hit300 * 300 + hit100 * 100 + hit50 * 50) / (totalHits * 300);
+            resultObject.accuracy = new Accuracy({
+                n300: hit300,
+                n100: hit100,
+                n50: hit50,
+                nmiss: hit0,
+                nobjects: hit300 + hit100 + hit50 + hit0
+            });
+
+            // Determine rank
+            const totalHits: number = resultObject.accuracy.n300 + resultObject.accuracy.n100 + resultObject.accuracy.n50 + resultObject.accuracy.nmiss;
+            const isHidden: boolean = resultObject.convertedMods?.some(m => m instanceof ModHidden || m instanceof ModFlashlight) ?? false;
+
+            const hit300Ratio: number = resultObject.accuracy.n300 / totalHits;
+
+            switch (true) {
+                case resultObject.accuracy.value() === 1:
+                    if (isHidden) {
+                        resultObject.rank = "XH";
+                    } else {
+                        resultObject.rank = "X";
+                    }
+                    break;
+                case hit300Ratio > 0.9 && resultObject.accuracy.n50 / totalHits < 0.01 && !resultObject.accuracy.nmiss:
+                    if (isHidden) {
+                        resultObject.rank = "SH";
+                    } else {
+                        resultObject.rank = "S";
+                    }
+                    break;
+                case (hit300Ratio > 0.8 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.9:
+                    resultObject.rank = "A";
+                    break;
+                case (hit300Ratio > 0.7 && !resultObject.accuracy.nmiss) || hit300Ratio > 0.8:
+                    resultObject.rank = "B";
+                    break;
+                case hit300Ratio > 0.6:
+                    resultObject.rank = "C";
+                    break;
+                default:
+                    resultObject.rank = "D";
+            }
         }
 
         this.data = new ReplayData(resultObject);
+    }
+
+    /**
+     * Gets hit error information of the replay.
+     * 
+     * `analyze()` must be called before calling this.
+     */
+    calculateHitError(): HitErrorInformation|null {
+        if (!this.data) {
+            return null;
+        }
+
+        const hitObjectData: ReplayObjectData[] = this.data.hitObjectData;
+        let positiveCount: number = 0;
+        let negativeCount: number = 0;
+        let positiveTotal: number = 0;
+        let negativeTotal: number = 0;
+
+        hitObjectData.forEach(v => {
+            if (v.result === hitResult.RESULT_0) {
+                return;
+            }
+
+            const accuracy: number = v.accuracy;
+
+            if (accuracy >= 0) {
+                positiveTotal += accuracy;
+                ++positiveCount;
+            } else {
+                negativeTotal += accuracy;
+                ++negativeCount;
+            }
+        });
+
+        return {
+            positiveAvg: positiveTotal / positiveCount || 0,
+            negativeAvg: negativeTotal / negativeCount || 0,
+            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map(v => v.accuracy)) * 10
+        };
     }
 
     /**
@@ -397,8 +517,8 @@ export class ReplayAnalyzer {
     /**
      * Converts replay mods to regular mod string.
      */
-    private convertMods(replayMods: string[]): string {
-        return mods.droidToPC(this.convertDroidMods(replayMods));
+    private convertMods(replayMods: string[]): Mod[] {
+        return ModUtil.droidStringToMods(this.convertDroidMods(replayMods));
     }
 
     /**

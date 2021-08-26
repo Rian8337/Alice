@@ -1,46 +1,72 @@
 {
   "name": "alice",
-  "version": "2.5.0",
-  "description": "A multipurpose Discord bot mainly made for osu!droid and Malody.",
-  "main": "mybot.js",
+  "version": "2.0.0",
+  "description": "A Discord bot for osu!droid",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "compile-windows": "rmdir dist /s /q & npm run compile-build && npm run build-osu-droid",
+    "compile-linux": "rm -rf dist & npm run compile-build && npm run build-osu-droid",
+    "compile-build": "tsc --build tsconfig.json",
+    "build-osu-droid": "dts-gen -m mathfn -o -f ./node_modules/mathfn/mathfn.d.ts && dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
+    "startDev": "node --trace-warnings dist/main.js",
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "startDev": "npm run heroku-postbuild && node mybot.js",
-    "heroku-postbuild": "npm install -g pm2 && npm run build-osu-droid",
-    "build-osu-droid": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts && cd ./modules/osu-droid && tsc --build tsconfig.json"
+    "heroku-postbuild": "npm run compile-linux"
   },
   "engines": {
-    "node": "16.x",
-    "npm": "^7.10.0"
+    "node": "16.x"
   },
   "keywords": [
+    "discordjs",
+    "typescript",
+    "osudroid",
+    "osu",
+    "osu!",
+    "osu!droid",
     "discord.js"
   ],
+  "type": "commonjs",
   "author": "Rian8337",
   "license": "MIT",
-  "dependencies": {
-    "adm-zip": "^0.4.16",
-    "bufferutil": "^4.0.3",
-    "canvas": "^2.8.0",
-    "crypto-js": "^4.0.0",
-    "discord.js": "^12.5.3",
-    "dotenv": "^8.2.0",
-    "java-deserialization": "^0.1.0",
-    "mongodb": "^3.6.2",
-    "osu-droid": "file:modules/osu-droid",
-    "pm2": "^4.5.6",
-    "request": "^2.88.2",
-    "unzipper": "^0.10.11",
-    "utf-8-validate": "^5.0.4",
-    "zlib-sync": "^0.1.7"
-  },
   "devDependencies": {
-    "@types/crypto-js": "^3.1.47",
-    "@types/node": "^14.6.4",
+    "@types/adm-zip": "^0.4.34",
+    "@types/crypto-js": "^4.0.1",
+    "@types/d3": "^6.7.0",
+    "@types/mongodb": "^3.6.12",
     "@types/request": "^2.48.5",
     "@types/unzipper": "^0.10.3",
     "dts-gen": "^0.6.0",
-    "typescript": "^4.1.3"
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.5",
+    "bufferutil": "^4.0.3",
+    "canvas": "^2.8.0",
+    "consola": "^2.15.3",
+    "crypto-js": "^4.0.0",
+    "d3": "^6.7.0",
+    "discord.js": "^13.0.0",
+    "dotenv": "^9.0.2",
+    "erlpack": "github:discord/erlpack",
+    "java-deserialization": "^0.1.0",
+    "mathfn": "^1.2.0",
+    "module-alias": "^2.2.2",
+    "mongodb": "^3.6.6",
+    "osu-droid": "file:modules/osu-droid",
+    "pm2": "^5.1.1",
+    "request": "^2.88.2",
+    "unzipper": "^0.10.11",
+    "utf-8-validate": "^5.0.5",
+    "zlib-sync": "^0.1.7"
+  },
+  "_moduleAliases": {
+    "@alice-commands": "dist/commands",
+    "@alice-core": "dist/core",
+    "@alice-database": "dist/database",
+    "@alice-enums": "dist/enums",
+    "@alice-events": "dist/events",
+    "@alice-interfaces": "dist/interfaces",
+    "@alice-types": "dist/types",
+    "@alice-utils": "dist/utils"
   }
 }

@@ -3,6 +3,7 @@ import { MapStats } from '../utils/MapStats';
 import { Parser } from '../beatmap/Parser';
 import { DroidStarRating } from '../difficulty/DroidStarRating';
 import { OsuStarRating } from '../difficulty/OsuStarRating';
+import { Mod } from '../mods/Mod';
 
 /**
  * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
@@ -32,7 +33,7 @@ export class MapStars {
         /**
          * Applied modifications in osu!standard format.
          */
-        mods?: string,
+        mods?: Mod[],
 
         /**
          * Custom map statistics to apply speed multiplier and force AR values as well as old statistics.
@@ -43,12 +44,14 @@ export class MapStars {
             throw new Error("Please enter an osu file!");
         }
 
+        const mod: Mod[] = params.mods ?? [];
+
         // Wish JavaScript has an actual clone method...
         const droidParser: Parser = new Parser();
         const pcParser: Parser = new Parser();
         try {
-            droidParser.parse(params.file, params.mods);
-            pcParser.parse(params.file, params.mods);
+            droidParser.parse(params.file, mod);
+            pcParser.parse(params.file, mod);
         } catch (e) {
             console.log("Invalid osu file");
             return this;
@@ -56,8 +59,6 @@ export class MapStars {
 
         const droidMap: Beatmap = droidParser.map;
         const pcMap: Beatmap = pcParser.map;
-
-        const mod: string = params.mods || "";
 
         const stats: MapStats = new MapStats({
             speedMultiplier: params.stats?.speedMultiplier || 1,

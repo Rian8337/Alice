@@ -1,5 +1,4 @@
 import * as request from 'request';
-import { mods } from '../utils/mods';
 import { modes } from '../constants/modes';
 import { Beatmap } from '../beatmap/Beatmap';
 import { MapStats } from '../utils/MapStats';
@@ -8,9 +7,11 @@ import { rankedStatus } from '../constants/rankedStatus';
 import { HitObject } from '../beatmap/hitobjects/HitObject';
 import { Slider } from '../beatmap/hitobjects/Slider';
 import { SliderTick } from '../beatmap/hitobjects/sliderObjects/SliderTick';
-import { OsuAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
+import { DroidAPIRequestBuilder, OsuAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
 import { Precision } from '../utils/Precision';
 import { TimingControlPoint } from '../beatmap/timings/TimingControlPoint';
+import { Score } from '../osu!droid/Score';
+import { Mod } from '../mods/Mod';
 
 interface OsuAPIResponse {
     readonly approved: string;
@@ -230,11 +231,6 @@ export class MapInfo {
     map?: Beatmap;
 
     /**
-     * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
-     */
-    error: boolean = false;
-
-    /**
      * Retrieve a beatmap's general information.
      * 
      * Either beatmap ID or MD5 hash of the beatmap must be specified. If both are specified, beatmap ID is taken.
@@ -255,7 +251,7 @@ export class MapInfo {
          */
         file?: boolean
     }): Promise<MapInfo> {
-        return new Promise(async resolve => {
+        return new Promise(async (resolve, reject) => {
             if (params.file === undefined) {
                 params.file = true;
             }
@@ -278,8 +274,7 @@ export class MapInfo {
             const map: MapInfo = new MapInfo();
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
-                map.error = true;
-                return resolve(map);
+                return reject("API error");
             }
             const mapinfo: OsuAPIResponse = JSON.parse(result.data.toString("utf-8"))[0];
             if (!mapinfo) {
@@ -363,7 +358,6 @@ export class MapInfo {
                 })
                 .on("complete", response => {
                     if (response.statusCode !== 200) {
-                        console.log("Error downloading osu file");
                         return resolve(this);
                     }
                     this.osuFile = Buffer.concat(dataArray).toString("utf8");
@@ -376,7 +370,7 @@ export class MapInfo {
     /**
      * Converts the beatmap's BPM if speed-changing mods are applied.
      */
-    private convertBPM(stats: MapStats): number {
+    convertBPM(stats: MapStats): number {
         let bpm: number = this.bpm;
         bpm *= stats.speedMultiplier;
 
@@ -385,7 +379,7 @@ export class MapInfo {
     /**
      * Converts the beatmap's status into a string.
      */
-    private convertStatus(): string {
+    convertStatus(): string {
         let status: string = "Unknown";
         for (const stat in rankedStatus) {
             if (rankedStatus[stat as keyof typeof rankedStatus] === this.approved) {
@@ -399,7 +393,7 @@ export class MapInfo {
     /**
      * Converts the beatmap's length if speed-changing mods are applied.
      */
-    private convertTime(stats: MapStats): string {
+    convertTime(stats: MapStats): string {
         let hitLength: number = this.hitLength;
         let totalLength: number = this.totalLength;
 
@@ -426,7 +420,7 @@ export class MapInfo {
      * - Option `4`: return last update date and map status
      * - Option `5`: return favorite count and play count
      */
-    showStatistics(mod: string, option: number, stats?: MapStats): string {
+    showStatistics(option: number, mod?: Mod[], stats?: MapStats): string {
         const mapParams = {
             cs: this.cs,
             ar: this.ar,
@@ -437,9 +431,9 @@ export class MapInfo {
             speedMultiplier: 1
         };
         if (stats) {
-            mapParams.ar = stats.ar || mapParams.ar;
-            mapParams.isForceAR = stats.isForceAR || mapParams.isForceAR;
-            mapParams.speedMultiplier = stats.speedMultiplier || mapParams.speedMultiplier;
+            mapParams.ar = stats.ar ?? mapParams.ar;
+            mapParams.isForceAR = stats.isForceAR ?? mapParams.isForceAR;
+            mapParams.speedMultiplier = stats.speedMultiplier ?? mapParams.speedMultiplier;
         }
         const mapStatistics: MapStats = new MapStats(mapParams).calculate({mode: modes.osu});
         mapStatistics.cs = parseFloat((mapStatistics.cs as number).toFixed(2));
@@ -449,7 +443,7 @@ export class MapInfo {
 
         switch (option) {
             case 0: {
-                let string: string = `${this.fullTitle}${mod ? ` +${mod}` : ""}`;
+                let string: string = `${this.fullTitle}${(mod?.length ?? 0) > 0 ? ` +${mod?.map(m => m.acronym).join("")}` : ""}`;
                 if (mapParams.speedMultiplier !== 1 || mapStatistics.isForceAR) {
                     string += " (";
                     if (mapStatistics.isForceAR) {
@@ -488,7 +482,7 @@ export class MapInfo {
                     const uninheritedTimingPoints: TimingControlPoint[] = this.map.timingPoints;
 
                     if (uninheritedTimingPoints.length === 1) {
-                        string += `${this.bpm}${this.bpm !== convertedBPM ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max score**: ${maxScore.toLocaleString()}` : ""}`;
+                        string += `${this.bpm}${!Precision.almostEqualsNumber(this.bpm, convertedBPM) ? ` (${convertedBPM})` : ""} - **Length**: ${this.convertTime(mapStatistics)} - **Max Combo**: ${this.maxCombo}x${maxScore > 0 ? `\n**Max Score**: ${maxScore.toLocaleString()}` : ""}`;
                     } else {
                         let maxBPM: number = this.bpm;
                         let minBPM: number = this.bpm;
@@ -535,7 +529,7 @@ export class MapInfo {
      * 
      * Useful to make embed messages.
      */
-    statusColor(): number {
+    get statusColor(): number {
         switch (this.approved) {
             case -2: return 16711711; // Graveyard: red
             case -1: return 9442302; // WIP: purple
@@ -557,13 +551,13 @@ export class MapInfo {
         if (!this.map) {
             return 0;
         }
-        const modbits: number = mods.modbitsFromString(stats.mods);
+    
         const difficultyMultiplier: number = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
 
         // score multiplier
         let scoreMultiplier: number = 1;
 
-        if (!(modbits & mods.osuMods.unranked)) {
+        if (stats.mods.every(m => m.droidRanked)) {
             let scoreSpeedMultiplier: number = 1;
             const speedMultiplier: number = stats.speedMultiplier;
             if (speedMultiplier > 1) {
@@ -571,42 +565,7 @@ export class MapInfo {
             } else if (speedMultiplier < 1) {
                 scoreSpeedMultiplier = Math.pow(0.3, (1 - speedMultiplier) * 4);
             }
-    
-            if (modbits & mods.osuMods.hr) {
-                scoreMultiplier *= 1.06;
-            }
-            if (modbits & mods.osuMods.hd) {
-                scoreMultiplier *= 1.06;
-            }
-            if (modbits & mods.osuMods.dt) {
-                scoreMultiplier *= 1.12;
-                scoreSpeedMultiplier /= 1.12;
-            }
-            if (modbits & mods.osuMods.nc) {
-                scoreMultiplier *= 1.12;
-                scoreSpeedMultiplier /= 1.12;
-            }
-            if (modbits & mods.osuMods.fl) {
-                scoreMultiplier *= 1.12;
-            }
-            if (modbits & mods.osuMods.nf) {
-                scoreMultiplier *= 0.5;
-            }
-            if (modbits & mods.osuMods.ez) {
-                scoreMultiplier *= 0.5;
-            }
-            if (modbits & mods.osuMods.ht) {
-                scoreMultiplier *= 0.3;
-                scoreSpeedMultiplier /= 0.3;
-            }
-            if (stats.mods.includes("RE")) {
-                scoreMultiplier *= 0.4;
-            }
-            if (stats.mods.includes("SU")) {
-                scoreMultiplier *= 1.06;
-                scoreSpeedMultiplier /= 1.06;
-            }
-            scoreMultiplier *= scoreSpeedMultiplier;
+            scoreMultiplier = stats.mods.reduce((a, v) => a * v.scoreMultiplier, 1) * scoreSpeedMultiplier;
         } else {
             scoreMultiplier = 0;
         }
@@ -625,14 +584,35 @@ export class MapInfo {
 
             const tickCount: number = object.nestedHitObjects.filter(v => v instanceof SliderTick).length;
 
-            // apply sliderhead, slider repeats, and slider ticks
+            // Apply sliderhead, slider repeats, and slider ticks
             score += 30 * object.repetitions + 10 * tickCount;
             combo += tickCount + object.repetitions;
-            // apply sliderend
+            // Apply sliderend
             score += Math.floor(300 + 300 * combo * difficultyMultiplier * scoreMultiplier / 25);
             ++combo;
         }
         return score;
+    }
+
+    /**
+     * Fetches the droid leaderboard of the beatmap.
+     * 
+     * The scores are sorted based on score.
+     * 
+     * @param page The page of the leaderboard to fetch. Each page contains at most 100 scores. If unspecified, defaults to the first page.
+     */
+    fetchDroidLeaderboard(page?: number): Promise<Score[]> {
+        return new Promise(async resolve => {
+            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
+                .addParameter("hash", this.hash)
+                .addParameter("page", Math.max(0, (page ?? 1) - 1))
+                .addParameter("order", "score");
+
+            const result: RequestResponse = await apiRequestBuilder.sendRequest();
+
+            resolve(result.data.toString("utf-8").split("\n").map(v => new Score().fillInformation(v)));
+        });
     }
 
     /**

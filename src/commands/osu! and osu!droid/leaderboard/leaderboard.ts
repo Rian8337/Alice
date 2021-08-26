@@ -1,0 +1,92 @@
+import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Command } from "@alice-interfaces/core/Command";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+
+export const run: Command["run"] = async (_, interaction) => {
+    CommandHelper.runSubcommandFromInteraction(interaction);
+};
+
+export const category: Command["category"] = CommandCategory.OSU;
+
+export const config: Command["config"] = {
+    name: "leaderboard",
+    description: "General leaderboard command.",
+    options: [
+        {
+            name: "beatmap",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View a beatmap's leaderboard.",
+            options: [
+                {
+                    name: "beatmap",
+                    type: CommandArgumentType.STRING,
+                    description: "The beatmap ID or link to view. If unspecified, will take the latest cached beatmap in the channel."
+                },
+                {
+                    name: "page",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The page of the leaderboard. Defaults to 1."
+                }
+            ]
+        },
+        {
+            name: "dpp",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View the droid pp (dpp) leaderboard.",
+            options: [
+                {
+                    name: "page",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The page of the leaderboard, ranging from 1 to 15. Defaults to 1."
+                },
+                {
+                    name: "clan",
+                    type: CommandArgumentType.STRING,
+                    description: "The clan name to view the leaderboard from."
+                }
+            ]
+        },
+        {
+            name: "ranked",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View the ranked score leaderboard.",
+            options: [
+                {
+                    name: "page",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The page of the leaderboard. Defaults to 1."
+                }
+            ]
+        },
+        {
+            name: "global",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View the global score leaderboard.",
+            options: [
+                {
+                    name: "page",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The page of the leaderboard. Defaults to 1."
+                }
+            ]
+        }
+    ],
+    example: [
+        {
+            command: "leaderboard dpp",
+            description: "will view the droid pp leaderboard at page 1."
+        },
+        {
+            command: "leaderboard ranked 3",
+            description: "will view the ranked score leaderboard at page 3."
+        },
+        {
+            command: "leaderboard dpp 1 Sunda Empire",
+            description: "will view the ranked score leaderboard at page 1 for the \"Sunda Empire\" clan."
+        }
+    ],
+    cooldown: 20,
+    permissions: [],
+    scope: "ALL"
+};

@@ -15,6 +15,7 @@ import { HitObject } from './hitobjects/HitObject';
 import { MapStats } from '../utils/MapStats';
 import { MathUtils } from '../mathutil/MathUtils';
 import { ParserConstants } from '../constants/ParserConstants';
+import { Mod } from '../mods/Mod';
 
 /**
  * A beatmap parser with just enough data for pp calculation.
@@ -53,7 +54,7 @@ export class Parser {
      * @param str The `.osu` file to parse.
      * @param mods The mods to parse the beatmap for.
      */
-    parse(str: string, mods: string = ""): Parser {
+    parse(str: string, mods: Mod[] = []): Parser {
         const lines: string[] = str.split("\n");
 
         for (let i: number = 0; i < lines.length; ++i) {
@@ -135,7 +136,7 @@ export class Parser {
                 // This exists in cases such as /b/2290233 where the beatmap has been
                 // edited by the user.
                 //
-                // In lazer, the default BPM is set to 60.
+                // In lazer, the default BPM is set to 60 (60000 / 1000).
                 if (this.map.timingPoints.length === 0) {
                     this.map.timingPoints.push(new TimingControlPoint({
                         time: Number.NEGATIVE_INFINITY,
@@ -171,8 +172,8 @@ export class Parser {
      * Logs any syntax errors into the console.
      */
     private warn(message: string): void {
-        // console.warn(message);
-        // console.warn(this.logError());
+        console.warn(message);
+        console.warn(this.logError());
     }
 
     /**

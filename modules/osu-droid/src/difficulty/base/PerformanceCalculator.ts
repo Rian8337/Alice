@@ -2,7 +2,7 @@ import { Accuracy } from '../../utils/Accuracy';
 import { modes } from '../../constants/modes';
 import { StarRating } from './StarRating';
 import { MapStats } from '../../utils/MapStats';
-import { mods } from '../../utils/mods';
+import { Mod } from '../../mods/Mod';
 
 /**
  * The base class of performance calculators.
@@ -19,14 +19,9 @@ export abstract class PerformanceCalculator {
     computedAccuracy: Accuracy = new Accuracy({});
 
     /**
-     * Bitwise value of enabled modifications.
-     */
-    protected convertedMods: number = 0;
-
-    /**
      * The calculated beatmap.
      */
-    protected abstract stars: StarRating;
+    abstract stars: StarRating;
 
     /**
      * The map statistics after applying modifications.
@@ -134,8 +129,7 @@ export abstract class PerformanceCalculator {
             throw new Error("params.stars must be in StarRating instance");
         }
         
-        const mod: string = this.stars.mods;
-        this.convertedMods = mods.modbitsFromString(mod);
+        const mod: Mod[] = this.stars.mods;
         const baseAR: number = <number> this.stars.map.ar;
         const baseOD: number = this.stars.map.od;
 

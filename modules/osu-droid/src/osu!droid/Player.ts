@@ -1,6 +1,7 @@
 import { Score } from './Score';
 import { MD5 } from 'crypto-js';
 import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
+import { Accuracy } from '../utils/Accuracy';
 
 interface ExtraInformation {
     readonly rank: number;
@@ -76,11 +77,6 @@ export class Player {
     readonly recentPlays: Score[] = [];
 
     /**
-     * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
-     */
-    error: boolean = false;
-
-    /**
      * Retrieves a player's info based on uid or username.
      * 
      * Either uid or username must be specified.
@@ -89,7 +85,7 @@ export class Player {
         uid?: number,
         username?: string
     }): Promise<Player> {
-        return new Promise(async resolve => {
+        return new Promise(async (resolve, reject) => {
             const player: Player = new Player();
             const uid = params.uid;
             const username = params.username;
@@ -109,8 +105,7 @@ export class Player {
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
                 console.log("Error retrieving player data");
-                player.error = true;
-                return resolve(player);
+                return reject("Error retrieving player data");
             }
 
             const resArr: string[] = result.data.toString("utf-8").split("<br>");
@@ -141,11 +136,12 @@ export class Player {
                         username: player.username,
                         scoreID: play.scoreid,
                         score: play.score,
-                        accuracy: parseFloat((play.accuracy / 1000).toFixed(2)),
-                        hit300: play.perfect,
-                        hit100: play.good,
-                        hit50: play.bad,
-                        miss: play.miss,
+                        accuracy: new Accuracy({
+                            n300: play.perfect,
+                            n100: play.good,
+                            n50: play.bad,
+                            nmiss: play.miss
+                        }),
                         rank: play.mark,
                         combo: play.combo,
                         title: play.filename,

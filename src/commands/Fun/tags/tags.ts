@@ -1,0 +1,197 @@
+import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Command } from "@alice-interfaces/core/Command";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+
+export const run: Command["run"] = async (_, interaction) => {
+    CommandHelper.runSubcommandFromInteraction(interaction);
+};
+
+export const category: Command["category"] = CommandCategory.BOT_CREATORS;
+
+export const config: Command["config"] = {
+    name: "tags",
+    description: "Main command for server-specific tags.",
+    options: [
+        {
+            name: "add",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Adds a new tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag. Must be less than or equal to 30 characters."
+                },
+                {
+                    name: "content",
+                    type: CommandArgumentType.STRING,
+                    description: "The content of the tag. Must be less than or equal to 1500 characters."
+                }
+            ]
+        },
+        {
+            name: "attach",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Inserts an attachment to a tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                },
+                {
+                    name: "url",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The URL to the attachment. Attachment must be less than 8 MB."
+                }
+            ]
+        },
+        {
+            name: "delete",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Deletes a tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                }
+            ]
+        },
+        {
+            name: "edit",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Edits a tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                },
+                {
+                    name: "content",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The new content of the tag."
+                }
+            ]
+        },
+        {
+            name: "info",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Views information of a tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                }
+            ]
+        },
+        {
+            name: "list",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Lists the tags that a user owns.",
+            options: [
+                {
+                    name: "user",
+                    type: CommandArgumentType.USER,
+                    description: "The Discord user. Defaults to yourself."
+                }
+            ]
+        },
+        {
+            name: "move",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Transfers the ownership of tags from a user to someone else.",
+            options: [
+                {
+                    name: "olduser",
+                    required: true,
+                    type: CommandArgumentType.USER,
+                    description: "The user to transfer the tags from."
+                },
+                {
+                    name: "newuser",
+                    required: true,
+                    type: CommandArgumentType.USER,
+                    description: "The user to transfer the tags to."
+                }
+            ]
+        },
+        {
+            name: "view",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Views a tag.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                }
+            ]
+        },
+        {
+            name: "unattach",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Unattaches a tag's attachment.",
+            options: [
+                {
+                    name: "name",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The name of the tag."
+                },
+                {
+                    name: "index",
+                    required: true,
+                    type: CommandArgumentType.INTEGER,
+                    description: "The index of the attachment to unattach.",
+                    choices: [
+                        {
+                            name: "First",
+                            value: 1
+                        },
+                        {
+                            name: "Second",
+                            value: 2
+                        },
+                        {
+                            name: "Third",
+                            value: 3
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    example: [
+        {
+            command: "fancy lock @Rian8337#0001",
+            description: "will compare your score among others."
+        },
+        {
+            command: "compare uid 51076",
+            description: "will compare the score of an osu!droid account with uid 51076."
+        },
+        {
+            command: "compare username NeroYuki",
+            description: "will compare the score of an osu!droid account with username NeroYuki."
+        },
+        {
+            command: "compare user @Rian8337#0001",
+            description: "will compare the score of Rian8337."
+        }
+    ],
+    permissions: ["BOT_OWNER"],
+    replyEphemeral: true,
+    scope: "GUILD_CHANNEL"
+};

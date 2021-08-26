@@ -50,7 +50,7 @@ export class DifficultyHitObjectCreator {
 
         this.hitObjectRadius = 32 * (1 - 0.7 * (circleSize - 5) / 5);
 
-        const scalingFactor: number = this.getScalingFactor(params.mode, this.hitObjectRadius);
+        const scalingFactor: number = this.getScalingFactor(params.mode);
         
         const difficultyObjects: DifficultyHitObject[] = [];
 
@@ -154,22 +154,22 @@ export class DifficultyHitObjectCreator {
      * @param mode The mode to get the scaling factor from.
      * @param radius The radiust to get the scaling factor from.
      */
-    private getScalingFactor(mode: modes, radius: number): number {
+    private getScalingFactor(mode: modes): number {
         // We will scale distances by this factor, so we can assume a uniform CircleSize among beatmaps.
-        let scalingFactor: number = this.normalizedRadius / radius;
+        let scalingFactor: number = this.normalizedRadius / this.hitObjectRadius;
 
         // High circle size (small CS) bonus
         switch (mode) {
             case modes.droid:
                 if (this.hitObjectRadius < this.DROID_CIRCLESIZE_BUFF_THRESHOLD) {
                     scalingFactor *= 1 +
-                        Math.min(this.DROID_CIRCLESIZE_BUFF_THRESHOLD - radius, 20) / 40;
+                        Math.min(this.DROID_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 20) / 40;
                 }
                 break;
             case modes.osu:
                 if (this.hitObjectRadius < this.PC_CIRCLESIZE_BUFF_THRESHOLD) {
                     scalingFactor *= 1 +
-                        Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - radius, 5) / 50;
+                        Math.min(this.PC_CIRCLESIZE_BUFF_THRESHOLD - this.hitObjectRadius, 5) / 50;
                 }
         }
 

@@ -1,7 +1,7 @@
 /**
  * Some math utility functions.
  */
- export abstract class MathUtils {
+export abstract class MathUtils {
     /**
      * Rounds a specified number with specified amount of fractional digits.
      * 
@@ -21,5 +21,19 @@
      */
     static clamp(num: number, min: number, max: number): number {
         return Math.max(min, Math.min(num, max));
+    }
+
+    /**
+     * Calculates the standard deviation of given data.
+     * 
+     * @param data The data to calculate.
+     */
+    static calculateStandardDeviation(data: number[]): number {
+        if (data.length === 0) {
+            return 0;
+        }
+        const mean: number = data.reduce((acc, value) => acc + value) / data.length;
+
+        return Math.sqrt(data.reduce((acc, value) => acc + Math.pow(value - mean, 2), 0) / data.length);
     }
 }

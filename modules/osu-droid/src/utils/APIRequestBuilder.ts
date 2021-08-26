@@ -12,7 +12,7 @@ export interface RequestResponse {
     readonly statusCode: number;
 }
 
-type DroidAPIEndpoint = "banscore.php" | "getuserinfo.php" | "scoresearch.php" | "scoresearchv2.php" | "rename.php" | "upload" | "user_list.php" | "usergeneral.php" | "top.php";
+type DroidAPIEndpoint = "banscore.php" | "getuserinfo.php" | "scoresearch.php" | "scoresearchv2.php" | "rename.php" | "upload" | "user_list.php" | "usergeneral.php" | "top.php" | "time.php";
 type OsuAPIEndpoint = "get_beatmaps" | "get_user" | "get_scores" | "get_user_best" | "get_user_recent" | "get_match" | "get_replay";
 
 abstract class APIRequestBuilder {

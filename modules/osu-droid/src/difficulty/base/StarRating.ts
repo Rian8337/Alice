@@ -6,6 +6,7 @@ import { DifficultyHitObject } from '../preprocessing/DifficultyHitObject';
 import { DifficultyHitObjectCreator } from '../preprocessing/DifficultyHitObjectCreator';
 import { Skill } from './Skill';
 import { Chart } from '../../utils/Chart';
+import { Mod } from '../../mods/Mod';
 
 /**
  * The base of difficulty calculation.
@@ -24,7 +25,7 @@ export abstract class StarRating {
     /**
      * The modifications applied.
      */
-    mods: string = "";
+    mods: Mod[] = [];
 
     /**
      * The total star rating of the beatmap.
@@ -45,7 +46,7 @@ export abstract class StarRating {
      * The strain peaks of speed difficulty.
      */
     speedStrainPeaks: number[] = [];
-    
+
     protected readonly sectionLength: number = 400;
     protected abstract readonly difficultyMultiplier: number;
 
@@ -76,7 +77,7 @@ export abstract class StarRating {
         /**
          * Applied modifications in osu!standard format.
          */
-        mods?: string,
+        mods?: Mod[],
 
         /**
          * Custom map statistics to apply custom speed multiplier as well as old statistics.
@@ -88,7 +89,7 @@ export abstract class StarRating {
             throw new Error("A map must be defined");
         }
 
-        const mod: string = this.mods = params.mods || this.mods;
+        const mod: Mod[] = this.mods = params.mods || this.mods;
 
         this.stats = new MapStats({
             cs: map.cs,
@@ -101,7 +102,7 @@ export abstract class StarRating {
         this.calculateAll();
 
         return this;
-    };
+    }
 
     /**
      * Generates difficulty hitobjects for this calculator.
@@ -149,7 +150,7 @@ export abstract class StarRating {
      */
     getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
-            if (this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
+            if (this.aimStrainPeaks.length === 0 || this.speedStrainPeaks.length === 0 || this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
                 return resolve(null);
             }
 

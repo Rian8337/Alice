@@ -75,6 +75,7 @@ export class DroidRhythm extends DroidSkill {
 
         return this.currentStrain * this.strainMultiplier;
     }
+
     protected saveToHitObject(current: DifficultyHitObject): void {
         current.rhythmStrain = this.strains[this.strains.length - 1];
     }

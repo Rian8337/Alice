@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A module containing utilities for osu!droid and osu! in general.",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "typings/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"

@@ -2,18 +2,18 @@ import { Circle } from "../../beatmap/hitobjects/Circle";
 import { DifficultyHitObject } from "../../difficulty/preprocessing/DifficultyHitObject";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { hitResult } from "../../constants/hitResult";
-import { modes } from "../../constants/modes";
 import { movementType } from "../../constants/movementType";
 import { DroidStarRating } from "../../difficulty/DroidStarRating";
 import { Vector2 } from "../../mathutil/Vector2";
 import { DroidHitWindow } from "../../utils/HitWindow";
 import { MapStats } from "../../utils/MapStats";
-import { mods } from "../../utils/mods";
 import { CursorData } from "../data/CursorData";
 import { ReplayData } from "../data/ReplayData";
 import { ReplayObjectData } from "../data/ReplayObjectData";
 import { BeatmapSectionGenerator } from "./BeatmapSectionGenerator";
 import { BeatmapSection } from "./data/BeatmapSection";
+import { ModPrecise } from "../../mods/ModPrecise";
+import { ModUtil } from "../../mods/ModUtil";
 import { MathUtils } from "../../mathutil/MathUtils";
 
 /**
@@ -221,9 +221,7 @@ export class ThreeFingerChecker {
         this.map = map;
         this.data = data;
 
-        const speedModRegex: RegExp = new RegExp(`[${mods.droidMods.dt}${mods.droidMods.nc}${mods.droidMods.ht}${mods.droidMods.su}]`, "g");
-        const droidModNoSpeedMod: string = mods.pcToDroid(this.map.mods).replace(speedModRegex, "");
-        const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
+        const stats: MapStats = new MapStats({od: this.map.map.od, mods: this.map.mods.filter(m => !ModUtil.speedChangingMods.map(v => v.droidString).includes(m.droidString))}).calculate();
 
         this.hitWindow = new DroidHitWindow(<number> stats.od);
 
@@ -275,7 +273,7 @@ export class ThreeFingerChecker {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
 
-        const isPrecise: boolean = this.map.mods.includes("PR");
+        const isPrecise: boolean = this.map.mods.some(m => m instanceof ModPrecise);
 
         for (const breakPoint of this.map.map.breakPoints) {
             const beforeIndex: number = MathUtils.clamp(objects.findIndex(o => o.object.endTime >= breakPoint.startTime) - 1, 0, objects.length - 2);
@@ -333,7 +331,7 @@ export class ThreeFingerChecker {
         const firstObjectResult: hitResult = objectData[0].result;
         const lastObjectResult: hitResult = objectData[objectData.length - 1].result;
 
-        const isPrecise: boolean = this.map.mods.includes("PR");
+        const isPrecise: boolean = this.map.mods.some(m => m instanceof ModPrecise);
 
         // For sliders, automatically set hit window length to be as lenient as possible.
         let firstObjectHitWindow: number = this.hitWindow.hitWindowFor50(isPrecise);
@@ -453,7 +451,7 @@ export class ThreeFingerChecker {
     private checkDrag(section: BeatmapSection): number {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
-        const isPrecise: boolean = this.map.mods.includes("PR");
+        const isPrecise: boolean = this.map.mods.some(m => m instanceof ModPrecise);
 
         const firstObject: DifficultyHitObject = objects[section.firstObjectIndex];
         const lastObject: DifficultyHitObject = objects[section.lastObjectIndex];
@@ -692,7 +690,7 @@ export class ThreeFingerChecker {
     private calculateNerfFactors(): void {
         const objects: DifficultyHitObject[] = this.map.objects;
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
-        const isPrecise: boolean = this.data.convertedMods.includes("PR");
+        const isPrecise: boolean = this.data.convertedMods.some(m => m instanceof ModPrecise);
 
         // We only filter cursor instances that are above the strain threshold.
         // This minimalizes the amount of cursor instances to analyze.

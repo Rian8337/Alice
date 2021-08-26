@@ -5,6 +5,8 @@ import { OsuAim } from './skills/OsuAim';
 import { OsuSpeed } from './skills/OsuSpeed';
 import { StarRating } from './base/StarRating';
 import { OsuSkill } from './skills/OsuSkill';
+import { ModTouchDevice } from '../mods/ModTouchDevice';
+import { Mod } from '../mods/Mod';
 
 /**
  * Difficulty calculator for osu!standard gamemode.
@@ -29,9 +31,9 @@ export class OsuStarRating extends StarRating {
         map: Beatmap,
 
         /**
-         * Applied modifications in osu!standard format.
+         * Applied modifications.
          */
-        mods?: string,
+        mods?: Mod[],
 
         /**
          * Custom map statistics to apply custom speed multiplier as well as old statistics.
@@ -53,7 +55,7 @@ export class OsuStarRating extends StarRating {
 
         this.aim = this.starValue(aimSkill.difficultyValue());
 
-        if (this.mods.includes("TD")) {
+        if (this.mods.some(m => m instanceof ModTouchDevice)) {
             this.aim = Math.pow(this.aim, 0.8);
         }
     }
@@ -97,7 +99,7 @@ export class OsuStarRating extends StarRating {
         this.aim = this.starValue(aimSkill.difficultyValue());
         this.speed = this.starValue(speedSkill.difficultyValue());
 
-        if (this.mods.includes("TD")) {
+        if (this.mods.some(m => m instanceof ModTouchDevice)) {
             this.aim = Math.pow(this.aim, 0.8);
         }
 

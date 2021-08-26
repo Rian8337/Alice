@@ -1,0 +1,120 @@
+import { Bot } from "@alice-core/Bot";
+import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
+import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
+import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
+import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { Snowflake } from "discord.js";
+import { Collection as MongoDBCollection } from "mongodb";
+
+/**
+ * A manager for the `birthday` collection.
+ */
+export class BirthdayCollectionManager extends DatabaseCollectionManager<DatabaseBirthday, Birthday> {
+    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseBirthday, Birthday>;
+
+    get defaultDocument(): DatabaseBirthday {
+        const date: Date = new Date();
+
+        return {
+            discordid: "",
+            date: date.getUTCDate(),
+            month: date.getUTCMonth(),
+            timezone: 0,
+            isLeapYear: false
+        };
+    }
+
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(client: Bot, collection: MongoDBCollection<DatabaseBirthday>) {
+        super(
+            client,
+            collection
+        );
+
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseBirthday, Birthday>> new Birthday(client, this.defaultDocument).constructor;
+    }
+
+    /**
+     * Gets a user's birthday data.
+     * 
+     * @param userId The ID of the user.
+     */
+    getUserBirthday(userId: Snowflake): Promise<Birthday | null> {
+        return this.getOne({ discordid: userId });
+    }
+
+    /**
+     * Sets a user's birthday.
+     * 
+     * @param userId The ID of the user.
+     * @param date The birthday date, ranging from 1 to the month's maximum date.
+     * @param month The birthday month, ranging from 0 to 11.
+     * @param timezone The timezone of the user, ranging from -12 to 14.
+     * @param force Whether to forcefully set the user's birthday.
+     * @returns An object containing information about the operation.
+     */
+    async setUserBirthday(userId: Snowflake, date: number, month: number, timezone: number, force?: boolean): Promise<DatabaseOperationResult> {
+        if (await this.hasSet(userId) && !force) {
+            return this.createOperationResult(false, "birthday is already set");
+        }
+
+        let maxDate: number = 30;
+
+        if ((month % 2 === 0 && month < 7) || month === 7 || (month % 2 !== 0 && month > 7)) {
+            maxDate = 31;
+        } else if (month === 1) {
+            // Special case for February
+            maxDate = 29;
+        }
+
+        if (!NumberHelper.isNumberInRange(date, 1, maxDate, true)) {
+            return this.createOperationResult(false, "invalid birthday date");
+        }
+
+        if (!NumberHelper.isNumberInRange(month, 0, 11, true)) {
+            return this.createOperationResult(false, "invalid birthday month");
+        }
+
+        if (!NumberHelper.isNumberInRange(timezone, -12, 14, true)) {
+            return this.createOperationResult(false, "invalid timezone");
+        }
+
+        // Detect if date entry is 29 Feb
+        const isLeapYear = month === 1 && date === 29;
+        if (isLeapYear) {
+            month = 2;
+            date = 1;
+        }
+
+        await this.collection.updateOne(
+            { discordid: userId },
+            {
+                $set: {
+                    date: date,
+                    month: month,
+                    timezone: timezone,
+                    isLeapYear: isLeapYear
+                }
+            },
+            { upsert: true }
+        );
+
+        return this.createOperationResult(true);
+    }
+
+    /**
+     * Checks if a Discord user has set their birthday.
+     * 
+     * @param userId The ID of the user.
+     * @returns Whether the user has set their birthday.
+     */
+    async hasSet(userId: Snowflake): Promise<boolean> {
+        return !!(await this.collection.findOne(
+            { discordid: userId }
+        ));
+    }
+}

@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: "Bot",
-    script: "mybot.js",
+    script: "./dist/main.js",
     instances: 1,
     env: {
       NODE_ENV: "development"

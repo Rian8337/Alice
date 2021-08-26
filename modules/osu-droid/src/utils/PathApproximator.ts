@@ -17,7 +17,7 @@ export class PathApproximator {
     /**
      * Approximates a bezier slider's path.
      * 
-     * Creates a piecewise-linear approximation of a bezier curve, by adaptively repeatedly subdividing
+     * Creates a piecewise-linear approximation of a bezier curve by adaptively repeatedly subdividing
      * the control points until their approximation error vanishes below a given threshold.
      * 
      * @param controlPoints The anchor points of the slider.
@@ -214,7 +214,7 @@ export class PathApproximator {
      * 
      * Make sure the 2nd order derivative (approximated using finite elements) is within tolerable bounds.
      * 
-     * NOTE: The 2nd order derivative of a 2d curve represents its curvature, so intuitively this function
+     * NOTE: The 2nd order derivative of a 2D curve represents its curvature, so intuitively this function
      * checks (as the name suggests) whether our approximation is _locally_ "flat". More curvy parts
      * need to have a denser approximation to be more "flat".
      * 

@@ -1,3 +1,5 @@
+import { Mod } from "../../mods/Mod";
+import { Accuracy } from "../../utils/Accuracy";
 import { CursorData } from "./CursorData";
 import { ReplayObjectData } from "./ReplayObjectData";
 
@@ -42,15 +44,6 @@ export interface ReplayInformation {
     hit300k?: number;
 
     /**
-     * The amount of 300s achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     * 
-     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
-     */
-    hit300?: number;
-
-    /**
      * The amount of 100 katu achieved in the play. See {@link https://osu.ppy.sh/help/wiki/Score this} osu! wiki page for more information.
      * 
      * Only available in replay v3 or later.
@@ -58,33 +51,6 @@ export interface ReplayInformation {
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
     hit100k?: number;
-
-    /**
-     * The amount of 100s achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     * 
-     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
-     */
-    hit100?: number;
-
-    /**
-     * The amount of 50s achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     * 
-     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
-     */
-    hit50?: number;
-
-    /**
-     * The amount of misses achieved in the play.
-     * 
-     * Only available in replay v3 or later.
-     * 
-     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
-     */
-    hit0?: number;
 
     /**
      * The total score achieved in the play.
@@ -107,7 +73,7 @@ export interface ReplayInformation {
      * 
      * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
-    accuracy?: number;
+    accuracy?: Accuracy;
 
     /**
      * Whether or not the play achieved the beatmap's maximum combo.
@@ -131,18 +97,20 @@ export interface ReplayInformation {
     rawMods?: string;
 
     /**
-     * Enabled modifications during the play in osu!droid format.
+     * The achieved rank in the play.
      * 
      * Only available in replay v3 or later.
+     * 
+     * If `map` is defined in analyzer (either in `Beatmap` or `StarRating` instance), this will be analyzed using beatmap hitobject information and replay hitobject data for replay v1 and v2.
      */
-    droidMods?: string;
+    rank?: string;
 
     /**
      * Enabled modifications during the play in osu!standard format.
      * 
      * Only available in replay v3 or later.
      */
-    convertedMods?: string;
+    convertedMods?: Mod[];
 
     /**
      * The speed modification of the replay.
@@ -183,19 +151,15 @@ export class ReplayData implements ReplayInformation {
     readonly hash: string;
     readonly time: Date;
     readonly hit300k: number;
-    readonly hit300: number;
     readonly hit100k: number;
-    readonly hit100: number;
-    readonly hit50: number;
-    readonly hit0: number;
     readonly score: number;
     readonly maxCombo: number;
-    readonly accuracy: number;
+    readonly accuracy: Accuracy;
     readonly isFullCombo: boolean;
     readonly playerName: string;
     readonly rawMods: string;
-    readonly droidMods: string;
-    readonly convertedMods: string;
+    readonly rank: string;
+    readonly convertedMods: Mod[];
     readonly cursorMovement: CursorData[];
     readonly hitObjectData: ReplayObjectData[];
     readonly speedModification: number;
@@ -208,19 +172,15 @@ export class ReplayData implements ReplayInformation {
         this.hash = values.hash;
         this.time = new Date(values.time || 0);
         this.hit300k = values.hit300k || 0;
-        this.hit300 = values.hit300 || 0;
         this.hit100k = values.hit100k || 0;
-        this.hit100 = values.hit100 || 0;
-        this.hit50 = values.hit50 || 0;
-        this.hit0 = values.hit0 || 0;
         this.score = values.score || 0;
         this.maxCombo = values.maxCombo || 0;
-        this.accuracy = values.accuracy || 0;
+        this.accuracy = values.accuracy || new Accuracy({});
         this.isFullCombo = values.isFullCombo || false;
         this.playerName = values.playerName || "";
         this.rawMods = values.rawMods || "";
-        this.droidMods = values.droidMods || "";
-        this.convertedMods = values.convertedMods || "";
+        this.rank = values.rank || "";
+        this.convertedMods = values.convertedMods || [];
         this.cursorMovement = values.cursorMovement;
         this.hitObjectData = values.hitObjectData;
         this.speedModification = values.speedModification || 1;

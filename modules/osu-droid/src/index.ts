@@ -21,8 +21,28 @@ import { MapInfo } from './tools/MapInfo';
 import { MapStars } from './tools/MapStars';
 import { MapStats } from './utils/MapStats';
 import { MathUtils } from './mathutil/MathUtils';
+import { Mod } from './mods/Mod';
+import { ModAuto } from './mods/ModAuto';
+import { ModAutopilot } from './mods/ModAutopilot';
+import { ModDoubleTime } from './mods/ModDoubleTime';
+import { ModEasy } from './mods/ModEasy';
+import { ModFlashlight } from './mods/ModFlashlight';
+import { ModHalfTime } from './mods/ModHalfTime';
+import { ModHardRock } from './mods/ModHardRock';
+import { ModHidden } from './mods/ModHidden';
+import { ModNightCore } from './mods/ModNightCore';
+import { ModNoFail } from './mods/ModNoFail';
+import { ModPerfect } from './mods/ModPerfect';
+import { ModPrecise } from './mods/ModPrecise';
+import { ModReallyEasy } from './mods/ModReallyEasy';
+import { ModRelax } from './mods/ModRelax';
+import { ModScoreV2 } from './mods/ModScoreV2';
+import { ModSmallCircle } from './mods/ModSmallCircle';
+import { ModSpunOut } from './mods/ModSpunOut';
+import { ModSuddenDeath } from './mods/ModSuddenDeath';
+import { ModTouchDevice } from './mods/ModTouchDevice';
+import { ModUtil } from './mods/ModUtil';
 import { modes } from './constants/modes';
-import { mods } from './utils/mods';
 import { movementType } from './constants/movementType';
 import { OsuAim } from './difficulty/skills/OsuAim';
 import { OsuPerformanceCalculator } from './difficulty/OsuPerformanceCalculator';
@@ -179,14 +199,114 @@ export = {
     MathUtils,
 
     /**
+     * Represents a mod.
+     */
+    Mod,
+
+    /**
+     * Represents the Auto mod.
+     */
+    ModAuto,
+
+    /**
+     * Represents the Autopilot mod.
+     */
+    ModAutopilot,
+
+    /**
+     * Represents the DoubleTime mod.
+     */
+    ModDoubleTime,
+
+    /**
+     * Represents the Easy mod.
+     */
+    ModEasy,
+
+    /**
+     * Represents the Flashlight mod.
+     */
+    ModFlashlight,
+
+    /**
+     * Represents the Halftime mod.
+     */
+    ModHalfTime,
+
+    /**
+     * Represents the HardRock mod.
+     */
+    ModHardRock,
+
+    /**
+     * Represents the Hidden mod.
+     */
+    ModHidden,
+
+    /**
+     * Represents the NightCore mod.
+     */
+    ModNightCore,
+
+    /**
+     * Represents the NoFail mod.
+     */
+    ModNoFail,
+
+    /**
+     * Represents the Perfect mod.
+     */
+    ModPerfect,
+
+    /**
+     * Represents the Precise mod.
+     */
+    ModPrecise,
+
+    /**
+     * Represents the ReallyEasy mod.
+     */
+    ModReallyEasy,
+
+    /**
+     * Represents the Relax mod.
+     */
+    ModRelax,
+
+    /**
+     * Represents the ScoreV2 mod.
+     */
+    ModScoreV2,
+
+    /**
+     * Represents the SmallCircle mod.
+     */
+    ModSmallCircle,
+
+    /**
+     * Represents the SpunOut mod.
+     */
+    ModSpunOut,
+
+    /**
+     * Represents the SuddenDeath mod.
+     */
+    ModSuddenDeath,
+
+    /**
+     * Utilities for mods.
+     */
+    ModUtil,
+
+    /**
+     * Represents the TouchDevice mod.
+     */
+    ModTouchDevice,
+
+    /**
      * Mode enum to switch things between osu!droid and osu!standard.
      */
     modes,
-
-    /**
-     * A namespace containing bitwise constant of mods in both osu!droid and osu!standard as well as conversion methods.
-     */
-    mods,
 
     /**
      * Movement type of a cursor in an osu!droid replay.

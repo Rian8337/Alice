@@ -2,14 +2,18 @@ import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
 import { OsuStarRating } from './OsuStarRating';
 import { MapStats } from '../utils/MapStats';
-import { mods } from '../utils/mods';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
+import { ModNoFail } from '../mods/ModNoFail';
+import { ModSpunOut } from '../mods/ModSpunOut';
+import { ModHidden } from '../mods/ModHidden';
+import { ModFlashlight } from '../mods/ModFlashlight';
+import { ModScoreV2 } from '../mods/ModScoreV2';
 
 /**
  * A performance points calculator that calculates performance points for osu!standard gamemode.
  */
 export class OsuPerformanceCalculator extends PerformanceCalculator {
-    protected stars: OsuStarRating = new OsuStarRating();
+    stars: OsuStarRating = new OsuStarRating();
 
     /**
      * The aim performance value.
@@ -69,10 +73,10 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         // Custom multiplier for SO and NF.
         // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
         let finalMultiplier: number = 1.12;
-        if (this.convertedMods & mods.osuMods.nf) {
+        if (this.stars.mods.some(m => m instanceof ModNoFail)) {
             finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
         }
-        if (this.convertedMods & mods.osuMods.so) {
+        if (this.stars.mods.some(m => m instanceof ModSpunOut)) {
             finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / objectCount, 0.85);
         }
 
@@ -125,14 +129,14 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
         let hiddenBonus: number = 1;
-        if (this.convertedMods & mods.osuMods.hd) {
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
             hiddenBonus += 0.04 * (12 - calculatedAR);
         }
 
         this.aim *= hiddenBonus;
 
         let flBonus: number = 1;
-        if (this.convertedMods & mods.osuMods.fl) {
+        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
             // Apply object-based bonus for flashlight.
             flBonus += 0.35 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
@@ -190,7 +194,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
-        if (this.convertedMods & mods.osuMods.hd) {
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.speed *= 1 + 0.04 * (12 - calculatedAR);
         }
 
@@ -215,7 +219,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         const n50: number = this.computedAccuracy.n50;
 
         const nobjects: number = this.stars.objects.length;
-        const ncircles: number = this.convertedMods & mods.osuMods.v2 ? nobjects - this.stars.map.spinners : this.stars.map.circles;
+        const ncircles: number = this.stars.mods.some(m => m instanceof ModScoreV2) ? nobjects - this.stars.map.spinners : this.stars.map.circles;
 
         const realAccuracy: number = Math.max(
             ncircles > 0 ?
@@ -232,10 +236,10 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         // Bonus for many hitcircles - it's harder to keep good accuracy up for longer
         this.accuracy *= Math.min(1.15, Math.pow(ncircles / 1000, 0.3));
 
-        if (this.convertedMods & mods.osuMods.hd) {
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.accuracy *= 1.08;
         }
-        if (this.convertedMods & mods.osuMods.fl) {
+        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
             this.accuracy *= 1.02;
         }
     }

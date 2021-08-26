@@ -7,13 +7,14 @@ import { movementType } from "../../constants/movementType";
 import { DroidStarRating } from "../../difficulty/DroidStarRating";
 import { DroidHitWindow } from "../../utils/HitWindow";
 import { MapStats } from "../../utils/MapStats";
-import { mods } from "../../utils/mods";
 import { CursorData } from "./../data/CursorData";
 import { ReplayData } from "./../data/ReplayData";
 import { ReplayObjectData } from "./../data/ReplayObjectData";
 import { IndexedHitObject } from "./objects/IndexedHitObject";
 import { Beatmap } from "../../beatmap/Beatmap";
 import { Utils } from "../../utils/Utils";
+import { ModUtil } from "../../mods/ModUtil";
+import { ModPrecise } from "osu-droid";
 
 interface CursorInformation {
     readonly cursorIndex: number;
@@ -65,9 +66,7 @@ export class TwoHandChecker {
         this.map = map;
         this.data = data;
 
-        const speedModRegex: RegExp = new RegExp(`[${mods.droidMods.dt}${mods.droidMods.nc}${mods.droidMods.ht}${mods.droidMods.su}]`, "g");
-        const droidModNoSpeedMod: string = mods.pcToDroid(this.map.mods).replace(speedModRegex, "");
-        const stats: MapStats = new MapStats({od: this.map.map.od, mods: mods.droidToPC(droidModNoSpeedMod)}).calculate({mode: modes.droid});
+        const stats: MapStats = new MapStats({od: this.map.map.od, mods: this.map.mods.filter(m => !ModUtil.speedChangingMods.map(v => v.droidString).includes(m.droidString))}).calculate();
         
         this.hitWindow = new DroidHitWindow(<number> stats.od);
     }
@@ -176,7 +175,7 @@ export class TwoHandChecker {
             return -1;
         }
 
-        const isPrecise: boolean = this.data.convertedMods.includes("PR");
+        const isPrecise: boolean = this.data.convertedMods.some(m => m instanceof ModPrecise);
         let hitWindowLength: number;
         switch (data.result) {
             case hitResult.RESULT_300:

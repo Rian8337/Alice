@@ -1,5 +1,8 @@
-import { mods } from '../utils/mods';
 import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuilder';
+import { Accuracy } from '../utils/Accuracy';
+import { ReplayAnalyzer } from '../replay/ReplayAnalyzer';
+import { Mod } from '../mods/Mod';
+import { ModUtil } from '../mods/ModUtil';
 
 interface ScoreInformation {
     /**
@@ -45,30 +48,10 @@ interface ScoreInformation {
     /**
      * The accuracy achieved in the play.
      */
-    accuracy: number;
+    accuracy: Accuracy;
 
     /**
-     * The perfect hit result of the play.
-     */
-    hit300: number;
-
-    /**
-     * The good hit result of the play.
-     */
-    hit100: number;
-
-    /**
-     * The bad hit result of the play.
-     */
-    hit50: number;
-
-    /**
-     * The amount of misses achieved in the play.
-     */
-    miss: number;
-
-    /**
-     * Enabled modifications in the play in osu!standard format.
+     * Enabled modifications in the score, including force AR and custom speed multiplier.
      */
     mods: string;
 
@@ -81,21 +64,60 @@ interface ScoreInformation {
 /**
  * Represents an osu!droid score.
  */
-export class Score implements ScoreInformation {
+export class Score {
+    /**
+     * The uid of the player.
+     */
     uid: number;
+
+    /**
+     * The ID of the score.
+     */
     scoreID: number;
+
+    /**
+     * The player's name.
+     */
     username: string;
+
+    /**
+     * The title of the beatmap.
+     */
     title: string;
+
+    /**
+     * The maximum combo achieved in the play.
+     */
     combo: number;
+
+    /**
+     * The score achieved in the play.
+     */
     score: number;
+
+    /**
+     * The rank achieved in the play.
+     */
     rank: string;
+
+    /**
+     * The date of which the play was set.
+     */
     date: Date;
-    accuracy: number;
-    hit300: number;
-    hit100: number;
-    hit50: number;
-    miss: number;
-    mods: string;
+
+    /**
+     * The accuracy achieved in the play.
+     */
+    accuracy: Accuracy;
+
+    /**
+     * Enabled modifications in the score.
+     */
+    mods: Mod[];
+
+    /**
+     * MD5 hash of the play.
+     */
     hash: string;
 
     /**
@@ -109,14 +131,9 @@ export class Score implements ScoreInformation {
     forcedAR?: number;
 
     /**
-     * Enabled modifications in the play in osu!droid format.
+     * The replay of the score.
      */
-    droidMods: string = "";
-
-    /**
-     * Whether or not the fetch result from `getFromHash()` returns an error. This should be immediately checked after calling said method.
-     */
-    error: boolean = false;
+    replay?: ReplayAnalyzer;
 
     constructor(values?: ScoreInformation) {
         this.uid = values?.uid ?? 0;
@@ -127,14 +144,11 @@ export class Score implements ScoreInformation {
         this.score = values?.score ?? 0;
         this.rank = values?.rank ?? '';
         this.date = new Date(values?.date ?? 0);
-        this.accuracy = values?.accuracy ?? 0;
-        this.miss = values?.miss ?? 0;
+        this.accuracy = values?.accuracy ?? new Accuracy({});
         this.hash = values?.hash ?? '';
-        this.hit300 = values?.hit300 ?? 0;
-        this.hit100 = values?.hit100 ?? 0;
-        this.hit50 = values?.hit50 ?? 0;
 
         const modstrings: string[] = (values?.mods ?? "").split("|");
+        let actualMods: string = "";
         for (let i = 0; i < modstrings.length; ++i) {
             if (!modstrings[i]) {
                 continue;
@@ -145,11 +159,11 @@ export class Score implements ScoreInformation {
             } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
             } else {
-                this.droidMods = modstrings[i];
+                actualMods += modstrings[i];
             }
         }
 
-        this.mods = mods.droidToPC(this.droidMods);
+        this.mods = ModUtil.droidStringToMods(actualMods);
     }
 
     /**
@@ -168,7 +182,7 @@ export class Score implements ScoreInformation {
          */
         hash: string
     }): Promise<Score> {
-        return new Promise(async resolve => {
+        return new Promise(async (resolve, reject) => {
             const score = new Score();
             const uid: number = score.uid = params.uid;
             const hash: string = score.hash = params.hash;
@@ -186,7 +200,7 @@ export class Score implements ScoreInformation {
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
                 console.log("Error retrieving score data");
-                return resolve(score);
+                return reject("Error retrieving score data");
             }
 
             const entry: string[] = result.data.toString("utf-8").split("<br>");
@@ -215,6 +229,7 @@ export class Score implements ScoreInformation {
         this.rank = play[5];
 
         const modstrings: string[] = play[6].split("|");
+        let actualMods: string = "";
         for (let i = 0; i < modstrings.length; ++i) {
             if (!modstrings[i]) {
                 continue;
@@ -225,16 +240,18 @@ export class Score implements ScoreInformation {
             } else if (modstrings[i].startsWith("x")) {
                 this.speedMultiplier = parseFloat(modstrings[i].replace("x", ""));
             } else {
-                this.droidMods = modstrings[i];
+                actualMods += modstrings[i];
             }
         }
 
-        this.mods = mods.droidToPC(this.droidMods);
-        this.accuracy = parseFloat((parseFloat(play[7]) / 1000).toFixed(2));
-        this.hit300 = parseInt(play[8]);
-        this.hit100 = parseInt(play[9]);
-        this.hit50 = parseInt(play[10]);
-        this.miss = parseInt(play[11]);
+        this.mods = ModUtil.droidStringToMods(actualMods);
+
+        this.accuracy = new Accuracy({
+            n300: parseInt(play[8]),
+            n100: parseInt(play[9]),
+            n50: parseInt(play[10]),
+            nmiss: parseInt(play[11])
+        });
         const date: Date = new Date(parseInt(play[12]) * 1000);
         date.setUTCHours(date.getUTCHours() + 7);
         this.date = date;
@@ -247,7 +264,7 @@ export class Score implements ScoreInformation {
      * Returns the complete mod string of this score (mods, speed multiplier, and force AR combined).
      */
     getCompleteModString(): string {
-        let finalString: string = `+${this.mods ? this.mods : "No Mod"}`;
+        let finalString: string = `+${this.mods.length > 0 ? this.mods.map(v => v.acronym) : "No Mod"}`;
 
         if (this.forcedAR !== undefined || this.speedMultiplier !== 1) {
             finalString += " (";
@@ -267,9 +284,20 @@ export class Score implements ScoreInformation {
     }
 
     /**
+     * Downloads the replay of this score.
+     */
+    async downloadReplay(): Promise<void> {
+        if (!this.scoreID || this.replay) {
+            return;
+        }
+
+        this.replay = await new ReplayAnalyzer({ scoreID: this.scoreID }).analyze();
+    }
+
+    /**
      * Returns a string representative of the class.
      */
     toString(): string {
-        return `Player: ${this.username}, uid: ${this.uid}, title: ${this.title}, score: ${this.score}, combo: ${this.combo}, rank: ${this.rank}, acc: ${this.accuracy}%, miss: ${this.miss}, date: ${this.date}, mods: ${this.mods}, hash: ${this.hash}`;
+        return `Player: ${this.username}, uid: ${this.uid}, title: ${this.title}, score: ${this.score}, combo: ${this.combo}, rank: ${this.rank}, acc: ${this.accuracy}%, date: ${this.date}, mods: ${this.mods}, hash: ${this.hash}`;
     }
 }
