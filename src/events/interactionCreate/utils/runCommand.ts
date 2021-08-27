@@ -17,9 +17,14 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 
     const botOwnerExecution: boolean = CommandHelper.isExecutedByBotOwner(interaction);
 
-    // if (Config.isDebug && !botOwnerExecution) {
-    //     return;
-    // }
+    if (Config.isDebug && !botOwnerExecution) {
+        return interaction.reply({
+            content: MessageCreator.createReject(
+                "I'm sorry, I'm in debug mode now. I cannot accept commands from anyone beside bot owners!"
+            ),
+            ephemeral: true
+        });
+    }
 
     const command: Command | undefined = client.commands.get(interaction.commandName);
 
