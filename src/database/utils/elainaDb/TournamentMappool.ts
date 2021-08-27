@@ -1,5 +1,6 @@
 import { Bot } from "@alice-core/Bot";
 import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
+import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 
@@ -9,7 +10,7 @@ import { ObjectId } from "bson";
 export class TournamentMappool extends Manager implements DatabaseTournamentMappool {
     forcePR: boolean;
     poolid: string;
-    map: (string | number)[];
+    map: MainBeatmapData[];
     readonly _id?: ObjectId;
 
     constructor(client: Bot, data: DatabaseTournamentMappool) {
