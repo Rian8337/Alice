@@ -76,7 +76,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (auctionCheck) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.auctionDoesntExist)
+            content: MessageCreator.createReject(clanStrings.auctionNameIsTaken)
         });
     }
 
