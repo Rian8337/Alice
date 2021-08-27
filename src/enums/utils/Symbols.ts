@@ -8,6 +8,8 @@ export enum Symbols {
     skipBackward = "⏮️",
     leftArrow = "⬅️",
     rightArrow = "➡️",
+    downArrow = "⬇️",
+    upArrow = "⬆️",
     skipForward = "⏭️",
     thumbsUp = "👍",
     thumbsDown = "👎",
