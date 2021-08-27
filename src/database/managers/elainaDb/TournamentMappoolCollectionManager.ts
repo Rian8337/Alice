@@ -26,4 +26,14 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
 
         this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMappool, TournamentMappool>> new TournamentMappool(client, this.defaultDocument).constructor
     }
+
+    /**
+     * Gets a tournament mappool from its id.
+     * 
+     * @param id The ID of the mappool.
+     * @returns The mappool, `null` if not found.
+     */
+    getFromId(id: string): Promise<TournamentMappool | null> {
+        return this.getOne({ poolid: id });
+    }
 }
