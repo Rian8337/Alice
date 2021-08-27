@@ -55,6 +55,7 @@ export enum clanStrings {
     clanAuctionCancelConfirmation = "Are you sure you want to cancel this auction?",
     clanAuctionCreateConfirmation = "Are you sure you want to create a new auction?",
     clanAuctionBidConfirmation = "Are you sure you want to bid to this auction?",
+    clanPowerTransferConfirmation = "Are you sure you want to transfer `%s` power points from `%s` clan to `%s` clan?",
     clanNameIsTooLong = "I'm sorry, clan names can only be 25 characters long!",
     clanAuctionNameIsTooLong = "I'm sorry, clan auction names can only be 20 characters long!",
     clanNameHasUnicode = "I'm sorry, clan name must not contain any unicode characters!",
@@ -63,6 +64,11 @@ export enum clanStrings {
     clanDoesntExist = "I'm sorry, that clan doesn't exist!",
     auctionDoesntExist = "I'm sorry, that auction doesn't exist!",
     auctionNameIsTaken = "I'm sorry, that auction name has been taken!",
+    userToTransferFromNotInClan = "Hey, the user to transfer power points from is not in a clan!",
+    userToTransferToNotInClan = "Hey, the user to transfer power points to is not in a clan!",
+    clanToTransferFromNotInMatchMode = "I'm sorry, the clan to transfer power points from is not in match mode!",
+    clanToTransferToNotInMatchMode = "I'm sorry, the clan to transfer power points to is not in match mode!",
+    clanHasPowerupActive = "%s has a `%s` powerup active!",
     profileNotFound = "I'm sorry, I cannot find your binded osu!droid account's profile!",
     clanUpkeepInformation = "Your upkeep cost is %s Alice coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Alice coins.",
     clanDescriptionTooLong = "I'm sorry, clan description must be less than 2000 characters!",
@@ -104,5 +110,7 @@ export enum clanStrings {
     clanAuctionCreateFailed = "I'm sorry, I couldn't create the auction: %s.",
     clanAuctionCreateSuccessful = "Successfully created the auction.",
     clanAuctionBidFailed = "I'm sorry, I couldn't process your bid: %s.",
-    clanAuctionBidSuccessful = "Successfully bid to the auction."
+    clanAuctionBidSuccessful = "Successfully bid to the auction.",
+    clanPowerTransferFailed = "I'm sorry, I couldn't perform the power points transfer: %s.",
+    clanPowerTransferSuccessful = "Successfully transferred `%s` power points from `%s` clan to `%s` clan."
 };
