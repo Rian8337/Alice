@@ -1,9 +1,7 @@
 # Alice
-A multipurpose Discord bot mainly made for osu!droid and Malody.
+A rewrite version of [Elaina](https://github.com/NeroYuki/Elaina), a multipurpose Discord bot mainly made for osu!droid.
 
 Optimized for [osu!droid International Discord server](https://discord.gg/nyD92cE) usage.
-
-Based on [Elaina](https://github.com/NeroYuki/Elaina) by [NeroYuki](https://github.com/NeroYuki) with a few additions and changes.
 
 osu!droid: http://ops.dgsrz.com/
 
