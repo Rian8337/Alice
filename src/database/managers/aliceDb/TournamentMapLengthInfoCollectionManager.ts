@@ -26,4 +26,14 @@ export class TournamentMapLengthInfoCollectionManager extends DatabaseCollection
 
         this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>> new TournamentMapLengthInfo(client, this.defaultDocument).constructor
     }
+
+    /**
+     * Gets a tournament mappool from its id.
+     * 
+     * @param id The ID of the mappool.
+     * @returns The mappool, `null` if not found.
+     */
+    getFromId(id: string): Promise<TournamentMapLengthInfo | null> {
+        return this.getOne({ poolid: id });
+    }
 }

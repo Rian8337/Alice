@@ -7,20 +7,9 @@ import { Collection } from "discord.js";
 /**
  * Represents a mappool length for tournament.
  */
-export class TournamentMapLengthInfo extends Manager {
-    /**
-     * The ID of the mappool.
-     */
+export class TournamentMapLengthInfo extends Manager implements DatabaseTournamentMapLengthInfo {
     poolid: string;
-
-    /**
-     * The beatmaps in the mappool, mapped by pick name.
-     */
-    map: Collection<string, number>;
-
-    /**
-     * The BSON object ID of this document in the database.
-     */
+    map: [string, string | number][];
     readonly _id?: ObjectId;
 
     constructor(client: Bot, data: DatabaseTournamentMapLengthInfo) {
@@ -28,6 +17,6 @@ export class TournamentMapLengthInfo extends Manager {
 
         this._id = data._id;
         this.poolid = data.poolid;
-        this.map = new Collection(data.map?.map(v => [v[0], parseInt(<string> v[1])]) ?? []);
+        this.map = data.map ?? [];
     }
 }
