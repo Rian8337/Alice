@@ -8,5 +8,6 @@ export enum CommandCategory {
     OSU = "osu! and osu!droid",
     PP_AND_RANKED = "osu!droid Elaina PP Project and Ranked Score Project",
     STAFF = "Staff",
-    TOOLS = "Tools"
+    TOOLS = "Tools",
+    TOURNAMENT = "Tournament"
 };
