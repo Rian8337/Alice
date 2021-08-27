@@ -13,6 +13,7 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
     get defaultDocument(): DatabaseTournamentMatch {
         return {
             matchid: "",
+            channelId: "",
             name: "",
             player: [],
             result: [],
@@ -28,5 +29,15 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
         );
 
         this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMatch, TournamentMatch>> new TournamentMatch(client, this.defaultDocument).constructor
+    }
+
+    /**
+     * Gets a match by its ID.
+     * 
+     * @param id The ID of the match.
+     * @returns The match, `null` if not found.
+     */
+    getById(id: string): Promise<TournamentMatch | null> {
+        return this.getOne({ matchid: id });
     }
 }

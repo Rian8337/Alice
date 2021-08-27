@@ -12,7 +12,6 @@ import { MapShareCollectionManager } from "./managers/aliceDb/MapShareCollection
 import { DPPAPIKeyCollectionManager } from "./managers/aliceDb/DPPAPIKeyCollectionManager";
 import { GuildTagsCollectionManager } from "./managers/aliceDb/GuildTagsCollectionManager";
 import { GuildPunishmentConfigCollectionManager } from "./managers/aliceDb/GuildPunishmentConfigCollectionManager";
-import { MatchChannelCollectionManager } from "./managers/aliceDb/MatchChannelCollectionManager";
 import { MatchDataCollectionManager } from "./managers/aliceDb/MatchDataCollectionManager";
 import { NameChangeCollectionManager } from "./managers/aliceDb/NameChangeCollectionManager";
 import { OsuBindCollectionManager } from "./managers/aliceDb/OsuBindCollectionManager";
@@ -79,11 +78,6 @@ export class AliceDBCollection {
      * The database collection for shared beatmaps.
      */
     readonly mapShare: MapShareCollectionManager;
-
-    /**
-     * The database collection for binded match channels for tournament matches.
-     */
-    readonly matchChannel: MatchChannelCollectionManager;
 
     /**
      * The database collection for tournament match results.
@@ -173,7 +167,6 @@ export class AliceDBCollection {
         this.loungeLock = new LoungeLockCollectionManager(client, aliceDb.collection("loungelock"));
         this.tournamentMapLengthInfo = new TournamentMapLengthInfoCollectionManager(client, aliceDb.collection("mapinfolength"));
         this.mapShare = new MapShareCollectionManager(client, aliceDb.collection("mapshare"));
-        this.matchChannel = new MatchChannelCollectionManager(client, aliceDb.collection("matchchannel"));
         this.matchData = new MatchDataCollectionManager(client, aliceDb.collection("matchdata"));
         this.nameChange = new NameChangeCollectionManager(client, aliceDb.collection("namechange"));
         this.osuBind = new OsuBindCollectionManager(client, aliceDb.collection("osubind"));

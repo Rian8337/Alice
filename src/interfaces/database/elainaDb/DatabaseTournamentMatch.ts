@@ -1,3 +1,4 @@
+import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
 /**
@@ -8,6 +9,11 @@ export interface DatabaseTournamentMatch extends BaseDocument {
      * The ID of the match.
      */
     matchid: string;
+
+    /**
+     * The ID of the thread channel at which the match proceeds.
+     */
+    channelId: Snowflake;
 
     /**
      * The name of the match.
