@@ -4,6 +4,7 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Bot } from "@alice-core/Bot";
+import { Snowflake } from "discord.js";
 
 /**
  * A manager for the `matchinfo` command.
@@ -39,5 +40,15 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
      */
     getById(id: string): Promise<TournamentMatch | null> {
         return this.getOne({ matchid: id });
+    }
+
+    /**
+     * Gets a match by its binded channel.
+     * 
+     * @param channelId The ID of the channel.
+     * @returns The match, `null` if not found.
+     */
+    getByChannel(channelId: Snowflake): Promise<TournamentMatch | null> {
+        return this.getOne({ channelId: channelId });
     }
 }
