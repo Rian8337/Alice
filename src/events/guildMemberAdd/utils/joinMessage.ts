@@ -31,7 +31,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
 
     embed.setDescription(joinMessage);
 
-    welcomeChannel.send({ embeds: [embed] });
+    welcomeChannel.send({ content: member.toString(), embeds: [embed] });
 };
 
 export const config: EventUtil["config"] = {
