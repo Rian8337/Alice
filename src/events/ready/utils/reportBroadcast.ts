@@ -9,7 +9,7 @@ export const run: EventUtil["run"] = async (client) => {
     ];
 
     setInterval(async () => {
-        const executionTime: number = Math.floor(Date.now() / 1000);
+        const executionTime: number = Date.now();
 
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
