@@ -48,12 +48,13 @@ export const run: Command["run"] = async (_, interaction) => {
         string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
     }
 
+    if (string) {
+        calcEmbedOptions.content = string;
+    }
+
     BeatmapManager.setChannelLatestBeatmap(interaction.channel!.id, calcResult.map.hash);
 
-    interaction.editReply({
-        content: string,
-        ...calcEmbedOptions
-    });
+    interaction.editReply(calcEmbedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;

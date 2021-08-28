@@ -47,10 +47,11 @@ export const run: Command["run"] = async (_, interaction) => {
         string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
     }
 
-    interaction.editReply({
-        content: string,
-        ...calcEmbedOptions
-    });
+    if (string) {
+        calcEmbedOptions.content = string;
+    }
+
+    interaction.editReply(calcEmbedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
