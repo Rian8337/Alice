@@ -81,6 +81,8 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             });
         }
 
+        client.logger.info(`Executed command: ${interaction.commandName}`);
+
         const finalCooldown: number = Math.max(
             // Local command cooldown
             command.config.cooldown ?? 0,
