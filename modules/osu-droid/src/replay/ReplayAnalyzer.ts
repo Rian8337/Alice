@@ -472,7 +472,7 @@ export class ReplayAnalyzer {
         return {
             positiveAvg: positiveTotal / positiveCount || 0,
             negativeAvg: negativeTotal / negativeCount || 0,
-            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map(v => v.accuracy)) * 10
+            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map(v => v.result !== hitResult.RESULT_0 ? v.accuracy : 0)) * 10
         };
     }
 
