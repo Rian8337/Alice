@@ -8,7 +8,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (DateTimeFormatHelper.getTimeDifference((<GuildMember> interaction.member).joinedAt!) < 86400 * 1000 * 7) {
+    if (DateTimeFormatHelper.getTimeDifference((<GuildMember> interaction.member).joinedAt!) > -86400 * 1000 * 7) {
         return interaction.editReply({
             content: MessageCreator.createReject(coinsStrings.userNotInServerForAWeek)
         });

@@ -34,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (DateTimeFormatHelper.getTimeDifference(<Date> toTransferGuildMember.joinedAt) < 86400 * 1000 * 7) {
+    if (DateTimeFormatHelper.getTimeDifference(<Date> toTransferGuildMember.joinedAt) > -86400 * 1000 * 7) {
         return interaction.editReply(MessageCreator.createReject(coinsStrings.userToTransferNotInServerForAWeek));
     }
 
