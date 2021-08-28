@@ -79,7 +79,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const arrow: Symbols = Symbols.rightArrowSmall;
 
-    const onPageChange: OnButtonPageChange = async (options, page, _) => {
+    const onPageChange: OnButtonPageChange = async (options, page) => {
         const actualPage: number = Math.floor((page - 1) / 20);
 
         const pageRemainder: number = (page - 1) % 20;
@@ -149,7 +149,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             );
         }
 
-        options = embedOptions;
+        Object.assign(options, embedOptions);
     };
 
     MessageButtonCreator.createLimitlessButtonBasedPaging(
