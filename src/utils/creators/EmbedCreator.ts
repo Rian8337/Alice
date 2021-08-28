@@ -15,6 +15,7 @@ import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 
 /**
  * Utility to create message embeds.
@@ -386,6 +387,24 @@ export abstract class EmbedCreator {
                 `If you see a user violating the rules, misbehaving, or intentionally trying to be annoying, please report the user using \`/report\` command (more information is available using \`/help report\`).\n\n` +
                 `Keep in mind that only staff members can view reports, therefore your privacy is safe. We appreciate your contribution towards bringing a friendly environment!`
             );
+
+        return embed;
+    }
+
+    /**
+     * Creates an embed summarizing a tournament match.
+     * 
+     * @param match The match.
+     * @returns The embed.
+     */
+    static createMatchSummaryEmbed(match: TournamentMatch): MessageEmbed {
+        const embed: MessageEmbed = this.createNormalEmbed(
+            { color: match.matchColorCode }
+        );
+
+        embed.setTitle(match.name)
+            .addField(match.team[0][0], `**${match.team[0][1]}**`, true)
+            .addField(match.team[1][0], `**${match.team[1][1]}**`, true);
 
         return embed;
     }
