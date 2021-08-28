@@ -170,7 +170,7 @@ export abstract class CommandHelper extends Manager {
 
         const member: GuildMember | null = <GuildMember | null> interaction.member;
 
-        if (!member || interaction.channel instanceof DMChannel || interaction.channel) {
+        if (!member || interaction.channel instanceof DMChannel) {
             return false;
         }
 
