@@ -45,7 +45,7 @@ export const run: EventUtil["run"] = async (client) => {
             }
 
             await expiredAuction.giveItemTo(winnerClan);
-            await expiredAuction.end();
+            await expiredAuction.end(true);
 
             const bidArray: AuctionBid[] = [...expiredAuction.bids.values()];
 
