@@ -309,11 +309,11 @@ export class Bot extends Client {
             this.logger.info(`${StringHelper.capitalizeString(name)} command registered`);
         };
 
-        if (!(await this.application!.commands.fetch(deployCommandID)) || forceRegister) {
+        if (forceRegister || !(await this.application!.commands.fetch(deployCommandID))) {
             await registerCommand("deploy");
         }
 
-        if (!(await this.application!.commands.fetch(undeployCommandID)) || forceRegister) {
+        if (forceRegister || !(await this.application!.commands.fetch(undeployCommandID))) {
             await registerCommand("undeploy");
         }
     }
