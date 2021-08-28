@@ -16,7 +16,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            askcountStrings.askCount, interaction.user.toString(), count.toString(), count === 1 ? "time" : "times"
+            askcountStrings.askCount, count.toLocaleString(), count === 1 ? "time" : "times"
         )
     });
 };

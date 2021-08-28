@@ -3,5 +3,5 @@
  */
 export enum askcountStrings {
     haveNotAsked = "I'm sorry, looks like you haven't asked me yet!",
-    askCount = "%s, you have asked me %s %s."
+    askCount = "You have asked me %s %s."
 };
