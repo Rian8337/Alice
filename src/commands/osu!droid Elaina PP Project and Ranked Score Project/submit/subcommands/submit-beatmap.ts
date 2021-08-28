@@ -123,7 +123,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.setDescription(
             embed.description! +
-            `**Ranked score**: ${totalScore}\n` +
+            `**Ranked score**: ${totalScore.toLocaleString()}\n` +
             `**Score gained**: ${scoreDiff.toLocaleString()}\n` +
             `**Current level**: ${Math.floor(level)} (${levelRemain}%)${(rankedScoreInfo?.level ?? 1) > Math.floor(level) ? `\n${Symbols.upIcon} Level up!` : ""}\n` +
             `**Score needed to level up**: ${(RankedScoreHelper.calculateScoreRequirement(Math.floor(level) + 1) - totalScore).toLocaleString()}`
@@ -148,7 +148,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     // Finalization
     embed.setTitle("PP submission info")
         .addField(
-            `${beatmapInfo.fullTitle}${score.mods ? ` +${score.mods}` : ""}`,
+            `${beatmapInfo.fullTitle} +${score.mods.map(v => v.acronym).join(",") || "No Mod"}`,
             fieldContent
         );
 

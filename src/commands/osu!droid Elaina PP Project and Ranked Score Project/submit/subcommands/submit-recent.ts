@@ -63,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     for await (const score of scoresToSubmit) {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false);
-        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title}${score.mods ? ` +${score.mods}` : ""}`;
+        const fieldTitle: string = `${beatmapInfo?.fullTitle ?? score.title} +${score.mods.map(v => v.acronym).join(",") || "No Mod"}`;
         let fieldContent: string = `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | **`;
 
         if (!beatmapInfo) {
