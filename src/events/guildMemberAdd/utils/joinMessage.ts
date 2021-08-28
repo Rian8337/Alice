@@ -15,14 +15,14 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         `Welcome to ${member.guild.name}'s ${welcomeChannel}.\n\n` +
         `To verify yourself as someone who plays osu!droid or interested in the game and open the rest of the server, you can follow *any* of the following methods:\n\n` +
         `- post your osu!droid screenshot (main menu if you are an online player or recent result (score) if you are an offline player). If you've just created an osu!droid account, please submit a score to the account before verifying\n` +
-        `- post your osu! profile (screenshot or link to profile) and reason why you join this server\n` +
+        `- post your osu! profile (screenshot or link to profile) and reason why you join this server\n\n` +
         `after that, you can ping <@&369108742077284353> and/or <@&595667274707370024> and wait for one to come to verify you.\n\n` +
         `**Do note that you have 1 week to verify, otherwise you will be automatically kicked.**`;
 
-    const timeDiff: number = Math.floor((Date.now() - member.user.createdTimestamp) / 1000);
+    const timeDiff: number = Math.floor(DateTimeFormatHelper.getTimeDifference(member.user.createdAt) / 1000);
 
-    if (timeDiff < 604800) {
-        joinMessage += `\n\n**[${Symbols.exclamationMark}]** Account age: ${DateTimeFormatHelper.secondsToDHMS(timeDiff)}`;
+    if (timeDiff > -604800) {
+        joinMessage += `\n\n**[${Symbols.exclamationMark}]** Account age: ${DateTimeFormatHelper.secondsToDHMS(-timeDiff)}`;
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
