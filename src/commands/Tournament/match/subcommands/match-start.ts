@@ -60,7 +60,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 content: MessageCreator.createAccept(matchStrings.roundEnded)
             });
 
-            client.subcommands.get("match")!.get("match-start")!.run(client, interaction);
+            client.subcommands.get("match")!.get("match-submit")!.run(client, interaction);
         }, 30 * 1000);
 
         interaction.channel!.send({
