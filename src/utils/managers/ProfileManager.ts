@@ -29,7 +29,7 @@ export abstract class ProfileManager extends Manager {
      * @param detailed Whether to give a detailed statistics.
      * @returns An image containing the player's statistics, `null` if the player is not found.
      */
-    static async getProfileStatistics(uid: number, player?: Player, bindInfo?: UserBind | null, playerInfo?: PlayerInfo | null, rankedScoreInfo?: RankedScore | null, detailed?: boolean): Promise<Buffer | null> {
+    static async getProfileStatistics(uid: number, player?: Player, bindInfo?: UserBind | null, playerInfo?: PlayerInfo | null, rankedScoreInfo?: RankedScore | null, detailed: boolean = false): Promise<Buffer | null> {
         if (bindInfo === undefined) {
             bindInfo = await DatabaseManager.elainaDb.collections.userBind.getOne({ previous_bind: { $all: [uid] } });
         }
@@ -52,7 +52,7 @@ export abstract class ProfileManager extends Manager {
             playerInfo = await DatabaseManager.aliceDb.collections.playerInfo.getOne({ discordid: bindInfo?.discordid });
         }
 
-        return new ProfileCardCreator(player, detailed ?? false, bindInfo, rankedScoreInfo, playerInfo).generateCard();
+        return new ProfileCardCreator(player, detailed, bindInfo, rankedScoreInfo, playerInfo).generateCard();
     }
 
     /**

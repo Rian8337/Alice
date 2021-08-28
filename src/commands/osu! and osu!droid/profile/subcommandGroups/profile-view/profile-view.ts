@@ -75,7 +75,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const profileImage: Buffer = <Buffer> await ProfileManager.getProfileStatistics(uid, player, bindInfo, undefined, undefined, pickedChoice === "detailed");
+    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(uid, player, bindInfo, undefined, undefined, pickedChoice === "detailed"))!;
 
     interaction.editReply({
         content: MessageCreator.createAccept(
