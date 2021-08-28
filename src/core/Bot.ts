@@ -211,7 +211,7 @@ export class Bot extends Client {
 
         const collection: Collection<string, Subcommand> = new Collection();
 
-        for await (const subcommand of subcommands.map(v => v.substring(0, v.length - 3))) {
+        for await (const subcommand of subcommands) {
             const filePath: string = `${subcommandPath}/${subcommand}`;
 
             const fileStat = await fs.lstat(filePath);
@@ -222,7 +222,7 @@ export class Bot extends Client {
 
             const file: Subcommand = await import(filePath);
 
-            collection.set(subcommand, file);
+            collection.set(subcommand.substring(0, subcommand.length - 3), file);
         }
 
         this.subcommands.set(commandName, collection);
