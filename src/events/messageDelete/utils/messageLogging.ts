@@ -3,7 +3,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (message.author.bot) {
+    if (message.author?.bot) {
         return;
     }
 
