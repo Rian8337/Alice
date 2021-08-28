@@ -239,9 +239,11 @@ export class Challenge extends Manager {
 
                     const coinEmoji: GuildEmoji = this.client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
-                    await notificationChannel.send(MessageCreator.createAccept(
-                        `Congratulations to <@${winnerBindInfo.discordid}> for achieving first place in challenge \`${this.challengeid}\`, earning him/her \`${this.isWeekly ? "50" : "25"}\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"}\` Alice coins!`
-                    ));
+                    await notificationChannel.send({
+                        content: MessageCreator.createAccept(
+                            `Congratulations to <@${winnerBindInfo.discordid}> for achieving first place in challenge \`${this.challengeid}\`, earning him/her \`${this.isWeekly ? "50" : "25"}\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"}\` Alice coins!`
+                        )
+                    });
                 }
             }
 
