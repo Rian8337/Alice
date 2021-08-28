@@ -63,8 +63,7 @@ export const config: Command["config"] = {
         {
             name: "calcparams",
             type: CommandArgumentType.STRING,
-            description:
-                "Calculation parameters."// +
+            description: "[(+<mod>) (<combo>x) (<acc>%) (<x100>x100) (<x50>x50) (<miss>m) (AR<ar>) (<speed>x) (-d) (-p)]."// +
                 // "- `mod`: Applied game modifications (HD, HR, etc). Defaults to No Mod.\n" +
                 // "- `combo`: Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to the beatmap's maximum combo.\n" +
                 // "- `acc`: Accuracy gained. Must be between 0 and 100. Defaults to 100.\n" +
