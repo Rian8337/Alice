@@ -24,9 +24,7 @@ export const run: Command["run"] = async (client, interaction) => {
     };
 
     if (interaction.options.getBoolean("debug")) {
-        const guild: Guild = await client.guilds.fetch(Constants.testingServer);
-
-        await guild.commands.create(data);
+        await interaction.guild!.commands.create(data);
     } else {
         await client.application!.commands.create(data);
     }

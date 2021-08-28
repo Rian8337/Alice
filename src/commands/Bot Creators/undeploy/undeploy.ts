@@ -18,11 +18,9 @@ export const run: Command["run"] = async (client, interaction) => {
     }
 
     if (interaction.options.getBoolean("debug")) {
-        const guild: Guild = await client.guilds.fetch(Constants.testingServer);
+        await interaction.guild!.commands.fetch();
 
-        await guild.commands.fetch();
-
-        await guild.commands.cache.find(v => v.name === commandName)?.delete();
+        await interaction.guild!.commands.cache.find(v => v.name === commandName)?.delete();
     } else {
         await client.application?.commands.cache.find(v => v.name === commandName)?.delete();
     }
