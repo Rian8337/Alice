@@ -13,7 +13,7 @@ export abstract class BeatmapManager extends Manager {
     /**
      * Color spectrum for difficulty rating icon.
      */
-    static readonly difficultyColorSpectrum: d3.ScaleLinear<string, string, never> =
+    private static readonly difficultyColorSpectrum: d3.ScaleLinear<string, string, never> =
         d3.scaleLinear<string>()
             .domain([1.5, 2, 2.5, 3.25, 4.5, 6, 7, 8])
             .clamp(true)
@@ -206,8 +206,7 @@ export abstract class BeatmapManager extends Manager {
      * @returns A difficulty icon representing the beatmap's difficulty.
      */
     static getBeatmapDifficultyIcon(rating: number): Buffer {
-        const color: string =
-            rating >= 8 ? "#000000" : this.difficultyColorSpectrum(rating);
+        const color: string = this.getBeatmapDifficultyColor(rating);
 
         const canvas: Canvas = createCanvas(128, 128);
 
@@ -234,6 +233,10 @@ export abstract class BeatmapManager extends Manager {
         c.closePath();
 
         return canvas.toBuffer();
+    }
+
+    static getBeatmapDifficultyColor(rating: number): string {
+        return rating >= 8 ? "#000000" : this.difficultyColorSpectrum(rating);
     }
 
     /**
