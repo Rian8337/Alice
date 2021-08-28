@@ -53,7 +53,7 @@ export abstract class MuteManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async addMute(interaction: CommandInteraction, member: GuildMember, reason: string, duration: number): Promise<MuteOperationResult> {
-        if (this.userIsImmune(member)) {
+        if (await this.userIsImmune(member)) {
             return this.createOperationResult(false, "User has mute immunity");
         }
 
@@ -266,7 +266,7 @@ export abstract class MuteManager extends PunishmentManager {
                     reason
                 );
 
-            currentLogChannel.send({ embeds: [unmuteEmbed]});
+            currentLogChannel.send({ embeds: [unmuteEmbed] });
 
             await this.notifyMember(member, `Hey, you were unmuted for ${reason}.`, unmuteEmbed);
         }
@@ -280,7 +280,8 @@ export abstract class MuteManager extends PunishmentManager {
         this.currentMutes.delete(member.id);
 
         const muteEmbed: MessageEmbed = logMessage.embeds[0];
-        muteEmbed.setFooter(muteEmbed.footer + " | User unmuted");
+
+        muteEmbed.setFooter(muteEmbed.footer?.text + " | User unmuted", muteEmbed.footer?.iconURL);
 
         await logMessage.edit({ embeds: [muteEmbed] });
 
@@ -367,7 +368,7 @@ export abstract class MuteManager extends PunishmentManager {
             return undefined;
         }
 
-        return guildConfig.currentMutes.get(member.guild.id);
+        return guildConfig.currentMutes.get(member.id);
     }
 
     /**
