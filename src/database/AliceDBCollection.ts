@@ -164,7 +164,7 @@ export class AliceDBCollection {
         this.nameChange = new NameChangeCollectionManager(client, aliceDb.collection("namechange"));
         this.osuBind = new OsuBindCollectionManager(client, aliceDb.collection("osubind"));
         this.playerInfo = new PlayerInfoCollectionManager(client, aliceDb.collection("playerpoints"));
-        this.rankedScore = new RankedScoreCollectionManager(client, aliceDb.collection("playerscore"));
+        this.rankedScore = new RankedScoreCollectionManager(client, aliceDb.collection("rankedscore"));
         this.playerSkins = new PlayerSkinCollectionManager(client, aliceDb.collection("playerskins"));
         this.dppAPIKey = new DPPAPIKeyCollectionManager(client, aliceDb.collection("ppapikey"));
         this.profileBackgrounds = new ProfileBackgroundCollectionManager(client, aliceDb.collection("profilebackgrounds"));
