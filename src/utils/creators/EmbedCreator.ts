@@ -88,7 +88,7 @@ export abstract class EmbedCreator {
                 .setFooter(this.botSign, ArrayHelper.getRandomArrayElement(Config.avatarList))
                 .setAuthor("Beatmap Information", `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(2)}.png`)
                 .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
-                .setColor(<ColorResolvable> HelperFunctions.rgbToHex(BeatmapManager.difficultyColorSpectrum(calcResult.osu.total)))
+                .setColor(<ColorResolvable> HelperFunctions.rgbToHex(BeatmapManager.difficultyColorSpectrum(Math.min(calcResult.osu.total, 8))))
                 .setTitle(beatmapInfo.showStatistics(0, calcParams.mods))
                 .setDescription(beatmapInfo.showStatistics(1, calcParams.mods))
                 .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
