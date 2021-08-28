@@ -1,5 +1,3 @@
-import { hrtime } from "process";
-
 /**
  * Helper functions to hopefully ease development.
  */
