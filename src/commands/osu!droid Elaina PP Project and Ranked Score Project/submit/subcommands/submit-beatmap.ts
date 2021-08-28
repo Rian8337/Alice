@@ -160,3 +160,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embeds: [embed]
     });
 };
+
+export const config: Subcommand["config"] = {
+    permissions: []
+};
