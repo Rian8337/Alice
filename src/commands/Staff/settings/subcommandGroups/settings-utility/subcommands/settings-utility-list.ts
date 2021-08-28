@@ -22,14 +22,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const content: { key: string, value: Collection<string, EventUtil> } = contents[page - 1];
 
-        embed.setDescription(`**Event name: ${content.key}**`);
+        embed.setDescription(`**Event name: \`${content.key}\`**`);
 
         for (const [utilName, utility] of content.value) {
             embed.addField(
                 `- ${utilName}`,
                 `${utility.config.description}\n` +
-                `Required Permissions: ${PermissionHelper.getPermissionString(utility.config.togglePermissions)}\n` +
-                `Toggleable Scope: ${utility.config.toggleScope.map(v => StringHelper.capitalizeString(v, true)).join(", ")}`
+                `**Required Permissions**: ${PermissionHelper.getPermissionString(utility.config.togglePermissions)}\n` +
+                `**Toggleable Scope**: ${utility.config.toggleScope.map(v => StringHelper.capitalizeString(v, true)).join(", ")}`
             );
         }
 
