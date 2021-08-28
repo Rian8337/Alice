@@ -18,7 +18,7 @@ export const run: Command["run"] = async(_, interaction) => {
 
     const role: Role = interaction.guild!.roles.cache.find(r => r.name === "Member")!;
 
-    if (toVerify.roles.resolve(role)) {
+    if (toVerify.roles.cache.has(role.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(verifyStrings.userIsAlreadyVerifiedError)
         });
