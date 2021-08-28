@@ -14,7 +14,6 @@ export abstract class InteractionCollectorCreator {
             filter: (i) => i.isButton() && users.includes(i.user.id),
             componentType: "BUTTON",
             dispose: true,
-            idle: Math.min(60000, duration * 1000),
             time: duration * 1000
         });
     }
@@ -32,7 +31,6 @@ export abstract class InteractionCollectorCreator {
             filter: (i) => i.isSelectMenu() && users.includes(i.user.id),
             componentType: "SELECT_MENU",
             dispose: true,
-            idle: Math.min(60000, duration * 1000),
             time: duration * 1000
         });
     }
