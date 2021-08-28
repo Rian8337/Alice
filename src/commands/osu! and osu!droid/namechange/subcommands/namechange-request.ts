@@ -75,7 +75,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(bindInfo.uid, player.username, newUsername);
+    await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(interaction.user.id, bindInfo.uid, player.username, newUsername);
 
     interaction.editReply({
         content: MessageCreator.createAccept(namechangeStrings.requestSuccess)
