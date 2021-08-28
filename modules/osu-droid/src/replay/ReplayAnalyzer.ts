@@ -528,9 +528,9 @@ export class ReplayAnalyzer {
      */
     checkFor3Finger(): void {
         if (!(this.map instanceof DroidStarRating) || !this.data) {
-            throw new Error("Map must be defined");
+            return;
         }
-        
+
         const threeFingerChecker: ThreeFingerChecker = new ThreeFingerChecker(this.map, this.data);
         const result: ThreeFingerInformation = threeFingerChecker.check();
 
