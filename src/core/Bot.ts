@@ -211,7 +211,7 @@ export class Bot extends Client {
 
         const collection: Collection<string, Subcommand> = new Collection();
 
-        for await (const subcommand of subcommands) {
+        for await (const subcommand of subcommands.map(v => v.substring(0, v.length - 3))) {
             const filePath: string = `${subcommandPath}/${subcommand}`;
 
             const fileStat = await fs.lstat(filePath);
@@ -222,7 +222,7 @@ export class Bot extends Client {
 
             const file: Subcommand = await import(filePath);
 
-            collection.set(subcommand.substring(0, subcommand.length - 3), file);
+            collection.set(subcommand, file);
         }
 
         this.subcommands.set(commandName, collection);
@@ -253,8 +253,8 @@ export class Bot extends Client {
 
             let j = 0;
 
-            for await (const eventUtil of eventUtils) {
-                this.logger.success("%d.%d. %s :: %s event utility loaded", i, ++j, event, eventUtil.substring(0, eventUtil.length - 3));
+            for await (const eventUtil of eventUtils.map(v => v.substring(0, v.length - 3))) {
+                this.logger.success("%d.%d. %s :: %s event utility loaded", i, ++j, event, eventUtil);
 
                 const eventUtility: EventUtil = await import(`${eventsPath}/${event}/utils/${eventUtil}`);
 
