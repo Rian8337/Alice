@@ -47,7 +47,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     embed.setTitle("Round Info")
         .addField("Match ID", match.matchid, true)
         .addField("Map", map[0], true)
-        .addField("Map Length", DateTimeFormatHelper.secondsToDHMS(timeLimit));
+        .addField("Map Length", DateTimeFormatHelper.secondsToDHMS(timeLimit), true);
 
     interaction.editReply({
         content: MessageCreator.createAccept(matchStrings.roundInitiated),
@@ -60,7 +60,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 content: MessageCreator.createAccept(matchStrings.roundEnded)
             });
 
-            client.subcommands.get("match")!.get("start")!.run(client, interaction);
+            client.subcommands.get("match")!.get("match-start")!.run(client, interaction);
         }, 30 * 1000);
 
         interaction.channel!.send({
