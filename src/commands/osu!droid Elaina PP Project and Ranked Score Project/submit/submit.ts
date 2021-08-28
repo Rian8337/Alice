@@ -51,7 +51,7 @@ export const config: Command["config"] = {
                 {
                     name: "offset",
                     type: CommandArgumentType.INTEGER,
-                    description: "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50. Defaults to 1."
+                    description: "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50."
                 }
             ]
         }
