@@ -218,7 +218,11 @@ export abstract class EmbedCreator {
             return embed;
         }
 
-        embed.setAuthor(`${calcResult.map.fullTitle} ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(2)}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${Symbols.star}]`, playerAvatarURL)
+        embed.setAuthor(
+                `${calcResult.map.fullTitle} ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(2)}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${Symbols.star}]`,
+                playerAvatarURL,
+                `https://osu.ppy.sh/b/${calcResult.map.beatmapID}`
+            )
             .setThumbnail(`https://b.ppy.sh/thumb/${calcResult.map.beatmapsetID}l.jpg`);
 
         beatmapInformation += `**${calcResult.droid.total.toFixed(2)}DPP**${(calcResult.replay?.tapPenalty ?? 1) !== 1 ? " (*penalized*)" : ""} | **${calcResult.osu.total.toFixed(2)}PP** `;
