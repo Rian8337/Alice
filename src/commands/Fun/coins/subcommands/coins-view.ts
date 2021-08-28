@@ -1,14 +1,11 @@
-import { GuildEmoji, User } from "discord.js";
+import { User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { coinsStrings } from "../coinsStrings";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
-
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
@@ -16,7 +13,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     interaction.editReply(MessageCreator.createAccept(
         coinsStrings.coinAmountInfo,
         user.id === interaction.user.id ? "you have" : "that user has",
-        coin.toString(),
         (playerInfo?.alicecoins ?? 0).toLocaleString()
     ));
 };

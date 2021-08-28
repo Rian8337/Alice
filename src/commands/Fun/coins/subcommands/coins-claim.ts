@@ -1,4 +1,3 @@
-import { GuildEmoji } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
@@ -10,8 +9,6 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
-
-    const coinEmoji: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
 
     if (playerInfo) {
         let dailyCoin: number = 50;
@@ -35,10 +32,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 coinsStrings.dailyClaimSuccess,
                 interaction.user.toString(),
                 streakComplete ? "completed a streak and " : "",
-                coinEmoji.toString(),
                 dailyCoin.toLocaleString(),
                 streak.toString(),
-                coinEmoji.toString(),
                 (playerInfo.alicecoins + dailyCoin).toLocaleString()
             )
         });
@@ -70,11 +65,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createAccept(
                 coinsStrings.dailyClaimSuccess,
                 "",
-                coinEmoji.toString(),
-                (50).toString(),
-                (1).toString(),
-                coinEmoji.toString(),
-                (50).toString()
+                "50",
+                "1",
+                "50"
             )
         });
     }

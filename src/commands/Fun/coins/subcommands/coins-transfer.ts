@@ -1,8 +1,7 @@
-import { GuildEmoji, GuildMember, User } from "discord.js";
+import { GuildMember, User } from "discord.js";
 import { Player } from "osu-droid";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { coinsStrings } from "../coinsStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -95,8 +94,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             limit = 250;
     }
 
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
-
     const transferredAmount: number = userPlayerInfo.transferred;
 
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
@@ -105,7 +102,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createWarn(
                 coinsStrings.coinTransferConfirmation,
                 interaction.user.toString(),
-                coin.toString(),
                 transferAmount.toLocaleString(),
                 toTransferGuildMember.toString()
             )
@@ -129,12 +125,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(
             coinsStrings.coinTransferSuccess,
-            coin.toString(),
             transferAmount.toLocaleString(),
             toTransferGuildMember.toString(),
-            coin.toString(),
             (limit - transferAmount - transferredAmount).toLocaleString(),
-            coin.toString(),
             (userPlayerInfo.alicecoins - transferAmount).toLocaleString()
         )
     });

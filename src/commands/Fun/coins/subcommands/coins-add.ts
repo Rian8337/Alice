@@ -1,4 +1,4 @@
-import { GuildEmoji, User } from "discord.js";
+import { User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
@@ -42,13 +42,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
-
     interaction.editReply(MessageCreator.createAccept(
         coinsStrings.addCoinSuccess,
-        coin.toString(),
         addAmount.toLocaleString(),
-        coin.toString(),
         (playerInfo.alicecoins + addAmount).toLocaleString()
     ));
 };
