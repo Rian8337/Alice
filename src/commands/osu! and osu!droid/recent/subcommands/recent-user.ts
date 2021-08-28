@@ -45,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     BeatmapManager.setChannelLatestBeatmap(interaction.channel!.id, player.recentPlays[index].hash);
 
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
-        player.recentPlays[index],
+        player.recentPlays[index - 1],
         player.avatarURL,
         (<GuildMember | null> interaction.member)?.displayColor
     );
