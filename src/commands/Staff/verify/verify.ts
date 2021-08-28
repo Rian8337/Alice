@@ -8,7 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { verifyStrings } from "./verifyStrings";
 
 export const run: Command["run"] = async(_, interaction) => {
-    if (!Config.verifyPerm.some(id => (<GuildMember> interaction.member).roles.resolve(id))) {
+    if (!(<GuildMember> interaction.member).roles.cache.hasAny(...Config.verifyPerm)) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.noPermissionReject)
         });
