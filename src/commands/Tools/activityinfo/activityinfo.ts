@@ -64,7 +64,9 @@ export const run: Command["run"] = async (client, interaction) => {
 
     let activityData: Collection<number, ChannelData>;
 
-    switch (interaction.options.getString("type")) {
+    const type: string = interaction.options.getString("type") ?? "overall";
+
+    switch (type) {
         case "weekly":
             activityData = await dbManager.getFromTimestampRange(
                 date.getTime() - daysToMilliseconds(date.getUTCDay()),
@@ -81,7 +83,7 @@ export const run: Command["run"] = async (client, interaction) => {
             );
 
             break;
-        default:
+        case "daily":
             date.setUTCDate(date.getUTCDate() - 1);
 
             activityData = await dbManager.getFromTimestampRange(
@@ -90,6 +92,11 @@ export const run: Command["run"] = async (client, interaction) => {
             );
 
             break;
+        default:
+            activityData = await dbManager.getFromTimestampRange(
+                0,
+                date.getTime()
+            );
     }
 
     if (activityData.size === 0) {
@@ -152,7 +159,7 @@ export const run: Command["run"] = async (client, interaction) => {
         { author: interaction.user, color: "#b58d3c" }
     );
 
-    embed.setTitle(`${StringHelper.capitalizeString(<string> interaction.options.getString("type"))} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(date)}`);
+    embed.setTitle(`${StringHelper.capitalizeString(type)} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(date)}`);
 
     const onPageChange: OnButtonPageChange = async (options, page, contents: ActivityCategory[]) => {
         const content: ActivityCategory = contents[page - 1];
@@ -188,7 +195,7 @@ export const config: Command["config"] = {
         {
             name: "type",
             type: CommandArgumentType.STRING,
-            description: "The activity interval type to view.",
+            description: "The activity interval type to view. Defaults to overall.",
             choices: [
                 {
                     name: "Overall",
