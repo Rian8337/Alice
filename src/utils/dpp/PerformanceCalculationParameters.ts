@@ -62,8 +62,6 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
                 nobjects: beatmap.objects
             });
 
-            console.log(this.accuracy.value() * 100, this.inputAccuracy);
-
             this.isEstimated = !Precision.almostEqualsNumber(this.accuracy.value() * 100, this.inputAccuracy, 1e-2);
         }
 
