@@ -207,13 +207,11 @@ export abstract class BeatmapManager extends Manager {
      * @returns A difficulty icon representing the beatmap's difficulty.
      */
     static getBeatmapDifficultyIcon(rating: number): Buffer {
-        const color: string = this.getBeatmapDifficultyColor(rating);
-
         const canvas: Canvas = createCanvas(128, 128);
 
         const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
 
-        c.fillStyle = color;
+        c.fillStyle = this.getBeatmapDifficultyColor(rating);
 
         c.beginPath();
         c.arc(canvas.width / 2, canvas.height / 2, 60, 0, 2 * Math.PI);
