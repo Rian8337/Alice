@@ -47,7 +47,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const embed: MessageEmbed = await EmbedCreator.createRecentPlayEmbed(
         player.recentPlays[index],
         player.avatarURL,
-        (<GuildMember> interaction.member).displayColor
+        (<GuildMember | null> interaction.member)?.displayColor
     );
 
     interaction.editReply({
