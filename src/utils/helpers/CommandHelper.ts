@@ -174,7 +174,7 @@ export abstract class CommandHelper extends Manager {
             return false;
         }
 
-        return (<TextChannel | null> interaction.channel)?.permissionsFor(member).has(permissions) || member.permissions.has(permissions);
+        return (<TextChannel | null> interaction.channel)?.permissionsFor(member).has(permissions) ?? false;
     }
 
     /**
