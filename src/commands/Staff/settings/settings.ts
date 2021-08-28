@@ -59,7 +59,7 @@ export const config: Command["config"] = {
                 {
                     name: "disable",
                     type: CommandArgumentType.SUB_COMMAND,
-                    description: "Disable a command.",
+                    description: "Disables a command.",
                     options: [
                         {
                             name: "command",
