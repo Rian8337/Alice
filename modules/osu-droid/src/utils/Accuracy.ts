@@ -38,7 +38,7 @@ export class Accuracy implements AccuracyInformation {
     readonly n100: number;
     readonly n50: number;
     readonly nmiss: number;
-    
+
     /**
      * Calculates accuracy based on given parameters.
      * 
