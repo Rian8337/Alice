@@ -11,7 +11,7 @@ export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "whitelist",
-    description: "The main command for droid performance points (dpp) whitelisting system.\n\nThis command uses a special permission that cannot be modified.",
+    description: "The main command for droid performance points (dpp) whitelisting system.",
     options: [
         {
             name: "check",
