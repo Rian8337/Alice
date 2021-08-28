@@ -2,7 +2,6 @@ import { GuildMember, MessageOptions } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { PerformanceCalculationParameters } from "@alice-interfaces/utils/PerformanceCalculationParameters";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -10,6 +9,7 @@ import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyH
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { manualcalcStrings } from "./manualcalcStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap", true))[0];

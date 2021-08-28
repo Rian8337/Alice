@@ -13,6 +13,7 @@ import { ChallengeStatusType } from "@alice-types/challenge/ChallengeStatusType"
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, GuildEmoji, MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { ObjectId } from "mongodb";
@@ -642,17 +643,19 @@ export class Challenge extends Manager {
     private async getReplayCalculationResult(data: ReplayData): Promise<PerformanceCalculationResult | null> {
         return BeatmapDifficultyHelper.calculateBeatmapPerformance(
             this.beatmapid,
-            {
-                accuracy: data.accuracy,
-                mods: data.convertedMods,
-                combo: data.maxCombo,
-                customStatistics: new MapStats({
+            new PerformanceCalculationParameters(
+                data.convertedMods,
+                data.accuracy,
+                data.accuracy.value() * 100,
+                data.maxCombo,
+                1,
+                new MapStats({
                     ar: data.forcedAR,
                     isForceAR: !!data.forcedAR,
                     speedMultiplier: data.speedModification,
                     oldStatistics: data.replayVersion <= 3
                 })
-            }
+            )
         );
     }
 

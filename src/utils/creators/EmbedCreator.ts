@@ -2,7 +2,6 @@ import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, h
 import { ColorResolvable, CommandInteraction, Guild, GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions, User } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { PerformanceCalculationParameters } from "@alice-interfaces/utils/PerformanceCalculationParameters";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
@@ -10,12 +9,13 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
-import { StarRatingCalculationParameters } from "@alice-interfaces/utils/StarRatingCalculationParameters";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
+import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 /**
  * Utility to create message embeds.
@@ -78,7 +78,7 @@ export abstract class EmbedCreator {
      * @param beatmapInfo The beatmap to create the beatmap embed from.
      * @param calcParams Calculation parameters to be used for beatmap statistics.
      */
-    static async createBeatmapEmbed(beatmapInfo: MapInfo, calcParams: StarRatingCalculationParameters = { mods: [] }, calcResult?: StarRatingCalculationResult): Promise<MessageOptions> {
+    static async createBeatmapEmbed(beatmapInfo: MapInfo, calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]), calcResult?: StarRatingCalculationResult): Promise<MessageOptions> {
         if (!calcResult) {
             calcResult = (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
         }
@@ -172,8 +172,8 @@ export abstract class EmbedCreator {
                 `${map.showStatistics(5, mods, customStatistics)}\n**Result**: ${combo}/${map.maxCombo}x | ${(accuracy.value() * 100).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${accuracy.nmiss}]`
             )
             .addField(
-                `**Droid pp**: __${droidPP.total.toFixed(2)} pp__ - ${droidPP.stars.total.toFixed(2)} stars`,
-                `**PC pp**: ${pcPP.total.toFixed(2)} pp - ${pcPP.stars.total.toFixed(2)} stars`
+                `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated ? " (estimated)" : ""} - ${droidPP.stars.total.toFixed(2)} stars`,
+                `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
             );
 
         return {
@@ -305,7 +305,7 @@ export abstract class EmbedCreator {
             (await BeatmapDifficultyHelper.calculateBeatmapPerformance(challenge.hash))!;
 
         const embedOptions: MessageOptions =
-            await this.createBeatmapEmbed(calcResult.map, { mods: calcResult.osu.stars.mods });
+            await this.createBeatmapEmbed(calcResult.map, new StarRatingCalculationParameters(calcResult.osu.stars.mods));
 
         const droidCalc: DroidPerformanceCalculator = calcResult.droid;
         const osuCalc: OsuPerformanceCalculator = calcResult.osu;

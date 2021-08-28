@@ -1,9 +1,9 @@
 import { Accuracy, DroidPerformanceCalculator, MapInfo, MapStars, MapStats, Mod, ModUtil, OsuPerformanceCalculator, ReplayAnalyzer, Score } from "osu-droid";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
-import { PerformanceCalculationParameters } from "@alice-interfaces/utils/PerformanceCalculationParameters";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
-import { StarRatingCalculationParameters } from "@alice-interfaces/utils/StarRatingCalculationParameters";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 
 /**
  * A helper to calculate difficulty and performance of beatmaps or scores.
@@ -62,19 +62,18 @@ export abstract class BeatmapDifficultyHelper {
             isForceAR: !isNaN(<number> forceAR)
         });
 
-        return {
-            combo: combo,
-            accuracy: new Accuracy({
-                percent: accPercent,
+        return new PerformanceCalculationParameters(
+            mods,
+            new Accuracy({
                 n100: count100,
                 n50: count50,
-                nmiss: countMiss,
-                // Temporarily set to this (will be modified once calculateBeatmap() is called)
-                nobjects: Math.max(1, count100 + count50 + countMiss)
+                nmiss: countMiss
             }),
-            mods: mods,
-            customStatistics: stats
-        };
+            accPercent,
+            combo,
+            1,
+            stats
+        );
     }
 
     /**
@@ -96,13 +95,14 @@ export abstract class BeatmapDifficultyHelper {
             oldStatistics: (score.replay?.data?.replayVersion ?? 1) <= 3
         });
 
-        return {
-            combo: score.combo,
-            accuracy: score.accuracy,
-            mods: score.mods,
-            tapPenalty: score.replay?.tapPenalty,
-            customStatistics: stats
-        };
+        return new PerformanceCalculationParameters(
+            score.mods,
+            score.accuracy,
+            score.accuracy.value() * 100,
+            score.combo,
+            1,
+            stats
+        );
     }
 
     /**
@@ -150,22 +150,15 @@ export abstract class BeatmapDifficultyHelper {
         }
 
         if (!calculationParams) {
-            calculationParams = {
-                combo: beatmap.maxCombo,
-                accuracy: new Accuracy({
+            calculationParams = new PerformanceCalculationParameters(
+                [],
+                new Accuracy({
                     n300: beatmap.objects
                 }),
-                mods: []
-            };
+                100,
+                beatmap.maxCombo
+            );
         }
-
-        calculationParams.accuracy = new Accuracy({
-            n300: beatmap.objects - calculationParams.accuracy.n100 - calculationParams.accuracy.n50 - calculationParams.accuracy.nmiss,
-            n100: calculationParams.accuracy.n100,
-            n50: calculationParams.accuracy.n50,
-            nmiss: calculationParams.accuracy.nmiss,
-            nobjects: beatmap.objects
-        });
 
         return this.calculatePerformance(beatmap, calculationParams);
     }
@@ -214,6 +207,8 @@ export abstract class BeatmapDifficultyHelper {
      * @returns The calculation result.
      */
     private static calculateDifficulty(beatmap: MapInfo, calculationParams: StarRatingCalculationParameters): StarRatingCalculationResult {
+        calculationParams.applyFromBeatmap(beatmap);
+
         const star: MapStars = new MapStars().calculate({
             file: beatmap.osuFile,
             mods: calculationParams.mods,
@@ -236,6 +231,8 @@ export abstract class BeatmapDifficultyHelper {
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
     private static calculatePerformance(beatmap: MapInfo, calculationParams: PerformanceCalculationParameters, replay?: ReplayAnalyzer): PerformanceCalculationResult {
+        calculationParams.applyFromBeatmap(beatmap);
+
         const star: StarRatingCalculationResult = this.calculateDifficulty(beatmap, calculationParams);
 
         if (replay) {

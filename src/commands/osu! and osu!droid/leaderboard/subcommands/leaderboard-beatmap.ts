@@ -6,6 +6,7 @@ import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingC
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -116,7 +117,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const noModCalcResult: StarRatingCalculationResult | null =
             beatmapInfo ?
                 await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
-                    beatmapInfo.hash, { mods: [] }
+                    beatmapInfo.hash, new StarRatingCalculationParameters([])
                 )
                 :
                 null;

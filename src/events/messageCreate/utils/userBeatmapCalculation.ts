@@ -1,10 +1,10 @@
 import { Config } from "@alice-core/Config";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { PerformanceCalculationParameters } from "@alice-interfaces/utils/PerformanceCalculationParameters";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
