@@ -5,6 +5,7 @@ import { Manager } from "@alice-utils/base/Manager";
 import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from "canvas";
+import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 
 /**
  * A manager for beatmaps.
@@ -235,8 +236,14 @@ export abstract class BeatmapManager extends Manager {
         return canvas.toBuffer();
     }
 
+    /**
+     * Gets a color representing a difficulty value.
+     * 
+     * @param rating The difficulty value.
+     * @returns The color in hex code.
+     */
     static getBeatmapDifficultyColor(rating: number): string {
-        return rating >= 8 ? "#000000" : this.difficultyColorSpectrum(rating);
+        return rating >= 8 ? "#000000" : HelperFunctions.rgbToHex(this.difficultyColorSpectrum(rating));
     }
 
     /**
