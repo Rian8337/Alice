@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (interaction.options.getSubcommandGroup()) {
+    if (interaction.options.getSubcommandGroup(false)) {
         CommandHelper.runSubcommandGroup(interaction);
     } else {
         CommandHelper.runSubcommandFromInteraction(interaction);

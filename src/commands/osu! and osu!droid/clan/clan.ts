@@ -1,11 +1,9 @@
 import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { clanStrings } from "./clanStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -15,7 +13,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    if (interaction.options.getSubcommandGroup()) {
+    if (interaction.options.getSubcommandGroup(false)) {
         CommandHelper.runSubcommandGroup(interaction);
     } else {
         CommandHelper.runSubcommandFromInteraction(interaction);
