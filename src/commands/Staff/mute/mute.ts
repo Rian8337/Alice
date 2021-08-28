@@ -25,6 +25,12 @@ export const config: Command["config"] = {
                     description: "The user to mute."
                 },
                 {
+                    name: "duration",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The duration to mute for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Minimum is 30 seconds."
+                },
+                {
                     name: "reason",
                     required: true,
                     type: CommandArgumentType.STRING,
@@ -42,12 +48,6 @@ export const config: Command["config"] = {
                     required: true,
                     type: CommandArgumentType.USER,
                     description: "The user to mute."
-                },
-                {
-                    name: "duration",
-                    required: true,
-                    type: CommandArgumentType.STRING,
-                    description: "The duration to mute for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Minimum is 30 seconds."
                 },
                 {
                     name: "reason",
