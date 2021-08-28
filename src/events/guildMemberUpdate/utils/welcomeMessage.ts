@@ -1,4 +1,4 @@
-import { GuildChannel, GuildMember, Role, ThreadChannel } from "discord.js";
+import { GuildChannel, GuildMember, ThreadChannel } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 
@@ -13,13 +13,7 @@ export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember
         return;
     }
 
-    const role: Role | undefined = newMember.guild.roles.cache.find(r => r.name === "Member");
-
-    if (!role) {
-        return;
-    }
-
-    if (!oldMember.roles.cache.has(role.id) && newMember.roles.cache.has(role.id)) {
+    if (!oldMember.roles.cache.find(r => r.name === "Member") && newMember.roles.cache.find(r => r.name === "Member")) {
         general.send({ content: `Welcome to ${newMember.guild.name}, ${newMember}!`, files: [ Constants.welcomeImageLink ] });
     }
 };
