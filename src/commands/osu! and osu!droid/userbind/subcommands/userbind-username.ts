@@ -24,10 +24,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
+    const userBindInfo: UserBind | null = await dbManager.getFromUser(interaction.user);
+
     const player: Player = await Player.getInformation({ username: username });
 
-    if (usernameBindInfo) {
-        if (!usernameBindInfo.isUidBinded(player.uid)) {
+    if (userBindInfo) {
+        if (!userBindInfo.isUidBinded(player.uid)) {
             // Binding a new account must be done inside main server
             const mainServer: Guild = await client.guilds.fetch(Constants.mainServer);
 
@@ -61,7 +63,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
         }
 
-        const result: DatabaseOperationResult = await usernameBindInfo.bind(player);
+        const result: DatabaseOperationResult = await userBindInfo.bind(player);
 
         if (!result.success) {
             return interaction.editReply({
@@ -69,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
 
-        if (usernameBindInfo.isUidBinded(player.uid)) {
+        if (userBindInfo.isUidBinded(player.uid)) {
             interaction.editReply({
                 content: MessageCreator.createAccept(
                     userbindStrings.oldAccountBindSuccessful,
@@ -83,8 +85,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     userbindStrings.newAccountBindSuccessful,
                     "username",
                     player.username,
-                    (1 - usernameBindInfo.previous_bind.length).toString(),
-                    1 - usernameBindInfo.previous_bind.length !== 1 ? "s" : ""
+                    (1 - userBindInfo.previous_bind.length).toString(),
+                    1 - userBindInfo.previous_bind.length !== 1 ? "s" : ""
                 )
             });
         }
