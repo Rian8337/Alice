@@ -191,7 +191,7 @@ export const config: Command["config"] = {
             description: "will compare the score of Rian8337."
         }
     ],
-    permissions: ["BOT_OWNER"],
+    permissions: [],
     replyEphemeral: true,
     scope: "GUILD_CHANNEL"
 };
