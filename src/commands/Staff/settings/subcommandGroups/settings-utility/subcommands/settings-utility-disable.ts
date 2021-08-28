@@ -34,8 +34,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createReject(settingsStrings.eventUtilityNotFound)
         });
     }
-    
-    if (CommandHelper.userFulfillsCommandPermission(interaction, util.config.togglePermissions)) {
+
+    if (!CommandHelper.userFulfillsCommandPermission(interaction, util.config.togglePermissions)) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.noPermissionReject)
         });
