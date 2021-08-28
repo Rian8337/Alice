@@ -114,7 +114,7 @@ export abstract class MuteManager extends PunishmentManager {
         });
 
         // Check if the user is already muted via role
-        if (member.roles.resolve(muteRole)) {
+        if (member.roles.cache.has(muteRole.id)) {
             return this.createOperationResult(false, "The user is already muted");
         }
 
@@ -213,7 +213,7 @@ export abstract class MuteManager extends PunishmentManager {
             return this.createOperationResult(false, "Unable to find mute role in the server");
         }
 
-        if (!member.roles.resolve(muteRole)) {
+        if (!member.roles.cache.has(muteRole.id)) {
             return this.createOperationResult(false, "The user is already muted");
         }
 
@@ -305,7 +305,7 @@ export abstract class MuteManager extends PunishmentManager {
         let maxDuration: number = Number.NEGATIVE_INFINITY;
 
         for await (const allowedMuteRole of allowedMuteRoles.values()) {
-            if (!member.roles.resolve(allowedMuteRole.id)) {
+            if (!member.roles.cache.has(allowedMuteRole.id)) {
                 continue;
             }
 
@@ -341,15 +341,7 @@ export abstract class MuteManager extends PunishmentManager {
             return false;
         }
 
-        const immuneMuteRoles: Snowflake[] = guildConfig.immuneMuteRoles;
-
-        for (const immuneMuteRole of immuneMuteRoles) {
-            if (member.roles.resolve(immuneMuteRole)) {
-                return true;
-            }
-        }
-
-        return false;
+        return member.roles.cache.hasAny(...guildConfig.immuneMuteRoles);
     }
 
     /**

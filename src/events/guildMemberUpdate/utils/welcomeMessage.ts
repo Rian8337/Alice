@@ -19,7 +19,7 @@ export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember
         return;
     }
 
-    if (!oldMember.roles.resolve(role) && newMember.roles.resolve(role)) {
+    if (!oldMember.roles.cache.has(role.id) && newMember.roles.cache.has(role.id)) {
         general.send({ content: `Welcome to ${newMember.guild.name}, ${newMember}!`, files: [ Constants.welcomeImageLink ] });
     }
 };

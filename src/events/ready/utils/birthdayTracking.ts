@@ -15,7 +15,7 @@ export const run: EventUtil["run"] = async (client) => {
 
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-        const role: Role|null = guild.roles.resolve("695201338182860860");
+        const role: Role | undefined = guild.roles.cache.get("695201338182860860");
 
         if (!role) {
             clearInterval(interval);
