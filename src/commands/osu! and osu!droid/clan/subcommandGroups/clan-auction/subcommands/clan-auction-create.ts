@@ -63,11 +63,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (!NumberHelper.isNumberInRange(amount, 1, clan.powerups.get(powerup)!.amount, true)) {
+    if (!NumberHelper.isNumberInRange(amount, 1, (clan.powerups.get(powerup)?.amount ?? 0), true)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
                 clanStrings.clanAuctionAmountOutOfBounds,
-                clan.powerups.get(powerup)!.amount.toLocaleString()
+                (clan.powerups.get(powerup)?.amount ?? 0).toLocaleString()
             )
         });
     }

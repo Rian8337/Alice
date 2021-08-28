@@ -11,7 +11,7 @@ export const category: Command["category"] = CommandCategory.STAFF;
 
 export const config: Command["config"] = {
     name: "settings",
-    description: "Customizes my behavior in a server or channel.\n\nEach subcommand's permission is different.",
+    description: "Customizes my behavior in a server or channel.",
     options: [
         {
             name: "command",

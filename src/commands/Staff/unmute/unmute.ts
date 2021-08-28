@@ -34,7 +34,7 @@ export const category: Command["category"] = CommandCategory.STAFF;
 
 export const config: Command["config"] = {
     name: "unmute",
-    description: `Unmutes a user.\n\nThis command has a special permission that can be configured using the /settings command.`,
+    description: `Unmutes a user. This command's permission can be configured using the /settings command.`,
     options: [
         {
             name: "user",

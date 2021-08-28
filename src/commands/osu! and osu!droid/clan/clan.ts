@@ -111,13 +111,7 @@ export const config: Command["config"] = {
                             name: "powerup",
                             required: true,
                             type: CommandArgumentType.STRING,
-                            description: "The powerup to be auctioned.",
-                            choices: DatabaseManager.elainaDb.collections.clan.defaultDocument.powerups.map(p => {
-                                return {
-                                    name: StringHelper.capitalizeString(p.name),
-                                    value: p.name
-                                };
-                            })
+                            description: "The powerup to be auctioned."
                         },
                         {
                             name: "amount",
@@ -494,13 +488,7 @@ export const config: Command["config"] = {
                             name: "name",
                             required: true,
                             type: CommandArgumentType.STRING,
-                            description: "The name of the powerup.",
-                            choices: DatabaseManager.elainaDb.collections.clan.defaultDocument.powerups.map(p => {
-                                return {
-                                    name: StringHelper.capitalizeString(p.name),
-                                    value: p.name
-                                };
-                            })
+                            description: "The name of the powerup."
                         }
                     ]
                 },

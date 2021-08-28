@@ -21,7 +21,7 @@ export const config: Command["config"] = {
         {
             name: "end",
             type: CommandArgumentType.SUB_COMMAND,
-            description: "Ends the ongoing vote in the channel. Only the initiator and users with \"Manage Channels\" permission can end a vote."
+            description: "Ends the ongoing vote in the channel."
         },
         {
             name: "contribute",

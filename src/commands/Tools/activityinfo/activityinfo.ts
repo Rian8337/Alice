@@ -211,7 +211,7 @@ export const config: Command["config"] = {
         {
             name: "date",
             type: CommandArgumentType.STRING,
-            description: "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current UTC date, month, and year."
+            description: "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time."
         }
     ],
     example: [

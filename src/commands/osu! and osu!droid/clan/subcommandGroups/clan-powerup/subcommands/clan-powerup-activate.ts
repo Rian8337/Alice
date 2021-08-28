@@ -53,9 +53,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const powerup: Powerup = clan.powerups.get(powerupType)!;
+    const powerup: Powerup | undefined = clan.powerups.get(powerupType);
 
-    if (powerup.amount === 0) {
+    if (!powerup || powerup.amount === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(clanStrings.clanDoesntHavePowerup)
         });

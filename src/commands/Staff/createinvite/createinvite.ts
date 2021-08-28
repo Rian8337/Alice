@@ -9,7 +9,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("duration", true));
+    const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("validduration", true));
 
     if (!NumberHelper.isNumeric(maxAge) || maxAge < 0) {
         return interaction.editReply({
@@ -52,10 +52,10 @@ export const config: Command["config"] = {
     description: "Creates an invite link to the channel.",
     options: [
         {
-            name: "duration",
+            name: "validduration",
             required: true,
             type: CommandArgumentType.STRING,
-            description: "The duration the invite link will be valid for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Set to 0 for never expire."
+            description: "In time format (e.g. 6:01:24:33 or 2d14h55m34s). Set to 0 for never expire."
         },
         {
             name: "usage",

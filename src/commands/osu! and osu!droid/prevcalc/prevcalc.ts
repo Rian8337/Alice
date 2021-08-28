@@ -57,13 +57,14 @@ export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
     name: "manualcalc",
-    description: "Calculates the latest cached beatmap in the channel, if any.",
+    // TODO: add calculation parameters in description
+    description: "Calculates the difficulty and performance value latest cached beatmap in the channel, if any.",
     options: [
         {
             name: "calcparams",
             type: CommandArgumentType.STRING,
             description:
-                "Calculation parameters [(+<mod>) (<combo>x) (<acc>%) (<x100>x100) (<x50>x50) (<miss>m) (AR<ar>) (<speed>x) (-d) (-p)]."// +
+                "Calculation parameters."// +
                 // "- `mod`: Applied game modifications (HD, HR, etc). Defaults to No Mod.\n" +
                 // "- `combo`: Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to the beatmap's maximum combo.\n" +
                 // "- `acc`: Accuracy gained. Must be between 0 and 100. Defaults to 100.\n" +

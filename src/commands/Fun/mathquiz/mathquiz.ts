@@ -112,7 +112,7 @@ export const category: Command["category"] = CommandCategory.FUN;
 
 export const config: Command["config"] = {
     name: "mathquiz",
-    description: "Creates a simple math equation that you have to solve within 30 seconds.\n\nFor reference:\n+: addition\n-: subtraction\n*: multiplication\n/: division\n!: factorial\nOperator precedence: Multiplication/division, addition/subtraction",
+    description: "Creates a simple math equation that you have to solve within 30 seconds.",
     options: [
         {
             name: "difflevel",

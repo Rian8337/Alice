@@ -201,7 +201,7 @@ export const category: Command["category"] = CommandCategory.FUN;
 
 export const config: Command["config"] = {
     name: "mathgame",
-    description: "A math game! Creates a simple math equation that you have to solve within 30 seconds. If not answered, the game will end. The equation goes more difficult as time progresses.\n\nFor reference:\n+: addition\n-: subtraction\n*: multiplication\n/: division\n!: factorial\nOperator precedence: Multiplication/division, addition/subtraction",
+    description: "A math game! Creates a simple math equation that you have to solve within 30 seconds.",
     options: [
         {
             name: "mode",

@@ -35,7 +35,7 @@ export const category: Command["category"] = CommandCategory.STAFF;
 
 export const config: Command["config"] = {
     name: "verify",
-    description: "Verifies a user.\n\nThis command uses a special permission that cannot be modified.",
+    description: "Verifies a user. This command uses a special permission that cannot be modified.",
     options: [
         {
             name: "user",
