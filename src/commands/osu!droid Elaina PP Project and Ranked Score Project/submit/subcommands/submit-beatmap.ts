@@ -153,10 +153,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(
-            submitStrings.submitSuccessful,
-            interaction.user.toString()
-        ),
+        content: MessageCreator.createAccept(submitStrings.submitSuccessful),
         embeds: [embed]
     });
 };
