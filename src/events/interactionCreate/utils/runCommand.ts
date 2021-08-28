@@ -65,8 +65,8 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
         });
     }
 
-    const subcommandGroup: Subcommand | undefined = CommandHelper.getSubcommand(interaction);
-    const subcommand: Subcommand | undefined = CommandHelper.getSubcommandGroup(interaction);
+    const subcommand: Subcommand | undefined = CommandHelper.getSubcommand(interaction);
+    const subcommandGroup: Subcommand | undefined = CommandHelper.getSubcommandGroup(interaction);
 
     // Command cooldown
     if (!botOwnerExecution) {
