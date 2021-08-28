@@ -18,12 +18,15 @@ export abstract class DateTimeFormatHelper {
         let minutes = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
-        return [
+        const final: string[] = [
             days.toString().padStart(2, "0"),
             hours.toString().padStart(2, "0"),
             minutes.toString().padStart(2, "0"),
             seconds.toString().padStart(2, "0")
-        ].filter(v => v !== "00").join(":");
+        ];
+
+        // Truncate 00s
+        return final.splice(Math.max(0, final.findIndex(v => v !== "00") - 1)).join(":");
     }
 
     /**
