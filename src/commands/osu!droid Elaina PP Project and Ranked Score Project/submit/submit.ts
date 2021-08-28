@@ -79,6 +79,6 @@ export const config: Command["config"] = {
         }
     ],
     permissions: [],
-    cooldown: 10,
+    cooldown: 5,
     scope: "GUILD_CHANNEL"
 };
