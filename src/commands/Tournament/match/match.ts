@@ -9,6 +9,7 @@ import { GuildMember, Snowflake } from "discord.js";
 export const run: Command["run"] = async (_, interaction) => {
     const whitelistedGuilds: Snowflake[] = [
         Constants.mainServer,
+        Constants.testingServer,
         "526214018269184001"
     ];
 
