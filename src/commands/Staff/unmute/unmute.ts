@@ -10,7 +10,7 @@ import { unmuteStrings } from "./unmuteStrings";
 export const run: Command["run"] = async(_, interaction) => {
     const toUnmute: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
 
-    if (await MuteManager.userCanMute(<GuildMember> interaction.member, 1)) {
+    if (await MuteManager.userCanMute(<GuildMember> interaction.member, Number.POSITIVE_INFINITY)) {
         return interaction.editReply({
             content: MessageCreator.createReject(unmuteStrings.userCannotUnmuteError)
         });
