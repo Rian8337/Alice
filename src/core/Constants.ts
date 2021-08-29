@@ -62,7 +62,6 @@ export class Constants {
     /**
      * The link to Alice coin emoji image.
      */
-    
     static readonly aliceCoinImage: string = "https://cdn.discordapp.com/emojis/669532330980802561.png";
 
     /**
