@@ -4,7 +4,6 @@
 export enum profileStrings {
     profileNotFound = "I'm sorry, I cannot find %s profile!",
     viewingProfile = "osu!droid profile for %s:\n<%s>",
-    bindInfo = "%s is %s.",
     infoBoxColorInfo = "Your information box %s is \`%s\`.",
     invalidRGBAformat = "I'm sorry, that's an invalid RGBA color format!",
     invalidHexCode = "I'm sorry, that's an invalid hex code!",

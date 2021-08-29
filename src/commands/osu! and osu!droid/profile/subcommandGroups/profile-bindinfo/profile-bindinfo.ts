@@ -1,10 +1,12 @@
-import { Snowflake } from "discord.js";
+import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { profileStrings } from "../../profileStrings";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { Player } from "osu-droid";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
@@ -13,43 +15,60 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 
-    let bindInfo: UserBind | null;
+    let bindInfo: UserBind | null | undefined;
+
+    let player: Player | undefined;
 
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!);
+            player = await Player.getInformation({ uid: uid! });
+            if (player.uid) {
+                bindInfo = await dbManager.getFromUid(player.uid);
+            }
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!);
+            player = await Player.getInformation({ username: username! });
+            if (player.uid) {
+                bindInfo = await dbManager.getFromUid(player.uid);
+            }
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
+            if (bindInfo?.uid) {
+                player = await Player.getInformation({ uid: bindInfo?.uid! });
+            }
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
+            if (bindInfo?.uid) {
+                player = await Player.getInformation({ uid: bindInfo?.uid! });
+            }
     }
 
-    if (username) {
+    if (!player) {
         return interaction.editReply({
-            content: MessageCreator.createAccept(
-                profileStrings.bindInfo, `Username ${username}`, bindInfo ? `binded to user ID ${bindInfo.discordid}` : "not binded"
-            )
+            content: MessageCreator.createReject(profileStrings.profileNotFound)
         });
     }
 
-    if (uid) {
-        return interaction.editReply({
-            content: MessageCreator.createAccept(
-                profileStrings.bindInfo, `Uid ${uid}`, bindInfo ? `binded to user ID ${bindInfo.discordid}` : "not binded"
-            )
-        });
-    }
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+        { color: (<GuildMember> interaction.member).displayColor }
+    );
+
+    embed.setAuthor(`Player Information for ${username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${uid}`)
+        .setThumbnail(player.avatarURL)
+        .setDescription(
+            `[Avatar Link](${player.avatarURL})\n\n` +
+            `**Uid**: ${uid}\n` +
+            `**Rank**: ${player.rank.toLocaleString()}\n` +
+            `**Play Count**: ${player.playCount.toLocaleString()}\n` + 
+            `**Country**: ${player.location}\n\n` + 
+            `**Bind Information**: ${bindInfo ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})` : "Not binded"}`
+        );
 
     interaction.editReply({
-        content: MessageCreator.createAccept(
-            profileStrings.bindInfo, `User ID ${discordid}`, bindInfo ? "binded" : "not binded"
-        )
+        embeds: [ embed ]
     });
 };
 
