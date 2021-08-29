@@ -55,13 +55,12 @@ function endGame(interaction: CommandInteraction, mode: MathGameType, gameStats:
 
     embed.setTitle("Math Game Statistics")
         .setDescription(
-            `**Game starter**: ${interaction.user}
-            **Time started**: ${interaction.createdAt.toUTCString()}
-            **Duration**: ${DateTimeFormatHelper.secondsToDHMS(Math.floor((Date.now() - interaction.createdTimestamp) / 1000))}
-            **Level reached**: Operator count ${operatorCount}, level ${level}
-
-            **Total correct answers**: ${totalAnswers} ${totalAnswers === 1 ? "answer" : "answers"}
-            ${answerString}`
+            `**Game starter**: ${interaction.user}\n` +
+            `**Time started**: ${interaction.createdAt.toUTCString()}\n` +
+            `**Duration**: ${DateTimeFormatHelper.secondsToDHMS(Math.floor((Date.now() - interaction.createdTimestamp) / 1000))}\n` +
+            `**Level reached**: Operator count ${operatorCount}, level ${level}\n\n` +
+            `**Total correct answers**: ${totalAnswers} ${totalAnswers === 1 ? "answer" : "answers"}\n` +
+            answerString
         );
 
     activeUsersOrChannels.delete(mode === "single" ? interaction.user.id : interaction.channel!.id);
