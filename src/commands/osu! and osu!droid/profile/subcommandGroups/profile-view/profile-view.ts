@@ -12,38 +12,40 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
-    let uid: number | null = interaction.options.getInteger("uid");
+    let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 
-    let bindInfo: UserBind | null;
+    let bindInfo: UserBind | null | undefined;
+
+    let player: Player | undefined;
 
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!);
+            player = await Player.getInformation({ uid: uid! });
+            uid = player.uid;
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!);
+            player = await Player.getInformation({ username: username! });
+            uid = player.uid;
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
+            uid = bindInfo?.uid;
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
+            uid = bindInfo?.uid;
     }
 
     if (!uid) {
-        if (!bindInfo) {
-            return interaction.editReply({
-                content: MessageCreator.createReject(
-                    uid || username || discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
-                )
-            });
-        }
-
-        uid = bindInfo.uid;
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                uid || username || discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
+            )
+        });
     }
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
@@ -65,7 +67,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         20
     ))[0];
 
-    const player: Player = await Player.getInformation({ uid: uid });
+    if (!player) {
+        player = await Player.getInformation({ uid: uid });
+    }
 
     if (!player.username) {
         return interaction.editReply({
