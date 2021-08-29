@@ -1,4 +1,4 @@
-import { Guild, GuildChannel, TextChannel, User } from "discord.js";
+import { GuildBan, GuildChannel, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
@@ -6,30 +6,30 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 
-export const run: EventUtil["run"] = async (_, guild: Guild, user: User) => {
-    if (guild.id !== Constants.mainServer) {
+export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
+    if (guildBan.guild.id !== Constants.mainServer) {
         return;
     }
 
-    const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(guild.id);
+    const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(guildBan.guild);
 
     if (!guildConfig) {
         return;
     }
 
-    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(guild);
+    const logChannel: GuildChannel | null = guildConfig.getGuildLogChannel(guildBan.guild);
 
     if (!(logChannel instanceof TextChannel)) {
         return;
     }
 
-    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(user);
+    const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(guildBan.user);
 
     if (!bindInfo) {
         return;
     }
 
-    await DatabaseManager.elainaDb.collections.userBind.delete({ discordid: user.id });
+    await DatabaseManager.elainaDb.collections.userBind.delete({ discordid: guildBan.user.id });
 
     await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: { $in: bindInfo.previous_bind } });
 
