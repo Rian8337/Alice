@@ -60,7 +60,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createReject(
+        content: MessageCreator.createAccept(
             settingsStrings.eventUtilityToggleSuccess, "disabled", utility, event
         )
     });
