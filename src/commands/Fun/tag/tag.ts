@@ -192,6 +192,5 @@ export const config: Command["config"] = {
         }
     ],
     permissions: [],
-    replyEphemeral: true,
     scope: "GUILD_CHANNEL"
 };
