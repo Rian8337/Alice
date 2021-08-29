@@ -36,7 +36,7 @@ export abstract class Config {
     ];
 
     static readonly verifyPerm: Snowflake[] = [
-        "529313445074698261", "369108742077284353"
+        "369108742077284353", "595667274707370024"
     ];
 
     static readonly ppChannel: Snowflake[] = [
