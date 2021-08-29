@@ -1,9 +1,10 @@
 import { Message, MessageEmbed, MessageMentions, Role, TextChannel, User } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { Constants } from "@alice-core/Constants";
 
 export const run: EventUtil["run"] = async (client, message: Message) => {
-    if (message.author.bot || (message.mentions.users.size === 0 && message.mentions.roles.size === 0)) {
+    if (message.author.bot || (message.mentions.users.size === 0 && message.mentions.roles.size === 0) || message.guildId !== Constants.mainServer) {
         return;
     }
 
