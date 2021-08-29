@@ -123,7 +123,7 @@ export const run: Command["run"] = async (client, interaction) => {
     let languageDescription: string = "";
 
     for await (const [id, count] of sortedChannelData) {
-        const channel: GuildChannel | null = await guild.channels.fetch(id);
+        const channel: GuildChannel | null | void = await guild.channels.fetch(id).catch(() => {});
 
         if (!channel) {
             continue;
