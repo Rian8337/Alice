@@ -117,7 +117,7 @@ export abstract class EmbedCreator {
         }
 
         embed.setDescription(
-            `**PP Profile for ${interaction.user} (${bindInfo.username})**\n` +
+            `**PP Profile for <@${bindInfo.discordid}> (${bindInfo.username})**\n` +
             `Total PP: **${bindInfo.pptotal.toFixed(2)} pp (#${ppRank.toLocaleString()})**\n` +
             `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${bindInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${bindInfo.uid})`
         );
