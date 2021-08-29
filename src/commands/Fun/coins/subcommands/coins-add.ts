@@ -9,7 +9,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.noPermissionReject)
