@@ -110,12 +110,12 @@ export const config: Command["config"] = {
         {
             name: "uid",
             type: CommandArgumentType.INTEGER,
-            description: "The uid of the osu!droid account."
+            description: "The uid of the player."
         },
         {
             name: "username",
             type: CommandArgumentType.STRING,
-            description: "The username of the osu!droid account."
+            description: "The username of the player."
         },
         {
             name: "index",
