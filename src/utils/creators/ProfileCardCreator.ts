@@ -130,6 +130,9 @@ export class ProfileCardCreator {
         await this.writePlayerProfile();
     }
 
+    /**
+     * Draws the description box area of the profile card.
+     */
     private async drawDescriptionBox(): Promise<void> {
         if (!this.detailed && !this.template) {
             return;
@@ -175,8 +178,6 @@ export class ProfileCardCreator {
      */
     private async drawFlag(): Promise<void> {
         this.context.save();
-
-        this.context.globalAlpha = 1;
 
         try {
             const flagPath: string = `${process.cwd()}/files/flags/${this.player.location}.png`;
@@ -239,7 +240,7 @@ export class ProfileCardCreator {
         // Outer box
         this.context.globalAlpha = 0.9;
         this.context.fillStyle = '#cccccc';
-        if (this.detailed) {
+        if (this.detailed || this.template) {
             this.context.fillRect(77, 206, 405, 30);
         } else {
             this.context.fillRect(215, 152, 267, 30);
@@ -247,19 +248,20 @@ export class ProfileCardCreator {
 
         // Inner box
         this.context.fillStyle = "#979797";
-        if (this.detailed) {
+        if (this.detailed || this.template) {
             this.context.fillRect(79, 208, 401, 26);
         } else {
             this.context.fillRect(217, 154, 263, 26);
         }
 
+        this.context.globalAlpha = 1;
+
         // Level progress
         if (this.rankedScoreInfo) {
             const progress: number = this.rankedScoreInfo.level - Math.floor(this.rankedScoreInfo.level);
             if (progress > 0) {
-                this.context.globalAlpha = 1;
                 this.context.fillStyle = "#e1c800";
-                if (this.detailed) {
+                if (this.detailed || this.template) {
                     this.context.fillRect(79, 208, progress * 401, 26);
                 } else {
                     this.context.fillRect(217, 154, progress * 263, 26);
@@ -270,7 +272,7 @@ export class ProfileCardCreator {
         // Level text
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
-        this.context.fillStyle = this.playerInfo?.picture_config?.textColor ?? "#000000";
+        this.context.fillStyle = this.playerInfo?.picture_config.textColor ?? "#000000";
         const rankedScoreLevel: number = this.rankedScoreInfo?.level ?? 1;
         if (this.detailed || this.template) {
             this.context.font = "19px Exo";
@@ -345,7 +347,7 @@ export class ProfileCardCreator {
         this.context.save();
 
         this.context.globalAlpha = 0.85;
-        this.context.fillStyle = this.playerInfo?.picture_config?.bgColor ?? "rgb(0, 139, 255)";
+        this.context.fillStyle = this.playerInfo?.picture_config.bgColor ?? "rgb(0, 139, 255)";
         this.context.fillRect(9, 197, 482, 294);
 
         this.context.restore();
@@ -360,8 +362,9 @@ export class ProfileCardCreator {
         this.context.globalAlpha = 0.6;
         this.context.fillStyle = "#b9a29b";
         this.context.fillRect(15, 312, 470, 170);
+        this.context.globalAlpha = 1;
 
-        const badges: (PartialProfileBackground | null)[] = this.playerInfo?.picture_config?.activeBadges ?? [];
+        const badges: (PartialProfileBackground | null)[] = this.playerInfo?.picture_config.activeBadges ?? [];
 
         for (let i = 0; i < badges.length; ++i) {
             const profileBadge: PartialProfileBackground | null = badges[i];
@@ -392,7 +395,7 @@ export class ProfileCardCreator {
         this.context.fillRect(15, 312, 470, 170);
 
         this.context.textAlign = "center";
-        this.context.globalAlpha = 0.7;
+        this.context.globalAlpha = 1;
         this.context.fillStyle = "#000000";
         this.context.beginPath();
         this.context.moveTo(15, 397);
@@ -406,6 +409,8 @@ export class ProfileCardCreator {
         this.context.stroke();
 
         this.context.font = "bold 12px Exo";
+        this.context.textAlign = "center";
+        this.context.textBaseline = "middle";
 
         for (let i = 0; i < 10; ++i) {
             if (i / 5 < 1) {
@@ -424,11 +429,10 @@ export class ProfileCardCreator {
     private async drawAliceCoinsInformation(): Promise<void> {
         this.context.save();
 
-        this.context.globalAlpha = 1;
         const coinImage: Image = await loadImage(Constants.aliceCoinImage);
+
         this.context.drawImage(coinImage, 15, 255, 50, 50);
 
-        this.context.textAlign = "left";
         this.context.fillText(`${(this.playerInfo?.alicecoins ?? 0).toLocaleString()} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString()} Challenge Points`, 75, 280);
 
         this.context.restore();
