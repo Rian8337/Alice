@@ -100,19 +100,19 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "recent5 self",
+            command: "recent5",
             description: "will display your 50 most recent plays."
         },
         {
-            command: "recent5 uid 51076",
+            command: "recent5 uid:51076",
             description: "will display the 50 most recent plays of an osu!droid account with uid 51076."
         },
         {
-            command: "recent5 username NeroYuki",
+            command: "recent5 username:NeroYuki",
             description: "will display the 50 most recent plays of an osu!droid account with username NeroYuki."
         },
         {
-            command: "recent5 user @Rian8337#0001",
+            command: "recent5 user:@Rian8337#0001",
             description: "will display the 50 most recent plays of Rian8337."
         }
     ],
