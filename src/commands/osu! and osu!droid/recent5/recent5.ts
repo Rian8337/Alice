@@ -95,7 +95,7 @@ export const config: Command["config"] = {
         {
             name: "username",
             type: CommandArgumentType.STRING,
-            description: "The username of the osu!droid account."
+            description: "The username of the player."
         }
     ],
     example: [
