@@ -45,6 +45,22 @@ export abstract class CommandHelper extends Manager {
     }
 
     /**
+     * Runs a subcommand or subcommand group that is directly picked
+     * by the user via an interaction.
+     * 
+     * Use this if a command has both subcommands and subcommand groups.
+     * 
+     * @param interaction The interaction that triggered the subcommand or subcommand group.
+     */
+    static runSubcommandOrGroup(interaction: CommandInteraction): Promise<any> {
+        if (interaction.options.getSubcommandGroup(false)) {
+            return this.runSubcommandGroup(interaction);
+        } else {
+            return this.runSubcommandFromInteraction(interaction);
+        }
+    }
+
+    /**
      * Runs a subcommand that is directly picked by the user via an interaction.
      * 
      * @param interaction The interaction that triggered the subcommand.
