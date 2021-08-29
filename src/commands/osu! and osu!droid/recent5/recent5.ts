@@ -1,61 +1,90 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
+import { Snowflake } from "discord.js";
+import { Player } from "osu-droid";
+import { recent5Strings } from "./recent5Strings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    if (interaction.options.data.length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(recent5Strings.tooManyOptions)
+        });
+    }
+
+    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const username: string | null = interaction.options.getString("username");
+
+    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+
+    let bindInfo: UserBind | null | undefined;
+
+    let player: Player | undefined;
+
+    switch (true) {
+        case !!uid:
+            player = await Player.getInformation({ uid: uid! });
+            uid = player.uid;
+            break;
+        case !!username:
+            player = await Player.getInformation({ username: username! });
+            uid = player.uid;
+            break;
+        case !!discordid:
+            bindInfo = await dbManager.getFromUser(discordid!);
+            uid = bindInfo?.uid;
+            break;
+        default:
+            // If no arguments are specified, default to self
+            bindInfo = await dbManager.getFromUser(interaction.user);
+            uid = bindInfo?.uid;
+    }
+
+    if (!player) {
+        player = await Player.getInformation({ uid: uid });
+    }
+
+    if (!player.username) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(recent5Strings.playerNotFound)
+        });
+    }
+
+    if (player.recentPlays.length === 0) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(recent5Strings.playerHasNoRecentPlays)
+        });
+    }
+
+    ScoreDisplayHelper.showRecentPlays(interaction, player);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
     name: "recent5",
-    description: "Displays the 50 most recent plays of a player.",
+    description: "Displays the 50 most recent plays of yourself or a player.",
     options: [
         {
             name: "user",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Displays the 50 most recent plays of a player.",
-            options: [
-                {
-                    name: "user",
-                    required: true,
-                    type: CommandArgumentType.USER,
-                    description: "The Discord user to show."
-                }
-            ]
+            type: CommandArgumentType.USER,
+            description: "The Discord user to show."
         },
         {
             name: "uid",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Displays the 50 most recent plays of an osu!droid account from its uid.",
-            options: [
-                {
-                    name: "uid",
-                    required: true,
-                    type: CommandArgumentType.INTEGER,
-                    description: "The uid of the osu!droid account."
-                }
-            ]
+            type: CommandArgumentType.INTEGER,
+            description: "The uid of the player."
         },
         {
             name: "username",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Displays the 50 most recent plays of an osu!droid from its username.",
-            options: [
-                {
-                    name: "username",
-                    required: true,
-                    type: CommandArgumentType.STRING,
-                    description: "The username of the osu!droid account."
-                }
-            ]
-        },
-        {
-            name: "self",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Displays your 50 most recent plays."
+            type: CommandArgumentType.STRING,
+            description: "The username of the osu!droid account."
         }
     ],
     example: [
