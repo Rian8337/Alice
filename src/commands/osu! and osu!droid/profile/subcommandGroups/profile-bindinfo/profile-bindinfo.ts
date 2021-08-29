@@ -56,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { color: (<GuildMember> interaction.member).displayColor }
     );
 
-    embed.setAuthor(`Player Information for ${username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${uid}`)
+    embed.setAuthor(`Player Information for ${player.username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${uid}`)
         .setThumbnail(player.avatarURL)
         .setDescription(
             `[Avatar Link](${player.avatarURL})\n\n` +
