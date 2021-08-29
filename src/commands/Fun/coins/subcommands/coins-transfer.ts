@@ -101,7 +101,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         {
             content: MessageCreator.createWarn(
                 coinsStrings.coinTransferConfirmation,
-                interaction.user.toString(),
                 transferAmount.toLocaleString(),
                 toTransferGuildMember.toString()
             )
