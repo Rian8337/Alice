@@ -7,7 +7,7 @@ export const run: EventUtil["run"] = async (_, oldMessage: Message, newMessage: 
         return;
     }
 
-    const logChannel: GuildChannel | ThreadChannel | undefined = oldMessage.guild!.channels.cache.find(c => c.id === "643770576238018570");
+    const logChannel: GuildChannel | ThreadChannel | undefined = newMessage.guild?.channels.cache.find(c => c.id === "643770576238018570");
 
     if (!logChannel?.isText()) {
         return;
