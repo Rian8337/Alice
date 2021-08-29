@@ -47,6 +47,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const team2PlayersInformation: RegExpMatchArray = team2Players.match(splitRegex) ?? [];
 
+    console.log(team1PlayersInformation);
+
+    console.log(team2PlayersInformation);
+
     // Ensure the player difference between both teams don't exceed 1
     if (Math.abs(team1PlayersInformation.length - team2PlayersInformation.length) > 1) {
         return interaction.editReply({
@@ -55,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     for (let i = 0; i < team1PlayersInformation.length + team2PlayersInformation.length; ++i) {
-        const teamInfo: [string, string] = <[string, string]> (i % 2 === 0 ? team1PlayersInformation : team2PlayersInformation).shift()?.split(" ") ?? [];
+        const teamInfo: [string, string] = <[string, string]> (i % 2 === 0 ? team1PlayersInformation : team2PlayersInformation)[Math.floor(i / 2)]?.split(" ") ?? [];
 
         if (teamInfo.length !== 2) {
             return interaction.editReply({
@@ -66,8 +70,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
-        matchData.player?.push(teamInfo);
-        matchData.result?.push([]);
+        matchData.player!.push(teamInfo);
+        matchData.result!.push([]);
     }
 
     const result: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.insert(matchData);

@@ -87,7 +87,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let team2String: string = "";
 
     for (let i = 0; i < match.player.length; ++i) {
-        const scoreData: string[] = (i % 2 === 0 ? team1Scores : team2Scores).shift()?.split(" ") ?? [];
+        const scoreData: string[] = (i % 2 === 0 ? team1Scores : team2Scores)[Math.floor(i / 2)]?.split(" ") ?? [];
 
         if (scoreData.length !== 3 || scoreData.map(v => parseFloat(v)).some(isNaN)) {
             return interaction.editReply({
