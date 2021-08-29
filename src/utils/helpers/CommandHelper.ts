@@ -275,6 +275,6 @@ export abstract class CommandHelper extends Manager {
      * @returns The amount of seconds represented by the input.
      */
     static convertStringTimeFormat(input: string): number {
-        return parseFloat(input) || DateTimeFormatHelper.DHMStoSeconds(input);
+        return DateTimeFormatHelper.DHMStoSeconds(input) || parseFloat(input);
     }
 }
