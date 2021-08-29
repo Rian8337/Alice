@@ -14,6 +14,7 @@ export class MathEquationCreator {
      */
     static createEquation(level: number, operatorAmount: number): MathEquation {
         const operators: string[] = ["/", "*", "+", "-"];
+        let prevOperatorAmount: number = operatorAmount;
         let equation: string = "";
         let realEquation: string = "";
         let answer: number = Number.NaN;
@@ -99,7 +100,7 @@ export class MathEquationCreator {
                 answer = Number.NaN;
                 equation = "";
                 realEquation = "";
-                ++operatorAmount;
+                operatorAmount = prevOperatorAmount;
             }
 
             ++attempts;
