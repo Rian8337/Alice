@@ -60,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         .setThumbnail(player.avatarURL)
         .setDescription(
             `[Avatar Link](${player.avatarURL})\n\n` +
-            `**Uid**: ${uid}\n` +
+            `**Uid**: ${player.uid}\n` +
             `**Rank**: ${player.rank.toLocaleString()}\n` +
             `**Play Count**: ${player.playCount.toLocaleString()}\n` + 
             `**Country**: ${player.location}\n\n` + 
