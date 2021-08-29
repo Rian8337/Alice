@@ -4,7 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -19,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
         });
     }
 

@@ -4,7 +4,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, Permissions, Util } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -17,13 +17,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong)
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.contentTooLong)
+            content: MessageCreator.createReject(tagStrings.contentTooLong)
         });
     }
 
@@ -33,14 +33,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
         });
     }
 
     // Allow server admins to edit tags that violate rules
     if (tag.author !== interaction.user.id && !CommandHelper.checkPermission(interaction, Permissions.FLAGS.ADMINISTRATOR)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner)
         });
     }
 
@@ -51,7 +51,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagsStrings.editTagSuccessful)
+        content: MessageCreator.createAccept(tagStrings.editTagSuccessful)
     });
 };
 

@@ -6,7 +6,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -20,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (tags.size === 0) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagsStrings.userDoesntHaveTags,
+                tagStrings.userDoesntHaveTags,
                 user.id === interaction.user.id ? "you" : "this user"
             )
         });

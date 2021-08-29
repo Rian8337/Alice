@@ -3,7 +3,7 @@ import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, User } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -19,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!tags.find(v => v.author === oldUser.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                tagsStrings.userDoesntHaveTags,
+                tagStrings.userDoesntHaveTags,
                 "this user"
             )
         });
@@ -34,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagsStrings.transferTagSuccessful, oldUser.toString(), newUser.toString())
+        content: MessageCreator.createAccept(tagStrings.transferTagSuccessful, oldUser.toString(), newUser.toString())
     });
 };
 

@@ -3,7 +3,7 @@ import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, Util } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -16,13 +16,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong)
         });
     }
 
     if (content.length > 1500) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.contentTooLong)
+            content: MessageCreator.createReject(tagStrings.contentTooLong)
         });
     }
 
@@ -30,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (tags.has(name)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagExists)
+            content: MessageCreator.createReject(tagStrings.tagExists)
         });
     }
 
@@ -49,7 +49,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagsStrings.addTagSuccessful)
+        content: MessageCreator.createAccept(tagStrings.addTagSuccessful)
     });
 };
 

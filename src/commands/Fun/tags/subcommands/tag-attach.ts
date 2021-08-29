@@ -5,7 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection, Message, MessageAttachment, TextChannel } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     if (!interaction.inGuild()) {
@@ -18,7 +18,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!StringHelper.isValidImage(url)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagAttachmentURLInvalid)
+            content: MessageCreator.createReject(tagStrings.tagAttachmentURLInvalid)
         });
     }
 
@@ -28,19 +28,19 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
         });
     }
 
     if (tag.author !== interaction.user.id) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner)
         });
     }
 
     if (tag.attachments.length >= 3) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.noTagAttachmentSlot)
+            content: MessageCreator.createReject(tagStrings.noTagAttachmentSlot)
         });
     }
 
@@ -67,11 +67,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
             interaction.editReply({
-                content: MessageCreator.createAccept(tagsStrings.attachToTagSuccessful)
+                content: MessageCreator.createAccept(tagStrings.attachToTagSuccessful)
             });
         } catch (ignored) {
             interaction.editReply({
-                content: MessageCreator.createReject(tagsStrings.tagAttachmentTooBig)
+                content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
             });
         }
     } else {
@@ -92,11 +92,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
             interaction.editReply({
-                content: MessageCreator.createAccept(tagsStrings.attachToTagSuccessful)
+                content: MessageCreator.createAccept(tagStrings.attachToTagSuccessful)
             });
         } catch (ignored) {
             interaction.editReply({
-                content: MessageCreator.createReject(tagsStrings.tagAttachmentTooBig)
+                content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
             });
         }
     }

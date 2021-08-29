@@ -3,7 +3,7 @@ import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {
@@ -14,7 +14,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong)
         });
     }
 
@@ -24,13 +24,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
         });
     }
 
     if (!tag.content && tag.attachments.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntHaveContentAndAttachments)
+            content: MessageCreator.createReject(tagStrings.tagDoesntHaveContentAndAttachments)
         });
     }
 

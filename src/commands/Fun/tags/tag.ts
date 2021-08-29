@@ -10,7 +10,7 @@ export const run: Command["run"] = async (_, interaction) => {
 export const category: Command["category"] = CommandCategory.BOT_CREATORS;
 
 export const config: Command["config"] = {
-    name: "tags",
+    name: "tag",
     description: "Main command for server-specific tags.",
     options: [
         {

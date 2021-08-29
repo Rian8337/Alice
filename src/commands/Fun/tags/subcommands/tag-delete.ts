@@ -5,7 +5,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { Collection, Message, Permissions, TextChannel } from "discord.js";
-import { tagsStrings } from "../tagsStrings";
+import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     if (!interaction.inGuild()) {
@@ -16,7 +16,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (name.length > 30) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.nameTooLong)
+            content: MessageCreator.createReject(tagStrings.nameTooLong)
         });
     }
 
@@ -26,14 +26,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     if (!tag) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.tagDoesntExist)
+            content: MessageCreator.createReject(tagStrings.tagDoesntExist)
         });
     }
 
     // Allow server admins to delete tags that violate rules
     if (tag.author !== interaction.user.id && !CommandHelper.checkPermission(interaction, Permissions.FLAGS.ADMINISTRATOR)) {
         return interaction.editReply({
-            content: MessageCreator.createReject(tagsStrings.notTagOwner)
+            content: MessageCreator.createReject(tagStrings.notTagOwner)
         });
     }
 
@@ -51,7 +51,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagsStrings.deleteTagSuccessful)
+        content: MessageCreator.createAccept(tagStrings.deleteTagSuccessful)
     });
 };
 
