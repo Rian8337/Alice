@@ -114,17 +114,7 @@ export class PlayerInfo extends Manager {
         this.points = data.points;
         this.alicecoins = data.alicecoins;
         this.streak = data.streak;
-        this.picture_config = data.picture_config ?? {
-            badges: [],
-            activeBadges: [],
-            activeBackground: new ProfileBackground(client, {
-                id: "bg",
-                name: "Default"
-            }),
-            backgrounds: [],
-            bgColor: "#008BFF",
-            textColor: "#000000"
-        };
+        this.picture_config = data.picture_config;
         this.chatcooldown = data.chatcooldown;
         this.dailyreset = data.dailyreset;
         this.hasSubmittedMapShare = data.hasSubmittedMapShare;
