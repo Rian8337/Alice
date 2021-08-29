@@ -1,76 +1,90 @@
+import { Constants } from "@alice-core/Constants";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { Snowflake } from "discord.js";
+import { ppcheckStrings } from "./ppcheckStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    if (interaction.options.data.length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(ppcheckStrings.tooManyOptions)
+        });
+    }
+
+    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const username: string | null = interaction.options.getString("username");
+
+    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+
+    let bindInfo: UserBind | null;
+
+    switch (true) {
+        case !!uid:
+            bindInfo = await dbManager.getFromUid(uid!);
+            break;
+        case !!username:
+            bindInfo = await dbManager.getFromUsername(username!);
+            break;
+        case !!discordid:
+            bindInfo = await dbManager.getFromUser(discordid!);
+            break;
+        default:
+            // If no arguments are specified, default to self
+            bindInfo = await dbManager.getFromUser(interaction.user);
+    }
+
+    if (!bindInfo) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                !!uid || !!username || !!discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
+            )
+        });
+    }
+
+    DPPHelper.viewDPPList(
+        interaction,
+        bindInfo,
+        NumberHelper.clamp(
+            interaction.options.getInteger("page") ?? 1,
+            1,
+            Math.ceil(bindInfo.pp.size / 5)
+        )
+    );
 };
 
 export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "ppcheck",
-    description: "Checks a user's droid pp (dpp) profile.",
+    description: "Checks yours or a user's droid pp (dpp) profile.",
     options: [
         {
             name: "user",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Checks a user's droid pp (dpp) profile.",
-            options: [
-                {
-                    name: "user",
-                    required: true,
-                    type: CommandArgumentType.USER,
-                    description: "The user to check."
-                },
-                {
-                    name: "page",
-                    type: CommandArgumentType.INTEGER,
-                    description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Default is 1."
-                }
-            ]
+            type: CommandArgumentType.USER,
+            description: "The user to check."
         },
         {
             name: "uid",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Checks the droid pp profile of an osu!droid account using its uid.",
-            options: [
-                {
-                    name: "uid",
-                    required: true,
-                    type: CommandArgumentType.INTEGER,
-                    description: "The uid to check."
-                },
-                {
-                    name: "page",
-                    type: CommandArgumentType.INTEGER,
-                    description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Default is 1."
-                }
-            ]
+            type: CommandArgumentType.INTEGER,
+            description: "The uid to check."
         },
         {
             name: "username",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Checks the droid pp (dpp) profile of an osu!droid account using its username.",
-            options: [
-                {
-                    name: "username",
-                    required: true,
-                    type: CommandArgumentType.STRING,
-                    description: "The username to check."
-                },
-                {
-                    name: "page",
-                    type: CommandArgumentType.INTEGER,
-                    description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Default is 1."
-                }
-            ]
+            type: CommandArgumentType.STRING,
+            description: "The username to check."
         },
         {
-            name: "self",
-            type: CommandArgumentType.SUB_COMMAND,
-            description: "Checks your droid pp (dpp) profile."
+            name: "page",
+            type: CommandArgumentType.INTEGER,
+            description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Default is 1."
         }
     ],
     example: [
@@ -79,19 +93,19 @@ export const config: Command["config"] = {
             description: "will give a list of your submitted plays in droid pp system."
         },
         {
-            command: "ppcheck @Rian8337#0001 5",
+            command: "ppcheck user:@Rian8337#0001 index:5",
             description: "will give a list of Rian8337's submitted plays in droid pp system at page 5."
         },
         {
-            command: "ppcheck 132783516176875520",
+            command: "ppcheck user:132783516176875520",
             description: "will give a list of the user with that Discord ID's submitted plays in droid pp system."
         },
         {
-            command: "ppcheck dgsrz 7",
+            command: "ppcheck username:dgsrz index:7",
             description: "will give a list of that username's submitted plays in droid pp system at page 7."
         },
         {
-            command: "ppcheck 11678",
+            command: "ppcheck uid:11678",
             description: "will give a list of that uid's submitted plays in droid pp system."
         }
     ],
