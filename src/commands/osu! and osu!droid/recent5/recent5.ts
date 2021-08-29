@@ -1,3 +1,4 @@
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -38,16 +39,26 @@ export const run: Command["run"] = async (_, interaction) => {
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
-            uid = bindInfo?.uid;
+
+            if (!bindInfo) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                });
+            }
+
+            player = await Player.getInformation({ uid: bindInfo.uid });
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
-            uid = bindInfo?.uid;
-    }
 
-    if (!player) {
-        player = await Player.getInformation({ uid: uid });
+            if (!bindInfo) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                });
+            }
+
+            player = await Player.getInformation({ uid: bindInfo.uid });
     }
 
     if (!player.username) {
