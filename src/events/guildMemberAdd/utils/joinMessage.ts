@@ -5,7 +5,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
-    const welcomeChannel: GuildChannel | null = await member.guild.channels.fetch("360716684174032896");
+    const welcomeChannel: GuildChannel | null | void = await member.guild.channels.fetch("360716684174032896").catch(() => {});
 
     if (!welcomeChannel?.isText()) {
         return;
