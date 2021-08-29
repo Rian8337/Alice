@@ -2,7 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection } from "discord.js";
+import { Collection, MessageOptions } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -34,10 +34,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    interaction.editReply({
-        content: tag.content,
-        files: tag.attachments
-    });
+    const options: MessageOptions = {};
+
+    if (tag.content) {
+        options.content = tag.content;
+    }
+
+    if (tag.attachments) {
+        options.files = tag.attachments;
+    }
+
+    interaction.editReply(options);
 };
 
 export const config: Subcommand["config"] = {
