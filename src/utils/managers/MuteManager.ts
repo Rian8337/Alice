@@ -302,7 +302,8 @@ export abstract class MuteManager extends PunishmentManager {
             return false;
         }
 
-        const allowedMuteRoles: Collection<string, RoleMutePermission> = guildConfig.allowedMuteRoles;
+        const allowedMuteRoles: Collection<Snowflake, RoleMutePermission> = guildConfig.allowedMuteRoles;
+
         let maxDuration: number = Number.NEGATIVE_INFINITY;
 
         for await (const allowedMuteRole of allowedMuteRoles.values()) {
@@ -317,7 +318,7 @@ export abstract class MuteManager extends PunishmentManager {
             maxDuration = Math.max(maxDuration, allowedMuteRole.maxTime);
 
             // End loop here if duration is fulfilled
-            if (duration < maxDuration) {
+            if (duration <= maxDuration) {
                 return true;
             }
         }
