@@ -342,9 +342,12 @@ export class ProfileCardCreator {
      * Initializes the area where description box will be drawn.
      */
     private initDescriptionBox(): void {
+        this.context.save();
+
         this.context.globalAlpha = 0.85;
         this.context.fillStyle = this.playerInfo?.picture_config?.bgColor ?? "rgb(0, 139, 255)";
         this.context.fillRect(9, 197, 482, 294);
+
         this.context.restore();
     }
 
@@ -352,6 +355,8 @@ export class ProfileCardCreator {
      * Draws the badges that the player owns.
      */
     private async drawBadges(): Promise<void> {
+        this.context.save();
+
         this.context.globalAlpha = 0.6;
         this.context.fillStyle = "#b9a29b";
         this.context.fillRect(15, 312, 470, 170);
@@ -380,6 +385,8 @@ export class ProfileCardCreator {
      * Draws the template for badges.
      */
     private drawTemplateBadges(): void {
+        this.context.save();
+
         this.context.globalAlpha = 0.6;
         this.context.fillStyle = "#b9a29b";
         this.context.fillRect(15, 312, 470, 170);
@@ -415,6 +422,8 @@ export class ProfileCardCreator {
      * Draws the Alice coins information of the player.
      */
     private async drawAliceCoinsInformation(): Promise<void> {
+        this.context.save();
+
         this.context.globalAlpha = 1;
         const coinImage: Image = await loadImage(Constants.aliceCoinImage);
         this.context.drawImage(coinImage, 15, 255, 50, 50);
