@@ -1,4 +1,4 @@
-import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, Snowflake } from "discord.js";
+import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction, Snowflake } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
 
@@ -14,9 +14,9 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param choices The choices that the user can choose.
      * @param users The users who can interact with the select menu.
      * @param duration The duration the select menu will be active for.
-     * @returns The ID of the choice that the user picks, `undefined` if the user didn't pick any.
+     * @returns The choices that the user picked.
      */
-    static createSelectMenu(interaction: CommandInteraction, placeholder: string, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string|undefined> {
+    static createSelectMenu(interaction: CommandInteraction, placeholder: string, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string[]> {
         return new Promise(async resolve => {
             const selectMenu: MessageSelectMenu = new MessageSelectMenu()
                 .setCustomId("whatever")
@@ -55,7 +55,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     }, 5 * 1000);
                 }
 
-                resolve(collected.first()?.customId);
+                resolve((<SelectMenuInteraction | undefined> collected.first())?.values ?? []);
             });
         });
     }
