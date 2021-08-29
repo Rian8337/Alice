@@ -190,23 +190,23 @@ export class PlayerInfo extends Manager {
         let limit: number;
 
         switch (true) {
-            case (thisPlayer.rank < 10):
+            case thisPlayer.rank < 10:
                 limit = 2500;
                 break;
-            case (thisPlayer.rank < 50):
+            case thisPlayer.rank < 50:
                 limit = 1750;
                 break;
-            case (thisPlayer.rank < 100):
+            case thisPlayer.rank < 100:
                 limit = 1250;
                 break;
-            case (thisPlayer.rank < 500):
+            case thisPlayer.rank < 500:
                 limit = 500;
                 break;
             default:
                 limit = 250;
         }
 
-        if (!NumberHelper.isNumberInRange(amount + this.transferred, 0, limit)) {
+        if (!NumberHelper.isNumberInRange(amount + this.transferred, 0, limit, true)) {
             return this.createOperationResult(false, `transferred amount is beyond daily limit—can only transfer ${(limit - this.transferred).toLocaleString()} Alice coins left.`);
         }
 
