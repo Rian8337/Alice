@@ -30,7 +30,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction.editReply({
             content: MessageCreator.createAccept(
                 coinsStrings.dailyClaimSuccess,
-                interaction.user.toString(),
                 streakComplete ? "completed a streak and " : "",
                 dailyCoin.toLocaleString(),
                 streak.toString(),
