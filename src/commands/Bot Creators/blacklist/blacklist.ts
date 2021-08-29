@@ -21,7 +21,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const pickedChoice: string | undefined = await SelectMenuCreator.createSelectMenu(
+    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
         `Detected Beatmap ID: ${beatmapID}\n\nChoose the action that you want to do.`,
         [
@@ -38,7 +38,7 @@ export const run: Command["run"] = async (_, interaction) => {
         ],
         Config.botOwners,
         20
-    )
+    ))[0];
 
     if (!pickedChoice) {
         return;

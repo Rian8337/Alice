@@ -46,7 +46,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         uid = bindInfo.uid;
     }
 
-    const pickedChoice: string | undefined = await SelectMenuCreator.createSelectMenu(
+    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
         "Choose the type of profile to view.",
         [
@@ -63,7 +63,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         ],
         [interaction.user.id],
         20
-    );
+    ))[0];
 
     const player: Player = await Player.getInformation({ uid: uid });
 

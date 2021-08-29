@@ -29,13 +29,13 @@ export abstract class CommandHelper extends Manager {
      * @param placeholder The placeholder text for the subcommand's select menu.
      */
     static async runSubcommandNotFromInteraction(interaction: CommandInteraction, mainCommandDirectory: string, subcommandChoices: MessageSelectOptionData[], placeholder: string): Promise<any> {
-        const pickedSubcommand: string | undefined = await SelectMenuCreator.createSelectMenu(
+        const pickedSubcommand: string = (await SelectMenuCreator.createSelectMenu(
             interaction,
             placeholder,
             subcommandChoices,
             [interaction.user.id],
             20
-        );
+        ))[0];
 
         if (!pickedSubcommand) {
             return;
