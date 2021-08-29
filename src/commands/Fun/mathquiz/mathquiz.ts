@@ -79,7 +79,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
         correct = true;
 
-        interaction.editReply({
+        interaction.channel!.send({
             content: MessageCreator.createAccept(
                 mathquizStrings.correctAnswer,
                 interaction.user.toString(),
