@@ -15,7 +15,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
+    const tags: Collection<string, Tag> =
+        (await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId)).filter(
+            v => v.author === interaction.user.id
+        );
 
     if (tags.size === 0) {
         return interaction.editReply({
