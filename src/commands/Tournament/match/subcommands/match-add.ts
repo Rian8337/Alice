@@ -74,12 +74,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(matchStrings.addMatchFailed)
+            content: MessageCreator.createReject(
+                matchStrings.addMatchFailed, result.reason!
+            )
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(matchStrings.addMatchSuccessful)
+        content: MessageCreator.createAccept(
+            matchStrings.addMatchSuccessful, matchId
+        )
     });
 };
 
