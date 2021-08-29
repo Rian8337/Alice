@@ -21,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const nameChange: NameChange | null = await DatabaseManager.aliceDb.collections.nameChange.getFromUid(bindInfo.uid);
 
     if (nameChange) {
-        if (nameChange.isProcessed) {
+        if (!nameChange.isProcessed) {
             return interaction.editReply({
                 content: MessageCreator.createReject(namechangeStrings.activeRequestExists)
             });
