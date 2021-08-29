@@ -1,5 +1,6 @@
 import { MathEquation } from "@alice-interfaces/utils/MathEquation";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 /**
  * A generator to create math equations.
@@ -14,7 +15,7 @@ export class MathEquationCreator {
      */
     static createEquation(level: number, operatorAmount: number): MathEquation {
         const operators: string[] = ["/", "*", "+", "-"];
-        let prevOperatorAmount: number = operatorAmount;
+        let prevOperatorAmount: number = NumberHelper.clamp(operatorAmount, 1, 10);
         let equation: string = "";
         let realEquation: string = "";
         let answer: number = Number.NaN;
@@ -30,7 +31,7 @@ export class MathEquationCreator {
                 break;
             }
 
-            while (operatorAmount) {
+            while (--operatorAmount) {
                 const operator: string = ArrayHelper.getRandomArrayElement(operators);
 
                 let number: number = this.generateNumber(level, operator);
@@ -57,7 +58,6 @@ export class MathEquationCreator {
                 }
 
                 lastOperator = operator;
-                --operatorAmount;
             }
 
             let number: number = this.generateNumber(level, lastOperator);
