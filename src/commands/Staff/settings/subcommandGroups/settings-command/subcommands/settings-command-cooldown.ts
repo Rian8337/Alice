@@ -68,7 +68,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createReject(settingsStrings.setCommandCooldownSuccess, commandName, cooldown.toString())
+        content: MessageCreator.createAccept(settingsStrings.setCommandCooldownSuccess, commandName, cooldown.toString())
     });
 };
 
