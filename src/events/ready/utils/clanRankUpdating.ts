@@ -39,7 +39,7 @@ export const run: EventUtil["run"] = async (_) => {
                         continue;
                     }
 
-                    if (highestRank < player.rank) {
+                    if (highestRank > player.rank) {
                         highestRank = player.rank;
                         highestRankUid = uid;
                     }
