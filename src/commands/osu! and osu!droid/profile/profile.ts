@@ -15,98 +15,45 @@ export const config: Command["config"] = {
     options: [
         {
             name: "bindinfo",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
-            description: "View the bind information of an osu!droid account.",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View your bind information or an osu!droid account.",
             options: [
                 {
                     name: "uid",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View the bind information of an osu!droid account using its uid.",
-                    options: [
-                        {
-                            name: "uid",
-                            required: true,
-                            type: CommandArgumentType.INTEGER,
-                            description: "The uid of the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.INTEGER,
+                    description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View the bind information of an osu!droid account using its username.",
-                    options: [
-                        {
-                            name: "username",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The username the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.STRING,
+                    description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View the bind information of a Discord user.",
-                    options: [
-                        {
-                            name: "user",
-                            required: true,
-                            type: CommandArgumentType.USER,
-                            description: "The Discord user."
-                        }
-                    ]
+                    type: CommandArgumentType.USER,
+                    description: "The Discord user."
                 }
             ]
         },
         {
             name: "view",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
-            description: "View an osu!droid account or Discord user's profile.",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View your osu!droid account's profile or someone else's.",
             options: [
                 {
                     name: "uid",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View an osu!droid account's profile using its uid.",
-                    options: [
-                        {
-                            name: "uid",
-                            required: true,
-                            type: CommandArgumentType.INTEGER,
-                            description: "The uid of the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.INTEGER,
+                    description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View an osu!droid account's profile using its username.",
-                    options: [
-                        {
-                            name: "username",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The username the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.STRING,
+                    description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View a Discord user's profile.",
-                    options: [
-                        {
-                            name: "user",
-                            required: true,
-                            type: CommandArgumentType.USER,
-                            description: "The Discord user."
-                        }
-                    ]
-                },
-                {
-                    name: "self",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "View your binded osu!droid account's profile."
+                    type: CommandArgumentType.USER,
+                    description: "The Discord user."
                 }
             ]
         },

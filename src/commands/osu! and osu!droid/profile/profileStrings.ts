@@ -2,6 +2,7 @@
  * Strings for the `profile` command.
  */
 export enum profileStrings {
+    tooManyOptions = "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
     profileNotFound = "I'm sorry, I cannot find %s profile!",
     viewingProfile = "osu!droid profile for %s:\n<%s>",
     infoBoxColorInfo = "Your information box %s is \`%s\`.",

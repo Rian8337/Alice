@@ -2,13 +2,19 @@ import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { profileStrings } from "../../profileStrings";
+import { profileStrings } from "../profileStrings";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { Player } from "osu-droid";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    if (interaction.options.data.length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(profileStrings.tooManyOptions)
+        });
+    }
+
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");

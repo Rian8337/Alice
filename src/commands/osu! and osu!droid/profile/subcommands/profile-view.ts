@@ -5,12 +5,18 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { profileStrings } from "../../profileStrings";
+import { profileStrings } from "../profileStrings";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    if (interaction.options.data.length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(profileStrings.tooManyOptions)
+        });
+    }
+
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
