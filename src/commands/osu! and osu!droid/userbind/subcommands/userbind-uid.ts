@@ -69,7 +69,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         if (!result.success) {
             return interaction.editReply({
-                content: MessageCreator.createReject(userbindStrings.accountBindError, result.reason!)
+                content: MessageCreator.createReject(
+                    userbindStrings.accountBindError,
+                    "uid",
+                    uid.toString(),
+                    result.reason!
+                )
             });
         }
 
