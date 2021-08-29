@@ -22,6 +22,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    clans.sort((a, b) => {
+        return b.power - a.power;
+    });
+
     const page: number = NumberHelper.clamp(interaction.options.getInteger("page") ?? 1, 1, Math.ceil(clans.size / 20));
 
     const onPageChange: OnButtonPageChange = async (options, page, entries: Clan[]) => {
