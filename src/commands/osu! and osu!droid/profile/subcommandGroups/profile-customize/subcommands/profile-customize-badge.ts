@@ -18,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             },
             {
                 label: "Equip Badge",
-                value: "eqipBadge",
+                value: "equipBadge",
                 description: "Equip a badge."
             },
             {
