@@ -2,7 +2,6 @@ import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerTracking } from "@alice-database/utils/elainaDb/PlayerTracking";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { DatabasePlayerTracking } from "@alice-interfaces/database/elainaDb/DatabasePlayerTracking";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, MessageEmbed, TextChannel } from "discord.js";
@@ -18,8 +17,6 @@ export const run: EventUtil["run"] = async (client) => {
 
         const trackedPlayers: Collection<number, PlayerTracking> = await DatabaseManager.elainaDb.collections.playerTracking.get("uid");
 
-        const execDate: Date = new Date();
-
         for await (const trackedPlayer of trackedPlayers.values()) {
             const player: Player = await Player.getInformation({ uid: trackedPlayer.uid });
 
@@ -27,8 +24,10 @@ export const run: EventUtil["run"] = async (client) => {
                 continue;
             }
 
+            const currentTime: Date = new Date();
+
             for await (const score of player.recentPlays) {
-                if (execDate.getTime() - score.date.getTime() > 600 * 1000) {
+                if (currentTime.getTime() - score.date.getTime() > 600 * 1000) {
                     break;
                 }
 
