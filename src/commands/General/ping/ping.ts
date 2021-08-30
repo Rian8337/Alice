@@ -1,4 +1,3 @@
-import { hrtime } from "process";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
@@ -7,31 +6,24 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { pingStrings } from "./pingStrings";
 import { DroidAPIRequestBuilder } from "osu-droid";
+import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 
 export const run: Command["run"] = async (client, interaction) => {
-    // TODO: split these into a function
-
-    let start: bigint = hrtime.bigint();
-
-    await DatabaseManager.elainaDb.instance.command({ ping: 1 });
-
-    const elainaDbPing: number = Number((hrtime.bigint() - start) / 1000000n);
-
-    start = hrtime.bigint();
-
-    await DatabaseManager.aliceDb.instance.command({ ping: 1 });
-
-    const aliceDbPing: number = Number((hrtime.bigint() - start) / 1000000n);
-
     const apiReq: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
         .setRequireAPIkey(false)
         .setEndpoint("time.php");
 
-    start = hrtime.bigint();
+    const droidPing: number = await HelperFunctions.getFunctionExecutionTime(
+        apiReq.sendRequest.bind(apiReq)
+    );
 
-    await apiReq.sendRequest();
+    const elainaDbPing: number = await HelperFunctions.getFunctionExecutionTime(
+        DatabaseManager.elainaDb.instance.command.bind(DatabaseManager.elainaDb.instance), { ping: 1 }
+    );
 
-    const droidPing: number = Number((hrtime.bigint() - start) / 1000000n);
+    const aliceDbPing: number = await HelperFunctions.getFunctionExecutionTime(
+        DatabaseManager.aliceDb.instance.command.bind(DatabaseManager.aliceDb.instance), { ping: 1 }
+    );
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({
         author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor
