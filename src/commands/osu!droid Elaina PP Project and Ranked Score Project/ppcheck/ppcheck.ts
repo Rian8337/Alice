@@ -64,7 +64,7 @@ export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
     name: "ppcheck",
-    description: "Checks yours or a user's droid pp (dpp) profile.",
+    description: "Checks yours or a player's droid pp (dpp) profile.",
     options: [
         {
             name: "user",
@@ -74,17 +74,17 @@ export const config: Command["config"] = {
         {
             name: "uid",
             type: CommandArgumentType.INTEGER,
-            description: "The uid to check."
+            description: "The uid of the player."
         },
         {
             name: "username",
             type: CommandArgumentType.STRING,
-            description: "The username to check."
+            description: "The username of the player."
         },
         {
             name: "page",
             type: CommandArgumentType.INTEGER,
-            description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Default is 1."
+            description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1."
         }
     ],
     example: [
