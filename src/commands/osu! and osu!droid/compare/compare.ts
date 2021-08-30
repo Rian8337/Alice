@@ -13,12 +13,6 @@ import { Player, Score } from "osu-droid";
 import { compareStrings } from "./compareStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (interaction.options.data.length > 1) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.tooManyOptions)
-        });
-    }
-
     const cachedBeatmapHash: string | undefined = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
 
     if (!cachedBeatmapHash) {
@@ -30,6 +24,12 @@ export const run: Command["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
     let uid: number | undefined | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
+
+    if ([discordid, uid, username].filter(Boolean).length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(compareStrings.tooManyOptions)
+        });
+    }
 
     const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 

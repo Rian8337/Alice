@@ -13,15 +13,15 @@ import { Player } from "osu-droid";
 import { recentStrings } from "./recentStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (interaction.options.data.length > 1) {
+    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const username: string | null = interaction.options.getString("username");
+
+    if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
             content: MessageCreator.createReject(recentStrings.tooManyOptions)
         });
     }
-
-    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
 
     const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 

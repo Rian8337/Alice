@@ -14,6 +14,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
+    if ([discordid, uid, username].filter(Boolean).length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(dailyStrings.tooManyOptions)
+        });
+    }
+
     const dbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
 
     let playerInfo: PlayerInfo | null;
