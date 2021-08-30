@@ -80,7 +80,10 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if (!score.title) {
         return interaction.editReply({
-            content: MessageCreator.createReject(compareStrings.scoreNotFound)
+            content: MessageCreator.createReject(
+                compareStrings.scoreNotFound,
+                !!uid || !!discordid || !!username ? "this user has" : "you have"
+            )
         });
     }
 
