@@ -52,7 +52,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
     }
 
-    if (!player) {
+    if (!player?.username) {
         return interaction.editReply({
             content: MessageCreator.createReject(profileStrings.profileNotFound)
         });
