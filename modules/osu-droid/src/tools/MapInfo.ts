@@ -611,7 +611,11 @@ export class MapInfo {
 
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
 
-            resolve(result.data.toString("utf-8").split("\n").map(v => new Score().fillInformation(v)));
+            const data: string[] = result.data.toString("utf-8").split("<br>");
+
+            data.shift();
+
+            resolve(data.map(v => new Score().fillInformation(v)));
         });
     }
 
