@@ -22,18 +22,24 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
     /**
      * The lifetime of each cache data in this limited collection.
      */
-    private readonly lifetime: number = 600;
+    private readonly lifetime: number;
 
     /**
      * @param capacity The capacity of the collection.
+     * @param lifetime The lifetime of each cache data in the collection, in seconds.
      */
-    constructor(capacity: number) {
+    constructor(capacity: number, lifetime: number) {
         super();
 
         this.capacity = capacity;
+        this.lifetime = lifetime;
 
         if (capacity <= 0) {
             throw new Error(`Invalid limited collection capacity: ${capacity}`);
+        }
+
+        if (lifetime <= 0) {
+            throw new Error(`Invalid limited collection lifetime: ${lifetime}`);
         }
 
         this.startInterval();
