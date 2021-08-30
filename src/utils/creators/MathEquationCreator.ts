@@ -31,7 +31,7 @@ export class MathEquationCreator {
                 break;
             }
 
-            while (--operatorAmount) {
+            while (operatorAmount--) {
                 const operator: string = ArrayHelper.getRandomArrayElement(operators);
 
                 let number: number = this.generateNumber(level, operator);
