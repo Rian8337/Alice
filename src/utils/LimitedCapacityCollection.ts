@@ -1,21 +1,14 @@
-import { Collection } from "discord.js";
+import { LimitedCollection } from "discord.js";
 
 /**
  * A collection with limited capacity.
  */
-export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
-    /**
-     * The capacity of this limited collection.
-     */
-    private readonly capacity: number;
-
+export class LimitedCapacityCollection<K, V> extends LimitedCollection<K, V> {
     /**
      * @param capacity The capacity of the collection.
      */
     constructor(capacity: number) {
-        super();
-
-        this.capacity = capacity;
+        super({ maxSize: capacity });
 
         if (capacity <= 0) {
             throw new Error(`Invalid limited collection capacity: ${capacity}`);
@@ -32,10 +25,6 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
      * @returns This `LimitedCapacityCollection` object.
      */
     set(key: K, value: V): this {
-        while (this.size >= this.capacity) {
-            this.delete(this.firstKey()!);
-        }
-
         // Reenter to set lastKey() to this key.
         this.delete(key);
 
