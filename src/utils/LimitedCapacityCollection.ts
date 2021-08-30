@@ -1,18 +1,59 @@
-import { LimitedCollection } from "discord.js";
+import { Collection } from "discord.js";
 
 /**
  * A collection with limited capacity.
  */
-export class LimitedCapacityCollection<K, V> extends LimitedCollection<K, V> {
+export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
+    /**
+     * The capacity of this collection.
+     */
+    private readonly capacity: number;
+
+    /**
+     * The epoch time at which a cache data is added, in milliseconds.
+     */
+    private readonly addedTime: Collection<K, number> = new Collection();
+
+    /**
+     * The interval at which this limited collection will be sweeped, in seconds.
+     */
+    private readonly sweepInterval: number = 600;
+
+    /**
+     * The lifetime of each cache data in this limited collection.
+     */
+    private readonly lifetime: number = 600;
+
     /**
      * @param capacity The capacity of the collection.
      */
     constructor(capacity: number) {
-        super({ maxSize: capacity });
+        super();
+
+        this.capacity = capacity;
 
         if (capacity <= 0) {
             throw new Error(`Invalid limited collection capacity: ${capacity}`);
         }
+
+        this.startInterval();
+    }
+
+    /**
+     * Starts an interval to periodically sweep cache data that
+     * were unused for the specified duration.
+     */
+    private startInterval(): void {
+        setInterval(() => {
+            const executionTime: number = Date.now();
+
+            this.addedTime.forEach((value, key) => {
+                if (executionTime - value > this.lifetime * 1000) {
+                    this.addedTime.delete(key);
+                    this.delete(key);
+                }
+            });
+        }, this.sweepInterval * 1000);
     }
 
     /**
@@ -25,10 +66,17 @@ export class LimitedCapacityCollection<K, V> extends LimitedCollection<K, V> {
      * @returns This `LimitedCapacityCollection` object.
      */
     set(key: K, value: V): this {
+        while (this.size >= this.capacity) {
+            this.addedTime.delete(this.firstKey()!);
+            this.delete(this.firstKey()!);
+        }
+
         // Reenter to set lastKey() to this key.
         this.delete(key);
 
         super.set(key, value);
+
+        this.addedTime.set(key, Date.now());
 
         return this;
     }
