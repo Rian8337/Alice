@@ -65,25 +65,25 @@ export abstract class MessageAnalyticsHelper {
                 continue;
             }
 
-            let finalCount: number = await this.getUserMessagesCount(channel, (newDailyTime - 86400) * 1000, newDailyTime * 1000);
+            let finalCount: number = await this.getUserMessagesCount(channel, newDailyTime - 86400 * 1000, newDailyTime);
 
             const activeThreads: FetchedThreads = await channel.threads.fetchActive();
 
             for await (const activeThread of activeThreads.threads.values()) {
-                finalCount += await this.getUserMessagesCount(activeThread, (newDailyTime - 86400) * 1000, newDailyTime * 1000);
+                finalCount += await this.getUserMessagesCount(activeThread, newDailyTime - 86400 * 1000, newDailyTime);
             }
 
             const archivedThreads: FetchedThreads = await channel.threads.fetchArchived({ fetchAll: true });
 
             for await (const archivedThread of archivedThreads.threads.values()) {
-                finalCount += await this.getUserMessagesCount(archivedThread, (newDailyTime - 86400) * 1000, newDailyTime * 1000);
+                finalCount += await this.getUserMessagesCount(archivedThread, newDailyTime - 86400 * 1000, newDailyTime);
             }
 
             channelData.set(channel.id, (channelData.get(channel.id) ?? 0) + finalCount);
         }
 
         await DatabaseManager.aliceDb.collections.channelData.update(
-            { timestamp: (newDailyTime - 86400) * 1000 },
+            { timestamp: newDailyTime - 86400 * 1000 },
             { $set: { channels: channelData.map((value, key) => [ key, value ]) } },
             { upsert: true }
         );
@@ -103,6 +103,7 @@ export abstract class MessageAnalyticsHelper {
      */
     static async getUserMessagesCount(channel: TextChannel | ThreadChannel, fetchStartTime: number, fetchEndTime: number): Promise<number> {
         const fetchCount: number = 100;
+
         let validCount: number = 0;
 
         const messageManager: MessageManager = channel.messages;
