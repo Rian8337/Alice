@@ -57,7 +57,7 @@ export const run: Command["run"] = async (_, interaction) => {
 export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
-    name: "manualcalc",
+    name: "prevcalc",
     // TODO: add calculation parameters in description
     description: "Calculates the difficulty and performance value latest cached beatmap in the channel, if any.",
     options: [
