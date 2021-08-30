@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { coinsStrings } from "../coinsStrings";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user);
