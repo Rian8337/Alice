@@ -25,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             birthdayStrings.setBirthdaySuccess,
             date.toString(),
-            month.toString(),
+            (month + 1).toString(),
             timezone >= 0 ? `+${timezone}` : timezone.toString()
         )
     });
