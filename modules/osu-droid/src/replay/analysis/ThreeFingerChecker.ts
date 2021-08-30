@@ -13,7 +13,7 @@ import { ReplayObjectData } from "../data/ReplayObjectData";
 import { BeatmapSectionGenerator } from "./BeatmapSectionGenerator";
 import { BeatmapSection } from "./data/BeatmapSection";
 import { ModPrecise } from "../../mods/ModPrecise";
-import { ModUtil } from "../../mods/ModUtil";
+import { ModUtil } from "../../utils/ModUtil";
 import { MathUtils } from "../../mathutil/MathUtils";
 
 /**

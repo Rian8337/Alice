@@ -13,7 +13,7 @@ import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuil
 import { ThreeFingerChecker, ThreeFingerInformation } from './analysis/ThreeFingerChecker';
 import { TwoHandChecker } from './analysis/TwoHandChecker';
 import { MathUtils } from '../mathutil/MathUtils';
-import { ModUtil } from '../mods/ModUtil';
+import { ModUtil } from '../utils/ModUtil';
 import { Mod } from '../mods/Mod';
 import { Accuracy } from '../utils/Accuracy';
 import { ModHidden } from '../mods/ModHidden';

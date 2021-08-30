@@ -13,7 +13,7 @@ import { ReplayObjectData } from "./../data/ReplayObjectData";
 import { IndexedHitObject } from "./objects/IndexedHitObject";
 import { Beatmap } from "../../beatmap/Beatmap";
 import { Utils } from "../../utils/Utils";
-import { ModUtil } from "../../mods/ModUtil";
+import { ModUtil } from "../../utils/ModUtil";
 import { ModPrecise } from "osu-droid";
 
 interface CursorInformation {

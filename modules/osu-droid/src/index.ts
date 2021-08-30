@@ -41,7 +41,7 @@ import { ModSmallCircle } from './mods/ModSmallCircle';
 import { ModSpunOut } from './mods/ModSpunOut';
 import { ModSuddenDeath } from './mods/ModSuddenDeath';
 import { ModTouchDevice } from './mods/ModTouchDevice';
-import { ModUtil } from './mods/ModUtil';
+import { ModUtil } from './utils/ModUtil';
 import { modes } from './constants/modes';
 import { movementType } from './constants/movementType';
 import { OsuAim } from './difficulty/skills/OsuAim';

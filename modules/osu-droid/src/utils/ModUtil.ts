@@ -1,23 +1,23 @@
-import { Mod } from "./Mod";
-import { ModAuto } from "./ModAuto";
-import { ModAutopilot } from "./ModAutopilot";
-import { ModDoubleTime } from "./ModDoubleTime";
-import { ModEasy } from "./ModEasy";
-import { ModFlashlight } from "./ModFlashlight";
-import { ModHalfTime } from "./ModHalfTime";
-import { ModHardRock } from "./ModHardRock";
-import { ModHidden } from "./ModHidden";
-import { ModNightCore } from "./ModNightCore";
-import { ModNoFail } from "./ModNoFail";
-import { ModPerfect } from "./ModPerfect";
-import { ModPrecise } from "./ModPrecise";
-import { ModReallyEasy } from "./ModReallyEasy";
-import { ModRelax } from "./ModRelax";
-import { ModScoreV2 } from "./ModScoreV2";
-import { ModSmallCircle } from "./ModSmallCircle";
-import { ModSpunOut } from "./ModSpunOut";
-import { ModSuddenDeath } from "./ModSuddenDeath";
-import { ModTouchDevice } from "./ModTouchDevice";
+import { Mod } from "../mods/Mod";
+import { ModAuto } from "../mods/ModAuto";
+import { ModAutopilot } from "../mods/ModAutopilot";
+import { ModDoubleTime } from "../mods/ModDoubleTime";
+import { ModEasy } from "../mods/ModEasy";
+import { ModFlashlight } from "../mods/ModFlashlight";
+import { ModHalfTime } from "../mods/ModHalfTime";
+import { ModHardRock } from "../mods/ModHardRock";
+import { ModHidden } from "../mods/ModHidden";
+import { ModNightCore } from "../mods/ModNightCore";
+import { ModNoFail } from "../mods/ModNoFail";
+import { ModPerfect } from "../mods/ModPerfect";
+import { ModPrecise } from "../mods/ModPrecise";
+import { ModReallyEasy } from "../mods/ModReallyEasy";
+import { ModRelax } from "../mods/ModRelax";
+import { ModScoreV2 } from "../mods/ModScoreV2";
+import { ModSmallCircle } from "../mods/ModSmallCircle";
+import { ModSpunOut } from "../mods/ModSpunOut";
+import { ModSuddenDeath } from "../mods/ModSuddenDeath";
+import { ModTouchDevice } from "../mods/ModTouchDevice";
 
 /**
  * Utilities for mods.

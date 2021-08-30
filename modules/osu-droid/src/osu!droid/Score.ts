@@ -2,7 +2,7 @@ import { DroidAPIRequestBuilder, RequestResponse } from '../utils/APIRequestBuil
 import { Accuracy } from '../utils/Accuracy';
 import { ReplayAnalyzer } from '../replay/ReplayAnalyzer';
 import { Mod } from '../mods/Mod';
-import { ModUtil } from '../mods/ModUtil';
+import { ModUtil } from '../utils/ModUtil';
 
 interface ScoreInformation {
     /**

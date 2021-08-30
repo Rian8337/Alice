@@ -9,7 +9,7 @@ import { ModEasy } from '../mods/ModEasy';
 import { ModPrecise } from '../mods/ModPrecise';
 import { ModSmallCircle } from '../mods/ModSmallCircle';
 import { ModReallyEasy } from '../mods/ModReallyEasy';
-import { ModUtil } from '../mods/ModUtil';
+import { ModUtil } from './ModUtil';
 
 /**
  * Holds general beatmap statistics for further modifications. 
