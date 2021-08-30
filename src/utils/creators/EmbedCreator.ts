@@ -12,7 +12,6 @@ import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingC
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
