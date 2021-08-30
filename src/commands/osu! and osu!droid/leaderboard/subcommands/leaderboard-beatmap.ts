@@ -3,6 +3,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
+import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -109,7 +110,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             const calcResult: PerformanceCalculationResult | null = await getCalculationResult(score);
 
             return `**${score.username}${score.mods.length > 0 ? `(${score.getCompleteModString()})` : ""}**\n` +
-                `${arrow} **${score.rank}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+                `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
                 `\`${score.date.toUTCString()}\``;
         };

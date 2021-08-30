@@ -1,11 +1,12 @@
 import * as d3 from "d3";
-import { MessageAttachment, Snowflake } from "discord.js";
+import { GuildEmoji, MessageAttachment, Snowflake } from "discord.js";
 import { MapInfo, OsuAPIRequestBuilder, OsuAPIResponse } from "osu-droid";
 import { Manager } from "@alice-utils/base/Manager";
 import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from "canvas";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { ScoreRank } from "@alice-types/utils/ScoreRank";
 
 /**
  * A manager for beatmaps.
@@ -255,5 +256,32 @@ export abstract class BeatmapManager extends Manager {
             this.getBeatmapDifficultyIcon(rating),
             `osu-${rating.toFixed(2)}.png`
         );
+    }
+
+    /**
+     * Gets an emoji that represents a rank.
+     * 
+     * @param rank The rank.
+     * @returns The emoji representing the rank.
+     */
+    static getRankEmote(rank: ScoreRank): GuildEmoji {
+        switch (rank) {
+            case "A":
+                return this.client.emojis.resolve("611559473236148265")!;
+            case "B":
+                return this.client.emojis.resolve("611559473169039413")!;
+            case "C":
+                return this.client.emojis.resolve("611559473328422942")!;
+            case "D":
+                return this.client.emojis.resolve("611559473122639884")!;
+            case "S":
+                return this.client.emojis.resolve("611559473294606336")!;
+            case "X":
+                return this.client.emojis.resolve("611559473492000769")!;
+            case "SH":
+                return this.client.emojis.resolve("611559473361846274")!;
+            case "XH":
+                return this.client.emojis.resolve("611559473479155713")!;
+        }
     }
 }

@@ -2,6 +2,7 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CommandInteraction, GuildMember, Message, MessageEmbed, Snowflake } from "discord.js";
 import { Player, Score } from "osu-droid";
 
@@ -30,7 +31,7 @@ export abstract class ScoreDisplayHelper {
                 const score: Score = contents[i];
 
                 embed.addField(
-                    `${i + 1}. **${score.rank}** | ${score.title} ${score.getCompleteModString()}`,
+                    `${i + 1}. **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** | ${score.title} ${score.getCompleteModString()}`,
                     `${score.score.toLocaleString()} / ${score.combo}x / ${(score.accuracy.value() * 100).toFixed(2)}% / [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
                     `\`${score.date.toUTCString()}\``
                 );

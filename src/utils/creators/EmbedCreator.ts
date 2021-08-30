@@ -15,6 +15,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { ScoreRank } from "@alice-types/utils/ScoreRank";
 
 /**
  * Utility to create message embeds.
@@ -206,7 +207,7 @@ export abstract class EmbedCreator {
 
         const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
-        let beatmapInformation: string = `${arrow} **${score.rank}** ${arrow} `;
+        let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${arrow} `;
 
         if (!calcResult) {
             beatmapInformation +=
