@@ -1,3 +1,5 @@
+import { hrtime } from "process";
+
 /**
  * Helper functions to hopefully ease development.
  */
@@ -26,5 +28,20 @@ export abstract class HelperFunctions {
         });
 
         return "#" + colors.join("");
+    }
+
+    /**
+     * Gets the execution time of a function.
+     * 
+     * @param fn The function to execute.
+     * @param args The arguments for the function.
+     * @returns The execution time of the function, in milliseconds.
+     */
+    static async getFunctionExecutionTime(fn: (...args: any[]) => Promise<any>, ...args: any[]): Promise<number> {
+        const start: bigint = hrtime.bigint();
+
+        await fn(...args);
+
+        return Number((hrtime.bigint() - start) / 1000000n);
     }
 }
