@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandOrGroup(interaction);
+    CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
@@ -42,78 +42,29 @@ export const config: Command["config"] = {
         },
         {
             name: "checksubmit",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
-            description: "Checks if an osu!droid account or Discord user has completed a challenge.",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Checks if you, an osu!droid account, or Discord user has completed a challenge.",
             options: [
                 {
+                    name: "challengeid",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The ID of the challenge."
+                },
+                {
                     name: "uid",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks if an osu!droid account has completed a challenge using its uid.",
-                    options: [
-                        {
-                            name: "challengeid",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The ID of the challenge."
-                        },
-                        {
-                            name: "uid",
-                            required: true,
-                            type: CommandArgumentType.INTEGER,
-                            description: "The uid of the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.INTEGER,
+                    description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks if an osu!droid account has completed a challenge using its username.",
-                    options: [
-                        {
-                            name: "challengeid",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The ID of the challenge."
-                        },
-                        {
-                            name: "username",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The username the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.STRING,
+                    description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks if a Discord user has completed a challenge.",
-                    options: [
-                        {
-                            name: "challengeid",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The ID of the challenge."
-                        },
-                        {
-                            name: "user",
-                            required: true,
-                            type: CommandArgumentType.USER,
-                            description: "The Discord user."
-                        }
-                    ]
-                },
-                {
-                    name: "self",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks your currently binded osu!droid account's challenge profile.",
-                    options: [
-                        {
-                            name: "challengeid",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The ID of the challenge."
-                        }
-                    ]
+                    type: CommandArgumentType.USER,
+                    description: "The Discord user."
                 }
             ]
         },
@@ -166,52 +117,23 @@ export const config: Command["config"] = {
         },
         {
             name: "profile",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
-            description: "Checks an osu!droid account's challenge profile.",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Checks yours or an osu!droid account's challenge profile.",
             options: [
                 {
                     name: "uid",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks an osu!droid account's challenge profile using its uid.",
-                    options: [
-                        {
-                            name: "uid",
-                            required: true,
-                            type: CommandArgumentType.INTEGER,
-                            description: "The uid of the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.INTEGER,
+                    description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks an osu!droid account's challenge profile using its username.",
-                    options: [
-                        {
-                            name: "username",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The username the osu!droid account."
-                        }
-                    ]
+                    type: CommandArgumentType.STRING,
+                    description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks a Discord user's challenge profile.",
-                    options: [
-                        {
-                            name: "user",
-                            required: true,
-                            type: CommandArgumentType.USER,
-                            description: "The Discord user."
-                        }
-                    ]
-                },
-                {
-                    name: "self",
-                    type: CommandArgumentType.SUB_COMMAND,
-                    description: "Checks your currently binded osu!droid account's challenge profile."
+                    type: CommandArgumentType.USER,
+                    description: "The Discord user."
                 }
             ]
         },
@@ -257,7 +179,7 @@ export const config: Command["config"] = {
             description: "will submit your 50 most recent plays towards the current ongoing daily challenge."
         },
         {
-            command: "daily checksubmit self d21",
+            command: "daily checksubmit d21",
             description: "will check if you have played challenge `d21`."
         }
     ],

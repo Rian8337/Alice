@@ -5,7 +5,7 @@ import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCo
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, Snowflake } from "discord.js";
-import { dailyStrings } from "../../dailyStrings";
+import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const challengeID: string = interaction.options.getString("challengeid", true);
