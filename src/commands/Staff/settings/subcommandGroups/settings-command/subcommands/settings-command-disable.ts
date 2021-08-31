@@ -26,6 +26,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
+    if (!CommandHelper.isExecutedByBotOwner(interaction) && command.config.permissions.some(v => v === "BOT_OWNER")) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(settingsStrings.cannotDisableCommand)
+        });
+    }
+
     let result: DatabaseOperationResult | undefined;
 
     switch (scope) {
