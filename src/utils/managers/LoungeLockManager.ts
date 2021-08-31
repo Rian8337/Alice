@@ -23,6 +23,11 @@ export abstract class LoungeLockManager extends PunishmentManager {
     private static loungeLockDb: LoungeLockCollectionManager;
 
     /**
+     * The lounge channel of the main server.
+     */
+    static loungeChannel: TextChannel;
+
+    /**
      * Initializes the manager.
      * 
      * @param client The instance of the bot.
@@ -31,22 +36,24 @@ export abstract class LoungeLockManager extends PunishmentManager {
         this.loungeLockDb = DatabaseManager.aliceDb.collections.loungeLock;
 
         this.mainServer = await this.client.guilds.fetch(Constants.mainServer);
+
+        this.loungeChannel = <TextChannel> await this.mainServer.channels.fetch(Constants.loungeChannel);
     }
 
     /**
      * Locks a user from lounge or extends its duration.
      * 
-     * @param userID The ID of the user.
+     * @param userId The ID of the user.
      * @param reason The reason for locking the user.
-     * @param duration The duration of the lock or the extension. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
+     * @param duration The duration of the lock or the extension, in seconds. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
      * @returns An object containing information about the operation.
      */
-    static async lock(userID: Snowflake, reason: string, duration: number): Promise<LoungeLockOperationResult> {
+    static async lock(userId: Snowflake, reason: string, duration: number): Promise<LoungeLockOperationResult> {
         if (duration < 0) {
             duration = Number.POSITIVE_INFINITY;
         }
 
-        const lockInfo: LoungeLock | null = await this.loungeLockDb.getUserLockInfo(userID);
+        const lockInfo: LoungeLock | null = await this.loungeLockDb.getUserLockInfo(userId);
 
         const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(this.mainServer);
 
@@ -69,19 +76,19 @@ export abstract class LoungeLockManager extends PunishmentManager {
             logEmbed.setColor("#c7c03c")
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
-                    `**User**: <@${userID}>
+                    `**User**: <@${userId}>
                     **Updated Reason**: ${reason}
                     **New Expiration Date**: ${!Number.isFinite(lockInfo.expiration + duration) ? "Never" : new Date((lockInfo.expiration + duration) * 1000).toUTCString()}`
                 );
         } else {
             // Insert new lock
-            await this.loungeLockDb.insertNewLock(userID, duration, reason);
+            await this.loungeLockDb.insertNewLock(userId, duration, reason);
 
             logEmbed.setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")
                 .setDescription(
-                    `**User**: <@${userID}>
-                    **Updated Reason**: ${reason}
+                    `**User**: <@${userId}>
+                    **Reason**: ${reason}
                     **Expiration Date**: ${new Date(duration * 1000).toUTCString()}`
                 );
         }
@@ -94,12 +101,12 @@ export abstract class LoungeLockManager extends PunishmentManager {
     /**
      * Unlocks a user from lounge.
      * 
-     * @param userID The ID of the user.
+     * @param userId The ID of the user.
      * @param reason The reason for unlocking the user.
      * @returns An object containing information about the operation.
      */
-    static async unlock(userID: Snowflake, reason: string): Promise<LoungeLockOperationResult> {
-        const lockInfo: LoungeLock | null = await this.loungeLockDb.getUserLockInfo(userID);
+    static async unlock(userId: Snowflake, reason: string): Promise<LoungeLockOperationResult> {
+        const lockInfo: LoungeLock | null = await this.loungeLockDb.getUserLockInfo(userId);
 
         if (!lockInfo) {
             return this.createOperationResult(false, "User is not locked from lounge");
@@ -126,7 +133,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
         logEmbed.setColor("#3ba7b8")
             .setTitle("Lounge Lock Removed")
             .setDescription(
-                `**User**: <@${userID}>
+                `**User**: <@${userId}>
                 **Updated Reason**: ${reason}`
             );
 
@@ -135,5 +142,37 @@ export abstract class LoungeLockManager extends PunishmentManager {
         await logChannel.send({ embeds: [logEmbed] });
 
         return this.createOperationResult(true);
+    }
+
+    /**
+     * Inserts a lock permission to the lounge channel.
+     * 
+     * @param userId The ID of the user to lock.
+     */
+    static async insertLockPermissionToChannel(userId: Snowflake): Promise<void> {
+        return this.updateChannelPermission(userId, true);
+    }
+
+    /**
+     * Removes a lock permission to the lounge channel.
+     * 
+     * @param userId The ID of the user to remove.
+     */
+    static async removeLockPermissionFromChannel(userId: Snowflake): Promise<void> {
+        return this.updateChannelPermission(userId, false);
+    }
+
+    /**
+     * Updates the lounge channel's permission with respect to a user.
+     * 
+     * @param userId The ID of the user.
+     * @param lock Whether to lock the user.
+     */
+    private static async updateChannelPermission(userId: Snowflake, lock: boolean): Promise<void> {
+        await this.loungeChannel.permissionOverwrites.edit(
+            userId,
+            { VIEW_CHANNEL: lock },
+            { reason: lock ? "Lounge lock insertion" : "Lounge lock removal" }
+        );
     }
 }
