@@ -2,7 +2,6 @@ import { Config } from "@alice-core/Config";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
 
 async function resetDailyCoinsAndMapShare(): Promise<void> {
@@ -20,7 +19,7 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
     );
 }
 
-export const run: EventUtil["run"] = async (client) => {
+export const run: EventUtil["run"] = async () => {
     const playerInfo: PlayerInfo = (await DatabaseManager.aliceDb.collections.playerInfo.getFromUser("386742340968120321"))!;
 
     let resetTime: number = playerInfo.dailyreset!;
@@ -33,7 +32,7 @@ export const run: EventUtil["run"] = async (client) => {
         resetTime += 86400;
 
         await resetDailyCoinsAndMapShare();
-        await MessageAnalyticsHelper.fetchDaily(client, resetTime * 1000);
+        await MessageAnalyticsHelper.fetchDaily(resetTime * 1000);
     }, 15 * 1000);
 };
 
