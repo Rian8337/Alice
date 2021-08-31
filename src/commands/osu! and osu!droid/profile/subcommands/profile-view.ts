@@ -73,9 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         20
     ))[0];
 
-    if (!player) {
-        player = await Player.getInformation({ uid: uid });
-    }
+    player ??= await Player.getInformation({ uid: uid });
 
     if (!player.username) {
         return interaction.editReply({
