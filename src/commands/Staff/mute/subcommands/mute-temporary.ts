@@ -1,4 +1,4 @@
-import { GuildMember, User } from "discord.js";
+import { GuildMember } from "discord.js";
 import { MuteOperationResult } from "@alice-interfaces/moderation/MuteOperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
