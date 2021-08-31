@@ -26,7 +26,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         return;
     }
 
-    if (lockInfo.expiration < Date.now()) {
+    if (lockInfo.isExpired) {
         await (<GuildChannel> member.guild.channels.cache.get(Constants.loungeChannel)).permissionOverwrites.delete(member.id);
         return;
     }
