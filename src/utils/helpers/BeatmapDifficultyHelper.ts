@@ -110,9 +110,10 @@ export abstract class BeatmapDifficultyHelper {
      * 
      * @param score The score.
      * @param useReplay Whether to use replay in the calculation. Defaults to `true`.
+     * @param calcParams Calculation parameters to override the score's default calculation parameters.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
-    static async calculateScorePerformance(score: Score, useReplay: boolean = true): Promise<PerformanceCalculationResult | null> {
+    static async calculateScorePerformance(score: Score, useReplay: boolean = true, calcParams?: PerformanceCalculationParameters): Promise<PerformanceCalculationResult | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
         if (!beatmap) {
@@ -123,9 +124,9 @@ export abstract class BeatmapDifficultyHelper {
             await score.downloadReplay();
         }   
 
-        const calcParams: PerformanceCalculationParameters = await this.getCalculationParamsFromScore(score, useReplay);
+        calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
-        const calcResult: PerformanceCalculationResult = this.calculatePerformance(beatmap, calcParams, score.replay);
+        const calcResult: PerformanceCalculationResult = this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined);
 
         return {
             map: beatmap,
