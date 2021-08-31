@@ -153,7 +153,16 @@ export abstract class EmbedCreator {
      * @returns The message options that contains the embed.
      */
     static async createCalculationEmbed(calculationParams: PerformanceCalculationParameters, calculationResult: PerformanceCalculationResult, graphColor?: string): Promise<MessageOptions> {
-        const embedOptions: MessageOptions = await this.createBeatmapEmbed(calculationResult.map, calculationParams);
+        const embedOptions: MessageOptions = await this.createBeatmapEmbed(
+            calculationResult.map,
+            calculationParams,
+            {
+                map: calculationResult.map,
+                droid: calculationResult.droid.stars,
+                osu: calculationResult.osu.stars
+            }
+        );
+
         const map: MapInfo = calculationResult.map;
         const droidPP: DroidPerformanceCalculator = calculationResult.droid;
         const pcPP: OsuPerformanceCalculator = calculationResult.osu;
@@ -166,7 +175,6 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
         embed.setImage("attachment://chart.png")
-            .setAuthor("Beatmap Information", `attachment://osu-${pcPP.stars.total.toFixed(2)}.png`)
             .spliceFields(embed.fields.length - 1, 1)
             .addField(
                 map.showStatistics(4, mods, customStatistics),
@@ -187,9 +195,7 @@ export abstract class EmbedCreator {
                     ))!,
                     "chart.png"
                 ),
-                BeatmapManager.getBeatmapDifficultyIconAttachment(
-                    parseFloat(pcPP.stars.total.toFixed(2))
-                )
+                ...embedOptions.files!
             ]
         };
     }
