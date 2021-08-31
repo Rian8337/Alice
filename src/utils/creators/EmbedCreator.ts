@@ -238,8 +238,9 @@ export abstract class EmbedCreator {
                 nmiss: 0
             });
 
-            const fcCalcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateBeatmapPerformance(
-                calcResult.map.beatmapID,
+            const fcCalcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(
+                score,
+                false,
                 calcParams
             ))!;
 
