@@ -139,10 +139,12 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction.channel!.send(questionString).then(msg => {
             const collector: MessageCollector = mode === "single" ?
             msg.channel.createMessageCollector({
-                filter: m => parseInt(m.content) === answer && m.author.id === interaction.user.id
+                filter: m => parseInt(m.content) === answer && m.author.id === interaction.user.id,
+                time: 30000
             }) :
             msg.channel.createMessageCollector({
-                filter: m => parseInt(m.content) === answer
+                filter: m => parseInt(m.content) === answer,
+                time: 30000
             });
 
             let correct: boolean = false;
