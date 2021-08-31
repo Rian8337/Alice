@@ -10,7 +10,7 @@ import { unmuteStrings } from "./unmuteStrings";
 export const run: Command["run"] = async(_, interaction) => {
     const toUnmute: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
 
-    if (await MuteManager.userCanMute(<GuildMember> interaction.member, Number.POSITIVE_INFINITY)) {
+    if (!await MuteManager.userCanMute(<GuildMember> interaction.member, Number.POSITIVE_INFINITY)) {
         return interaction.editReply({
             content: MessageCreator.createReject(unmuteStrings.userCannotUnmuteError)
         });
@@ -19,6 +19,7 @@ export const run: Command["run"] = async(_, interaction) => {
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
     const result: MuteOperationResult = await MuteManager.removeMute(toUnmute, interaction, reason);
+
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
@@ -27,7 +28,9 @@ export const run: Command["run"] = async(_, interaction) => {
         });
     }
 
-    interaction.deleteReply();
+    interaction.editReply({
+        content: MessageCreator.createAccept(unmuteStrings.unmuteSuccessful)
+    });
 };
 
 export const category: Command["category"] = CommandCategory.STAFF;
