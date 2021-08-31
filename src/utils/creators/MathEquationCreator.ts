@@ -51,7 +51,7 @@ export class MathEquationCreator {
                     }
 
                     equation += `${this.calculateFactorial(number)} ${operator} `;
-                    realEquation += `${number}! ${operator}`;
+                    realEquation += `${number}! ${operator} `;
                 } else {
                     equation += `${number} ${operator} `;
                     realEquation += `${number} ${operator} `;
