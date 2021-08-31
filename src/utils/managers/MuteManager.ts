@@ -68,7 +68,7 @@ export abstract class MuteManager extends PunishmentManager {
 
         const isInfiniteMute: boolean = !Number.isFinite(duration);
 
-        if (!this.userCanMute(<GuildMember> interaction.member, duration)) {
+        if (!await this.userCanMute(<GuildMember> interaction.member, duration)) {
             return this.createOperationResult(false, `Not enough permission to mute ${isInfiniteMute ? "permanently" : `for ${DateTimeFormatHelper.secondsToDHMS(duration)}`}`);
         }
 
