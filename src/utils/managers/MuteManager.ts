@@ -433,7 +433,7 @@ export abstract class MuteManager extends PunishmentManager {
 
             for await (const mute of entry.currentMutes.values()) {
                 const guildMember: GuildMember | void = await guild.members.fetch(mute.userID).catch(() => {});
-                
+
                 if (!guildMember || !guildMember.roles.cache.has(muteRole.id)) {
                     continue;
                 }
@@ -441,7 +441,7 @@ export abstract class MuteManager extends PunishmentManager {
                 const endTime: number = mute.muteEndTime;
 
                 // Just end mute if time left is less than 10 seconds
-                if (DateTimeFormatHelper.getTimeDifference(endTime) < 1e4) {
+                if (DateTimeFormatHelper.getTimeDifference(endTime * 1000) < 1e4) {
                     await guildMember.roles.remove(muteRole);
                     await this.punishmentDb.update(
                         { guildID: guild.id }, { $pull: { currentMutes: { userID: guildMember.id } } }
