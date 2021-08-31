@@ -166,6 +166,7 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
         embed.setImage("attachment://chart.png")
+            .setAuthor("Beatmap Information", `attachment://osu-${pcPP.stars.total.toFixed(2)}.png`)
             .spliceFields(embed.fields.length - 1, 1)
             .addField(
                 map.showStatistics(4, mods, customStatistics),
@@ -178,13 +179,18 @@ export abstract class EmbedCreator {
 
         return {
             embeds: [ embed ],
-            files: [new MessageAttachment(
-                (await pcPP.stars.getStrainChart(
-                    map.beatmapsetID,
-                    graphColor
-                ))!,
-                "chart.png"
-            ), ...embedOptions.files!]
+            files: [
+                new MessageAttachment(
+                    (await pcPP.stars.getStrainChart(
+                        map.beatmapsetID,
+                        graphColor
+                    ))!,
+                    "chart.png"
+                ),
+                BeatmapManager.getBeatmapDifficultyIconAttachment(
+                    parseFloat(pcPP.stars.total.toFixed(2))
+                )
+            ]
         };
     }
 
