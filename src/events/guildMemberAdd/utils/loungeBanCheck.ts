@@ -1,23 +1,22 @@
-import { GuildMember, TextChannel } from "discord.js";
+import { GuildMember } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
+import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
+    if (member.guild.id !== Constants.mainServer) {
+        return;
+    }
+
     const lockInfo: LoungeLock | null = await DatabaseManager.aliceDb.collections.loungeLock.getUserLockInfo(member.id);
 
-    if (!lockInfo) {
+    if (!lockInfo || lockInfo.isExpired) {
         return;
     }
 
-    const loungeChannel: TextChannel | undefined = <TextChannel | undefined> member.guild.channels.cache.get(Constants.loungeChannel);
-
-    if (!loungeChannel) {
-        return;
-    }
-
-    loungeChannel.permissionOverwrites.edit(member, { "VIEW_CHANNEL": false }, { reason: "Lounge ban" });
+    LoungeLockManager.insertLockPermissionToChannel(member.id);
 };
 
 export const config: EventUtil["config"] = {
