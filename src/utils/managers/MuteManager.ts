@@ -7,6 +7,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
+import { LoungeLockManager } from "./LoungeLockManager";
 
 /**
  * A manager for mutes.
@@ -49,7 +50,7 @@ export abstract class MuteManager extends PunishmentManager {
      * @param interaction The interaction that triggered the mute.
      * @param member The guild member to mute.
      * @param reason Reason for muting.
-     * @param duration The duration to mute the user for. For permanent mutes, use Infinity.
+     * @param duration The duration to mute the user for, in seconds. For permanent mutes, use Infinity.
      * @returns An object containing information about the operation.
      */
     static async addMute(interaction: CommandInteraction, member: GuildMember, reason: string, duration: number): Promise<MuteOperationResult> {
@@ -174,6 +175,10 @@ export abstract class MuteManager extends PunishmentManager {
         await this.punishmentDb.update(
             { guildID: member.guild.id }, { $push: { currentMutes: muteInformation } }
         );
+
+        if (duration >= 6 * 3600) {
+            await LoungeLockManager.lock(member.id, "Muted for 6 hours or longer", 30 * 24 * 3600 * 1000);
+        }
 
         if (!isInfiniteMute) {
             const timeout: NodeJS.Timeout = setTimeout(async () => {
