@@ -15,6 +15,13 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
     expiration: number;
     readonly _id?: ObjectId;
 
+    /**
+     * Whether this lock is expired.
+     */
+    get isExpired(): boolean {
+        return this.expiration < Date.now();
+    }
+
     constructor(client: Bot, data: DatabaseLoungeLock) {
         super(client);
 
