@@ -14,7 +14,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
     isLeapYear: boolean;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseBirthday) {
+    constructor(client: Bot, data: DatabaseBirthday = DatabaseManager.aliceDb.collections.birthday.defaultDocument) {
         super(client);
 
         this._id = data._id;

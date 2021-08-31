@@ -103,7 +103,7 @@ export class PlayerInfo extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabasePlayerInfo) {
+    constructor(client: Bot, data: DatabasePlayerInfo = DatabaseManager.aliceDb.collections.playerInfo.defaultDocument) {
         super(client);
 
         this._id = data._id;

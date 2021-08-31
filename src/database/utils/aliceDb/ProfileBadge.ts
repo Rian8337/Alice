@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseProfileBadge } from "@alice-interfaces/database/aliceDb/DatabaseProfileBadge";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -14,7 +15,7 @@ export class ProfileBadge extends Manager implements DatabaseProfileBadge {
     requirement: number;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseProfileBadge) {
+    constructor(client: Bot, data: DatabaseProfileBadge = DatabaseManager.aliceDb.collections.profileBadges.defaultDocument) {
         super(client);
 
         this._id = data._id;

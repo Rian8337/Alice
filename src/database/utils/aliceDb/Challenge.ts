@@ -129,7 +129,7 @@ export class Challenge extends Manager {
 
     private readonly challengeChannelID: Snowflake = "669221772083724318";
 
-    constructor(client: Bot, data: DatabaseChallenge) {
+    constructor(client: Bot, data: DatabaseChallenge = DatabaseManager.aliceDb.collections.challenge.defaultDocument) {
         super(client);
 
         this._id = data._id;

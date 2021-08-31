@@ -46,7 +46,7 @@ export class RankedScore extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseRankedScore) {
+    constructor(client: Bot, data: DatabaseRankedScore = DatabaseManager.aliceDb.collections.rankedScore.defaultDocument) {
         super(client);
 
         this._id = data._id;

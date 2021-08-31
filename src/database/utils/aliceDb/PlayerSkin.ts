@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabasePlayerSkin } from "@alice-interfaces/database/aliceDb/DatabasePlayerSkin";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -12,7 +13,7 @@ export class PlayerSkin extends Manager implements DatabasePlayerSkin {
     skin: string;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabasePlayerSkin) {
+    constructor(client: Bot, data: DatabasePlayerSkin = DatabaseManager.aliceDb.collections.playerSkins.defaultDocument) {
         super(client);
 
         this._id = data._id;

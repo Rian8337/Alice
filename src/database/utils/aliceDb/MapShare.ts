@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -17,7 +18,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
     status: "accepted" | "denied" | "pending" | "posted";
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseMapShare) {
+    constructor(client: Bot, data: DatabaseMapShare = DatabaseManager.aliceDb.collections.mapShare.defaultDocument) {
         super(client);
 
         this._id = data._id;

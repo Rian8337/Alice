@@ -96,7 +96,7 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseUserBind) {
+    constructor(client: Bot, data: DatabaseUserBind = DatabaseManager.elainaDb.collections.userBind.defaultDocument) {
         super(client);
 
         this._id = data._id;

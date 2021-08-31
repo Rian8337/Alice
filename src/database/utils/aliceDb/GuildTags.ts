@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { DatabaseGuildTags } from "@alice-interfaces/database/aliceDb/DatabaseGuildTags";
 import { Manager } from "@alice-utils/base/Manager";
@@ -25,7 +26,7 @@ export class GuildTags extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseGuildTags) {
+    constructor(client: Bot, data: DatabaseGuildTags = DatabaseManager.aliceDb.collections.guildTags.defaultDocument) {
         super(client);
 
         this._id = data._id;

@@ -1,7 +1,7 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
 import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 
@@ -24,7 +24,7 @@ export class ChannelData extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseChannelData) {
+    constructor(client: Bot, data: DatabaseChannelData = DatabaseManager.aliceDb.collections.channelData.defaultDocument) {
         super(client);
 
         this._id = data._id;

@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseDPPBan } from "@alice-interfaces/database/elainaDb/DatabaseDPPBan";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -11,7 +12,7 @@ export class DPPBan extends Manager implements DatabaseDPPBan {
     reason: string;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseDPPBan) {
+    constructor(client: Bot, data: DatabaseDPPBan = DatabaseManager.elainaDb.collections.dppBan.defaultDocument) {
         super(client);
 
         this._id = data._id;

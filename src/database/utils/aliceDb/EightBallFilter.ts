@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseEightBallFilter } from "@alice-interfaces/database/aliceDb/DatabaseEightBallFilter";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -14,7 +15,7 @@ export class EightBallFilter extends Manager implements DatabaseEightBallFilter 
     response: string[];
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseEightBallFilter) {
+    constructor(client: Bot, data: DatabaseEightBallFilter = DatabaseManager.aliceDb.collections.eightBallFilter.defaultDocument) {
         super(client);
 
         this._id = data._id;

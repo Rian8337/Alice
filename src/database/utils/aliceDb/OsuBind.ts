@@ -1,4 +1,5 @@
 import { Bot } from "@alice-core/Bot";
+import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseOsuBind } from "@alice-interfaces/database/aliceDb/DatabaseOsuBind";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
@@ -12,7 +13,7 @@ export class OsuBind extends Manager implements DatabaseOsuBind {
     username: string;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseOsuBind) {
+    constructor(client: Bot, data: DatabaseOsuBind = DatabaseManager.aliceDb.collections.osuBind.defaultDocument) {
         super(client);
 
         this._id = data._id;
