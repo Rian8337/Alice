@@ -13,6 +13,7 @@ export enum settingsStrings {
     eventUtilityNotFound = "I'm sorry, I cannot find the event utility that you have specified!",
     eventUtilityToggleSuccess = "Successfully %s event utility `%s` for event `%s`.",
     commandNotFound = "I'm sorry, I cannot find the command that you have specified!",
+    cannotDisableCommand = "I'm sorry, you cannot disable or put a cooldown to this command!",
     setCommandCooldownFailed = "I'm sorry, I'm unable to set the command's cooldown: %s.",
     setCommandCooldownSuccess = "Successfully set `%s` cooldown to %s second(s).",
     disableCommandFailed = "I'm sorry, I'm unable to disable the command: %s.",
