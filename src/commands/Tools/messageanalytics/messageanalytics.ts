@@ -84,8 +84,12 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "color #ffdd00",
-            description: "will show the color with hex code \"#ffdd00\"."
+            command: "messageanalytics fetch fromdate:2018-1-1 scope:Server",
+            description: "will fetch message analytics from January 1st, 2018 up to this date."
+        },
+        {
+            command: "messageanalytics info type:Daily date:2019-1-1",
+            description: "will give message analytics information in January 1st, 2019."
         }
     ],
     permissions: [],
