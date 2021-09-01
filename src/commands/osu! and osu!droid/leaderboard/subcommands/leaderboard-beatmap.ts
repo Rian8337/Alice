@@ -109,8 +109,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const getScoreDescription = async (score: Score): Promise<string> => {
             const calcResult: PerformanceCalculationResult | null = await getCalculationResult(score);
 
-            return `**${score.username}${score.mods.length > 0 ? `(${score.getCompleteModString()})` : ""}**\n` +
-                `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+            return `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
                 `\`${score.date.toUTCString()}\``;
         };
@@ -136,6 +135,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         embed.addField(
             "**Top Score**",
+            `**${topScore.username}${topScore.mods.length > 0 ? ` (${topScore.getCompleteModString()})` : ""}**\n` +
             await getScoreDescription(topScore)
         );
 
