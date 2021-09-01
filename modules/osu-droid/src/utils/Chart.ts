@@ -233,7 +233,7 @@ export class Chart implements ChartInitializer {
         c.beginPath();
         data.forEach((d: Data) => c.lineTo(d.x * this.scaleX, d.y * this.scaleY));
         c.stroke();
-        c.lineTo(data[data.length - 1].x * this.scaleX, 0);
+        c.lineTo(data.at(-1)!.x * this.scaleX, 0);
         c.lineTo(0, 0);
         c.fill();
 

@@ -77,7 +77,7 @@ export class DroidRhythm extends DroidSkill {
     }
 
     protected saveToHitObject(current: DifficultyHitObject): void {
-        current.rhythmStrain = this.strains[this.strains.length - 1];
+        current.rhythmStrain = this.strains.at(-1)!;
     }
 
     private isRatioEqual(ratio: number, a: number, b: number): boolean {

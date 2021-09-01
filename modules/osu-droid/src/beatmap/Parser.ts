@@ -446,8 +446,8 @@ export class Parser {
             return list[0];
         }
 
-        if (time >= list[list.length - 1].time) {
-            return list[list.length - 1];
+        if (time >= list.at(-1)!.time) {
+            return list.at(-1)!;
         }
 
         let l: number = 0;

@@ -100,8 +100,8 @@ export class SliderPath {
                 this.calculateSubPath(cpSpan).forEach(t => {
                     if (
                         this.calculatedPath.length === 0 ||
-                        this.calculatedPath[this.calculatedPath.length - 1].x !== t.x ||
-                        this.calculatedPath[this.calculatedPath.length - 1].y !== t.y
+                        this.calculatedPath.at(-1)!.x !== t.x ||
+                        this.calculatedPath.at(-1)!.y !== t.y
                     ) {
                         this.calculatedPath.push(t);
                     }
@@ -156,7 +156,7 @@ export class SliderPath {
 
             if (calculatedLength > this.expectedDistance) {
                 // The path will be shortened further, in which case we should trim any more unnecessary lengths and their associated path segments
-                while (this.cumulativeLength.length > 0 && this.cumulativeLength[this.cumulativeLength.length - 1] >= this.expectedDistance) {
+                while (this.cumulativeLength.length > 0 && this.cumulativeLength.at(-1)! >= this.expectedDistance) {
                     this.cumulativeLength.pop();
                     this.calculatedPath.splice(pathEndIndex--, 1);
                 }
@@ -172,7 +172,7 @@ export class SliderPath {
             const dir: Vector2 = this.calculatedPath[pathEndIndex].subtract(this.calculatedPath[pathEndIndex - 1]);
             dir.normalize();
 
-            this.calculatedPath[pathEndIndex] = this.calculatedPath[pathEndIndex - 1].add(dir.scale(this.expectedDistance - this.cumulativeLength[this.cumulativeLength.length - 1]));
+            this.calculatedPath[pathEndIndex] = this.calculatedPath[pathEndIndex - 1].add(dir.scale(this.expectedDistance - this.cumulativeLength.at(-1)!));
             this.cumulativeLength.push(this.expectedDistance);
         }
     }
@@ -209,7 +209,7 @@ export class SliderPath {
             return this.calculatedPath[0];
         }
         if (i >= this.calculatedPath.length) {
-            return this.calculatedPath[this.calculatedPath.length - 1];
+            return this.calculatedPath.at(-1)!;
         }
 
         const p0: Vector2 = this.calculatedPath[i - 1];

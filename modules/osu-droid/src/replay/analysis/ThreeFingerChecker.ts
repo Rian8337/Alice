@@ -329,7 +329,7 @@ export class ThreeFingerChecker {
         const objectData: ReplayObjectData[] = this.data.hitObjectData;
 
         const firstObjectResult: hitResult = objectData[0].result;
-        const lastObjectResult: hitResult = objectData[objectData.length - 1].result;
+        const lastObjectResult: hitResult = objectData.at(-1)!.result;
 
         const isPrecise: boolean = this.map.mods.some(m => m instanceof ModPrecise);
 
@@ -350,7 +350,7 @@ export class ThreeFingerChecker {
         
         // For sliders, automatically set hit window length to be as lenient as possible.
         let lastObjectHitWindow: number = this.hitWindow.hitWindowFor50(isPrecise);
-        if (objects[objects.length - 1].object instanceof Circle) {
+        if (objects.at(-1)!.object instanceof Circle) {
             switch (lastObjectResult) {
                 case hitResult.RESULT_300:
                     lastObjectHitWindow = this.hitWindow.hitWindowFor300(isPrecise);
@@ -367,7 +367,7 @@ export class ThreeFingerChecker {
         // This is because cursors aren't recorded exactly at hit time,
         // probably due to the game's behavior.
         const firstObjectHitTime: number = objects[0].object.startTime - firstObjectHitWindow;
-        const lastObjectHitTime: number = objects[objects.length - 1].object.startTime + lastObjectHitWindow;
+        const lastObjectHitTime: number = objects.at(-1)!.object.startTime + lastObjectHitWindow;
 
         for (let i = 0; i < this.data.cursorMovement.length; ++i) {
             const cursorInstance: CursorData = this.data.cursorMovement[i];

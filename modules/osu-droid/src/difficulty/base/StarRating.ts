@@ -167,7 +167,7 @@ export abstract class StarRating {
                 };
             });
 
-            const maxTime: number = strainInformations[strainInformations.length - 1]?.time ?? this.objects[this.objects.length - 1].object.endTime / 1000;
+            const maxTime: number = strainInformations.at(-1)!.time ?? this.objects.at(-1)!.object.endTime / 1000;
             const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}), 1);
 
             const maxXUnits: number = 10;

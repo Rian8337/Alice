@@ -141,11 +141,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             scoreList.push(0);
         }
 
-        const scoreString: string = `${match.player[i][0]} - (${score.mods.map(v => v.name).join(", ")}): **${scoreList[scoreList.length - 1]}** - ${score.rank} - ${(score.accuracy.value() * 100).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
+        const scoreString: string = `${match.player[i][0]} - (${score.mods.map(v => v.name).join(", ")}): **${scoreList.at(-1)!}** - ${score.rank} - ${(score.accuracy.value() * 100).toFixed(2)}% - ${score.accuracy.nmiss} misses\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **${verificationResult.reason}**`;
 
         if (i % 2 === 0) {
-            team1OverallScore += scoreList[scoreList.length - 1];
+            team1OverallScore += scoreList.at(-1)!;
 
             if (verificationResult.success) {
                 team1String += scoreString;
@@ -153,7 +153,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 team1String += failString;
             }
         } else {
-            team2OverallScore += scoreList[scoreList.length - 1];
+            team2OverallScore += scoreList.at(-1)!;
 
             if (verificationResult.success) {
                 team2String += scoreString;

@@ -109,7 +109,7 @@ export abstract class DroidSkill extends Skill {
             fcTime = (fcTime + dt) / this.fcProbability(skill, this.strains[i]);
         }
 
-        return fcTime - (this.times[this.times.length - 1] - this.times[0]);
+        return fcTime - (this.times.at(-1)! - this.times[0]);
     }
 
     /**
@@ -118,7 +118,7 @@ export abstract class DroidSkill extends Skill {
      * @param totalDifficulty The total difficulty of all objects in the beatmap.
      */
     private fcTimeSkillLevel(totalDifficulty: number): number {
-        let lengthEstimate: number = 0.4 * (this.times[this.times.length - 1] - this.times[0]);
+        let lengthEstimate: number = 0.4 * (this.times.at(-1)! - this.times[0]);
         // For every minute of straining time past 1 minute, add 45 mins to estimated time to FC.
         this.targetFcTime += 45 * Math.max(0, this.expectedTargetTime(totalDifficulty) - 60000);
 

@@ -56,7 +56,7 @@ export class DroidTap extends DroidSkill {
     }
 
     protected saveToHitObject(current: DifficultyHitObject): void {
-        current.tapStrain = this.strains[this.strains.length - 1];
+        current.tapStrain = this.strains.at(-1)!;
     }
 
     /**

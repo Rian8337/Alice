@@ -114,7 +114,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         scoreList.push(scoreV2);
 
-        const scoreString: string = `${match.player[i][0]} - (N/A): **${scoreList[scoreList.length - 1]}** - ${(parseFloat(scoreData[1])).toFixed(2)}% - ${scoreData[3]} misses\n`;
+        const scoreString: string = `${match.player[i][0]} - (N/A): **${scoreList.at(-1)!}** - ${(parseFloat(scoreData[1])).toFixed(2)}% - ${scoreData[3]} misses\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **Failed**`;
 
         if (i % 2 === 0) {
