@@ -1,19 +1,17 @@
 import { Collection, Guild, GuildChannel, MessageEmbed, Snowflake } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { ActivityCategory } from "@alice-interfaces/commands/Tools/ActivityCategory";
-import { Command } from "@alice-interfaces/core/Command";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { activityinfoStrings } from "./activityinfoStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { ChannelDataCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
+import { messageanalyticsStrings } from "../messageanalyticsStrings";
+import { Subcommand } from "@alice-interfaces/core/Subcommand";
 
 /**
  * Converts days to milliseconds.
@@ -25,7 +23,7 @@ function daysToMilliseconds(days: number): number {
     return 24 * 3.6e6 * days;
 }
 
-export const run: Command["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (client, interaction) => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
     const dbManager: ChannelDataCollectionManager = DatabaseManager.aliceDb.collections.channelData;
 
@@ -34,9 +32,9 @@ export const run: Command["run"] = async (client, interaction) => {
     if (interaction.options.getString("date")) {
         const dateEntries: number[] = (interaction.options.getString("date", true)).split("-").map(v => parseInt(v));
 
-        if (dateEntries.length !== 3 || dateEntries.some(isNaN)) {
+        if (dateEntries.length !== 3 || dateEntries.some(Number.isNaN)) {
             return interaction.editReply({
-                content: MessageCreator.createReject(activityinfoStrings.incorrectDateFormat)
+                content: MessageCreator.createReject(messageanalyticsStrings.incorrectDateFormat)
             });
         }
 
@@ -47,13 +45,13 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (date.getTime() < guild.createdTimestamp) {
         return interaction.editReply({
-            content: MessageCreator.createReject(activityinfoStrings.dateBeforeGuildCreationError)
+            content: MessageCreator.createReject(messageanalyticsStrings.dateBeforeGuildCreationError)
         });
     }
 
     if (date.getTime() > Date.now()) {
         return interaction.editReply({
-            content: MessageCreator.createReject(activityinfoStrings.dateHasntPassed)
+            content: MessageCreator.createReject(messageanalyticsStrings.dateHasntPassed)
         });
     }
 
@@ -101,7 +99,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (activityData.size === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(activityinfoStrings.noActivityDataOnDate)
+            content: MessageCreator.createReject(messageanalyticsStrings.noActivityDataOnDate)
         });
     }
 
@@ -184,53 +182,4 @@ export const run: Command["run"] = async (client, interaction) => {
         10,
         onPageChange
     );
-};
-
-export const category: Command["category"] = CommandCategory.TOOLS;
-
-export const config: Command["config"] = {
-    name: "activityinfo",
-    description: "Views channel activities in main server.",
-    options: [
-        {
-            name: "type",
-            type: CommandArgumentType.STRING,
-            description: "The activity interval type to view. Defaults to overall.",
-            choices: [
-                {
-                    name: "Overall",
-                    value: "overall"
-                },
-                {
-                    name: "Monthly",
-                    value: "monthly"
-                },
-                {
-                    name: "Weekly",
-                    value: "weekly"
-                },
-                {
-                    name: "Daily",
-                    value: "daily"
-                }
-            ]
-        },
-        {
-            name: "date",
-            type: CommandArgumentType.STRING,
-            description: "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time."
-        }
-    ],
-    example: [
-        {
-            command: "activityinfo",
-            description: "will view activity information of the main server based on."
-        },
-        {
-            command: "activityinfo 2021-5-4",
-            description: "will view activity information of the main server at the week May 4, 2021 is at."
-        }
-    ],
-    permissions: [],
-    scope: "ALL"
 };
