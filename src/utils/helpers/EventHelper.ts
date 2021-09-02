@@ -29,7 +29,7 @@ export abstract class EventHelper {
             if (guild && this.isUtilityDisabledInGuild(guild, eventName, utilityName)) {
                 continue;
             }
-            
+
             if (channel && this.isUtilityDisabledInChannel(channel, eventName, utilityName)) {
                 continue;
             }
