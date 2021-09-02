@@ -8,7 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { GuildMember, Interaction } from "discord.js";
+import { DMChannel, GuildMember, Interaction } from "discord.js";
 
 export const run: EventUtil["run"] = async (client, interaction: Interaction) => {
     if (!interaction.isCommand()) {
@@ -81,7 +81,7 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             });
         }
 
-        client.logger.info(`Executed command: ${interaction.commandName}`);
+        client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : interaction.channel!.toString()}): ${interaction.commandName}`);
 
         const finalCooldown: number = Math.max(
             // Local command cooldown
