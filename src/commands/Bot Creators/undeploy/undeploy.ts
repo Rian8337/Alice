@@ -1,21 +1,11 @@
-import { Constants } from "@alice-core/Constants";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Guild } from "discord.js";
 import { undeployStrings } from "./undeployStrings";
 
 export const run: Command["run"] = async (client, interaction) => {
     const commandName: string = interaction.options.getString("command", true);
-
-    const command: Command | undefined = client.commands.get(commandName);
-
-    if (!command) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(undeployStrings.commandNotFound)
-        });
-    }
 
     if (interaction.options.getBoolean("debug")) {
         await interaction.guild!.commands.fetch();
