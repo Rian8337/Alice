@@ -76,9 +76,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
             logEmbed.setColor("#c7c03c")
                 .setTitle("Lounge Lock Extended")
                 .setDescription(
-                    `**User**: <@${userId}>
-                    **Updated Reason**: ${reason}
-                    **New Expiration Date**: ${!Number.isFinite(lockInfo.expiration + duration) ? "Never" : new Date((lockInfo.expiration + duration) * 1000).toUTCString()}`
+                    `**User**: <@${userId}>\n` +
+                    `**Updated Reason**: ${reason}\n` +
+                    `**New Expiration Date**: ${!Number.isFinite(lockInfo.expiration + duration) ? "Never" : new Date((lockInfo.expiration + duration) * 1000).toUTCString()}`
                 );
         } else {
             // Insert new lock
@@ -87,9 +87,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
             logEmbed.setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")
                 .setDescription(
-                    `**User**: <@${userId}>
-                    **Reason**: ${reason}
-                    **Expiration Date**: ${new Date(duration * 1000).toUTCString()}`
+                    `**User**: <@${userId}>\n` +
+                    `**Reason**: ${reason}\n` +
+                    `**Expiration Date**: ${new Date(duration * 1000).toUTCString()}`
                 );
         }
 
