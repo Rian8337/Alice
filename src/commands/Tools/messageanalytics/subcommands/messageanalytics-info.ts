@@ -159,17 +159,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     embed.setTitle(`${StringHelper.capitalizeString(type)} channel activity per ${DateTimeFormatHelper.dateToHumanReadable(date)}`);
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: ActivityCategory[]) => {
+    const onPageChange: OnButtonPageChange = async (_, page, contents: ActivityCategory[]) => {
         const content: ActivityCategory = contents[page - 1];
-
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
 
         embed.setDescription(
             `**${content.category}**\n\n` +
             content.description
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

@@ -33,9 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
     );
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: Tag[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: Tag[]) => {
         embed.setDescription(
             `**Tags for ${interaction.user}**\n` +
             `**Total tags**: ${contents.length}\n\n` +
@@ -44,8 +42,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
             .join("\n")
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

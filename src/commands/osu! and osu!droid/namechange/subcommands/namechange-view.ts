@@ -25,9 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle("Name Change Request List");
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: NameChange[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: NameChange[]) => {
         for (let i = 10 * (page - 1); i < 10 + 10 * (page - 1); ++i) {
             const content: NameChange = contents[i];
 
@@ -40,8 +38,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 );
             }
         }
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

@@ -24,9 +24,7 @@ export abstract class ScoreDisplayHelper {
 
         embed.setDescription(`Recent plays for **${player.username}**`);
 
-        const onPageChange: OnButtonPageChange = async (options, page, contents: Score[]) => {
-            const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+        const onPageChange: OnButtonPageChange = async (_, page, contents: Score[]) => {
             for (let i = 5 * (page - 1); i < Math.min(contents.length, 5 + 5 * (page - 1)); ++i) {
                 const score: Score = contents[i];
 
@@ -36,8 +34,6 @@ export abstract class ScoreDisplayHelper {
                     `\`${score.date.toUTCString()}\``
                 );
             }
-
-            options.embeds![0] = embed;
         };
 
         return MessageButtonCreator.createLimitedButtonBasedPaging(

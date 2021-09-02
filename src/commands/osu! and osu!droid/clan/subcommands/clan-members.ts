@@ -36,9 +36,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embed.setThumbnail(clan.iconURL);
     }
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: ClanMember[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: ClanMember[]) => {
         embed.setDescription(
             contents.slice(5 * (page - 1), 5 + 5 * (page - 1))
                 .map((v, i) =>
@@ -50,8 +48,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 )
                 .join("\n\n")
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

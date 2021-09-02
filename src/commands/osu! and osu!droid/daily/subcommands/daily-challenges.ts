@@ -28,9 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const bonusDescription: BonusDescription[] = challenge.getBonusInformation();
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: BonusDescription[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: BonusDescription[]) => {
         const content: BonusDescription = contents[page - 1];
 
         embed.addField(content.id, content.description);

@@ -1,6 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseProfileBackground } from "@alice-interfaces/database/aliceDb/DatabaseProfileBackground";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
@@ -15,24 +14,20 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const ownedBackgrounds: ProfileBackground[] = (playerInfo?.picture_config.backgrounds ?? []).map(v => new ProfileBackground(client, v));
 
-    const onPageChange: OnButtonPageChange = async (options, page, backgrounds: ProfileBackground[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+    );
 
+    const onPageChange: OnButtonPageChange = async (_, page, backgrounds: ProfileBackground[]) => {
         for (let i = 10 * (page - 1); i < Math.min(backgrounds.length, 10 * 10 * (page - 1)); ++i) {
             const bg: ProfileBackground = backgrounds[i];
             embed.addField(`${i + 1}. ${bg.name}`, `Owned: **${ownedBackgrounds.find(v => v.id === bg.id) ? "Yes" : "No"}**`);
         }
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        {
-            embeds: [ EmbedCreator.createNormalEmbed(
-                { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
-            ) ]
-        },
+        { embeds: [ embed ] },
         [interaction.user.id],
         [...backgrounds.values()],
         10,

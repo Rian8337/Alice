@@ -32,16 +32,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle("Roles with Mute Immunity");
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: RoleMutePermission[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: RoleMutePermission[]) => {
         embed.setDescription(contents
             .slice(10 * (page - 1), 10 + 10 * (page - 1))
             .map(v => `- <@&${v.id}> (${v.maxTime === -1 ? "Permanent" : DateTimeFormatHelper.secondsToDHMS(v.maxTime)})`)
             .join("\n")
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

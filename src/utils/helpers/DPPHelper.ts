@@ -95,9 +95,7 @@ export abstract class DPPHelper {
 
         const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(interaction, bindInfo, ppRank);
 
-        const onPageChange: OnButtonPageChange = async (options, page, contents: PPEntry[]) => {
-            const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+        const onPageChange: OnButtonPageChange = async (_, page, contents: PPEntry[]) => {
             for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
                 const pp: PPEntry = contents[i];
                 if (pp) {
@@ -129,8 +127,6 @@ export abstract class DPPHelper {
                     embed.addField(`${i+1}. -`, "-");
                 }
             }
-
-            options.embeds![0] = embed;
         };
 
         MessageButtonCreator.createLimitedButtonBasedPaging(

@@ -25,9 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
     );
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: ClanAuction[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: ClanAuction[]) => {
         for (let i = 5 * (page - 1); i < Math.min(contents.length, 5 + 5 * (page - 1)); ++i) {
             const auction: ClanAuction = contents[i];
 
@@ -42,8 +40,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 `**Bidders**: ${auction.bids.size.toLocaleString()}`
             );
         }
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

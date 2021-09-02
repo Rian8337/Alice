@@ -34,17 +34,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     embed.setTitle(`Name History For Uid ${nameChange.uid}`)
         .setDescription(`**Current Username**: ${nameChange.current_username}`);
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: string[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: string[]) => {
         embed.addField(
             "Name History",
             contents.slice(10 * (page - 1), 10 + 10 * (page - 1))
                 .map((v, i) => `**${10 * (page - 1) + i}.** ${v}`)
                 .join("\n")
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

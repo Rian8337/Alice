@@ -120,17 +120,13 @@ export const run: Command["run"] = async (client, interaction) => {
             )
             .setThumbnail(<string> client.user?.avatarURL({dynamic: true}));
 
-        const onPageChange: OnButtonPageChange = async (options, page, contents: { key: string, value: string[] }[]) => {
-            const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+        const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: string[] }[]) => {
             const list: { key: string, value: string[] } = contents[page - 1];
 
             embed.addField(
                 `**Category**: ${list.key}`,
                 list.value.map(v => `\`${v}\``).join(" • ")
             );
-
-            options.embeds![0] = embed;
         };
 
         MessageButtonCreator.createLimitedButtonBasedPaging(

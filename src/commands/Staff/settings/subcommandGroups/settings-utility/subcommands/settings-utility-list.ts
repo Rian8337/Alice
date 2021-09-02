@@ -17,9 +17,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
     );
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: { key: string, value: Collection<string, EventUtil> }[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: Collection<string, EventUtil> }[]) => {
         const content: { key: string, value: Collection<string, EventUtil> } = contents[page - 1];
 
         embed.setDescription(`**Event name: \`${content.key}\`**`);
@@ -32,8 +30,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 `**Toggleable Scope**: ${utility.config.toggleScope.map(v => StringHelper.capitalizeString(v, true)).join(", ")}`
             );
         }
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(

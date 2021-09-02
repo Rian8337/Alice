@@ -30,16 +30,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     embed.setTitle("Roles with Mute Immunity");
 
-    const onPageChange: OnButtonPageChange = async (options, page, contents: Snowflake[]) => {
-        const embed: MessageEmbed = <MessageEmbed> options.embeds![0];
-
+    const onPageChange: OnButtonPageChange = async (_, page, contents: Snowflake[]) => {
         embed.setDescription(contents
             .slice(10 * (page - 1), 10 + 10 * (page - 1))
             .map(v => `- <@&${v}>`)
             .join("\n")
         );
-
-        options.embeds![0] = embed;
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
