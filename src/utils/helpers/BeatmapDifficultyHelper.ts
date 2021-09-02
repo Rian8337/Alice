@@ -92,7 +92,7 @@ export abstract class BeatmapDifficultyHelper {
             ar: score.forcedAR,
             speedMultiplier: score.speedMultiplier,
             isForceAR: !!isNaN(<number> score.forcedAR),
-            oldStatistics: (score.replay?.data?.replayVersion ?? 1) <= 3
+            oldStatistics: (score.replay?.data?.replayVersion ?? 4) <= 3
         });
 
         return new PerformanceCalculationParameters(
