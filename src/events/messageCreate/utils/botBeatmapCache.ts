@@ -11,7 +11,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const embed: MessageEmbed = message.embeds[0];
 
     // Prioritize embed author
-    const url: string | undefined | null = embed?.author?.iconURL ?? embed?.url;
+    const url: string | undefined | null = embed?.author?.url ?? embed?.url;
 
     if (!url) {
         return;
