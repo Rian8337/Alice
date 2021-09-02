@@ -174,7 +174,7 @@ export class MapStats {
         switch (params?.mode || modes.osu) {
             case modes.droid: {
                 // In droid pre-1.6.8, NC speed multiplier is assumed bugged (1.39)
-                if ((this.mods.some(m => m instanceof ModNightCore)) && this.oldStatistics) {
+                if (this.mods.some(m => m instanceof ModNightCore) && this.oldStatistics) {
                     this.speedMultiplier *= 1.39 / 1.5;
                 }
 
