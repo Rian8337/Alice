@@ -188,8 +188,7 @@ export class Score {
             const hash: string = score.hash = params.hash;
 
             if (!uid || !hash) {
-                console.log("Uid and hash must be specified");
-                return resolve(score);
+                return reject("Uid and hash must be specified");
             }
 
             const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
@@ -199,14 +198,12 @@ export class Score {
 
             const result: RequestResponse = await apiRequestBuilder.sendRequest();
             if (result.statusCode !== 200) {
-                console.log("Error retrieving score data");
                 return reject("Error retrieving score data");
             }
 
             const entry: string[] = result.data.toString("utf-8").split("<br>");
             entry.shift();
             if (entry.length === 0) {
-                console.log("No play found");
                 return resolve(score);
             }
             score.fillInformation(entry[0]);
