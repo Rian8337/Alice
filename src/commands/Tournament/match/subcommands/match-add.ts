@@ -41,7 +41,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         result: []
     };
 
-    const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,1}\b/g;
+    const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,2}\b/g;
 
     const team1PlayersInformation: RegExpMatchArray = team1Players.match(splitRegex) ?? [];
 
