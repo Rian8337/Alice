@@ -115,7 +115,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 hitErrorInformation.positiveAvg.toFixed(2),
                 hitErrorInformation.unstableRate.toFixed(2)
             ),
-            files: [replayAttachment]
+            files: [ replayAttachment ]
         });
     }
 
@@ -130,6 +130,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
     (<MessageEmbed> calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, calcEmbedOptions.embeds![0].author?.iconURL)
         .addField("Hit Error Information", `${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(2)} UR`);
+
+    calcEmbedOptions.files = [ replayAttachment ];
 
     interaction.editReply(calcEmbedOptions);
 };
