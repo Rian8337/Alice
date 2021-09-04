@@ -21,4 +21,9 @@ export abstract class CacheManager {
      * The command cooldowns that are currently active.
      */
     static readonly activeCommandCooldowns: Set<CooldownKey> = new Set();
+
+    /**
+     * The users/channels that still have a math game active.
+     */
+    static readonly stillHasMathGameActive: Set<Snowflake> = new Set();
 }

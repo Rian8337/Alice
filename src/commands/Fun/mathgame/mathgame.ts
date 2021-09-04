@@ -12,9 +12,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-
-// Only need to mark active users and channels
-const activeUsersOrChannels: Set<Snowflake> = new Set();
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 /**
  * Generates an equation and loops the game.
@@ -63,7 +61,7 @@ function endGame(interaction: CommandInteraction, mode: MathGameType, gameStats:
             answerString
         );
 
-    activeUsersOrChannels.delete(mode === "single" ? interaction.user.id : interaction.channel!.id);
+    CacheManager.stillHasMathGameActive.delete(mode === "single" ? interaction.user.id : interaction.channel!.id);
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(endMessage),
@@ -76,22 +74,22 @@ export const run: Command["run"] = async (_, interaction) => {
 
     switch (mode) {
         case "single":
-            if (activeUsersOrChannels.has(interaction.user.id)) {
+            if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(mathgameStrings.userHasOngoingGame)
                 });
             }
 
-            activeUsersOrChannels.add(interaction.user.id);
+            CacheManager.stillHasMathGameActive.add(interaction.user.id);
             break;
         case "multi":
-            if (activeUsersOrChannels.has(interaction.channel!.id)) {
+            if (CacheManager.stillHasMathGameActive.has(interaction.channel!.id)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(mathgameStrings.channelHasOngoingGame)
                 });
             }
 
-            activeUsersOrChannels.add(interaction.channel!.id);
+            CacheManager.stillHasMathGameActive.add(interaction.channel!.id);
             break;
     }
 

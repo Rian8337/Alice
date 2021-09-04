@@ -1,4 +1,4 @@
-import { Message, MessageCollector, Snowflake } from "discord.js";
+import { Message, MessageCollector } from "discord.js";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MathEquation } from "@alice-interfaces/utils/MathEquation";
@@ -7,11 +7,10 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { mathquizStrings } from "./mathquizStrings";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-
-const stillHasEquationActive: Set<Snowflake> = new Set();
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 export const run: Command["run"] = async (_, interaction) => {
-    if (stillHasEquationActive.has(interaction.user.id)) {
+    if (CacheManager.stillHasMathGameActive.has(interaction.user.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(mathquizStrings.userStillHasActiveGame)
         });
@@ -65,7 +64,7 @@ export const run: Command["run"] = async (_, interaction) => {
         )
     });
 
-    stillHasEquationActive.add(interaction.user.id);
+    CacheManager.stillHasMathGameActive.add(interaction.user.id);
 
     const collector: MessageCollector = msg.channel.createMessageCollector({
         filter: (m: Message) => parseInt(m.content) === answer && m.author.id === interaction.user.id,
@@ -89,8 +88,6 @@ export const run: Command["run"] = async (_, interaction) => {
             )
         });
 
-        stillHasEquationActive.delete(interaction.user.id);
-
         collector.stop();
     });
 
@@ -102,9 +99,9 @@ export const run: Command["run"] = async (_, interaction) => {
                 realEquation,
                 answer.toString()
             ));
-
-            stillHasEquationActive.delete(interaction.user.id);
         }
+
+        CacheManager.stillHasMathGameActive.delete(interaction.user.id);
     });
 };
 
