@@ -21,8 +21,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const team2Scores: string[] = interaction.options.getString("team2scores", true).match(splitRegex) ?? [];
 
-    console.log(team1Scores, team2Scores);
-
     const match: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
     if (!match) {
@@ -81,6 +79,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const mapData: MainBeatmapData = mappoolMainData.map[pickIndex];
 
+    console.log(mapData);
+
     const scoreList: number[] = [];
 
     let team1OverallScore: number = 0;
@@ -102,10 +102,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
         }
 
+        console.log(scoreData);
+
         let scoreV2: number = match.calculateScoreV2(
             parseInt(scoreData[0]),
             parseFloat(scoreData[1]) / 100,
-            parseInt(scoreData[3]),
+            parseInt(scoreData[2]),
             parseInt(<string> mapData[2]),
             mapData[4] ?? 0.6
         );
@@ -114,9 +116,11 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             scoreV2 /= 0.59 / 0.56;
         }
 
+        scoreV2 = Math.round(scoreV2);
+
         scoreList.push(scoreV2);
 
-        const scoreString: string = `${match.player[i][0]} - (N/A): **${scoreList.at(-1)!}** - ${(parseFloat(scoreData[1])).toFixed(2)}% - ${scoreData[3]} misses\n`;
+        const scoreString: string = `${match.player[i][0]} - (N/A): **${scoreV2}** - ${(parseFloat(scoreData[1])).toFixed(2)}% - ${scoreData[2]} misses\n`;
         const failString: string = `${match.player[i][0]} - (N/A): **0** - **Failed**`;
 
         if (i % 2 === 0) {
@@ -166,14 +170,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const finalResult: DatabaseOperationResult = await match.updateMatch();
 
     if (!finalResult.success) {
-        return interaction.channel!.send({
+        return interaction.editReply({
             content: MessageCreator.createReject(
                 matchStrings.submitMatchFailed, finalResult.reason!
             )
         });
     }
 
-    interaction.channel!.send({
+    interaction.editReply({
         content: MessageCreator.createAccept(matchStrings.submitMatchSuccessful),
         embeds: [ resultEmbed, summaryEmbed ]
     });
