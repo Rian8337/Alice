@@ -51,7 +51,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(matchStrings.undoMatchSuccessful)
+        content: MessageCreator.createAccept(
+            matchStrings.undoMatchSuccessful, match.matchid
+        )
     });
 };
 
