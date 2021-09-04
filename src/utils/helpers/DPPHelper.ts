@@ -15,6 +15,12 @@ import { MapInfo, Score } from "osu-droid";
  * A helper for droid performance points submission.
  */
 export abstract class DPPHelper {
+    /**
+     * Checks a score's submission validity.
+     * 
+     * @param score The score.
+     * @returns The validity of the score.
+     */
     static async checkSubmissionValidity(score: Score): Promise<DPPSubmissionValidity> {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
