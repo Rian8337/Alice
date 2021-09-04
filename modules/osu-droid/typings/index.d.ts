@@ -2235,10 +2235,6 @@ declare module "osu-droid" {
          */
         forcedAR?: number;
         /**
-         * Enabled modifications in the play in osu!droid format.
-         */
-        droidMods: string;
-        /**
          * The replay of the score.
          */
         replay?: ReplayAnalyzer;
