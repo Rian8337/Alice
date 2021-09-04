@@ -24,7 +24,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     const bindDb: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 
-    const bindInfo: UserBind | null = await bindDb.getFromUser(user.id);
+    const bindInfo: UserBind | null = await bindDb.getFromUid(uid);
 
     if (!bindInfo) {
         return interaction.editReply({
