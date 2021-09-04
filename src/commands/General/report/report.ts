@@ -43,9 +43,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     embed.setThumbnail(toReport.user.avatarURL({ dynamic: true })!)
         .setDescription(
-            `**Offender**: ${toReport} (${toReport.id})
-            **Channel**: ${interaction.channel}
-            **Reason**: ${reason}`
+            `**Offender**: ${toReport} (${toReport.id})\n` +
+            `**Channel**: ${interaction.channel}\n` +
+            `**Reason**: ${reason}`
         );
 
     const reportChannel: TextChannel = <TextChannel> interaction.guild!.channels.cache.find(c => c.name === Config.reportChannel);
@@ -58,11 +58,10 @@ export const run: Command["run"] = async (_, interaction) => {
 
     replyEmbed.setAuthor("Report Summary")
         .setDescription(
-            `**Offender**: ${toReport} (${toReport.id})
-            **Channel**: ${interaction.channel}
-            **Reason**: ${reason}
-            
-            Remember to save your evidence in case it is needed.`
+            `**Offender**: ${toReport} (${toReport.id})\n` +
+            `**Channel**: ${interaction.channel}\n` +
+            `**Reason**: ${reason}\n\n` +
+            `Remember to save your evidence in case it is needed.`
         );
     
     interaction.user.send({ embeds: [replyEmbed] })
