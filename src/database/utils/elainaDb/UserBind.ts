@@ -254,7 +254,7 @@ export class UserBind extends Manager {
             this.uid = ArrayHelper.getRandomArrayElement(this.previous_bind);
         }
 
-        const player: Player = await Player.getInformation({ uid: this.uid });
+        const player: Player = await Player.getInformation({ uid: uid });
 
         if (!player.username) {
             this.previous_bind.push(uid);
