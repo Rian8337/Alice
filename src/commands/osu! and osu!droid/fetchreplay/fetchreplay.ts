@@ -77,7 +77,7 @@ export const run: Command["run"] = async (_, interaction) => {
             filename: `${data.folderName}\/${data.fileName}`,
             playername: data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
-            mod: `${score.droidMods}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""}${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
+            mod: `${score.mods.map(v => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""}${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
             score: score.score,
             combo: score.combo,
             mark: score.rank,
