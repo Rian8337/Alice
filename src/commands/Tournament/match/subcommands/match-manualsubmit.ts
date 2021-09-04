@@ -15,11 +15,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const pick: string = interaction.options.getString("pick", true);
 
-    const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,2}\b/g;
+    const splitRegex: RegExp = /\b[\w']+(?:[^\w\n]+[\w']+){0,3}\b/g;
 
     const team1Scores: string[] = interaction.options.getString("team1scores", true).match(splitRegex) ?? [];
 
     const team2Scores: string[] = interaction.options.getString("team2scores", true).match(splitRegex) ?? [];
+
+    console.log(team1Scores, team2Scores);
 
     const match: TournamentMatch | null = await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id);
 
@@ -69,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const pickIndex: number = mappoolDurationData.map.findIndex(m => m[0] === pick);
+    const pickIndex: number = mappoolDurationData.map.findIndex(m => m[0].toUpperCase() === pick.toUpperCase());
 
     if (pickIndex === -1) {
         return interaction.editReply({
