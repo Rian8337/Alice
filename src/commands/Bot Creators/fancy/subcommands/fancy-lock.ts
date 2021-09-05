@@ -9,9 +9,9 @@ import { fancyStrings } from "../fancyStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user", true);
 
-    const duration: number = CommandHelper.convertStringTimeFormat(interaction.options.getString("duration")!);
+    const duration: number = CommandHelper.convertStringTimeFormat(interaction.options.getString("duration", true));
 
-    const reason: string = interaction.options.getString("reason")!;
+    const reason: string = interaction.options.getString("reason", true);
 
     if (!Number.isFinite(duration)) {
         return interaction.editReply({

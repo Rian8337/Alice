@@ -177,7 +177,7 @@ export abstract class MuteManager extends PunishmentManager {
         );
 
         if (duration >= 6 * 3600) {
-            await LoungeLockManager.lock(member.id, "Muted for 6 hours or longer", 30 * 24 * 3600 * 1000);
+            await LoungeLockManager.lock(member.id, "Muted for 6 hours or longer", 30 * 24 * 3600);
         }
 
         if (!isInfiniteMute) {

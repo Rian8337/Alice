@@ -78,7 +78,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setDescription(
                     `**User**: <@${userId}>\n` +
                     `**Updated Reason**: ${reason}\n` +
-                    `**New Expiration Date**: ${!Number.isFinite(lockInfo.expiration + duration) ? "Never" : new Date((lockInfo.expiration + duration) * 1000).toUTCString()}`
+                    `**New Expiration Date**: ${!Number.isFinite(lockInfo.expiration + duration * 1000) ? "Never" : new Date(lockInfo.expiration + duration * 1000).toUTCString()}`
                 );
         } else {
             // Insert new lock
