@@ -86,7 +86,7 @@ export abstract class EmbedCreator {
         return {
             embeds: [new MessageEmbed()
                 .setFooter(this.botSign, ArrayHelper.getRandomArrayElement(Config.avatarList))
-                .setAuthor("Beatmap Information", `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(2)}.png`)
+                .setAuthor("Beatmap Information", `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)
                 .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
                 .setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calcResult.osu.total))
                 .setTitle(beatmapInfo.showStatistics(0, calcParams.mods))
@@ -95,7 +95,7 @@ export abstract class EmbedCreator {
                 .addField(beatmapInfo.showStatistics(2, calcParams.mods), beatmapInfo.showStatistics(3, calcParams.mods))
                 .addField(beatmapInfo.showStatistics(4, calcParams.mods), beatmapInfo.showStatistics(5, calcParams.mods))
             ],
-            files: [BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(beatmapInfo.totalDifficulty.toFixed(2)))]
+            files: [BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(calcResult.osu.total.toFixed(2)))]
         };
     }
 
