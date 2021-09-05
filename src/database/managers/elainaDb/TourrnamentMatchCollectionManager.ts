@@ -3,7 +3,6 @@ import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/Dat
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 import { Snowflake } from "discord.js";
 
 /**
@@ -23,13 +22,13 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseTournamentMatch>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseTournamentMatch>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMatch, TournamentMatch>> new TournamentMatch(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMatch, TournamentMatch>> new TournamentMatch().constructor
     }
 
     /**

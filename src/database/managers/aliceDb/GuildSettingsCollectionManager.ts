@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
 import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
@@ -21,13 +20,13 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<Da
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseGuildSettings>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseGuildSettings>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>> new GuildSettings(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>> new GuildSettings().constructor
     }
 
     /**

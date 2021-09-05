@@ -3,7 +3,6 @@ import { DatabaseDPPBan } from "@alice-interfaces/database/elainaDb/DatabaseDPPB
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `dppban` collection.
@@ -18,13 +17,13 @@ export class DPPBanCollectionManager extends DatabaseCollectionManager<DatabaseD
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseDPPBan>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseDPPBan>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseDPPBan, DPPBan>> new DPPBan(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseDPPBan, DPPBan>> new DPPBan().constructor
     }
 
     /**

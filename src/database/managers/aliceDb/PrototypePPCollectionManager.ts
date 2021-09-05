@@ -3,7 +3,6 @@ import { DatabasePrototypePP } from "@alice-interfaces/database/aliceDb/Database
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `prototypepp` collection.
@@ -22,12 +21,12 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabasePrototypePP>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabasePrototypePP>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePrototypePP, PrototypePP>> new PrototypePP(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePrototypePP, PrototypePP>> new PrototypePP().constructor
     }
 }

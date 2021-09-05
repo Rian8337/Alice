@@ -5,7 +5,6 @@ import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
-import { Bot } from "@alice-core/Bot";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
@@ -87,13 +86,13 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseClan>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseClan>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClan, Clan>> new Clan(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClan, Clan>> new Clan().constructor
     }
 
     /**
@@ -136,6 +135,6 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
             { weeklyfee: { $lte: weeklyFeeTimeLimit } }
         ).sort({ weeklyfee: 1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(databaseClans.map(v => new Clan(this.client, v)), "name");
+        return ArrayHelper.arrayToCollection(databaseClans.map(v => Object.assign(this.defaultInstance, v)), "name");
     }
 }

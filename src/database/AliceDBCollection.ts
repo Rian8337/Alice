@@ -22,7 +22,6 @@ import { ProfileBackgroundCollectionManager } from "./managers/aliceDb/ProfileBa
 import { VotingCollectionManager } from "./managers/aliceDb/VotingCollectionManager";
 import { PrototypePPCollectionManager } from "./managers/aliceDb/PrototypePPCollectionManager";
 import { ProfileBadgeCollectionManager } from "./managers/aliceDb/ProfileBadgeCollectionManager";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * Contains collections from Alice DB.
@@ -147,32 +146,31 @@ export class AliceDBCollection {
     readonly voting: VotingCollectionManager;
 
     /**
-     * @param client The instance of the bot.
      * @param aliceDb The database that is only used by this bot (my database).
      */
-    constructor(client: Bot, aliceDb: Db) {
-        this.askCount = new AskCountCollectionManager(client, aliceDb.collection("askcount"));
-        this.clanAuction = new ClanAuctionCollectionManager(client, aliceDb.collection("auction"));
-        this.birthday = new BirthdayCollectionManager(client, aliceDb.collection("birthday"));
-        this.channelData = new ChannelDataCollectionManager(client, aliceDb.collection("channeldata"));
-        this.challenge = new ChallengeCollectionManager(client, aliceDb.collection("dailychallenge"));
-        this.guildSettings = new GuildSettingsCollectionManager(client, aliceDb.collection("guildsettings"));
-        this.emojiStatistics = new EmojiStatisticsCollectionManager(client, aliceDb.collection("emojistatistics"));
-        this.loungeLock = new LoungeLockCollectionManager(client, aliceDb.collection("loungelock"));
-        this.tournamentMapLengthInfo = new TournamentMapLengthInfoCollectionManager(client, aliceDb.collection("mapinfolength"));
-        this.mapShare = new MapShareCollectionManager(client, aliceDb.collection("mapshare"));
-        this.nameChange = new NameChangeCollectionManager(client, aliceDb.collection("namechange"));
-        this.osuBind = new OsuBindCollectionManager(client, aliceDb.collection("osubind"));
-        this.playerInfo = new PlayerInfoCollectionManager(client, aliceDb.collection("playerpoints"));
-        this.rankedScore = new RankedScoreCollectionManager(client, aliceDb.collection("rankedscore"));
-        this.playerSkins = new PlayerSkinCollectionManager(client, aliceDb.collection("playerskins"));
-        this.dppAPIKey = new DPPAPIKeyCollectionManager(client, aliceDb.collection("ppapikey"));
-        this.profileBackgrounds = new ProfileBackgroundCollectionManager(client, aliceDb.collection("profilebackgrounds"));
-        this.profileBadges = new ProfileBadgeCollectionManager(client, aliceDb.collection("profilebadges"));
-        this.prototypePP = new PrototypePPCollectionManager(client, aliceDb.collection("prototypepp"));
-        this.guildPunishmentConfig = new GuildPunishmentConfigCollectionManager(client, aliceDb.collection("punishmentconfig"));
-        this.eightBallFilter = new EightBallFilterCollectionManager(client, aliceDb.collection("responsefilter"));
-        this.guildTags = new GuildTagsCollectionManager(client, aliceDb.collection("tags"));
-        this.voting = new VotingCollectionManager(client, aliceDb.collection("voting"));
+    constructor(aliceDb: Db) {
+        this.askCount = new AskCountCollectionManager(aliceDb.collection("askcount"));
+        this.clanAuction = new ClanAuctionCollectionManager(aliceDb.collection("auction"));
+        this.birthday = new BirthdayCollectionManager(aliceDb.collection("birthday"));
+        this.channelData = new ChannelDataCollectionManager(aliceDb.collection("channeldata"));
+        this.challenge = new ChallengeCollectionManager(aliceDb.collection("dailychallenge"));
+        this.guildSettings = new GuildSettingsCollectionManager(aliceDb.collection("guildsettings"));
+        this.emojiStatistics = new EmojiStatisticsCollectionManager(aliceDb.collection("emojistatistics"));
+        this.loungeLock = new LoungeLockCollectionManager(aliceDb.collection("loungelock"));
+        this.tournamentMapLengthInfo = new TournamentMapLengthInfoCollectionManager(aliceDb.collection("mapinfolength"));
+        this.mapShare = new MapShareCollectionManager(aliceDb.collection("mapshare"));
+        this.nameChange = new NameChangeCollectionManager(aliceDb.collection("namechange"));
+        this.osuBind = new OsuBindCollectionManager(aliceDb.collection("osubind"));
+        this.playerInfo = new PlayerInfoCollectionManager(aliceDb.collection("playerpoints"));
+        this.rankedScore = new RankedScoreCollectionManager(aliceDb.collection("rankedscore"));
+        this.playerSkins = new PlayerSkinCollectionManager(aliceDb.collection("playerskins"));
+        this.dppAPIKey = new DPPAPIKeyCollectionManager(aliceDb.collection("ppapikey"));
+        this.profileBackgrounds = new ProfileBackgroundCollectionManager(aliceDb.collection("profilebackgrounds"));
+        this.profileBadges = new ProfileBadgeCollectionManager(aliceDb.collection("profilebadges"));
+        this.prototypePP = new PrototypePPCollectionManager(aliceDb.collection("prototypepp"));
+        this.guildPunishmentConfig = new GuildPunishmentConfigCollectionManager(aliceDb.collection("punishmentconfig"));
+        this.eightBallFilter = new EightBallFilterCollectionManager(aliceDb.collection("responsefilter"));
+        this.guildTags = new GuildTagsCollectionManager(aliceDb.collection("tags"));
+        this.voting = new VotingCollectionManager(aliceDb.collection("voting"));
     }
 }

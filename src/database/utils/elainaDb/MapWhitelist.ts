@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { WhitelistDifficultyStatistics } from "@alice-interfaces/dpp/WhitelistDifficultyStatistics";
@@ -19,8 +18,8 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
     whitelistScanDone?: boolean;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseMapWhitelist = DatabaseManager.elainaDb.collections.mapWhitelist.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseMapWhitelist = DatabaseManager.elainaDb.collections.mapWhitelist.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.mapid = data.mapid;

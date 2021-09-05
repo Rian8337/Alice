@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
@@ -23,13 +22,13 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseGuildPunishmentConfig>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseGuildPunishmentConfig>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>> new GuildPunishmentConfig(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>> new GuildPunishmentConfig().constructor
     }
 
     /**

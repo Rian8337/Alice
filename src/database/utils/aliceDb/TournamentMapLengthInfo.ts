@@ -12,8 +12,8 @@ export class TournamentMapLengthInfo extends Manager implements DatabaseTourname
     map: [string, string | number][];
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.poolid = data.poolid;

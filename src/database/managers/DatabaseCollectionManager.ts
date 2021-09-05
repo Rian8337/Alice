@@ -29,14 +29,14 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * The default instance of this collection utility.
      */
     get defaultInstance(): C {
-        return new this.utilityInstance(this.client, this.defaultDocument);
+        return new this.utilityInstance(this.defaultDocument);
     }
 
     /**
      * @param collection The MongoDB collection.
      */
-    constructor(client: Bot, collection: MongoDBCollection<T>) {
-        super(client);
+    constructor(collection: MongoDBCollection<T>) {
+        super();
 
         this.collection = collection;
     }
@@ -109,7 +109,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
         const collection: DiscordCollection<T[K], C> = new DiscordCollection();
 
         for (const data of res) {
-            collection.set(data[key], new this.utilityInstance(this.client, data));
+            collection.set(data[key], new this.utilityInstance(data));
         }
 
         return collection;
@@ -155,7 +155,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     async getOne(filter: FilterQuery<T> = { }, options?: WithoutProjection<FindOneOptions<T>> | FindOneOptions<T extends T ? T : T>): Promise<C | null> {
         const res: T | null = await this.collection.findOne(filter, options);
 
-        return res ? new this.utilityInstance(this.client, res) : null;
+        return res ? new this.utilityInstance(res) : null;
     }
 
     /**

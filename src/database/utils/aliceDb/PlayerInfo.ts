@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
@@ -10,7 +9,6 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 import { Player } from "osu-droid";
-import { ProfileBackground } from "./ProfileBackground";
 
 /**
  * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
@@ -103,8 +101,8 @@ export class PlayerInfo extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabasePlayerInfo = DatabaseManager.aliceDb.collections.playerInfo.defaultDocument) {
-        super(client);
+    constructor(data: DatabasePlayerInfo = DatabaseManager.aliceDb.collections.playerInfo.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

@@ -17,8 +17,8 @@ export class Voting extends Manager implements DatabaseVoting {
     choices: VoteChoice[];
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseVoting = DatabaseManager.aliceDb.collections.voting.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseVoting = DatabaseManager.aliceDb.collections.voting.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.initiator = data.initiator;

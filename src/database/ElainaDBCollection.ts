@@ -7,7 +7,6 @@ import { MapWhitelistCollectionManager } from "./managers/elainaDb/MapWhitelistC
 import { DPPBanCollectionManager } from "./managers/elainaDb/DPPBanCollectionManager";
 import { PlayerTrackingCollectionManager } from "./managers/elainaDb/PlayerTrackingCollectionManager";
 import { UserBindCollectionManager } from "./managers/elainaDb/UserBindCollectionManager";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * Contains collections from Elaina DB.
@@ -54,17 +53,16 @@ export class ElainaDBCollection {
     readonly userBind: UserBindCollectionManager;
 
     /**
-     * @param client The instance of the bot.
      * @param elainaDb The database that is shared with the old bot (Nero's database).
      */
-    constructor(client: Bot, elainaDb: Db) {
-        this.clan = new ClanCollectionManager(client, elainaDb.collection("clandb"));
-        this.mapBlacklist = new MapBlacklistCollectionManager(client, elainaDb.collection("mapblacklist"));
-        this.tournamentMappool = new TournamentMappoolCollectionManager(client, elainaDb.collection("mapinfo"));
-        this.tournamentMatch = new TournamentMatchCollectionManager(client, elainaDb.collection("matchinfo"));
-        this.mapWhitelist = new MapWhitelistCollectionManager(client, elainaDb.collection("mapwhitelist"));
-        this.dppBan = new DPPBanCollectionManager(client, elainaDb.collection("ppban"));
-        this.playerTracking = new PlayerTrackingCollectionManager(client, elainaDb.collection("tracking"));
-        this.userBind = new UserBindCollectionManager(client, elainaDb.collection("userbind"));
+    constructor(elainaDb: Db) {
+        this.clan = new ClanCollectionManager(elainaDb.collection("clandb"));
+        this.mapBlacklist = new MapBlacklistCollectionManager(elainaDb.collection("mapblacklist"));
+        this.tournamentMappool = new TournamentMappoolCollectionManager(elainaDb.collection("mapinfo"));
+        this.tournamentMatch = new TournamentMatchCollectionManager(elainaDb.collection("matchinfo"));
+        this.mapWhitelist = new MapWhitelistCollectionManager(elainaDb.collection("mapwhitelist"));
+        this.dppBan = new DPPBanCollectionManager(elainaDb.collection("ppban"));
+        this.playerTracking = new PlayerTrackingCollectionManager(elainaDb.collection("tracking"));
+        this.userBind = new UserBindCollectionManager(elainaDb.collection("userbind"));
     }
 }

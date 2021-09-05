@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
 import { Manager } from "@alice-utils/base/Manager";
@@ -24,8 +23,8 @@ export class ChannelData extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseChannelData = DatabaseManager.aliceDb.collections.channelData.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseChannelData = DatabaseManager.aliceDb.collections.channelData.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.timestamp = data.timestamp;

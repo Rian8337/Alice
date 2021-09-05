@@ -5,7 +5,6 @@ import { Collection as DiscordCollection, Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `namechange` collection.
@@ -25,13 +24,13 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<Datab
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseNameChange>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseNameChange>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseNameChange, NameChange>> new NameChange(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseNameChange, NameChange>> new NameChange().constructor
     }
 
     /**

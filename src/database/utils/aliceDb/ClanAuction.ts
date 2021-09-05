@@ -6,12 +6,10 @@ import { Manager } from "@alice-utils/base/Manager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { ObjectId } from "bson";
-import { Collection, Snowflake } from "discord.js";
+import { Collection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
-import { Bot } from "@alice-core/Bot";
 import { PowerupType } from "@alice-types/clan/PowerupType";
-import { PlayerInfo } from "./PlayerInfo";
 
 /**
  * Represents a clan auction.
@@ -62,8 +60,8 @@ export class ClanAuction extends Manager {
      */
     bids: Collection<string, AuctionBid>;
 
-    constructor(client: Bot, data: DatabaseClanAuction = DatabaseManager.aliceDb.collections.clanAuction.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseClanAuction = DatabaseManager.aliceDb.collections.clanAuction.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.name = data.name;

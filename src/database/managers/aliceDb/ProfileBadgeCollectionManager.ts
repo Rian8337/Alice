@@ -3,7 +3,6 @@ import { DatabaseProfileBadge } from "@alice-interfaces/database/aliceDb/Databas
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -23,13 +22,13 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<Dat
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseProfileBadge>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseProfileBadge>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseProfileBadge, ProfileBadge>> new ProfileBadge(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseProfileBadge, ProfileBadge>> new ProfileBadge().constructor
     }
 
     /**
@@ -40,6 +39,6 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<Dat
             {}, { projection: { _id: 0, id: 1, name: 1, description: 1 } }
         ).sort({ type: 1, name: 1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(badges.map(v => new ProfileBadge(this.client, v)), "id");
+        return ArrayHelper.arrayToCollection(badges.map(v => Object.assign(this.defaultInstance, v)), "id");
     }
 }

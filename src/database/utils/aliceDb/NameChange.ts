@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -19,8 +18,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
     previous_usernames: string[];
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseNameChange = DatabaseManager.aliceDb.collections.nameChange.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseNameChange = DatabaseManager.aliceDb.collections.nameChange.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

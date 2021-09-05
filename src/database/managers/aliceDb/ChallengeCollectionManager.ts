@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
@@ -34,13 +33,10 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
     /**
      * @param collection The MongoDB collection.
      */
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseChallenge>) {
-        super(
-            client,
-            collection
-        );
+    constructor(collection: MongoDBCollection<DatabaseChallenge>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChallenge, Challenge>> new Challenge(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChallenge, Challenge>> new Challenge().constructor
     }
 
     /**

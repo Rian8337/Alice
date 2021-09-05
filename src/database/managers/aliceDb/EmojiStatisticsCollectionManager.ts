@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
 import { DatabaseEmojiStatistics } from "@alice-interfaces/database/aliceDb/DatabaseEmojiStatistics";
@@ -19,13 +18,13 @@ export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseEmojiStatistics>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseEmojiStatistics>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseEmojiStatistics, EmojiStatistics>> new EmojiStatistics(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseEmojiStatistics, EmojiStatistics>> new EmojiStatistics().constructor
     }
 
     /**

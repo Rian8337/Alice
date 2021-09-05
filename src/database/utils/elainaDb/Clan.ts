@@ -1,6 +1,5 @@
 import { ObjectId } from "bson";
 import { Collection, Guild, GuildChannel, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
@@ -132,8 +131,8 @@ export class Clan extends Manager {
     /**
      * @param data The clan data from database.
      */
-    constructor(client: Bot, data: DatabaseClan = DatabaseManager.elainaDb.collections.clan.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseClan = DatabaseManager.elainaDb.collections.clan.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.name = data.name;

@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
 import { DatabaseEightBallFilter } from "@alice-interfaces/database/aliceDb/DatabaseEightBallFilter";
@@ -21,12 +20,12 @@ export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseEightBallFilter>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseEightBallFilter>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>> new EightBallFilter(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>> new EightBallFilter().constructor
     }
 }

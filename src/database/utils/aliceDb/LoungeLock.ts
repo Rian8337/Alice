@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -22,8 +21,8 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
         return this.expiration < Date.now();
     }
 
-    constructor(client: Bot, data: DatabaseLoungeLock = DatabaseManager.aliceDb.collections.loungeLock.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseLoungeLock = DatabaseManager.aliceDb.collections.loungeLock.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

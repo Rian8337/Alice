@@ -3,7 +3,6 @@ import { DatabaseTournamentMapLengthInfo } from "@alice-interfaces/database/alic
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `mapinfolength` collection.
@@ -18,13 +17,13 @@ export class TournamentMapLengthInfoCollectionManager extends DatabaseCollection
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseTournamentMapLengthInfo>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseTournamentMapLengthInfo>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>> new TournamentMapLengthInfo(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>> new TournamentMapLengthInfo().constructor
     }
 
     /**

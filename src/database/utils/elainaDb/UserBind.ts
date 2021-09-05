@@ -1,17 +1,21 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
-import { MapInfo, Player, Score } from "osu-droid";
+import { DroidAPIRequestBuilder, MapInfo, Player, RequestResponse, Score } from "osu-droid";
+import { RankedScore } from "../aliceDb/RankedScore";
 import { Clan } from "./Clan";
 
 /**
@@ -96,8 +100,8 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseUserBind = DatabaseManager.elainaDb.collections.userBind.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseUserBind = DatabaseManager.elainaDb.collections.userBind.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;
@@ -218,6 +222,144 @@ export class UserBind extends Manager {
                 },
                 $inc: {
                     playc: Math.max(0, playCountIncrement)
+                }
+            }
+        );
+    }
+
+    /**
+     * Recalculates this player's dpp, only taking account plays from
+     * the current dpp list.
+     */
+    async recalculateDPP(): Promise<DatabaseOperationResult> {
+        const newList: Collection<string, PPEntry> = new Collection();
+
+        this.playc = 0;
+
+        for await (const ppEntry of this.pp.values()) {
+            const score: Score = await Score.getFromHash({ uid: this.uid, hash: ppEntry.hash });
+
+            if (!score.title) {
+                continue;
+            }
+
+            const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
+
+            if (submissionValidity !== DPPSubmissionValidity.VALID) {
+                continue;
+            }
+
+            const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+
+            if (!calcResult) {
+                continue;
+            }
+
+            ++this.playc;
+
+            DPPHelper.insertScore(newList, score, calcResult);
+        }
+
+        this.pp = newList;
+        this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
+
+        return DatabaseManager.elainaDb.collections.userBind.update(
+            { discordid: this.discordid },
+            {
+                $set: {
+                    pp: [...this.pp.values()],
+                    pptotal: this.pptotal,
+                    playc: this.playc
+                }
+            }
+        );
+    }
+
+    /**
+     * Recalculates all of the player's scores for dpp and ranked score.
+     */
+    async recalculateAllScores(): Promise<DatabaseOperationResult> {
+        const newList: Collection<string, PPEntry> = new Collection();
+
+        this.playc = 0;
+
+        const getScores = async (page: number): Promise<Score[]> => {
+            const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
+                .addParameter("uid", this.uid)
+                .addParameter("page", page - 1);
+
+            const data: RequestResponse = await apiRequestBuilder.sendRequest();
+
+            if (data.statusCode !== 200) {
+                return [];
+            }
+
+            const entries: string[] = data.data.toString("utf-8").split("\n");
+
+            entries.shift();
+
+            return entries.map(v => new Score().fillInformation(v));
+        };
+
+        for await (const uid of this.previous_bind) {
+            const player: Player = await Player.getInformation({ uid: uid });
+
+            if (!player.username) {
+                continue;
+            }
+
+            const rankedScore: RankedScore =
+                await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(uid) ??
+                DatabaseManager.aliceDb.collections.rankedScore.defaultInstance;
+
+            rankedScore.username = player.username;
+
+            let page = 0;
+
+            while (true) {
+                const scores: Score[] = await getScores(++page);
+
+                if (scores.length === 0) {
+                    break;
+                }
+
+                for await (const score of scores) {
+                    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
+
+                    if (!beatmapInfo) {
+                        continue;
+                    }
+
+                    if (await DPPHelper.checkSubmissionValidity(score) === DPPSubmissionValidity.VALID) {
+                        const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+
+                        if (calcResult) {
+                            ++this.playc;
+
+                            DPPHelper.insertScore(newList, score, calcResult);
+                        }
+                    }
+
+                    if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
+                        RankedScoreHelper.insertScore(rankedScore.scorelist, score);
+                    }
+                }
+            }
+
+            await rankedScore.setNewRankedScoreValue(rankedScore.scorelist, rankedScore.scorelist.size);
+        }
+
+        this.pp = newList;
+        this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
+
+        return DatabaseManager.elainaDb.collections.userBind.update(
+            { discordid: this.discordid },
+            {
+                $set: {
+                    pp: [...this.pp.values()],
+                    pptotal: this.pptotal,
+                    playc: this.playc
                 }
             }
         );

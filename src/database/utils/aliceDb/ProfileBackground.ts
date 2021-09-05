@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseProfileBackground } from "@alice-interfaces/database/aliceDb/DatabaseProfileBackground";
 import { Manager } from "@alice-utils/base/Manager";
@@ -12,8 +11,8 @@ export class ProfileBackground extends Manager implements DatabaseProfileBackgro
     id: string;
     name: string;
 
-    constructor(client: Bot, data: DatabaseProfileBackground = DatabaseManager.aliceDb.collections.profileBackgrounds.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseProfileBackground = DatabaseManager.aliceDb.collections.profileBackgrounds.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.id = data.id;

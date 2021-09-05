@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { Db } from "mongodb";
 import { AliceDBCollection } from "./AliceDBCollection";
 import { ElainaDBCollection } from "./ElainaDBCollection";
@@ -40,19 +39,18 @@ export abstract class DatabaseManager {
     /**
      * Initializes the manager.
      * 
-     * @param client The instance of the bot.
      * @param elainaDb The database that is shared with the old bot (Nero's database).
      * @param aliceDb The database that is only used by this bot (my database).
      */
-    static init(client: Bot, elainaDb: Db, aliceDb: Db) {
+    static init(elainaDb: Db, aliceDb: Db) {
         this.elainaDb = {
             instance: elainaDb,
-            collections: new ElainaDBCollection(client, elainaDb)
+            collections: new ElainaDBCollection(elainaDb)
         };
 
         this.aliceDb = {
             instance: aliceDb,
-            collections: new AliceDBCollection(client, aliceDb)
-        }
+            collections: new AliceDBCollection(aliceDb)
+        };
     }
 }

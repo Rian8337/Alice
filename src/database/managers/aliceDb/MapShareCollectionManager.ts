@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
@@ -23,12 +22,12 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<Databas
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseMapShare>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseMapShare>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapShare, MapShare>> new MapShare(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapShare, MapShare>> new MapShare().constructor
     }
 }

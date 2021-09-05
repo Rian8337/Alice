@@ -3,7 +3,6 @@ import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/Database
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 import { Collection as DiscordCollection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
@@ -24,13 +23,13 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<Data
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseRankedScore>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseRankedScore>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseRankedScore, RankedScore>> new RankedScore(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseRankedScore, RankedScore>> new RankedScore().constructor
     }
 
     /**
@@ -41,7 +40,7 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<Data
             {}, { projection: {_id: 0, uid: 1, score: 1, playc: 1, username: 1, level: 1} }
         ).sort({ score: -1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(rankedScore.map(v => new RankedScore(this.client, v)), "uid");
+        return ArrayHelper.arrayToCollection(rankedScore.map(v => Object.assign(this.defaultInstance, v)), "uid");
     }
 
     /**

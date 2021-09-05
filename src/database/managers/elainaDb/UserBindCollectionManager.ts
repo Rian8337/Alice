@@ -5,7 +5,6 @@ import { Collection as MongoDBCollection, FilterQuery } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `userbind` collection.
@@ -26,13 +25,13 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseUserBind>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseUserBind>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseUserBind, UserBind>> new UserBind(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseUserBind, UserBind>> new UserBind().constructor
     }
 
     /**
@@ -55,7 +54,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { dppScanComplete: { $ne: true } }
         ).sort({ pptotal: -1 }).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(this.client, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
     }
 
     /**
@@ -69,7 +68,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { dppRecalcComplete: { $ne: true } }
         ).sort({ pptotal: -1 }).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(this.client, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
     }
 
     /**
@@ -125,6 +124,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { projection: { _id: 0, discordid: 1, uid: 1, pptotal: 1, playc: 1, username: 1 } }
         ).sort({ pptotal: -1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(this.client, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
     }
 }

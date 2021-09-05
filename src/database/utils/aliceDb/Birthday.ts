@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -14,8 +13,8 @@ export class Birthday extends Manager implements DatabaseBirthday {
     isLeapYear: boolean;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseBirthday = DatabaseManager.aliceDb.collections.birthday.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseBirthday = DatabaseManager.aliceDb.collections.birthday.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

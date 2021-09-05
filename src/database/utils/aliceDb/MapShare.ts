@@ -18,8 +18,8 @@ export class MapShare extends Manager implements DatabaseMapShare {
     status: "accepted" | "denied" | "pending" | "posted";
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseMapShare = DatabaseManager.aliceDb.collections.mapShare.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseMapShare = DatabaseManager.aliceDb.collections.mapShare.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.beatmap_id = data.beatmap_id;

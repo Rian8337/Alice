@@ -4,7 +4,6 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `playerinfo` collection.
@@ -40,13 +39,13 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<Datab
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabasePlayerInfo>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabasePlayerInfo>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerInfo, PlayerInfo>> new PlayerInfo(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerInfo, PlayerInfo>> new PlayerInfo().constructor
     }
 
     /**

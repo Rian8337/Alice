@@ -7,12 +7,13 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const backgrounds: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
 
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
 
-    const ownedBackgrounds: ProfileBackground[] = (playerInfo?.picture_config.backgrounds ?? []).map(v => new ProfileBackground(client, v));
+    const ownedBackgrounds: ProfileBackground[] = (playerInfo?.picture_config.backgrounds ?? [])
+        .map(v => Object.assign(DatabaseManager.aliceDb.collections.profileBackgrounds.defaultInstance, v));
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
         { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }

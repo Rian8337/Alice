@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
 import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
@@ -21,13 +20,13 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseLoungeLock>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseLoungeLock>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>> new LoungeLock(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>> new LoungeLock().constructor
     }
 
     /**

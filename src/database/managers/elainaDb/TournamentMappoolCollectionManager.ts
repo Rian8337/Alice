@@ -3,7 +3,6 @@ import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/D
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `mapinfo` collection.
@@ -18,13 +17,13 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseTournamentMappool>) {
-        super(
-            client,
-            collection,
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseTournamentMappool>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMappool, TournamentMappool>> new TournamentMappool(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseTournamentMappool, TournamentMappool>> new TournamentMappool().constructor
     }
 
     /**

@@ -5,7 +5,6 @@ import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `mapwhitelist` command.
@@ -29,13 +28,13 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseMapWhitelist>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseMapWhitelist>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>> new MapWhitelist(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>> new MapWhitelist().constructor
     }
 
     /**
@@ -48,6 +47,6 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
             { whitelistScanDone: { $ne: true } }
         ).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(mapWhitelist.map(v => new MapWhitelist(this.client, v)), "mapid");
+        return ArrayHelper.arrayToCollection(mapWhitelist.map(v => Object.assign(this.defaultInstance, v)), "mapid");
     }
 }

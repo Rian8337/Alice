@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
@@ -29,13 +28,10 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<Databas
     /**
      * @param collection The MongoDB collection.
      */
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseBirthday>) {
-        super(
-            client,
-            collection
-        );
+    constructor(collection: MongoDBCollection<DatabaseBirthday>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseBirthday, Birthday>> new Birthday(client, this.defaultDocument).constructor;
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseBirthday, Birthday>> new Birthday().constructor;
     }
 
     /**

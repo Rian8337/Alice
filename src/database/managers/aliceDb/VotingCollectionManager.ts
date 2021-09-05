@@ -3,7 +3,6 @@ import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVotin
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 import { Snowflake } from "discord.js";
 
 /**
@@ -21,13 +20,13 @@ export class VotingCollectionManager extends DatabaseCollectionManager<DatabaseV
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseVoting>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseVoting>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseVoting, Voting>> new Voting(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseVoting, Voting>> new Voting().constructor
     }
 
     /**

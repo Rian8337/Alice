@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -43,8 +42,8 @@ export class GuildPunishmentConfig extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb.collections.guildPunishmentConfig.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb.collections.guildPunishmentConfig.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.guildID = data.guildID;

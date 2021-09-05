@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapBlacklist } from "@alice-interfaces/database/elainaDb/DatabaseMapBlacklist";
 import { Manager } from "@alice-utils/base/Manager";
@@ -12,8 +11,8 @@ export class MapBlacklist extends Manager implements DatabaseMapBlacklist {
     reason: string;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseMapBlacklist = DatabaseManager.elainaDb.collections.mapBlacklist.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseMapBlacklist = DatabaseManager.elainaDb.collections.mapBlacklist.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.beatmapID = data.beatmapID;

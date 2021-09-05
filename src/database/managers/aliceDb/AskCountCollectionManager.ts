@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
 import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
@@ -22,13 +21,10 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<Databas
     /**
      * @param collection The MongoDB collection.
      */
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseAskCount>) {
-        super(
-            client,
-            collection
-        );
+    constructor(collection: MongoDBCollection<DatabaseAskCount>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseAskCount, AskCount>> new AskCount(client, this.defaultDocument).constructor;
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseAskCount, AskCount>> new AskCount(this.defaultDocument).constructor;
     }
 
     /**

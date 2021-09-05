@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabasePrototypePP } from "@alice-interfaces/database/aliceDb/DatabasePrototypePP";
 import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
@@ -47,8 +46,8 @@ export class PrototypePP extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabasePrototypePP = DatabaseManager.aliceDb.collections.prototypePP.defaultDocument) {
-        super(client);
+    constructor(data: DatabasePrototypePP = DatabaseManager.aliceDb.collections.prototypePP.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

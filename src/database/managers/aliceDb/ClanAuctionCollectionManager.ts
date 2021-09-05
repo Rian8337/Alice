@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
@@ -27,13 +26,13 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseClanAuction>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseClanAuction>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>> new ClanAuction(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>> new ClanAuction().constructor
     }
 
     /**

@@ -116,12 +116,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         expirydate: Math.floor(Date.now() / 1000) + duration
     };
 
-    const newAuction: ClanAuction = new ClanAuction(
-        client,
-        Object.assign(
-            DatabaseManager.aliceDb.collections.clanAuction.defaultDocument,
-            partialData
-        )
+    const newAuction: ClanAuction = Object.assign(
+        DatabaseManager.aliceDb.collections.clanAuction.defaultInstance,
+        partialData
     );
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;

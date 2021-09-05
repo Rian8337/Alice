@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { DPPAPIKey } from "@alice-database/utils/aliceDb/DPPAPIKey";
 import { DatabaseDPPAPIKey } from "@alice-interfaces/database/aliceDb/DatabaseDPPAPIKey";
@@ -18,12 +17,12 @@ export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<Databa
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseDPPAPIKey>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseDPPAPIKey>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>> new DPPAPIKey(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>> new DPPAPIKey().constructor
     }
 }

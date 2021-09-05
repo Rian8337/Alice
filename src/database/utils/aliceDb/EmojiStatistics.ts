@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseEmojiStatistics } from "@alice-interfaces/database/aliceDb/DatabaseEmojiStatistics";
 import { EmojiStat } from "@alice-interfaces/moderation/EmojiStat";
@@ -26,8 +25,8 @@ export class EmojiStatistics extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseEmojiStatistics = DatabaseManager.aliceDb.collections.emojiStatistics.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseEmojiStatistics = DatabaseManager.aliceDb.collections.emojiStatistics.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.guildID = data.guildID;

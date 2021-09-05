@@ -75,6 +75,8 @@ export class Bot extends Client {
                 "REACTION"
             ]
         });
+
+        Manager.init(this);
     }
 
     /**
@@ -119,7 +121,6 @@ export class Bot extends Client {
         this.logger.success("Connection to Alice DB established");
 
         DatabaseManager.init(
-            this,
             elainaDb.db("ElainaDB"),
             aliceDb.db("AliceDB")
         );

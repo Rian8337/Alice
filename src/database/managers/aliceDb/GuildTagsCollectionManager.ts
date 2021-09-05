@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildTags } from "@alice-database/utils/aliceDb/GuildTags";
 import { Tag } from "@alice-interfaces/commands/Tools/Tag";
@@ -21,13 +20,13 @@ export class GuildTagsCollectionManager extends DatabaseCollectionManager<Databa
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseGuildTags>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseGuildTags>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildTags, GuildTags>> new GuildTags(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseGuildTags, GuildTags>> new GuildTags().constructor
     }
 
     /**

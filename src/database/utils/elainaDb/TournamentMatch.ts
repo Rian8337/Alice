@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { BaseOperationResult } from "@alice-interfaces/core/BaseOperationResult";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -38,8 +37,8 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
         }
     }
 
-    constructor(client: Bot, data: DatabaseTournamentMatch = DatabaseManager.elainaDb.collections.tournamentMatch.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseTournamentMatch = DatabaseManager.elainaDb.collections.tournamentMatch.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.matchid = data.matchid;

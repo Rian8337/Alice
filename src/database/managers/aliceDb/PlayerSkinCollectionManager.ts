@@ -4,7 +4,6 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
-import { Bot } from "@alice-core/Bot";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 
 /**
@@ -20,13 +19,13 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabasePlayerSkin>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabasePlayerSkin>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerSkin, PlayerSkin>> new PlayerSkin(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerSkin, PlayerSkin>> new PlayerSkin().constructor
     }
 
     /**

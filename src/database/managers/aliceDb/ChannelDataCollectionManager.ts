@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
@@ -23,13 +22,13 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseChannelData>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseChannelData>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>> new ChannelData(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>> new ChannelData().constructor
     }
 
     /**

@@ -46,8 +46,8 @@ export class RankedScore extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseRankedScore = DatabaseManager.aliceDb.collections.rankedScore.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseRankedScore = DatabaseManager.aliceDb.collections.rankedScore.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.uid = data.uid;
@@ -81,12 +81,14 @@ export class RankedScore extends Manager {
                 $set: {
                     level: this.level,
                     score: this.score,
-                    scorelist: RankedScoreHelper.toArray(this.scorelist)
+                    scorelist: RankedScoreHelper.toArray(this.scorelist),
+                    username: this.username
                 },
                 $inc: {
                     playc: playCountIncrement
                 }
-            }
+            },
+            { upsert: true }
         );
     }
 }

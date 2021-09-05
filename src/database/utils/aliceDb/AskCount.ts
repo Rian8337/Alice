@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -14,8 +13,8 @@ export class AskCount extends Manager implements DatabaseAskCount {
     count: number;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseAskCount = DatabaseManager.aliceDb.collections.askCount.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseAskCount = DatabaseManager.aliceDb.collections.askCount.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.discordid = data.discordid;

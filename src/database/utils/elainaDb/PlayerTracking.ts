@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabasePlayerTracking } from "@alice-interfaces/database/elainaDb/DatabasePlayerTracking";
 import { Manager } from "@alice-utils/base/Manager";
@@ -11,8 +10,8 @@ export class PlayerTracking extends Manager implements DatabasePlayerTracking {
     uid: number;
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabasePlayerTracking = DatabaseManager.elainaDb.collections.playerTracking.defaultDocument) {
-        super(client);
+    constructor(data: DatabasePlayerTracking = DatabaseManager.elainaDb.collections.playerTracking.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.uid = data.uid;

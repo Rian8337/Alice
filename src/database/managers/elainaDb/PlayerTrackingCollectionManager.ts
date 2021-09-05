@@ -3,7 +3,6 @@ import { DatabasePlayerTracking } from "@alice-interfaces/database/elainaDb/Data
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 
 /**
@@ -17,13 +16,13 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<D
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabasePlayerTracking>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabasePlayerTracking>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerTracking, PlayerTracking>> new PlayerTracking(client, this.defaultDocument).constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabasePlayerTracking, PlayerTracking>> new PlayerTracking().constructor
     }
 
     /**

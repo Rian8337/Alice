@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildSettings } from "@alice-interfaces/database/aliceDb/DatabaseGuildSettings";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
@@ -38,8 +37,8 @@ export class GuildSettings extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(client: Bot, data: DatabaseGuildSettings = DatabaseManager.aliceDb.collections.guildSettings.defaultDocument) {
-        super(client);
+    constructor(data: DatabaseGuildSettings = DatabaseManager.aliceDb.collections.guildSettings.defaultDocument) {
+        super();
 
         this._id = data._id;
         this.id = data.id;

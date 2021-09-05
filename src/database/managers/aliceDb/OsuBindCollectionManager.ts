@@ -3,7 +3,6 @@ import { DatabaseOsuBind } from "@alice-interfaces/database/aliceDb/DatabaseOsuB
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { Bot } from "@alice-core/Bot";
 
 /**
  * A manager for the `osubind` collection.
@@ -18,12 +17,12 @@ export class OsuBindCollectionManager extends DatabaseCollectionManager<Database
         };
     }
 
-    constructor(client: Bot, collection: MongoDBCollection<DatabaseOsuBind>) {
-        super(
-            client,
-            collection
-        );
+    /**
+     * @param collection The MongoDB collection.
+     */
+    constructor(collection: MongoDBCollection<DatabaseOsuBind>) {
+        super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>> new OsuBind(client, this.defaultDocument).constructor 
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>> new OsuBind().constructor 
     }
 }
