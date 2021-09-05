@@ -22,9 +22,9 @@ export abstract class DPPHelper {
      * @returns The validity of the score.
      */
     static async checkSubmissionValidity(score: Score): Promise<DPPSubmissionValidity> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
+        const calculationResult: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
-        if (!beatmapInfo) {
+        if (!calculationResult) {
             return DPPSubmissionValidity.BEATMAP_NOT_FOUND;
         }
 
@@ -35,10 +35,10 @@ export abstract class DPPHelper {
                 return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
             case score.speedMultiplier !== 1:
                 return DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED;
-            case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
+            case await WhitelistManager.isBlacklisted(calculationResult.beatmapID):
                 return DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED;
-            case WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved) &&
-                await WhitelistManager.getBeatmapWhitelistStatus(beatmapInfo.hash) !== "updated":
+            case WhitelistManager.beatmapNeedsWhitelisting(calculationResult.approved) &&
+                await WhitelistManager.getBeatmapWhitelistStatus(calculationResult.hash) !== "updated":
                 return DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED;
             default:
                 return DPPSubmissionValidity.VALID;
@@ -49,14 +49,13 @@ export abstract class DPPHelper {
      * Inserts a score into a list of dpp plays.
      * 
      * @param dppList The list of dpp plays, mapped by hash.
-     * @param beatmapInfo Information about the beatmap of the score.
      * @param score The score.
      * @param calculationResult The calculation result of the score. If omitted, the score will be calculated on fly.
      */
-    static insertScore(dppList: Collection<string, PPEntry>, beatmapInfo: MapInfo, score: Score, calculationResult: PerformanceCalculationResult): void {
+    static insertScore(dppList: Collection<string, PPEntry>, score: Score, calculationResult: PerformanceCalculationResult): void {
         const ppEntry: PPEntry = {
-            hash: beatmapInfo.hash,
-            title: beatmapInfo.fullTitle,
+            hash: calculationResult.map.hash,
+            title: calculationResult.map.fullTitle,
             pp: parseFloat(calculationResult.droid.total.toFixed(2)),
             mods: score.mods.map(v => v.acronym).join(""),
             accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
@@ -65,7 +64,7 @@ export abstract class DPPHelper {
             scoreID: score.scoreID
         };
 
-        dppList.set(beatmapInfo.hash, ppEntry)
+        dppList.set(calculationResult.map.hash, ppEntry)
             .sort((a, b) => {
                 return b.pp - a.pp;
             });

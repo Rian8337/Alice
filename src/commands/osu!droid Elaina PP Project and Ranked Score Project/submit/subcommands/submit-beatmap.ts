@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     // PP
     const calcResult: PerformanceCalculationResult = <PerformanceCalculationResult> await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
-    DPPHelper.insertScore(bindInfo.pp, beatmapInfo, score, calcResult);
+    DPPHelper.insertScore(bindInfo.pp, score, calcResult);
 
     const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
 
