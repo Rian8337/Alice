@@ -22,8 +22,14 @@ export const run: EventUtil["run"] = async (_, oldMessage: Message, newMessage: 
 
     embed.setTitle("Message edited")
         .addField("Channel", `${oldMessage.channel} | [Go to Message](${oldMessage.url})`)
-        .addField("Old Message", oldMessage.content.substring(0, 1025))
-        .addField("New Message", newMessage.content.substring(0, 1025));
+
+    if (oldMessage.content) {
+        embed.addField("Old Message", oldMessage.content.substring(0, 1025));
+    }
+
+    if (newMessage.content) {
+        embed.addField("New Message", newMessage.content.substring(0, 1025));
+    }
 
     logChannel.send({embeds: [embed]});
 };
