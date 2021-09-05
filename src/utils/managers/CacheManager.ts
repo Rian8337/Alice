@@ -1,6 +1,6 @@
 import { CooldownKey } from "@alice-types/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
-import { Snowflake } from "discord.js";
+import { CommandInteraction, Snowflake, Collection } from "discord.js";
 import { MapInfo } from "osu-droid";
 
 /**
@@ -28,4 +28,9 @@ export abstract class CacheManager {
      * This is used to prevent users from starting more than one game at once.
      */
     static readonly stillHasMathGameActive: Set<Snowflake> = new Set();
+
+    /**
+     * Recalculation queue for per-user recalculation, mapped by the user's ID.
+     */
+    static readonly recalculationQueue: Collection<Snowflake, CommandInteraction> = new Collection();
 }

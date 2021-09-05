@@ -277,8 +277,10 @@ export class UserBind extends Manager {
 
     /**
      * Recalculates all of the player's scores for dpp and ranked score.
+     * 
+     * @param markAsSlotFulfill Whether to set `hasAskedForRecalc` to true.
      */
-    async recalculateAllScores(): Promise<DatabaseOperationResult> {
+    async recalculateAllScores(markAsSlotFulfill: boolean = true): Promise<DatabaseOperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
         this.playc = 0;
@@ -359,7 +361,9 @@ export class UserBind extends Manager {
                 $set: {
                     pp: [...this.pp.values()],
                     pptotal: this.pptotal,
-                    playc: this.playc
+                    playc: this.playc,
+                    // Only set to true if hasAskedForRecalc is originally false
+                    hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc
                 }
             }
         );
