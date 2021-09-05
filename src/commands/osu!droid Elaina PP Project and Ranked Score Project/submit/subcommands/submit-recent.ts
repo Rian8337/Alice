@@ -13,6 +13,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
@@ -39,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const submissionAmount: number = interaction.options.getInteger("amount") ?? 1;
+    const submissionAmount: number = NumberHelper.clamp(interaction.options.getInteger("amount") ?? 1, 1, 5);
     const submissionOffset: number = interaction.options.getInteger("offset") ?? 1;
 
     const scoresToSubmit: Score[] = player.recentPlays.slice(submissionOffset - 1, submissionAmount + submissionOffset - 1);
