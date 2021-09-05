@@ -25,6 +25,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    await channel.threads.fetch();
+
+    await channel.threads.fetchArchived();
+
     let thread: ThreadChannel | undefined = channel.threads.cache.find(c => c.name === `${match.matchid} ${match.name}`);
 
     if (!thread) {
@@ -32,6 +36,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             name: `${match.matchid} ${match.name}`,
             autoArchiveDuration: 60
         });
+    } else if (thread.archived && thread.unarchivable) {
+        await thread.setArchived(false);
     }
 
     if (!thread.joined) {
