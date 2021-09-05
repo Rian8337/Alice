@@ -1,11 +1,7 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
-import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
-import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
@@ -13,32 +9,6 @@ import { Player } from "osu-droid";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
-
-/**
- * Gets the upkeep distribution of a clan.
- * 
- * @param memberCount The amount of members in the clan.
- * @returns The upkeep distribution.
- */
-function getEqualUpkeepDistribution(memberCount: number): number[] {
-    const dist_list: number[] = [];
-    const index_list: number[] = [];
-    const base = Math.floor(200 / memberCount);
-    const mod = 200 % memberCount;
-
-    for (let i = 0; i < memberCount; ++i) {
-        dist_list.push(base);
-    }
-
-    for (let i = 0; i < mod; ++i) {
-        let index = Math.floor(Math.random() * dist_list.length);
-        while (index_list.includes(index)) index = Math.floor(Math.random() * dist_list.length);
-        index_list.push(index);
-        ++dist_list[index];
-    }
-
-    return dist_list;
-}
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
