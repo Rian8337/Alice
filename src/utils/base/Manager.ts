@@ -13,13 +13,9 @@ export abstract class Manager {
     /**
      * The client that instantiated this manager.
      */
-    protected readonly client: Bot;
+    protected readonly client: Bot = Manager.client;
 
     protected isInitialized: boolean = false;
-
-    constructor(client: Bot) {
-        this.client = client;
-    }
 
     /**
      * Initializes the manager.
