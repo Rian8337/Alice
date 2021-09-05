@@ -21,7 +21,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
         return this.expiration < Date.now();
     }
 
-    constructor(data: DatabaseLoungeLock = DatabaseManager.aliceDb.collections.loungeLock.defaultDocument) {
+    constructor(data: DatabaseLoungeLock = DatabaseManager.aliceDb?.collections.loungeLock.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

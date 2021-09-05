@@ -14,7 +14,7 @@ export class TournamentMappool extends Manager implements DatabaseTournamentMapp
     map: MainBeatmapData[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseTournamentMappool = DatabaseManager.elainaDb.collections.tournamentMappool.defaultDocument) {
+    constructor(data: DatabaseTournamentMappool = DatabaseManager.elainaDb?.collections.tournamentMappool.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

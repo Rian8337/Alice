@@ -60,7 +60,7 @@ export class ClanAuction extends Manager {
      */
     bids: Collection<string, AuctionBid>;
 
-    constructor(data: DatabaseClanAuction = DatabaseManager.aliceDb.collections.clanAuction.defaultDocument) {
+    constructor(data: DatabaseClanAuction = DatabaseManager.aliceDb?.collections.clanAuction.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

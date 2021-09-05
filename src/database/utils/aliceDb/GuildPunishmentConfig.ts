@@ -42,7 +42,7 @@ export class GuildPunishmentConfig extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb.collections.guildPunishmentConfig.defaultDocument) {
+    constructor(data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb?.collections.guildPunishmentConfig.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

@@ -17,11 +17,11 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, GuildEmoji, MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { ObjectId } from "mongodb";
 import { Accuracy, Beatmap, Circle, DroidHitWindow, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModEasy, modes, ModHalfTime, ModNoFail, ModPrecise, ModUtil, ReplayAnalyzer, ReplayData, ReplayObjectData, Score } from "osu-droid";
-import { Manager } from "../../../utils/base/Manager";
-import { BeatmapDifficultyHelper } from "../../../utils/helpers/BeatmapDifficultyHelper";
-import { DateTimeFormatHelper } from "../../../utils/helpers/DateTimeFormatHelper";
-import { StringHelper } from "../../../utils/helpers/StringHelper";
-import { BeatmapManager } from "../../../utils/managers/BeatmapManager";
+import { Manager } from "@alice-utils/base/Manager";
+import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { UserBind } from "../elainaDb/UserBind";
 
 /**
@@ -128,7 +128,7 @@ export class Challenge extends Manager {
 
     private readonly challengeChannelID: Snowflake = "669221772083724318";
 
-    constructor(data: DatabaseChallenge = DatabaseManager.aliceDb.collections.challenge.defaultDocument) {
+    constructor(data: DatabaseChallenge = DatabaseManager.aliceDb?.collections.challenge.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseTournamentMapLengthInfo } from "@alice-interfaces/database/aliceDb/DatabaseTournamentMapLengthInfo";
 import { Manager } from "@alice-utils/base/Manager";
@@ -12,7 +11,7 @@ export class TournamentMapLengthInfo extends Manager implements DatabaseTourname
     map: [string, string | number][];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb.collections.tournamentMapLengthInfo.defaultDocument) {
+    constructor(data: DatabaseTournamentMapLengthInfo = DatabaseManager.aliceDb?.collections.tournamentMapLengthInfo.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

@@ -18,7 +18,7 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
     whitelistScanDone?: boolean;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseMapWhitelist = DatabaseManager.elainaDb.collections.mapWhitelist.defaultDocument) {
+    constructor(data: DatabaseMapWhitelist = DatabaseManager.elainaDb?.collections.mapWhitelist.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

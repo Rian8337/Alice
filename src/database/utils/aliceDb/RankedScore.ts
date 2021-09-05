@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
@@ -46,7 +45,7 @@ export class RankedScore extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseRankedScore = DatabaseManager.aliceDb.collections.rankedScore.defaultDocument) {
+    constructor(data: DatabaseRankedScore = DatabaseManager.aliceDb?.collections.rankedScore.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

@@ -37,7 +37,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
         }
     }
 
-    constructor(data: DatabaseTournamentMatch = DatabaseManager.elainaDb.collections.tournamentMatch.defaultDocument) {
+    constructor(data: DatabaseTournamentMatch = DatabaseManager.elainaDb?.collections.tournamentMatch.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

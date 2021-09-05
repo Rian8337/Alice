@@ -14,7 +14,7 @@ export class EightBallFilter extends Manager implements DatabaseEightBallFilter 
     response: string[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseEightBallFilter = DatabaseManager.aliceDb.collections.eightBallFilter.defaultDocument) {
+    constructor(data: DatabaseEightBallFilter = DatabaseManager.aliceDb?.collections.eightBallFilter.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

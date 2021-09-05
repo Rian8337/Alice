@@ -13,7 +13,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
     count: number;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseAskCount = DatabaseManager.aliceDb.collections.askCount.defaultDocument) {
+    constructor(data: DatabaseAskCount = DatabaseManager.aliceDb?.collections.askCount.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

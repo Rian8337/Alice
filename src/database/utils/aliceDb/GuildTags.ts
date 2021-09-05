@@ -25,7 +25,7 @@ export class GuildTags extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseGuildTags = DatabaseManager.aliceDb.collections.guildTags.defaultDocument) {
+    constructor(data: DatabaseGuildTags = DatabaseManager.aliceDb?.collections.guildTags.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

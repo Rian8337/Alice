@@ -18,7 +18,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
     previous_usernames: string[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseNameChange = DatabaseManager.aliceDb.collections.nameChange.defaultDocument) {
+    constructor(data: DatabaseNameChange = DatabaseManager.aliceDb?.collections.nameChange.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

@@ -11,7 +11,7 @@ export class ProfileBackground extends Manager implements DatabaseProfileBackgro
     id: string;
     name: string;
 
-    constructor(data: DatabaseProfileBackground = DatabaseManager.aliceDb.collections.profileBackgrounds.defaultDocument) {
+    constructor(data: DatabaseProfileBackground = DatabaseManager.aliceDb?.collections.profileBackgrounds.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

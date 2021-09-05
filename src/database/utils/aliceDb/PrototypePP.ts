@@ -46,7 +46,7 @@ export class PrototypePP extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabasePrototypePP = DatabaseManager.aliceDb.collections.prototypePP.defaultDocument) {
+    constructor(data: DatabasePrototypePP = DatabaseManager.aliceDb?.collections.prototypePP.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

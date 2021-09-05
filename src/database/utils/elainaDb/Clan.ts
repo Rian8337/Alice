@@ -131,7 +131,7 @@ export class Clan extends Manager {
     /**
      * @param data The clan data from database.
      */
-    constructor(data: DatabaseClan = DatabaseManager.elainaDb.collections.clan.defaultDocument) {
+    constructor(data: DatabaseClan = DatabaseManager.elainaDb?.collections.clan.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

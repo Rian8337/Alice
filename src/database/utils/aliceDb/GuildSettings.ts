@@ -37,7 +37,7 @@ export class GuildSettings extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseGuildSettings = DatabaseManager.aliceDb.collections.guildSettings.defaultDocument) {
+    constructor(data: DatabaseGuildSettings = DatabaseManager.aliceDb?.collections.guildSettings.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

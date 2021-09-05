@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
@@ -17,7 +16,7 @@ export class Voting extends Manager implements DatabaseVoting {
     choices: VoteChoice[];
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseVoting = DatabaseManager.aliceDb.collections.voting.defaultDocument) {
+    constructor(data: DatabaseVoting = DatabaseManager.aliceDb?.collections.voting.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

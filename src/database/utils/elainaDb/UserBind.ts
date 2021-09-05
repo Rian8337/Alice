@@ -100,7 +100,7 @@ export class UserBind extends Manager {
      */
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseUserBind = DatabaseManager.elainaDb.collections.userBind.defaultDocument) {
+    constructor(data: DatabaseUserBind = DatabaseManager.elainaDb?.collections.userBind.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;

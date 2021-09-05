@@ -5,6 +5,9 @@ import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
 
+/**
+ * Represents an information about a Discord user's birthday.
+ */
 export class Birthday extends Manager implements DatabaseBirthday {
     discordid: Snowflake;
     date: number;
@@ -13,7 +16,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
     isLeapYear: boolean;
     readonly _id?: ObjectId;
 
-    constructor(data: DatabaseBirthday = DatabaseManager.aliceDb.collections.birthday.defaultDocument) {
+    constructor(data: DatabaseBirthday = DatabaseManager.aliceDb?.collections.birthday.defaultDocument ?? {}) {
         super();
 
         this._id = data._id;
