@@ -3,10 +3,10 @@ import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
-import { Collection, GuildChannel, Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import { Collection, TextChannel } from "discord.js";
 import { messageanalyticsStrings } from "../messageanalyticsStrings";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const fromDateEntries: number[] = (interaction.options.getString("fromdate", true)).split("-").map(v => parseInt(v));
 
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
@@ -88,7 +88,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         for await (const [ date, count ] of messageData) {
             const channelData: ChannelData =
-                guildMessageAnalyticsData.get(date) ?? new ChannelData(client);
+                guildMessageAnalyticsData.get(date) ??
+                DatabaseManager.aliceDb.collections.channelData.defaultInstance;
 
             channelData.timestamp = date;
 
