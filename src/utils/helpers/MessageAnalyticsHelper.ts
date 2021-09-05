@@ -175,7 +175,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         currentDate.setUTCHours(0, 0, 0, 0);
 
-        while (fetchEndTime >= fetchStartTime) {
+        while (fetchEndTime >= fetchStartTime && lastMessageID) {
             const messages: Collection<string, Message> = await messageManager.fetch({ limit: fetchCount, before: lastMessageID });
 
             for (const message of messages.values()) {
@@ -199,6 +199,8 @@ export abstract class MessageAnalyticsHelper extends Manager {
                     ++validCount;
                 }
             }
+
+            lastMessageID = messages.last()?.id;
 
             collection.set(currentDate.getTime(), validCount);
         }
