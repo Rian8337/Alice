@@ -47,10 +47,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const team2PlayersInformation: RegExpMatchArray = team2Players.match(splitRegex) ?? [];
 
-    console.log(team1PlayersInformation);
-
-    console.log(team2PlayersInformation);
-
     // Ensure the player difference between both teams don't exceed 1
     if (Math.abs(team1PlayersInformation.length - team2PlayersInformation.length) > 1) {
         return interaction.editReply({
