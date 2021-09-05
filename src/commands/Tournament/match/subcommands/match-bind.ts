@@ -55,7 +55,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createReject(matchStrings.bindMatchSuccessful, id)
+        content: MessageCreator.createAccept(matchStrings.bindMatchSuccessful, id)
     });
 };
 
