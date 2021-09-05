@@ -270,7 +270,6 @@ export class Bot extends Client {
      * @param client The instance of the bot.
      */
     private async initUtils(): Promise<void> {
-        Manager.init(this);
         ProfileManager.init();
         await CommandUtilManager.init();
         await LoungeLockManager.init();
