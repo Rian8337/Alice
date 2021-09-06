@@ -63,10 +63,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
             const finalCount: number = (await this.getChannelMessageCount(channel, newDailyTime - 86400 * 1000, newDailyTime)).first()!;
 
-            channelData.set(
-                channel.id,
-                (channelData.get(channel.id) ?? 0) + finalCount
-            );
+            channelData.set(channel.id, finalCount);
         }
 
         await DatabaseManager.aliceDb.collections.channelData.update(
@@ -161,7 +158,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         const messageManager: MessageManager = channel.messages;
 
-        const lastMessage: Message|undefined = (await messageManager.fetch({ limit: 1 })).first();
+        const lastMessage: Message | undefined = (await messageManager.fetch({ limit: 1 })).first();
 
         let lastMessageID: Snowflake | undefined = lastMessage?.id;
 
@@ -175,7 +172,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         currentDate.setUTCHours(0, 0, 0, 0);
 
-        while (fetchEndTime >= fetchStartTime && lastMessageID) {
+        while (currentDate.getTime() >= fetchStartTime && lastMessageID) {
             const messages: Collection<string, Message> = await messageManager.fetch({ limit: fetchCount, before: lastMessageID });
 
             for (const message of messages.values()) {
