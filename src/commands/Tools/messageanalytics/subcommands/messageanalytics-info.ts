@@ -179,3 +179,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         onPageChange
     );
 };
+
+export const config: Subcommand["config"] = {
+    permissions: []
+};
