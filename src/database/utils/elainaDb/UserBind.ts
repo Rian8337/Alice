@@ -327,7 +327,9 @@ export class UserBind extends Manager {
 
                 const rankedScoreCollection: Collection<string, number> = new Collection();
 
-                for await (const score of scores) {
+                let score: Score | undefined;
+
+                while (score = scores.shift()) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
                     if (!beatmapInfo) {
