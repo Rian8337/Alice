@@ -43,7 +43,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const channelsToFetch: TextChannel[] = [];
 
-    if (interaction.options.getString("scope") ?? "channel" === "channel") {
+    if ((interaction.options.getString("scope") ?? "channel") === "channel") {
         if (!(interaction.channel instanceof TextChannel)) {
             return interaction.editReply({
                 content: MessageCreator.createReject(messageanalyticsStrings.notATextChannel)
