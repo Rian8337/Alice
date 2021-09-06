@@ -81,6 +81,10 @@ export abstract class BeatmapManager extends Manager {
             const beatmapsData: OsuAPIResponse[] = JSON.parse(result.data.toString("utf-8"));
 
             for (const beatmapData of beatmapsData) {
+                if (beatmapData.mode !== "0") {
+                    continue;
+                }
+
                 const beatmapInfo: MapInfo = new MapInfo();
 
                 beatmapInfo.fillMetadata(beatmapData);
