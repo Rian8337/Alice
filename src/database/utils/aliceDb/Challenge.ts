@@ -150,38 +150,36 @@ export class Challenge extends Manager {
      * 
      * @returns An object containing information about the operation.
      */
-    start(): Promise<ChallengeOperationResult> {
-        return new Promise(async resolve => {
-            if (this.status !== "scheduled") {
-                return resolve(this.createOperationResult(false, "challenge is not scheduled"));
-            }
+    async start(): Promise<ChallengeOperationResult> {
+        if (this.status !== "scheduled") {
+            return this.createOperationResult(false, "challenge is not scheduled");
+        }
 
-            // Check if any challenges are ongoing
-            if (await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(this.type)) {
-                return resolve(this.createOperationResult(false, "a challenge is still ongoing"));
-            }
+        // Check if any challenges are ongoing
+        if (await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(this.type)) {
+            return this.createOperationResult(false, "a challenge is still ongoing");
+        }
 
-            await DatabaseManager.aliceDb.collections.challenge.update(
-                { challengeid: this.challengeid },
-                {
-                    $set: {
-                        status: "ongoing",
-                        timelimit: Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1)
-                    }
+        await DatabaseManager.aliceDb.collections.challenge.update(
+            { challengeid: this.challengeid },
+            {
+                $set: {
+                    status: "ongoing",
+                    timelimit: Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1)
                 }
-            );
+            }
+        );
 
-            const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
+        const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
 
-            const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
+        const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
 
-            await notificationChannel.send({
-                content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.`),
-                ...challengeEmbedOptions
-            });
-
-            resolve(this.createOperationResult(true));
+        await notificationChannel.send({
+            content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.`),
+            ...challengeEmbedOptions
         });
+
+        return this.createOperationResult(true);
     }
 
     /**
@@ -190,64 +188,61 @@ export class Challenge extends Manager {
      * @param force Whether to force end the challenge.
      * @returns An object containing information about the operation.
      */
-    end(force?: boolean): Promise<ChallengeOperationResult> {
-        return new Promise(async resolve => {
-            if (!this.hasStarted) {
-                return resolve(this.createOperationResult(false, "challenge is not ongoing"));
-            }
+    async end(force?: boolean): Promise<ChallengeOperationResult> {
+        if (!this.hasStarted) {
+            return this.createOperationResult(false, "challenge is not ongoing");
+        }
 
-            if (!force && DateTimeFormatHelper.getTimeDifference(this.timelimit * 1000) > 0) {
-                return resolve(this.createOperationResult(false, "not the time to end challenge yet"));
-            }
+        if (!force && DateTimeFormatHelper.getTimeDifference(this.timelimit * 1000) > 0) {
+            return this.createOperationResult(false, "not the time to end challenge yet");
+        }
 
-            await DatabaseManager.aliceDb.collections.challenge.update(
-                { challengeid: this.challengeid }, { $set: { status: "finished" } }
-            );
+        await DatabaseManager.aliceDb.collections.challenge.update(
+            { challengeid: this.challengeid }, { $set: { status: "finished" } }
+        );
 
+        const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
 
-            const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
+        const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
 
-            const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
-
-            await notificationChannel.send({
-                content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.`),
-                ...challengeEmbedOptions
-            });
-
-            // Award first place in leaderboard
-            const firstPlaceScore: Score | undefined = (await this.getCurrentLeaderboard()).shift();
-
-            if (firstPlaceScore) {
-                const winnerBindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUid(firstPlaceScore.uid);
-
-                if (winnerBindInfo) {
-                    await DatabaseManager.aliceDb.collections.playerInfo.update(
-                        { uid: winnerBindInfo.uid },
-                        {
-                            $inc: {
-                                points: this.isWeekly ? 50 : 25,
-                                alicecoins: this.isWeekly ? 100 : 50
-                            }
-                        }
-                    );
-
-                    await DatabaseManager.elainaDb.collections.clan.update(
-                        { "member_list.id": winnerBindInfo.discordid },
-                        { $inc: { power: this.isWeekly ? 50 : 25 } }
-                    );
-
-                    const coinEmoji: GuildEmoji = this.client.emojis.cache.get(Constants.aliceCoinEmote)!;
-
-                    await notificationChannel.send({
-                        content: MessageCreator.createAccept(
-                            `Congratulations to <@${winnerBindInfo.discordid}> for achieving first place in challenge \`${this.challengeid}\`, earning him/her \`${this.isWeekly ? "50" : "25"}\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"}\` Alice coins!`
-                        )
-                    });
-                }
-            }
-
-            resolve(this.createOperationResult(true));
+        await notificationChannel.send({
+            content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.`),
+            ...challengeEmbedOptions
         });
+
+        // Award first place in leaderboard
+        const firstPlaceScore: Score | undefined = (await this.getCurrentLeaderboard()).shift();
+
+        if (firstPlaceScore) {
+            const winnerBindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUid(firstPlaceScore.uid);
+
+            if (winnerBindInfo) {
+                await DatabaseManager.aliceDb.collections.playerInfo.update(
+                    { uid: winnerBindInfo.uid },
+                    {
+                        $inc: {
+                            points: this.isWeekly ? 50 : 25,
+                            alicecoins: this.isWeekly ? 100 : 50
+                        }
+                    }
+                );
+
+                await DatabaseManager.elainaDb.collections.clan.update(
+                    { "member_list.id": winnerBindInfo.discordid },
+                    { $inc: { power: this.isWeekly ? 50 : 25 } }
+                );
+
+                const coinEmoji: GuildEmoji = this.client.emojis.cache.get(Constants.aliceCoinEmote)!;
+
+                await notificationChannel.send({
+                    content: MessageCreator.createAccept(
+                        `Congratulations to <@${winnerBindInfo.discordid}> for achieving first place in challenge \`${this.challengeid}\`, earning him/her \`${this.isWeekly ? "50" : "25"}\` points and ${coinEmoji}\`${this.isWeekly ? "100" : "50"}\` Alice coins!`
+                    )
+                });
+            }
+        }
+
+        return this.createOperationResult(true);
     }
 
     /**
