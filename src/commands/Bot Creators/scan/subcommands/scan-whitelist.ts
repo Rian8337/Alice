@@ -8,6 +8,9 @@ import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { MapWhitelistCollectionManager } from "@alice-database/managers/elainaDb/MapWhitelistCollectionManager";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
+import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
+import { MapInfo } from "osu-droid";
+import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 
 /**
  * Deletes a beatmap with specific hash from all players.
@@ -48,24 +51,37 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let scannedCount: number = 0;
 
     while (true) {
-        const entries: Collection<number, MapWhitelist> = await whitelistDb.getUnscannedBeatmaps(500);
+        const entries: Collection<number, MapWhitelist> = await whitelistDb.getUnscannedBeatmaps(250);
 
         if (entries.size === 0) {
             break;
         }
 
         for await (const entry of entries.values()) {
-            if (!await entry.checkValidity()) {
-                await deletePlays(entry.hashid);
+            const validity: WhitelistValidity = await entry.checkValidity();
 
-                await whitelistDb.delete({ mapid: entry.mapid });
+            switch (validity) {
+                case WhitelistValidity.BEATMAP_NOT_FOUND:
+                case WhitelistValidity.DOESNT_NEED_WHITELISTING:
+                    await deletePlays(entry.hashid);
+
+                    await whitelistDb.delete({ mapid: entry.mapid });
+                    break;
+                case WhitelistValidity.OUTDATED_HASH:
+                    await deletePlays(entry.hashid);
+
+                    const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(entry.mapid, false))!;
+
+                    entry.hashid = beatmapInfo.hash;
+                case WhitelistValidity.VALID:
+                    client.logger.info(++scannedCount);
+
+                    entry.whitelistScanDone = true;
+
+                    await HelperFunctions.sleep(0.05);
+
+                    await whitelistDb.update({ mapid: entry.mapid }, { $set: { ...entry } });
             }
-
-            client.logger.info(++scannedCount);
-
-            await HelperFunctions.sleep(0.05);
-
-            await whitelistDb.update({ mapid: entry.mapid }, { $set: { ...entry } });
         }
     }
 

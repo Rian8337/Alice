@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
 import { WhitelistDifficultyStatistics } from "@alice-interfaces/dpp/WhitelistDifficultyStatistics";
 import { Manager } from "@alice-utils/base/Manager";
@@ -31,31 +32,31 @@ export class MapWhitelist extends Manager implements DatabaseMapWhitelist {
     /**
      * Checks whether this whitelisted beatmap is still valid.
      */
-    async checkValidity(): Promise<boolean> {
+    async checkValidity(): Promise<WhitelistValidity> {
         const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(this.hashid, false, true);
 
         if (!beatmapInfo) {
-            return false;
-        }
-
-        if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
-            return false;
+            return WhitelistValidity.BEATMAP_NOT_FOUND;
         }
 
         if (this.hashid !== beatmapInfo.hash) {
             await this.updateDiffstat();
 
-            return false;
+            return WhitelistValidity.OUTDATED_HASH;
         }
 
-        return true;
+        if (!WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved)) {
+            return WhitelistValidity.DOESNT_NEED_WHITELISTING;
+        }
+
+        return WhitelistValidity.VALID;
     }
 
     /**
      * Updates the diffstat of this whitelisted beatmap.
      */
     async updateDiffstat(): Promise<void> {
-        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(this.hashid, false, true);
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(this.hashid, false);
 
         if (!beatmapInfo) {
             return;
