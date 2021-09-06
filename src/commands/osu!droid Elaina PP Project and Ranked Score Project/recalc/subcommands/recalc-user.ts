@@ -39,6 +39,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    if (await bindInfo.isDPPBanned()) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(recalcStrings.userIsDPPBanned)
+        });
+    }
+
     if (CacheManager.recalculationQueue.size > 0) {
         CacheManager.recalculationQueue.set(user.id, interaction);
 
