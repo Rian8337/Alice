@@ -5,8 +5,7 @@ import { Snowflake } from "discord.js";
  */
 export class Constants {
     /**
-     * Default message to send when a user doesn't meet required
-     * permissions to use a command.
+     * Default message to send when a user doesn't meet required permissions to use a command.
      */
     static readonly noPermissionReject: string = "I'm sorry, you do not have the permission to execute this command.";
 
@@ -16,26 +15,27 @@ export class Constants {
     static readonly databaseErrorReject: string = "I'm sorry, I'm having trouble receiving response from database. Please try again!";
 
     /**
-     * Default message to send when a Discord user doesn't
-     * have a binded osu!droid account.
+     * Default message to send when a Discord user doesn't have a binded osu!droid account.
      */
     static readonly selfNotBindedReject: string = "I'm sorry, your account is not binded. You need to bind your account using `/userbind` first.";
 
     /**
-     * Default message to send when a command
-     * is not available in a server.
+     * Default message to send when a command is not available in a server.
      */
     static readonly notAvailableInServerReject: string = "I'm sorry, this command is not available in this server.";
 
     /**
-     * Default message to send when a user (third-person)
-     * doesn't have a binded osu!droid account.
+     * Default message to send when a command is not available in a channel.
+     */
+    static readonly notAvailableInChannelReject: string = "I'm sorry, this command is not available in this channel.";
+
+    /**
+     * Default message to send when a user (third-person) doesn't have a binded osu!droid account.
      */
     static readonly userNotBindedReject: string = "I'm sorry, that account is not binded. The user needs to bind his/her account using `/userbind` first.";
 
     /**
-     * Default message to send when an API request
-     * towards the osu!droid server fails.
+     * Default message to send when an API request towards the osu!droid server fails.
      */
     static readonly droidApiRequestFail: string = "I'm sorry, I'm having trouble receiving response from osu!droid server. Please try again!";
 
@@ -83,4 +83,9 @@ export class Constants {
      * The ID of the channel that is storing tag attachments.
      */
     static readonly tagAttachmentChannel: Snowflake = "695521921441333308";
+
+    /**
+     * The ID of the channel for managing map share submissions.
+     */
+    static readonly mapShareChannel: Snowflake = "715423228461449297";
 }
