@@ -218,7 +218,7 @@ export class Score {
      */
     fillInformation(info: string): Score {
         const play: string[] = info.split(" ");
-            
+
         this.scoreID = parseInt(play[0]);
         this.username = play[2];
         this.score = parseInt(play[3]);
