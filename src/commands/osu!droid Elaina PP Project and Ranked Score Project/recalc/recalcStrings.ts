@@ -8,7 +8,7 @@ export enum recalcStrings {
     userQueued = "Successfully queued %s for recalculation.",
     fullRecalcInProgress = "Successfully started recalculation.",
     fullRecalcSuccess = "%s, recalculation done!",
-    recalcInProgress = "Recalculating %s...",
+    recalcInProgress = "Recalculating the user...",
     recalcFailed = "%s, the recalculation failed: %s.",
     recalcSuccess = "%s, successfully recalculated %s."
 };
