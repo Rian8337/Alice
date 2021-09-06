@@ -326,7 +326,7 @@ export abstract class EmbedCreator {
         const calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters(ModUtil.pcStringToMods(challenge.constrain));
 
         const calcResult: StarRatingCalculationResult =
-            (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(challenge.hash, calcParams))!;
+            (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(challenge.beatmapid, calcParams))!;
 
         const embedOptions: MessageOptions =
             await this.createBeatmapEmbed(calcResult.map, calcParams, calcResult);
