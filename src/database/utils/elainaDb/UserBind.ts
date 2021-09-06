@@ -14,6 +14,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
+import { UpdateQuery } from "mongodb";
 import { DroidAPIRequestBuilder, MapInfo, Player, RequestResponse, Score } from "osu-droid";
 import { RankedScore } from "../aliceDb/RankedScore";
 import { Clan } from "./Clan";
@@ -282,10 +283,10 @@ export class UserBind extends Manager {
 
         this.playc = 0;
 
-        const getScores = async (page: number): Promise<Score[]> => {
+        const getScores = async (uid: number, page: number): Promise<Score[]> => {
             const apiRequestBuilder: DroidAPIRequestBuilder = new DroidAPIRequestBuilder()
                 .setEndpoint("scoresearchv2.php")
-                .addParameter("uid", this.uid)
+                .addParameter("uid", uid)
                 .addParameter("page", page - 1);
 
             const data: RequestResponse = await apiRequestBuilder.sendRequest();
@@ -294,7 +295,7 @@ export class UserBind extends Manager {
                 return [];
             }
 
-            const entries: string[] = data.data.toString("utf-8").split("\n");
+            const entries: string[] = data.data.toString("utf-8").split("<br>");
 
             entries.shift();
 
@@ -312,12 +313,15 @@ export class UserBind extends Manager {
                 await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(uid) ??
                 DatabaseManager.aliceDb.collections.rankedScore.defaultInstance;
 
+            rankedScore.uid = uid;
             rankedScore.username = player.username;
 
             let page = 0;
 
             while (true) {
-                const scores: Score[] = await getScores(++page);
+                const scores: Score[] = await getScores(uid, ++page);
+
+                console.log(scores.length);
 
                 if (scores.length === 0) {
                     break;
@@ -352,18 +356,23 @@ export class UserBind extends Manager {
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
 
+        const query: UpdateQuery<DatabaseUserBind> = {
+            $set: {
+                pp: [...this.pp.values()],
+                pptotal: this.pptotal,
+                playc: this.playc,
+                // Only set to true if hasAskedForRecalc is originally false
+                hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc
+            }
+        };
+
+        if (isDPPRecalc) {
+            Object.defineProperty(query, "dppRecalcComplete", { value: true, writable: true, configurable: true, enumerable: true });
+        }
+
         return DatabaseManager.elainaDb.collections.userBind.update(
             { discordid: this.discordid },
-            {
-                $set: {
-                    pp: [...this.pp.values()],
-                    pptotal: this.pptotal,
-                    playc: this.playc,
-                    // Only set to true if hasAskedForRecalc is originally false
-                    hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc,
-                    dppRecalcComplete: isDPPRecalc || undefined
-                }
-            }
+            query
         );
     }
 
