@@ -45,7 +45,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const email: string = interaction.options.getString("email", true);
+    const email: string = interaction.options.getString("email", true).trim();
 
     if (email !== player.email) {
         return interaction.editReply({
