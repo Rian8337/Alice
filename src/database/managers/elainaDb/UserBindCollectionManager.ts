@@ -54,7 +54,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { dppScanComplete: { $ne: true } }
         ).sort({ pptotal: -1 }).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
     }
 
     /**
@@ -68,7 +68,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { dppRecalcComplete: { $ne: true } }
         ).sort({ pptotal: -1 }).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
     }
 
     /**
@@ -124,6 +124,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
             { projection: { _id: 0, discordid: 1, uid: 1, pptotal: 1, playc: 1, username: 1 } }
         ).sort({ pptotal: -1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(userBind.map(v => Object.assign(this.defaultInstance, v)), "discordid");
+        return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
     }
 }

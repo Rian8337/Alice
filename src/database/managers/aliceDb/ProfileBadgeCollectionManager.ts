@@ -39,6 +39,6 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<Dat
             {}, { projection: { _id: 0, id: 1, name: 1, description: 1 } }
         ).sort({ type: 1, name: 1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(badges.map(v => Object.assign(this.defaultInstance, v)), "id");
+        return ArrayHelper.arrayToCollection(badges.map(v => new ProfileBadge(v)), "id");
     }
 }

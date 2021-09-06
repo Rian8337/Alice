@@ -135,6 +135,6 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
             { weeklyfee: { $lte: weeklyFeeTimeLimit } }
         ).sort({ weeklyfee: 1 }).toArray();
 
-        return ArrayHelper.arrayToCollection(databaseClans.map(v => Object.assign(this.defaultInstance, v)), "name");
+        return ArrayHelper.arrayToCollection(databaseClans.map(v => new Clan(v)), "name");
     }
 }

@@ -47,6 +47,6 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
             { whitelistScanDone: { $ne: true } }
         ).limit(amount).toArray();
 
-        return ArrayHelper.arrayToCollection(mapWhitelist.map(v => Object.assign(this.defaultInstance, v)), "mapid");
+        return ArrayHelper.arrayToCollection(mapWhitelist.map(v => new MapWhitelist(v)), "mapid");
     }
 }
