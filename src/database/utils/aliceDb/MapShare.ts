@@ -1,9 +1,16 @@
 import { Bot } from "@alice-core/Bot";
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
+import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
+import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
 import { Manager } from "@alice-utils/base/Manager";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { ObjectId } from "bson";
-import { Snowflake } from "discord.js";
+import { MessageOptions, Snowflake, TextChannel } from "discord.js";
+import { UserBind } from "../elainaDb/UserBind";
+import { PlayerInfo } from "./PlayerInfo";
 
 /**
  * Represents a shared beatmap.
@@ -15,7 +22,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
     id: Snowflake;
     date: number;
     summary: string;
-    status: "accepted" | "denied" | "pending" | "posted";
+    status: MapShareSubmissionStatus;
     readonly _id?: ObjectId;
 
     constructor(data: DatabaseMapShare = DatabaseManager.aliceDb?.collections.mapShare.defaultDocument ?? {}) {
@@ -31,5 +38,107 @@ export class MapShare extends Manager implements DatabaseMapShare {
         this.status = data.status;
     }
 
-    // TODO: methods to deny/post/accept/whatever
+    /**
+     * Accepts this submission.
+     * 
+     * @returns An object containing the result of the operation.
+     */
+    accept(): Promise<DatabaseOperationResult> {
+        this.status = "accepted";
+
+        return DatabaseManager.aliceDb.collections.mapShare.update(
+            { beatmap_id: this.beatmap_id },
+            {
+                $set: {
+                    status: this.status
+                }
+            }
+        );
+    }
+
+    /**
+     * Denies this submission.
+     * 
+     * @returns An object containing the result of the operation.
+     */
+    deny(): Promise<DatabaseOperationResult> {
+        this.status = "denied";
+
+        return DatabaseManager.aliceDb.collections.mapShare.update(
+            { beatmap_id: this.beatmap_id },
+            {
+                $set: {
+                    status: this.status
+                }
+            }
+        );
+    }
+
+    /**
+     * Deletes this submission.
+     * 
+     * This is done if a beatmap is updated after it is submitted.
+     * 
+     * @returns An object containing the result of the operation.
+     */
+    delete(): Promise<DatabaseOperationResult> {
+        return DatabaseManager.aliceDb.collections.mapShare.delete(
+            { beatmap_id: this.beatmap_id }
+        );
+    }
+
+    /**
+     * Posts this submission in the map share channel.
+     * 
+     * @returns An object containing the result of the operation.
+     */
+    async post(): Promise<DatabaseOperationResult> {
+        if (this.status !== "accepted") {
+            return this.createOperationResult(false, "submission is not accepted yet");
+        }
+
+        const embedOptions: MessageOptions | null = await EmbedCreator.createMapShareEmbed(this);
+
+        if (!embedOptions) {
+            return this.createOperationResult(false, "beatmap not found");
+        }
+
+        const coinAward: number = 200 * Math.floor(this.summary.split(" ").length / 50);
+
+        const playerInfo: PlayerInfo | null =
+            await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(this.id);
+
+        if (playerInfo) {
+            await playerInfo.incrementCoins(coinAward);
+        } else {
+            const bindInfo: UserBind | null =
+                await DatabaseManager.elainaDb.collections.userBind.getFromUser(this.id);
+
+            if (!bindInfo) {
+                return this.createOperationResult(false, "submitter is not binded");
+            }
+
+            await DatabaseManager.aliceDb.collections.playerInfo.insert({
+                uid: bindInfo.uid,
+                username: bindInfo.username,
+                discordid: this.id,
+                alicecoins: coinAward
+            });
+        }
+
+        const channel: TextChannel = <TextChannel> await (await this.client.guilds.fetch(Constants.mainServer)).channels.fetch("430002296160649229");
+
+        await channel.send(embedOptions);
+
+        this.status = "posted";
+
+        return DatabaseManager.aliceDb.collections.mapShare.update(
+            { beatmap_id: this.beatmap_id },
+            {
+                $set: {
+                    status: this.status
+                }
+            }
+        );
+    }
 }

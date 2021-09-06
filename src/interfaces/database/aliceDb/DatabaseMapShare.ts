@@ -1,3 +1,4 @@
+import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
@@ -38,5 +39,5 @@ export interface DatabaseMapShare extends BaseDocument {
     /**
      * The status of the shared beatmap submission.
      */
-    status: "accepted" | "denied" | "pending" | "posted";
+    status: MapShareSubmissionStatus;
 };

@@ -1,4 +1,4 @@
-import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, OsuPerformanceCalculator, ReplayData, ReplayObjectData, Score, Slider, SliderTick, TailCircle } from "osu-droid";
+import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModUtil, OsuPerformanceCalculator, ReplayData, ReplayObjectData, Score, Slider, SliderTick, TailCircle } from "osu-droid";
 import { ColorResolvable, CommandInteraction, Guild, GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions, User } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -16,6 +16,7 @@ import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch"
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
+import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 
 /**
  * Utility to create message embeds.
@@ -319,17 +320,16 @@ export abstract class EmbedCreator {
      * Creates a challenge embed.
      * 
      * @param challenge The challenge to create the challenge embed for.
-     * @returns The embed.
+     * @returns The options for the embed.
      */
     static async createChallengeEmbed(challenge: Challenge, graphColor?: string): Promise<MessageOptions> {
-        const calcResult: PerformanceCalculationResult =
-            (await BeatmapDifficultyHelper.calculateBeatmapPerformance(challenge.hash))!;
+        const calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters(ModUtil.pcStringToMods(challenge.constrain));
+
+        const calcResult: StarRatingCalculationResult =
+            (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(challenge.hash, calcParams))!;
 
         const embedOptions: MessageOptions =
-            await this.createBeatmapEmbed(calcResult.map, new StarRatingCalculationParameters(calcResult.osu.stars.mods));
-
-        const droidCalc: DroidPerformanceCalculator = calcResult.droid;
-        const osuCalc: OsuPerformanceCalculator = calcResult.osu;
+            await this.createBeatmapEmbed(calcResult.map, calcParams, calcResult);
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
@@ -345,8 +345,8 @@ export abstract class EmbedCreator {
             )
             .addField(
                 `**Star Rating**\n` +
-                `${Symbols.star.repeat(Math.min(10, Math.floor(droidCalc.stars.total)))} ${droidCalc.stars.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(Math.min(10, Math.floor(osuCalc.stars.total)))} ${osuCalc.stars.total.toFixed(2)} PC stars`,
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calcResult.droid.total)))} ${calcResult.droid.total.toFixed(2)} droid stars\n` +
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calcResult.osu.total)))} ${calcResult.osu.total.toFixed(2)} PC stars`,
                 `**Point(s)**: ${challenge.points} points\n` +
                 `**Pass Condition**: ${challenge.getPassInformation()}\n` +
                 `**Constrain**: ${challenge.constrain ? `${challenge.constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}`
@@ -355,7 +355,7 @@ export abstract class EmbedCreator {
         return {
             embeds: [ embed ],
             files: [new MessageAttachment(
-                (await osuCalc.stars.getStrainChart(
+                (await calcResult.osu.getStrainChart(
                     calcResult.map.beatmapsetID,
                     graphColor
                 ))!,
@@ -432,5 +432,47 @@ export abstract class EmbedCreator {
             .addField(match.team[1][0], `**${match.team[1][1]}**`, true);
 
         return embed;
+    }
+
+    /**
+     * Creates an embed for a map share submission.
+     * 
+     * @param submission The submission.
+     * @returns The options for the embed.
+     */
+    static async createMapShareEmbed(submission: MapShare): Promise<MessageOptions | null> {
+        const calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]);
+
+        const calcResult: StarRatingCalculationResult =
+            (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(submission.beatmap_id, calcParams))!;
+
+        const embedOptions: MessageOptions =
+            await this.createBeatmapEmbed(calcResult.map, calcParams, calcResult);
+
+        const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+
+        embed.setImage("attachment://chart.png")
+            .setAuthor(`Submission by ${submission.submitter}`, `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)
+            .addField(
+                "**Star Rating**",
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calcResult.droid.total)))} ${calcResult.droid.total.toFixed(2)} droid stars\n` +
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calcResult.osu.total)))} ${calcResult.osu.total.toFixed(2)} PC stars`
+            )
+            .addField(
+                "**Status and Summary**",
+                `**Status**: ${StringHelper.capitalizeString(submission.status)}\n\n` +
+                `**Summary**:\n${submission.summary}`
+            );
+
+        return {
+            embeds: [ embed ],
+            files: [new MessageAttachment(
+                (await calcResult.osu.getStrainChart(
+                    calcResult.map.beatmapsetID,
+                    "#28ebda"
+                ))!,
+                "chart.png"
+            ), ...embedOptions.files!]
+        };
     }
 }
