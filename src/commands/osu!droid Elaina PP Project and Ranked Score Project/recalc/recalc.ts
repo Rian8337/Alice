@@ -41,20 +41,16 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "whitelist 1764213",
-            description: "will whitelist/unwhitelist the beatmap with ID 1764213."
+            command: "recalc all true",
+            description: "will recalculate all scores of all users in the droid performance points (dpp) system."
         },
         {
-            command: "whitelist https://osu.ppy.sh/b/1884658",
-            description: "will whitelist/unwhitelist the linked beatmap, depending on the action taken by the user."
+            command: "recalc user @Rian8337#0001",
+            description: "will recalculate Rian8337's scores."
         },
         {
-            command: "whitelist https://osu.ppy.sh/s/902745",
-            description: "will whitelist/unwhitelist the linked beatmapset, depending on the action taken by the user."
-        },
-        {
-            command: "whitelist https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
-            description: "will whitelist/unwhitelist the linked beatmap/beatmapset (the link contains both beatmap ID and beatmapset ID), depending on the action taken by the user."
+            command: "recalc user 132783516176875520",
+            description: "will recalculate the scores of the user with that Discord ID."
         }
     ],
     permissions: ["SPECIAL"],
