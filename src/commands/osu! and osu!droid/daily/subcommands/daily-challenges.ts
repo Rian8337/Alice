@@ -39,7 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { embeds: [ embed ] },
         [interaction.user.id],
         bonusDescription,
-        1,
+        3,
         1,
         60,
         onPageChange
