@@ -98,14 +98,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
     } else {
-        const doc: DatabaseUserBind = dbManager.defaultDocument;
-
-        doc.discordid = interaction.user.id;
-        doc.uid = player.uid;
-        doc.username = player.username;
-        doc.previous_bind.push(player.uid);
-
-        const result: DatabaseOperationResult = await dbManager.insert(doc);
+        const result: DatabaseOperationResult = await dbManager.insert({
+            discordid: interaction.user.id,
+            uid: player.uid,
+            username: player.username,
+            previous_bind: [player.uid]
+        });
 
         if (!result.success) {
             return interaction.editReply({

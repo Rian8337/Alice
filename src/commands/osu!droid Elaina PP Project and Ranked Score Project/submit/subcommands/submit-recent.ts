@@ -135,16 +135,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (rankedScoreInfo) {
         await rankedScoreInfo.setNewRankedScoreValue(scoreList, scoresToSubmit.length);
     } else {
-        const doc: DatabaseRankedScore = DatabaseManager.aliceDb.collections.rankedScore.defaultDocument;
-
-        doc.uid = bindInfo.uid;
-        doc.username = bindInfo.username;
-        doc.level = level;
-        doc.score = totalScore;
-        doc.scorelist = RankedScoreHelper.toArray(scoreList);
-        doc.playc = 1;
-
-        await rankedScoreDbManager.insert(doc);
+        await rankedScoreDbManager.insert({
+            uid: bindInfo.uid,
+            username: bindInfo.username,
+            level: level,
+            score: totalScore,
+            scorelist: RankedScoreHelper.toArray(scoreList),
+            playc: 1
+        });
     }
 
     interaction.editReply({
