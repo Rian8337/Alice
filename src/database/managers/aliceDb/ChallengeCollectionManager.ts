@@ -58,7 +58,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
         return this.getOne({$and: [
             {
                 challengeid: {
-                    $regex: new RegExp((type === "weekly" ? "w" : "d") + "\d{1,}", "g")
+                    $regex: new RegExp(`${type === "weekly" ? "w" : "d"}\\d{1,}`, "g")
                 }
             },
             {
