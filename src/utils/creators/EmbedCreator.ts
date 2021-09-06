@@ -336,10 +336,9 @@ export abstract class EmbedCreator {
         embed.setImage("attachment://chart.png")
             .setAuthor(
                 challenge.type === "weekly" ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge",
-                "https://image.frl/p/beyefgeq5m7tobjg.jpg"
+                `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`
             )
             .setDescription(
-                `**[${calcResult.map.showStatistics(0)}](https://osu.ppy.sh/b/${calcResult.map.beatmapID})**\n` + 
                 `Featured by <@${challenge.featured}>\n` +
                 `Download: [Google Drive](${challenge.link[0]})${challenge.link[1] ? ` - [OneDrive](${challenge.link[1]})` : ""}`
             )
