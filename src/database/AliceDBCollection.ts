@@ -153,7 +153,7 @@ export class AliceDBCollection {
         this.clanAuction = new ClanAuctionCollectionManager(aliceDb.collection("auction"));
         this.birthday = new BirthdayCollectionManager(aliceDb.collection("birthday"));
         this.channelData = new ChannelDataCollectionManager(aliceDb.collection("channeldata"));
-        this.challenge = new ChallengeCollectionManager(aliceDb.collection("dailychallenge"));
+        this.challenge = new ChallengeCollectionManager(aliceDb.collection("challenge"));
         this.guildSettings = new GuildSettingsCollectionManager(aliceDb.collection("guildsettings"));
         this.emojiStatistics = new EmojiStatisticsCollectionManager(aliceDb.collection("emojistatistics"));
         this.loungeLock = new LoungeLockCollectionManager(aliceDb.collection("loungelock"));
