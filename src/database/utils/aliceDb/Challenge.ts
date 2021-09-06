@@ -175,7 +175,7 @@ export class Challenge extends Manager {
         const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
 
         await notificationChannel.send({
-            content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.`),
+            content: MessageCreator.createAccept(`Successfully started challenge \`${this.challengeid}\`.\n<@&674918022116278282>`),
             ...challengeEmbedOptions
         });
 
