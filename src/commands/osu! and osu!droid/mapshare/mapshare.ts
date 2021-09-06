@@ -1,9 +1,10 @@
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    
+    CommandHelper.runSubcommandFromInteraction(interaction);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
