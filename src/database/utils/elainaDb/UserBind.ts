@@ -16,7 +16,6 @@ import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 import { UpdateQuery } from "mongodb";
 import { DroidAPIRequestBuilder, MapInfo, Player, RequestResponse, Score } from "osu-droid";
-import { RankedScore } from "../aliceDb/RankedScore";
 import { Clan } from "./Clan";
 
 /**
@@ -313,12 +312,9 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            const rankedScore: RankedScore =
-                await DatabaseManager.aliceDb.collections.rankedScore.getFromUid(uid) ??
-                DatabaseManager.aliceDb.collections.rankedScore.defaultInstance;
-
-            rankedScore.uid = uid;
-            rankedScore.username = player.username;
+            // Do manual operations to reduce memory usage (we don't need to cache
+            // submitted scores)
+            await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: uid });
 
             let page = 0;
 
@@ -328,6 +324,8 @@ export class UserBind extends Manager {
                 if (scores.length === 0) {
                     break;
                 }
+
+                const rankedScoreCollection: Collection<string, number> = new Collection();
 
                 for await (const score of scores) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
@@ -351,12 +349,29 @@ export class UserBind extends Manager {
                     }
 
                     if (RankedScoreHelper.isBeatmapEligible(beatmapInfo.approved)) {
-                        RankedScoreHelper.insertScore(rankedScore.scorelist, score);
+                        rankedScoreCollection.set(beatmapInfo.hash, score.score);
                     }
                 }
-            }
 
-            await rankedScore.setNewRankedScoreValue(rankedScore.scorelist, rankedScore.scorelist.size);
+                await DatabaseManager.aliceDb.collections.rankedScore.update(
+                    { uid: uid },
+                    {
+                        $inc: {
+                            score: rankedScoreCollection.reduce((acc, value) => acc + value, 0),
+                            playc: rankedScoreCollection.size
+                        },
+                        $addToSet: {
+                            scorelist: {
+                                $each: RankedScoreHelper.toArray(rankedScoreCollection)
+                            }
+                        },
+                        $setOnInsert: {
+                            username: player.username
+                        }
+                    },
+                    { upsert: true }
+                );
+            }
         }
 
         this.pp = newList;
