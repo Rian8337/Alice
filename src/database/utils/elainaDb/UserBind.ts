@@ -234,8 +234,6 @@ export class UserBind extends Manager {
     async recalculateDPP(): Promise<DatabaseOperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
-        this.playc = 0;
-
         for await (const ppEntry of this.pp.values()) {
             const score: Score = await Score.getFromHash({ uid: this.uid, hash: ppEntry.hash });
 
@@ -255,8 +253,6 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            ++this.playc;
-
             DPPHelper.insertScore(newList, score, calcResult);
         }
 
@@ -268,8 +264,7 @@ export class UserBind extends Manager {
             {
                 $set: {
                     pp: [...this.pp.values()],
-                    pptotal: this.pptotal,
-                    playc: this.playc
+                    pptotal: this.pptotal
                 }
             }
         );
