@@ -340,7 +340,7 @@ export class UserBind extends Manager {
                         const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
                         if (calcResult) {
-                            await HelperFunctions.sleep(0.2);
+                            await HelperFunctions.sleep(0.1);
 
                             ++this.playc;
 
