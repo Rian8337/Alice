@@ -321,8 +321,6 @@ export class UserBind extends Manager {
             while (true) {
                 const scores: Score[] = await getScores(uid, ++page);
 
-                console.log(scores.length);
-
                 if (scores.length === 0) {
                     break;
                 }
