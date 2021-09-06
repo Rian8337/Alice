@@ -64,6 +64,6 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
             {
                 status: "ongoing"
             }
-        ]})
+        ]});
     }
 }
