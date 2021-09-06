@@ -244,6 +244,8 @@ export class UserBind extends Manager {
 
             const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
 
+            await HelperFunctions.sleep(0.1);
+
             if (submissionValidity !== DPPSubmissionValidity.VALID) {
                 continue;
             }
@@ -253,6 +255,8 @@ export class UserBind extends Manager {
             if (!calcResult) {
                 continue;
             }
+
+            await HelperFunctions.sleep(0.2);
 
             DPPHelper.insertScore(newList, score, calcResult);
         }
@@ -332,10 +336,14 @@ export class UserBind extends Manager {
                         continue;
                     }
 
+                    await HelperFunctions.sleep(0.1);
+
                     if (await DPPHelper.checkSubmissionValidity(score) === DPPSubmissionValidity.VALID) {
                         const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
                         if (calcResult) {
+                            await HelperFunctions.sleep(0.2);
+
                             ++this.playc;
 
                             DPPHelper.insertScore(newList, score, calcResult);
