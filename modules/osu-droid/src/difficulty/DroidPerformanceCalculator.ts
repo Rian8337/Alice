@@ -24,8 +24,8 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     /**
      * The tap performance value.
      */
-    tap: number = 0;
-    
+    speed: number = 0;
+
     /**
      * The accuracy performance value.
      */
@@ -73,7 +73,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
 
         this.calculateAimValue();
-        this.calculateTapValue();
+        this.calculateSpeedValue();
         this.calculateAccuracyValue();
 
         // Custom multiplier for SO and NF.
@@ -87,10 +87,10 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
 
         // Apply tap penalty for penalized plays.
-        this.tap /= (params.tapPenalty ?? 1);
+        this.speed /= (params.tapPenalty ?? 1);
 
         this.total = Math.pow(
-            Math.pow(this.aim, 1.1) + Math.pow(this.tap, 1.1) +
+            Math.pow(this.aim, 1.1) + Math.pow(this.speed, 1.1) +
             Math.pow(this.accuracy, 1.1),
             1 / 1.1
         ) * finalMultiplier;
@@ -129,31 +129,31 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
         this.aim *= hiddenBonus;
 
+        // AR scaling
         let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            arFactor = 0.15 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         } else if (calculatedAR < 8) {
-            arFactor = 0.05 * (8 - calculatedAR);
+            arFactor += 0.025 * (8 - calculatedAR);
         }
 
-        // Scale aim with AR, sensitive to object count.
-        this.aim *= 1 + arFactor * (0.33 + 0.66 * Math.min(1, objectCount / 1250));
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
 
+        const arBonus: number = 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
+
+        let flBonus: number = 1;
         if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
             // Apply object-based bonus for flashlight.
-            let flBonus: number = 1 + 0.25 * Math.min(1, objectCount / 200);
+            flBonus += 0.35 * Math.min(1, objectCount / 200);
             if (objectCount > 200) {
                 flBonus += 0.3 * Math.min(1, (objectCount - 200) / 300);
             }
             if (objectCount > 500) {
                 flBonus += (objectCount - 500) / 1200;
             }
-            this.aim *= flBonus;
         }
 
-        if (this.stars.mods.some(m => m instanceof ModHidden) && this.stars.mods.some(m => m instanceof ModFlashlight)) {
-            this.aim *= 1.2;
-        }
+        this.aim *= Math.max(arBonus, flBonus);
 
         // Scale the aim value with accuracy slightly.
         this.aim *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
@@ -166,38 +166,42 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     /**
      * Calculates the tap performance value of the beatmap.
      */
-    protected calculateTapValue(): void {
+    protected calculateSpeedValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
         const n50: number = this.computedAccuracy.n50;
 
-        this.tap = this.baseValue(this.stars.speed);
+        this.speed = this.baseValue(this.stars.speed);
 
         if (this.computedAccuracy.nmiss > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.tap *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
         }
 
         // Combo scaling
-        this.tap *= this.comboPenalty;
+        this.speed *= this.comboPenalty;
 
-        // Scale tap sensitive to AR, without respect to object count.
+        let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            this.tap *= 1 + 0.3 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         }
+
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
+
+        this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
         // Scale the tap value with accuracy and OD.
         const od: number = <number> this.mapStatistics.od;
         const odScaling: number = Math.pow(od, 2) / 750;
-        this.tap *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
+        this.speed *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
             Math.pow(
                 this.computedAccuracy.value(objectCount),
                 12 - Math.max(od, 2.5) / 2
             );
 
         // Scale the tap value with # of 50s to punish doubletapping.
-        this.tap *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
+        this.speed *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
     }
 
     /**
@@ -255,7 +259,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     toString(): string {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
-            + " aim, " + this.tap.toFixed(2) + " tap, "
+            + " aim, " + this.speed.toFixed(2) + " speed, "
             + this.accuracy.toFixed(2) + " acc)"
         );
     }
