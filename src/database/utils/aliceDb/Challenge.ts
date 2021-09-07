@@ -252,7 +252,7 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async checkScoreCompletion(score: Score): Promise<ChallengeOperationResult> {
-        if (this.constrain && StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain)) {
+        if (this.constrain && StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain.toUpperCase())) {
             return this.createOperationResult(false, "constrain not fulfilled");
         }
 
@@ -300,7 +300,7 @@ export class Challenge extends Manager {
 
         const data: ReplayData = replay.data;
 
-        if (this.constrain && StringHelper.sortAlphabet(data.convertedMods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain)) {
+        if (this.constrain && StringHelper.sortAlphabet(data.convertedMods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain.toUpperCase())) {
             return this.createOperationResult(false, "constrain not fulfilled");
         }
 
