@@ -3,16 +3,14 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, Snowflake } from "discord.js";
-import { dailyStrings } from "../dailyStrings";
+import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const allPlayers: Collection<Snowflake, PlayerInfo> =   
+    const allPlayers: Collection<number, PlayerInfo> =   
         await DatabaseManager.aliceDb.collections.playerInfo.get(
-            "discordid",
+            "uid",
             {},
             { projection: { _id: 0, uid: 1, points: 1, username: 1 } }
         );
