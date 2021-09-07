@@ -10,6 +10,7 @@ export enum dailyStrings {
     startChallengeSuccess = "Successfully started challenge `%s`.",
     userHasPlayedChallenge = "The player has played challenge `%s` with highest bonus level achieved `%s`.",
     userHasNotPlayedChallenge = "The player has not played challenge `%s`.",
+    userHasNotPlayedAnyChallenge = "I'm sorry, this user has not played any challenges at all!",
     scoreNotFound = "I'm sorry, you haven't played the challenge beatmap!",
     challengeNotCompleted = "I'm sorry, you did not complete the ongoing challenge: %s.",
     challengeCompleted = "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point%s and `%s` Alice coins! You now have `%s` point%s and `%s` Alice coins.",

@@ -4,8 +4,11 @@ import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/Pl
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { Player } from "osu-droid";
+import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
@@ -33,12 +36,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             playerInfo = await dbManager.getFromUser(interaction.user);
     }
 
+    if (!playerInfo) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(dailyStrings.userHasNotPlayedAnyChallenge)
+        });
+    }
+
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
         { color: (<GuildMember> interaction.member).displayColor }
     );
 
-    embed.setAuthor(`Daily/Weekly Challenge Profile for ${username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", playerInfo ? ProfileManager.getProfileLink(playerInfo.uid).toString() : undefined)
-        .addField("Statistics", `**Points**: ${playerInfo?.points ?? 0}\n**Alice Coins**: ${coin}${playerInfo?.alicecoins ?? 0}\n**Challenges completed**: ${playerInfo?.challenges.size ?? 0}`);
+    embed.setAuthor(`Daily/Weekly Challenge Profile for ${playerInfo.username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", ProfileManager.getProfileLink(playerInfo.uid).toString())
+        .addField("Statistics", `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`);
 
     interaction.editReply({
         embeds: [ embed ]
