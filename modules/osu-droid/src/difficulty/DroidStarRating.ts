@@ -54,7 +54,7 @@ export class DroidStarRating extends StarRating {
         map: Beatmap,
 
         /**
-         * Applied modifications in osu!standard format.
+         * Applied modifications.
          */
         mods?: Mod[],
 
