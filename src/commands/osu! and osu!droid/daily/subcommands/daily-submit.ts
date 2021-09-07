@@ -71,7 +71,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         if (challengeData) {
             // Player has completed challenge. Subtract the challenge's original points
             // and difference from highest challenge level
-            pointsGained -= challenge.points - Math.max(0, bonusLevel - challengeData.highestLevel) * 2;
+            pointsGained -= challenge.points + (challengeData.highestLevel - Math.max(0, bonusLevel - challengeData.highestLevel)) * 2;
 
             challengeData.highestLevel = Math.max(bonusLevel, challengeData.highestLevel);
         } else {
