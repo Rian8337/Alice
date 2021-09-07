@@ -173,7 +173,7 @@ export abstract class MuteManager extends PunishmentManager {
         };
 
         await this.punishmentDb.update(
-            { guildID: member.guild.id }, { $push: { currentMutes: muteInformation } }
+            { guildID: member.guild.id }, { $addToSet: { currentMutes: muteInformation } }
         );
 
         if (duration >= 6 * 3600) {
@@ -197,8 +197,8 @@ export abstract class MuteManager extends PunishmentManager {
      * The user's mute role will be taken if it hasn't been done yet.
      * 
      * @param member The guild member to unmute.
-     * @param interaction The message that triggered the unmute.
-     * @param reason The reason for unmuting.
+     * @param interaction The interaction that triggered the unmute, if any.
+     * @param reason The reason for unmuting, if this unmute is triggered by an interaction.
      * @returns An object containing information about the operation.
      */
     static async removeMute(member: GuildMember, interaction?: CommandInteraction, reason?: string): Promise<MuteOperationResult> {
@@ -279,7 +279,7 @@ export abstract class MuteManager extends PunishmentManager {
         await member.roles.remove(muteRole, reason ?? "Mute time is over");
 
         await this.punishmentDb.update(
-            { guildID: member.guild.id }, { $pull: { currentMutes: { userID: member.guild.id } } }
+            { guildID: member.guild.id }, { $pull: { currentMutes: { userID: member.id } } }
         );
 
         this.currentMutes.delete(member.id);
@@ -288,7 +288,9 @@ export abstract class MuteManager extends PunishmentManager {
 
         muteEmbed.setFooter(muteEmbed.footer?.text + " | User unmuted", muteEmbed.footer?.iconURL);
 
-        await logMessage.edit({ embeds: [muteEmbed] });
+        if (logMessage.editable) {
+            await logMessage.edit({ embeds: [muteEmbed] });
+        }
 
         return this.createOperationResult(true);
     }
@@ -398,6 +400,11 @@ export abstract class MuteManager extends PunishmentManager {
         const durationLeft: number = DateTimeFormatHelper.getTimeDifference(muteInformation.muteEndTime * 1000);
 
         if (!Number.isFinite(durationLeft)) {
+            return;
+        }
+
+        if (durationLeft <= 0) {
+            await this.removeMute(member);
             return;
         }
 
