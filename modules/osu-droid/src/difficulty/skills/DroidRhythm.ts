@@ -8,15 +8,13 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly process rhythm.
  */
 export class DroidRhythm extends DroidSkill {
+    protected readonly skillMultiplier: number = 5;
+    protected readonly reducedSectionCount: number = 15;
+    protected readonly reducedSectionBaseline: number = 0.75;
+    protected readonly difficultyMultiplier: number = 1.04;
     protected readonly historyLength: number = 16;
 
-    protected readonly baseDecay: number = 0.75;
-
-    protected readonly starsPerDouble: number = 1.075;
-
-    protected readonly decayExcessThreshold: number = 500;
-
-    private readonly strainMultiplier: number = 5;
+    protected readonly strainDecayBase: number = 0.3;
 
     protected strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
@@ -70,14 +68,11 @@ export class DroidRhythm extends DroidSkill {
         // Also add in our special transitions.
         const rhythmComplexitySum: number = specialTransitionCount + islandTimes.reduce((a, v, i) => a + v / Math.sqrt(Math.max(1, islandSizes[i])), 0);
 
-        this.currentStrain *= this.computeDecay(current.strainTime);
-        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum) / 2 - 1;
-
-        return this.currentStrain * this.strainMultiplier;
+        return (Math.sqrt(4 + rhythmComplexitySum) / 2 - 1) * this.skillMultiplier;
     }
 
     protected saveToHitObject(current: DifficultyHitObject): void {
-        current.rhythmStrain = this.strains.at(-1)!;
+        current.rhythmStrain = this.currentStrain;
     }
 
     private isRatioEqual(ratio: number, a: number, b: number): boolean {

@@ -1,31 +1,139 @@
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { Skill } from "../base/Skill";
+import { Interpolation } from "../../mathutil/Interpolation";
+import { MathUtils } from "../../mathutil/MathUtils";
 
 /**
  * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
  * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
  */
 export abstract class DroidSkill extends Skill {
-    readonly strains: number[] = [];
-    private readonly times: number[] = [];
-    private readonly targetFcPrecision: number = 0.01;
-    private targetFcTime: number = 30 * 60 * 1000; // Estimated time it takes us to FC (30 minutes)
-
-    protected abstract readonly decayExcessThreshold: number;
-    protected abstract readonly baseDecay: number;
-
-    protected abstract readonly starsPerDouble: number;
-
+    /**
+     * The strain of currently calculated hitobject.
+     */
     protected currentStrain: number = 1;
 
-    protected get difficultyExponent(): number {
-        return 1 / Math.log2(this.starsPerDouble);
+    /**
+     * The current section's strain peak.
+     */
+    private currentSectionPeak: number = 1;
+
+    /**
+     * Strain peaks are stored here.
+     */
+    readonly strainPeaks: number[] = [];
+
+    /**
+     * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
+     */
+    protected abstract readonly skillMultiplier: number;
+
+    /**
+     * Determines how quickly strain decays for the given skill.
+     * 
+     * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
+     */
+    protected abstract readonly strainDecayBase: number;
+
+    /**
+     * The number of sections with the highest strains, which the peak strain reductions will apply to.
+     * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
+     */
+    protected abstract readonly reducedSectionCount: number;
+
+    /**
+     * The baseline multiplier applied to the section with the biggest strain.
+     */
+    protected abstract readonly reducedSectionBaseline: number;
+
+    /**
+     * The final multiplier to be applied to the final difficulty value after all other calculations.
+     */
+    protected abstract readonly difficultyMultiplier: number;
+
+    private readonly sectionLength: number = 400;
+
+    private currentSectionEnd: number = 0;
+
+    /**
+     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
+     * 
+     * @param current The hitobject to process.
+     */
+    protected process(current: DifficultyHitObject): void {
+        // The first object doesn't generate a strain, so we begin with an incremented section end
+        if (this.previous.length === 0) {
+            this.currentSectionEnd = Math.ceil(current.startTime / this.sectionLength) * this.sectionLength;
+        }
+
+        while (current.startTime > this.currentSectionEnd) {
+            this.saveCurrentPeak();
+            this.startNewSectionFrom(this.currentSectionEnd);
+            this.currentSectionEnd += this.sectionLength;
+        }
+
+        this.currentStrain *= this.strainDecay(current.deltaTime);
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+
+        this.saveToHitObject(current);
+
+        this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
     }
 
     /**
-     * The calculated strain value associated with this difficulty hitobject.
+     * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
+     */
+    private saveCurrentPeak(): void {
+        if (this.previous.length > 0) {
+            this.strainPeaks.push(this.currentSectionPeak);
+        }
+    }
+
+    /**
+     * Sets the initial strain level for a new section.
      * 
-     * @param current The current difficulty hitobject being processed.
+     * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
+     */
+    private startNewSectionFrom(offset: number): void {
+        // The maximum strain of the new section is not zero by default, strain decays as usual regardless of section boundaries.
+        // This means we need to capture the strain level at the beginning of the new section, and use that as the initial peak level.
+        if (this.previous.length > 0) {
+            this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
+        }
+    }
+
+    /**
+     * Calculates the difficulty value.
+     */
+    difficultyValue(): number {
+        let difficulty: number = 0;
+        let weight: number = 1;
+
+        const sortedStrains: number[] = this.strainPeaks.slice().sort((a, b) => {
+            return b - a;
+        });
+
+        // We are reducing the highest strains first to account for extreme difficulty spikes.
+        for (let i = 0; i < Math.min(sortedStrains.length, this.reducedSectionCount); ++i) {
+            const scale: number = Math.log10(Interpolation.lerp(1, 10, MathUtils.clamp(i / this.reducedSectionCount, 0, 1)));
+
+            sortedStrains[i] *= Interpolation.lerp(this.reducedSectionBaseline, 1, scale);
+        }
+
+        // Difficulty is the weighted sum of the highest strains from every section.
+        // We're sorting from highest to lowest strain.
+        sortedStrains.sort((a, b) => {
+            return b - a;
+        }).forEach(strain => {
+            difficulty += strain * weight;
+            weight *= 0.9;
+        });
+
+        return difficulty * this.difficultyMultiplier;
+    }
+
+    /**
+     * Calculates the strain value of a hitobject.
      */
     protected abstract strainValueOf(current: DifficultyHitObject): number;
 
@@ -35,108 +143,11 @@ export abstract class DroidSkill extends Skill {
     protected abstract saveToHitObject(current: DifficultyHitObject): void;
 
     /**
-     * Utility to decay strain over a period of deltaTime.
+     * Calculates strain decay for a specified time frame.
      * 
-     * @param deltaTime The time between objects.
+     * @param ms The time frame to calculate.
      */
-    protected computeDecay(deltaTime: number): number {
-        return deltaTime < this.decayExcessThreshold ?
-            this.baseDecay :
-            // Beyond 500 MS (or whatever decayExcessThreshold is), we decay geometrically to avoid keeping strain going over long breaks.
-            Math.pow(Math.pow(this.baseDecay, Math.min(deltaTime, this.decayExcessThreshold)), deltaTime);
-    }
-
-    protected process(current: DifficultyHitObject): void {
-        this.strains.push(this.strainValueOf(current));
-        this.times.push(current.startTime);
-        this.saveToHitObject(current);
-    }
-
-    difficultyValue(): number {
-        if (this.strains.length === 0) {
-            return 0;
-        }
-
-        let starRating: number = 0;
-
-        // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x * starsPerDouble
-        // This also applies to two sets of notes with equal difficulty.
-        for (const strain of this.strains) {
-            starRating += Math.pow(strain, this.difficultyExponent);
-        }
-
-        return this.fcTimeSkillLevel(Math.pow(starRating, 1 / this.difficultyExponent));
-    }
-
-    /**
-     * The probability of a player of the given skill to full combo a map of the given difficulty.
-     * 
-     * @param skill The skill level of the player.
-     * @param difficulty The difficulty of a range of notes.
-     */
-    private fcProbability(skill: number, difficulty: number): number {
-        return Math.exp(-Math.pow(difficulty / Math.max(1e-10, skill), this.difficultyExponent));
-    }
-
-    /**
-     * Approximates the skill level of a player that can FC a map with the given difficulty,
-     * if their probability of success in doing so is equal to the given probability.
-     */
-    private skillLevel(probability: number, difficulty: number): number {
-        return difficulty * Math.pow(-Math.log(probability), -1 / this.difficultyExponent);
-    }
-
-    /**
-     * Approximates the amount of time spent straining during the beatmap. Used for scaling expected target time.
-     */
-    private expectedTargetTime(totalDifficulty: number): number {
-        let targetTime: number = 0;
-
-        for (let i = 1; i < this.strains.length; ++i) {
-            targetTime += Math.min(2000, this.times[i] - this.times[i - 1]) * (this.strains[i] / totalDifficulty);
-        }
-
-        return targetTime;
-    }
-
-    private expectedFcTime(skill: number): number {
-        let lastTimestamp: number = this.times[0] - 5; // time taken to retry map
-        let fcTime: number = 0;
-
-        for (let i = 0; i < this.strains.length; ++i) {
-            const dt: number = this.times[i] - lastTimestamp;
-            lastTimestamp = this.times[i];
-            fcTime = (fcTime + dt) / this.fcProbability(skill, this.strains[i]);
-        }
-
-        return fcTime - (this.times.at(-1)! - this.times[0]);
-    }
-
-    /**
-     * The final estimated skill level necessary to full combo the entire beatmap.
-     * 
-     * @param totalDifficulty The total difficulty of all objects in the beatmap.
-     */
-    private fcTimeSkillLevel(totalDifficulty: number): number {
-        let lengthEstimate: number = 0.4 * (this.times.at(-1)! - this.times[0]);
-        // For every minute of straining time past 1 minute, add 45 mins to estimated time to FC.
-        this.targetFcTime += 45 * Math.max(0, this.expectedTargetTime(totalDifficulty) - 60000);
-
-        let fcProb: number = lengthEstimate / this.targetFcTime;
-        let skill: number = this.skillLevel(fcProb, totalDifficulty);
-
-        for (let i = 0; i < 5; ++i) {
-            const fcTime: number = this.expectedFcTime(skill);
-            lengthEstimate = fcTime * fcProb;
-            fcProb = lengthEstimate / this.targetFcTime;
-            skill = this.skillLevel(fcProb, totalDifficulty);
-
-            if (Math.abs(fcTime - this.targetFcTime) < this.targetFcPrecision * this.targetFcTime) {
-                // Enough precision
-                break;
-            }
-        }
-
-        return skill;
+    private strainDecay(ms: number): number {
+        return Math.pow(this.strainDecayBase, ms / 1000);
     }
 }

@@ -12,7 +12,7 @@ import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
 import { DroidStarRating } from './difficulty/DroidStarRating';
 import { DroidRhythm } from './difficulty/skills/DroidRhythm';
-import { DroidTap } from './difficulty/skills/DroidTap';
+import { DroidSpeed } from './difficulty/skills/DroidSpeed';
 import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
 import { HitObject } from './beatmap/hitobjects/HitObject';
@@ -157,7 +157,7 @@ export = {
     /**
      * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
      */
-    DroidTap,
+    DroidSpeed: DroidTap,
 
     /**
      * Bitwise enum for gamemodes.

@@ -2,7 +2,7 @@ import { Beatmap } from '../beatmap/Beatmap';
 import { modes } from '../constants/modes';
 import { MapStats } from '../utils/MapStats';
 import { DroidAim } from './skills/DroidAim';
-import { DroidTap } from './skills/DroidTap';
+import { DroidSpeed } from './skills/DroidSpeed';
 import { DroidRhythm } from './skills/DroidRhythm';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
@@ -83,7 +83,7 @@ export class DroidStarRating extends StarRating {
      * Calculates the tap star rating of the beatmap and stores it in this instance.
      */
     calculateTap(): void {
-        const tapSkill: DroidTap = new DroidTap();
+        const tapSkill: DroidSpeed = new DroidSpeed();
 
         this.calculateSkills(tapSkill);
 
@@ -116,7 +116,7 @@ export class DroidStarRating extends StarRating {
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        const tapSkill: DroidTap = <DroidTap> skills[1];
+        const tapSkill: DroidSpeed = <DroidSpeed> skills[1];
         const rhythmSkill: DroidRhythm = <DroidRhythm> skills[2];
 
         this.aimStrainPeaks = aimSkill.strains;
@@ -148,7 +148,7 @@ export class DroidStarRating extends StarRating {
     protected createSkills(): DroidSkill[] {
         return [
             new DroidAim(),
-            new DroidTap(),
+            new DroidSpeed(),
             new DroidRhythm()
         ];
     }

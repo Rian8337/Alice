@@ -1,4 +1,3 @@
-//@ts-ignore
 import { Canvas, Image, NodeCanvasRenderingContext2D } from "canvas";
 
 declare module "osu-droid" {
@@ -447,33 +446,21 @@ declare module "osu-droid" {
      * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
      */
     export class DroidAim extends DroidSkill {
-        protected readonly starsPerDouble: number;
-        protected readonly historyLength: number;
-        protected readonly decayExcessThreshold: number;
-        protected readonly baseDecay: number;
-        private readonly distanceConstant: number;
-        private readonly snapStrainMultiplier: number;
-        private readonly flowStrainMultiplier: number;
-        private readonly sliderStrainMultiplier: number;
-        private readonly totalStrainMultiplier: number;
-        protected strainValueOf(current: DifficultyHitObject): number;
-        protected saveToHitObject(current: DifficultyHitObject): void;
         /**
-         * Calculates the difficulty to flow from the previous hitobject the current hitobject.
+         * Minimum timing threshold.
          */
-        private flowStrainOf(prev: DifficultyHitObject, current: DifficultyHitObject, next: DifficultyHitObject, prevVec: Vector2, currentVec: Vector2, nextVec: Vector2): number;
+        private readonly timingThreshold: number;
+        protected readonly angleBonusBegin: number;
+        protected readonly skillMultiplier: number;
+        protected readonly strainDecayBase: number;
         /**
-         * Calculates the difficulty to snap from the previous hitobject to the current hitobject.
+         * @param currentObject The hitobject to calculate.
          */
-        private snapStrainOf(prev: DifficultyHitObject, current: DifficultyHitObject, prevVec: Vector2, currentVec: Vector2): number;
+        strainValueOf(currentObject: DifficultyHitObject): number;
         /**
-         * Calculates the estimated difficulty associated with the slider movement from the previous hitobject to the current hitobject.
+         * @param currentObject The hitobject to save to.
          */
-        private sliderStrainOf(prev: DifficultyHitObject): number;
-        /**
-         * Alters the distance traveled for snapping to match the results from Fitts' law.
-         */
-        private snapScaling(distance: number): number;
+        saveToHitObject(currentObject: DifficultyHitObject): void;
     }
 
     /**
@@ -664,23 +651,25 @@ declare module "osu-droid" {
     /**
      * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
      */
-    export class DroidTap extends DroidSkill {
-        protected readonly starsPerDouble: number;
-        protected readonly historyLength: number;
-        protected readonly decayExcessThreshold: number;
-        protected readonly baseDecay: number;
-        private readonly strainTimeBuffRange: number;
-        private singleStrain: number;
-        private readonly singleMultiplier: number;
-        private readonly strainMultiplier: number;
-        private readonly rhythmMultiplier: number;
-        protected strainValueOf(current: DifficultyHitObject): number;
-        protected saveToHitObject(current: DifficultyHitObject): void;
+    export class DroidSpeed extends DroidSkill {
         /**
-         * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current hitobject.
+         * Spacing threshold for a single hitobject spacing.
          */
-        private calculateRhythmDifficulty(): number;
-        private isRatioEqual(ratio: number, a: number, b: number);
+        private readonly SINGLE_SPACING_THRESHOLD: number;
+        protected readonly angleBonusBegin: number;
+        protected readonly skillMultiplier: number;
+        protected readonly strainDecayBase: number;
+        private readonly minSpeedBonus: number;
+        private readonly maxSpeedBonus: number;
+        private readonly angleBonusScale: number;
+        /**
+         * @param currentObject The hitobject to calculate.
+         */
+        strainValueOf(currentObject: DifficultyHitObject): number;
+        /**
+         * @param currentObject The hitobject to save to.
+         */
+        saveToHitObject(currentObject: DifficultyHitObject): void;
     }
 
     /**
@@ -3264,19 +3253,52 @@ declare module "osu-droid" {
      * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
      */
     abstract class DroidSkill extends Skill {
-        readonly strains: number[];
-        private readonly times: number[];
-        private readonly targetFcPrecision: number;
-        private targetFcTime: number;
-        protected abstract readonly decayExcessThreshold: number;
-        protected abstract readonly baseDecay: number;
-        protected abstract readonly starsPerDouble: number;
-        protected currentStrain: number;
-        protected get difficultyExponent(): number;
         /**
-         * The calculated strain value associated with this difficulty hitobject.
+         * The strain of currently calculated hitobject.
+         */
+        protected currentStrain: number;
+        /**
+         * The current section's strain peak.
+         */
+        private currentSectionPeak;
+        /**
+         * Strain peaks are stored here.
+         */
+        readonly strainPeaks: number[];
+        /**
+         * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
+         */
+        protected abstract readonly skillMultiplier: number;
+        /**
+         * Determines how quickly strain decays for the given skill.
          *
-         * @param current The current difficulty hitobject being processed.
+         * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
+         */
+        protected abstract readonly strainDecayBase: number;
+        private readonly sectionLength: number;
+        private currentSectionEnd: number;
+        /**
+         * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
+         *
+         * @param current The hitobject to process.
+         */
+        protected process(current: DifficultyHitObject): void;
+        /**
+         * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
+         */
+        private saveCurrentPeak(): void;
+        /**
+         * Sets the initial strain level for a new section.
+         *
+         * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
+         */
+        private startNewSectionFrom(offset: number): void;
+        /**
+         * Calculates the difficulty value.
+         */
+        difficultyValue(): number;
+        /**
+         * Calculates the strain value of a hitobject.
          */
         protected abstract strainValueOf(current: DifficultyHitObject): number;
         /**
@@ -3284,36 +3306,11 @@ declare module "osu-droid" {
          */
         protected abstract saveToHitObject(current: DifficultyHitObject): void;
         /**
-         * Utility to decay strain over a period of deltaTime.
+         * Calculates strain decay for a specified time frame.
          *
-         * @param deltaTime The time between objects.
+         * @param ms The time frame to calculate.
          */
-        protected computeDecay(deltaTime: number): number;
-        protected process(current: DifficultyHitObject): void;
-        difficultyValue(): number;
-        /**
-         * The probability of a player of the given skill to full combo a map of the given difficulty.
-         *
-         * @param skill The skill level of the player.
-         * @param difficulty The difficulty of a range of notes.
-         */
-        private fcProbability(skill: number, difficulty: number): number;
-        /**
-         * Approximates the skill level of a player that can FC a map with the given difficulty,
-         * if their probability of success in doing so is equal to the given probability.
-         */
-        private skillLevel(probability: number, difficulty: number): number;
-        /**
-         * Approximates the amount of time spent straining during the beatmap. Used for scaling expected target time.
-         */
-        private expectedTargetTime(totalDifficulty: number): number;
-        private expectedFcTime(skill: number): number;
-        /**
-         * The final estimated skill level necessary to full combo the entire beatmap.
-         *
-         * @param totalDifficulty The total difficulty of all objects in the beatmap.
-         */
-        private fcTimeSkillLevel(totalDifficulty: number): number;
+          private strainDecay(ms: number): number;
     }
 
     abstract class HitWindow {
