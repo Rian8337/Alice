@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { BaseDocument } from "@alice-interfaces/database/BaseDocument";
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
