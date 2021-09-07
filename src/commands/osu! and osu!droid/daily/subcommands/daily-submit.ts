@@ -61,42 +61,42 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const playerInfo: PlayerInfo | null =
         await playerInfoDbManager.getFromUser(interaction.user);
 
-    // Keep track of how many levels are gained
-    let levelGained: number = bonusLevel;
+    // Keep track of how many points are gained
+    let pointsGained: number = bonusLevel * 2 + challenge.points;
 
     if (playerInfo) {
 
         const challengeData: ChallengeCompletionData | undefined = playerInfo.challenges.get(challenge.challengeid);
 
         if (challengeData) {
-            levelGained -= challengeData.highestLevel;
+            // Player has completed challenge. Subtract the challenge's original points
+            // and difference from highest challenge level
+            pointsGained -= challenge.points - Math.max(0, bonusLevel - challengeData.highestLevel) * 2;
 
-            challengeData.highestLevel = bonusLevel;
+            challengeData.highestLevel = Math.max(bonusLevel, challengeData.highestLevel);
         } else {
             playerInfo.challenges.set(challenge.challengeid, { id: challenge.challengeid, highestLevel: bonusLevel });
         }
 
-        if (levelGained) {
-            await playerInfoDbManager.update(
-                { discordid: interaction.user.id },
-                {
-                    $set: {
-                        challenges: [...playerInfo.challenges.values()]
-                    },
-                    $inc: {
-                        alicecoins: (levelGained + (challengeData ? challenge.points : 0)) * 2,
-                        points: levelGained + (challengeData ? challenge.points : 0)
-                    }
+        await playerInfoDbManager.update(
+            { discordid: interaction.user.id },
+            {
+                $set: {
+                    challenges: [...playerInfo.challenges.values()]
+                },
+                $inc: {
+                    alicecoins: pointsGained * 2,
+                    points: pointsGained
                 }
-            );
-        }
+            }
+        );
     } else {
         await playerInfoDbManager.insert({
             uid: player.uid,
             username: player.username,
             discordid: interaction.user.id,
-            points: levelGained,
-            alicecoins: levelGained * 2,
+            points: pointsGained,
+            alicecoins: pointsGained * 2,
             challenges: [
                 {
                     id: challenge.challengeid,
@@ -106,21 +106,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
-
     interaction.editReply({
         content: MessageCreator.createAccept(
             dailyStrings.challengeCompleted,
             challenge.challengeid,
-            bonusLevel.toString(),
-            levelGained.toString(),
-            levelGained === 1 ? "" : "s",
-            coin.toString(),
-            (levelGained * 2).toString(),
-            (playerInfo?.points ?? 0 + levelGained).toString(),
-            (playerInfo?.points ?? 0 + levelGained) === 1 ? "" : "s",
-            coin.toString(),
-            (playerInfo?.alicecoins ?? 0 + levelGained * 2).toString()
+            bonusLevel.toLocaleString(),
+            pointsGained.toLocaleString(),
+            pointsGained === 1 ? "" : "s",
+            (pointsGained * 2).toLocaleString(),
+            ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(),
+            ((playerInfo?.points ?? 0) + pointsGained) === 1 ? "" : "s",
+            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString()
         )
     });
 };

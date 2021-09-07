@@ -10,7 +10,7 @@ export interface PerformanceCalculationResult {
     readonly map: MapInfo,
 
     /**
-     * The replay of the score, if a score is calculated and the replay for that score is available.
+     * The replay of the score, if one is used during calculation.
      */
     readonly replay?: ReplayAnalyzer,
 

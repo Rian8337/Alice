@@ -312,7 +312,7 @@ export class Challenge extends Manager {
             return this.createOperationResult(false, "custom speed multiplier and/or force AR is used");
         }
 
-        const calcResult: PerformanceCalculationResult = (await this.getReplayCalculationResult(data))!;
+        const calcResult: PerformanceCalculationResult = (await this.getReplayCalculationResult(replay))!;
 
         if (!this.verifyHitObjectData(calcResult.map.map!, data)) {
             return this.createOperationResult(false, "Replay seem to be edited");
@@ -344,19 +344,33 @@ export class Challenge extends Manager {
     async calculateBonusLevel(score: Score): Promise<number>;
 
     async calculateBonusLevel(scoreOrReplay: Score | ReplayAnalyzer): Promise<number> {
-        if (scoreOrReplay instanceof ReplayAnalyzer && !scoreOrReplay.data) {
-            await scoreOrReplay.analyze();
+        if (scoreOrReplay instanceof ReplayAnalyzer) {
+            if (!scoreOrReplay.data) {
+                await scoreOrReplay.analyze();
+            }
 
             if (!scoreOrReplay.data) {
+                return 0;
+            }
+        } else {
+            if (!scoreOrReplay.replay) {
+                await scoreOrReplay.downloadReplay();
+            }
+
+            if (!scoreOrReplay.replay) {
                 return 0;
             }
         }
 
         const calcResult: PerformanceCalculationResult | null = scoreOrReplay instanceof Score ?
-            await BeatmapDifficultyHelper.calculateScorePerformance(scoreOrReplay) :
-            await this.getReplayCalculationResult(scoreOrReplay.data!)
+            await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+                this.beatmapid,
+                await BeatmapDifficultyHelper.getCalculationParamsFromScore(scoreOrReplay),
+                scoreOrReplay.replay
+            ) :
+            await this.getReplayCalculationResult(scoreOrReplay)
 
-        if (!calcResult || !calcResult.replay) {
+        if (!calcResult) {
             return 0;
         }
 
@@ -364,7 +378,9 @@ export class Challenge extends Manager {
             await this.calculateChallengeScoreV2(scoreOrReplay) :
             await this.calculateChallengeScoreV2(scoreOrReplay.data!);
 
-        const hitErrorInformation: HitErrorInformation = calcResult.replay.calculateHitError()!;
+        const replay: ReplayAnalyzer = scoreOrReplay instanceof ReplayAnalyzer ? scoreOrReplay : scoreOrReplay.replay!;
+
+        const hitErrorInformation: HitErrorInformation = replay.calculateHitError()!;
 
         let level: number = 0;
 
@@ -633,10 +649,16 @@ export class Challenge extends Manager {
     /**
      * Calculates a replay with respect to the challenge.
      * 
-     * @param data The data of the replay.
+     * @param replay The replay to calculate.
      * @returns The calculation result.
      */
-    private async getReplayCalculationResult(data: ReplayData): Promise<PerformanceCalculationResult | null> {
+    private async getReplayCalculationResult(replay: ReplayAnalyzer): Promise<PerformanceCalculationResult | null> {
+        const data: ReplayData | null = replay.data;
+
+        if (!data) {
+            return null;
+        }
+
         return BeatmapDifficultyHelper.calculateBeatmapPerformance(
             this.beatmapid,
             new PerformanceCalculationParameters(
@@ -651,7 +673,8 @@ export class Challenge extends Manager {
                     speedMultiplier: data.speedModification,
                     oldStatistics: data.replayVersion <= 3
                 })
-            )
+            ),
+            replay
         );
     }
 

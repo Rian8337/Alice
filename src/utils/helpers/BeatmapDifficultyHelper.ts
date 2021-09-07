@@ -141,9 +141,10 @@ export abstract class BeatmapDifficultyHelper {
      * 
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
-    static async calculateBeatmapPerformance(beatmapIDorHash: number | string, calculationParams?: PerformanceCalculationParameters): Promise<PerformanceCalculationResult | null> {
+    static async calculateBeatmapPerformance(beatmapIDorHash: number | string, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(beatmapIDorHash);
 
         if (!beatmap) {
@@ -161,7 +162,7 @@ export abstract class BeatmapDifficultyHelper {
             );
         }
 
-        return this.calculatePerformance(beatmap, calculationParams);
+        return this.calculatePerformance(beatmap, calculationParams, replay);
     }
 
     /**
