@@ -5,11 +5,12 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("birthdayTracking")) {
             return;
         }
 

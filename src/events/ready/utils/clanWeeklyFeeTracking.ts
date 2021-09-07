@@ -9,10 +9,11 @@ import { Player } from "osu-droid";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanWeeklyFeeUpdating")) {
             return;
         }
 

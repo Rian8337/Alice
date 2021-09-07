@@ -1,6 +1,8 @@
+import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, Guild, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
@@ -9,6 +11,10 @@ export const run: EventUtil["run"] = async (client) => {
     ];
 
     setInterval(async () => {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("reportBroadcast")) {
+            return;
+        }
+
         const executionTime: number = Date.now();
 
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);

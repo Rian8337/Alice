@@ -5,10 +5,11 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Player } from "osu-droid";
 import { Collection } from "discord.js";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (_) => {
     setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanRankUpdating")) {
             return;
         }
 

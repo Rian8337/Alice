@@ -18,3 +18,9 @@ export const run: EventUtil["run"] = async (client) => {
         "639481086425956382"
     );
 };
+
+export const config: EventUtil["config"] = {
+    description: "Responsible for Mudae role reaction.",
+    togglePermissions: ["BOT_OWNER"],
+    toggleScope: ["GLOBAL"]
+};

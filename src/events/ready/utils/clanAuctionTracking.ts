@@ -7,12 +7,18 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, GuildEmoji, MessageEmbed, TextChannel } from "discord.js";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
+import { Config } from "@alice-core/Config";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
     const coinEmoji: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
     const notificationChannel: TextChannel = <TextChannel> await client.channels.fetch("696646867567640586");
 
     setInterval(async () => {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanAuctionTracking")) {
+            return;
+        }
+
         const executionTime: number = Math.floor(Date.now() / 1000);
 
         const expiredAuctions: Collection<string, ClanAuction> = await DatabaseManager.aliceDb.collections.clanAuction.getExpiredAuctions(executionTime);

@@ -1,10 +1,11 @@
 import { Config } from "@alice-core/Config";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
     setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("botActivityCycle")) {
             return;
         }
 

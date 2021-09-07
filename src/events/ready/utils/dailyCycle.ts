@@ -3,6 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 async function resetDailyCoinsAndMapShare(): Promise<void> {
     await DatabaseManager.aliceDb.collections.playerInfo.update(
@@ -25,7 +26,7 @@ export const run: EventUtil["run"] = async () => {
     let resetTime: number = playerInfo.dailyreset!;
 
     setInterval(async () => {
-        if (Config.maintenance || resetTime > Math.floor(Date.now() / 1000)) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("dailyCycle") || resetTime > Math.floor(Date.now() / 1000)) {
             return;
         }
 

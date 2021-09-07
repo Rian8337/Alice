@@ -1,11 +1,12 @@
 import { Config } from "@alice-core/Config";
 import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, Guild, GuildMember } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
     setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("unverifiedPrune")) {
             return;
         }
 

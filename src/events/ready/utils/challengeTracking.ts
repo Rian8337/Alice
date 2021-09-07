@@ -5,6 +5,8 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, TextChannel, User } from "discord.js";
 import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/ChallengeCollectionManager";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { Config } from "@alice-core/Config";
 
 export const run: EventUtil["run"] = async (client) => {
     const notificationChannel: TextChannel = <TextChannel> await client.channels.fetch("669221772083724318");
@@ -13,6 +15,10 @@ export const run: EventUtil["run"] = async (client) => {
     const dbManager: ChallengeCollectionManager = DatabaseManager.aliceDb.collections.challenge;
 
     setInterval(async () => {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("challengeTracking")) {
+            return;
+        }
+
         const ongoingChallenges: Collection<string, Challenge> = await dbManager.get("challengeid", { status: "ongoing" });
 
         if (!ongoingChallenges.some(v => v.challengeid.startsWith("d"))) {

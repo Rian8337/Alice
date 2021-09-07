@@ -4,6 +4,7 @@ import { PlayerTracking } from "@alice-database/utils/elainaDb/PlayerTracking";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Collection, MessageEmbed, TextChannel } from "discord.js";
 import { Player } from "osu-droid";
 
@@ -11,7 +12,7 @@ export const run: EventUtil["run"] = async (client) => {
     const channel: TextChannel = <TextChannel> await client.channels.fetch("665106609382359041");
 
     setInterval(async () => {
-        if (Config.maintenance) {
+        if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("playerTracking")) {
             return;
         }
 
