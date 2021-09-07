@@ -12,7 +12,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply(MessageCreator.createAccept(
         coinsStrings.coinAmountInfo,
-        user.id === interaction.user.id ? "you have" : "that user has",
+        user.id === interaction.user.id ? "You have" : "That user has",
         (playerInfo?.alicecoins ?? 0).toLocaleString()
     ));
 };
