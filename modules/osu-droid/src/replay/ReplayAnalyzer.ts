@@ -76,7 +76,7 @@ export class ReplayAnalyzer {
     /**
      * Penalty value used to penalize dpp for 3 finger abuse.
      */
-    tapPenalty: number = 1;
+    speedPenalty: number = 1;
 
     private readonly BYTE_LENGTH = 1;
     private readonly SHORT_LENGTH = 2;
@@ -535,7 +535,7 @@ export class ReplayAnalyzer {
         const result: ThreeFingerInformation = threeFingerChecker.check();
 
         this.is3Finger = result.is3Finger;
-        this.tapPenalty = result.penalty;
+        this.speedPenalty = result.penalty;
     }
 
     /**

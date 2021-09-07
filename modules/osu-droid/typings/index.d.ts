@@ -493,9 +493,9 @@ declare module "osu-droid" {
          */
         aim: number;
         /**
-         * The tap performance value.
+         * The speed performance value.
          */
-        tap: number;
+        speed: number;
         /**
          * The accuracy performance value.
          */
@@ -518,9 +518,9 @@ declare module "osu-droid" {
              */
             miss?: number;
             /**
-             * The tap penalty to apply for penalized scores.
+             * The speed penalty to apply for penalized scores.
              */
-            tapPenalty?: number;
+            speedPenalty?: number;
             /**
              * Custom map statistics to apply custom tap multiplier and force AR values as well as old statistics.
              */
@@ -2013,7 +2013,7 @@ declare module "osu-droid" {
         /**
          * Penalty value used to penalize dpp for 3 finger abuse.
          */
-        tapPenalty: number;
+        speedPenalty: number;
         private readonly BYTE_LENGTH: number;
         private readonly SHORT_LENGTH: number;
         private readonly INT_LENGTH: number;
