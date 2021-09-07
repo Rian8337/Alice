@@ -474,7 +474,7 @@ export class Challenge extends Manager {
      * @param mods The mods.
      */
     private isModFulfills(mods: Mod[]): boolean {
-        return mods.some(m => m instanceof ModEasy || m instanceof ModNoFail || m instanceof ModHalfTime);
+        return !mods.some(m => m instanceof ModEasy || m instanceof ModNoFail || m instanceof ModHalfTime);
     }
 
     /**
