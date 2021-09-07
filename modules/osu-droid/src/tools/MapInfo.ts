@@ -407,7 +407,13 @@ export class MapInfo {
      * Time string parsing function for statistics utility.
      */
     private timeString(second: number): string {
-        return new Date(1000 * Math.ceil(second)).toISOString().substr(11, 8).replace(/^[0:]+/, "");
+        let str: string = new Date(1000 * Math.ceil(second)).toISOString().substr(11, 8).replace(/^[0:]+/, "");
+
+        if (second < 60) {
+            str = "0:" + str;
+        }
+
+        return str;
     }
 
     /**
