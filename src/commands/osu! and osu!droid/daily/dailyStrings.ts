@@ -12,7 +12,7 @@ export enum dailyStrings {
     userHasNotPlayedChallenge = "The player has not played challenge `%s`.",
     scoreNotFound = "I'm sorry, you haven't played the challenge beatmap!",
     challengeNotCompleted = "I'm sorry, you did not complete the ongoing challenge: %s.",
-    challengeCompleted = "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point`%s` and `%s` Alice coins! You now have `%s` point%s and `%s` Alice coins.",
+    challengeCompleted = "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point%s and `%s` Alice coins! You now have `%s` point%s and `%s` Alice coins.",
     invalidReplayURL = "Hey, please enter a valid URL!",
     replayDownloadFail = "I'm sorry, I couldn't download your replay!",
     replayInvalid = "Hey, please provide the proper download link to your replay!",
