@@ -63,20 +63,6 @@ export class DifficultyHitObject {
     radius: number = 0;
 
     /**
-     * Predicted probability that the player will 'flow' from previous hitobject to this hitobject.
-     */
-    flowProbability: number = 0;
-
-    /**
-     * Predicted probability that the player will 'snap' from previous hitobject to this hitobject.
-     */
-    get snapProbability(): number {
-        return 1 - this.flowProbability;
-    }
-
-    distanceVector: Vector2 = new Vector2({x: 0, y: 0});
-
-    /**
      * @param object The underlying hitobject.
      */
     constructor(object: HitObject) {

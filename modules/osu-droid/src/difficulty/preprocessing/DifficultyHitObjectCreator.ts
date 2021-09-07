@@ -4,7 +4,6 @@ import { DifficultyHitObject } from "./DifficultyHitObject";
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Precision } from "../../utils/Precision";
 import { modes } from "../../constants/modes";
-import { MathUtils } from "../../mathutil/MathUtils";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 
 /**
@@ -71,9 +70,8 @@ export class DifficultyHitObjectCreator {
 
                 // Don't need to jump to reach spinners
                 if (!(object.object instanceof Spinner)) {
-                    object.distanceVector = object.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor));
-                    object.jumpDistance = object.distanceVector.length;
+                    object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
+                        .subtract(lastCursorPosition.scale(scalingFactor)).length;
                 }
 
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
@@ -91,11 +89,6 @@ export class DifficultyHitObjectCreator {
 
                     object.angle = Math.abs(Math.atan2(det, dot));
                 }
-
-                const angleOffset: number = 10 * Math.sin(1.5 * (Math.PI / 2 - MathUtils.clamp(object.angle, Math.PI / 6, Math.PI / 2)));
-                const distanceOffset: number = Math.pow(object.jumpDistance, 1.7) / 325;
-
-                object.flowProbability = 1 / (1 + Math.exp(object.deltaTime - 126 + distanceOffset + angleOffset));
             }
 
             difficultyObjects.push(object);
