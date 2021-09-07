@@ -16,7 +16,7 @@ export class DroidRhythm extends DroidSkill {
 
     protected readonly strainDecayBase: number = 0.3;
 
-    protected strainValueOf(current: DifficultyHitObject): number {
+    strainValueAt(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }

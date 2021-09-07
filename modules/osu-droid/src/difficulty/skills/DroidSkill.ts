@@ -72,8 +72,7 @@ export abstract class DroidSkill extends Skill {
             this.currentSectionEnd += this.sectionLength;
         }
 
-        this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+        this.currentStrain = this.strainValueAt(current);
 
         this.saveToHitObject(current);
 
@@ -84,9 +83,7 @@ export abstract class DroidSkill extends Skill {
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
     private saveCurrentPeak(): void {
-        if (this.previous.length > 0) {
-            this.strainPeaks.push(this.currentSectionPeak);
-        }
+        this.strainPeaks.push(this.currentSectionPeak);
     }
 
     /**
@@ -95,11 +92,9 @@ export abstract class DroidSkill extends Skill {
      * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
      */
     private startNewSectionFrom(offset: number): void {
-        // The maximum strain of the new section is not zero by default, strain decays as usual regardless of section boundaries.
+        // The maximum strain of the new section is not zero by default.
         // This means we need to capture the strain level at the beginning of the new section, and use that as the initial peak level.
-        if (this.previous.length > 0) {
-            this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
-        }
+        this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
     }
 
     /**
@@ -135,7 +130,7 @@ export abstract class DroidSkill extends Skill {
     /**
      * Calculates the strain value of a hitobject.
      */
-    protected abstract strainValueOf(current: DifficultyHitObject): number;
+    protected abstract strainValueAt(current: DifficultyHitObject): number;
 
     /**
      * Saves the current strain to a hitobject.
@@ -147,7 +142,7 @@ export abstract class DroidSkill extends Skill {
      * 
      * @param ms The time frame to calculate.
      */
-    private strainDecay(ms: number): number {
+    protected strainDecay(ms: number): number {
         return Math.pow(this.strainDecayBase, ms / 1000);
     }
 }

@@ -21,7 +21,7 @@ export class DroidAim extends DroidSkill {
     /**
      * @param currentObject The hitobject to calculate.
      */
-    strainValueOf(currentObject: DifficultyHitObject): number {
+    strainValueAt(currentObject: DifficultyHitObject): number {
         if (currentObject.object instanceof Spinner) {
             return 0;
         }
@@ -49,10 +49,15 @@ export class DroidAim extends DroidSkill {
         const travelDistanceExp: number = applyDiminishingExp(currentObject.travelDistance);
         const weightedDistance: number = jumpDistanceExp + travelDistanceExp + Math.sqrt(travelDistanceExp * jumpDistanceExp);
 
-        return Math.max(
+        const aimStrain: number = Math.max(
             result + weightedDistance / Math.max(currentObject.strainTime, this.timingThreshold),
             weightedDistance / currentObject.strainTime
         );
+
+        this.currentStrain *= this.strainDecay(currentObject.deltaTime);
+        this.currentStrain += aimStrain * this.skillMultiplier;
+
+        return this.currentStrain;
     }
 
     /**

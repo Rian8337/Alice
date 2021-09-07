@@ -29,7 +29,7 @@ export class DroidSpeed extends DroidSkill {
     /**
      * @param currentObject The hitobject to calculate.
      */
-    strainValueOf(currentObject: DifficultyHitObject): number {
+    strainValueAt(currentObject: DifficultyHitObject): number {
         if (!currentObject.strainTime || currentObject.object instanceof Spinner) {
             return 0;
         }
