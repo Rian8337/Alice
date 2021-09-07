@@ -15,4 +15,9 @@ export interface DatabaseGuildTags extends BaseDocument {
      * The tags that the guild has.
      */
     tags: Tag[];
+
+    /**
+     * Whether this guild-specific tags has been scanned for empty tags.
+     */
+    emptyScanDone?: boolean;
 };

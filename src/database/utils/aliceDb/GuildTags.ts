@@ -21,6 +21,11 @@ export class GuildTags extends Manager {
     tags: Collection<string, Tag>;
 
     /**
+     * Whether this guild-specific tags has been scanned for empty tags.
+     */
+    emptyScanDone?: boolean;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -31,5 +36,6 @@ export class GuildTags extends Manager {
         this._id = data._id;
         this.guildid = data.guildid;
         this.tags = ArrayHelper.arrayToCollection(data.tags ?? [], "name");
+        this.emptyScanDone = data.emptyScanDone;
     }
 }

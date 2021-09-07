@@ -42,6 +42,15 @@ export class GuildTagsCollectionManager extends DatabaseCollectionManager<Databa
     }
 
     /**
+     * Gets a guild's tags that have not been scanned for empty tags.
+     * 
+     * @returns A guild's tags that have not been scanned, `null` if all tags have been scanned.
+     */
+    async getUnscannedGuildTags(): Promise<GuildTags | null> {
+        return this.getOne({ emptyScanDone: { $ne: true } });
+    }
+
+    /**
      * Updates a guild's tags.
      * 
      * @param guildId The ID of the guild.
