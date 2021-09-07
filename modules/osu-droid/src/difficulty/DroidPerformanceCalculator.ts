@@ -172,7 +172,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         const calculatedAR: number = <number> this.mapStatistics.ar;
         const n50: number = this.computedAccuracy.n50;
 
-        this.tap = this.baseValue(this.stars.tap);
+        this.tap = this.baseValue(this.stars.speed);
 
         if (this.computedAccuracy.nmiss > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.

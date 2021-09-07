@@ -157,7 +157,7 @@ export = {
     /**
      * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
      */
-    DroidSpeed: DroidTap,
+    DroidSpeed: DroidSpeed,
 
     /**
      * Bitwise enum for gamemodes.

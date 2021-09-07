@@ -207,4 +207,13 @@ export abstract class StarRating {
      * Creates skills to be calculated.
      */
     protected abstract createSkills(): Skill[];
+
+    /**
+     * Calculates the star rating value of a difficulty.
+     * 
+     * @param difficulty The difficulty to calculate.
+     */
+    protected starValue(difficulty: number): number {
+        return Math.sqrt(difficulty) * this.difficultyMultiplier;
+    }
 }

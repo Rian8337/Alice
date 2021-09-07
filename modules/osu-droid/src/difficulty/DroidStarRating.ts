@@ -20,14 +20,14 @@ export class DroidStarRating extends StarRating {
     /**
      * The tap star rating of the beatmap.
      */
-    tap: number = 0;
+    speed: number = 0;
 
     /**
      * The rhythm star rating of the beatmap.
      */
     rhythm: number = 0;
 
-    protected readonly difficultyMultiplier: number = 0.18;
+    protected readonly difficultyMultiplier: number = 0.0675;
 
     /**
      * Calculates the star rating of the specified beatmap.
@@ -74,22 +74,22 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(aimSkill);
 
-        this.aimStrainPeaks = aimSkill.strains;
+        this.aimStrainPeaks = aimSkill.strainPeaks;
 
-        this.aim = this.baseRatingValue(aimSkill.difficultyValue());
+        this.aim = Math.pow(this.starValue(aimSkill.difficultyValue()), 0.8);
     }
 
     /**
      * Calculates the tap star rating of the beatmap and stores it in this instance.
      */
-    calculateTap(): void {
-        const tapSkill: DroidSpeed = new DroidSpeed();
+    calculateSpeed(): void {
+        const speedSkill: DroidSpeed = new DroidSpeed();
 
-        this.calculateSkills(tapSkill);
+        this.calculateSkills(speedSkill);
 
-        this.speedStrainPeaks = tapSkill.strains;
+        this.speedStrainPeaks = speedSkill.strainPeaks;
 
-        this.tap = this.baseRatingValue(tapSkill.difficultyValue());
+        this.speed = this.starValue(speedSkill.difficultyValue());
     }
 
     calculateRhythm(): void {
@@ -97,14 +97,14 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(rhythmSkill);
 
-        this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
+        this.rhythm = this.starValue(rhythmSkill.difficultyValue());
     }
 
     /**
      * Calculates the total star rating of the beatmap and stores it in this instance.
      */
     calculateTotal(): void {
-        this.total = this.aim + this.tap + Math.pow(this.rhythm, 0.4);
+        this.total = this.aim + this.speed + Math.pow(this.rhythm, 0.4);
     }
 
     /**
@@ -116,17 +116,17 @@ export class DroidStarRating extends StarRating {
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        const tapSkill: DroidSpeed = <DroidSpeed> skills[1];
+        const speedSkill: DroidSpeed = <DroidSpeed> skills[1];
         const rhythmSkill: DroidRhythm = <DroidRhythm> skills[2];
 
-        this.aimStrainPeaks = aimSkill.strains;
-        this.speedStrainPeaks = tapSkill.strains;
+        this.aimStrainPeaks = aimSkill.strainPeaks;
+        this.speedStrainPeaks = speedSkill.strainPeaks;
 
-        this.aim = this.baseRatingValue(aimSkill.difficultyValue());
+        this.aim = this.starValue(aimSkill.difficultyValue());
 
-        this.tap = this.baseRatingValue(tapSkill.difficultyValue());
+        this.speed = this.starValue(speedSkill.difficultyValue());
 
-        this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
+        this.rhythm = this.starValue(rhythmSkill.difficultyValue());
 
         this.calculateTotal();
     }
@@ -137,7 +137,7 @@ export class DroidStarRating extends StarRating {
     toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
-            " aim, " + this.tap.toFixed(2) + " tap, " +
+            " aim, " + this.speed.toFixed(2) + " speed, " +
             this.rhythm.toFixed(2) + " rhythm)"
         );
     }
@@ -151,12 +151,5 @@ export class DroidStarRating extends StarRating {
             new DroidSpeed(),
             new DroidRhythm()
         ];
-    }
-
-    /**
-     * Calculates the base rating value of a difficulty.
-     */
-    private baseRatingValue(difficulty: number): number {
-        return Math.pow(difficulty, 0.75) * this.difficultyMultiplier;
     }
 }

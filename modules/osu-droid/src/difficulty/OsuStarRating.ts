@@ -125,13 +125,4 @@ export class OsuStarRating extends StarRating {
             new OsuSpeed()
         ];
     }
-
-    /**
-     * Calculates the star rating value of a difficulty.
-     * 
-     * @param difficulty The difficulty to calculate.
-     */
-    private starValue(difficulty: number): number {
-        return Math.sqrt(difficulty) * this.difficultyMultiplier;
-    }
 }

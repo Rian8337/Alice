@@ -122,7 +122,7 @@ export class ThreeFingerChecker {
      * 
      * Increasing this number will result in less sections being flagged.
      */
-    private readonly strainThreshold: number = 30;
+    private readonly strainThreshold: number = 200;
 
     /**
      * The distance threshold between cursors to assume that two cursors are
@@ -225,7 +225,7 @@ export class ThreeFingerChecker {
 
         this.hitWindow = new DroidHitWindow(<number> stats.od);
 
-        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.tapStrain >= this.strainThreshold);
+        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.speedStrain >= this.strainThreshold);
         this.strainNoteCount = strainNotes.length;
     }
 
@@ -607,18 +607,18 @@ export class ThreeFingerChecker {
         const newBeatmapSections: ThreeFingerBeatmapSection[] = [];
         
         for (const beatmapSection of this.beatmapSections) {
-            let inTapSection: boolean = false;
+            let inSpeedSection: boolean = false;
             let newFirstObjectIndex = beatmapSection.firstObjectIndex;
 
             for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
-                if (!inTapSection && objects[i].tapStrain >= this.strainThreshold) {
-                    inTapSection = true;
+                if (!inSpeedSection && objects[i].speedStrain >= this.strainThreshold) {
+                    inSpeedSection = true;
                     newFirstObjectIndex = i;
                     continue;
                 }
 
-                if (inTapSection && objects[i].tapStrain < this.strainThreshold) {
-                    inTapSection = false;
+                if (inSpeedSection && objects[i].speedStrain < this.strainThreshold) {
+                    inSpeedSection = false;
                     newBeatmapSections.push({
                         firstObjectIndex: newFirstObjectIndex,
                         lastObjectIndex: i,
@@ -629,7 +629,7 @@ export class ThreeFingerChecker {
             }
 
             // Don't forget to manually add the last beatmap section, which would otherwise be ignored.
-            if (inTapSection) {
+            if (inSpeedSection) {
                 newBeatmapSections.push({
                     firstObjectIndex: newFirstObjectIndex,
                     lastObjectIndex: beatmapSection.lastObjectIndex,
@@ -794,7 +794,7 @@ export class ThreeFingerChecker {
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
                 const strainFactor: number = Math.sqrt(
                     objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex)
-                    .map(v => {return v.tapStrain;})
+                    .map(v => {return v.speedStrain;})
                     .sort((a, b) => {return b - a;})
                     .reduce((acc, value) => acc + value / this.strainThreshold, 0)
                 );
