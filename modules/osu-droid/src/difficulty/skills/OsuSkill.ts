@@ -53,7 +53,7 @@ export abstract class OsuSkill extends Skill {
 
     private readonly sectionLength: number = 400;
 
-    private currentSectionEnd: number = 0;
+    private currentSectionEnd: number = 1;
 
     /**
      * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
