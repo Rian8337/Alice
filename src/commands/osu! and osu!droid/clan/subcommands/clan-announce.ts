@@ -3,7 +3,7 @@ import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Role, Util } from "discord.js";
+import { Role } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -54,7 +54,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     finalMessage += `\n\n${announcementMessage}\n\n- ${interaction.user}`;
 
-    interaction.channel!.send(Util.removeMentions(finalMessage));
+    interaction.channel!.send({
+        content: finalMessage,
+        allowedMentions: {
+            parse: ["everyone"]
+        }
+    });
 };
 
 export const config: Subcommand["config"] = {
