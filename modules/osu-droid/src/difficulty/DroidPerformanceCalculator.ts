@@ -202,7 +202,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             );
 
         // Punish high speed values with low OD to prevent OD abuse on rhythmically complex songs.
-        if (this.speed > 100 && od < 3.33) { // OD9 droid
+        if (this.speed > 100 && od < 3.33) {
             this.speed = 100 + (this.speed - 100) * Math.max(0.5, od / 4);
         }
     }
