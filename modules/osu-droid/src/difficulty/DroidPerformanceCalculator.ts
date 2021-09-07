@@ -2,13 +2,14 @@ import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
 import { DroidStarRating } from './DroidStarRating';
 import { MapStats } from '../utils/MapStats';
-import { OsuHitWindow } from '../utils/HitWindow';
+import { DroidHitWindow } from '../utils/HitWindow';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
 import { ModNoFail } from '../mods/ModNoFail';
 import { ModSpunOut } from '../mods/ModSpunOut';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
+import { ModPrecise } from '../mods/ModPrecise';
 
 /**
  * A performance points calculator that calculates performance points for osu!droid gamemode.
@@ -200,8 +201,10 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
                 12 - Math.max(od, 2.5) / 2
             );
 
-        // Scale the tap value with # of 50s to punish doubletapping.
-        this.speed *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
+        // Punish high speed values with low OD to prevent OD abuse on rhythmically complex songs.
+        if (this.speed > 100 && od < 3.33) { // OD9 droid
+            this.speed = 100 + (this.speed - 100) * Math.max(0.5, od / 4);
+        }
     }
 
     /**
@@ -215,26 +218,28 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             return;
         }
 
-        // Drastically change acc calculation to fit droid meta.
-
         // We calculate a variance based on the object count and # of 50s, 100s, etc. This prevents us from having cases
         // where an SS on lower OD is actually worth more than a 95% on OD11, even though OD11 requires a greater window
         // of precision.
-
-        const p100: number = this.computedAccuracy.n100 / ncircles;
+        const p100: number = 2 * this.computedAccuracy.n100 / ncircles; // This is multiplied by two to encourage better accuracy (scales better).
         const p50: number = this.computedAccuracy.n50 / ncircles;
         const pm: number = this.computedAccuracy.nmiss / ncircles;
-        const p300: number = 1 - pm - p50 - p100;
+        const p300: number = Math.max(0, 1 - pm - p50 - p100);
 
-        const hitWindow: OsuHitWindow = new OsuHitWindow(<number> this.mapStatistics.od);
-        const m300: number = hitWindow.hitWindowFor300();
-        const m100: number = hitWindow.hitWindowFor100();
-        const m50: number = hitWindow.hitWindowFor50();
+        // Convert converted droid OD back to original droid OD first before calculating variance.
+        let droidMS: number = 50 - 6 * (this.mapStatistics.od! - 5);
+        const isPrecise: boolean = this.stars.mods.some(m => m instanceof ModPrecise);
+        const od: number = 5 - (droidMS - (isPrecise ? 55 : 75)) / (isPrecise ? 6 : 5);
+
+        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
+
+        const m300: number = hitWindow.hitWindowFor300(isPrecise);
+        const m100: number = hitWindow.hitWindowFor100(isPrecise);
+        const m50: number = hitWindow.hitWindowFor50(isPrecise);
 
         const variance: number = p300 * Math.pow(m300 / 2, 2) +
             p100 * Math.pow((m300 + m100) / 2, 2) +
-            p50 * Math.pow((m100 + m50) / 2, 2) +
-            pm * Math.pow(229.5 - 11 * <number> this.mapStatistics.od, 2);
+            p50 * Math.pow((m100 + m50) / 2, 2);
 
         this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
 
@@ -244,7 +249,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         // Scale the accuracy value with amount of accuracy objects (objects that
         // depends on hit window for hit result)
-        const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 2400) / 1500));
+        const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
         this.accuracy *= lengthScaling;
 
         if (this.stars.mods.some(m => m instanceof ModHidden)) {

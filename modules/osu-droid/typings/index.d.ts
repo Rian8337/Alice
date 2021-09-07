@@ -531,9 +531,9 @@ declare module "osu-droid" {
          */
         protected calculateAimValue(): void;
         /**
-         * Calculates the tap performance value of the beatmap.
+         * Calculates the speed performance value of the beatmap.
          */
-        protected calculateTapValue(): void;
+        protected calculateSpeedValue(): void;
         /**
          * Calculates the accuracy performance value of the beatmap.
          */
