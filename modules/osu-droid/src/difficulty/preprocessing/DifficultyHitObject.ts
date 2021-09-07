@@ -40,7 +40,7 @@ export class DifficultyHitObject {
      * 
      * Calculated as the angle between the circles (current-2, current-1, current).
      */
-    angle: number = 0;
+    angle: number | null = null;
 
     /**
      * The amount of time elapsed between this hitobject and the last hitobject.
