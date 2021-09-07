@@ -73,6 +73,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         20
     ))[0];
 
+    if (!pickedChoice) {
+        return;
+    }
+
     player ??= await Player.getInformation({ uid: uid });
 
     if (!player.username) {
