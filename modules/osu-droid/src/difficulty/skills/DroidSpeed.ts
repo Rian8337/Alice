@@ -136,7 +136,7 @@ export class DroidSpeed extends DroidSkill {
 
                     if (prevPrevDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
                         // Previous increase happened a note ago.
-                        // Albeit this is a 1/1->1/2-1/4 transition, we dont want to buff this.
+                        // Albeit this is a 1/1->1/2-1/4 type of transition, we dont want to buff this.
                         effectiveRatio /= 8;
                     }
 
