@@ -147,7 +147,7 @@ export class ThreeFingerChecker {
     private readonly cursorDistancingTimeThreshold: number = 1000;
 
     /**
-     * The amount of notes that has a tap strain exceeding `strainThreshold`.
+     * The amount of notes that has a speed strain exceeding `strainThreshold`.
      */
     private readonly strainNoteCount: number;
 
