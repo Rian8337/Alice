@@ -169,7 +169,7 @@ export class PlayerInfo extends Manager {
                     alicecoins: coinAmount
                 },
                 $set: {
-                    hasClaimedDaily: true,
+                    hasClaimedDaily: this.hasClaimedDaily,
                     streak: this.streak
                 } 
             }
