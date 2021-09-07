@@ -34,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     if (thread && !thread.unarchivable) {
-        await thread.setArchived(true);
+        await thread.setLocked(true);
     }
 
     interaction.editReply({
