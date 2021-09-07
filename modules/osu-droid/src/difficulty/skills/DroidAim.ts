@@ -40,7 +40,7 @@ export class DroidAim extends DroidSkill {
                     Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *
                     Math.max(currentObject.jumpDistance - scale, 0)
                 );
-                result = 1.5 * applyDiminishingExp(Math.max(0, angleBonus)) /
+                result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
                     Math.max(this.timingThreshold, this.previous[0].strainTime);
             }
         }
