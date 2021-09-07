@@ -128,7 +128,7 @@ export abstract class PerformanceCalculator {
         if (!(this.stars instanceof StarRating)) {
             throw new Error("params.stars must be in StarRating instance");
         }
-        
+
         const mod: Mod[] = this.stars.mods;
         const baseAR: number = <number> this.stars.map.ar;
         const baseOD: number = this.stars.map.od;
