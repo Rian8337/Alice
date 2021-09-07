@@ -348,7 +348,7 @@ export abstract class EmbedCreator {
                 `${Symbols.star.repeat(Math.min(10, Math.floor(calcResult.osu.total)))} ${calcResult.osu.total.toFixed(2)} PC stars`,
                 `**Point(s)**: ${challenge.points} points\n` +
                 `**Pass Condition**: ${challenge.getPassInformation()}\n` +
-                `**Constrain**: ${challenge.constrain ? `${challenge.constrain} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\n` +
+                `**Constrain**: ${challenge.constrain ? `${challenge.constrain.toUpperCase()} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\n` +
                 "Use \`/daily challenges\` to check bonuses."
             );
 
