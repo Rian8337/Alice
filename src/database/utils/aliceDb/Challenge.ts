@@ -460,9 +460,15 @@ export class Challenge extends Manager {
     async getCurrentLeaderboard(): Promise<Score[]> {
         const beatmapInfo: MapInfo = <MapInfo> await BeatmapManager.getBeatmap(this.beatmapid);
 
+        const oldHash: string = beatmapInfo.hash;
+
         beatmapInfo.hash = this.hash;
 
-        return beatmapInfo.fetchDroidLeaderboard();
+        const scores: Score[] = await beatmapInfo.fetchDroidLeaderboard();
+
+        beatmapInfo.hash = oldHash;
+
+        return scores;
     }
 
     /**
