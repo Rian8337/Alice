@@ -496,7 +496,7 @@ export class Challenge extends Manager {
      * @param mods The mods.
      */
     private isConstrainFulfilled(mods: Mod[]): boolean {
-        return !!this.constrain && StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain.toUpperCase());
+        return !this.constrain || StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(this.constrain.toUpperCase());
     }
 
     /**
