@@ -15,7 +15,7 @@ export enum tagStrings {
     editTagSuccessful = "Successfully edited tag `%s.`",
     attachToTagSuccessful = "Successfully attached an image to tag `%s`.",
     deleteTagIndexOutOfBounds = "I'm sorry, the tag only has %s attachment(s)!",
-    deleteTagSuccessful = "Successfully deleted tag `%s.`",
+    deleteTagSuccessful = "Successfully deleted tag `%s`.",
     deleteTagAttachmentSuccessful = "Successfully deleted the attachment of tag `%s`.",
     transferTagSuccessful = "Successfully transferred %s's tags to %s.",
     notTagOwner = "I'm sorry, this tag doesn't belong to you!",

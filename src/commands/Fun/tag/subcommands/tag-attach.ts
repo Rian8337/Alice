@@ -67,7 +67,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
             interaction.editReply({
-                content: MessageCreator.createAccept(tagStrings.attachToTagSuccessful)
+                content: MessageCreator.createAccept(
+                    tagStrings.attachToTagSuccessful, name
+                )
             });
         } catch (ignored) {
             interaction.editReply({
@@ -92,7 +94,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
             interaction.editReply({
-                content: MessageCreator.createAccept(tagStrings.attachToTagSuccessful)
+                content: MessageCreator.createAccept(
+                    tagStrings.attachToTagSuccessful, name
+                )
             });
         } catch (ignored) {
             interaction.editReply({
