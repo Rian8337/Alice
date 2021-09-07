@@ -1,3 +1,4 @@
+import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanCollectionManager } from "@alice-database/managers/elainaDb/ClanCollectionManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
@@ -5,10 +6,10 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Canvas, createCanvas, Image, loadImage, NodeCanvasRenderingContext2D } from "canvas";
-import { GuildMember, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
+import { GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: Subcommand["run"] = async (client, interaction) => {
     const dbManager: ClanCollectionManager = DatabaseManager.elainaDb.collections.clan;
 
     const clan: Clan | null =
@@ -28,12 +29,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { author: interaction.user, color: (await clan.getClanRole())?.color ?? (<GuildMember> interaction.member).displayColor }
     );
 
+    const coinEmoji: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
+
     embed.setTitle(clan.name)
         .addField("Clan Leader", `<@${clan.leader}> (${clan.leader})`, true)
         .addField("Power", clan.power.toLocaleString(), true)
         .addField("Members", `${clan.member_list.size}/25`, true)
         .addField("Creation Date", new Date(clan.createdAt * 1000).toUTCString(), true)
-        .addField("Total Upkeep Estimation", clan.calculateOverallUpkeep().toLocaleString(), true);
+        .addField("Total Upkeep Estimation", `${coinEmoji}${clan.calculateOverallUpkeep().toLocaleString()} Alice coins`, true);
 
     if (clan.iconURL) {
         embed.setThumbnail(clan.iconURL);
