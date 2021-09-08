@@ -171,7 +171,6 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // Global variables
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
-        const n50: number = this.computedAccuracy.n50;
 
         this.speed = this.baseValue(this.stars.speed);
 
