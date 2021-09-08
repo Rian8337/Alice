@@ -446,7 +446,7 @@ declare module "osu-droid" {
         /**
          * @param currentObject The hitobject to calculate.
          */
-        strainValueOf(currentObject: DifficultyHitObject): number;
+        strainValueAt(currentObject: DifficultyHitObject): number;
         /**
          * @param currentObject The hitobject to save to.
          */
@@ -550,7 +550,7 @@ declare module "osu-droid" {
         protected readonly starsPerDouble: number;
         protected readonly decayExcessThreshold: number;
         private readonly strainMultiplier: number;
-        protected strainValueOf(current: DifficultyHitObject): number;
+        protected strainValueAt(current: DifficultyHitObject): number;
         protected saveToHitObject(current: DifficultyHitObject): void;
         private isRatioEqual(ratio: number, a: number, b: number): boolean;
     }
@@ -655,11 +655,23 @@ declare module "osu-droid" {
         /**
          * @param currentObject The hitobject to calculate.
          */
-        strainValueOf(currentObject: DifficultyHitObject): number;
+        strainValueAt(currentObject: DifficultyHitObject): number;
         /**
          * @param currentObject The hitobject to save to.
          */
         saveToHitObject(currentObject: DifficultyHitObject): void;
+        /**
+         * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current object.
+         */
+        private calculateRhythmBonus(currentObject: DifficultyHitObject): number;
+        /**
+         * Calculates the tap strain of a hitobject.
+         */
+        private tapStrainOf(currentObject: DifficultyHitObject): number;
+        /**
+         * Calculates the movement strain of a hitobject.
+         */
+        private movementStrainOf(currentObject: DifficultyHitObject, speedBonus: number): number;
     }
 
     /**
@@ -3287,7 +3299,7 @@ declare module "osu-droid" {
         /**
          * Calculates the strain value of a hitobject.
          */
-        protected abstract strainValueOf(current: DifficultyHitObject): number;
+        protected abstract strainValueAt(current: DifficultyHitObject): number;
         /**
          * Saves the current strain to a hitobject.
          */
@@ -3297,7 +3309,7 @@ declare module "osu-droid" {
          *
          * @param ms The time frame to calculate.
          */
-          private strainDecay(ms: number): number;
+        private strainDecay(ms: number): number;
     }
 
     abstract class HitWindow {
