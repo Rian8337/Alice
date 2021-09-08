@@ -27,7 +27,7 @@ export class DroidStarRating extends StarRating {
      */
     rhythm: number = 0;
 
-    protected readonly difficultyMultiplier: number = 0.0675;
+    protected readonly difficultyMultiplier: number = 0.18;
 
     /**
      * Calculates the star rating of the specified beatmap.

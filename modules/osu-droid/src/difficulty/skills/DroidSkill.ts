@@ -51,6 +51,11 @@ export abstract class DroidSkill extends Skill {
      */
     protected abstract readonly difficultyMultiplier: number;
 
+    /**
+     * The bonus multiplier that is given for a sequence of notes of equal difficulty.
+     */
+    protected abstract readonly starsPerDouble: number;
+
     private readonly sectionLength: number = 400;
 
     private currentSectionEnd: number = 1;
@@ -97,13 +102,7 @@ export abstract class DroidSkill extends Skill {
         this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
     }
 
-    /**
-     * Calculates the difficulty value.
-     */
     difficultyValue(): number {
-        let difficulty: number = 0;
-        let weight: number = 1;
-
         const sortedStrains: number[] = this.strainPeaks.slice().sort((a, b) => {
             return b - a;
         });
@@ -115,16 +114,14 @@ export abstract class DroidSkill extends Skill {
             sortedStrains[i] *= Interpolation.lerp(this.reducedSectionBaseline, 1, scale);
         }
 
-        // Difficulty is the weighted sum of the highest strains from every section.
-        // We're sorting from highest to lowest strain.
-        sortedStrains.sort((a, b) => {
-            return b - a;
-        }).forEach(strain => {
-            difficulty += strain * weight;
-            weight *= 0.9;
-        });
+        const difficultyExponent: number = 1 / Math.log2(this.starsPerDouble);
 
-        return difficulty * this.difficultyMultiplier;
+        // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x*StarsPerDouble
+        // This also applies to two sets of notes with equal difficulty.
+        return Math.pow(
+            sortedStrains.reduce((a, v) => a + Math.pow(v, difficultyExponent), 0),
+            1 / difficultyExponent
+        );
     }
 
     /**
