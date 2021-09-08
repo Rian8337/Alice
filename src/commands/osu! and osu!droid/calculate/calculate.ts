@@ -1,31 +1,40 @@
+import { GuildMember, MessageOptions } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { GuildMember, MessageOptions } from "discord.js";
-import { prevcalcStrings } from "./prevcalcStrings";
+import { calculateStrings } from "./calculateStrings";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const beatmapHash: string | undefined = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+    const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap") ?? "")[0];
 
-    if (!beatmapHash) {
+    const hash: string | undefined = BeatmapManager.getChannelLatestBeatmap(interaction.channel!.id);
+
+    if (!beatmapID && !hash) {
         return interaction.editReply({
-            content: MessageCreator.createReject(prevcalcStrings.noCachedBeatmap)
+            content: MessageCreator.createReject(calculateStrings.noBeatmapProvided)
+        });
+    }
+
+    if (beatmapID && (isNaN(beatmapID) || !NumberHelper.isPositive(beatmapID))) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(calculateStrings.beatmapProvidedIsInvalid)
         });
     }
 
     const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromInteraction(interaction);
 
-    const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapHash, calcParams);
+    const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapID ?? hash, calcParams);
 
     if (!calcResult) {
         return interaction.editReply({
-            content: MessageCreator.createReject(prevcalcStrings.beatmapNotFound)
+            content: MessageCreator.createReject(calculateStrings.beatmapNotFound)
         });
     }
 
@@ -49,15 +58,22 @@ export const run: Command["run"] = async (_, interaction) => {
         calcEmbedOptions.content = string;
     }
 
+    BeatmapManager.setChannelLatestBeatmap(interaction.channel!.id, calcResult.map.hash);
+
     interaction.editReply(calcEmbedOptions);
 };
 
 export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
-    name: "prevcalc",
-    description: "Calculates the difficulty and performance value latest cached beatmap in the channel, if any.",
+    name: "calculate",
+    description: "Calculates the difficulty and performance value of an osu!standard beatmap.",
     options: [
+        {
+            name: "beatmap",
+            type: CommandArgumentType.STRING,
+            description: "The beatmap ID or link to calculate. Defaults to the latest cached beatmap in the channel, if any."
+        },
         {
             name: "mods",
             type: CommandArgumentType.STRING,
@@ -111,23 +127,27 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "manualcalc 1884658",
+            command: "calculate",
+            description: "will calculate the latest cached beatmap in the channel."
+        },
+        {
+            command: "calculate 1884658",
             description: "will calculate the beatmap with ID 1884658."
         },
         {
-            command: "manualcalc https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
             description: "will calculate the linked beatmap."
         },
         {
-            command: "manualcalc 1884658 99.89%",
+            command: "calculate 1884658 99.89%",
             description: "will calculate the beatmap with ID 1884658 with 99.89% as accuracy gained."
         },
         {
-            command: "manualcalc https://osu.ppy.sh/beatmapsets/902745#osu/1884658 1x100 1x50 +HDHR -d -p",
+            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658 1x100 1x50 +HDHR -d -p",
             description: "will calculate the linked beatmap with 1x 100 and 1x 50 gained, HDHR mod, and show detailed response for both droid and standard difficulty and performance value."
         },
         {
-            command: "manualcalc https://osu.ppy.sh/beatmapsets/902745#osu/1884658 10x100 5x50 +HDDT 2.0x 150x",
+            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658 10x100 5x50 +HDDT 2.0x 150x",
             description: "will calculate the linked beatmap with 10x 100 and 5x 50 gained, HDDT mod, 2x speed multiplier, and a maximum combo of 150."
         }
     ],
