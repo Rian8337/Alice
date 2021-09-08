@@ -103,7 +103,7 @@ export abstract class BeatmapDifficultyHelper {
                 n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
                 nmiss: Math.max(0, interaction.options.getInteger("misses") ?? 0)
             }),
-            NumberHelper.clamp(interaction.options.getInteger("accuracy") ?? 0, 0, 100),
+            NumberHelper.clamp(interaction.options.getNumber("accuracy") ?? 0, 0, 100),
             interaction.options.getInteger("combo") ? Math.max(0, interaction.options.getInteger("combo", true)) : undefined,
             1,
             stats
