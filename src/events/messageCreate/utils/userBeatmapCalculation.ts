@@ -16,7 +16,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromUser(message.content);
+    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
 
     for await (const arg of message.content.split(/\s+/g)) {
         if (!arg.startsWith("https://osu.ppy.sh/") || !StringHelper.isValidURL(arg)) {

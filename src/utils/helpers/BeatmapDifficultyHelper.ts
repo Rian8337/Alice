@@ -4,18 +4,20 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
+import { CommandInteraction } from "discord.js";
+import { NumberHelper } from "./NumberHelper";
 
 /**
  * A helper to calculate difficulty and performance of beatmaps or scores.
  */
 export abstract class BeatmapDifficultyHelper {
     /**
-     * Gets calculation parameters from a user input.
+     * Gets calculation parameters from a user's message.
      * 
-     * @param userInput The user's input.
-     * @returns The calculation parameters from the user's input.
+     * @param message The user's message.
+     * @returns The calculation parameters from the user's message.
      */
-    static getCalculationParamsFromUser(userInput: string): PerformanceCalculationParameters {
+    static getCalculationParamsFromMessage(message: string): PerformanceCalculationParameters {
         let mods: Mod[] = [];
         let combo: number | undefined;
         let forceAR: number | undefined;
@@ -25,7 +27,7 @@ export abstract class BeatmapDifficultyHelper {
         let count100: number = 0;
         let count50: number = 0;
 
-        for (const input of userInput.split(/\s+/g)) {
+        for (const input of message.split(/\s+/g)) {
             if (input.endsWith("%")) {
                 const newAccPercent = parseFloat(input);
                 accPercent = Math.max(0, Math.min(newAccPercent || 0, 100));
@@ -71,6 +73,38 @@ export abstract class BeatmapDifficultyHelper {
             }),
             accPercent,
             combo,
+            1,
+            stats
+        );
+    }
+
+    /**
+     * Gets calculation parameters from an interaction.
+     * 
+     * @param interaction The interaction.
+     * @returns The calculation parameters from the interaction.
+     */
+    static getCalculationParamsFromInteraction(interaction: CommandInteraction): PerformanceCalculationParameters {
+        const forceAR: number | undefined =
+            interaction.options.getNumber("approachrate") ?
+            NumberHelper.clamp(interaction.options.getNumber("approachrate", true), 0, 12.5) :
+            undefined;
+
+        const stats: MapStats = new MapStats({
+            ar: forceAR,
+            speedMultiplier: NumberHelper.clamp(interaction.options.getNumber("speedmultiplier") ?? 1, 0.5, 2),
+            isForceAR: !isNaN(<number> forceAR)
+        });
+
+        return new PerformanceCalculationParameters(
+            ModUtil.pcStringToMods(interaction.options.getString("mods") ?? ""),
+            new Accuracy({
+                n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
+                n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
+                nmiss: Math.max(0, interaction.options.getInteger("misses") ?? 0)
+            }),
+            NumberHelper.clamp(interaction.options.getInteger("accuracy") ?? 0, 0, 100),
+            interaction.options.getInteger("combo") ? Math.max(0, interaction.options.getInteger("combo", true)) : undefined,
             1,
             stats
         );

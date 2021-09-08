@@ -19,9 +19,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromUser(
-        interaction.options.getString("calcparams") ?? ""
-    );
+    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromInteraction(interaction);
 
     const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapHash, calcParams);
 
@@ -39,11 +37,11 @@ export const run: Command["run"] = async (_, interaction) => {
 
     let string: string = "";
 
-    if ((interaction.options.getString("calcparams") ?? "")?.includes("-d")) {
+    if (interaction.options.getBoolean("showdroiddetail")) {
         string += `Raw droid stars: ${calcResult.droid.stars.toString()}\nRaw droid pp: ${calcResult.droid.toString()}\n`;
     }
 
-    if ((interaction.options.getString("calcparams") ?? "")?.includes("-p")) {
+    if (interaction.options.getBoolean("showosudetail")) {
         string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
     }
 
@@ -58,23 +56,57 @@ export const category: Command["category"] = CommandCategory.OSU;
 
 export const config: Command["config"] = {
     name: "prevcalc",
-    // TODO: add calculation parameters in description
     description: "Calculates the difficulty and performance value latest cached beatmap in the channel, if any.",
     options: [
         {
-            name: "calcparams",
+            name: "mods",
             type: CommandArgumentType.STRING,
-            description: "[(+<mod>) (<combo>x) (<acc>%) (<x100>x100) (<x50>x50) (<miss>m) (AR<ar>) (<speed>x) (-d) (-p)]."// +
-                // "- `mod`: Applied game modifications (HD, HR, etc). Defaults to No Mod.\n" +
-                // "- `combo`: Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to the beatmap's maximum combo.\n" +
-                // "- `acc`: Accuracy gained. Must be between 0 and 100. Defaults to 100.\n" +
-                // "- `x50`: Amount of 50s gained. Overrides accuracy.\n" +
-                // "- `x100`: Amount of 100s gained. Overrides accuracy.\n" +
-                // "- `miss`: Amount of misses. Defaults to 0.\n" +
-                // "- `ar`: Approach Rate (AR) to be forced in calculation from 0 to 12.5. Defaults to the beatmap's AR.\n" +
-                // "- `speed`: Speed multiplier to calculate for (can be stacked with speed-changing modifications) from 0.5 to 2. A dot must be put to differentiate with combo (for example `1.0x`). Defaults to 1.\n" +
-                // "- `-d`: Show detailed response for droid pp.\n" +
-                // "- `-p`: Show detailed response for PC pp."
+            description: "Applied game modifications (HD, HR, etc). Defaults to No Mod."
+        },
+        {
+            name: "combo",
+            type: CommandArgumentType.INTEGER,
+            description: "Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to maximum combo."
+        },
+        {
+            name: "accuracy",
+            type: CommandArgumentType.NUMBER,
+            description: "The accuracy gained, from 0 to 100. Defaults to 100."
+        },
+        {
+            name: "x100",
+            type: CommandArgumentType.INTEGER,
+            description: "The amount of 100s gained. If specified, overrides the accuracy option. Defaults to 0."
+        },
+        {
+            name: "x50",
+            type: CommandArgumentType.INTEGER,
+            description: "The amount of 50s gained. If specified, overrides the accuracy option. Defaults to 0."
+        },
+        {
+            name: "misses",
+            type: CommandArgumentType.INTEGER,
+            description: "The amount of misses gained. Defaults to 0."
+        },
+        {
+            name: "approachrate",
+            type: CommandArgumentType.NUMBER,
+            description: "The Approach Rate (AR) to be forced in calculation, from 0 to 12.5. Defaults to the beatmap's AR."
+        },
+        {
+            name: "speedmultiplier",
+            type: CommandArgumentType.NUMBER,
+            description: "The speed multiplier to calculate for (stackable with modifications) from 0.5 to 2. Defaults to 1."
+        },
+        {
+            name: "showdroiddetail",
+            type: CommandArgumentType.BOOLEAN,
+            description: "Whether to show detailed response for droid pp."
+        },
+        {
+            name: "showosudetail",
+            type: CommandArgumentType.BOOLEAN,
+            description: "Whether to show detailed response for PC pp."
         }
     ],
     example: [
