@@ -29,7 +29,6 @@ export class DroidSpeed extends DroidSkill {
     private readonly rhythmMultiplier: number = 2.5;
     private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
 
-    private currentRhythm: number = 1;
     private currentTapStrain: number = 1;
     private currentMovementStrain: number = 1;
 
@@ -48,15 +47,15 @@ export class DroidSpeed extends DroidSkill {
             speedBonus += 0.75 * Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
         }
 
-        this.currentRhythm = this.calculateRhythmBonus(currentObject);
+        const currentRhythm: number = this.calculateRhythmBonus(currentObject);
 
         this.currentTapStrain *= this.strainDecay(currentObject.deltaTime);
         this.currentTapStrain += this.tapStrainOf(currentObject, speedBonus) * this.skillMultiplier;
 
         this.currentMovementStrain *= this.strainDecay(currentObject.deltaTime);
-        this.currentMovementStrain += this.movementStrainOf(currentObject, speedBonus);
+        this.currentMovementStrain += this.movementStrainOf(currentObject, speedBonus) * this.skillMultiplier;
 
-        return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
+        return this.currentMovementStrain + this.currentTapStrain * currentRhythm;
     }
 
     /**
