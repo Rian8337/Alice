@@ -12,7 +12,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
         await interaction.guild!.commands.cache.find(v => v.name === commandName)?.delete();
     } else {
-        await client.application?.commands.cache.find(v => v.name === commandName)?.delete();
+        await client.application!.commands.cache.find(v => v.name === commandName)?.delete();
     }
 
     interaction.editReply({
