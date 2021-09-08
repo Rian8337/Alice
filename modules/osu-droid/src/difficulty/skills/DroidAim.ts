@@ -33,16 +33,14 @@ export class DroidAim extends DroidSkill {
             return Math.pow(val, 0.99);
         };
 
-        if (this.previous.length > 0) {
-            if (currentObject.angle !== null && currentObject.angle > this.angleBonusBegin) {
-                const angleBonus: number = Math.sqrt(
-                    Math.max(this.previous[0].jumpDistance - scale, 0) *
-                    Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *
-                    Math.max(currentObject.jumpDistance - scale, 0)
-                );
-                result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
-                    Math.max(this.timingThreshold, this.previous[0].strainTime);
-            }
+        if (this.previous.length > 0 && currentObject.angle !== null && currentObject.angle > this.angleBonusBegin) {
+            const angleBonus: number = Math.sqrt(
+                Math.max(this.previous[0].jumpDistance - scale, 0) *
+                Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *
+                Math.max(currentObject.jumpDistance - scale, 0)
+            );
+            result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
+                Math.max(this.timingThreshold, this.previous[0].strainTime);
         }
 
         const jumpDistanceExp: number = applyDiminishingExp(currentObject.jumpDistance);
