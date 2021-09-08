@@ -31,27 +31,39 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case !!uid:
             player = await Player.getInformation({ uid: uid! });
             uid = player.uid;
+            if (!uid) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(profileStrings.profileNotFound, "the player's")
+                });
+            }
             break;
         case !!username:
             player = await Player.getInformation({ username: username! });
             uid = player.uid;
+            if (!uid) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(profileStrings.profileNotFound, "the player's")
+                });
+            }
             break;
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
             uid = bindInfo?.uid;
+            if (!uid) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(Constants.userNotBindedReject)
+                });
+            }
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
             uid = bindInfo?.uid;
-    }
-
-    if (!uid) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                uid || username || discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
-            )
-        });
+            if (!uid) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(Constants.selfNotBindedReject)
+                });
+            }
     }
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
