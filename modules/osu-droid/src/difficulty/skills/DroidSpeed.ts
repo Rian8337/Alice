@@ -45,7 +45,7 @@ export class DroidSpeed extends DroidSkill {
         const deltaTime: number = Math.max(this.maxSpeedBonus, currentObject.deltaTime);
 
         if (deltaTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus) - deltaTime / 40, 2);
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
         }
 
         this.currentRhythm = this.calculateRhythmBonus(currentObject);
