@@ -3283,9 +3283,6 @@ declare module "osu-droid" {
          * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
          */
         private startNewSectionFrom(offset: number): void;
-        /**
-         * Calculates the difficulty value.
-         */
         difficultyValue(): number;
         /**
          * Calculates the strain value of a hitobject.
@@ -3373,9 +3370,6 @@ declare module "osu-droid" {
          * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
          */
         private startNewSectionFrom(offset: number): void;
-        /**
-         * Calculates the difficulty value.
-         */
         difficultyValue(): number;
         /**
          * Calculates the strain value of a hitobject.

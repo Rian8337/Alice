@@ -102,9 +102,6 @@ export abstract class OsuSkill extends Skill {
         }
     }
 
-    /**
-     * Calculates the difficulty value.
-     */
     difficultyValue(): number {
         let difficulty: number = 0;
         let weight: number = 1;
