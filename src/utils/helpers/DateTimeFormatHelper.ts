@@ -19,13 +19,12 @@ export abstract class DateTimeFormatHelper {
         seconds -= minutes * 60;
 
         const final: string[] = [
-            days + " days",
-            hours + " hours",
-            minutes + " minutes",
-            seconds + " seconds"
+            days + " day" + (days > 1 ? "s" : ""),
+            hours + " hour" + (hours > 1 ? "s" : ""),
+            minutes + " minute" + (minutes > 1 ? "s" : ""),
+            seconds + " second" + (seconds > 1 ? "s" : "")
         ];
 
-        // Truncate 00s
         return final.filter(v => !v.startsWith("0")).join(", ");
     }
 
