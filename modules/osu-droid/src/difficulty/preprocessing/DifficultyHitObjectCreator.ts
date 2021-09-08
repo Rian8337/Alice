@@ -65,7 +65,7 @@ export class DifficultyHitObjectCreator {
                     this.calculateSliderCursorPosition(lastObject.object);
                     object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
                 }
-    
+
                 const lastCursorPosition: Vector2 = this.getEndCursorPosition(lastObject.object);
 
                 // Don't need to jump to reach spinners
