@@ -56,7 +56,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             }
 
             if (message.content.includes("-p")) {
-                string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
+                string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
             }
 
             if (string) {
