@@ -76,7 +76,7 @@ export class DroidStarRating extends StarRating {
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
 
-        this.aim = Math.pow(this.starValue(aimSkill.difficultyValue()), 0.8);
+        this.aim = this.starValue(aimSkill.difficultyValue());
     }
 
     /**
@@ -122,7 +122,7 @@ export class DroidStarRating extends StarRating {
         this.aimStrainPeaks = aimSkill.strainPeaks;
         this.speedStrainPeaks = speedSkill.strainPeaks;
 
-        this.aim = Math.pow(this.starValue(aimSkill.difficultyValue()), 0.8);
+        this.aim = this.starValue(aimSkill.difficultyValue());
 
         this.speed = this.starValue(speedSkill.difficultyValue());
 
