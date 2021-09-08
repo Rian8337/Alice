@@ -466,6 +466,7 @@ export class Challenge extends Manager {
 
         const scores: Score[] = await beatmapInfo.fetchDroidLeaderboard();
 
+        // Restore old hash so that cache works properly
         beatmapInfo.hash = oldHash;
 
         return scores;
