@@ -19,7 +19,6 @@ export class DroidSpeed extends DroidSkill {
     protected readonly reducedSectionCount: number = 5;
     protected readonly reducedSectionBaseline: number = 0.75;
     protected readonly starsPerDouble: number = 1.1;
-    protected readonly difficultyMultiplier: number = 1.04;
 
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
@@ -55,6 +54,8 @@ export class DroidSpeed extends DroidSkill {
 
         this.currentMovementStrain *= this.strainDecay(currentObject.deltaTime);
         this.currentMovementStrain += this.movementStrainOf(currentObject, speedBonus) * this.skillMultiplier;
+
+        console.log(currentObject.object.startTime, currentObject.deltaTime, speedBonus, this.currentTapStrain, this.currentMovementStrain, currentRhythm);
 
         return this.currentMovementStrain + this.currentTapStrain * currentRhythm;
     }

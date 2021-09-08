@@ -47,11 +47,6 @@ export abstract class DroidSkill extends Skill {
     protected abstract readonly reducedSectionBaseline: number;
 
     /**
-     * The final multiplier to be applied to the final difficulty value after all other calculations.
-     */
-    protected abstract readonly difficultyMultiplier: number;
-
-    /**
      * The bonus multiplier that is given for a sequence of notes of equal difficulty.
      */
     protected abstract readonly starsPerDouble: number;
