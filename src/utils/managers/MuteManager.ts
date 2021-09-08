@@ -82,7 +82,7 @@ export abstract class MuteManager extends PunishmentManager {
 
         // Check if there are duplicate mutes
         if (this.currentMutes.has(member.id)) {
-            return this.createOperationResult(false, "Unable to find mute");
+            return this.createOperationResult(false, "User is already muted");
         }
 
         let muteRole: Role | undefined = this.getGuildMuteRole(member.guild);
