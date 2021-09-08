@@ -4,6 +4,11 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
+    if (Config.isDebug) {
+        client.user!.setActivity("Debug mode", { type: "PLAYING" });
+        return;
+    }
+
     setInterval(async () => {
         if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("botActivityCycle")) {
             return;
