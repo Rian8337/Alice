@@ -27,15 +27,18 @@ export const run: Command["run"] = async (_, interaction) => {
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
     const result: BanOperationResult = await BanManager.unban(interaction, toUnban, reason);
+
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                unbanStrings.unbanFailed, <string> result.reason
+                unbanStrings.unbanFailed, result.reason!
             )
         });
     }
 
-    interaction.deleteReply();
+    interaction.editReply({
+        content: MessageCreator.createAccept(unbanStrings.unbanSuccessful)
+    });
 };
 
 export const category: Command["category"] = CommandCategory.STAFF;
@@ -67,6 +70,7 @@ export const config: Command["config"] = {
             description: "will unban the user with that Discord ID for \"Grapes\"."
         }
     ],
+    replyEphemeral: true,
     permissions: ["BAN_MEMBERS"],
     scope: "GUILD_CHANNEL"
 };
