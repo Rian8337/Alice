@@ -17,7 +17,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const ytRegex: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]+).*/;
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromUser(message.content);
+    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
 
     for await (const arg of message.content.split(/\s+/g)) {
         const match: RegExpMatchArray | null = arg.match(ytRegex);

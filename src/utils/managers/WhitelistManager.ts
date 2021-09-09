@@ -113,7 +113,7 @@ export abstract class WhitelistManager extends Manager {
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully whitelisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully whitelisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);
@@ -135,7 +135,7 @@ export abstract class WhitelistManager extends Manager {
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully unwhitelisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully unwhitelisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);

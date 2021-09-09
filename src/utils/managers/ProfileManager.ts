@@ -34,7 +34,7 @@ export abstract class ProfileManager extends Manager {
             bindInfo = await DatabaseManager.elainaDb.collections.userBind.getOne({ previous_bind: { $all: [uid] } });
         }
 
-        if (!rankedScoreInfo) {
+        if (rankedScoreInfo === undefined) {
             rankedScoreInfo = await DatabaseManager.aliceDb.collections.rankedScore.getOne(
                 { uid: uid }, { projection: { _id: 0, level: 1, score: 1 } }
             );

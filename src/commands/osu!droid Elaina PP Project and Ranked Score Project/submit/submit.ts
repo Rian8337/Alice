@@ -12,7 +12,7 @@ export const run: Command["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(
                 submitStrings.commandNotAllowed)
         }).then(
-            () => setTimeout(interaction.deleteReply, 5 * 1000)
+            () => setTimeout(() => interaction.deleteReply(), 5 * 1000)
         );
     }
 

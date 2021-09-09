@@ -1,10 +1,10 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
+import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, Message, MessageAttachment, TextChannel } from "discord.js";
+import { Message, MessageAttachment, TextChannel } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -22,9 +22,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
-
-    const tag: Tag | undefined = tags.get(name);
+    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
 
     if (!tag) {
         return interaction.editReply({
@@ -62,9 +60,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             tag.attachments = editedMessage.attachments.map(v => v.url);
 
-            tags.set(name, tag);
-
-            await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+            await tag.updateTag();
 
             interaction.editReply({
                 content: MessageCreator.createAccept(
@@ -89,9 +85,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             tag.attachment_message = message.id;
             tag.attachments.push(url);
 
-            tags.set(name, tag);
-
-            await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+            await tag.updateTag();
 
             interaction.editReply({
                 content: MessageCreator.createAccept(

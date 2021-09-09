@@ -38,7 +38,7 @@ export const run: EventUtil["run"] = async (client) => {
             }
 
             // Run the next challenge
-            const nextChallengeID: string = (ongoingChallenge.isWeekly ? "w" : "d") + parseInt(ongoingChallenge.challengeid.slice(1) + 1);
+            const nextChallengeID: string = (ongoingChallenge.isWeekly ? "w" : "d") + (parseInt(ongoingChallenge.challengeid.slice(1)) + 1);
 
             const nextChallenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getById(nextChallengeID);
 

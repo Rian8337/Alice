@@ -76,11 +76,18 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 case WhitelistValidity.VALID:
                     client.logger.info(++scannedCount);
 
-                    entry.whitelistScanDone = true;
-
                     await HelperFunctions.sleep(0.05);
 
-                    await whitelistDb.update({ mapid: entry.mapid }, { $set: { ...entry } });
+                    await whitelistDb.update(
+                        { mapid: entry.mapid },
+                        {
+                            $set: {
+                                diffstat: entry.diffstat,
+                                hashid: entry.hashid,
+                                whitelistScanDone: true
+                            }
+                        }
+                    );
             }
         }
     }

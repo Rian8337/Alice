@@ -3,30 +3,29 @@
  */
 export abstract class DateTimeFormatHelper {
     /**
-     * Converts seconds into `DD:HH:MM:SS` date format.
+     * Converts seconds into `w days, x hours, y minutes, z seconds` format.
      * 
      * @param seconds The amount of seconds to convert.
      * @returns The formatted date.
      */
     static secondsToDHMS(seconds: number): string {
-        let days = Math.floor(seconds / 86400);
+        const days: number = Math.floor(seconds / 86400);
         seconds -= days * 86400;
 
-        let hours = Math.floor(seconds / 3600);
+        const hours: number = Math.floor(seconds / 3600);
         seconds -= hours * 3600;
 
-        let minutes = Math.floor(seconds / 60);
+        const minutes: number = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
         const final: string[] = [
-            days.toString().padStart(2, "0"),
-            hours.toString().padStart(2, "0"),
-            minutes.toString().padStart(2, "0"),
-            seconds.toString().padStart(2, "0")
+            days + " day" + (days > 1 ? "s" : ""),
+            hours + " hour" + (hours > 1 ? "s" : ""),
+            minutes + " minute" + (minutes > 1 ? "s" : ""),
+            seconds + " second" + (seconds > 1 ? "s" : "")
         ];
 
-        // Truncate 00s
-        return final.splice(Math.max(0, final.findIndex(v => v !== "00") - 1)).join(":");
+        return final.filter(v => !v.startsWith("0")).join(", ");
     }
 
     /**

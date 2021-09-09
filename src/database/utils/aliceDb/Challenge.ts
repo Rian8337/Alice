@@ -252,11 +252,11 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async checkScoreCompletion(score: Score): Promise<ChallengeOperationResult> {
-        if (this.constrain && StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain)) {
+        if (!this.isConstrainFulfilled(score.mods)) {
             return this.createOperationResult(false, "constrain not fulfilled");
         }
 
-        if (!this.isModFulfills(score.mods)) {
+        if (!this.isModFulfilled(score.mods)) {
             return this.createOperationResult(false, "usage of EZ, NF, or HT");
         }
 
@@ -300,11 +300,11 @@ export class Challenge extends Manager {
 
         const data: ReplayData = replay.data;
 
-        if (this.constrain && StringHelper.sortAlphabet(data.convertedMods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(this.constrain)) {
+        if (!this.isConstrainFulfilled(data.convertedMods)) {
             return this.createOperationResult(false, "constrain not fulfilled");
         }
 
-        if (!this.isModFulfills(data.convertedMods)) {
+        if (!this.isModFulfilled(data.convertedMods)) {
             return this.createOperationResult(false, "usage of EZ, NF, or HT");
         }
 
@@ -460,9 +460,16 @@ export class Challenge extends Manager {
     async getCurrentLeaderboard(): Promise<Score[]> {
         const beatmapInfo: MapInfo = <MapInfo> await BeatmapManager.getBeatmap(this.beatmapid);
 
+        const oldHash: string = beatmapInfo.hash;
+
         beatmapInfo.hash = this.hash;
 
-        return beatmapInfo.fetchDroidLeaderboard();
+        const scores: Score[] = await beatmapInfo.fetchDroidLeaderboard();
+
+        // Restore old hash so that cache works properly
+        beatmapInfo.hash = oldHash;
+
+        return scores;
     }
 
     /**
@@ -485,11 +492,20 @@ export class Challenge extends Manager {
     }
 
     /**
+     * Checks if a sequence of mods fulfills the challenge's constrain.
+     * 
+     * @param mods The mods.
+     */
+    private isConstrainFulfilled(mods: Mod[]): boolean {
+        return !this.constrain || StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(this.constrain.toUpperCase());
+    }
+
+    /**
      * Checks if a sequence of mods fulfills general challenge requirement.
      * 
      * @param mods The mods.
      */
-    private isModFulfills(mods: Mod[]): boolean {
+    private isModFulfilled(mods: Mod[]): boolean {
         return !mods.some(m => m instanceof ModEasy || m instanceof ModNoFail || m instanceof ModHalfTime);
     }
 

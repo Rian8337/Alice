@@ -16,7 +16,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromUser(message.content);
+    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
 
     for await (const arg of message.content.split(/\s+/g)) {
         if (!arg.startsWith("https://osu.ppy.sh/") || !StringHelper.isValidURL(arg)) {
@@ -56,7 +56,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             }
 
             if (message.content.includes("-p")) {
-                string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
+                string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
             }
 
             if (string) {
