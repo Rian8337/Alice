@@ -197,7 +197,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.speed *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
             Math.pow(
                 this.computedAccuracy.value(objectCount),
-                12 - Math.max(od, 2.5) / 2
+                (12 - Math.max(od, 2.5)) / 2
             );
 
         // Punish high speed values with low OD to prevent OD abuse on rhythmically complex songs.
