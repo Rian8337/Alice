@@ -73,24 +73,21 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(entry.mapid, false))!;
 
                     entry.hashid = beatmapInfo.hash;
-
-                    entry.diffstat = {
-                        cs: beatmapInfo.cs,
-                        ar: beatmapInfo.ar,
-                        od: beatmapInfo.od,
-                        hp: beatmapInfo.hp,
-                        sr: parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
-                        bpm: beatmapInfo.bpm
-                    };
-
                 case WhitelistValidity.VALID:
                     client.logger.info(++scannedCount);
 
-                    entry.whitelistScanDone = true;
-
                     await HelperFunctions.sleep(0.05);
 
-                    await whitelistDb.update({ mapid: entry.mapid }, { $set: { ...entry } });
+                    await whitelistDb.update(
+                        { mapid: entry.mapid },
+                        {
+                            $set: {
+                                diffstat: entry.diffstat,
+                                hashid: entry.hashid,
+                                whitelistScanDone: true
+                            }
+                        }
+                    );
             }
         }
     }
