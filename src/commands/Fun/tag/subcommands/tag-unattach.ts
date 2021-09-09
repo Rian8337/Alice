@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
+import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -22,9 +22,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
-
-    const tag: Tag | undefined = tags.get(name);
+    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
 
     if (!tag) {
         return interaction.editReply({
@@ -70,9 +68,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         tag.attachments.length = 0;
     }
 
-    tags.set(name, tag);
-
-    await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+    await tag.updateTag();
 
     interaction.editReply({
         content: MessageCreator.createAccept(tagStrings.deleteTagAttachmentSuccessful)

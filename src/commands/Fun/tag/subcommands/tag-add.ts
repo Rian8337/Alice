@@ -1,8 +1,8 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
+import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, Util } from "discord.js";
+import { Util } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -26,27 +26,23 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
+    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
 
-    if (tags.has(name)) {
+    if (tag) {
         return interaction.editReply({
             content: MessageCreator.createReject(tagStrings.tagExists)
         });
     }
 
-    tags.set(
-        name,
-        {
-            name: name,
-            content: content,
-            author: interaction.user.id,
-            attachment_message: "",
-            attachments: [],
-            date: interaction.createdTimestamp
-        }
-    );
-
-    await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+    await DatabaseManager.aliceDb.collections.guildTags.insert({
+        guildid: interaction.guildId,
+        name: name,
+        content: content,
+        author: interaction.user.id,
+        attachment_message: "",
+        attachments: [],
+        date: interaction.createdTimestamp
+    });
 
     interaction.editReply({
         content: MessageCreator.createAccept(
