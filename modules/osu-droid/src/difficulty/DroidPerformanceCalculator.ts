@@ -243,13 +243,11 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
 
         // Scale the accuracy value with rhythm complexity.
-        const rhythmScaling: number = Math.pow(Math.exp(this.stars.rhythm - 1), 0.75);
-        this.accuracy *= rhythmScaling;
+        this.accuracy *= Math.pow(Math.exp(this.stars.rhythm - 1), 0.85);
 
         // Scale the accuracy value with amount of accuracy objects (objects that
         // depends on hit window for hit result).
-        const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
-        this.accuracy *= lengthScaling;
+        this.accuracy *= Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
 
         if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.accuracy *= 1.08;
