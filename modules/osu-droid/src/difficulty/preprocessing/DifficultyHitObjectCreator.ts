@@ -75,7 +75,7 @@ export class DifficultyHitObjectCreator {
                 }
 
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
-                // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
+                // Every strain interval is hard capped at the equivalent of 300 BPM streaming speed as a safety measure
                 object.strainTime = Math.max(50, object.deltaTime);
                 object.startTime = object.object.startTime / params.speedMultiplier;
 
