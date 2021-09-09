@@ -36,17 +36,6 @@ export abstract class DroidSkill extends Skill {
     protected abstract readonly strainDecayBase: number;
 
     /**
-     * The number of sections with the highest strains, which the peak strain reductions will apply to.
-     * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
-     */
-    protected abstract readonly reducedSectionCount: number;
-
-    /**
-     * The baseline multiplier applied to the section with the biggest strain.
-     */
-    protected abstract readonly reducedSectionBaseline: number;
-
-    /**
      * The bonus multiplier that is given for a sequence of notes of equal difficulty.
      */
     protected abstract readonly starsPerDouble: number;
@@ -98,21 +87,10 @@ export abstract class DroidSkill extends Skill {
     }
 
     difficultyValue(): number {
-        const sortedStrains: number[] = this.strainPeaks.slice().sort((a, b) => {
-            return b - a;
-        });
-
-        // We are reducing the highest strains first to account for extreme difficulty spikes.
-        for (let i = 0; i < Math.min(sortedStrains.length, this.reducedSectionCount); ++i) {
-            const scale: number = Math.log10(Interpolation.lerp(1, 10, MathUtils.clamp(i / this.reducedSectionCount, 0, 1)));
-
-            sortedStrains[i] *= Interpolation.lerp(this.reducedSectionBaseline, 1, scale);
-        }
-
         // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x * starsPerDouble.
         // This also applies to two sets of notes with equal difficulty.
         return Math.pow(
-            sortedStrains.reduce((a, v) => a + Math.pow(v, 1 / Math.log2(this.starsPerDouble)), 0),
+            this.strainPeaks.reduce((a, v) => a + Math.pow(v, 1 / Math.log2(this.starsPerDouble)), 0),
             Math.log2(this.starsPerDouble)
         );
     }

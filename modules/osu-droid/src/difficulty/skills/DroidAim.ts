@@ -14,8 +14,6 @@ export class DroidAim extends DroidSkill {
     private readonly angleBonusBegin: number = Math.PI / 3;
     protected readonly skillMultiplier: number = 26.25;
     protected readonly strainDecayBase: number = 0.15;
-    protected readonly reducedSectionCount: number = 10;
-    protected readonly reducedSectionBaseline: number = 0.75;
     protected readonly starsPerDouble: number = 1.05;
 
     /**
