@@ -10,7 +10,7 @@ export class DroidRhythm extends DroidSkill {
     protected readonly skillMultiplier: number = 1.5;
     protected readonly reducedSectionCount: number = 10;
     protected readonly reducedSectionBaseline: number = 0.75;
-    protected readonly starsPerDouble: number = 1.025;
+    protected readonly starsPerDouble: number = 1.01;
     protected readonly historyLength: number = 16;
     protected readonly strainDecayBase: number = 0.15;
 
