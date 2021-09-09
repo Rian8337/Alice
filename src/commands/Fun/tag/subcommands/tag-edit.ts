@@ -51,7 +51,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
 
     interaction.editReply({
-        content: MessageCreator.createAccept(tagStrings.editTagSuccessful)
+        content: MessageCreator.createAccept(
+            tagStrings.editTagSuccessful, name
+        )
     });
 };
 
