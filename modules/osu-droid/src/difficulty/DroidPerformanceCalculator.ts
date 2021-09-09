@@ -247,7 +247,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.accuracy *= rhythmScaling;
 
         // Scale the accuracy value with amount of accuracy objects (objects that
-        // depends on hit window for hit result)
+        // depends on hit window for hit result).
         const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
         this.accuracy *= lengthScaling;
 
