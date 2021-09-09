@@ -16,8 +16,8 @@ export class DroidSpeed extends DroidSkill {
     protected readonly historyLength: number = 32;
     protected readonly skillMultiplier: number = 1375;
     protected readonly strainDecayBase: number = 0.3;
-    protected readonly reducedSectionCount: number = 5;
-    protected readonly reducedSectionBaseline: number = 0.75;
+    protected readonly reducedSectionCount: number = 10;
+    protected readonly reducedSectionBaseline: number = 0.5;
     protected readonly starsPerDouble: number = 1.1;
 
     // ~200 1/4 BPM streams
