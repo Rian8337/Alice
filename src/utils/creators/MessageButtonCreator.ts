@@ -99,7 +99,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             collector.on("end", async collected => {
                 if (collected.size > 0) {
                     await interaction.editReply({
-                        content: MessageCreator.createAccept("Please wait..."),
+                        content: MessageCreator.createPrefixedMessage("Please wait...", Symbols.timer),
                         components: []
                     });
                 } else {
