@@ -30,10 +30,10 @@ export const run: EventUtil["run"] = async () => {
             return;
         }
 
-        await resetDailyCoinsAndMapShare();
-        await MessageAnalyticsHelper.fetchDaily(resetTime * 1000);
-
         resetTime += 86400;
+
+        await resetDailyCoinsAndMapShare();
+        await MessageAnalyticsHelper.fetchDaily((resetTime - 86400) * 1000);
     }, 15 * 1000);
 };
 
