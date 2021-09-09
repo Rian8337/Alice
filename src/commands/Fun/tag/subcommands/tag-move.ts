@@ -1,8 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, User } from "discord.js";
+import { User } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -14,24 +13,17 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const newUser: User = interaction.options.getUser("newuser", true);
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
-
-    if (!tags.find(v => v.author === oldUser.id)) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(
-                tagStrings.userDoesntHaveTags,
-                "this user"
-            )
-        });
-    }
-
-    tags.forEach(tag => {
-        if (tag.author === oldUser.id) {
-            tag.author = newUser.id;
+    await DatabaseManager.aliceDb.collections.guildTags.update(
+        {
+            guildid: interaction.guildId,
+            author: oldUser.id
+        },
+        {
+            $set: {
+                author: newUser.id
+            }
         }
-    });
-
-    await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+    );
 
     interaction.editReply({
         content: MessageCreator.createAccept(tagStrings.transferTagSuccessful, oldUser.toString(), newUser.toString())

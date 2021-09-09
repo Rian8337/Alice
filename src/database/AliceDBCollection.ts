@@ -10,7 +10,7 @@ import { EmojiStatisticsCollectionManager } from "./managers/aliceDb/EmojiStatis
 import { LoungeLockCollectionManager } from "./managers/aliceDb/LoungeLockCollectionManager";
 import { MapShareCollectionManager } from "./managers/aliceDb/MapShareCollectionManager";
 import { DPPAPIKeyCollectionManager } from "./managers/aliceDb/DPPAPIKeyCollectionManager";
-import { GuildTagsCollectionManager } from "./managers/aliceDb/GuildTagsCollectionManager";
+import { GuildTagCollectionManager } from "./managers/aliceDb/GuildTagCollectionManager";
 import { GuildPunishmentConfigCollectionManager } from "./managers/aliceDb/GuildPunishmentConfigCollectionManager";
 import { NameChangeCollectionManager } from "./managers/aliceDb/NameChangeCollectionManager";
 import { OsuBindCollectionManager } from "./managers/aliceDb/OsuBindCollectionManager";
@@ -138,7 +138,7 @@ export class AliceDBCollection {
     /**
      * The database collection for guild tags.
      */
-    readonly guildTags: GuildTagsCollectionManager;
+    readonly guildTags: GuildTagCollectionManager;
 
     /**
      * The database collection for voting entries.
@@ -170,7 +170,7 @@ export class AliceDBCollection {
         this.prototypePP = new PrototypePPCollectionManager(aliceDb.collection("prototypepp"));
         this.guildPunishmentConfig = new GuildPunishmentConfigCollectionManager(aliceDb.collection("punishmentconfig"));
         this.eightBallFilter = new EightBallFilterCollectionManager(aliceDb.collection("responsefilter"));
-        this.guildTags = new GuildTagsCollectionManager(aliceDb.collection("tags"));
+        this.guildTags = new GuildTagCollectionManager(aliceDb.collection("tags"));
         this.voting = new VotingCollectionManager(aliceDb.collection("voting"));
     }
 }

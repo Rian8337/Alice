@@ -17,5 +17,6 @@ export enum Symbols {
     rightArrowSmall = "▸",
     missIcon = "❌",
     upIcon = "🆙",
-    cake = "🎂"
+    cake = "🎂",
+    timer = "⏲️"
 };

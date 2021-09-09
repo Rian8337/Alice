@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
+import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -20,9 +20,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const tags: Collection<string, Tag> = await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId);
-
-    const tag: Tag | undefined = tags.get(name);
+    const tag: GuildTag | null = await DatabaseManager.aliceDb.collections.guildTags.getByName(interaction.guildId, name);
 
     if (!tag) {
         return interaction.editReply({
@@ -37,8 +35,6 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    tags.delete(name);
-
     // Also delete attachment
     if (tag.attachment_message) {
         const channel: TextChannel = <TextChannel> await client.channels.fetch(Constants.tagAttachmentChannel);
@@ -48,7 +44,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await message.delete();
     }
 
-    await DatabaseManager.aliceDb.collections.guildTags.updateGuildTags(interaction.guildId, tags);
+    await DatabaseManager.aliceDb.collections.guildTags.delete({
+        guildid: tag.guildid,
+        name: tag.name
+    });
 
     interaction.editReply({
         content: MessageCreator.createAccept(

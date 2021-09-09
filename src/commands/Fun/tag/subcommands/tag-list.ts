@@ -1,5 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Tag } from "@alice-interfaces/commands/Tools/Tag";
+import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -15,10 +15,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
-    const tags: Collection<string, Tag> =
-        (await DatabaseManager.aliceDb.collections.guildTags.getGuildTags(interaction.guildId)).filter(
-            v => v.author === interaction.user.id
-        );
+    const tags: Collection<string, GuildTag> =
+        await DatabaseManager.aliceDb.collections.guildTags.getUserGuildTags(interaction.guildId, user.id);
 
     if (tags.size === 0) {
         return interaction.editReply({
@@ -33,14 +31,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
     );
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: Tag[]) => {
+    const onPageChange: OnButtonPageChange = async (_, page, contents: GuildTag[]) => {
         embed.setDescription(
             `**Tags for ${interaction.user}**\n` +
             `**Total tags**: ${contents.length}\n\n` +
             contents
-            .slice(10 * (page - 1), 10 + 10 * (page - 1))
-            .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
-            .join("\n")
+                .slice(10 * (page - 1), 10 + 10 * (page - 1))
+                .map((v, i) => `${10 * (page - 1) + i + 1}. ${v.name}`)
+                .join("\n")
         );
     };
 

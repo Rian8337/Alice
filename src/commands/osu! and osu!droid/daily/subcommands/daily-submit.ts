@@ -3,6 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { ChallengeOperationResult } from "@alice-interfaces/challenge/ChallengeOperationResult";
@@ -104,6 +105,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 }
             ]
         });
+    }
+
+    if (bindInfo.clan) {
+        const clan: Clan = (await DatabaseManager.elainaDb.collections.clan.getFromName(bindInfo.clan))!;
+
+        clan.incrementPower(pointsGained);
+
+        await clan.updateClan();
     }
 
     interaction.editReply({

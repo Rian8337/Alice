@@ -1,9 +1,15 @@
 import { Snowflake } from "discord.js";
+import { BaseDocument } from "../BaseDocument";
 
 /**
- * Represents a tag.
+ * Represents a guild tag.
  */
-export interface Tag {
+export interface DatabaseGuildTag extends BaseDocument {
+    /**
+     * The ID of the guild.
+     */
+    guildid: Snowflake;
+
     /**
      * The Discord ID of the tag author.
      */
