@@ -2,7 +2,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ApplicationCommand, ApplicationCommandManager } from "discord.js";
+import { ApplicationCommand } from "discord.js";
 import { undeployStrings } from "./undeployStrings";
 
 export const run: Command["run"] = async (client, interaction) => {
