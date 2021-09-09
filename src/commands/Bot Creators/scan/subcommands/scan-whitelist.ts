@@ -73,6 +73,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(entry.mapid, false))!;
 
                     entry.hashid = beatmapInfo.hash;
+
+                    entry.diffstat = {
+                        cs: beatmapInfo.cs,
+                        ar: beatmapInfo.ar,
+                        od: beatmapInfo.od,
+                        hp: beatmapInfo.hp,
+                        sr: parseFloat(beatmapInfo.totalDifficulty.toFixed(2)),
+                        bpm: beatmapInfo.bpm
+                    };
+
                 case WhitelistValidity.VALID:
                     client.logger.info(++scannedCount);
 
