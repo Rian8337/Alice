@@ -16,7 +16,6 @@ export class DroidRhythm extends DroidSkill {
 
     private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
 
-
     strainValueAt(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
