@@ -111,7 +111,7 @@ export abstract class DroidSkill extends Skill {
 
         const difficultyExponent: number = 1 / Math.log2(this.starsPerDouble);
 
-        // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x*StarsPerDouble
+        // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x * starsPerDouble.
         // This also applies to two sets of notes with equal difficulty.
         return Math.pow(
             sortedStrains.reduce((a, v) => a + Math.pow(v, difficultyExponent), 0),
