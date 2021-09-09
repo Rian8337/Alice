@@ -11,8 +11,8 @@ export class DroidRhythm extends DroidSkill {
     protected readonly reducedSectionCount: number = 10;
     protected readonly reducedSectionBaseline: number = 0.75;
     protected readonly starsPerDouble: number = 1.01;
-    protected readonly historyLength: number = 16;
-    protected readonly strainDecayBase: number = 0.15;
+    protected readonly historyLength: number = 32;
+    protected readonly strainDecayBase: number = 0.3;
 
     private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
 
