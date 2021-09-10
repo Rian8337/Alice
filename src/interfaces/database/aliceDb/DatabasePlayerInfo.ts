@@ -50,12 +50,6 @@ export interface DatabasePlayerInfo extends BaseDocument {
     picture_config: ProfileImageConfig;
 
     /**
-     * The epoch time at which the cooldown to gain Alice coins
-     * through chatting will expire, in seconds.
-     */
-    chatcooldown: number;
-
-    /**
      * The epoch time at which daily coins claim will be reset,
      * in seconds.
      * 
@@ -82,12 +76,4 @@ export interface DatabasePlayerInfo extends BaseDocument {
      * The amount of Alice coins the user has transferred to other user.
      */
     transferred: number;
-
-    /**
-     * The epoch time at which the next report broadcast will be
-     * sent, in seconds.
-     * 
-     * This is only available under user ID `386742340968120321`.
-     */
-    nextReportBroadcast?: number;
 };

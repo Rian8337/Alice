@@ -61,9 +61,9 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 continue;
             }
 
-            const finalCount: number = (await this.getChannelMessageCount(channel, newDailyTime - 86400 * 1000, newDailyTime)).first()!;
+            const finalCounts: Collection<number, number> = await this.getChannelMessageCount(channel, newDailyTime - 86400 * 1000, newDailyTime);
 
-            channelData.set(channel.id, finalCount);
+            channelData.set(channel.id, finalCounts.reduce((a, v) => a + v, 0));
         }
 
         await DatabaseManager.aliceDb.collections.channelData.update(

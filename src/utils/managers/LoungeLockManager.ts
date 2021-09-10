@@ -89,7 +89,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
                 .setDescription(
                     `**User**: <@${userId}>\n` +
                     `**Reason**: ${reason}\n` +
-                    `**Expiration Date**: ${new Date(duration * 1000).toUTCString()}`
+                    `**Expiration Date**: ${!Number.isFinite(duration * 1000) ? "Never" : new Date(Date.now() + duration * 1000).toUTCString()}`
                 );
         }
 

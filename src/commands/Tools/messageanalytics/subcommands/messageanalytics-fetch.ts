@@ -6,7 +6,7 @@ import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHel
 import { Collection, TextChannel } from "discord.js";
 import { messageanalyticsStrings } from "../messageanalyticsStrings";
 
-export const run: Subcommand["run"] = async (_, interaction) => {
+export const run: Subcommand["run"] = async (client, interaction) => {
     const fromDateEntries: number[] = (interaction.options.getString("fromdate", true)).split("-").map(v => parseInt(v));
 
     if (fromDateEntries.length !== 3 || fromDateEntries.some(Number.isNaN)) {
@@ -80,11 +80,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             continue;
         }
 
+        client.logger.info(`Fetching messages in #${channel.name}`);
+
         const messageData: Collection<number, number> = await MessageAnalyticsHelper.getChannelMessageCount(
             channel,
             fromDate.getTime(),
             toDate.getTime()
         );
+
+        client.logger.info(`Channel #${channel.name} has ${messageData.reduce((a, v) => a + v, 0)} messages`);
 
         for await (const [ date, count ] of messageData) {
             const channelData: ChannelData =

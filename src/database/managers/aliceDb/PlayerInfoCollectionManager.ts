@@ -15,7 +15,6 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<Datab
         return {
             alicecoins: 0,
             challenges: [],
-            chatcooldown: Math.floor(Date.now() / 1000),
             discordid: "",
             hasClaimedDaily: false,
             hasSubmittedMapShare: false,

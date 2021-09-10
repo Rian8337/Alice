@@ -14,7 +14,7 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
     get defaultDocument(): DatabaseChannelData {
         const date: Date = new Date();
 
-        date.setUTCHours(0);
+        date.setUTCHours(0, 0, 0, 0);
 
         return {
             timestamp: date.getTime(),
@@ -36,20 +36,14 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
      * 
      * @param from The minimum time range.
      * @param to The maximum time range.
-     * @param inclusive Whether the specified time range is inclusive.
      * @returns The channel statistics from the given range.
      */
-    getFromTimestampRange(from: number, to: number, inclusive: boolean = true): Promise<DiscordCollection<number, ChannelData>> {
+    getFromTimestampRange(from: number, to: number): Promise<DiscordCollection<number, ChannelData>> {
         const query: FilterQuery<DatabaseChannelData> = {
-            timestamp: inclusive ?
-                {
-                    $gte: from,
-                    $lte: to
-                } :
-                {
-                    $gt: from,
-                    $lt: to
-                }
+            timestamp: {
+                $gte: from,
+                $lte: to
+            }
         };
 
         return this.get("timestamp", query);
