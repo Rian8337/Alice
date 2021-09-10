@@ -12,6 +12,8 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (isDebug) {
         await interaction.guild!.commands.fetch();
+    } else {
+        await client.application!.commands.fetch();
     }
 
     const command: ApplicationCommand | undefined =
