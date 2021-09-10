@@ -1,7 +1,5 @@
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { Skill } from "../base/Skill";
-import { Interpolation } from "../../mathutil/Interpolation";
-import { MathUtils } from "../../mathutil/MathUtils";
 
 /**
  * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
