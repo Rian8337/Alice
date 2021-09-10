@@ -17,6 +17,7 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 /**
  * Utility to create message embeds.
@@ -334,6 +335,9 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
         embed.setImage("attachment://chart.png")
+            .setFooter(
+                embed.footer!.text! + ` | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000)))}`
+            )
             .setAuthor(
                 challenge.type === "weekly" ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge",
                 `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`
