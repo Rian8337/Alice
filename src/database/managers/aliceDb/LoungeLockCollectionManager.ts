@@ -43,14 +43,14 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
      * Inserts a new lounge lock.
      * 
      * @param userId The ID of the user to lock.
-     * @param duration The duration of the lock.
+     * @param duration The duration of the lock, in seconds.
      * @param reason Reason for locking the user.
      * @returns An object containing information about the operation.
      */
     insertNewLock(userId: Snowflake, duration: number, reason: string): Promise<DatabaseOperationResult> {
         return this.insert({
             discordid: userId,
-            expiration: Math.floor(Date.now()) + duration,
+            expiration: Date.now() + duration * 1000,
             reason: reason
         });
     }
