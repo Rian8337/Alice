@@ -191,7 +191,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
-        // Scale the tap value with accuracy and OD.
+        // Scale the speed value with accuracy and OD.
         const od: number = <number> this.mapStatistics.od;
         const odScaling: number = Math.pow(od, 2) / 750;
         this.speed *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
