@@ -24,7 +24,7 @@ export class DroidSpeed extends DroidSkill {
     // ~330 BPM 1/4 streams
     private readonly maxSpeedBonus: number = 45;
 
-    private readonly rhythmMultiplier: number = 2.5;
+    private readonly rhythmMultiplier: number = 1.5;
     private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
 
     private currentTapStrain: number = 1;
