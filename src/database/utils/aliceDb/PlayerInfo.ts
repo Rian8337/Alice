@@ -83,14 +83,6 @@ export class PlayerInfo extends Manager {
     transferred: number;
 
     /**
-     * The epoch time at which the next report broadcast will be
-     * sent, in seconds.
-     * 
-     * This is only available under user ID `386742340968120321`.
-     */
-    nextReportBroadcast?: number;
-
-    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -112,7 +104,6 @@ export class PlayerInfo extends Manager {
         this.hasClaimedDaily = data.hasClaimedDaily;
         this.isBannedFromMapShare = data.isBannedFromMapShare;
         this.transferred = data.transferred;
-        this.nextReportBroadcast = data.nextReportBroadcast;
     }
 
     /**

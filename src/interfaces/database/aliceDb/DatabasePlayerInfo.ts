@@ -76,12 +76,4 @@ export interface DatabasePlayerInfo extends BaseDocument {
      * The amount of Alice coins the user has transferred to other user.
      */
     transferred: number;
-
-    /**
-     * The epoch time at which the next report broadcast will be
-     * sent, in seconds.
-     * 
-     * This is only available under user ID `386742340968120321`.
-     */
-    nextReportBroadcast?: number;
 };
