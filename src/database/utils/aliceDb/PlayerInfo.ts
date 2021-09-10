@@ -55,12 +55,6 @@ export class PlayerInfo extends Manager {
     picture_config: ProfileImageConfig;
 
     /**
-     * The epoch time at which the cooldown to gain Alice coins
-     * through chatting will expire, in seconds.
-     */
-    chatcooldown: number;
-
-    /**
      * The epoch time at which daily coins claim will be reset,
      * in seconds.
      * 
@@ -113,7 +107,6 @@ export class PlayerInfo extends Manager {
         this.alicecoins = data.alicecoins;
         this.streak = data.streak;
         this.picture_config = data.picture_config;
-        this.chatcooldown = data.chatcooldown;
         this.dailyreset = data.dailyreset;
         this.hasSubmittedMapShare = data.hasSubmittedMapShare;
         this.hasClaimedDaily = data.hasClaimedDaily;
