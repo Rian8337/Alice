@@ -72,8 +72,8 @@ export class NameChange extends Manager implements DatabaseNameChange {
             }
         );
 
+        this.previous_usernames.push(this.current_username);
         this.current_username = this.new_username!;
-        this.new_username = null;
 
         return result;
     }
@@ -88,7 +88,6 @@ export class NameChange extends Manager implements DatabaseNameChange {
             return this.createOperationResult(false, "no active name change requset");
         }
 
-        this.new_username = null;
         this.isProcessed = true;
 
         return DatabaseManager.aliceDb.collections.nameChange.update(
