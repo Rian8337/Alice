@@ -89,6 +89,34 @@ export abstract class DPPHelper {
     }
 
     /**
+     * Deletes a beatmap with specific hash from all players.
+     * 
+     * @param hash The beatmap's hash.
+     */
+    static async deletePlays(hash: string): Promise<void> {
+        const toUpdateList: Collection<string, UserBind> = await DatabaseManager.elainaDb.collections.userBind.get(
+            "discordid",
+            { "pp.hash": hash },
+            { projection: { _id: 0, pp: 1, playc: 1 } }
+        );
+    
+        for await (const toUpdate of toUpdateList.values()) {
+            toUpdate.pp.delete(hash);
+    
+            await DatabaseManager.elainaDb.collections.userBind.update(
+                { discordid: toUpdate.discordid },
+                {
+                    $set: {
+                        pp: [...toUpdate.pp.values()],
+                        pptotal: this.calculateFinalPerformancePoints(toUpdate.pp),
+                        playc: Math.max(0, toUpdate.playc - 1)
+                    }
+                }
+            );
+        }
+    }
+
+    /**
      * Views the DPP list of a player.
      * 
      * @param interaction The interaction that triggered this function.
