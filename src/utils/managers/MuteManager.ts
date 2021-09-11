@@ -8,6 +8,7 @@ import { PunishmentManager } from "./PunishmentManager";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { LoungeLockManager } from "./LoungeLockManager";
+import { Config } from "@alice-core/Config";
 
 /**
  * A manager for mutes.
@@ -34,7 +35,9 @@ export abstract class MuteManager extends PunishmentManager {
     static async init(): Promise<void> {
         this.punishmentDb = DatabaseManager.aliceDb.collections.guildPunishmentConfig;
 
-        await this.cacheOngoingMute();
+        if (!Config.isDebug) {
+            await this.cacheOngoingMute();
+        }
     }
 
     /**
