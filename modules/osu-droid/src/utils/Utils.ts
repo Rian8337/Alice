@@ -12,20 +12,6 @@ export abstract class Utils {
     }
 
     /**
-     * Deep copies an instance.
-     * 
-     * @param instance The instance to deep copy.
-     */
-    static deepCopy<T>(instance: T): T {
-        return Object.assign(
-            Object.create(
-                Object.getPrototypeOf(instance)
-            ),
-            JSON.parse(JSON.stringify(instance))
-        );
-    }
-
-    /**
      * Creates an array with specific length that's prefilled with an initial value.
      * 
      * @param length The length of the array.
