@@ -5,10 +5,13 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
+import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Snowflake } from "discord.js";
+import { MessageEmbed, Snowflake } from "discord.js";
 import { ppcheckStrings } from "./ppcheckStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -49,14 +52,57 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    DPPHelper.viewDPPList(
+    const ppRank: number = await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
+
+    const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(interaction, bindInfo, ppRank);
+
+    const onPageChange: OnButtonPageChange = async (_, page, contents: PPEntry[]) => {
+        for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
+            const pp: PPEntry = contents[i];
+            if (pp) {
+                let modstring = pp.mods ? `+${pp.mods}` : "";
+                if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
+                    if (pp.mods) {
+                        modstring += " ";
+                    }
+
+                    modstring += "(";
+
+                    if (pp.forcedAR) {
+                        modstring += `AR${pp.forcedAR}`;
+                    }
+
+                    if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
+                        if (pp.forcedAR) {
+                            modstring += ", ";
+                        }
+
+                        modstring += `${pp.speedMultiplier}x`;
+                    }
+
+                    modstring += ")";
+                }
+
+                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+            } else {
+                embed.addField(`${i+1}. -`, "-");
+            }
+        }
+    };
+
+    MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        bindInfo,
+        { embeds: [ embed ] },
+        [interaction.user.id],
+        [...bindInfo.pp.values()],
+        5,
         NumberHelper.clamp(
             interaction.options.getInteger("page") ?? 1,
             1,
             Math.ceil(bindInfo.pp.size / 5)
-        )
+        ),
+        120,
+        onPageChange
     );
 };
 
