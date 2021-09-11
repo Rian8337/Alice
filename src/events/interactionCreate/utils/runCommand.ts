@@ -141,5 +141,6 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 export const config: EventUtil["config"] = {
     description: "Responsible for handling commands received from interactions. This event utility cannot be disabled.",
     togglePermissions: [],
-    toggleScope: []
+    toggleScope: [],
+    debugEnabled: true
 };
