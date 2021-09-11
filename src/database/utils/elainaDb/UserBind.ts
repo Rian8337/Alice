@@ -317,8 +317,12 @@ export class UserBind extends Manager {
                 scoreID: score.scoreID
             };
 
+            this.client.logger.info(`${calcResult.map.fullTitle}${entry.mods ? ` +${entry.mods}` : ""}: ${entry.prevPP} ⮕  ${entry.pp}`);
+
             newList.set(ppEntry.hash, entry);
         }
+
+        this.client.logger.info(`${this.pptotal} ⮕  ${DPPHelper.calculateFinalPerformancePoints(newList).toFixed(2)}`);
 
         return DatabaseManager.aliceDb.collections.prototypePP.update(
             { discordid: this.discordid },
