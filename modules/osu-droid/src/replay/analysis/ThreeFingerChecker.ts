@@ -530,7 +530,7 @@ export class ThreeFingerChecker {
         if (objectIndex === -1) {
             return -1;
         }
-        
+
         while (cursorIndexes.length > 0) {
             if (objectIndex === sectionObjects.length) {
                 break;
