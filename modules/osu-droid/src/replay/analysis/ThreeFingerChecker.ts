@@ -15,6 +15,7 @@ import { BeatmapSection } from "./data/BeatmapSection";
 import { ModPrecise } from "../../mods/ModPrecise";
 import { ModUtil } from "../../utils/ModUtil";
 import { MathUtils } from "../../mathutil/MathUtils";
+import { ThreeFingerBeatmapSection } from "./data/ThreeFingerBeatmapSection";
 
 /**
  * Information about the result of a check.
@@ -75,32 +76,6 @@ interface NerfFactor {
      * Nerf factor based on how much a section is 3-fingered.
      */
     readonly fingerFactor: number;
-}
-
-/**
- * A section of a beatmap. This is used to detect dragged sections.
- */
-class ThreeFingerBeatmapSection extends BeatmapSection {
-    /**
-     * Whether or not this beatmap section is dragged.
-     */
-    isDragged: boolean;
-
-    /**
-     * The index of the cursor that is dragging this section.
-     */
-    dragFingerIndex: number;
-
-    constructor(values: {
-        firstObjectIndex: number,
-        lastObjectIndex: number,
-        isDragged: boolean,
-        dragFingerIndex: number
-    }) {
-        super(values.firstObjectIndex, values.lastObjectIndex);
-        this.isDragged = values.isDragged;
-        this.dragFingerIndex = values.dragFingerIndex;
-    }
 }
 
 /**
