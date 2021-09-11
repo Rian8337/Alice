@@ -99,10 +99,10 @@ export abstract class DPPHelper {
             { "pp.hash": hash },
             { projection: { _id: 0, pp: 1, playc: 1 } }
         );
-    
+
         for await (const toUpdate of toUpdateList.values()) {
             toUpdate.pp.delete(hash);
-    
+
             await DatabaseManager.elainaDb.collections.userBind.update(
                 { discordid: toUpdate.discordid },
                 {
@@ -139,11 +139,11 @@ export abstract class DPPHelper {
                         }
 
                         modstring += "(";
-                        
+
                         if (pp.forcedAR) {
                             modstring += `AR${pp.forcedAR}`;
                         }
-                        
+
                         if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
                             if (pp.forcedAR) {
                                 modstring += ", ";
