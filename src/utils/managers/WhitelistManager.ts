@@ -55,7 +55,7 @@ export abstract class WhitelistManager extends Manager {
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully blacklisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully blacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);
@@ -77,7 +77,7 @@ export abstract class WhitelistManager extends Manager {
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully unblacklisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully unblacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);
