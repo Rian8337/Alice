@@ -200,6 +200,9 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
                 (12 - Math.max(od, 2.5)) / 2
             );
 
+        // Scale the speed value with # of 50s to punish doubletapping.
+        this.speed *= Math.pow(0.98, Math.max(0, this.computedAccuracy.n50 - objectCount / 500));
+
         // Punish high speed values with low OD to prevent OD abuse on rhythmically complex songs.
         if (this.speed > 100 && od < 3.33) {
             this.speed = 100 + (this.speed - 100) * Math.max(0.5, od / 3.33);
@@ -220,7 +223,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // We calculate a variance based on the object count and # of 50s, 100s, etc. This prevents us from having cases
         // where an SS on lower OD is actually worth more than a 95% on OD11, even though OD11 requires a greater window
         // of precision.
-        const p100: number = 2 * this.computedAccuracy.n100 / ncircles; // This is multiplied by two to encourage better accuracy (scales better).
+        const p100: number = this.computedAccuracy.n100 / ncircles;
         const p50: number = this.computedAccuracy.n50 / ncircles;
         const pm: number = this.computedAccuracy.nmiss / ncircles;
         const p300: number = Math.max(0, 1 - pm - p50 - p100);
