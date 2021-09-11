@@ -24,5 +24,10 @@ export interface EventUtil extends Event {
          * The scopes at which this event utility can be disabled/enabled.
          */
         readonly toggleScope: EventUtilToggleScope[];
+
+        /**
+         * Whether this event utility will be enabled in debug mode.
+         */
+        readonly debugEnabled?: boolean;
     }
 };

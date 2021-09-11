@@ -21,6 +21,10 @@ export abstract class EventHelper {
         const eventName: string = <string> eventDirectory.split(/[\/\\]/g).pop();
 
         for await (const [utilityName, utility] of (client.eventUtilities.get(eventName) ?? new Collection()).entries()) {
+            if (Config.isDebug && !utility.config.debugEnabled) {
+                continue;
+            }
+
             // Hierarchy: global --> guild --> channel
             if (this.isUtilityDisabledGlobally(eventName, utilityName)) {
                 continue;
