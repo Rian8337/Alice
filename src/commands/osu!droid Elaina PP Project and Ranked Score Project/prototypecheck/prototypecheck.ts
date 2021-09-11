@@ -1,0 +1,167 @@
+import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
+import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
+import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Command } from "@alice-interfaces/core/Command";
+import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
+import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
+import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { prototypecheckStrings } from "./prototypecheckStrings";
+
+export const run: Command["run"] = async (_, interaction) => {
+    const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
+    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const username: string | null = interaction.options.getString("username");
+
+    if ([discordid, uid, username].filter(Boolean).length > 1) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(prototypecheckStrings.tooManyOptions)
+        });
+    }
+
+    const dbManager: PrototypePPCollectionManager = DatabaseManager.aliceDb.collections.prototypePP;
+
+    let ppInfo: PrototypePP | null;
+
+    switch (true) {
+        case !!uid:
+            ppInfo = await dbManager.getFromUid(uid!);
+            break;
+        case !!username:
+            ppInfo = await dbManager.getFromUsername(username!);
+            break;
+        case !!discordid:
+            ppInfo = await dbManager.getFromUser(discordid!);
+            break;
+        default:
+            // If no arguments are specified, default to self
+            ppInfo = await dbManager.getFromUser(interaction.user);
+    }
+
+    if (!ppInfo) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                !!uid || !!username || !!discordid ? prototypecheckStrings.userInfoNotAvailable : prototypecheckStrings.selfInfoNotAvailable
+            )
+        });
+    }
+
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+    );
+
+    embed.setDescription(
+        `**PP Profile for <@${ppInfo.discordid}> (${ppInfo.username})**\n` +
+        `Total PP: **${ppInfo.pptotal.toFixed(2)} pp (#${(await dbManager.getUserDPPRank(ppInfo.pptotal)).toLocaleString()})**\n` +
+        `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${ppInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${ppInfo.uid})\n` +
+        `Last Update: **${new Date(ppInfo.lastUpdate).toUTCString()}**`
+    );
+
+    const onPageChange: OnButtonPageChange = async (_, page, contents: PrototypePPEntry[]) => {
+        for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
+            const pp: PrototypePPEntry = contents[i];
+            if (pp) {
+                let modstring = pp.mods ? `+${pp.mods}` : "";
+                if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
+                    if (pp.mods) {
+                        modstring += " ";
+                    }
+
+                    modstring += "(";
+
+                    if (pp.forcedAR) {
+                        modstring += `AR${pp.forcedAR}`;
+                    }
+
+                    if (pp.speedMultiplier && pp.speedMultiplier !== 1) {
+                        if (pp.forcedAR) {
+                            modstring += ", ";
+                        }
+
+                        modstring += `${pp.speedMultiplier}x`;
+                    }
+
+                    modstring += ")";
+                }
+
+                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`);
+            } else {
+                embed.addField(`${i+1}. -`, "-");
+            }
+        }
+    };
+
+    MessageButtonCreator.createLimitedButtonBasedPaging(
+        interaction,
+        { embeds: [ embed ] },
+        [interaction.user.id],
+        [...ppInfo.pp.values()],
+        5,
+        NumberHelper.clamp(
+            interaction.options.getInteger("page") ?? 1,
+            1,
+            Math.ceil(ppInfo.pp.size / 5)
+        ),
+        120,
+        onPageChange
+    );
+};
+
+export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
+
+export const config: Command["config"] = {
+    name: "prototypecheck",
+    description: "Checks yours or a player's prototype droid pp (dpp) profile.",
+    options: [
+        {
+            name: "user",
+            type: CommandArgumentType.USER,
+            description: "The user to check."
+        },
+        {
+            name: "uid",
+            type: CommandArgumentType.INTEGER,
+            description: "The uid of the player."
+        },
+        {
+            name: "username",
+            type: CommandArgumentType.STRING,
+            description: "The username of the player."
+        },
+        {
+            name: "page",
+            type: CommandArgumentType.INTEGER,
+            description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1."
+        }
+    ],
+    example: [
+        {
+            command: "prototypecheck",
+            description: "will give a list of your submitted plays in droid pp system."
+        },
+        {
+            command: "prototypecheck user:@Rian8337#0001 index:5",
+            description: "will give a list of Rian8337's submitted plays in droid pp system at page 5."
+        },
+        {
+            command: "prototypecheck user:132783516176875520",
+            description: "will give a list of the user with that Discord ID's submitted plays in droid pp system."
+        },
+        {
+            command: "prototypecheck username:dgsrz index:7",
+            description: "will give a list of that username's submitted plays in droid pp system at page 7."
+        },
+        {
+            command: "prototypecheck uid:11678",
+            description: "will give a list of that uid's submitted plays in droid pp system."
+        }
+    ],
+    cooldown: 10,
+    permissions: [],
+    scope: "ALL"
+};
