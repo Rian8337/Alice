@@ -1,18 +1,17 @@
-import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
+import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { MessageEmbed, Snowflake } from "discord.js";
-import { ppcheckStrings } from "./ppcheckStrings";
+import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { prototypecheckStrings } from "./prototypecheckStrings";
 
 export const run: Command["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
@@ -21,44 +20,51 @@ export const run: Command["run"] = async (_, interaction) => {
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         return interaction.editReply({
-            content: MessageCreator.createReject(ppcheckStrings.tooManyOptions)
+            content: MessageCreator.createReject(prototypecheckStrings.tooManyOptions)
         });
     }
 
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: PrototypePPCollectionManager = DatabaseManager.aliceDb.collections.prototypePP;
 
-    let bindInfo: UserBind | null;
+    let ppInfo: PrototypePP | null;
 
     switch (true) {
         case !!uid:
-            bindInfo = await dbManager.getFromUid(uid!);
+            ppInfo = await dbManager.getFromUid(uid!);
             break;
         case !!username:
-            bindInfo = await dbManager.getFromUsername(username!);
+            ppInfo = await dbManager.getFromUsername(username!);
             break;
         case !!discordid:
-            bindInfo = await dbManager.getFromUser(discordid!);
+            ppInfo = await dbManager.getFromUser(discordid!);
             break;
         default:
             // If no arguments are specified, default to self
-            bindInfo = await dbManager.getFromUser(interaction.user);
+            ppInfo = await dbManager.getFromUser(interaction.user);
     }
 
-    if (!bindInfo) {
+    if (!ppInfo) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                !!uid || !!username || !!discordid ? Constants.userNotBindedReject : Constants.selfNotBindedReject
+                !!uid || !!username || !!discordid ? prototypecheckStrings.userInfoNotAvailable : prototypecheckStrings.selfInfoNotAvailable
             )
         });
     }
 
-    const ppRank: number = await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
+    const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+    );
 
-    const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(interaction, bindInfo, ppRank);
+    embed.setDescription(
+        `**PP Profile for <@${ppInfo.discordid}> (${ppInfo.username})**\n` +
+        `Total PP: **${ppInfo.pptotal.toFixed(2)} pp (#${(await dbManager.getUserDPPRank(ppInfo.pptotal)).toLocaleString()})**\n` +
+        `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${ppInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${ppInfo.uid})\n` +
+        `Last Update: **${new Date(ppInfo.lastUpdate).toUTCString()}**`
+    );
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: PPEntry[]) => {
+    const onPageChange: OnButtonPageChange = async (_, page, contents: PrototypePPEntry[]) => {
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
-            const pp: PPEntry = contents[i];
+            const pp: PrototypePPEntry = contents[i];
             if (pp) {
                 let modstring = pp.mods ? `+${pp.mods}` : "";
                 if (pp.forcedAR || (pp.speedMultiplier && pp.speedMultiplier !== 1)) {
@@ -83,7 +89,7 @@ export const run: Command["run"] = async (_, interaction) => {
                     modstring += ")";
                 }
 
-                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | **${pp.prevPP}** ⮕ **${pp.pp}** pp (${(pp.pp - pp.prevPP).toFixed(2)} pp)`);
             } else {
                 embed.addField(`${i+1}. -`, "-");
             }
@@ -94,12 +100,12 @@ export const run: Command["run"] = async (_, interaction) => {
         interaction,
         { embeds: [ embed ] },
         [interaction.user.id],
-        [...bindInfo.pp.values()],
+        [...ppInfo.pp.values()],
         5,
         NumberHelper.clamp(
             interaction.options.getInteger("page") ?? 1,
             1,
-            Math.ceil(bindInfo.pp.size / 5)
+            Math.ceil(ppInfo.pp.size / 5)
         ),
         120,
         onPageChange
@@ -109,8 +115,8 @@ export const run: Command["run"] = async (_, interaction) => {
 export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
 
 export const config: Command["config"] = {
-    name: "ppcheck",
-    description: "Checks yours or a player's droid pp (dpp) profile.",
+    name: "prototypecheck",
+    description: "Checks yours or a player's prototype droid pp (dpp) profile.",
     options: [
         {
             name: "user",
@@ -135,23 +141,23 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "ppcheck",
+            command: "prototypecheck",
             description: "will give a list of your submitted plays in droid pp system."
         },
         {
-            command: "ppcheck user:@Rian8337#0001 index:5",
+            command: "prototypecheck user:@Rian8337#0001 index:5",
             description: "will give a list of Rian8337's submitted plays in droid pp system at page 5."
         },
         {
-            command: "ppcheck user:132783516176875520",
+            command: "prototypecheck user:132783516176875520",
             description: "will give a list of the user with that Discord ID's submitted plays in droid pp system."
         },
         {
-            command: "ppcheck username:dgsrz index:7",
+            command: "prototypecheck username:dgsrz index:7",
             description: "will give a list of that username's submitted plays in droid pp system at page 7."
         },
         {
-            command: "ppcheck uid:11678",
+            command: "prototypecheck uid:11678",
             description: "will give a list of that uid's submitted plays in droid pp system."
         }
     ],

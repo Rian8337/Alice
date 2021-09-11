@@ -110,7 +110,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
     /**
      * Gets the DPP leaderboard.
      * 
-     * @param clan The clan to get the
+     * @param clan The clan to get the leaderboard for.
      */
     async getDPPLeaderboard(clan?: string): Promise<DiscordCollection<string, UserBind>> {
         const query: FilterQuery<DatabaseUserBind> = {};

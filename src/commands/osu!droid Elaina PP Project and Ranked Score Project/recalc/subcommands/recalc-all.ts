@@ -38,7 +38,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     await dbManager.update({}, { $unset: { dppScanComplete: "" } });
 
     interaction.channel!.send({
-        content: MessageCreator.createAccept(recalcStrings.fullRecalcSuccess)
+        content: MessageCreator.createAccept(
+            recalcStrings.fullRecalcSuccess, interaction.user.toString()
+        )
     });
 };
 

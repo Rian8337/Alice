@@ -10,6 +10,7 @@ import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
+import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
 
 /**
  * A manager for whitelisted and blacklisted beatmaps.
@@ -49,10 +50,12 @@ export abstract class WhitelistManager extends Manager {
             reason: reason
         });
 
+        await DPPHelper.deletePlays(beatmap.hash);
+
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully blacklisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully blacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);
@@ -74,7 +77,7 @@ export abstract class WhitelistManager extends Manager {
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
-            { content: MessageCreator.createAccept(`Successfully unblacklisted ${beatmap.fullTitle}.`), ...embedOptions }
+            { content: MessageCreator.createAccept(`Successfully unblacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
         );
 
         return this.createOperationResult(true);
@@ -131,6 +134,8 @@ export abstract class WhitelistManager extends Manager {
         }
 
         await DatabaseManager.elainaDb.collections.mapWhitelist.delete({ mapid: beatmap.beatmapID });
+
+        await DPPHelper.deletePlays(beatmap.hash);
 
         const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
 

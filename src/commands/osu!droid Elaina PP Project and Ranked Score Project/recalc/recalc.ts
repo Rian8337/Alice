@@ -26,6 +26,28 @@ export const config: Command["config"] = {
             ]
         },
         {
+            name: "prototype",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Recalculates a user as prototype droid performance points (dpp).",
+            options: [
+                {
+                    name: "user",
+                    type: CommandArgumentType.USER,
+                    description: "The user to recalculate."
+                },
+                {
+                    name: "uid",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The uid of the user."
+                },
+                {
+                    name: "username",
+                    type: CommandArgumentType.STRING,
+                    description: "The username of the user."
+                }
+            ]
+        },
+        {
             name: "user",
             type: CommandArgumentType.SUB_COMMAND,
             description: "Recalculates all scores of a user.",

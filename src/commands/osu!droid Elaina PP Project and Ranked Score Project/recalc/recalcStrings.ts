@@ -2,6 +2,7 @@
  * Strings for the `recalc` command.
  */
 export enum recalcStrings {
+    tooManyOptions = "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
     userIsInQueue = "I'm sorry, this user is already in queue!",
     userIsDPPBanned = "I'm sorry, this user has been DPP banned!",
     userHasRequestedRecalc = "I'm sorry, this user has already requested a recalculation before!",

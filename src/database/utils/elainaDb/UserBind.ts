@@ -3,6 +3,7 @@ import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity"
 import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -272,6 +273,66 @@ export class UserBind extends Manager {
                     dppRecalcComplete: true
                 }
             }
+        );
+    }
+
+    /**
+     * Calculates this player's dpp into the prototype dpp database.
+     */
+    async calculatePrototypeDPP(): Promise<DatabaseOperationResult> {
+        const newList: Collection<string, PrototypePPEntry> = new Collection();
+
+        for await (const ppEntry of this.pp.values()) {
+            const score: Score = await Score.getFromHash({ uid: this.uid, hash: ppEntry.hash });
+
+            if (!score.title) {
+                continue;
+            }
+
+            const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
+
+            await HelperFunctions.sleep(0.1);
+
+            if (submissionValidity !== DPPSubmissionValidity.VALID) {
+                continue;
+            }
+
+            const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
+
+            if (!calcResult) {
+                continue;
+            }
+
+            await HelperFunctions.sleep(0.2);
+
+            const entry: PrototypePPEntry = {
+                hash: calcResult.map.hash,
+                title: calcResult.map.fullTitle,
+                pp: parseFloat(calcResult.droid.total.toFixed(2)),
+                prevPP: ppEntry.pp,
+                mods: score.mods.map(v => v.acronym).join(""),
+                accuracy: parseFloat((score.accuracy.value() * 100).toFixed(2)),
+                combo: score.combo,
+                miss: score.accuracy.nmiss,
+                scoreID: score.scoreID
+            };
+
+            newList.set(ppEntry.hash, entry);
+        }
+
+        return DatabaseManager.aliceDb.collections.prototypePP.update(
+            { discordid: this.discordid },
+            {
+                $set: {
+                    pp: [...newList.values()],
+                    pptotal: DPPHelper.calculateFinalPerformancePoints(newList),
+                    lastUpdate: Date.now(),
+                    previous_bind: this.previous_bind,
+                    uid: this.uid,
+                    username: this.username
+                }
+            },
+            { upsert: true }
         );
     }
 

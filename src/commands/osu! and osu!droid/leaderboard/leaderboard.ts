@@ -38,7 +38,7 @@ export const config: Command["config"] = {
                 {
                     name: "page",
                     type: CommandArgumentType.INTEGER,
-                    description: "The page of the leaderboard, ranging from 1 to 15. Defaults to 1."
+                    description: "The page of the leaderboard. Defaults to 1."
                 },
                 {
                     name: "clan",
@@ -48,9 +48,9 @@ export const config: Command["config"] = {
             ]
         },
         {
-            name: "ranked",
+            name: "global",
             type: CommandArgumentType.SUB_COMMAND,
-            description: "View the ranked score leaderboard.",
+            description: "View the global score leaderboard.",
             options: [
                 {
                     name: "page",
@@ -60,9 +60,21 @@ export const config: Command["config"] = {
             ]
         },
         {
-            name: "global",
+            name: "prototype",
             type: CommandArgumentType.SUB_COMMAND,
-            description: "View the global score leaderboard.",
+            description: "View the droid pp (dpp) prototype leaderboard.",
+            options: [
+                {
+                    name: "page",
+                    type: CommandArgumentType.INTEGER,
+                    description: "The page of the leaderboard. Defaults to 1."
+                }
+            ]
+        },
+        {
+            name: "ranked",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "View the ranked score leaderboard.",
             options: [
                 {
                     name: "page",

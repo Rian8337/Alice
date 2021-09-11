@@ -74,7 +74,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         if (!unwhitelistResult.success) {
             whitelistResponseStrings.push(MessageCreator.createReject(
-                whitelistStrings.unwhitelistFailed, beatmap.fullTitle, <string> unwhitelistResult.reason
+                whitelistStrings.unwhitelistFailed, beatmap.fullTitle, unwhitelistResult.reason!
             ));
             continue;
         }
