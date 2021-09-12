@@ -1,3 +1,4 @@
+//@ts-ignore
 import { Canvas, Image, NodeCanvasRenderingContext2D } from "canvas";
 
 declare module "osu-droid" {
@@ -443,6 +444,7 @@ declare module "osu-droid" {
         protected readonly angleBonusBegin: number;
         protected readonly skillMultiplier: number;
         protected readonly strainDecayBase: number;
+        protected readonly starsPerDouble: number;
         /**
          * @param currentObject The hitobject to calculate.
          */
@@ -546,10 +548,10 @@ declare module "osu-droid" {
      */
     export class DroidRhythm extends DroidSkill {
         protected readonly historyLength: number;
-        protected readonly baseDecay: number;
         protected readonly starsPerDouble: number;
-        protected readonly decayExcessThreshold: number;
-        private readonly strainMultiplier: number;
+        protected readonly skillMultiplier: number;
+        protected readonly strainDecayBase: number;
+        private readonly historyTimeMax: number;
         protected strainValueAt(current: DifficultyHitObject): number;
         protected saveToHitObject(current: DifficultyHitObject): void;
         private isRatioEqual(ratio: number, a: number, b: number): boolean;
@@ -649,9 +651,14 @@ declare module "osu-droid" {
         protected readonly angleBonusBegin: number;
         protected readonly skillMultiplier: number;
         protected readonly strainDecayBase: number;
+        protected readonly starsPerDouble: number;
         private readonly minSpeedBonus: number;
         private readonly maxSpeedBonus: number;
         private readonly angleBonusScale: number;
+        private readonly rhythmMultiplier: number;
+        private readonly historyTimeMax: number;
+        private currentTapStrain: number;
+        private currentMovementStrain: number;
         /**
          * @param currentObject The hitobject to calculate.
          */
@@ -3277,6 +3284,10 @@ declare module "osu-droid" {
          * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
          */
         protected abstract readonly strainDecayBase: number;
+        /**
+         * The bonus multiplier that is given for a sequence of notes of equal difficulty.
+         */
+        protected abstract readonly starsPerDouble: number;
         private readonly sectionLength: number;
         private currentSectionEnd: number;
         /**
