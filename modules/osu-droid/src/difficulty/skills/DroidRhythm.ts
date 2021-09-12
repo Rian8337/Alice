@@ -1,5 +1,6 @@
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
+import { Precision } from "../../utils/Precision";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
 
@@ -54,7 +55,7 @@ export class DroidRhythm extends DroidSkill {
             effectiveRatio *= Math.sqrt(200 / (currentDelta + prevDelta)) * currentHistoricalDecay;
 
             if (firstDeltaSwitch) {
-                if (this.isRatioEqual(1, prevDelta, currentDelta)) {
+                if (Precision.almostEqualsNumber(prevDelta, currentDelta, 15)) {
                     // Island is still progressing, count size.
                     ++islandSize;
                 } else {
@@ -109,9 +110,5 @@ export class DroidRhythm extends DroidSkill {
 
     protected saveToHitObject(current: DifficultyHitObject): void {
         current.rhythmStrain = this.currentStrain;
-    }
-
-    private isRatioEqual(ratio: number, a: number, b: number): boolean {
-        return a + 15 > ratio * b && a - 15 < ratio * b;
     }
 }
