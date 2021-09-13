@@ -32,9 +32,22 @@ export class PrototypePP extends Manager {
     pptotal: number;
 
     /**
+     * The total droid performance points (dpp) of the account before recalculation.
+     */
+    prevpptotal: number;
+
+    /**
      * The UID of the account.
      */
     uid: number;
+
+    /**
+     * The UID of osu!droid accounts that are binded to the user.
+     * 
+     * A user can only bind up to 2 osu!droid accounts, therefore
+     * the maximum length of this array will never exceed 2.
+     */
+    previous_bind: number[];
 
     /**
      * The username of the account.
@@ -54,7 +67,9 @@ export class PrototypePP extends Manager {
         this.lastUpdate = data.lastUpdate;
         this.pp = ArrayHelper.arrayToCollection(data.pp ?? [], "hash");
         this.pptotal = data.pptotal;
+        this.prevpptotal = data.prevpptotal;
         this.uid = data.uid;
+        this.previous_bind = data.previous_bind ?? [];
         this.username = data.username;
     }
 }

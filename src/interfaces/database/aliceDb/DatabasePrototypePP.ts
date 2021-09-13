@@ -28,6 +28,11 @@ export interface DatabasePrototypePP extends BaseDocument {
     pptotal: number;
 
     /**
+     * The total droid performance points (dpp) of the account before recalculation.
+     */
+    prevpptotal: number;
+
+    /**
      * The UID of the account.
      */
     uid: number;
