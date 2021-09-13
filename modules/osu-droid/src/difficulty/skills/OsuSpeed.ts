@@ -70,6 +70,7 @@ export class OsuSpeed extends OsuSkill {
      * @param currentObject The hitobject to save to.
      */
     saveToHitObject(currentObject: DifficultyHitObject): void {
-        currentObject.speedStrain = this.currentStrain;
+        // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
+        currentObject.movementStrain = this.currentStrain;
     }
 }

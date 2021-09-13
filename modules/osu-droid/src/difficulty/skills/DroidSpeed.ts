@@ -30,6 +30,7 @@ export class DroidSpeed extends DroidSkill {
 
     private currentTapStrain: number = 1;
     private currentMovementStrain: number = 1;
+    private currentRhythm: number = 1;
 
     /**
      * @param currentObject The hitobject to calculate.
@@ -46,7 +47,7 @@ export class DroidSpeed extends DroidSkill {
             speedBonus += 0.75 * Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
         }
 
-        const currentRhythm: number = this.calculateRhythmBonus(currentObject);
+        this.currentRhythm = this.calculateRhythmBonus(currentObject);
 
         this.currentTapStrain *= this.strainDecay(currentObject.deltaTime);
         this.currentTapStrain += this.tapStrainOf(currentObject, speedBonus) * this.skillMultiplier;
@@ -54,14 +55,16 @@ export class DroidSpeed extends DroidSkill {
         this.currentMovementStrain *= this.strainDecay(currentObject.deltaTime);
         this.currentMovementStrain += this.movementStrainOf(currentObject, speedBonus) * this.skillMultiplier;
 
-        return this.currentMovementStrain + this.currentTapStrain * currentRhythm;
+        return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
     }
 
     /**
      * @param currentObject The hitobject to save to.
      */
     saveToHitObject(currentObject: DifficultyHitObject): void {
-        currentObject.speedStrain = this.currentStrain;
+        currentObject.movementStrain = this.currentMovementStrain;
+        currentObject.tapStrain = this.currentTapStrain;
+        currentObject.rhythmMultiplier = this.currentRhythm;
     }
 
     /**
