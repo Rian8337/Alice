@@ -163,7 +163,7 @@ export class ThreeFingerChecker {
      * will also increase the chance of 3-fingered plays getting out from
      * being flagged.
      */
-    private readonly accidentalTapThreshold: number = 500;
+    private readonly accidentalTapThreshold: number = 400;
 
     /**
      * The hit window of this beatmap. Keep in mind that speed-changing mods do not change hit window length in game logic.
@@ -764,14 +764,15 @@ export class ThreeFingerChecker {
                 .sort((a, b) => {return b.count - a.count;})
                 .slice(2);
 
-            if ((threeFingerRatio > this.threeFingerRatioThreshold && cursorAmounts.filter(v => v > 0).length > 3) || validPresses.length > 0) {
+            // Ignore cursor presses that are only 1 for now since they are very likely to be accidental
+            if ((threeFingerRatio > this.threeFingerRatioThreshold && cursorAmounts.filter(v => v > 1).length > 3) || validPresses.length > 0) {
                 // Strain factor
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
                 const strainFactor: number = Math.sqrt(
                     objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex)
-                    .map(v => {return v.tapStrain;})
-                    .sort((a, b) => {return b - a;})
-                    .reduce((acc, value) => acc + value / this.strainThreshold, 0)
+                        .map(v => {return v.tapStrain;})
+                        .sort((a, b) => {return b - a;})
+                        .reduce((acc, value) => acc + value / this.strainThreshold, 0)
                 );
 
                 // We can ignore the first 3 (2 for drag) filled cursor instances
@@ -808,6 +809,6 @@ export class ThreeFingerChecker {
      * Calculates the final penalty.
      */
     private calculateFinalPenalty(): number {
-        return 1 + this.nerfFactors.reduce((a, n) => a + 0.05 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1), 0);
+        return 1 + this.nerfFactors.reduce((a, n) => a + 0.01 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1), 0);
     }
 }
