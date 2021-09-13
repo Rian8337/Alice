@@ -25,7 +25,7 @@ export abstract class DateTimeFormatHelper {
             seconds + " second" + (seconds > 1 ? "s" : "")
         ];
 
-        return final.filter(v => !v.startsWith("0")).join(", ");
+        return final.filter(v => !v.startsWith("0")).join(", ") || "0 seconds";
     }
 
     /**

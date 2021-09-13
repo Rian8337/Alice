@@ -330,6 +330,7 @@ export class UserBind extends Manager {
                 $set: {
                     pp: [...newList.values()],
                     pptotal: DPPHelper.calculateFinalPerformancePoints(newList),
+                    prevpptotal: this.pptotal,
                     lastUpdate: Date.now(),
                     previous_bind: this.previous_bind,
                     uid: this.uid,

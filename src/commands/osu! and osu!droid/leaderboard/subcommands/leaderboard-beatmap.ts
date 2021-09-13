@@ -133,6 +133,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const topScore: Score = leaderboardCache.get(1)![0];
 
+        if (!embed.title) {
+            embed.setTitle(topScore.title);
+        } else if (noModCalcResult) {
+            embed.setTitle(embed.title + ` [${noModCalcResult.droid.total.toFixed(2)}${Symbols.star} | ${noModCalcResult.osu.total.toFixed(2)}${Symbols.star}]`);
+        }
+
         embed.addField(
             "**Top Score**",
             `**${topScore.username}${topScore.mods.length > 0 ? ` (${topScore.getCompleteModString()})` : ""}**\n` +

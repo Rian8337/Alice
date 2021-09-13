@@ -18,6 +18,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
             lastUpdate: Date.now(),
             pp: [],
             pptotal: 0,
+            prevpptotal: 0,
             uid: 0,
             username: "",
             previous_bind: []

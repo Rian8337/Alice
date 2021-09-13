@@ -10,6 +10,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { calculateStrings } from "./calculateStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { MapStats, ModUtil, Accuracy } from "osu-droid";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap") ?? "")[0];
@@ -28,7 +29,30 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromInteraction(interaction);
+    // Get calculation parameters
+    const forceAR: number | undefined =
+        interaction.options.getNumber("approachrate") ?
+        NumberHelper.clamp(interaction.options.getNumber("approachrate", true), 0, 12.5) :
+        undefined;
+
+    const stats: MapStats = new MapStats({
+        ar: forceAR,
+        speedMultiplier: NumberHelper.clamp(interaction.options.getNumber("speedmultiplier") ?? 1, 0.5, 2),
+        isForceAR: !isNaN(<number> forceAR)
+    });
+
+    const calcParams: PerformanceCalculationParameters = new PerformanceCalculationParameters(
+        ModUtil.pcStringToMods(interaction.options.getString("mods") ?? ""),
+        new Accuracy({
+            n100: Math.max(0, interaction.options.getInteger("x100") ?? 0),
+            n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
+            nmiss: Math.max(0, interaction.options.getInteger("misses") ?? 0)
+        }),
+        NumberHelper.clamp(interaction.options.getNumber("accuracy") ?? 0, 0, 100),
+        interaction.options.getInteger("combo") ? Math.max(0, interaction.options.getInteger("combo", true)) : undefined,
+        1,
+        stats
+    );
 
     const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapID ?? hash, calcParams);
 

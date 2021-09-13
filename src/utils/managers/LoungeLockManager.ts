@@ -84,6 +84,8 @@ export abstract class LoungeLockManager extends PunishmentManager {
             // Insert new lock
             await this.loungeLockDb.insertNewLock(userId, duration, reason);
 
+            await this.insertLockPermissionToChannel(userId);
+
             logEmbed.setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")
                 .setDescription(
@@ -171,7 +173,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
     private static async updateChannelPermission(userId: Snowflake, lock: boolean): Promise<void> {
         await this.loungeChannel.permissionOverwrites.edit(
             userId,
-            { VIEW_CHANNEL: lock },
+            { VIEW_CHANNEL: !lock },
             { reason: lock ? "Lounge lock insertion" : "Lounge lock removal" }
         );
     }
