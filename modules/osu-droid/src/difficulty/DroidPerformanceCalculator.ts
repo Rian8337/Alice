@@ -56,7 +56,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         /**
          * The tap penalty to apply for penalized scores.
          */
-        tapPenalty?: number,
+        speedPenalty?: number,
 
         /**
          * Custom map statistics to apply custom tap multiplier and force AR values as well as old statistics.
@@ -88,7 +88,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
 
         // Apply tap penalty for penalized plays.
-        this.speed /= (params.tapPenalty ?? 1);
+        this.speed /= (params.speedPenalty ?? 1);
 
         this.total = Math.pow(
             Math.pow(this.aim, 1.1) + Math.pow(this.speed, 1.1) +
