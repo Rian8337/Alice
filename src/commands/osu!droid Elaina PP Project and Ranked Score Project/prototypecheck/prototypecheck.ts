@@ -58,6 +58,8 @@ export const run: Command["run"] = async (_, interaction) => {
     embed.setDescription(
         `**PP Profile for <@${ppInfo.discordid}> (${ppInfo.username})**\n` +
         `Total PP: **${ppInfo.pptotal.toFixed(2)} pp (#${(await dbManager.getUserDPPRank(ppInfo.pptotal)).toLocaleString()})**\n` +
+        `Previous Total PP: **${ppInfo.prevpptotal.toFixed(2)} pp**\n` +
+        `Difference: **${(ppInfo.pptotal - ppInfo.prevpptotal).toFixed(2)} pp**\n` +
         `[PP Profile](https://ppboard.herokuapp.com/profile?uid=${ppInfo.uid}) - [Mirror](https://droidppboard.herokuapp.com/profile?uid=${ppInfo.uid})\n` +
         `Last Update: **${new Date(ppInfo.lastUpdate).toUTCString()}**`
     );
