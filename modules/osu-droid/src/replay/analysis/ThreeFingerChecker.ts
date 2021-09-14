@@ -16,6 +16,7 @@ import { ModPrecise } from "../../mods/ModPrecise";
 import { ModUtil } from "../../utils/ModUtil";
 import { MathUtils } from "../../mathutil/MathUtils";
 import { ThreeFingerBeatmapSection } from "./data/ThreeFingerBeatmapSection";
+import { Interpolation } from "../../mathutil/Interpolation";
 
 /**
  * Information about the result of a check.
@@ -322,7 +323,7 @@ export class ThreeFingerChecker {
                     firstObjectHitWindow = this.hitWindow.hitWindowFor50(isPrecise);
             }
         }
-        
+
         // For sliders, automatically set hit window length to be as lenient as possible.
         let lastObjectHitWindow: number = this.hitWindow.hitWindowFor50(isPrecise);
         if (objects.at(-1)!.object instanceof Circle) {
@@ -365,15 +366,7 @@ export class ThreeFingerChecker {
                     continue;
                 }
 
-                let inBreakPoint: boolean = false;
-                for (const breakPoint of this.breakPointAccurateTimes) {
-                    if (time >= breakPoint.startTime && time <= breakPoint.endTime) {
-                        inBreakPoint = true;
-                        break;
-                    }
-                }
-
-                if (inBreakPoint) {
+                if (this.breakPointAccurateTimes.some(v => time >= v.startTime && time <= v.endTime)) {
                     continue;
                 }
 
@@ -514,7 +507,7 @@ export class ThreeFingerChecker {
             const o: DifficultyHitObject = sectionObjects[objectIndex];
             const s: ReplayObjectData = sectionReplayObjectData[objectIndex];
             ++objectIndex;
-            
+
             if (s.result === hitResult.RESULT_0) {
                 continue;
             }
@@ -522,7 +515,7 @@ export class ThreeFingerChecker {
             // Get the cursor instance that is closest to the object's hit time.
             for (let j = 0; j < cursorIndexes.length; ++j) {
                 const c: CursorData = this.data.cursorMovement[cursorIndexes[j]];
-            
+
                 // Cursor instances aren't always recorded at all times,
                 // therefore the game emulates the movement between
                 // movementType.MOVE cursors.
@@ -550,8 +543,8 @@ export class ThreeFingerChecker {
                     // This minimizes rounding error.
                     for (let mSecPassed = c.time[hitIndex]; mSecPassed <= c.time[nextHitIndex]; ++mSecPassed) {
                         const t: number = (mSecPassed - c.time[nextHitIndex]) / (c.time[hitIndex] - c.time[nextHitIndex]);
-                        cursorPosition.x = c.x[hitIndex] * t + c.x[nextHitIndex] * (1 - t);
-                        cursorPosition.y = c.y[hitIndex] * t + c.y[nextHitIndex] * (1 - t);
+                        cursorPosition.x = Interpolation.lerp(c.x[hitIndex], c.x[nextHitIndex], t);
+                        cursorPosition.y = Interpolation.lerp(c.y[hitIndex], c.y[nextHitIndex], t);
 
                         if (o.object.stackedPosition.getDistance(cursorPosition) <= o.radius) {
                             isInObject = true;
@@ -809,6 +802,6 @@ export class ThreeFingerChecker {
      * Calculates the final penalty.
      */
     private calculateFinalPenalty(): number {
-        return 1 + this.nerfFactors.reduce((a, n) => a + 0.01 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.1), 0);
+        return 1 + this.nerfFactors.reduce((a, n) => a + 0.01 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.05), 0);
     }
 }
