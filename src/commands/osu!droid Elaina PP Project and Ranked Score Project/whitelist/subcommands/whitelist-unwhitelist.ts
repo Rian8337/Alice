@@ -1,6 +1,6 @@
 import { Constants } from "@alice-core/Constants";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { WhitelistOperationResult } from "@alice-interfaces/dpp/WhitelistOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -70,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const whitelistResponseStrings: string[] = [];
 
     for await (const beatmap of beatmaps) {
-        const unwhitelistResult: WhitelistOperationResult = await WhitelistManager.unwhitelist(beatmap);
+        const unwhitelistResult: OperationResult = await WhitelistManager.unwhitelist(beatmap);
 
         if (!unwhitelistResult.success) {
             whitelistResponseStrings.push(MessageCreator.createReject(

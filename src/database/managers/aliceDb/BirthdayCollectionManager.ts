@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { Snowflake } from "discord.js";
@@ -53,7 +53,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<Databas
      * @param force Whether to forcefully set the user's birthday.
      * @returns An object containing information about the operation.
      */
-    async setUserBirthday(userId: Snowflake, date: number, month: number, timezone: number, force?: boolean): Promise<DatabaseOperationResult> {
+    async setUserBirthday(userId: Snowflake, date: number, month: number, timezone: number, force?: boolean): Promise<OperationResult> {
         if (await this.hasSet(userId) && !force) {
             return this.createOperationResult(false, "birthday is already set");
         }

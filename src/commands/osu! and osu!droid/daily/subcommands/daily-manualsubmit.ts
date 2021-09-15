@@ -5,9 +5,8 @@ import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
-import { ChallengeOperationResult } from "@alice-interfaces/challenge/ChallengeOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -83,7 +82,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const completionStatus: ChallengeOperationResult = await challenge.checkReplayCompletion(replayAnalyzer);
+    const completionStatus: OperationResult = await challenge.checkReplayCompletion(replayAnalyzer);
 
     if (!completionStatus.success) {
         return interaction.editReply({

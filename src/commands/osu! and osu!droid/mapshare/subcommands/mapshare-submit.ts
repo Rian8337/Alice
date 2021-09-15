@@ -5,7 +5,7 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -132,7 +132,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await DatabaseManager.aliceDb.collections.mapShare.insert({
+    const result: OperationResult = await DatabaseManager.aliceDb.collections.mapShare.insert({
         beatmap_id: beatmapId,
         hash: beatmapInfo.hash,
         submitter: bindInfo.username,

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DisabledCommand } from "@alice-interfaces/moderation/DisabledCommand";
 import { DisabledEventUtil } from "@alice-interfaces/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "@alice-interfaces/moderation/GuildChannelSettings";
@@ -68,7 +68,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      * @returns An object containing information about database operation.
      */
-    static async disableUtilityInChannel(channel: TextChannel | NewsChannel, event: string, utility: string): Promise<DatabaseOperationResult> {
+    static async disableUtilityInChannel(channel: TextChannel | NewsChannel, event: string, utility: string): Promise<OperationResult> {
         const channelEventUtilSettings: DisabledEventUtil[] | undefined = this.channelDisabledEventUtils.get(channel.id);
 
         if (channelEventUtilSettings) {
@@ -138,7 +138,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      * @returns An object containing information about the operation.
      */
-    static async disableUtilityInGuild(guildId: Snowflake, event: string, utility: string): Promise<DatabaseOperationResult> {
+    static async disableUtilityInGuild(guildId: Snowflake, event: string, utility: string): Promise<OperationResult> {
         const guildEventUtilSettings: DisabledEventUtil[] = this.guildDisabledEventUtils.get(guildId) ?? [];
 
         if (guildEventUtilSettings.find(v => v.event === event && v.name === utility)) {
@@ -189,7 +189,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      * @returns An object containing information about the operation.
      */
-    static async enableUtilityInChannel(channel: TextChannel | NewsChannel, event: string, utility: string): Promise<DatabaseOperationResult> {
+    static async enableUtilityInChannel(channel: TextChannel | NewsChannel, event: string, utility: string): Promise<OperationResult> {
         const channelEventUtilSettings: DisabledEventUtil[] | undefined = this.channelDisabledEventUtils.get(channel.id);
 
         if (!channelEventUtilSettings) {
@@ -232,7 +232,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param utility The name of the event utility.
      * @returns An object containing information about the operation.
      */
-    static async enableUtilityInGuild(guildId: Snowflake, event: string, utility: string): Promise<DatabaseOperationResult> {
+    static async enableUtilityInGuild(guildId: Snowflake, event: string, utility: string): Promise<OperationResult> {
         const guildEventUtilSettings: DisabledEventUtil[] | undefined = this.guildDisabledEventUtils.get(guildId);
 
         if (!guildEventUtilSettings) {
@@ -283,7 +283,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
      * @returns An object containing information about the operation.
      */
-    static async setCommandCooldownInChannel(channel: TextChannel | NewsChannel, commandName: string, cooldown: number): Promise<DatabaseOperationResult> {
+    static async setCommandCooldownInChannel(channel: TextChannel | NewsChannel, commandName: string, cooldown: number): Promise<OperationResult> {
         if (cooldown > 0 && !NumberHelper.isNumberInRange(cooldown, 5, 3600, true)) {
             return this.createOperationResult(false, "cooldown must be between 5 and 3600 seconds");
         }
@@ -369,7 +369,7 @@ export abstract class CommandUtilManager extends Manager {
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
      * @returns An object containing information about the operation.
      */
-    static async setCommandCooldownInGuild(guildId: Snowflake, commandName: string, cooldown: number): Promise<DatabaseOperationResult> {
+    static async setCommandCooldownInGuild(guildId: Snowflake, commandName: string, cooldown: number): Promise<OperationResult> {
         if (cooldown > 0 && !NumberHelper.isNumberInRange(cooldown, 5, 3600, true)) {
             return this.createOperationResult(false, "cooldown must be between 5 and 3600 seconds");
         }

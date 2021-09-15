@@ -3,7 +3,7 @@ import { UpdateQuery } from "mongodb";
 import { MapInfo, rankedStatus } from "osu-droid";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
-import { WhitelistOperationResult } from "@alice-interfaces/dpp/WhitelistOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Constants } from "@alice-core/Constants";
 import { Manager } from "@alice-utils/base/Manager";
 import { WhitelistStatus } from "@alice-types/dpp/WhitelistStatus";
@@ -40,7 +40,7 @@ export abstract class WhitelistManager extends Manager {
      * @param reason The reason for blacklisting the beatmap.
      * @returns An object containing information about the operation.
      */
-    static async blacklist(beatmap: MapInfo, reason: string): Promise<WhitelistOperationResult> {
+    static async blacklist(beatmap: MapInfo, reason: string): Promise<OperationResult> {
         if (await this.isBlacklisted(beatmap.beatmapID)) {
             return this.createOperationResult(false, "Beatmap is already blacklisted");
         }
@@ -67,7 +67,7 @@ export abstract class WhitelistManager extends Manager {
      * @param beatmap The beatmap to unblacklist.
      * @returns An object containing information about the operation.
      */
-    static async unblacklist(beatmap: MapInfo): Promise<WhitelistOperationResult> {
+    static async unblacklist(beatmap: MapInfo): Promise<OperationResult> {
         if (!await this.isBlacklisted(beatmap.beatmapID)) {
             return this.createOperationResult(false, "Beatmap is not blacklisted");
         }
@@ -89,7 +89,7 @@ export abstract class WhitelistManager extends Manager {
      * @param beatmaps The beatmap to whitelist.
      * @returns An object containing information about the operation.
      */
-    static async whitelist(beatmap: MapInfo): Promise<WhitelistOperationResult> {
+    static async whitelist(beatmap: MapInfo): Promise<OperationResult> {
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(false, "Beatmap is not graveyarded");
         }
@@ -128,7 +128,7 @@ export abstract class WhitelistManager extends Manager {
      * @param beatmap The beatmap to unwhitelist.
      * @returns An object containing information about the operation.
      */
-    static async unwhitelist(beatmap: MapInfo): Promise<WhitelistOperationResult> {
+    static async unwhitelist(beatmap: MapInfo): Promise<OperationResult> {
         if (!this.isEligibleForWhitelist(beatmap)) {
             return this.createOperationResult(false, "Beatmap is not graveyarded");
         }

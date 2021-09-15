@@ -3,7 +3,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
 import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
 import { Manager } from "@alice-utils/base/Manager";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -43,7 +43,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * 
      * @returns An object containing the result of the operation.
      */
-    accept(): Promise<DatabaseOperationResult> {
+    accept(): Promise<OperationResult> {
         this.status = "accepted";
 
         return DatabaseManager.aliceDb.collections.mapShare.update(
@@ -61,7 +61,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * 
      * @returns An object containing the result of the operation.
      */
-    deny(): Promise<DatabaseOperationResult> {
+    deny(): Promise<OperationResult> {
         this.status = "denied";
 
         return DatabaseManager.aliceDb.collections.mapShare.update(
@@ -81,7 +81,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * 
      * @returns An object containing the result of the operation.
      */
-    delete(): Promise<DatabaseOperationResult> {
+    delete(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.mapShare.delete(
             { beatmap_id: this.beatmap_id }
         );
@@ -92,7 +92,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
      * 
      * @returns An object containing the result of the operation.
      */
-    async post(): Promise<DatabaseOperationResult> {
+    async post(): Promise<OperationResult> {
         if (this.status !== "accepted") {
             return this.createOperationResult(false, "submission is not accepted yet");
         }

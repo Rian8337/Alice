@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
@@ -31,7 +31,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     clan.setMatchMode(isMatch);
 
-    const result: ClanOperationResult = await clan.updateClan();
+    const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
         return interaction.editReply({

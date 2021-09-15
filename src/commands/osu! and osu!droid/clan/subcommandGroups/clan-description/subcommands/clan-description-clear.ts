@@ -3,7 +3,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -70,7 +70,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const editDescResult: ClanOperationResult = clan.setDescription();
+    const editDescResult: OperationResult = clan.setDescription();
 
     if (!editDescResult.success) {
         return interaction.editReply({
@@ -78,7 +78,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const finalResult: ClanOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({

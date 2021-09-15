@@ -2,14 +2,13 @@ import { Player } from 'osu-droid';
 import { Guild, GuildMember, Role } from 'discord.js';
 import { MessageCreator } from '@alice-utils/creators/MessageCreator';
 import { userbindStrings } from '../userbindStrings';
-import { DatabaseUserBind } from '@alice-interfaces/database/elainaDb/DatabaseUserBind';
 import { DatabaseManager } from '@alice-database/DatabaseManager';
 import { Constants } from '@alice-core/Constants';
 import { MessageButtonCreator } from '@alice-utils/creators/MessageButtonCreator';
 import { UserBindCollectionManager } from '@alice-database/managers/elainaDb/UserBindCollectionManager';
 import { UserBind } from '@alice-database/utils/elainaDb/UserBind';
 import { Subcommand } from '@alice-interfaces/core/Subcommand';
-import { DatabaseOperationResult } from '@alice-interfaces/database/DatabaseOperationResult';
+import { OperationResult } from '@alice-interfaces/core/OperationResult';
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
@@ -65,7 +64,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
         }
 
-        const result: DatabaseOperationResult = await userBindInfo.bind(player);
+        const result: OperationResult = await userBindInfo.bind(player);
 
         if (!result.success) {
             return interaction.editReply({
@@ -98,7 +97,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
     } else {
-        const result: DatabaseOperationResult = await dbManager.insert({
+        const result: OperationResult = await dbManager.insert({
             discordid: interaction.user.id,
             uid: player.uid,
             username: player.username,

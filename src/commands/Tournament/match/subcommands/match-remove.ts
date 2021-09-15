@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Channel, ThreadChannel } from "discord.js";
 import { matchStrings } from "../matchStrings";
@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.delete(
+    const result: OperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.delete(
         { matchid: match.matchid }
     );
 

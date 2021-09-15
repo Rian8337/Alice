@@ -1,7 +1,7 @@
 /**
- * The base of an operation result.
+ * Represents an operation result.
  */
-export interface BaseOperationResult {
+export interface OperationResult {
     /**
      * Whether the operation was successful.
      */

@@ -2,7 +2,7 @@ import { GuildMember } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { MuteOperationResult } from "@alice-interfaces/moderation/MuteOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
 import { unmuteStrings } from "./unmuteStrings";
@@ -18,7 +18,7 @@ export const run: Command["run"] = async(_, interaction) => {
 
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: MuteOperationResult = await MuteManager.removeMute(toUnmute, interaction, reason);
+    const result: OperationResult = await MuteManager.removeMute(toUnmute, interaction, reason);
 
     if (!result.success) {
         return interaction.editReply({

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -37,7 +37,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
      * @param reason The reason for extending the reason.
      * @returns An object containing information about the database operation.
      */
-    async extend(duration: number, reason?: string): Promise<DatabaseOperationResult> {
+    async extend(duration: number, reason?: string): Promise<OperationResult> {
         this.expiration += duration;
         this.reason = reason;
 
@@ -52,7 +52,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
      * 
      * @returns An object containing information about the database operation.
      */
-    async unlock(): Promise<DatabaseOperationResult> {
+    async unlock(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.loungeLock.delete({ discordid: this.discordid });
     }
 
@@ -61,7 +61,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
      * 
      * @returns An object containing information about the database operation.
      */
-    async makePermanent(): Promise<DatabaseOperationResult> {
+    async makePermanent(): Promise<OperationResult> {
         this.expiration = Number.POSITIVE_INFINITY;
 
         return DatabaseManager.aliceDb.collections.loungeLock.update(

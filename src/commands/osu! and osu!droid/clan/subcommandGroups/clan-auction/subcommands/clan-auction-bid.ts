@@ -4,7 +4,7 @@ import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
@@ -61,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     auction.bid(clan, amount);
 
-    const coinDeductionResult: DatabaseOperationResult = await playerInfo.incrementCoins(-amount);
+    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-amount);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
@@ -71,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const finalResult: DatabaseOperationResult = await auction.updateAuction();
+    const finalResult: OperationResult = await auction.updateAuction();
 
     if (!finalResult.success) {
         return interaction.editReply({

@@ -8,7 +8,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const toTransfer: User = interaction.options.getUser("user", true);
@@ -113,7 +113,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const result: DatabaseOperationResult = await userPlayerInfo.transferCoins(transferAmount, player, toTransferPlayerInfo);
+    const result: OperationResult = await userPlayerInfo.transferCoins(transferAmount, player, toTransferPlayerInfo);
 
     if (!result.success) {
         return interaction.editReply({

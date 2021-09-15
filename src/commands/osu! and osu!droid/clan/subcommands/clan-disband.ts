@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -73,7 +73,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const result: ClanOperationResult = await clan.disband();
+    const result: OperationResult = await clan.disband();
 
     if (!result.success) {
         return interaction.editReply({

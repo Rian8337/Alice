@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { dailyStrings } from "../dailyStrings";
 
@@ -16,7 +16,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await challenge.start();
+    const result: OperationResult = await challenge.start();
 
     if (!result.success) {
         return interaction.editReply({

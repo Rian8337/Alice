@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseBirthday } from "@alice-interfaces/database/aliceDb/DatabaseBirthday";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -35,7 +35,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
      * @param timezone The new timezone of the user.
      * @returns An object containing information about the operation.
      */
-    forceSetBirthday(date: number, month: number, timezone?: number): Promise<DatabaseOperationResult> {
+    forceSetBirthday(date: number, month: number, timezone?: number): Promise<OperationResult> {
         this.date = date;
         this.month = month;
         this.timezone = timezone ?? this.timezone;

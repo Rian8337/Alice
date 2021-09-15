@@ -9,7 +9,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Command["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
@@ -32,7 +32,7 @@ export const run: Command["run"] = async (client, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await bindInfo.moveBind(uid, user.id);
+    const result: OperationResult = await bindInfo.moveBind(uid, user.id);
 
     if (!result.success) {
         return interaction.editReply({

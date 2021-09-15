@@ -2,7 +2,7 @@ import { MapInfo } from "osu-droid";
 import { Config } from "@alice-core/Config";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { WhitelistOperationResult } from "@alice-interfaces/dpp/WhitelistOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
@@ -23,7 +23,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        `Detected Beatmap ID: ${beatmapID}\n\nChoose the action that you want to do.`,
+        `Detected Beatmap ID: ${beatmapID}. Choose the action that you want to do.`,
         [
             {
                 label: "Blacklist",
@@ -60,7 +60,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 });
             }
 
-            const blacklistResult: WhitelistOperationResult = await WhitelistManager.blacklist(beatmapInfo, reason);
+            const blacklistResult: OperationResult = await WhitelistManager.blacklist(beatmapInfo, reason);
 
             if (!blacklistResult.success) {
                 return interaction.editReply({
@@ -78,7 +78,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
             break;
         case "unblacklist":
-            const unblacklistResult: WhitelistOperationResult = await WhitelistManager.unblacklist(beatmapInfo);
+            const unblacklistResult: OperationResult = await WhitelistManager.unblacklist(beatmapInfo);
 
             if (!unblacklistResult.success) {
                 return interaction.editReply({

@@ -2,7 +2,7 @@ import { GuildBan, Snowflake, User } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { BanOperationResult } from "@alice-interfaces/moderation/BanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BanManager } from "@alice-utils/managers/BanManager";
 import { unbanStrings } from "./unbanStrings";
@@ -26,7 +26,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: BanOperationResult = await BanManager.unban(interaction, toUnban, reason);
+    const result: OperationResult = await BanManager.unban(interaction, toUnban, reason);
 
     if (!result.success) {
         return interaction.editReply({

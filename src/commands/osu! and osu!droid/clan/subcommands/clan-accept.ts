@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
@@ -64,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     await clan.addClanRole(toAccept);
 
-    const bindUpdateResult: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
+    const bindUpdateResult: OperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
         { discordid: toAccept.id },
         {
             $set: {
@@ -81,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const finalResult: DatabaseOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({

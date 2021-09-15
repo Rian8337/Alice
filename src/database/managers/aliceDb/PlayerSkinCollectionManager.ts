@@ -4,7 +4,7 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake, User } from "discord.js";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * A manager for the `playerskin` collection.
@@ -52,7 +52,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
      * @param id The ID of the user.
      * @param link The link to the skin.
      */
-    insertNewSkin(id: Snowflake, link: string): Promise<DatabaseOperationResult>;
+    insertNewSkin(id: Snowflake, link: string): Promise<OperationResult>;
 
     /**
      * Inserts or updates a user's skin.
@@ -60,9 +60,9 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
      * @param user The user.
      * @param link The link to the skin.
      */
-    insertNewSkin(user: User, link: string): Promise<DatabaseOperationResult>;
+    insertNewSkin(user: User, link: string): Promise<OperationResult>;
 
-    insertNewSkin(userOrId: User | Snowflake, link: string): Promise<DatabaseOperationResult> {
+    insertNewSkin(userOrId: User | Snowflake, link: string): Promise<OperationResult> {
         return this.update({ discordid: userOrId instanceof User ? userOrId.id : userOrId }, { $set: { skin: link } });
     }
 }

@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { VoteChoice } from "@alice-interfaces/commands/Tools/VoteChoice";
 import { DatabaseVoting } from "@alice-interfaces/database/aliceDb/DatabaseVoting";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -31,7 +31,7 @@ export class Voting extends Manager implements DatabaseVoting {
      * 
      * @returns An object containing information about the operation.
      */
-    async end(): Promise<DatabaseOperationResult> {
+    async end(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.voting.delete({ channel: this.channel });
     }
 }

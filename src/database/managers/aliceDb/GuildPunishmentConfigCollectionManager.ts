@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Guild, Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
@@ -64,7 +64,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
      * @param channelId The ID of the channel.
      * @returns An object containing information about the database operation.
      */
-    setGuildLogChannel(guildId: Snowflake, channelId: Snowflake): Promise<DatabaseOperationResult> {
+    setGuildLogChannel(guildId: Snowflake, channelId: Snowflake): Promise<OperationResult> {
         return this.update(
             { guildID: guildId },
             {
@@ -86,7 +86,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
      * @param guildId The ID of the guild.
      * @returns An object containing information about the database operation.
      */
-    unsetGuildLogChannel(guildId: Snowflake): Promise<DatabaseOperationResult> {
+    unsetGuildLogChannel(guildId: Snowflake): Promise<OperationResult> {
         return this.update(
             { guildID: guildId },
             {

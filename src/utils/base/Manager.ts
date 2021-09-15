@@ -1,5 +1,5 @@
 import { Bot } from "@alice-core/Bot";
-import { BaseOperationResult } from "@alice-interfaces/core/BaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * The base of all managers.
@@ -33,7 +33,7 @@ export abstract class Manager {
      * @param reason The reason for why the operation failed.
      * @returns The operation result object.
      */
-    protected static createOperationResult(success: boolean, reason?: string): BaseOperationResult {
+    protected static createOperationResult(success: boolean, reason?: string): OperationResult {
         return {
             success: success,
             reason: reason
@@ -47,7 +47,7 @@ export abstract class Manager {
      * @param reason The reason for why the operation failed.
      * @returns The operation result object.
      */
-    protected createOperationResult(success: boolean, reason?: string): BaseOperationResult {
+    protected createOperationResult(success: boolean, reason?: string): OperationResult {
         return {
             success: success,
             reason: reason

@@ -2,7 +2,7 @@ import { GuildMember } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { BanOperationResult } from "@alice-interfaces/moderation/BanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { BanManager } from "@alice-utils/managers/BanManager";
@@ -31,7 +31,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: BanOperationResult = await BanManager.ban(interaction, toBan, reason);
+    const result: OperationResult = await BanManager.ban(interaction, toBan, reason);
 
     if (!result.success) {
         return interaction.editReply({

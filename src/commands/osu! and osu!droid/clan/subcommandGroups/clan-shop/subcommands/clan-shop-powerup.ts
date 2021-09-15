@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -90,7 +90,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     ++clan.powerups.get(powerup)!.amount;
 
-    const result: DatabaseOperationResult = await clan.updateClan();
+    const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
         return interaction.editReply({

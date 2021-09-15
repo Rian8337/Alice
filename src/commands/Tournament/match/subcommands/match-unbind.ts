@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ThreadChannel } from "discord.js";
 import { matchStrings } from "../matchStrings";
@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     match.channelId = "";
 
-    const result: DatabaseOperationResult = await match.updateMatch();
+    const result: OperationResult = await match.updateMatch();
 
     if (!result.success) {
         return interaction.editReply({

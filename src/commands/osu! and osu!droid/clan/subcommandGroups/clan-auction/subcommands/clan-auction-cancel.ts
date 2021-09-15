@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -56,7 +56,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     ++clan.powerups.get(powerup)!.amount;
 
-    const cancelResult: DatabaseOperationResult = await DatabaseManager.aliceDb.collections.clanAuction.delete(
+    const cancelResult: OperationResult = await DatabaseManager.aliceDb.collections.clanAuction.delete(
         { name: name }
     );
 
@@ -68,7 +68,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const finalResult: DatabaseOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({
