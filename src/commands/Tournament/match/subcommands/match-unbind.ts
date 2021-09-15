@@ -33,7 +33,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (thread && !thread.unarchivable) {
+    if (thread && thread.manageable) {
         await thread.setLocked(true);
     }
 
