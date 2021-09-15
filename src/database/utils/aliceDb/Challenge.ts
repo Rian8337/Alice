@@ -412,7 +412,7 @@ export class Challenge extends Manager {
                         break;
                     case "mod":
                         const mods: Mod[] = scoreOrReplay instanceof Score ? scoreOrReplay.mods : scoreOrReplay.data!.convertedMods;
-                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(<string> tier.value);
+                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet((<string> tier.value).toUpperCase());
                         break;
                     case "rank":
                         const rank: string = scoreOrReplay instanceof Score ? scoreOrReplay.rank : scoreOrReplay.data!.rank;
