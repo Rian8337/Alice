@@ -570,7 +570,7 @@ export class UserBind extends Manager {
             uidOrUsernameOrPlayer :
             await Player.getInformation(typeof uidOrUsernameOrPlayer === "string" ? { username: uidOrUsernameOrPlayer } : { uid: uidOrUsernameOrPlayer });
 
-        if (!player.username) {
+        if (!player.username || !player.uid) {
             return this.createOperationResult(false, "player with such uid or username is not found");
         }
 
