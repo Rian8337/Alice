@@ -21,7 +21,7 @@ import { dailyStrings } from "../dailyStrings";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const url: string = interaction.options.getString("replayurl", true);
 
-    if (StringHelper.isValidURL(url)) {
+    if (!StringHelper.isValidURL(url)) {
         return interaction.editReply({
             content: MessageCreator.createReject(dailyStrings.invalidReplayURL)
         });
