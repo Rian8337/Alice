@@ -79,7 +79,17 @@ export class OsuStarRating extends StarRating {
     calculateTotal(): void {
         // Total stars mixes speed and aim in such a way that
         // heavily aim or speed focused maps get a bonus
-        this.total = this.aim + this.speed + Math.abs(this.speed - this.aim) * 0.5;
+        const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
+        const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const basePerformanceValue: number = Math.pow(
+            Math.pow(aimPerformanceValue, 1.1) +
+            Math.pow(speedPerformanceValue, 1.1),
+            1 / 1.1
+        );
+
+        if (basePerformanceValue > 1e-5) {
+            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4)
+        }
     }
 
     /**
@@ -124,6 +134,15 @@ export class OsuStarRating extends StarRating {
             new OsuAim(),
             new OsuSpeed()
         ];
+    }
+
+    /**
+     * Calculates the base performance value of a difficulty rating.
+     * 
+     * @param rating The difficulty rating.
+     */
+    private basePerformanceValue(rating: number): number {
+        return Math.pow(5 * Math.max(1, rating / 0.0675) - 4, 3) / 100000;
     }
 
     /**
