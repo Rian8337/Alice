@@ -21,8 +21,6 @@ import { dailyStrings } from "../dailyStrings";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const url: string = interaction.options.getString("replayurl", true);
 
-    const type: ChallengeType = <ChallengeType> interaction.options.getString("type", true) ?? "daily";
-
     if (StringHelper.isValidURL(url)) {
         return interaction.editReply({
             content: MessageCreator.createReject(dailyStrings.invalidReplayURL)
@@ -71,11 +69,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const challenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getOngoingChallenge(type);
+    const challenge: Challenge | null = await DatabaseManager.aliceDb.collections.challenge.getFromHash(data.hash);
 
     if (!challenge) {
         return interaction.editReply({
-            content: MessageCreator.createReject(dailyStrings.noOngoingChallenge)
+            content: MessageCreator.createReject(dailyStrings.challengeFromReplayNotFound)
+        });
+    }
+
+    if (!challenge.isOngoing) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(dailyStrings.challengeNotOngoing)
         });
     }
 

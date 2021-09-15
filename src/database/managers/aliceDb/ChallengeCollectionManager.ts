@@ -43,6 +43,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
      * Gets a challenge by its ID.
      * 
      * @param id The ID of the challenge.
+     * @returns The challenge, `null` if not found.
      */
     getById(id: string): Promise<Challenge | null> {
         return this.getOne({ challengeid: id });
@@ -65,5 +66,15 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
                 status: "ongoing"
             }
         ]});
+    }
+
+    /**
+     * Gets a challenge by its hash.
+     * 
+     * @param hash The hash of the challenge.
+     * @returns The challenge, `null` if not found.
+     */
+    getFromHash(hash: string): Promise<Challenge | null> {
+        return this.getOne({ hash: hash });
     }
 }

@@ -113,9 +113,9 @@ export class Challenge extends Manager {
     }
 
     /**
-     * Whether the challenge has started.
+     * Whether the challenge is ongoing.
      */
-    get hasStarted(): boolean {
+    get isOngoing(): boolean {
         return this.status === "ongoing";
     }
 
@@ -189,7 +189,7 @@ export class Challenge extends Manager {
      * @returns An object containing information about the operation.
      */
     async end(force?: boolean): Promise<ChallengeOperationResult> {
-        if (!this.hasStarted) {
+        if (!this.isOngoing) {
             return this.createOperationResult(false, "challenge is not ongoing");
         }
 
