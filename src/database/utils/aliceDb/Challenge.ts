@@ -314,10 +314,6 @@ export class Challenge extends Manager {
 
         const calcResult: PerformanceCalculationResult = (await this.getReplayCalculationResult(replay))!;
 
-        if (!this.verifyHitObjectData(calcResult.map.map!, data)) {
-            return this.createOperationResult(false, "Replay seem to be edited");
-        }
-
         const pass: boolean = await this.verifyPassCompletion(
             replay,
             calcResult,
@@ -692,55 +688,6 @@ export class Challenge extends Manager {
             ),
             replay
         );
-    }
-
-    /**
-     * Verifies whether replay
-     */
-    private verifyHitObjectData(map: Beatmap, data: ReplayData): boolean {
-        if (map.objects.length !== data.hitObjectData.length) {
-            return false;
-        }
-
-        const modNoSpeedChange: Mod[] = data.convertedMods.filter(m => !ModUtil.speedChangingMods.find(mod => m.acronym === mod.acronym));
-        const isPrecise: boolean = data.convertedMods.some(m => m instanceof ModPrecise);
-        const od: number = new MapStats({ od: map.od, mods: modNoSpeedChange }).calculate({ mode: modes.droid }).od!;
-        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
-
-        const hitWindow300: number = hitWindow.hitWindowFor300(isPrecise);
-        const hitWindow100: number = hitWindow.hitWindowFor100(isPrecise);
-        const hitWindow50: number = hitWindow.hitWindowFor50(isPrecise);
-
-        for (let i = 0; i < map.objects.length; ++i) {
-            const object: HitObject = map.objects[i];
-            const hitData: ReplayObjectData = data.hitObjectData[i];
-
-            if (!(object instanceof Circle) || hitData.result === hitResult.RESULT_0) {
-                continue;
-            }
-
-            const accuracyAbsolute: number = Math.abs(hitData.accuracy);
-
-            let isEdited: boolean = false;
-
-            switch (hitData.result) {
-                case hitResult.RESULT_50:
-                    isEdited = accuracyAbsolute > hitWindow50;
-                    break;
-                case hitResult.RESULT_100:
-                    isEdited = accuracyAbsolute > hitWindow100;
-                    break;
-                case hitResult.RESULT_300:
-                    isEdited = accuracyAbsolute > hitWindow300;
-                    break;
-            }
-
-            if (isEdited) {
-                return isEdited;
-            }
-        }
-
-        return false;
     }
 
     /**
