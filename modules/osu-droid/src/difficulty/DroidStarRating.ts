@@ -104,7 +104,17 @@ export class DroidStarRating extends StarRating {
      * Calculates the total star rating of the beatmap and stores it in this instance.
      */
     calculateTotal(): void {
-        this.total = this.aim + this.speed + Math.pow(this.rhythm, 0.4);
+        const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
+        const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const basePerformanceValue: number = Math.pow(
+            Math.pow(aimPerformanceValue, 1.1) +
+            Math.pow(speedPerformanceValue, 1.1),
+            1 / 1.1
+        );
+
+        if (basePerformanceValue > 1e-5) {
+            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4);
+        }
     }
 
     /**

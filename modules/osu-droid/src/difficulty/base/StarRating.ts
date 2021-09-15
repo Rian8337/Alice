@@ -216,4 +216,13 @@ export abstract class StarRating {
     protected starValue(difficulty: number): number {
         return Math.sqrt(difficulty) * this.difficultyMultiplier;
     }
+
+    /**
+     * Calculates the base performance value of a difficulty rating.
+     * 
+     * @param rating The difficulty rating.
+     */
+    protected basePerformanceValue(rating: number): number {
+        return Math.pow(5 * Math.max(1, rating / 0.0675) - 4, 3) / 100000;
+    }
 }
