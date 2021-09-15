@@ -4,8 +4,6 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { CommandInteraction } from "discord.js";
-import { NumberHelper } from "./NumberHelper";
 
 /**
  * A helper to calculate difficulty and performance of beatmaps or scores.
