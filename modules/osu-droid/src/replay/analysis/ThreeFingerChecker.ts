@@ -347,13 +347,13 @@ export class ThreeFingerChecker {
 
         for (let i = 0; i < this.data.cursorMovement.length; ++i) {
             const cursorInstance: CursorData = this.data.cursorMovement[i];
-            const newCursorData: CursorData = {
+            const newCursorData: CursorData = new CursorData({
                 size: 0,
                 time: [],
                 x: [],
                 y: [],
                 id: []
-            };
+            });
 
             for (let j = 0; j < cursorInstance.size; ++j) {
                 if (cursorInstance.id[j] !== movementType.DOWN) {
@@ -692,8 +692,8 @@ export class ThreeFingerChecker {
             });
             const cursorAmounts: number[] = [];
             const cursorVectorTimes: {
-                vector: Vector2,
-                time: number
+                readonly vector: Vector2,
+                readonly time: number
             }[] = [];
             for (let i = 0; i < this.downCursorInstances.length; ++i) {
                 // Do not include drag cursor instance.
@@ -741,6 +741,7 @@ export class ThreeFingerChecker {
                         continue;
                     }
                     similarPresses[pressIndex].vector = cursorVectorTime.vector;
+                    similarPresses[pressIndex].lastTime = cursorVectorTime.time;
                     ++similarPresses[pressIndex].count;
                 } else {
                     similarPresses.push({
