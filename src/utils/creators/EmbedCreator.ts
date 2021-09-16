@@ -336,7 +336,7 @@ export abstract class EmbedCreator {
 
         embed.setImage("attachment://chart.png")
             .setFooter(
-                embed.footer!.text! + ` | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000)))}`,
+                embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000)))}`,
                 embed.footer!.iconURL
             )
             .setAuthor(
