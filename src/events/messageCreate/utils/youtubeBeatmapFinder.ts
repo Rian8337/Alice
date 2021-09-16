@@ -32,7 +32,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const data: RequestResponse = await RESTManager.request(`https://www.googleapis.com/youtube/v3/videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${videoId}`)
+        const data: RequestResponse = await RESTManager.request(`https://www.googleapis.com/youtube/v3/videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${videoId}`);
 
         if (data.statusCode !== 200) {
             continue;
@@ -57,6 +57,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         let validCount: number = 0;
 
         for await (const link of description.split("\n")) {
+            if (!link.startsWith("https://osu.ppy.sh")) {
+                continue;
+            }
+
             if (validCount === 3) {
                 break;
             }
