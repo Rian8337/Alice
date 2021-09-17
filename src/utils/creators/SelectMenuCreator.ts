@@ -39,21 +39,23 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             });
 
             collector.on("end", async collected => {
-                if (collected.size > 0) {
-                    await interaction.editReply({
-                        content: MessageCreator.createAccept("Please wait..."),
-                        components: []
-                    });
-                } else {
-                    await interaction.editReply({
-                        content: MessageCreator.createReject("Timed out."),
-                        components: []
-                    });
-
-                    setTimeout(() => {
-                        interaction.deleteReply();
-                    }, 5 * 1000);
-                }
+                try {
+                    if (collected.size > 0) {
+                        await interaction.editReply({
+                            content: MessageCreator.createAccept("Please wait..."),
+                            components: []
+                        });
+                    } else {
+                        await interaction.editReply({
+                            content: MessageCreator.createReject("Timed out."),
+                            components: []
+                        });
+    
+                        setTimeout(() => {
+                            interaction.deleteReply();
+                        }, 5 * 1000);
+                    }
+                } catch { }
 
                 resolve((<SelectMenuInteraction | undefined> collected.first())?.values ?? []);
             });
