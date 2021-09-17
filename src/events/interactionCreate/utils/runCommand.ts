@@ -81,10 +81,6 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             });
         }
 
-        client.logger.info(
-            `${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`
-        );
-
         const finalCooldown: number = Math.max(
             // Local command cooldown
             command.config.cooldown ?? 0,
@@ -102,6 +98,8 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 
         CommandHelper.setCooldown(cooldownKey, finalCooldown);
     }
+
+    client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`);
 
     // Ephemeral handling
     try {
