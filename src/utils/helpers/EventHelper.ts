@@ -1,4 +1,4 @@
-import { Collection, Guild, TextBasedChannels } from "discord.js";
+import { Channel, Collection, Guild } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { DisabledEventUtil } from '@alice-interfaces/moderation/DisabledEventUtil';
@@ -17,7 +17,7 @@ export abstract class EventHelper {
      * @param channel The channel at which the event was triggered.
      * @param utilArgs Arguments for the utility.
      */
-    static async runUtilities(client: Bot, eventDirectory: string, guild?: Guild | null, channel?: TextBasedChannels | null, ...utilArgs: any[]): Promise<void> {
+    static async runUtilities(client: Bot, eventDirectory: string, guild?: Guild | null, channel?: Channel | null, ...utilArgs: any[]): Promise<void> {
         const eventName: string = <string> eventDirectory.split(/[\/\\]/g).pop();
 
         for await (const [utilityName, utility] of (client.eventUtilities.get(eventName) ?? new Collection()).entries()) {
@@ -54,7 +54,7 @@ export abstract class EventHelper {
      * @param utilityName The name of the event's utility.
      * @returns Whether the event utility is disabled in the channel.
      */
-    static isUtilityDisabledInChannel(channel: TextBasedChannels, eventName: string, utilityName: string): boolean {
+    static isUtilityDisabledInChannel(channel: Channel, eventName: string, utilityName: string): boolean {
         return this.isUtilityDisabled(
             eventName,
             utilityName,
