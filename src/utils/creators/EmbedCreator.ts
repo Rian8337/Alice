@@ -18,6 +18,7 @@ import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCa
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { MusicQueue } from "@alice-interfaces/music/MusicQueue";
 
 /**
  * Utility to create message embeds.
@@ -479,5 +480,22 @@ export abstract class EmbedCreator {
                 "chart.png"
             ), ...embedOptions.files!]
         };
+    }
+
+    /**
+     * Gets an embed representing a music queue.
+     * 
+     * @param queue The music queue.
+     * @returns The embed.
+     */
+    static createMusicQueueEmbed(queue: MusicQueue): MessageEmbed {
+        const embed: MessageEmbed = this.createNormalEmbed();
+
+        embed.setTitle(queue.information.title)
+            .setThumbnail(queue.information.thumbnail)
+            .setDescription(`Channel: ${queue.information.author.name}\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${queue.queuer}>`)
+            .setURL(queue.information.url);
+
+        return embed;
     }
 }
