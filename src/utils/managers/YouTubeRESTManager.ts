@@ -1,5 +1,6 @@
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
 import { YouTubeVideoSnippet } from "@alice-interfaces/youtube/YouTubeVideoSnippet";
+import { decode } from "html-entities";
 import { RequestResponse } from "osu-droid";
 import { RESTManager } from "./RESTManager";
 
@@ -29,11 +30,13 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return null;
         }
 
-        const items = info?.items[0]?.snippet;
+        const items: YouTubeVideoSnippet | null = info?.items[0]?.snippet;
 
         if (!items) {
             return null;
         }
+
+        items.title = decode(items.title);
 
         return items;
     }
@@ -62,6 +65,10 @@ export abstract class YouTubeRESTManager extends RESTManager {
         if (!items) {
             return [];
         }
+
+        items.forEach(item => {
+            item.snippet.title = decode(item.snippet.title);
+        });
 
         return items.map(v => {
             return {
