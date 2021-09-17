@@ -9,7 +9,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
-import { YouTubeVideoSnippet } from "@alice-interfaces/youtube/YouTubeVideoSnippet";
+import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -33,13 +33,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const data: YouTubeVideoSnippet | null = await YouTubeRESTManager.getSnippet(videoId);
+        const data: YouTubeVideoInformation | null = await YouTubeRESTManager.getInformation(videoId);
 
         if (!data) {
             continue;
         }
 
-        const description: string = data.description;
+        const description: string = data.snippet.description;
 
         // Limit to 3 beatmaps to prevent spam
         let validCount: number = 0;

@@ -11,12 +11,12 @@ export abstract class YouTubeRESTManager extends RESTManager {
     private static readonly host: string = `https://www.googleapis.com/youtube/v3/`;
 
     /**
-     * Gets the snippet information of a YouTube video.
+     * Gets the information of a YouTube video.
      * 
      * @param id The ID of the video.
-     * @returns The snippet information of the video, `null` if not found.
+     * @returns The information of the video, `null` if not found.
      */
-    static async getSnippet(id: string): Promise<YouTubeVideoSnippet | null> {
+    static async getInformation(id: string): Promise<YouTubeVideoInformation | null> {
         const result: RequestResponse = await this.request(this.host + `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`);
 
         if (result.statusCode !== 200) {
@@ -30,15 +30,21 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return null;
         }
 
-        const items: YouTubeVideoSnippet | null = info?.items[0]?.snippet;
+        const item = info?.items[0];
 
-        if (!items) {
+        if (!item) {
             return null;
         }
 
-        items.title = decode(items.title);
+        item.title = decode(item.title);
 
-        return items;
+        return {
+            kind: item.kind,
+            etag: item.etag,
+            id: item.id,
+            url: `https://www.youtube.com/watch?v=${item.id}`,
+            snippet: item.snippet
+        };
     }
 
     /**
