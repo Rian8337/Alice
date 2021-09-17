@@ -75,6 +75,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
                 kind: v.kind,
                 etag: v.etag,
                 id: v.id.videoId,
+                url: `https://www.youtube.com/watch?v=${v.id.videoId}`,
                 snippet: v.snippet
             };
         });

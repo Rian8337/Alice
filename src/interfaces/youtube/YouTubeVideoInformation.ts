@@ -13,6 +13,11 @@ export interface YouTubeVideoInformation {
     readonly id: string;
 
     /**
+     * The URL of the video.
+     */
+    readonly url: string;
+
+    /**
      * The snippet of the video.
      */
     readonly snippet: YouTubeVideoSnippet;
