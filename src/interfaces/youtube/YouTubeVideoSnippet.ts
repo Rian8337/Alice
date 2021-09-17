@@ -12,7 +12,7 @@ export interface YouTubeVideoSnippet {
     /**
      * The title of the video.
      */
-    readonly title: string;
+    title: string;
 
     /**
      * The description of the video.
