@@ -67,7 +67,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     tagStrings.attachToTagSuccessful, name
                 )
             });
-        } catch (ignored) {
+        } catch {
             interaction.editReply({
                 content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
             });
@@ -92,7 +92,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     tagStrings.attachToTagSuccessful, name
                 )
             });
-        } catch (ignored) {
+        } catch {
             interaction.editReply({
                 content: MessageCreator.createReject(tagStrings.tagAttachmentTooBig)
             });

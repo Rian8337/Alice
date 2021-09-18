@@ -176,7 +176,7 @@ export class ReplayAnalyzer {
         let rawObject: any[];
         try {
             rawObject = javaDeserialization.parse(this.fixedODR);
-        } catch (ignored) {
+        } catch {
             return;
         }
 

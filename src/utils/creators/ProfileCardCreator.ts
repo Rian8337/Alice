@@ -193,7 +193,7 @@ export class ProfileCardCreator {
 
                 this.context.fillText(this.player.location, 440 + flagImage.width / 3, flagImage.height + 15);
             }
-        } catch (ignored) { }
+        } catch { }
 
         this.context.restore();
     }

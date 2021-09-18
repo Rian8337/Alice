@@ -111,7 +111,7 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
                 subcommand?.config.replyEphemeral ||
                 subcommandGroup?.config.replyEphemeral
         });
-    } catch (ignored) {
+    } catch {
         return;
     }
 

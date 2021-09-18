@@ -160,7 +160,7 @@ export abstract class MuteManager extends PunishmentManager {
 
         try {
             await this.notifyMember(member, `Hey, you were muted ${durationString} for \`${reason}\`. Sorry!`, muteEmbed);
-        } catch (ignored) {
+        } catch {
             interaction.channel!.send(MessageCreator.createWarn(
                 `A user has been muted, but their DMs are locked. The user will be muted ${durationString}.`
             ));

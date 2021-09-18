@@ -26,7 +26,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
         let info: any;
         try {
             info = JSON.parse(result.data.toString("utf-8"));
-        } catch (ignored) {
+        } catch {
             return null;
         }
 
@@ -62,7 +62,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
         let info: any;
         try {
             info = JSON.parse(result.data.toString("utf-8"));
-        } catch (ignored) {
+        } catch {
             return [];
         }
 

@@ -74,7 +74,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     content: MessageCreator.createReject(namechangeStrings.denyUserNotification, "new username taken"),
                     embeds:[embed]
                 });
-            } catch (ignored) { }
+            } catch { }
         }
 
         return;
@@ -104,7 +104,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             user.send({
                 content: MessageCreator.createReject(namechangeStrings.acceptUserNotification, new Date(nameChange.cooldown * 1000).toUTCString()), embeds: [embed]
             });
-        } catch (ignored) { }
+        } catch { }
     }
 };
 

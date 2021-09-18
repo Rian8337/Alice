@@ -49,7 +49,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     try {
         await replayAnalyzer.analyze();
-    } catch (ignored) {
+    } catch {
         return interaction.editReply({
             content: MessageCreator.createReject(dailyStrings.replayInvalid)
         });

@@ -175,7 +175,7 @@ export class Bot extends Client {
 
         try {
             subcommandGroups = await fs.readdir(subcommandGroupPath);
-        } catch (ignored) {
+        } catch {
             return;
         }
 
@@ -207,7 +207,7 @@ export class Bot extends Client {
 
         try {
             subcommands = await fs.readdir(subcommandPath);
-        } catch (ignored) {
+        } catch {
             return;
         }
 
