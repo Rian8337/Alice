@@ -151,16 +151,14 @@ export abstract class BeatmapDifficultyHelper {
             return null;
         }
 
-        if (!calculationParams) {
-            calculationParams = new PerformanceCalculationParameters(
-                [],
-                new Accuracy({
-                    n300: beatmap.objects
-                }),
-                100,
-                beatmap.maxCombo
-            );
-        }
+        calculationParams ??= new PerformanceCalculationParameters(
+            [],
+            new Accuracy({
+                n300: beatmap.objects
+            }),
+            100,
+            beatmap.maxCombo
+        );
 
         return this.calculatePerformance(beatmap, calculationParams, replay);
     }
