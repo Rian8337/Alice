@@ -20,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     );
 
     const onPageChange: OnButtonPageChange = async (_, page, backgrounds: ProfileBackground[]) => {
-        for (let i = 10 * (page - 1); i < Math.min(backgrounds.length, 10 * 10 * (page - 1)); ++i) {
+        for (let i = 10 * (page - 1); i < Math.min(backgrounds.length, 10 + 10 * (page - 1)); ++i) {
             const bg: ProfileBackground = backgrounds[i];
             embed.addField(`${i + 1}. ${bg.name}`, `Owned: **${ownedBackgrounds.find(v => v.id === bg.id) ? "Yes" : "No"}**`);
         }

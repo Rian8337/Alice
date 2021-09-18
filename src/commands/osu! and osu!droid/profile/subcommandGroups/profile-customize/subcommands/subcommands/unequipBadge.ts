@@ -64,7 +64,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             profileStrings.unequipBadgeSuccess,
             interaction.user.toString(),
             (badgeIndex + 1).toString()
-        )
+        ),
+        embeds: []
     });
 };
 

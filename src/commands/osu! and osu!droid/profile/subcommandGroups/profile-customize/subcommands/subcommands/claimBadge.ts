@@ -164,7 +164,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     });
 
     if (playerInfo) {
-
         await playerInfoDbManager.update(
             { discordid: interaction.user.id }, { $set: { picture_config: pictureConfig } }
         );
