@@ -492,7 +492,7 @@ export abstract class EmbedCreator {
         const embed: MessageEmbed = this.createNormalEmbed();
 
         embed.setTitle(queue.information.title)
-            .setImage(queue.information.thumbnail)
+            .setThumbnail(queue.information.thumbnail)
             .setDescription(`Channel: ${queue.information.author.name}\n\nDuration: ${queue.information.duration.toString()}\n\nQueued/requested by <@${queue.queuer}>`)
             .setURL(queue.information.url);
 

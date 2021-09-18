@@ -28,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (information) {
         embed.addField("Currently Playing", `[${information.title}](${information.url})\n\nChannel: ${information.author.name}\n\nDuration: ${information.duration.toString()}\n\nQueued/requested by <@${musicInformation.currentlyPlaying!.queuer}>`)
-            .setImage(information.thumbnail);
+            .setThumbnail(information.thumbnail);
     } else {
         embed.addField("Currently Playing", "None");
     }
