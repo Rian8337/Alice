@@ -60,7 +60,7 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
     if (!CommandHelper.userFulfillsCommandPermission(interaction, command.config.permissions)) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `${Constants.noPermissionReject}. You need these permissions: \`${PermissionHelper.getPermissionString(command.config.permissions)}\`.`
+                `${Constants.noPermissionReject} You need these permissions: \`${PermissionHelper.getPermissionString(command.config.permissions)}\`.`
             )
         });
     }
