@@ -103,9 +103,11 @@ export abstract class MusicManager extends Manager {
             return this.createOperationResult(false, "I'm not in your voice channel");
         }
 
-        musicInformation.connection.destroy();
+        if (musicInformation.connection.state.status !== VoiceConnectionStatus.Destroyed) {
+            musicInformation.connection.destroy();
+        }
 
-        this.musicInformations.delete(channel.id);
+        this.musicInformations.delete(channel.guildId);
 
         return this.createOperationResult(true);
     }
