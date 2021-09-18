@@ -7,8 +7,7 @@ import { musicStrings } from "../musicStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const result: OperationResult = await MusicManager.skip(
-        (<GuildMember> interaction.member).voice.channel!,
-        interaction.channel!
+        (<GuildMember> interaction.member).voice.channel!
     );
 
     if (!result.success) {

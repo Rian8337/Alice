@@ -1,6 +1,6 @@
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { MusicQueue } from "@alice-interfaces/music/MusicQueue";
+import { MusicQueue } from "@alice-utils/music/MusicQueue";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";

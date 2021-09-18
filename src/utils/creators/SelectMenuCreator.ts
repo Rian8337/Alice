@@ -27,7 +27,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 .addComponents(selectMenu);
 
             const message: Message = <Message> await interaction.editReply({
-                content: MessageCreator.createWarn("Please choose one of the options below."),
+                content: MessageCreator.createWarn("A select menu has appeared..."),
                 components: [component]
             });
 

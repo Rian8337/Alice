@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.repeatModeSuccess, repeatMode.toString()
+            musicStrings.repeatModeSuccess, repeatMode ? "enabled" : "disabled"
         )
     });
 };

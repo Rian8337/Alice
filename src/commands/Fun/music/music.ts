@@ -23,6 +23,11 @@ export const config: Command["config"] = {
     description: "Main command for music.",
     options: [
         {
+            name: "info",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Shows information about my music status."
+        },
+        {
             name: "leave",
             type: CommandArgumentType.SUB_COMMAND,
             description: "Leaves the current voice channel I'm in."
@@ -40,7 +45,7 @@ export const config: Command["config"] = {
         {
             name: "play",
             type: CommandArgumentType.SUB_COMMAND,
-            description: "Plays a YouTube video as audio into a voice channel.",
+            description: "Plays or enqueues a YouTube video into a voice channel.",
             options: [
                 {
                     name: "query",

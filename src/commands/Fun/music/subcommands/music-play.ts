@@ -4,16 +4,11 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
-import { GuildMember } from "discord.js";
+import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import { musicStrings } from "../musicStrings";
+import { MusicQueue } from "@alice-utils/music/MusicQueue";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (MusicManager.musicInformations.get((<GuildMember> interaction.member).voice.channelId!)?.player) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(musicStrings.musicIsStillPlaying)
-        });
-    }
-
     const searchResult: SearchResult = await yts(interaction.options.getString("query", true));
 
     const videos: VideoSearchResult[] = searchResult.videos.slice(0, 26);
@@ -35,7 +30,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             };
         }),
         [interaction.user.id],
-        60
+        30
     ))[0];
 
     if (!pickedChoice) {
@@ -44,13 +39,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const info: VideoSearchResult = videos.find(v => v.videoId === pickedChoice)!;
 
-    const result: OperationResult = await MusicManager.play(
+    const result: OperationResult = await MusicManager.enqueue(
         (<GuildMember> interaction.member).voice.channel!,
-        interaction.channel!,
-        {
-            information: info,
-            queuer: interaction.user.id
-        }
+        <TextChannel | ThreadChannel> interaction.channel!,
+        new MusicQueue(info, interaction.user.id)
     );
 
     if (!result.success) {

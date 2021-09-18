@@ -4,7 +4,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { GuildMember } from "discord.js";
+import { MusicQueue } from "@alice-utils/music/MusicQueue";
+import { GuildMember, TextChannel, ThreadChannel } from "discord.js";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { musicStrings } from "../../../musicStrings";
 
@@ -30,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             };
         }),
         [interaction.user.id],
-        60
+        30
     ))[0];
 
     if (!pickedChoice) {
@@ -41,10 +42,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const result: OperationResult = await MusicManager.enqueue(
         (<GuildMember> interaction.member).voice.channel!,
-        {
-            information: info,
-            queuer: interaction.user.id
-        },
+        <TextChannel | ThreadChannel> interaction.channel!,
+        new MusicQueue(info, interaction.user.id),
         NumberHelper.clamp(interaction.options.getInteger("position") ?? 1, 1, 10)
     );
 
