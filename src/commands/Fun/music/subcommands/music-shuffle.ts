@@ -8,22 +8,21 @@ import { musicStrings } from "../musicStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const shuffleMode: boolean = interaction.options.getBoolean("shuffle", true);
 
-    const result: OperationResult = MusicManager.setShuffle(
-        (<GuildMember> interaction.member).voice.channel!,
-        shuffleMode
+    const result: OperationResult = MusicManager.shuffle(
+        (<GuildMember> interaction.member).voice.channel!
     );
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                musicStrings.shuffleModeFailed, result.reason!
+                musicStrings.shuffleFailed, result.reason!
             )
         });
     }
 
     interaction.editReply({
         content: MessageCreator.createAccept(
-            musicStrings.shuffleModeSuccess, shuffleMode ? "enabled" : "disabled"
+            musicStrings.shuffleSuccess, shuffleMode ? "enabled" : "disabled"
         )
     });
 };

@@ -74,4 +74,20 @@ export abstract class ArrayHelper {
     static removeDuplicate<T>(array: T[]): T[] {
         return Array.from(new Set(array));
     }
+
+    /**
+     * Shuffles an array.
+     * 
+     * The original array will be modified.
+     * 
+     * This uses Richard Durstenfeld's shuffle algorithm.
+     * 
+     * @param array The array to shuffle.
+     */
+    static shuffle<T>(array: T[]): void {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j: number = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
 }

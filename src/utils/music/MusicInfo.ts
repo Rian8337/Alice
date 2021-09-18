@@ -63,11 +63,6 @@ export class MusicInfo {
     repeat: boolean = false;
 
     /**
-     * Whether the music queue in this voice channel will be shuffled.
-     */
-    shuffle: boolean = false;
-
-    /**
      * Whether the current queue is being skipped.
      */
     skip: boolean = false;
@@ -189,12 +184,19 @@ export class MusicInfo {
     }
 
     /**
+     * Shuffles the queue of this music information.
+     */
+    shuffleQueue(): void {
+        ArrayHelper.shuffle(this.queue);
+    }
+
+    /**
 	 * Attempts to play a queue.
      * 
-     * @param prevQueue The previous queue that was being played.
+     * @param queueToRepeat The music queue that will be repeated if repeat mode is enabled.
      * @param forceSkip Whether to skip the previously played queue if repeat mode is enabled.
 	 */
-    private async processQueue(prevQueue: MusicQueue): Promise<void> {
+    private async processQueue(queueToRepeat: MusicQueue): Promise<void> {
         const repeatAndNotSkip: boolean = this.repeat && !this.skip;
 
         // Don't do anything if the queue is locked (already being processed),
@@ -219,25 +221,14 @@ export class MusicInfo {
 
         const nextQueue: MusicQueue =
             repeatAndNotSkip ?
-            prevQueue :
-                this.shuffle ?
-                ArrayHelper.getRandomArrayElement(this.queue) :
-                this.queue[0];
+            queueToRepeat :
+            this.queue.shift()!;
 
         try {
             // Attempt to convert the queue into an `AudioResource` (i.e. start streaming the video).
             const resource: AudioResource<MusicQueue> = await nextQueue.createAudioResource();
 
             this.player.play(resource);
-
-            // Since nextQueue could be an instance of prevQueue, we splice the
-            // queue in here instead of the beginning.
-            if (!repeatAndNotSkip) {
-                this.queue.splice(
-                    this.queue.findIndex(q => q.information.videoId === prevQueue.information.videoId),
-                    1
-                );
-            }
 
             this.skip = false;
 
@@ -249,16 +240,11 @@ export class MusicInfo {
                 )
             });
 
-            this.queue.splice(
-                this.queue.findIndex(q => q.information.videoId === prevQueue.information.videoId),
-                1
-            );
-
             this.queueLock = false;
 
             this.repeat = false;
 
-            this.processQueue(prevQueue);
+            this.processQueue(queueToRepeat);
         }
     }
 }

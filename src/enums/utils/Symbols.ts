@@ -19,6 +19,5 @@ export enum Symbols {
     upIcon = "🆙",
     cake = "🎂",
     timer = "⏲️",
-    repeatSingleButton = "🔂",
-    shuffleButton = "🔀"
+    repeatSingleButton = "🔂"
 };

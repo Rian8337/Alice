@@ -218,19 +218,18 @@ export abstract class MusicManager extends Manager {
     }
 
     /**
-     * Sets the shuffle mode of a music queue in a channel.
+     * Shuffles a music queue in a voice channel.
      * 
      * @param channel The channel.
-     * @param repeat Whether to enable repeat mode.
      */
-    static setShuffle(channel: VoiceChannel | StageChannel, shuffle: boolean): OperationResult {
+    static shuffle(channel: VoiceChannel | StageChannel): OperationResult {
         const musicInformation: MusicInfo | undefined = this.musicInformations.get(channel.guildId);
 
         if (!musicInformation) {
             return this.createOperationResult(false, "I'm not in a voice channel");
         }
 
-        musicInformation.shuffle = shuffle;
+        musicInformation.shuffleQueue();
 
         return this.createOperationResult(true);
     }

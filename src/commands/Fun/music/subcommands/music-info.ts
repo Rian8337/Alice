@@ -33,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         embed.addField("Currently Playing", "None");
     }
 
-    embed.addField("Playback Settings", `${Symbols.repeatSingleButton} Repeat mode: ${musicInformation.repeat ? "Enabled" : "Disabled"}\n${Symbols.shuffleButton} Shuffle mode: ${musicInformation.shuffle ? "Enabled" : "Disabled"}`)
+    embed.addField("Playback Settings", `${Symbols.repeatSingleButton} Repeat mode: ${musicInformation.repeat ? "Enabled" : "Disabled"}`)
         .addField("Queue", musicInformation.queue.map((v, i) => `${i + 1}. ${v.information.title}`).join("\n") || "None");
 
     interaction.editReply({
