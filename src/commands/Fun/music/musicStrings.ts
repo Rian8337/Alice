@@ -7,7 +7,7 @@ export enum musicStrings {
     noMusicIsPlaying = "I'm sorry, there is no music playing!",
     noTracksFound = "I'm sorry, I couldn't find any YouTube videos from your search query!",
     playTrackFailed = "I'm sorry, I couldn't play the track: %s.",
-    playTrackSuccess = "Successfully played `%s`.",
+    playTrackSuccess = "Successfully played or enqueued `%s`.",
     skipTrackFailed = "I'm sorry, I couldn't skip the track: %s.",
     skipTrackSuccess = "Successfully skipped the track.",
     pauseTrackFailed = "I'm sorry, I couldn't pause the track: %s.",
