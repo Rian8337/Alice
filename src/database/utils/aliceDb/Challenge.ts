@@ -272,7 +272,11 @@ export class Challenge extends Manager {
             return this.createOperationResult(false, "custom speed multiplier and/or force AR is used");
         }
 
-        const calcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(score))!;
+        const calcResult: PerformanceCalculationResult | null = (await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            score.replay
+        ))!;
 
         const pass: boolean = await this.verifyPassCompletion(
             score,
