@@ -13,7 +13,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Player, Score } from "osu-droid";
 import { dailyStrings } from "../dailyStrings";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const type: ChallengeType = <ChallengeType> interaction.options.getString("type") ?? "daily";
 
     const challenge: Challenge | null =
