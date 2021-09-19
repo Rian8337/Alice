@@ -3,7 +3,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Constants } from "@alice-core/Constants";
 
 export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember: GuildMember) => {
-    if (oldMember.user.bot || oldMember.roles.cache.size !== 0 && newMember.roles.cache.size !== 1) {
+    if (oldMember.user.bot || oldMember.roles.cache.size === newMember.roles.cache.size) {
         return;
     }
 
