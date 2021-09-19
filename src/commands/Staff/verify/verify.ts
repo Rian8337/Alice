@@ -1,4 +1,4 @@
-import { GuildMember, Role } from "discord.js";
+import { GuildMember, Role, TextChannel } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -28,6 +28,13 @@ export const run: Command["run"] = async(_, interaction) => {
 
     interaction.editReply({
         content: MessageCreator.createAccept(verifyStrings.verificationSuccess)
+    });
+
+    const general: TextChannel = <TextChannel> interaction.guild!.channels.cache.get(Constants.mainServer);
+
+    general.send({
+        content: `Welcome to ${interaction.guild!.name}, ${toVerify}!`,
+        files: [ Constants.welcomeImageLink ]
     });
 };
 
