@@ -52,19 +52,40 @@ export const run: Command["run"] = async (client, interaction) => {
 
         if (cmd.config.options.length > 0) {
             const finalMappedArgs: string[] = [];
-            const mappedArgs: string[] = [];
-            const precedingKeywords: string[] = [];
-            let isOptional: boolean = false;
 
             for (const arg of cmd.config.options) {
+                const mappedArgs: string[] = [];
+                const precedingKeywords: string[] = [];
+                let isOptional: boolean = false;
+
                 switch (arg.type) {
                     case CommandArgumentType.SUB_COMMAND_GROUP:
-                    case CommandArgumentType.SUB_COMMAND:
                         precedingKeywords.push(arg.name);
                         for (const localArg of (arg.options ?? [])) {
                             precedingKeywords.push(localArg.name);
+                            for (const localLocalArg of (localArg.options ?? [])) {
+                                isOptional ||= !localLocalArg.required;
+
+                                if (isOptional) {
+                                    mappedArgs.push(`[${localLocalArg.name}]`);
+                                } else {
+                                    mappedArgs.push(`<${localLocalArg.name}>`);
+                                }
+                            }
                         }
-                    case CommandArgumentType.BOOLEAN:
+                        break;
+                    case CommandArgumentType.SUB_COMMAND:
+                        precedingKeywords.push(arg.name);
+                        for (const localArg of (arg.options ?? [])) {
+                            isOptional ||= !localArg.required;
+
+                            if (isOptional) {
+                                mappedArgs.push(`[${localArg.name}]`);
+                            } else {
+                                mappedArgs.push(`<${localArg.name}>`);
+                            }
+                        }
+                        break;
                     default:
                         isOptional ||= !arg.required;
 
