@@ -119,15 +119,7 @@ export const config: Command["config"] = {
         {
             name: "shuffle",
             type: CommandArgumentType.SUB_COMMAND,
-            description: "Sets shuffle mode (whether to randomly select a music from the music queue).",
-            options: [
-                {
-                    name: "shuffle",
-                    required: true,
-                    type: CommandArgumentType.BOOLEAN,
-                    description: "Whether to enable shuffle mode."
-                }
-            ]
+            description: "Shuffles the current music queue."
         },
         {
             name: "skip",
@@ -137,8 +129,24 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "music play abcde",
-            description: "will play whatever lol (later)."
+            command: "music play",
+            arguments: [
+                {
+                    name: "query",
+                    value: "realm of tranquil eternity"
+                }
+            ],
+            description: "will search \"realm of tranquil eternity\" from YouTube and lets you choose which video to play."
+        },
+        {
+            command: "music queue remove",
+            arguments: [
+                {
+                    name: "position",
+                    value: 3
+                }
+            ],
+            description: "will remove the 3rd music queue in queue list."
         }
     ],
     cooldown: 10,

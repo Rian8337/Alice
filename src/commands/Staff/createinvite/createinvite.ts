@@ -9,7 +9,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("validduration", true));
+    const maxAge: number = DateTimeFormatHelper.DHMStoSeconds(interaction.options.getString("validduration") ?? "0");
 
     if (!NumberHelper.isNumeric(maxAge) || maxAge < 0) {
         return interaction.editReply({
@@ -17,7 +17,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const maxUsage: number = interaction.options.getInteger("usage", true);
+    const maxUsage: number = interaction.options.getInteger("usage") ?? 0;
 
     if (maxUsage < 0) {
         return interaction.editReply({
@@ -33,7 +33,7 @@ export const run: Command["run"] = async (_, interaction) => {
         );
 
         embed.setTitle("Invite Link Created")
-            .addField("Created in", <string> interaction.channel?.toString(), true)
+            .addField("Created in", interaction.channel!.toString(), true)
             .addField("Maximum Usage", maxUsage === 0 ? "Infinite" : maxUsage.toString())
             .addField("Expiration Time", DateTimeFormatHelper.secondsToDHMS(maxAge) || "Never", true)
             .addField("Reason", reason)
@@ -53,15 +53,13 @@ export const config: Command["config"] = {
     options: [
         {
             name: "validduration",
-            required: true,
             type: CommandArgumentType.STRING,
-            description: "In time format (e.g. 6:01:24:33 or 2d14h55m34s). Set to 0 for never expire."
+            description: "In time format (e.g. 6:01:24:33 or 2d14h55m34s). Defaults to never expire."
         },
         {
             name: "usage",
-            required: true,
             type: CommandArgumentType.INTEGER,
-            description: "The maximum usage until the invite link expires. Set to 0 for no limit."
+            description: "The maximum usage until the invite link expires. Defaults to no limit."
         },
         {
             name: "reason",
@@ -71,11 +69,27 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "createinvite 14d 10",
+            command: "createinvite",
+            arguments: [
+                {
+                    name: "validduration",
+                    value: "14d"
+                },
+                {
+                    name: "usage",
+                    value: 10
+                }
+            ],
             description: "will create an invite link that expires on either 14 days or after 10 users have used the invite link."
         },
         {
-            command: "createinvite 0 0 Permanent invite link",
+            command: "createinvite",
+            arguments: [
+                {
+                    name: "reason",
+                    value: "Permanent invite link"
+                }
+            ],
             description: "will create an invite link that never expires for \"Permanent invite link\"."
         }
     ],

@@ -47,7 +47,13 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "color #ffdd00",
+            command: "color",
+            arguments: [
+                {
+                    name: "hexcode",
+                    value: "#ffdd00"
+                }
+            ],
             description: "will show the color with hex code \"#ffdd00\"."
         }
     ],

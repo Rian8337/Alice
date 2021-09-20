@@ -109,7 +109,7 @@ export const config: Command["config"] = {
                     name: "beatmap",
                     required: true,
                     type: CommandArgumentType.STRING,
-                    description: "The beatmap ID or link to share.."
+                    description: "The beatmap ID or link to share."
                 },
                 {
                     name: "summary",
@@ -148,16 +148,18 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "mapshare submit https://osu.ppy.sh/beatmapsets/902745#osu/1884658 this map is so good",
-            description: "will submit a new map sharing submission with the linked beatmap and summary \"this map is so good\"."
-        },
-        {
-            command: "leaderboard ranked 3",
-            description: "will view the ranked score leaderboard at page 3."
-        },
-        {
-            command: "leaderboard dpp 1 Sunda Empire",
-            description: "will view the ranked score leaderboard at page 1 for the \"Sunda Empire\" clan."
+            command: "mapshare submit",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                },
+                {
+                    name: "summary",
+                    value: "This map is so good"
+                }
+            ],
+            description: "will submit a new map sharing submission with the linked beatmap and summary \"This map is so good\"."
         }
     ],
     permissions: [],

@@ -53,11 +53,23 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "verify @Rian8337#0001",
+            command: "verify",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will verify Rian8337."
         },
         {
-            command: "verify 132783516176875520",
+            command: "verify",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will verify the user with that Discord ID."
         }
     ],

@@ -63,15 +63,33 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "recalc all true",
+            command: "recalc all",
+            arguments: [
+                {
+                    name: "full",
+                    value: true
+                }
+            ],
             description: "will recalculate all scores of all users in the droid performance points (dpp) system."
         },
         {
-            command: "recalc user @Rian8337#0001",
+            command: "recalc user",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will recalculate Rian8337's scores."
         },
         {
-            command: "recalc user 132783516176875520",
+            command: "recalc user",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will recalculate the scores of the user with that Discord ID."
         }
     ],

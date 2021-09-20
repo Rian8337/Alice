@@ -53,6 +53,21 @@ export interface Command {
             readonly command: string;
 
             /**
+             * The arguments of the command.
+             */
+            readonly arguments?: {
+                /**
+                 * The name of the argument.
+                 */
+                readonly name: string;
+
+                /**
+                 * The value of the argument.
+                 */
+                readonly value: string | number | boolean;
+            }[];
+
+            /**
              * The description about what the command usage example will do.
              */
             readonly description: string;

@@ -5,6 +5,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { CommandInteraction, GuildMember, Message, MessageEmbed, Snowflake } from "discord.js";
 import { Player, Score } from "osu-droid";
+import { NumberHelper } from "./NumberHelper";
 
 /**
  * A helper for displaying scores to a user.
@@ -21,6 +22,8 @@ export abstract class ScoreDisplayHelper {
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
             { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
         );
+
+        const page: number = NumberHelper.clamp(interaction.options.getInteger("page") ?? 1, 1, Math.ceil(player.recentPlays.length / 5));
 
         embed.setDescription(`Recent plays for **${player.username}**`);
 
@@ -42,7 +45,7 @@ export abstract class ScoreDisplayHelper {
             [interaction.user.id],
             player.recentPlays,
             5,
-            1,
+            page,
             120,
             onPageChange
         );

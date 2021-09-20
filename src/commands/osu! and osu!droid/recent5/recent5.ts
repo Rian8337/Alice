@@ -83,6 +83,11 @@ export const config: Command["config"] = {
     description: "Displays the 50 most recent plays of yourself or a player.",
     options: [
         {
+            name: "page",
+            type: CommandArgumentType.INTEGER,
+            description: "The page to display, ranging from 1 to 10. Defaults to 1."
+        },
+        {
             name: "user",
             type: CommandArgumentType.USER,
             description: "The Discord user to show."
@@ -104,15 +109,33 @@ export const config: Command["config"] = {
             description: "will display your 50 most recent plays."
         },
         {
-            command: "recent5 uid:51076",
+            command: "recent5",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will display the 50 most recent plays of an osu!droid account with uid 51076."
         },
         {
-            command: "recent5 username:NeroYuki",
+            command: "recent5",
+            arguments: [
+                {
+                    name: "username",
+                    value: "NeroYuki"
+                }
+            ],
             description: "will display the 50 most recent plays of an osu!droid account with username NeroYuki."
         },
         {
-            command: "recent5 user:@Rian8337#0001",
+            command: "recent5",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will display the 50 most recent plays of Rian8337."
         }
     ],

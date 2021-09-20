@@ -54,11 +54,27 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "deploy blacklist",
+            command: "deploy",
+            arguments: [
+                {
+                    name: "command",
+                    value: "blacklist"
+                }
+            ],
             description: "will deploy the command with name \"blacklist\" globally."
         },
         {
-            command: "deploy help true",
+            command: "deploy",
+            arguments: [
+                {
+                    name: "command",
+                    value: "help"
+                },
+                {
+                    name: "debug",
+                    value: true
+                }
+            ],
             description: "will deploy the command with name \"help\" in debug server."
         }
     ],

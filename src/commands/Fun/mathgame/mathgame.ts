@@ -224,7 +224,13 @@ export const config: Command["config"] = {
             description: "will start a math game with only you can participate."
         },
         {
-            command: "mathgame multi",
+            command: "mathgame",
+            arguments: [
+                {
+                    name: "mode",
+                    value: "Multiplayer"
+                }
+            ],
             description: "will start a math game in the channel that others can participate."
         }
     ],

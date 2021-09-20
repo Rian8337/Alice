@@ -53,11 +53,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "mute @Rian8337#0001 boo",
+            command: "unmute",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "boo"
+                }
+            ],
             description: "will unmute Rian8337 for \"boo\"."
         },
         {
-            command: "mute 132783516176875520 bad",
+            command: "unmute",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "reason",
+                    value: "bad"
+                }
+            ],
             description: "will unmute the user with that Discord ID for \"bad\"."
         }
     ],

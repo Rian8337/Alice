@@ -66,11 +66,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "switchbind 51076 @Rian8337#0001",
+            command: "switchbind uid:51076 user:@Rian8337#0001",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                },
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will switch the osu!droid account with uid 51076's bind to Rian8337."
         },
         {
-            command: "switchbind 5475 132783516176875520",
+            command: "switchbind uid:5475 user:132783516176875520",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 5475
+                },
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will switch the osu!droid account with uid 5475's bind to the Discord account with ID 132783516176875520."
         }
     ],

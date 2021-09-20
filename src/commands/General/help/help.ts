@@ -96,7 +96,7 @@ export const run: Command["run"] = async (client, interaction) => {
                         }
                 }
 
-                finalMappedArgs.push(`${precedingKeywords.join(" ")} ${mappedArgs.join(" ")}`);
+                finalMappedArgs.push(`[ ${precedingKeywords.join(" ")} ${mappedArgs.join(" ")} ]`);
             }
 
             argsString += finalMappedArgs.map(v => v.trim()).join(" | ");
@@ -104,14 +104,14 @@ export const run: Command["run"] = async (client, interaction) => {
 
         embed.setTitle(cmd.config.name)
             .setDescription(
-                "```md\n" + `${cmd.config.description}` + "```" +
+                "```md\n" + `${cmd.config.description}` + "```\n" +
                 "Category: " + "`" + cmd.category + "`\n" +
                 "Required Permissions: `" + PermissionHelper.getPermissionString(cmd.config.permissions) + "`"
             )
             .addField(
                 "Examples",
                 cmd.config.example.map(v =>
-                    `\`/${v.command}\`\n` +
+                    `\`/${v.command}\`${v.arguments ? ` ${v.arguments.map(a => `\`${a.name}:${a.value}\``).join(" ")}` : ""}\n` +
                     v.description
                 ).join("\n\n") || "None",
                 true
@@ -120,7 +120,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 "Usage\n" +
                 "`<...>`: required\n" +
                 "`[...]`: optional\n\n" +
-                `\`${cmd.config.name} ${argsString}\``,
+                `\`${cmd.config.name}${argsString ? ` ${argsString}` : ""}\``,
                 "**Details**\n" +
                 cmd.config.options.map(v =>
                     "`" + v.name + "`: *" + (<string> v.type).split("_").map(v => StringHelper.capitalizeString(v, true)).join(" ") + "*\n" +
@@ -178,10 +178,17 @@ export const config: Command["config"] = {
     example: [
         {
             command: "help",
+            arguments: [],
             description: "will output all commands that I have."
         },
         {
-            command: "help ping",
+            command: "help",
+            arguments: [
+                {
+                    name: "commandname",
+                    value: "ping"
+                }
+            ],
             description: "will output the help section of `ping` command."
         }
     ],

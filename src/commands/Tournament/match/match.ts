@@ -215,8 +215,44 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "ping",
-            description: "will give my websocket ping to Discord."
+            command: "match add",
+            arguments: [
+                {
+                    name: "id",
+                    value: "t11f1.m1"
+                },
+                {
+                    name: "name",
+                    value: "osu!droid 11th Tournament"
+                },
+                {
+                    name: "team1name",
+                    value: "Red Team"
+                },
+                {
+                    name: "team2name",
+                    value: "Blue Team"
+                },
+                {
+                    name: "team1players",
+                    value: "NeroYuki 5455 Rian8337 51076"
+                },
+                {
+                    name: "team2players",
+                    value: "RisingSTORM 117819 NabilaSari 156828"
+                }
+            ],
+            description: "will add a match with ID `t11f1.m1` and name \"osu!droid 11th Tournament\", and the following teams and players:\n- Red Team: NeroYuki (uid 5455) and Rian8337 (uid 51076)\n- Blue Team: RisingSTORM (uid 117819) and NabilaSari (uid 156828)"
+        },
+        {
+            command: "match bind",
+            arguments: [
+                {
+                    name: "id",
+                    value: "t11f1.m1"
+                }
+            ],
+            description: "will bind the match with ID `t11f1.m1` to the channel the command is executed."
         }
     ],
     permissions: ["SPECIAL"],

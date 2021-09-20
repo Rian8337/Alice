@@ -104,11 +104,27 @@ export const config: Command["config"] = {
             description: "will claim your daily Alice coins."
         },
         {
-            command: "coins transfer @Rian8337#0001 500",
+            command: "coins transfer",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "amount",
+                    value: 500
+                }
+            ],
             description: "will transfer 500 Alice coins to Rian8337."
         },
         {
-            command: "coins view 132783516176875520",
+            command: "coins view",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will view the amount of Alice coins of the Discord account with that ID."
         }
     ],

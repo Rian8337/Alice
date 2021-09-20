@@ -42,21 +42,43 @@ export const config: Command["config"] = {
             description: "Starts a vote in the channel.",
             options: [
                 {
-                    name: "input",
+                    name: "topic",
                     required: true,
                     type: CommandArgumentType.STRING,
-                    description: "The input to start vote, defined as \"<topic> | <choice 1> | <choice 2> | <choice n> | ...\""
+                    description: "The topic of the vote."
+                },
+                {
+                    name: "choices",
+                    required: true,
+                    type: CommandArgumentType.STRING,
+                    description: "The choices of the vote, separated by \"|\"."
                 }
             ]
         }
     ],
     example: [
         {
-            command: "vote start What is your favorite color? | Green | Blue | Red",
+            command: "vote start",
+            arguments: [
+                {
+                    name: "topic",
+                    value: "What is your favorite color?"
+                },
+                {
+                    name: "choices",
+                    value: "Green | Blue | Red"
+                }
+            ],
             description: "will start a vote in the channel with topic \"What is your favorite color?\" and choices \"Green\", \"Blue\", and \"Red\"."
         },
         {
-            command: "vote contribute 2",
+            command: "vote contribute",
+            arguments: [
+                {
+                    name: "option",
+                    value: 2
+                }
+            ],
             description: "will vote for option 2 in the current ongoing vote in the channel."
         }
     ],

@@ -66,11 +66,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "ban @Rian8337#0001 Apple",
+            command: "ban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "Apple"
+                }
+            ],
             description: "will ban Rian8337 for \"Apple\"."
         },
         {
-            command: "ban 132783516176875520 Grapes",
+            command: "ban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "reason",
+                    value: "Grapes"
+                }
+            ],
             description: "will ban the user with that Discord ID for \"Grapes\"."
         }
     ],

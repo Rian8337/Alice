@@ -144,23 +144,55 @@ export const config: Command["config"] = {
     example: [
         {
             command: "prototypecheck",
-            description: "will give a list of your submitted plays in droid pp system."
+            description: "will give a list of your submitted plays in prototype droid pp system."
         },
         {
-            command: "prototypecheck user:@Rian8337#0001 index:5",
-            description: "will give a list of Rian8337's submitted plays in droid pp system at page 5."
+            command: "prototypecheck",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "page",
+                    value: 5
+                }
+            ],
+            description: "will give a list of Rian8337's submitted plays in prototype droid pp system at page 5."
         },
         {
-            command: "prototypecheck user:132783516176875520",
-            description: "will give a list of the user with that Discord ID's submitted plays in droid pp system."
+            command: "prototypecheck",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
+            description: "will give a list of the user with that Discord ID's submitted plays in prototype droid pp system."
         },
         {
-            command: "prototypecheck username:dgsrz index:7",
-            description: "will give a list of that username's submitted plays in droid pp system at page 7."
+            command: "prototypecheck",
+            arguments: [
+                {
+                    name: "username",
+                    value: "dgsrz"
+                },
+                {
+                    name: "page",
+                    value: 7
+                }
+            ],
+            description: "will give a list of that username's submitted plays in prototype droid pp system at page 7."
         },
         {
-            command: "prototypecheck uid:11678",
-            description: "will give a list of that uid's submitted plays in droid pp system."
+            command: "prototypecheck",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 11678
+                }
+            ],
+            description: "will give a list of that uid's submitted plays in prototype droid pp system."
         }
     ],
     cooldown: 10,

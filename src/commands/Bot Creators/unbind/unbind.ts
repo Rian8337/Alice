@@ -61,7 +61,13 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "unbind 51076",
+            command: "unbind uid:51076",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account."
         }
     ],

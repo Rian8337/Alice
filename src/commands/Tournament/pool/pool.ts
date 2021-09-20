@@ -70,11 +70,23 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "pool t11sf",
+            command: "pool",
+            arguments: [
+                {
+                    name: "id",
+                    value: "t11sf"
+                }
+            ],
             description: "will retrieve a list of beatmaps from tournament mappool \"t11sf\"."
         },
         {
             command: "pool t8gf",
+            arguments: [
+                {
+                    name: "id",
+                    value: "t8gf"
+                }
+            ],
             description: "will retrieve a list of beatmaps from tournament mappool \"t8gf\"."
         }
     ],

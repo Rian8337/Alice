@@ -62,11 +62,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "unban @Rian8337#0001 Apple",
+            command: "unban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "Apple"
+                }
+            ],
             description: "will unban Rian8337 for \"Apple\"."
         },
         {
-            command: "unban 132783516176875520 Grapes",
+            command: "unban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "reason",
+                    value: "Grapes"
+                }
+            ],
             description: "will unban the user with that Discord ID for \"Grapes\"."
         }
     ],

@@ -38,11 +38,23 @@ export const config: Command["config"] = {
             description: "will retrieve your avatar."
         },
         {
-            command: "avatar @Rian8337#0001",
+            command: "avatar",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will retrieve Rian8337's avatar."
         },
         {
-            command: "avatar 132783516176875520",
+            command: "avatar",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will retrieve the avatar of the user with that Discord ID."
         }
     ],

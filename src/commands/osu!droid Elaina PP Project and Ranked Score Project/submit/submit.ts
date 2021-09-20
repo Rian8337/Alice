@@ -62,19 +62,47 @@ export const config: Command["config"] = {
             description: "will submit your most recent play."
         },
         {
-            command: "submit recent 3",
+            command: "submit recent",
+            arguments: [
+                {
+                    name: "amount",
+                    value: 3
+                }
+            ],
             description: "will submit your 1st, 2nd, and 3rd most recent plays."
         },
         {
-            command: "submit recent 4 18",
+            command: "submit recent",
+            arguments: [
+                {
+                    name: "amount",
+                    value: 4
+                },
+                {
+                    name: "offset",
+                    value: 18
+                }
+            ],
             description: "will submit your 18th, 19th, 20th, and 21th most recent plays."
         },
         {
-            command: "submit beatmap https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "submit beatmap",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                }
+            ],
             description: "will submit your score from the linked beatmap."
         },
         {
-            command: "submit beatmap 1884658",
+            command: "submit beatmap",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                }
+            ],
             description: "will submit your score from the beatmap with that ID."
         }
     ],

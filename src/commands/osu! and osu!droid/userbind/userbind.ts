@@ -47,11 +47,23 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "userbind uid 51076",
+            command: "userbind uid",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will bind your Discord account to the osu!droid account with uid 51076."
         },
         {
-            command: "userbind username NeroYuki",
+            command: "userbind username",
+            arguments: [
+                {
+                    name: "username",
+                    value: "NeroYuki"
+                }
+            ],
             description: "will bind your Discord account to the osu!droid account with username NeroYuki."
         }
     ],

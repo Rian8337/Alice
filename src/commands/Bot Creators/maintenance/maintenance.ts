@@ -38,7 +38,7 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "maintenance Discord API problem",
+            command: "maintenance reason:Discord API problem",
             description: "will toggle maintenance mode for \"Discord API problem\"."
         }
     ],

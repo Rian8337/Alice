@@ -53,7 +53,7 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "addtrack 51076",
+            command: "playertrack add uid:51076",
             description: "will add uid 51076 into player tracking list."
         }
     ],

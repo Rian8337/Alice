@@ -156,19 +156,51 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "fetchreplay 1884658",
+            command: "fetchreplay",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                }
+            ],
             description: "will fetch the replay from the uid you're currently binded on in the beatmap with ID 1884658."
         },
         {
-            command: "fetchreplay https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "fetchreplay",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                }
+            ],
             description: "will fetch the replay from the uid you're currently binded on in the linked beatmap."
         },
         {
-            command: "fetchreplay 1884658 51076",
+            command: "fetchreplay",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                },
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will fetch the replay from the player with uid 51076 in the beatmap with ID 1884658."
         },
         {
-            command: "fetchreplay https://osu.ppy.sh/b/1884658 5455",
+            command: "fetchreplay 5455",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/b/1884658"
+                },
+                {
+                    name: "uid",
+                    value: 5455
+                }
+            ],
             description: "will fetch the replay from the player with uid 5455 in the linked beatmap."
         }
     ],

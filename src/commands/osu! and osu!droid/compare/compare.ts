@@ -127,15 +127,33 @@ export const config: Command["config"] = {
             description: "will compare your score among others."
         },
         {
-            command: "compare uid:51076",
+            command: "compare",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will compare the score of an osu!droid account with uid 51076."
         },
         {
-            command: "compare username:NeroYuki",
+            command: "compare",
+            arguments: [
+                {
+                    name: "username",
+                    value: "NeroYuki"
+                }
+            ],
             description: "will compare the score of an osu!droid account with username NeroYuki."
         },
         {
-            command: "compare user:@Rian8337#0001",
+            command: "compare",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will compare the score of Rian8337."
         }
     ],
