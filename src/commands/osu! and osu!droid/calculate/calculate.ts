@@ -75,7 +75,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
+        string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
     }
 
     if (string) {
