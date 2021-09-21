@@ -150,10 +150,10 @@ export abstract class PerformanceCalculator {
         });
 
         if (params.stats) {
-            this.mapStatistics.ar = params.stats.ar || this.mapStatistics.ar;
-            this.mapStatistics.isForceAR = params.stats.isForceAR || this.mapStatistics.isForceAR;
-            this.mapStatistics.speedMultiplier = params.stats.speedMultiplier || this.mapStatistics.speedMultiplier;
-            this.mapStatistics.oldStatistics = params.stats.oldStatistics || this.mapStatistics.oldStatistics;
+            this.mapStatistics.ar = params.stats.ar ?? this.mapStatistics.ar;
+            this.mapStatistics.isForceAR = params.stats.isForceAR ?? this.mapStatistics.isForceAR;
+            this.mapStatistics.speedMultiplier = params.stats.speedMultiplier ?? this.mapStatistics.speedMultiplier;
+            this.mapStatistics.oldStatistics = params.stats.oldStatistics ?? this.mapStatistics.oldStatistics;
         }
 
         this.mapStatistics.calculate({mode: mode});
