@@ -91,7 +91,7 @@ export abstract class BeatmapDifficultyHelper {
         const stats: MapStats = new MapStats({
             ar: score.forcedAR,
             speedMultiplier: score.speedMultiplier,
-            isForceAR: !!isNaN(<number> score.forcedAR),
+            isForceAR: !isNaN(score.forcedAR!),
             oldStatistics: (score.replay?.data?.replayVersion ?? 4) <= 3
         });
 
