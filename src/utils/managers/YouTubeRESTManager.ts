@@ -1,5 +1,4 @@
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
-import { YouTubeVideoSnippet } from "@alice-interfaces/youtube/YouTubeVideoSnippet";
 import { decode } from "html-entities";
 import { RequestResponse } from "osu-droid";
 import { RESTManager } from "./RESTManager";
