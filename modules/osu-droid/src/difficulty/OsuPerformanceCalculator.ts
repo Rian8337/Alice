@@ -8,6 +8,7 @@ import { ModSpunOut } from '../mods/ModSpunOut';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
+import { ModTouchDevice } from '../mods/ModTouchDevice';
 
 /**
  * A performance points calculator that calculates performance points for osu!standard gamemode.
@@ -24,12 +25,17 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
      * The speed performance value.
      */
     speed: number = 0;
-    
+
     /**
      * The accuracy performance value.
      */
     accuracy: number = 0;
-    
+
+    /**
+     * The flashlight performance value.
+     */
+    flashlight: number = 0;
+
     calculate(params: {
         /**
          * The star rating instance to calculate.
@@ -69,6 +75,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         this.calculateAimValue();
         this.calculateSpeedValue();
         this.calculateAccuracyValue();
+        this.calculateFlashlightValue();
 
         // Custom multiplier for SO and NF.
         // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
@@ -82,7 +89,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         this.total = Math.pow(
             Math.pow(this.aim, 1.1) + Math.pow(this.speed, 1.1) +
-            Math.pow(this.accuracy, 1.1),
+            Math.pow(this.accuracy, 1.1) + Math.pow(this.flashlight, 1.1),
             1 / 1.1
         ) * finalMultiplier;
 
@@ -125,7 +132,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
 
-        const arBonus: number = 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
+        this.aim *=  1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
         // We want to give more reward for lower AR when it comes to aim and HD. This nerfs high AR and buffs lower AR.
         let hiddenBonus: number = 1;
@@ -134,20 +141,6 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         }
 
         this.aim *= hiddenBonus;
-
-        let flBonus: number = 1;
-        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
-            // Apply object-based bonus for flashlight.
-            flBonus += 0.35 * Math.min(1, objectCount / 200);
-            if (objectCount > 200) {
-                flBonus += 0.3 * Math.min(1, (objectCount - 200) / 300);
-            }
-            if (objectCount > 500) {
-                flBonus += (objectCount - 500) / 1200;
-            }
-        }
-
-        this.aim *= Math.max(arBonus, flBonus);
 
         // Scale the aim value with accuracy slightly.
         this.aim *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
@@ -244,11 +237,49 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         }
     }
 
+    private calculateFlashlightValue(): void {
+        if (!this.stars.mods.some(m => m instanceof ModFlashlight)) {
+            return;
+        }
+
+        // Global variables
+        const objectCount: number = this.stars.objects.length;
+
+        this.flashlight = Math.pow(
+            Math.pow(this.stars.flashlight, this.stars.mods.some(m => m instanceof ModTouchDevice) ? 0.8 : 1),
+            2
+        ) * 25;
+
+        // Add an additional bonus for HDFL.
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
+            this.flashlight *= 1.3;
+        }
+
+        // Combo scaling
+        this.flashlight *= this.comboPenalty;
+
+        if (this.computedAccuracy.nmiss > 0) {
+            // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
+            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+        }
+
+        // Account for shorter maps having a higher ratio of 0 combo/100 combo flashlight radius.
+        this.flashlight *= 0.7 + 0.1 * Math.min(1, objectCount / 200) +
+            (objectCount > 200 ? 0.2 * Math.min(1, (objectCount - 200) / 200) : 0);
+
+        // Scale the aim value with accuracy slightly.
+        this.flashlight *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
+
+        // It is also important to consider accuracy difficulty when doing that.
+        const odScaling: number = Math.pow(<number> this.mapStatistics.od, 2) / 2500;
+        this.flashlight *= 0.98 + odScaling;
+    }
+
     toString(): string {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
             + " aim, " + this.speed.toFixed(2) + " speed, "
-            + this.accuracy.toFixed(2) + " acc)"
+            + this.accuracy.toFixed(2) + " acc, " + this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 }

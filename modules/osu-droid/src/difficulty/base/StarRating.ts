@@ -7,6 +7,7 @@ import { DifficultyHitObjectCreator } from '../preprocessing/DifficultyHitObject
 import { Skill } from './Skill';
 import { Chart } from '../../utils/Chart';
 import { Mod } from '../../mods/Mod';
+import { ModFlashlight } from '../../mods/ModFlashlight';
 
 /**
  * The base of difficulty calculation.
@@ -41,11 +42,16 @@ export abstract class StarRating {
      * The strain peaks of aim difficulty.
      */
     aimStrainPeaks: number[] = [];
-    
+
     /**
      * The strain peaks of speed difficulty.
      */
     speedStrainPeaks: number[] = [];
+
+    /**
+     * The strain peaks of flashlight difficulty.
+     */
+    flashlightStrainPeaks: number[] = [];
 
     protected readonly sectionLength: number = 400;
     protected abstract readonly difficultyMultiplier: number;
@@ -163,7 +169,9 @@ export abstract class StarRating {
             }[] = this.aimStrainPeaks.map((v, i) => {
                 return {
                     time: (currentSectionEnd + sectionLength * i) / 1000,
-                    strain: (v + this.speedStrainPeaks[i]) / 2
+                    strain: this.mods.some(m => m instanceof ModFlashlight) ?
+                        (v + this.speedStrainPeaks[i] + this.flashlightStrainPeaks[i]) / 3 :
+                        (v + this.speedStrainPeaks[i]) / 2
                 };
             });
 

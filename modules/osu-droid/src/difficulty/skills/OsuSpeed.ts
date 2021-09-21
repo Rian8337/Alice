@@ -17,6 +17,7 @@ export class OsuSpeed extends OsuSkill {
     protected readonly reducedSectionCount: number = 5;
     protected readonly reducedSectionBaseline: number = 0.75;
     protected readonly difficultyMultiplier: number = 1.04;
+    protected readonly decayWeight: number = 0.9;
 
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;

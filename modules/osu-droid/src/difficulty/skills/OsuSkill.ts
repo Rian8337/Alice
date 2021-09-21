@@ -51,6 +51,11 @@ export abstract class OsuSkill extends Skill {
      */
     protected abstract readonly difficultyMultiplier: number;
 
+    /**
+     * The weight by which each strain value decays.
+     */
+    protected abstract readonly decayWeight: number;
+
     private readonly sectionLength: number = 400;
 
     private currentSectionEnd: number = 0;
@@ -102,9 +107,6 @@ export abstract class OsuSkill extends Skill {
         }
     }
 
-    /**
-     * Calculates the difficulty value.
-     */
     difficultyValue(): number {
         let difficulty: number = 0;
         let weight: number = 1;
@@ -126,7 +128,7 @@ export abstract class OsuSkill extends Skill {
             return b - a;
         }).forEach(strain => {
             difficulty += strain * weight;
-            weight *= 0.9;
+            weight *= this.decayWeight;
         });
 
         return difficulty * this.difficultyMultiplier;
