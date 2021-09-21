@@ -19,5 +19,7 @@ export enum Symbols {
     upIcon = "🆙",
     cake = "🎂",
     timer = "⏲️",
-    repeatSingleButton = "🔂"
+    repeatSingleButton = "🔂",
+    heart = "❤️",
+    playButton = "▶️"
 };
