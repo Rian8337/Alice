@@ -9,6 +9,7 @@ import { ModTouchDevice } from '../mods/ModTouchDevice';
 import { Mod } from '../mods/Mod';
 import { OsuFlashlight } from './skills/OsuFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
+import { OsuHitWindow } from '../utils/HitWindow';
 
 /**
  * Difficulty calculator for osu!standard gamemode.
@@ -71,7 +72,10 @@ export class OsuStarRating extends StarRating {
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
-        const speedSkill: OsuSpeed = new OsuSpeed(this.mods);
+        const speedSkill: OsuSpeed = new OsuSpeed(
+            this.mods,
+            new OsuHitWindow(this.stats.od!).hitWindowFor300()
+        );
 
         this.calculateSkills(speedSkill);
 
@@ -117,6 +121,8 @@ export class OsuStarRating extends StarRating {
         if (basePerformanceValue > 1e-5) {
             this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4)
         }
+
+        console.log(`${this.total} stars (${this.aim} aim, ${this.speed} speed, ${this.flashlight} flashlight)`);
     }
 
     /**
@@ -163,7 +169,10 @@ export class OsuStarRating extends StarRating {
     protected createSkills(): OsuSkill[] {
         return [
             new OsuAim(this.mods),
-            new OsuSpeed(this.mods),
+            new OsuSpeed(
+                this.mods,
+                new OsuHitWindow(this.stats.od!).hitWindowFor300()
+            ),
             new OsuFlashlight(this.mods)
         ];
     }
