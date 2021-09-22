@@ -1,5 +1,5 @@
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { LoungeLockOperationResult } from "@alice-interfaces/moderation/LoungeLockOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { LoungeLockManager } from "@alice-utils/managers/LoungeLockManager";
@@ -19,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: LoungeLockOperationResult = await LoungeLockManager.lock(user.id, reason, duration);
+    const result: OperationResult = await LoungeLockManager.lock(user.id, reason, duration);
 
     if (!result.success) {
         return interaction.editReply({

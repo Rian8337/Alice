@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildPunishmentConfig } from "@alice-interfaces/database/aliceDb/DatabaseGuildPunishmentConfig";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Mute } from "@alice-interfaces/moderation/Mute";
 import { RoleMutePermission } from "@alice-interfaces/moderation/RoleMutePermission";
 import { Manager } from "@alice-utils/base/Manager";
@@ -69,7 +69,7 @@ export class GuildPunishmentConfig extends Manager {
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async grantMuteImmunity(roleId: Snowflake): Promise<DatabaseOperationResult> {
+    async grantMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
         if (this.immuneMuteRoles.find(r => r === roleId)) {
             return this.createOperationResult(true);
         }
@@ -92,7 +92,7 @@ export class GuildPunishmentConfig extends Manager {
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async revokeMuteImmunity(roleId: Snowflake): Promise<DatabaseOperationResult> {
+    async revokeMuteImmunity(roleId: Snowflake): Promise<OperationResult> {
         const index: number = this.immuneMuteRoles.findIndex(r => r === roleId);
 
         if (index === -1) {
@@ -117,7 +117,7 @@ export class GuildPunishmentConfig extends Manager {
      * @param roleId The ID of the role.
      * @param maxTime The maximum time the role is allowed to mute for. -1 means the role can mute indefinitely.
      */
-    async grantMutePermission(roleId: Snowflake, maxTime: number): Promise<DatabaseOperationResult> {
+    async grantMutePermission(roleId: Snowflake, maxTime: number): Promise<OperationResult> {
         const roleMutePermission: RoleMutePermission | undefined = this.allowedMuteRoles.get(roleId);
 
         if (roleMutePermission?.maxTime === maxTime) {
@@ -142,7 +142,7 @@ export class GuildPunishmentConfig extends Manager {
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
-    async revokeMutePermission(roleId: Snowflake): Promise<DatabaseOperationResult> {
+    async revokeMutePermission(roleId: Snowflake): Promise<OperationResult> {
         if (!this.allowedMuteRoles.delete(roleId)) {
             return this.createOperationResult(true);
         }

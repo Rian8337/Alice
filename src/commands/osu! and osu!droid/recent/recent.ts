@@ -129,15 +129,41 @@ export const config: Command["config"] = {
             description: "will show your most recent play."
         },
         {
-            command: "recent uid:51076 index:5",
+            command: "recent",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                },
+                {
+                    name: "index",
+                    value: 5
+                }
+            ],
             description: "will show the 5th most recent play of uid 51076."
         },
         {
-            command: "recent username:NeroYuki index:2",
+            command: "recent",
+            arguments: [
+                {
+                    name: "username",
+                    value: "NeroYuki"
+                },
+                {
+                    name: "index",
+                    value: 2
+                }
+            ],
             description: "will show the 2nd most recent play of username NeroYuki."
         },
         {
-            command: "recent user:@Rian8337#0001",
+            command: "recent",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will show the most recent play of Rian8337."
         }
     ],

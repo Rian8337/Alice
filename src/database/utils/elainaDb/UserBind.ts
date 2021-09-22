@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
@@ -139,7 +139,7 @@ export class UserBind extends Manager {
      * 
      * @returns An object containing information about the operation.
      */
-    async scanDPP(): Promise<DatabaseOperationResult> {
+    async scanDPP(): Promise<OperationResult> {
         if (await this.isDPPBanned()) {
             // Reset everything if user is banned.
             this.pp = new Collection();
@@ -203,7 +203,7 @@ export class UserBind extends Manager {
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.
      */
-    async setNewDPPValue(list: Collection<string, PPEntry>, playCountIncrement: number): Promise<DatabaseOperationResult> {
+    async setNewDPPValue(list: Collection<string, PPEntry>, playCountIncrement: number): Promise<OperationResult> {
         this.pp = list.clone();
 
         this.pp.sort((a, b) => {
@@ -232,7 +232,7 @@ export class UserBind extends Manager {
      * Recalculates this player's dpp, only taking account plays from
      * the current dpp list.
      */
-    async recalculateDPP(): Promise<DatabaseOperationResult> {
+    async recalculateDPP(): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
@@ -279,7 +279,7 @@ export class UserBind extends Manager {
     /**
      * Calculates this player's dpp into the prototype dpp database.
      */
-    async calculatePrototypeDPP(): Promise<DatabaseOperationResult> {
+    async calculatePrototypeDPP(): Promise<OperationResult> {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
@@ -347,7 +347,7 @@ export class UserBind extends Manager {
      * @param markAsSlotFulfill Whether to set `hasAskedForRecalc` to `true`.
      * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners.
      */
-    async recalculateAllScores(markAsSlotFulfill: boolean = true, isDPPRecalc: boolean = false): Promise<DatabaseOperationResult> {
+    async recalculateAllScores(markAsSlotFulfill: boolean = true, isDPPRecalc: boolean = false): Promise<OperationResult> {
         const newList: Collection<string, PPEntry> = new Collection();
 
         this.playc = 0;
@@ -473,7 +473,7 @@ export class UserBind extends Manager {
      * @param to The ID of the Discord account to move to.
      * @returns An object containing information about the operation.
      */
-    async moveBind(uid: number, to: Snowflake): Promise<DatabaseOperationResult> {
+    async moveBind(uid: number, to: Snowflake): Promise<OperationResult> {
         if (!this.previous_bind.includes(uid)) {
             return this.createOperationResult(false, "uid is not binded to this Discord account");
         }
@@ -547,7 +547,7 @@ export class UserBind extends Manager {
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
-    async bind(uid: number): Promise<DatabaseOperationResult>;
+    async bind(uid: number): Promise<OperationResult>;
 
     /**
      * Binds an osu!droid account to this Discord account.
@@ -555,7 +555,7 @@ export class UserBind extends Manager {
      * @param username The username of the osu!droid account.
      * @returns An object containing information about the operation.
      */
-    async bind(username: string): Promise<DatabaseOperationResult>;
+    async bind(username: string): Promise<OperationResult>;
 
     /**
      * Binds an osu!droid account to this Discord account.
@@ -563,14 +563,14 @@ export class UserBind extends Manager {
      * @param player The `Player` instance of the osu!droid account.
      * @returns An object containing information about the operation.
      */
-    async bind(player: Player): Promise<DatabaseOperationResult>;
+    async bind(player: Player): Promise<OperationResult>;
 
-    async bind(uidOrUsernameOrPlayer: string | number | Player): Promise<DatabaseOperationResult> {
+    async bind(uidOrUsernameOrPlayer: string | number | Player): Promise<OperationResult> {
         const player: Player = uidOrUsernameOrPlayer instanceof Player ?
             uidOrUsernameOrPlayer :
             await Player.getInformation(typeof uidOrUsernameOrPlayer === "string" ? { username: uidOrUsernameOrPlayer } : { uid: uidOrUsernameOrPlayer });
 
-        if (!player.username) {
+        if (!player.username || !player.uid) {
             return this.createOperationResult(false, "player with such uid or username is not found");
         }
 
@@ -610,7 +610,7 @@ export class UserBind extends Manager {
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
-    async unbind(uid: number): Promise<DatabaseOperationResult> {
+    async unbind(uid: number): Promise<OperationResult> {
         if (!this.isUidBinded(uid)) {
             return this.createOperationResult(false, "uid is not binded to this Discord account");
         }
@@ -657,7 +657,7 @@ export class UserBind extends Manager {
      * 
      * @param name The name of the clan.
      */
-    async setClan(name: string): Promise<DatabaseOperationResult> {
+    async setClan(name: string): Promise<OperationResult> {
         this.clan = name;
 
         return DatabaseManager.elainaDb.collections.userBind.update(

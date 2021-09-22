@@ -60,11 +60,35 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "mute permanent @Rian8337#0001 boo",
+            command: "mute permanent",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "boo"
+                }
+            ],
             description: "will mute Rian8337 permanently with reason \"boo\"."
         },
         {
-            command: "mute temporary 132783516176875520 2h bad",
+            command: "mute temporary",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "duration",
+                    value: "2h"
+                },
+                {
+                    name: "reason",
+                    value: "bad"
+                }
+            ],
             description: "will mute the user with that Discord ID for 2 hours with reason \"bad\"."
         }
     ],

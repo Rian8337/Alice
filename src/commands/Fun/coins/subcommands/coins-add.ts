@@ -7,7 +7,7 @@ import { coinsStrings } from "../coinsStrings";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     if (!CommandHelper.isExecutedByBotOwner(interaction)) {
@@ -34,7 +34,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await playerInfo.incrementCoins(addAmount);
+    const result: OperationResult = await playerInfo.incrementCoins(addAmount);
 
     if (!result.success) {
         return interaction.editReply({

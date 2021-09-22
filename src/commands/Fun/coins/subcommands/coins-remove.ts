@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { coinsStrings } from "../coinsStrings";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const userToRemove: User = interaction.options.getUser("user", true);
@@ -26,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await playerInfo.incrementCoins(-removeAmount);
+    const result: OperationResult = await playerInfo.incrementCoins(-removeAmount);
 
     if (!result.success) {
         return interaction.editReply({

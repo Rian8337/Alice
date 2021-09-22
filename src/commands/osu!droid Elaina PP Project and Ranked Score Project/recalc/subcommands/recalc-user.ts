@@ -3,7 +3,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
@@ -61,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await bindInfo.recalculateAllScores();
+    const result: OperationResult = await bindInfo.recalculateAllScores();
 
     CacheManager.recalculationQueue.delete(user.id);
 

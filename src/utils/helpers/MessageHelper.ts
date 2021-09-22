@@ -14,7 +14,7 @@ export abstract class MessageHelper {
         try {
             await message.channel.messages.fetch(message.id);
             return true;
-        } catch (ignored) {
+        } catch {
             return false;
         }
     }

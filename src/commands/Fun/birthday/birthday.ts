@@ -84,20 +84,26 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "fancy lock @Rian8337#0001",
-            description: "will compare your score among others."
+            command: "birthday set",
+            arguments: [
+                {
+                    name: "month",
+                    value: 2
+                },
+                {
+                    name: "date",
+                    value: 8
+                },
+                {
+                    name: "timezone",
+                    value: 7
+                }
+            ],
+            description: "will set your birthday to February 8 at UTC+7."
         },
         {
-            command: "compare uid 51076",
-            description: "will compare the score of an osu!droid account with uid 51076."
-        },
-        {
-            command: "compare username NeroYuki",
-            description: "will compare the score of an osu!droid account with username NeroYuki."
-        },
-        {
-            command: "compare user @Rian8337#0001",
-            description: "will compare the score of Rian8337."
+            command: "birthday view",
+            description: "will view your birthday."
         }
     ],
     permissions: [],

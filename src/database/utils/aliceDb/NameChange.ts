@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseNameChange } from "@alice-interfaces/database/aliceDb/DatabaseNameChange";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -36,7 +36,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * 
      * @returns An object containing information about the operation.
      */
-    async accept(): Promise<DatabaseOperationResult> {
+    async accept(): Promise<OperationResult> {
         if (this.isProcessed) {
             return this.createOperationResult(false, "no active name change requset");
         }
@@ -58,7 +58,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
         this.isProcessed = true;
 
-        const result: DatabaseOperationResult = await DatabaseManager.aliceDb.collections.nameChange.update(
+        const result: OperationResult = await DatabaseManager.aliceDb.collections.nameChange.update(
             { uid: this.uid },
             {
                 $set: {
@@ -83,7 +83,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
      * 
      * @returns An object containing information about the operation.
      */
-    async deny(): Promise<DatabaseOperationResult> {
+    async deny(): Promise<OperationResult> {
         if (this.isProcessed) {
             return this.createOperationResult(false, "no active name change requset");
         }

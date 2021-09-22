@@ -175,20 +175,56 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "fancy lock @Rian8337#0001",
-            description: "will compare your score among others."
+            command: "tag add",
+            arguments: [
+                {
+                    name: "name",
+                    value: "deni123"
+                }
+            ],
+            description: "will add a new empty tag called \"deni123\" which needs to be edited or given an attachment."
         },
         {
-            command: "compare uid 51076",
-            description: "will compare the score of an osu!droid account with uid 51076."
+            command: "tag add",
+            arguments: [
+                {
+                    name: "name",
+                    value: "deni123"
+                },
+                {
+                    name: "content",
+                    value: "hi"
+                }
+            ],
+            description: "will add a new tag called \"deni123\" with content \"hi\"."
         },
         {
-            command: "compare username NeroYuki",
-            description: "will compare the score of an osu!droid account with username NeroYuki."
+            command: "tag attach",
+            arguments: [
+                {
+                    name: "name",
+                    value: "deni123"
+                },
+                {
+                    name: "url",
+                    value: "https://b.ppy.sh/thumb/902745l.jpg"
+                }
+            ],
+            description: "will attach the given image to the tag \"deni123\"."
         },
         {
-            command: "compare user @Rian8337#0001",
-            description: "will compare the score of Rian8337."
+            command: "tag edit",
+            arguments: [
+                {
+                    name: "name",
+                    value: "deni123"
+                },
+                {
+                    name: "content",
+                    value: "hi"
+                }
+            ],
+            description: "will edit the tag \"deni123\"'s content to \"hi\"."
         }
     ],
     permissions: [],

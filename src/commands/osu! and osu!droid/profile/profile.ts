@@ -86,19 +86,43 @@ export const config: Command["config"] = {
             description: "will view your currently binded osu!droid account's profile."
         },
         {
-            command: "profile bindinfo @Rian8337#0001",
+            command: "profile bindinfo",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will view Rian8337's bind information."
         },
         {
-            command: "profile view 132783516176875520",
+            command: "profile view",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will view the currently binded osu!droid account's profile of the user with that Discord ID."
         },
         {
-            command: "profile bindinfo dgsrz",
+            command: "profile bindinfo",
+            arguments: [
+                {
+                    name: "username",
+                    value: "dgsrz"
+                }
+            ],
             description: "will view the bind information of the osu!droid account with that username."
         },
         {
-            command: "profile view 11678",
+            command: "profile view",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 11678
+                }
+            ],
             description: "will view that uid's profile."
         }
     ],

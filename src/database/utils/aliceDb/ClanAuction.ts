@@ -1,6 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { AuctionBid } from "@alice-interfaces/clan/AuctionBid";
-import { AuctionOperationResult } from "@alice-interfaces/clan/AuctionOperationResult";
 import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
 import { Manager } from "@alice-utils/base/Manager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
@@ -10,6 +9,7 @@ import { Collection } from "discord.js";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
 import { PowerupType } from "@alice-types/clan/PowerupType";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * Represents a clan auction.
@@ -81,7 +81,7 @@ export class ClanAuction extends Manager {
      * @param amount The amount of Alice coins to bid.
      * @returns An object containing information about the operation.
      */
-    bid(clan: Clan, amount: number): AuctionOperationResult {
+    bid(clan: Clan, amount: number): OperationResult {
         this.bids.set(
             clan.name,
             {
@@ -103,7 +103,7 @@ export class ClanAuction extends Manager {
      * @param force Whether to forcefully end the auction.
      * @returns An object containing information about the operation.
      */
-    async end(force?: boolean): Promise<AuctionOperationResult> {
+    async end(force?: boolean): Promise<OperationResult> {
         if (!force && DateTimeFormatHelper.getTimeDifference(this.expirydate * 1000) > 0) {
             return this.createOperationResult(false, "not the time to end auction yet");
         }
@@ -134,7 +134,7 @@ export class ClanAuction extends Manager {
      * @param clan The clan. If unspecified, the winning clan will be given. This can also be used to save database requests.
      * @returns An object containing information about the operation.
      */
-    async giveItemTo(clan?: Clan): Promise<AuctionOperationResult> {
+    async giveItemTo(clan?: Clan): Promise<OperationResult> {
         if (!clan) {
             clan = <Clan> await this.getWinnerClan();
             if (!clan) {
@@ -154,7 +154,7 @@ export class ClanAuction extends Manager {
     /**
      * Returns the auctioned item to the auctioneer.
      */
-    async returnItemToAuctioneer(): Promise<AuctionOperationResult> {
+    async returnItemToAuctioneer(): Promise<OperationResult> {
         const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromName(this.auctioneer);
 
         if (!clan) {
@@ -178,7 +178,7 @@ export class ClanAuction extends Manager {
      * 
      * @returns An object containing information about the operation.
      */
-    async updateAuction(): Promise<AuctionOperationResult> {
+    async updateAuction(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.clanAuction.update(
             { name: this.name },
             {

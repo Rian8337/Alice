@@ -5,7 +5,7 @@ import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { DatabaseClanAuction } from "@alice-interfaces/database/aliceDb/DatabaseClanAuction";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -95,7 +95,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     clan.powerups.get(powerup)!.amount -= amount;
 
-    const result: DatabaseOperationResult = await clan.updateClan();
+    const result: OperationResult = await clan.updateClan();
 
     if (!result.success) {
         return interaction.editReply({

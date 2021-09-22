@@ -45,15 +45,33 @@ export const config: Command["config"] = {
             description: "will grab the download link of the cached beatmap in the channel (if any)."
         },
         {
-            command: "downloadlink 1884658",
+            command: "downloadlink",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                }
+            ],
             description: "will grab the download link of the beatmap with ID 1884658."
         },
         {
-            command: "downloadlink https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "downloadlink",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                }
+            ],
             description: "will grab the download link of the linked beatmap."
         },
         {
-            command: "downloadlink https://osu.ppy.sh/b/1884658",
+            command: "downloadlink",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/b/1884658"
+                }
+            ],
             description: "will grab the download link of the linked beatmap."
         }
     ],

@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMatch";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { matchStrings } from "../matchStrings";
@@ -70,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         matchData.result!.push([]);
     }
 
-    const result: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.insert(matchData);
+    const result: OperationResult = await DatabaseManager.elainaDb.collections.tournamentMatch.insert(matchData);
 
     if (!result.success) {
         return interaction.editReply({

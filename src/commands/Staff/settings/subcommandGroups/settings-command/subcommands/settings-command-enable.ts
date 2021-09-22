@@ -1,7 +1,7 @@
 import { Constants } from "@alice-core/Constants";
 import { Command } from "@alice-interfaces/core/Command";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { CommandUtilScope } from "@alice-types/utils/CommandUtilScope";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -26,7 +26,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    let result: DatabaseOperationResult | undefined;
+    let result: OperationResult | undefined;
 
     switch (scope) {
         case "channel":

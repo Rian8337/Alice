@@ -1,7 +1,7 @@
 import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
 import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
 import { DatabaseLoungeLock } from "@alice-interfaces/database/aliceDb/DatabaseLoungeLock";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
@@ -47,7 +47,7 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
      * @param reason Reason for locking the user.
      * @returns An object containing information about the operation.
      */
-    insertNewLock(userId: Snowflake, duration: number, reason: string): Promise<DatabaseOperationResult> {
+    insertNewLock(userId: Snowflake, duration: number, reason: string): Promise<OperationResult> {
         return this.insert({
             discordid: userId,
             expiration: Date.now() + duration * 1000,

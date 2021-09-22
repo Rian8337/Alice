@@ -45,6 +45,7 @@ import { ModUtil } from './utils/ModUtil';
 import { modes } from './constants/modes';
 import { movementType } from './constants/movementType';
 import { OsuAim } from './difficulty/skills/OsuAim';
+import { OsuFlashlight } from './difficulty/skills/OsuFlashlight';
 import { OsuPerformanceCalculator } from './difficulty/OsuPerformanceCalculator';
 import { OsuSpeed } from './difficulty/skills/OsuSpeed';
 import { OsuStarRating } from './difficulty/OsuStarRating';
@@ -322,6 +323,11 @@ export = {
      * API request builder for osu!standard.
      */
     OsuAPIRequestBuilder,
+
+    /**
+     * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
+     */
+    OsuFlashlight,
 
     /**
      * Represents the hit window of osu!standard.

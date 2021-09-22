@@ -111,7 +111,7 @@ export const config: Command["config"] = {
                     name: "replayurl",
                     required: true,
                     type: CommandArgumentType.STRING,
-                    description: "The download URL to the replay."
+                    description: "The download URL to the replay (.odr file)."
                 }
             ]
         },
@@ -175,12 +175,28 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "daily submit",
-            description: "will submit your 50 most recent plays towards the current ongoing daily challenge."
+            command: "daily checksubmit",
+            arguments: [
+                {
+                    name: "challengeid",
+                    value: "d21"
+                }
+            ],
+            description: "will check if you have played challenge `d21`."
         },
         {
-            command: "daily checksubmit d21",
-            description: "will check if you have played challenge `d21`."
+            command: "daily manualsubmit",
+            arguments: [
+                {
+                    name: "replayurl",
+                    value: "https://cdn.discordapp.com/attachments/631130003441975297/888432557941739581/e2dc39ca969a739eaa711ebf431ebdda163.odr"
+                }
+            ],
+            description: "will submit the linked replay to be verified against the current daily or weekly challenge."
+        },
+        {
+            command: "daily submit",
+            description: "will submit your 50 most recent plays towards the current ongoing daily challenge."
         }
     ],
     permissions: [],

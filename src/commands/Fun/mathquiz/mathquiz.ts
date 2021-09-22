@@ -128,11 +128,27 @@ export const config: Command["config"] = {
             description: "will generate a math equation with difficulty level 1 and 4 operator amount."
         },
         {
-            command: "mathquiz 20",
+            command: "mathquiz difflevel:20",
+            arguments: [
+                {
+                    name: "difflevel",
+                    value: 20
+                }
+            ],
             description: "will generate a math equation with difficulty level 20 and 4 operator amount."
         },
         {
-            command: "mathquiz 5 5",
+            command: "mathquiz difflevel:5 operatoramount:5",
+            arguments: [
+                {
+                    name: "difflevel",
+                    value: 5
+                },
+                {
+                    name: "operatoramount",
+                    value: 5
+                }
+            ],
             description: "will generate a math equation with difficulty level 5 and 5 operator amount."
         }
     ],

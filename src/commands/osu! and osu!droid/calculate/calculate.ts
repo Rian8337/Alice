@@ -48,7 +48,7 @@ export const run: Command["run"] = async (_, interaction) => {
             n50: Math.max(0, interaction.options.getInteger("x50") ?? 0),
             nmiss: Math.max(0, interaction.options.getInteger("misses") ?? 0)
         }),
-        NumberHelper.clamp(interaction.options.getNumber("accuracy") ?? 0, 0, 100),
+        NumberHelper.clamp(interaction.options.getNumber("accuracy") ?? 100, 0, 100),
         interaction.options.getInteger("combo") ? Math.max(0, interaction.options.getInteger("combo", true)) : undefined,
         1,
         stats
@@ -75,7 +75,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `Raw PC stars: ${calcResult.osu.toString()}\nRaw PC pp: ${calcResult.osu.stars.toString()}`;
+        string += `Raw PC stars: ${calcResult.osu.stars.toString()}\nRaw PC pp: ${calcResult.osu.toString()}`;
     }
 
     if (string) {
@@ -155,23 +155,97 @@ export const config: Command["config"] = {
             description: "will calculate the latest cached beatmap in the channel."
         },
         {
-            command: "calculate 1884658",
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                }
+            ],
             description: "will calculate the beatmap with ID 1884658."
         },
         {
-            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                }
+            ],
             description: "will calculate the linked beatmap."
         },
         {
-            command: "calculate 1884658 99.89%",
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658
+                },
+                {
+                    name: "accuracy",
+                    value: 99.89
+                }
+            ],
             description: "will calculate the beatmap with ID 1884658 with 99.89% as accuracy gained."
         },
         {
-            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658 1x100 1x50 +HDHR -d -p",
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                },
+                {
+                    name: "x100",
+                    value: 1
+                },
+                {
+                    name: "x50",
+                    value: 1
+                },
+                {
+                    name: "mods",
+                    value: "HDHR"
+                },
+                {
+                    name: "showdroiddetail",
+                    value: true
+                },
+                {
+                    name: "showosudetail",
+                    value: true
+                }
+            ],
             description: "will calculate the linked beatmap with 1x 100 and 1x 50 gained, HDHR mod, and show detailed response for both droid and standard difficulty and performance value."
         },
         {
-            command: "calculate https://osu.ppy.sh/beatmapsets/902745#osu/1884658 10x100 5x50 +HDDT 2.0x 150x",
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                },
+                {
+                    name: "x100",
+                    value: 1
+                },
+                {
+                    name: "x50",
+                    value: 1
+                },
+                {
+                    name: "mods",
+                    value: "HDDT"
+                },
+                {
+                    name: "speedmultiplier",
+                    value: 2
+                },
+                {
+                    name: "combo",
+                    value: 150
+                }
+            ],
             description: "will calculate the linked beatmap with 10x 100 and 5x 50 gained, HDDT mod, 2x speed multiplier, and a maximum combo of 150."
         }
     ],

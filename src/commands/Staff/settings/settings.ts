@@ -320,15 +320,37 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "settings punishmentlog set #channel",
+            command: "settings punishmentlog set",
+            arguments: [
+                {
+                    name: "channel",
+                    value: "#channel"
+                }
+            ],
             description: "will set the current guild's punishment log channel to #channel."
         },
         {
-            command: "settings muteimmunity grant @Moderator",
+            command: "settings muteimmunity grant",
+            arguments: [
+                {
+                    name: "role",
+                    value: "@Moderator"
+                }
+            ],
             description: "will grant mute immunity for the Moderator role."
         },
         {
-            command: "settings command cooldown recent 60",
+            command: "settings command cooldown",
+            arguments: [
+                {
+                    name: "command",
+                    value: "recent"
+                },
+                {
+                    name: "duration",
+                    value: "60s"
+                }
+            ],
             description: "will set the cooldown for \"recent\" command to 60 seconds."
         }
     ],

@@ -60,20 +60,14 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "fancy lock @Rian8337#0001",
-            description: "will compare your score among others."
-        },
-        {
-            command: "compare uid 51076",
-            description: "will compare the score of an osu!droid account with uid 51076."
-        },
-        {
-            command: "compare username NeroYuki",
-            description: "will compare the score of an osu!droid account with username NeroYuki."
-        },
-        {
-            command: "compare user @Rian8337#0001",
-            description: "will compare the score of Rian8337."
+            command: "fancy lock user:@Rian8337#0001",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
+            description: "will lock Rian8337 from the lounge channel."
         }
     ],
     permissions: ["BOT_OWNER"],

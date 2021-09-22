@@ -60,7 +60,7 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
     if (!CommandHelper.userFulfillsCommandPermission(interaction, command.config.permissions)) {
         return interaction.reply({
             content: MessageCreator.createReject(
-                `${Constants.noPermissionReject}. You need these permissions: \`${PermissionHelper.getPermissionString(command.config.permissions)}\`.`
+                `${Constants.noPermissionReject} You need these permissions: \`${PermissionHelper.getPermissionString(command.config.permissions)}\`.`
             )
         });
     }
@@ -81,10 +81,6 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             });
         }
 
-        client.logger.info(
-            `${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`
-        );
-
         const finalCooldown: number = Math.max(
             // Local command cooldown
             command.config.cooldown ?? 0,
@@ -103,6 +99,8 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
         CommandHelper.setCooldown(cooldownKey, finalCooldown);
     }
 
+    client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`);
+
     // Ephemeral handling
     try {
         await interaction.deferReply({
@@ -113,7 +111,7 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
                 subcommand?.config.replyEphemeral ||
                 subcommandGroup?.config.replyEphemeral
         });
-    } catch (ignored) {
+    } catch {
         return;
     }
 

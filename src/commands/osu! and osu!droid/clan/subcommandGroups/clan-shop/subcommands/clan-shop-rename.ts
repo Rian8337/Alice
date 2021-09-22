@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
@@ -71,7 +71,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const coinDeductionResult: DatabaseOperationResult = await playerInfo.incrementCoins(-cost);
+    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-cost);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
@@ -81,7 +81,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const auctionRenameResult: DatabaseOperationResult = await DatabaseManager.aliceDb.collections.clanAuction.update(
+    const auctionRenameResult: OperationResult = await DatabaseManager.aliceDb.collections.clanAuction.update(
         { auctioneer: clan.name }, { $set: { auctioneer: name } }
     );
 
@@ -93,7 +93,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const bindRenameResult: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
+    const bindRenameResult: OperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
         { clan: clan.name }, { $set: { clan: name } }
     );
 
@@ -107,7 +107,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     clan.name = name;
 
-    const finalResult: DatabaseOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({

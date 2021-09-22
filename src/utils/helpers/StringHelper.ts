@@ -163,7 +163,7 @@ export abstract class StringHelper {
         try {
             url = new URL(str);
             return true;
-        } catch (ignored) {
+        } catch {
             return false;
         }
     }

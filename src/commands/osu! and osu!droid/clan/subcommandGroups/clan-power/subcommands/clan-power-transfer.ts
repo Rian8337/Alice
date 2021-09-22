@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -170,7 +170,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     toClan.member_list.get(to.id)!.battle_cooldown = currentTime + 86400 * 4;
     toClan.power += totalGivenPower;
 
-    const fromClanResult: DatabaseOperationResult = await fromClan.updateClan();
+    const fromClanResult: OperationResult = await fromClan.updateClan();
 
     if (!fromClanResult.success) {
         return interaction.editReply({
@@ -178,7 +178,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const toClanResult: DatabaseOperationResult = await toClan.updateClan();
+    const toClanResult: OperationResult = await toClan.updateClan();
 
     if (!toClanResult.success) {
         return interaction.editReply({

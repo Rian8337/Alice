@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MessageEmbed } from "discord.js";
@@ -22,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     match.status = "completed";
 
-    const result: DatabaseOperationResult = await match.updateMatch();
+    const result: OperationResult = await match.updateMatch();
 
     if (!result.success) {
         return interaction.editReply({

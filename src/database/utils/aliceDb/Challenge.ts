@@ -3,7 +3,6 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Bonus } from "@alice-interfaces/challenge/Bonus";
 import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
-import { ChallengeOperationResult } from "@alice-interfaces/challenge/ChallengeOperationResult";
 import { PassRequirement } from "@alice-interfaces/challenge/PassRequirement";
 import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
@@ -23,6 +22,7 @@ import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper"
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { UserBind } from "../elainaDb/UserBind";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * Represents a daily or weekly challenge.
@@ -113,9 +113,9 @@ export class Challenge extends Manager {
     }
 
     /**
-     * Whether the challenge has started.
+     * Whether the challenge is ongoing.
      */
-    get hasStarted(): boolean {
+    get isOngoing(): boolean {
         return this.status === "ongoing";
     }
 
@@ -150,7 +150,7 @@ export class Challenge extends Manager {
      * 
      * @returns An object containing information about the operation.
      */
-    async start(): Promise<ChallengeOperationResult> {
+    async start(): Promise<OperationResult> {
         if (this.status !== "scheduled") {
             return this.createOperationResult(false, "challenge is not scheduled");
         }
@@ -188,8 +188,8 @@ export class Challenge extends Manager {
      * @param force Whether to force end the challenge.
      * @returns An object containing information about the operation.
      */
-    async end(force?: boolean): Promise<ChallengeOperationResult> {
-        if (!this.hasStarted) {
+    async end(force?: boolean): Promise<OperationResult> {
+        if (!this.isOngoing) {
             return this.createOperationResult(false, "challenge is not ongoing");
         }
 
@@ -251,7 +251,7 @@ export class Challenge extends Manager {
      * @param score The score.
      * @returns An object containing information about the operation.
      */
-    async checkScoreCompletion(score: Score): Promise<ChallengeOperationResult> {
+    async checkScoreCompletion(score: Score): Promise<OperationResult> {
         if (!this.isConstrainFulfilled(score.mods)) {
             return this.createOperationResult(false, "constrain not fulfilled");
         }
@@ -272,7 +272,11 @@ export class Challenge extends Manager {
             return this.createOperationResult(false, "custom speed multiplier and/or force AR is used");
         }
 
-        const calcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(score))!;
+        const calcResult: PerformanceCalculationResult | null = (await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+            this.beatmapid,
+            await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
+            score.replay
+        ))!;
 
         const pass: boolean = await this.verifyPassCompletion(
             score,
@@ -289,7 +293,7 @@ export class Challenge extends Manager {
      * @param score The data of the replay.
      * @returns An object containing information about the operation.
      */
-    async checkReplayCompletion(replay: ReplayAnalyzer): Promise<ChallengeOperationResult> {
+    async checkReplayCompletion(replay: ReplayAnalyzer): Promise<OperationResult> {
         if (!replay.data) {
             await replay.analyze();
 
@@ -313,10 +317,6 @@ export class Challenge extends Manager {
         }
 
         const calcResult: PerformanceCalculationResult = (await this.getReplayCalculationResult(replay))!;
-
-        if (!this.verifyHitObjectData(calcResult.map.map!, data)) {
-            return this.createOperationResult(false, "Replay seem to be edited");
-        }
 
         const pass: boolean = await this.verifyPassCompletion(
             replay,
@@ -412,7 +412,7 @@ export class Challenge extends Manager {
                         break;
                     case "mod":
                         const mods: Mod[] = scoreOrReplay instanceof Score ? scoreOrReplay.mods : scoreOrReplay.data!.convertedMods;
-                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(<string> tier.value);
+                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet((<string> tier.value).toUpperCase());
                         break;
                     case "rank":
                         const rank: string = scoreOrReplay instanceof Score ? scoreOrReplay.rank : scoreOrReplay.data!.rank;
@@ -692,55 +692,6 @@ export class Challenge extends Manager {
             ),
             replay
         );
-    }
-
-    /**
-     * Verifies whether replay
-     */
-    private verifyHitObjectData(map: Beatmap, data: ReplayData): boolean {
-        if (map.objects.length !== data.hitObjectData.length) {
-            return false;
-        }
-
-        const modNoSpeedChange: Mod[] = data.convertedMods.filter(m => !ModUtil.speedChangingMods.find(mod => m.acronym === mod.acronym));
-        const isPrecise: boolean = data.convertedMods.some(m => m instanceof ModPrecise);
-        const od: number = new MapStats({ od: map.od, mods: modNoSpeedChange }).calculate({ mode: modes.droid }).od!;
-        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
-
-        const hitWindow300: number = hitWindow.hitWindowFor300(isPrecise);
-        const hitWindow100: number = hitWindow.hitWindowFor100(isPrecise);
-        const hitWindow50: number = hitWindow.hitWindowFor50(isPrecise);
-
-        for (let i = 0; i < map.objects.length; ++i) {
-            const object: HitObject = map.objects[i];
-            const hitData: ReplayObjectData = data.hitObjectData[i];
-
-            if (!(object instanceof Circle) || hitData.result === hitResult.RESULT_0) {
-                continue;
-            }
-
-            const accuracyAbsolute: number = Math.abs(hitData.accuracy);
-
-            let isEdited: boolean = false;
-
-            switch (hitData.result) {
-                case hitResult.RESULT_50:
-                    isEdited = accuracyAbsolute > hitWindow50;
-                    break;
-                case hitResult.RESULT_100:
-                    isEdited = accuracyAbsolute > hitWindow100;
-                    break;
-                case hitResult.RESULT_300:
-                    isEdited = accuracyAbsolute > hitWindow300;
-                    break;
-            }
-
-            if (isEdited) {
-                return isEdited;
-            }
-        }
-
-        return false;
     }
 
     /**

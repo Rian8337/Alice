@@ -3,7 +3,7 @@ import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/Tournamen
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -167,7 +167,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         match.result[i].push(scoreList[i]);
     }
 
-    const finalResult: DatabaseOperationResult = await match.updateMatch();
+    const finalResult: OperationResult = await match.updateMatch();
 
     if (!finalResult.success) {
         return interaction.editReply({

@@ -2,7 +2,7 @@ import { MapInfo } from "osu-droid";
 import { Config } from "@alice-core/Config";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { WhitelistOperationResult } from "@alice-interfaces/dpp/WhitelistOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
@@ -23,7 +23,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        `Detected Beatmap ID: ${beatmapID}\n\nChoose the action that you want to do.`,
+        `Detected Beatmap ID: ${beatmapID}. Choose the action that you want to do.`,
         [
             {
                 label: "Blacklist",
@@ -60,7 +60,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 });
             }
 
-            const blacklistResult: WhitelistOperationResult = await WhitelistManager.blacklist(beatmapInfo, reason);
+            const blacklistResult: OperationResult = await WhitelistManager.blacklist(beatmapInfo, reason);
 
             if (!blacklistResult.success) {
                 return interaction.editReply({
@@ -78,7 +78,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
             break;
         case "unblacklist":
-            const unblacklistResult: WhitelistOperationResult = await WhitelistManager.unblacklist(beatmapInfo);
+            const unblacklistResult: OperationResult = await WhitelistManager.unblacklist(beatmapInfo);
 
             if (!unblacklistResult.success) {
                 return interaction.editReply({
@@ -119,15 +119,45 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "blacklist 1764213 Abuse map",
+            command: "blacklist",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1764213
+                },
+                {
+                    name: "reason",
+                    value: "Abuse map"
+                }
+            ],
             description: "will blacklist/unblacklist the beatmap with ID 1764213 with reason \"Abuse map\"."
         },
         {
-            command: "blacklist https://osu.ppy.sh/b/1884658 Broken due to diffcalc",
+            command: "blacklist",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/b/1884658"
+                },
+                {
+                    name: "reason",
+                    value: "Broken due to diffcalc"
+                }
+            ],
             description: "will blacklist/unblacklist the linked beatmap with reason \"Broken due to diffcalc\"."
         },
         {
-            command: "blacklist https://osu.ppy.sh/beatmapsets/902745#osu/1884658 Broken due to diffcalc",
+            command: "blacklist",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                },
+                {
+                    name: "reason",
+                    value: "Abuse map"
+                }
+            ],
             description: "will blacklist/unblacklist the linked beatmap with reason \"Broken due to diffcalc\"."
         }
     ],

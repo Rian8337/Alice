@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildTag } from "@alice-interfaces/database/aliceDb/DatabaseGuildTag";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
@@ -41,7 +41,7 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
      * 
      * @returns An object containing information about the operation.
      */
-    updateTag(): Promise<DatabaseOperationResult> {
+    updateTag(): Promise<OperationResult> {
         return DatabaseManager.aliceDb.collections.guildTags.update(
             {
                 guildid: this.guildid,

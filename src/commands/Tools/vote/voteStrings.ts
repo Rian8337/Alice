@@ -7,7 +7,6 @@ export enum voteStrings {
     endVoteSuccess = "Vote ended!",
     voteChoiceIsSameAsBefore = "I'm sorry, you have voted for that choice!",
     voteRegistered = "%s, %s!",
-    invalidVoteStartInput = "Hey, your input is invalid! I cannot find a topic nor choices!",
     tooFewChoices = "I'm sorry, you must specify at least 2 choices!",
     voteStartSuccess = "Successfully started vote."
 };

@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseAskCount } from "@alice-interfaces/database/aliceDb/DatabaseAskCount";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
@@ -27,7 +27,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
      * @param value The value to increase.
      * @returns An object containing information about the operation.
      */
-    increaseValue(value: number): Promise<DatabaseOperationResult> {
+    increaseValue(value: number): Promise<OperationResult> {
         this.count += value;
 
         return DatabaseManager.aliceDb.collections.askCount.update(
@@ -42,7 +42,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
      * @param value The value to increase.
      * @returns An object containing information about the operation.
      */
-    setValue(value: number): Promise<DatabaseOperationResult> {
+    setValue(value: number): Promise<OperationResult> {
         this.count = value;
 
         return DatabaseManager.aliceDb.collections.askCount.update(

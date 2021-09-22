@@ -4,7 +4,7 @@ import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
 import { Collection as MongoDBCollection } from "mongodb";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * A manager for the `namechange` collection.
@@ -58,7 +58,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<Datab
      * @param newUsername The new username that is requested by the player.
      * @returns An object containing information about the operation.
      */
-    requestNameChange(discordId: Snowflake, uid: number, currentUsername: string, newUsername: string): Promise<DatabaseOperationResult> {
+    requestNameChange(discordId: Snowflake, uid: number, currentUsername: string, newUsername: string): Promise<OperationResult> {
         return this.update(
             { uid: uid },
             {

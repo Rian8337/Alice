@@ -26,11 +26,6 @@ export class Slider extends HitObject {
     readonly path: SliderPath;
 
     /**
-     * The slider's end position.
-     */
-    readonly endPosition: Vector2;
-
-    /**
      * The slider's velocity.
      */
     readonly velocity: number;
@@ -100,11 +95,10 @@ export class Slider extends HitObject {
         mapTickRate: number,
         tickDistanceMultiplier: number
     }) {
-        super(values);
+        super({ endPosition: values.position.add(values.path.positionAt(1)), ...values });
         // Basically equal to span count
         this.repetitions = values.repetitions;
         this.path = values.path;
-        this.endPosition = this.position.add(this.path.positionAt(1));
 
         const scoringDistance: number = 100 * values.mapSliderVelocity * values.speedMultiplier;
         this.velocity = scoringDistance / values.msPerBeat;

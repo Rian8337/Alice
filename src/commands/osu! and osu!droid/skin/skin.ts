@@ -45,11 +45,23 @@ export const config: Command["config"] = {
             description: "will view your own skin."
         },
         {
-            command: "skin view @Rian8337#0001",
+            command: "skin view",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will view Rian8337's skin."
         },
         {
-            command: "skin set https://osu.ppy.sh/beatmapsets/902745#osu/1884658",
+            command: "skin set",
+            arguments: [
+                {
+                    name: "url",
+                    value: "https://osu.ppy.sh/beatmapsets/902745#osu/1884658"
+                }
+            ],
             description: "will set your skin to the specified URL."
         }
     ],

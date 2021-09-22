@@ -113,7 +113,13 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "emojistatistics average",
+            command: "emojistatistics",
+            arguments: [
+                {
+                    name: "sortoption",
+                    value: "Average per month"
+                }
+            ],
             description: "will show emoji usage statistics in the server sorted by average usage per month."
         }
     ],

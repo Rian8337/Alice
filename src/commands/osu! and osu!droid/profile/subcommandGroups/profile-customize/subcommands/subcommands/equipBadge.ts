@@ -83,7 +83,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             interaction.user.toString(),
             badge.id,
             (badgeIndex + 1).toString()
-        )
+        ),
+        embeds: []
     });
 };
 

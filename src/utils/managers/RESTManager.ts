@@ -41,7 +41,7 @@ export abstract class RESTManager extends Manager {
 
         try {
             return loadImage(result.data);
-        } catch (ignored) {
+        } catch {
             return null;
         }
     }

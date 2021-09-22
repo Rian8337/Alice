@@ -121,7 +121,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     /**
      * Creates a button-based paging.
      * 
-     * If there is only 1 page to view, no buttons will be enabled.
+     * If there is only 1 page to view, no buttons will be shown.
      * 
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
@@ -138,8 +138,6 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     private static async createButtonBasedPaging(interaction: CommandInteraction, options: MessageOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, limitless: boolean, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
         const pages: number = limitless ? Number.POSITIVE_INFINITY : Math.ceil(contents.length / contentsPerPage);
 
-        const onlyOnePage: boolean = pages === 1;
-
         let currentPage: number = startPage;
 
         const buttons: MessageButton[] = this.createPagingButtons(currentPage, pages);
@@ -147,8 +145,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         const component: MessageActionRow = new MessageActionRow()
             .addComponents(buttons);
 
-        options.components ??= [];
-        options.components.push(component);
+        if (pages !== 1) {
+            options.components ??= [];
+            options.components.push(component);
+        }
 
         /**
          * Edits paging embed if the page button uses an embed to display contents to the user.
@@ -169,7 +169,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         const message: Message = <Message> await interaction.editReply(options);
 
-        if (onlyOnePage) {
+        if (pages === 1) {
             return message;
         }
 

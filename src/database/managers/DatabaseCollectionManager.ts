@@ -1,5 +1,5 @@
 import { BaseDocument } from "@alice-interfaces/database/BaseDocument";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
@@ -48,7 +48,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    update(filter: FilterQuery<T>, query: UpdateQuery<T> | Partial<T>, options: UpdateManyOptions = {}): Promise<DatabaseOperationResult> {
+    update(filter: FilterQuery<T>, query: UpdateQuery<T> | Partial<T>, options: UpdateManyOptions = {}): Promise<OperationResult> {
         return new Promise(resolve => {
             this.collection.updateMany(filter, query, options, err => {
                 if (err) {
@@ -163,7 +163,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
-    delete(filter: FilterQuery<T>): Promise<DatabaseOperationResult> {
+    delete(filter: FilterQuery<T>): Promise<OperationResult> {
         return new Promise(resolve => {
             this.collection.deleteMany(filter, err => {
                 if (err) {
@@ -180,7 +180,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * 
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
-    insert(...docs: Partial<T>[]): Promise<DatabaseOperationResult> {
+    insert(...docs: Partial<T>[]): Promise<OperationResult> {
         return new Promise(resolve => {
             this.collection.insertMany(docs.map(v => <OptionalId<T>> Object.assign(this.defaultDocument, v)), err => {
                 if (err) {

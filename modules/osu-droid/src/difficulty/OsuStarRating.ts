@@ -7,6 +7,8 @@ import { StarRating } from './base/StarRating';
 import { OsuSkill } from './skills/OsuSkill';
 import { ModTouchDevice } from '../mods/ModTouchDevice';
 import { Mod } from '../mods/Mod';
+import { OsuFlashlight } from './skills/OsuFlashlight';
+import { ModFlashlight } from '../mods/ModFlashlight';
 
 /**
  * Difficulty calculator for osu!standard gamemode.
@@ -21,6 +23,11 @@ export class OsuStarRating extends StarRating {
      * The speed star rating of the beatmap.
      */
     speed: number = 0;
+
+    /**
+     * The flashlight star rating of the beatmap.
+     */
+    flashlight: number = 0;
 
     protected readonly difficultyMultiplier: number = 0.0675;
 
@@ -47,7 +54,7 @@ export class OsuStarRating extends StarRating {
      * Calculates the aim star rating of the beatmap and stores it in this instance.
      */
     calculateAim(): void {
-        const aimSkill: OsuAim = new OsuAim();
+        const aimSkill: OsuAim = new OsuAim(this.mods);
 
         this.calculateSkills(aimSkill);
 
@@ -64,7 +71,7 @@ export class OsuStarRating extends StarRating {
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
-        const speedSkill: OsuSpeed = new OsuSpeed();
+        const speedSkill: OsuSpeed = new OsuSpeed(this.mods);
 
         this.calculateSkills(speedSkill);
 
@@ -74,14 +81,34 @@ export class OsuStarRating extends StarRating {
     }
 
     /**
+     * Calculates the flashlight star rating of the beatmap and stores it in this instance.
+     */
+    calculateFlashlight(): void {
+        const flashlightSkill: OsuFlashlight = new OsuFlashlight(this.mods);
+
+        this.calculateSkills(flashlightSkill);
+
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
+    }
+
+    /**
      * Calculates the total star rating of the beatmap and stores it in this instance.
      */
     calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
         const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        let flashlightPerformanceValue: number = 0;
+
+        if (this.mods.some(m => m instanceof ModFlashlight)) {
+            flashlightPerformanceValue = Math.pow(this.flashlight, 2) * 25;
+        }
+
         const basePerformanceValue: number = Math.pow(
             Math.pow(aimPerformanceValue, 1.1) +
-            Math.pow(speedPerformanceValue, 1.1),
+            Math.pow(speedPerformanceValue, 1.1) +
+            Math.pow(flashlightPerformanceValue, 1.1),
             1 / 1.1
         );
 
@@ -100,12 +127,15 @@ export class OsuStarRating extends StarRating {
 
         const aimSkill: OsuAim = <OsuAim> skills[0];
         const speedSkill: OsuSpeed = <OsuSpeed> skills[1];
+        const flashlightSkill: OsuFlashlight = <OsuFlashlight> skills[2];
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
         this.speedStrainPeaks = speedSkill.strainPeaks;
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
         this.speed = this.starValue(speedSkill.difficultyValue());
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
 
         if (this.mods.some(m => m instanceof ModTouchDevice)) {
             this.aim = Math.pow(this.aim, 0.8);
@@ -120,7 +150,8 @@ export class OsuStarRating extends StarRating {
     toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
-            " aim, " + this.speed.toFixed(2) + " speed)"
+            " aim, " + this.speed.toFixed(2) + " speed, " +
+            this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 
@@ -129,8 +160,9 @@ export class OsuStarRating extends StarRating {
      */
     protected createSkills(): OsuSkill[] {
         return [
-            new OsuAim(),
-            new OsuSpeed()
+            new OsuAim(this.mods),
+            new OsuSpeed(this.mods),
+            new OsuFlashlight(this.mods)
         ];
     }
 }

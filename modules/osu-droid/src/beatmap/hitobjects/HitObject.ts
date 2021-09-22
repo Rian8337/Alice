@@ -21,6 +21,11 @@ export abstract class HitObject {
     readonly position: Vector2;
 
     /**
+     * The end position of the hitobject in osu!pixels.
+     */
+    readonly endPosition: Vector2;
+
+    /**
      * The end time of the hitobject.
      */
     endTime: number;
@@ -44,12 +49,14 @@ export abstract class HitObject {
         startTime: number,
         position: Vector2,
         type: number,
-        endTime?: number
+        endTime?: number,
+        endPosition?: Vector2
     }) {
         this.startTime = values.startTime ?? 0;
         this.endTime = values.endTime ?? values.startTime;
         this.type = values.type ?? 0;
         this.position = values.position ?? new Vector2({x: 0, y: 0});
+        this.endPosition = values.endPosition ?? this.position;
         this.stackedPosition = this.position;
         this.isNewCombo = !!(this.type & 1 << 2);
         this.stackHeight = 0;

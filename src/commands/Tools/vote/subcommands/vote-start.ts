@@ -5,17 +5,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { voteStrings } from "../voteStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const input: string[] = interaction.options.getString("input", true).split("|");
+    const topic: string = interaction.options.getString("topic", true);
 
-    if (input.length === 0) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(voteStrings.invalidVoteStartInput)
-        });
-    }
-
-    const topic: string = input.shift()!;
-
-    const choices: VoteChoice[] = input.map(v => {
+    const choices: VoteChoice[] = interaction.options.getString("input", true).split("|").map(v => {
         return {
             choice: v.trim(),
             voters: []

@@ -1,6 +1,5 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { BaseOperationResult } from "@alice-interfaces/core/BaseOperationResult";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseTournamentMatch } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMatch";
 import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { Manager } from "@alice-utils/base/Manager";
@@ -58,7 +57,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
      * 
      * @returns An object containing information about the operation.
      */
-    updateMatch(): Promise<DatabaseOperationResult> {
+    updateMatch(): Promise<OperationResult> {
         return DatabaseManager.elainaDb.collections.tournamentMatch.update(
             { matchid: this.matchid },
             {
@@ -119,7 +118,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
      * @param map The beatmap data to verify for.
      * @param forcePR Whether this match enforces the PR mod.
      */
-    verifyScore(score: Score, map: MainBeatmapData, forcePR?: boolean): BaseOperationResult {
+    verifyScore(score: Score, map: MainBeatmapData, forcePR?: boolean): OperationResult {
         if (score.hash !== map[3]) {
             return this.createOperationResult(false, "Score not found");
         }

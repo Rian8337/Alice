@@ -3,7 +3,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
@@ -73,7 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const coinDeductionResult: DatabaseOperationResult = await playerInfo.incrementCoins(-cost);
+    const coinDeductionResult: OperationResult = await playerInfo.incrementCoins(-cost);
 
     if (!coinDeductionResult.success) {
         return interaction.editReply({
@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const changeLeaderResult: DatabaseOperationResult = clan.changeLeader(toTransfer.id);
+    const changeLeaderResult: OperationResult = clan.changeLeader(toTransfer.id);
 
     if (!changeLeaderResult.success) {
         return interaction.editReply({
@@ -91,7 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const finalResult: DatabaseOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({

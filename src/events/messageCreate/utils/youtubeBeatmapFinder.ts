@@ -1,7 +1,6 @@
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { MapInfo, MapStats, RequestResponse } from "osu-droid";
+import { MapInfo, MapStats } from "osu-droid";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
@@ -9,6 +8,8 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
+import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -32,31 +33,22 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             continue;
         }
 
-        const data: RequestResponse = await RESTManager.request(`https://www.googleapis.com/youtube/v3/videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${videoId}`)
+        const data: YouTubeVideoInformation | null = await YouTubeRESTManager.getInformation(videoId);
 
-        if (data.statusCode !== 200) {
+        if (!data) {
             continue;
         }
 
-        let info: any;
-        try {
-            info = JSON.parse(data.data.toString("utf-8"));
-        } catch (ignored) {
-            continue;
-        }
-
-        const items = info?.items[0]?.snippet;
-
-        if (!items) {
-            continue;
-        }
-
-        const description: string = items.description;
+        const description: string = data.snippet.description;
 
         // Limit to 3 beatmaps to prevent spam
         let validCount: number = 0;
 
         for await (const link of description.split("\n")) {
+            if (!link.startsWith("https://osu.ppy.sh")) {
+                continue;
+            }
+
             if (validCount === 3) {
                 break;
             }

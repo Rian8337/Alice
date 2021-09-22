@@ -8,8 +8,8 @@ import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { Player } from "osu-droid";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: EventUtil["run"] = async (client) => {
     const interval: NodeJS.Timeout = setInterval(async () => {
@@ -105,7 +105,7 @@ export const run: EventUtil["run"] = async (client) => {
 
                     if (clan.member_list.size === 1) {
                         // Clan only exists of the leader. Deduct clan power to the point where the clan will be disbanded.
-                        const result: ClanOperationResult = clan.incrementPower(-100);
+                        const result: OperationResult = clan.incrementPower(-100);
 
                         if (!result.success) {
                             await clan.disband();

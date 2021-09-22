@@ -95,11 +95,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "report @Rian8337#0001 Posting NSFW",
+            command: "report",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "Posting NSFW"
+                }
+            ],
             description: "will report Rian8337 for \"Posting NSFW\"."
         },
         {
-            command: "report 132783516176875520 Spamming",
+            command: "report",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "reason",
+                    value: "Spamming"
+                }
+            ],
             description: "will report the user with that Discord ID for \"Spamming\"."
         }
     ],

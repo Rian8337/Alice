@@ -34,17 +34,19 @@ export abstract class MessageInputCreator {
             });
 
             collector.on("end", async collected => {
-                if (collected.size === 0) {
-                    await interaction.editReply({
-                        content: MessageCreator.createReject(
-                            "Timed out."
-                        )
-                    });
-
-                    setTimeout(() => {
-                        interaction.deleteReply();
-                    }, 5 * 1000);
-                }
+                try {
+                    if (collected.size === 0) {
+                        await interaction.editReply({
+                            content: MessageCreator.createReject(
+                                "Timed out."
+                            )
+                        });
+    
+                        setTimeout(() => {
+                            interaction.deleteReply();
+                        }, 5 * 1000);
+                    }
+                } catch { }
 
                 if (collected.first()?.content === "exit") {
                     return resolve(undefined);

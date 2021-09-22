@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { MuteOperationResult } from "@alice-interfaces/moderation/MuteOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
 import { muteStrings } from "../muteStrings";
@@ -26,7 +26,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason", true);
 
-    const result: MuteOperationResult = await MuteManager.addMute(interaction, toMute, reason, duration);
+    const result: OperationResult = await MuteManager.addMute(interaction, toMute, reason, duration);
 
     if (!result.success) {
         return interaction.editReply({

@@ -4,7 +4,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Guild, GuildMember, Role } from "discord.js";
@@ -73,7 +73,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         return;
     }
 
-    const result: DatabaseOperationResult = await playerInfo.incrementCoins(-cost);
+    const result: OperationResult = await playerInfo.incrementCoins(-cost);
 
     if (!result.success) {
         return interaction.editReply({

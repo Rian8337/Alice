@@ -2,9 +2,8 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
 import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { BaseOperationResult } from "@alice-interfaces/core/BaseOperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -121,7 +120,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     for (let i = 0; i < playerList.length; ++i) {
         const score: Score = playerList[i].recentPlays[0];
 
-        const verificationResult: BaseOperationResult = match.verifyScore(score, map, mappoolMainData.forcePR);
+        const verificationResult: OperationResult = match.verifyScore(score, map, mappoolMainData.forcePR);
 
         if (verificationResult.success) {
             let scorev2: number = match.calculateScoreV2(
@@ -204,7 +203,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         match.result[i].push(scoreList[i]);
     }
 
-    const finalResult: DatabaseOperationResult = await match.updateMatch();
+    const finalResult: OperationResult = await match.updateMatch();
 
     if (!finalResult.success) {
         return interaction.channel!.send({

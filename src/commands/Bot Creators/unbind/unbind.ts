@@ -7,7 +7,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -29,7 +29,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await bindInfo.unbind(uid);
+    const result: OperationResult = await bindInfo.unbind(uid);
 
     if (!result.success) {
         return interaction.editReply({
@@ -61,7 +61,13 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "unbind 51076",
+            command: "unbind uid:51076",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                }
+            ],
             description: "will unbind the osu!droid account with uid 51076 if it is binded to a Discord account."
         }
     ],

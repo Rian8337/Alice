@@ -6,15 +6,14 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
-import { ChallengeOperationResult } from "@alice-interfaces/challenge/ChallengeOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildEmoji } from "discord.js";
 import { Player, Score } from "osu-droid";
 import { dailyStrings } from "../dailyStrings";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const type: ChallengeType = <ChallengeType> interaction.options.getString("type") ?? "daily";
 
     const challenge: Challenge | null =
@@ -45,7 +44,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const completionStatus: ChallengeOperationResult = await challenge.checkScoreCompletion(score);
+    const completionStatus: OperationResult = await challenge.checkScoreCompletion(score);
 
     if (!completionStatus.success) {
         return interaction.editReply({

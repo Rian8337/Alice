@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ChallengeCompletionData } from "@alice-interfaces/challenge/ChallengeCompletionData";
 import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -112,7 +112,7 @@ export class PlayerInfo extends Manager {
      * @param amount The amount to increment.
      * @returns An object containing information about the operation.
      */
-    async incrementCoins(amount: number): Promise<DatabaseOperationResult> {
+    async incrementCoins(amount: number): Promise<OperationResult> {
         if (this.alicecoins + amount < 0) {
             // This would only happen if the amount incremented is negative
             return this.createOperationResult(false, `too much coin deduction; can only deduct at most ${this.alicecoins.toLocaleString()} Alice coins`);
@@ -131,7 +131,7 @@ export class PlayerInfo extends Manager {
      * 
      * @param coinAmount The amount of coins the user has gained.
      */
-    async claimDailyCoins(coinAmount: number): Promise<DatabaseOperationResult> {
+    async claimDailyCoins(coinAmount: number): Promise<OperationResult> {
         if (this.hasClaimedDaily) {
             return this.createOperationResult(false, "daily claim has been used");
         }
@@ -168,7 +168,7 @@ export class PlayerInfo extends Manager {
      * @param to The player to transfer the Alice coins to.
      * @returns An object containing information about the operation.
      */
-    async transferCoins(amount: number, thisPlayer: Player, to: PlayerInfo): Promise<DatabaseOperationResult> {
+    async transferCoins(amount: number, thisPlayer: Player, to: PlayerInfo): Promise<OperationResult> {
         let limit: number;
 
         switch (true) {

@@ -1,5 +1,5 @@
 import { CommandInteraction, Guild, GuildChannel, GuildMember, MessageEmbed, TextChannel, User } from "discord.js";
-import { BanOperationResult } from "@alice-interfaces/moderation/BanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PunishmentManager } from "./PunishmentManager";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -17,7 +17,7 @@ export abstract class BanManager extends PunishmentManager {
      * @param reason The reason for banning.
      * @returns An object containing information about the operation.
      */
-    static async ban(interaction: CommandInteraction, banned: GuildMember, reason: string): Promise<BanOperationResult> {
+    static async ban(interaction: CommandInteraction, banned: GuildMember, reason: string): Promise<OperationResult> {
         const guildConfig: GuildPunishmentConfig | null = await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(banned.guild);
 
         if (!guildConfig) {
@@ -58,7 +58,7 @@ export abstract class BanManager extends PunishmentManager {
      * @param reason The reason for unbanning.
      * @returns An object containing information about the operation.
      */
-    static async unban(interaction: CommandInteraction, toUnban: User, reason: string): Promise<BanOperationResult> {
+    static async unban(interaction: CommandInteraction, toUnban: User, reason: string): Promise<OperationResult> {
         if (!interaction.inGuild()) {
             return this.createOperationResult(false, "can only unban in a server");
         }

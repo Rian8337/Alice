@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { ObjectId } from "bson";
@@ -65,7 +65,7 @@ export class RankedScore extends Manager {
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.
      */
-    async setNewRankedScoreValue(list: Collection<string, number>, playCountIncrement: number): Promise<DatabaseOperationResult> {
+    async setNewRankedScoreValue(list: Collection<string, number>, playCountIncrement: number): Promise<OperationResult> {
         this.scorelist = list.clone();
 
         this.score = list.reduce((a, v) => a + v, 0);

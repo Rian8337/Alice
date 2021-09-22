@@ -1,4 +1,4 @@
-import { GuildMember, Role } from "discord.js";
+import { GuildMember, Role, TextChannel } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -29,6 +29,13 @@ export const run: Command["run"] = async(_, interaction) => {
     interaction.editReply({
         content: MessageCreator.createAccept(verifyStrings.verificationSuccess)
     });
+
+    const general: TextChannel = <TextChannel> interaction.guild!.channels.cache.get(Constants.mainServer);
+
+    general.send({
+        content: `Welcome to ${interaction.guild!.name}, ${toVerify}!`,
+        files: [ Constants.welcomeImageLink ]
+    });
 };
 
 export const category: Command["category"] = CommandCategory.STAFF;
@@ -46,11 +53,23 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "verify @Rian8337#0001",
+            command: "verify",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will verify Rian8337."
         },
         {
-            command: "verify 132783516176875520",
+            command: "verify",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will verify the user with that Discord ID."
         }
     ],

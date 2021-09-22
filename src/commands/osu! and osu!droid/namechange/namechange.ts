@@ -83,7 +83,22 @@ export const config: Command["config"] = {
             description: "View currently active name change requests."
         }
     ],
-    example: [],
+    example: [
+        {
+            command: "namechange request",
+            arguments: [
+                {
+                    name: "email",
+                    value: "test123@gmail.com"
+                },
+                {
+                    name: "newusername",
+                    value: "deni123"
+                }
+            ],
+            description: "will request a name change with new username \"deni123\"."
+        }
+    ],
     cooldown: 10,
     permissions: [],
     scope: "ALL"

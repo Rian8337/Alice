@@ -9,7 +9,7 @@ import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: Command["run"] = async (client, interaction) => {
     const uid: number = interaction.options.getInteger("uid", true);
@@ -32,7 +32,7 @@ export const run: Command["run"] = async (client, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await bindInfo.moveBind(uid, user.id);
+    const result: OperationResult = await bindInfo.moveBind(uid, user.id);
 
     if (!result.success) {
         return interaction.editReply({
@@ -66,11 +66,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "switchbind 51076 @Rian8337#0001",
+            command: "switchbind uid:51076 user:@Rian8337#0001",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 51076
+                },
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                }
+            ],
             description: "will switch the osu!droid account with uid 51076's bind to Rian8337."
         },
         {
-            command: "switchbind 5475 132783516176875520",
+            command: "switchbind uid:5475 user:132783516176875520",
+            arguments: [
+                {
+                    name: "uid",
+                    value: 5475
+                },
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                }
+            ],
             description: "will switch the osu!droid account with uid 5475's bind to the Discord account with ID 132783516176875520."
         }
     ],

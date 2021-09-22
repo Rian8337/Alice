@@ -1,6 +1,6 @@
 import { Guild, GuildChannel, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { LoungeLockOperationResult } from "@alice-interfaces/moderation/LoungeLockOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Constants } from "@alice-core/Constants";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PunishmentManager } from "./PunishmentManager";
@@ -48,7 +48,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
      * @param duration The duration of the lock or the extension, in seconds. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
      * @returns An object containing information about the operation.
      */
-    static async lock(userId: Snowflake, reason: string, duration: number): Promise<LoungeLockOperationResult> {
+    static async lock(userId: Snowflake, reason: string, duration: number): Promise<OperationResult> {
         if (duration < 0) {
             duration = Number.POSITIVE_INFINITY;
         }
@@ -107,7 +107,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
      * @param reason The reason for unlocking the user.
      * @returns An object containing information about the operation.
      */
-    static async unlock(userId: Snowflake, reason: string): Promise<LoungeLockOperationResult> {
+    static async unlock(userId: Snowflake, reason: string): Promise<OperationResult> {
         const lockInfo: LoungeLock | null = await this.loungeLockDb.getUserLockInfo(userId);
 
         if (!lockInfo) {

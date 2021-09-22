@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { birthdayStrings } from "../birthdayStrings";
 
@@ -11,12 +11,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const timezone: number = interaction.options.getInteger("timezone", true);
 
-    const result: DatabaseOperationResult = await DatabaseManager.aliceDb.collections.birthday.setUserBirthday(interaction.user.id, date, month, timezone);
+    const result: OperationResult = await DatabaseManager.aliceDb.collections.birthday.setUserBirthday(interaction.user.id, date, month, timezone);
 
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.setBirthdayFailed, <string> result.reason
+                birthdayStrings.setBirthdayFailed, result.reason!
             )
         });
     }

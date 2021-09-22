@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { mapshareStrings } from "../mapshareStrings";
@@ -31,7 +31,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result: DatabaseOperationResult = await submission.post();
+    const result: OperationResult = await submission.post();
 
     if (!result.success) {
         return interaction.editReply({

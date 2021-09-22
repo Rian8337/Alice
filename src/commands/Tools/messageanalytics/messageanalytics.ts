@@ -84,11 +84,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "messageanalytics fetch fromdate:2018-1-1 scope:Server",
+            command: "messageanalytics fetch",
+            arguments: [
+                {
+                    name: "fromdate",
+                    value: "2018-1-1"
+                },
+                {
+                    name: "scope",
+                    value: "Server"
+                }
+            ],
             description: "will fetch message analytics from January 1st, 2018 up to this date."
         },
         {
             command: "messageanalytics info type:Daily date:2019-1-1",
+            arguments: [
+                {
+                    name: "type",
+                    value: "Daily"
+                },
+                {
+                    name: "date",
+                    value: "2019-1-1"
+                }
+            ],
             description: "will give message analytics information in January 1st, 2019."
         }
     ],

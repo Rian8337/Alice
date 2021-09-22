@@ -90,11 +90,23 @@ export const config: Command["config"] = {
             description: "will view the droid pp leaderboard at page 1."
         },
         {
-            command: "leaderboard ranked 3",
+            command: "leaderboard ranked",
+            arguments: [
+                {
+                    name: "page",
+                    value: 3
+                }
+            ],
             description: "will view the ranked score leaderboard at page 3."
         },
         {
-            command: "leaderboard dpp 1 Sunda Empire",
+            command: "leaderboard dpp",
+            arguments: [
+                {
+                    name: "clan",
+                    value: "Sunda Empire"
+                }
+            ],
             description: "will view the ranked score leaderboard at page 1 for the \"Sunda Empire\" clan."
         }
     ],

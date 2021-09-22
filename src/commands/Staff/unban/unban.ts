@@ -2,7 +2,7 @@ import { GuildBan, Snowflake, User } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { BanOperationResult } from "@alice-interfaces/moderation/BanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BanManager } from "@alice-utils/managers/BanManager";
 import { unbanStrings } from "./unbanStrings";
@@ -26,7 +26,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const reason: string = interaction.options.getString("reason") ?? "Not specified.";
 
-    const result: BanOperationResult = await BanManager.unban(interaction, toUnban, reason);
+    const result: OperationResult = await BanManager.unban(interaction, toUnban, reason);
 
     if (!result.success) {
         return interaction.editReply({
@@ -62,11 +62,31 @@ export const config: Command["config"] = {
     ],
     example: [
         {
-            command: "unban @Rian8337#0001 Apple",
+            command: "unban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "@Rian8337#0001"
+                },
+                {
+                    name: "reason",
+                    value: "Apple"
+                }
+            ],
             description: "will unban Rian8337 for \"Apple\"."
         },
         {
-            command: "unban 132783516176875520 Grapes",
+            command: "unban",
+            arguments: [
+                {
+                    name: "user",
+                    value: "132783516176875520"
+                },
+                {
+                    name: "reason",
+                    value: "Grapes"
+                }
+            ],
             description: "will unban the user with that Discord ID for \"Grapes\"."
         }
     ],

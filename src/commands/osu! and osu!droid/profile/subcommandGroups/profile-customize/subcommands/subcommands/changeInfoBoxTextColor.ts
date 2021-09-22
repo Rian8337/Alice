@@ -91,7 +91,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 "text",
                 color
             ),
-            files: [image]
+            files: [image],
+            embeds: []
         },
         [interaction.user.id],
         15

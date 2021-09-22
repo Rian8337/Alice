@@ -2,18 +2,17 @@ import { ObjectId } from "bson";
 import { Collection, Guild, GuildChannel, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
 import { DatabaseClan } from "@alice-interfaces/database/elainaDb/DatabaseClan";
 import { Manager } from "../../../utils/base/Manager";
 import { MessageCreator } from "../../../utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { DatabaseOperationResult } from "@alice-interfaces/database/DatabaseOperationResult";
 import { Constants } from "@alice-core/Constants";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
 import { Precision } from "osu-droid";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 /**
  * Represents a clan.
@@ -160,7 +159,7 @@ export class Clan extends Manager {
      * @param message The message for the clan leader.
      * @returns An object containing information about the operation.
      */
-    notifyLeader(message: string): Promise<ClanOperationResult> {
+    notifyLeader(message: string): Promise<OperationResult> {
         return new Promise(async resolve => {
             const leader: User = await this.client.users.fetch(this.leader);
 
@@ -188,7 +187,7 @@ export class Clan extends Manager {
      * @param user The user to remove.
      * @returns An object containing information about the operation.
      */
-    async removeMember(user: User): Promise<ClanOperationResult>;
+    async removeMember(user: User): Promise<OperationResult>;
 
     /**
      * Removes a member from the clan.
@@ -202,9 +201,9 @@ export class Clan extends Manager {
      * @param userID The ID of the user to remove.
      * @returns An object containing information about the operation.
      */
-    async removeMember(userID: Snowflake): Promise<ClanOperationResult>;
+    async removeMember(userID: Snowflake): Promise<OperationResult>;
 
-    async removeMember(userOrId: User | Snowflake): Promise<ClanOperationResult> {
+    async removeMember(userOrId: User | Snowflake): Promise<OperationResult> {
         const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
 
         if (!this.member_list.delete(id)) {
@@ -240,7 +239,7 @@ export class Clan extends Manager {
      * @param newLeader The Discord ID of the new leader. If unspecified, a random clan member will be picked.
      * @returns An object containing information about the operation.
      */
-    changeLeader(newLeader?: Snowflake): ClanOperationResult {
+    changeLeader(newLeader?: Snowflake): OperationResult {
         if (newLeader === this.leader) {
             return this.createOperationResult(false, "new leader is the same as the old leader");
         }
@@ -332,8 +331,8 @@ export class Clan extends Manager {
      * @param reason The reason for disbanding the clan.
      * @returns An object containing information about the operation.
      */
-    async disband(): Promise<ClanOperationResult> {
-        const result: DatabaseOperationResult = await DatabaseManager.elainaDb.collections.clan.delete(
+    async disband(): Promise<OperationResult> {
+        const result: OperationResult = await DatabaseManager.elainaDb.collections.clan.delete(
             { name: this.name }
         );
 
@@ -375,7 +374,7 @@ export class Clan extends Manager {
      * 
      * @returns An object containing information about the operation.
      */
-    async updateClan(): Promise<ClanOperationResult> {
+    async updateClan(): Promise<OperationResult> {
         return DatabaseManager.elainaDb.collections.clan.update(
             { name: this.name },
             {
@@ -407,7 +406,7 @@ export class Clan extends Manager {
      * @param matchMode Whether the clan is in match mode.
      * @returns An object containing information about the operation.
      */
-    setMatchMode(matchMode: boolean): ClanOperationResult {
+    setMatchMode(matchMode: boolean): OperationResult {
         if (this.isMatch === matchMode) {
             return this.createOperationResult(false, `clan is already${matchMode ? "" : " not"} in match mode`);
         }
@@ -422,7 +421,7 @@ export class Clan extends Manager {
      * 
      * @param users The users to add clan roles to.
      */
-    async addClanRole(...users: (User | Snowflake)[]): Promise<ClanOperationResult> {
+    async addClanRole(...users: (User | Snowflake)[]): Promise<OperationResult> {
         const clanRole: Role | undefined = await this.getClanRole();
 
         if (!clanRole) {
@@ -451,7 +450,7 @@ export class Clan extends Manager {
      * 
      * @param users The users to remove clan roles from.
      */
-    async removeClanRole(...users: (User | Snowflake)[]): Promise<ClanOperationResult> {
+    async removeClanRole(...users: (User | Snowflake)[]): Promise<OperationResult> {
         const clanRole: Role | undefined = await this.getClanRole();
 
         if (!clanRole) {
@@ -573,7 +572,7 @@ export class Clan extends Manager {
      * 
      * @param iconURL The URL of the icon. Omit this parameter to delete the current icon.
      */
-    async setIcon(iconURL?: string): Promise<ClanOperationResult> {
+    async setIcon(iconURL?: string): Promise<OperationResult> {
         const channel: TextChannel = await this.getAttachmentChannel();
 
         if (iconURL) {
@@ -609,7 +608,7 @@ export class Clan extends Manager {
      * 
      * @param bannerURL The URL of the banner. Omit this parameter to delete the current banner.
      */
-    async setBanner(bannerURL?: string): Promise<ClanOperationResult> {
+    async setBanner(bannerURL?: string): Promise<OperationResult> {
         const channel: TextChannel = await this.getAttachmentChannel();
 
         if (bannerURL) {
@@ -651,7 +650,7 @@ export class Clan extends Manager {
      * 
      * @param description The clan's new description. Omit this parameter to clear the current description.
      */
-    setDescription(description?: string): ClanOperationResult {
+    setDescription(description?: string): OperationResult {
         if (description) {
             if (description.length >= 2000) {
                 return this.createOperationResult(false, "description must be less than 2000 characters");
@@ -670,7 +669,7 @@ export class Clan extends Manager {
      * 
      * @param amount The amount to increment the clan power for.
      */
-    incrementPower(amount: number): ClanOperationResult {
+    incrementPower(amount: number): OperationResult {
         if (this.power + amount < 0) {
             return this.createOperationResult(false, "clan power will fall below zero");
         }

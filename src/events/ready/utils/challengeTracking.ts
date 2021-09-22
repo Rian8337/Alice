@@ -1,5 +1,4 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ChallengeOperationResult } from "@alice-interfaces/challenge/ChallengeOperationResult";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -7,6 +6,7 @@ import { Collection, TextChannel, User } from "discord.js";
 import { ChallengeCollectionManager } from "@alice-database/managers/aliceDb/ChallengeCollectionManager";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Config } from "@alice-core/Config";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 
 export const run: EventUtil["run"] = async (client) => {
     const notificationChannel: TextChannel = <TextChannel> await client.channels.fetch("669221772083724318");
@@ -31,7 +31,7 @@ export const run: EventUtil["run"] = async (client) => {
 
         for await (const ongoingChallenge of ongoingChallenges.values()) {
             // End current challenge if sufficient
-            const endOperationResult: ChallengeOperationResult = await ongoingChallenge.end();
+            const endOperationResult: OperationResult = await ongoingChallenge.end();
 
             if (!endOperationResult.success) {
                 continue;

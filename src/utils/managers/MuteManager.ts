@@ -1,7 +1,7 @@
 import { Collection, CommandInteraction, Guild, GuildChannel, GuildMember, Message, MessageEmbed, Permissions, Role, Snowflake, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Mute } from "@alice-interfaces/moderation/Mute";
-import { MuteOperationResult } from "@alice-interfaces/moderation/MuteOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { RoleMutePermission } from "@alice-interfaces/moderation/RoleMutePermission";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
@@ -56,7 +56,7 @@ export abstract class MuteManager extends PunishmentManager {
      * @param duration The duration to mute the user for, in seconds. For permanent mutes, use Infinity.
      * @returns An object containing information about the operation.
      */
-    static async addMute(interaction: CommandInteraction, member: GuildMember, reason: string, duration: number): Promise<MuteOperationResult> {
+    static async addMute(interaction: CommandInteraction, member: GuildMember, reason: string, duration: number): Promise<OperationResult> {
         if (await this.userIsImmune(member)) {
             return this.createOperationResult(false, "User has mute immunity");
         }
@@ -160,7 +160,7 @@ export abstract class MuteManager extends PunishmentManager {
 
         try {
             await this.notifyMember(member, `Hey, you were muted ${durationString} for \`${reason}\`. Sorry!`, muteEmbed);
-        } catch (ignored) {
+        } catch {
             interaction.channel!.send(MessageCreator.createWarn(
                 `A user has been muted, but their DMs are locked. The user will be muted ${durationString}.`
             ));
@@ -204,7 +204,7 @@ export abstract class MuteManager extends PunishmentManager {
      * @param reason The reason for unmuting, if this unmute is triggered by an interaction.
      * @returns An object containing information about the operation.
      */
-    static async removeMute(member: GuildMember, interaction?: CommandInteraction, reason?: string): Promise<MuteOperationResult> {
+    static async removeMute(member: GuildMember, interaction?: CommandInteraction, reason?: string): Promise<OperationResult> {
         const muteInformation: Mute | undefined = await this.getMuteInformation(member);
 
         if (!muteInformation) {

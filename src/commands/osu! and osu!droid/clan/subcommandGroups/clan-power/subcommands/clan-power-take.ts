@@ -1,7 +1,7 @@
 import { clanStrings } from "@alice-commands/osu! and osu!droid/clan/clanStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { ClanOperationResult } from "@alice-interfaces/clan/ClanOperationResult";
+import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
@@ -18,7 +18,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const incrementResult: ClanOperationResult = clan.incrementPower(-amount);
+    const incrementResult: OperationResult = clan.incrementPower(-amount);
 
     if (!incrementResult.success) {
         return interaction.editReply({
@@ -28,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const finalResult: ClanOperationResult = await clan.updateClan();
+    const finalResult: OperationResult = await clan.updateClan();
 
     if (!finalResult.success) {
         return interaction.editReply({

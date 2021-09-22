@@ -4,8 +4,6 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
-import { CommandInteraction } from "discord.js";
-import { NumberHelper } from "./NumberHelper";
 
 /**
  * A helper to calculate difficulty and performance of beatmaps or scores.
@@ -93,7 +91,7 @@ export abstract class BeatmapDifficultyHelper {
         const stats: MapStats = new MapStats({
             ar: score.forcedAR,
             speedMultiplier: score.speedMultiplier,
-            isForceAR: !!isNaN(<number> score.forcedAR),
+            isForceAR: !isNaN(score.forcedAR!),
             oldStatistics: (score.replay?.data?.replayVersion ?? 4) <= 3
         });
 
@@ -153,16 +151,14 @@ export abstract class BeatmapDifficultyHelper {
             return null;
         }
 
-        if (!calculationParams) {
-            calculationParams = new PerformanceCalculationParameters(
-                [],
-                new Accuracy({
-                    n300: beatmap.objects
-                }),
-                100,
-                beatmap.maxCombo
-            );
-        }
+        calculationParams ??= new PerformanceCalculationParameters(
+            [],
+            new Accuracy({
+                n300: beatmap.objects
+            }),
+            100,
+            beatmap.maxCombo
+        );
 
         return this.calculatePerformance(beatmap, calculationParams, replay);
     }

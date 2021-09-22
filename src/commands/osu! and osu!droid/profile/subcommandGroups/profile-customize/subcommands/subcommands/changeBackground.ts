@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const backgroundList: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
+    const backgroundList: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("name");
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
@@ -34,7 +34,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 EmbedCreator.createInputEmbed(
                     interaction,
                     "Change Profile Card Background",
-                    `Enter the background that you want to use.\n\nIf you don't own the background, you will be prompted to buy it. A background costs ${coin}\`500\` Alice coins.`
+                    `Enter the name of the background that you want to use.\n\nIf you don't own the background, you will be prompted to buy it. A background costs ${coin}\`500\` Alice coins.`
                 )
             ]
         },
@@ -98,7 +98,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     coin.toString()
                 )
             ),
-            files: [image]
+            files: [image],
+            embeds: []
         },
         [interaction.user.id],
         15
@@ -120,7 +121,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             interaction.user.toString(),
             bgName,
             isBackgroundOwned ? "" : ` You now have ${coin}\`${playerInfo?.alicecoins}\` Alice coins.`
-        )
+        ),
+        embeds: [],
+        files: []
     });
 };
 
