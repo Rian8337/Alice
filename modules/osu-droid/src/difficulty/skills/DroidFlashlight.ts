@@ -17,7 +17,7 @@ export class DroidFlashlight extends DroidSkill {
 
         const scalingFactor: number = 52 / current.radius;
 
-        let smallDistNerf: number = 0;
+        let smallDistNerf: number = 1;
 
         let cumulativeStrainTime: number = 0;
 
