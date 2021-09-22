@@ -84,7 +84,7 @@ export class OsuSpeed extends OsuSkill {
 
         return (1 + (speedBonus - 1) * 0.75) * angleBonus *
             (0.95 + speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5))
-            / currentObject.strainTime;
+            / strainTime;
     }
 
     /**
