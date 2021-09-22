@@ -50,7 +50,7 @@ export class DifficultyHitObjectCreator {
         this.hitObjectRadius = 32 * (1 - 0.7 * (circleSize - 5) / 5);
 
         const scalingFactor: number = this.getScalingFactor(params.mode);
-        
+
         const difficultyObjects: DifficultyHitObject[] = [];
 
         for (let i = 0; i < this.objects.length; ++i) {
@@ -75,8 +75,7 @@ export class DifficultyHitObjectCreator {
                 }
 
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
-                // Every strain interval is hard capped at the equivalent of 300 BPM streaming speed as a safety measure
-                object.strainTime = Math.max(50, object.deltaTime);
+                object.strainTime = Math.max(params.mode === modes.droid ? 50 : 25, object.deltaTime);
                 object.startTime = object.object.startTime / params.speedMultiplier;
 
                 if (lastLastObject) {

@@ -149,7 +149,7 @@ export abstract class BeatmapManager extends Manager {
                 continue;
             }
 
-            if (!s.startsWith("https://osu.ppy.sh/")) {
+            if (!s.startsWith("https://osu.ppy.sh/") && !s.startsWith("https://dev.ppy.sh/")) {
                 continue;
             }
 
@@ -183,7 +183,7 @@ export abstract class BeatmapManager extends Manager {
         const strArray: string[] = str.split(/\s+/g);
 
         for (const s of strArray) {
-            if (!s.startsWith("https://osu.ppy.sh/")) {
+            if (!s.startsWith("https://osu.ppy.sh/") && !s.startsWith("https://dev.ppy.sh/")) {
                 continue;
             }
 

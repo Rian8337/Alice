@@ -71,7 +71,8 @@ export class DifficultyHitObject {
     deltaTime: number = 0;
 
     /**
-     * Milliseconds elapsed since the start time of the previous hitobject, with a minimum of 50ms.
+     * Milliseconds elapsed since the start time of the previous hitobject, with a minimum of 50ms for droid
+     * and 25ms for PC.
      */
     strainTime: number = 0;
 

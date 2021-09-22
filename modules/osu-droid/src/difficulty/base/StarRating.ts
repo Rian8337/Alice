@@ -99,6 +99,9 @@ export abstract class StarRating {
 
         this.stats = new MapStats({
             cs: map.cs,
+            ar: map.ar,
+            od: map.od,
+            hp: map.hp,
             mods: mod,
             speedMultiplier: params.stats?.speedMultiplier || 1,
             oldStatistics: params.stats?.oldStatistics || false
