@@ -7,6 +7,8 @@ import { DroidRhythm } from './skills/DroidRhythm';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
+import { DroidFlashlight } from './skills/DroidFlashlight';
+import { ModFlashlight } from '../mods/ModFlashlight';
 
 /**
  * Difficulty calculator for osu!droid gamemode.
@@ -26,6 +28,11 @@ export class DroidStarRating extends StarRating {
      * The rhythm star rating of the beatmap.
      */
     rhythm: number = 0;
+
+    /**
+     * The flashlight star rating of the beatmap.
+     */
+    flashlight: number = 0;
 
     protected readonly difficultyMultiplier: number = 0.18;
 
@@ -80,7 +87,7 @@ export class DroidStarRating extends StarRating {
     }
 
     /**
-     * Calculates the tap star rating of the beatmap and stores it in this instance.
+     * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
         const speedSkill: DroidSpeed = new DroidSpeed(this.mods);
@@ -92,6 +99,9 @@ export class DroidStarRating extends StarRating {
         this.speed = this.starValue(speedSkill.difficultyValue());
     }
 
+    /**
+     * Calculates the rhythm star rating of the beatmap and stores it in this instance.
+     */
     calculateRhythm(): void {
         const rhythmSkill: DroidRhythm = new DroidRhythm(this.mods);
 
@@ -101,14 +111,33 @@ export class DroidStarRating extends StarRating {
     }
 
     /**
+     * Calculates the flashlight star rating of the beatmap and stores it in this instance.
+     */
+    calculateFlashlight(): void {
+        const flashlightSkill: DroidFlashlight = new DroidFlashlight(this.mods);
+
+        this.calculateSkills(flashlightSkill);
+
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
+    }
+
+    /**
      * Calculates the total star rating of the beatmap and stores it in this instance.
      */
     calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
         const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const flashlightPerformanceValue: number =
+            this.mods.some(m => m instanceof ModFlashlight) ? 
+            Math.pow(this.flashlight, 2) * 25 :
+            0;
+
         const basePerformanceValue: number = Math.pow(
             Math.pow(aimPerformanceValue, 1.1) +
-            Math.pow(speedPerformanceValue, 1.1),
+            Math.pow(speedPerformanceValue, 1.1) +
+            Math.pow(flashlightPerformanceValue, 1.1),
             1 / 1.1
         );
 
@@ -128,15 +157,19 @@ export class DroidStarRating extends StarRating {
         const aimSkill: DroidAim = <DroidAim> skills[0];
         const speedSkill: DroidSpeed = <DroidSpeed> skills[1];
         const rhythmSkill: DroidRhythm = <DroidRhythm> skills[2];
+        const flashlightSkill: DroidFlashlight = <DroidFlashlight> skills[3];
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
         this.speedStrainPeaks = speedSkill.strainPeaks;
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
 
         this.speed = this.starValue(speedSkill.difficultyValue());
 
         this.rhythm = this.starValue(rhythmSkill.difficultyValue());
+
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
 
         this.calculateTotal();
     }
@@ -148,7 +181,8 @@ export class DroidStarRating extends StarRating {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
             " aim, " + this.speed.toFixed(2) + " speed, " +
-            this.rhythm.toFixed(2) + " rhythm)"
+            this.rhythm.toFixed(2) + " rhythm, " +
+            this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 
@@ -159,7 +193,8 @@ export class DroidStarRating extends StarRating {
         return [
             new DroidAim(this.mods),
             new DroidSpeed(this.mods),
-            new DroidRhythm(this.mods)
+            new DroidRhythm(this.mods),
+            new DroidFlashlight(this.mods)
         ];
     }
 }
