@@ -99,7 +99,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     /**
      * Calculates the aim performance value of the beatmap.
      */
-    protected calculateAimValue(): void {
+    private calculateAimValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
@@ -153,7 +153,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     /**
      * Calculates the speed performance value of the beatmap.
      */
-    protected calculateSpeedValue(): void {
+    private calculateSpeedValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
@@ -205,7 +205,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     /**
      * Calculates the accuracy performance value of the beatmap.
      */
-    protected calculateAccuracyValue(): void {
+    private calculateAccuracyValue(): void {
         // Global variables
         const n300: number = this.computedAccuracy.n300;
         const n100: number = this.computedAccuracy.n100;
@@ -237,6 +237,9 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         }
     }
 
+    /**
+     * Calculates the flashlight performance value of the beatmap.
+     */
     private calculateFlashlightValue(): void {
         if (!this.stars.mods.some(m => m instanceof ModFlashlight)) {
             return;
