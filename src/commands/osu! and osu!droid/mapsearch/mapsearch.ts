@@ -63,6 +63,8 @@ export const run: Command["run"] = async (_, interaction) => {
         footerText: "Service provided by Sayobot"
     });
 
+    embed.setDescription(`**Beatmaps Found**: ${data.results.toLocaleString()}`);
+
     const onPageChange: OnButtonPageChange = async (_, page) => {
         embed.spliceFields(0, embed.fields.length);
 
