@@ -51,7 +51,7 @@ export class DifficultyHitObjectCreator {
         this.hitObjectRadius = 32 * (1 - 0.7 * (circleSize - 5) / 5);
 
         const scalingFactor: number = this.getScalingFactor(params.mode);
-        
+
         const difficultyObjects: DifficultyHitObject[] = [];
 
         for (let i = 0; i < this.objects.length; ++i) {
@@ -66,7 +66,7 @@ export class DifficultyHitObjectCreator {
                     this.calculateSliderCursorPosition(lastObject.object);
                     object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
                 }
-    
+
                 const lastCursorPosition: Vector2 = this.getEndCursorPosition(lastObject.object);
 
                 // Don't need to jump to reach spinners
