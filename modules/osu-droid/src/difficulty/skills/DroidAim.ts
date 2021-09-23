@@ -17,10 +17,10 @@ export class DroidAim extends DroidSkill {
     protected readonly starsPerDouble: number = 1.05;
 
     /**
-     * @param currentObject The hitobject to calculate.
+     * @param current The hitobject to calculate.
      */
-    strainValueAt(currentObject: DifficultyHitObject): number {
-        if (currentObject.object instanceof Spinner) {
+    strainValueAt(current: DifficultyHitObject): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
@@ -31,35 +31,35 @@ export class DroidAim extends DroidSkill {
             return Math.pow(val, 0.99);
         };
 
-        if (this.previous.length > 0 && currentObject.angle !== null && currentObject.angle > this.angleBonusBegin) {
+        if (this.previous.length > 0 && current.angle !== null && current.angle > this.angleBonusBegin) {
             const angleBonus: number = Math.sqrt(
                 Math.max(this.previous[0].jumpDistance - scale, 0) *
-                Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *
-                Math.max(currentObject.jumpDistance - scale, 0)
+                Math.pow(Math.sin(current.angle - this.angleBonusBegin), 2) *
+                Math.max(current.jumpDistance - scale, 0)
             );
             result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
                 Math.max(this.timingThreshold, this.previous[0].strainTime);
         }
 
-        const jumpDistanceExp: number = applyDiminishingExp(currentObject.jumpDistance);
-        const travelDistanceExp: number = applyDiminishingExp(currentObject.travelDistance);
+        const jumpDistanceExp: number = applyDiminishingExp(current.jumpDistance);
+        const travelDistanceExp: number = applyDiminishingExp(current.travelDistance);
         const weightedDistance: number = jumpDistanceExp + travelDistanceExp + Math.sqrt(travelDistanceExp * jumpDistanceExp);
 
         const aimStrain: number = Math.max(
-            result + weightedDistance / Math.max(currentObject.strainTime, this.timingThreshold),
-            weightedDistance / currentObject.strainTime
+            result + weightedDistance / Math.max(current.strainTime, this.timingThreshold),
+            weightedDistance / current.strainTime
         );
 
-        this.currentStrain *= this.strainDecay(currentObject.deltaTime);
+        this.currentStrain *= this.strainDecay(current.deltaTime);
         this.currentStrain += aimStrain * this.skillMultiplier;
 
         return this.currentStrain;
     }
 
     /**
-     * @param currentObject The hitobject to save to.
+     * @param current The hitobject to save to.
      */
-    saveToHitObject(currentObject: DifficultyHitObject): void {
-        currentObject.aimStrain = this.currentStrain;
+    saveToHitObject(current: DifficultyHitObject): void {
+        current.aimStrain = this.currentStrain;
     }
 }

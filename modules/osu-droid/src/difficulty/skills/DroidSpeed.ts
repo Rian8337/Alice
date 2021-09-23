@@ -33,45 +33,45 @@ export class DroidSpeed extends DroidSkill {
     private currentRhythm: number = 1;
 
     /**
-     * @param currentObject The hitobject to calculate.
+     * @param current The hitobject to calculate.
      */
-    strainValueAt(currentObject: DifficultyHitObject): number {
-        if (currentObject.object instanceof Spinner) {
+    strainValueAt(current: DifficultyHitObject): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
         let speedBonus: number = 1;
-        const deltaTime: number = Math.max(this.maxSpeedBonus, currentObject.deltaTime);
+        const deltaTime: number = Math.max(this.maxSpeedBonus, current.deltaTime);
 
         if (deltaTime < this.minSpeedBonus) {
             speedBonus += 0.75 * Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
         }
 
-        this.currentRhythm = this.calculateRhythmBonus(currentObject);
+        this.currentRhythm = this.calculateRhythmBonus(current);
 
-        this.currentTapStrain *= this.strainDecay(currentObject.deltaTime);
-        this.currentTapStrain += this.tapStrainOf(currentObject, speedBonus) * this.skillMultiplier;
+        this.currentTapStrain *= this.strainDecay(current.deltaTime);
+        this.currentTapStrain += this.tapStrainOf(current, speedBonus) * this.skillMultiplier;
 
-        this.currentMovementStrain *= this.strainDecay(currentObject.deltaTime);
-        this.currentMovementStrain += this.movementStrainOf(currentObject, speedBonus) * this.skillMultiplier;
+        this.currentMovementStrain *= this.strainDecay(current.deltaTime);
+        this.currentMovementStrain += this.movementStrainOf(current, speedBonus) * this.skillMultiplier;
 
         return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
     }
 
     /**
-     * @param currentObject The hitobject to save to.
+     * @param current The hitobject to save to.
      */
-    saveToHitObject(currentObject: DifficultyHitObject): void {
-        currentObject.movementStrain = this.currentMovementStrain;
-        currentObject.tapStrain = this.currentTapStrain;
-        currentObject.rhythmMultiplier = this.currentRhythm;
+    saveToHitObject(current: DifficultyHitObject): void {
+        current.movementStrain = this.currentMovementStrain;
+        current.tapStrain = this.currentTapStrain;
+        current.rhythmMultiplier = this.currentRhythm;
     }
 
     /**
      * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current object.
      */
-    private calculateRhythmBonus(currentObject: DifficultyHitObject): number {
-        if (currentObject.object instanceof Spinner) {
+    private calculateRhythmBonus(current: DifficultyHitObject): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
@@ -85,7 +85,7 @@ export class DroidSpeed extends DroidSkill {
             // Scale note 0 to 1 from history to now.
             let currentHistoricalDecay: number = Math.max(
                 0,
-                this.historyTimeMax - (currentObject.startTime - this.previous[i - 1].startTime)
+                this.historyTimeMax - (current.startTime - this.previous[i - 1].startTime)
             ) / this.historyTimeMax;
 
             if (currentHistoricalDecay === 0) {
@@ -163,35 +163,35 @@ export class DroidSpeed extends DroidSkill {
     /**
      * Calculates the tap strain of a hitobject.
      */
-    private tapStrainOf(currentObject: DifficultyHitObject, speedBonus: number): number {
-        if (currentObject.object instanceof Spinner) {
+    private tapStrainOf(current: DifficultyHitObject, speedBonus: number): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
-        return speedBonus / currentObject.strainTime;
+        return speedBonus / current.strainTime;
     }
 
     /**
      * Calculates the movement strain of a hitobject.
      */
-    private movementStrainOf(currentObject: DifficultyHitObject, speedBonus: number): number {
-        if (currentObject.object instanceof Spinner) {
+    private movementStrainOf(current: DifficultyHitObject, speedBonus: number): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
-        const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, currentObject.jumpDistance + currentObject.travelDistance);
+        const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
 
         let angleBonus: number = 1;
-        if (currentObject.angle !== null) {
-            if (currentObject.angle < Math.PI / 2) {
+        if (current.angle !== null) {
+            if (current.angle < Math.PI / 2) {
                 angleBonus += 0.25;
-            } else if (currentObject.angle < this.angleBonusBegin) {
+            } else if (current.angle < this.angleBonusBegin) {
                 angleBonus += Math.pow(
-                    Math.sin(1.5 * (this.angleBonusBegin - currentObject.angle)), 2
+                    Math.sin(1.5 * (this.angleBonusBegin - current.angle)), 2
                 ) / 4;
             }
         }
 
-        return angleBonus * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / currentObject.strainTime;
+        return angleBonus * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / current.strainTime;
     }
 }
