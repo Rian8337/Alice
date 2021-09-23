@@ -36,15 +36,15 @@ export class OsuSpeed extends OsuSkill {
     }
 
     /**
-     * @param currentObject The hitobject to calculate.
+     * @param current The hitobject to calculate.
      */
-    strainValueOf(currentObject: DifficultyHitObject): number {
-        if (!currentObject.strainTime || currentObject.object instanceof Spinner) {
+    strainValueOf(current: DifficultyHitObject): number {
+        if (!current.strainTime || current.object instanceof Spinner) {
             return 0;
         }
 
-        const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, currentObject.jumpDistance + currentObject.travelDistance);
-        let strainTime: number = currentObject.strainTime;
+        const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
+        let strainTime: number = current.strainTime;
 
         const greatWindowFull: number = this.greatWindow * 2;
         const speedWindowRatio: number = strainTime / greatWindowFull;
@@ -64,20 +64,20 @@ export class OsuSpeed extends OsuSkill {
         }
 
         let angleBonus: number = 1;
-        if (currentObject.angle !== null && currentObject.angle < this.angleBonusBegin) {
+        if (current.angle !== null && current.angle < this.angleBonusBegin) {
             angleBonus += Math.pow(
-                Math.sin(1.5 * (this.angleBonusBegin - currentObject.angle)),
+                Math.sin(1.5 * (this.angleBonusBegin - current.angle)),
                 2
             ) / 3.57;
-            if (currentObject.angle < Math.PI / 2) {
+            if (current.angle < Math.PI / 2) {
                 angleBonus = 1.28;
-                if (distance < this.angleBonusScale && currentObject.angle < Math.PI / 4) {
+                if (distance < this.angleBonusScale && current.angle < Math.PI / 4) {
                     angleBonus += (1 - angleBonus) *
                         Math.min((this.angleBonusScale - distance) / 10, 1);
                 } else if (distance < this.angleBonusScale) {
                     angleBonus += (1 - angleBonus) *
                         Math.min((this.angleBonusScale - distance) / 10, 1) *
-                        Math.sin((Math.PI / 2 - currentObject.angle) * 4 / Math.PI);
+                        Math.sin((Math.PI / 2 - current.angle) * 4 / Math.PI);
                 }
             }
         }
@@ -88,10 +88,10 @@ export class OsuSpeed extends OsuSkill {
     }
 
     /**
-     * @param currentObject The hitobject to save to.
+     * @param current The hitobject to save to.
      */
-    saveToHitObject(currentObject: DifficultyHitObject): void {
+    saveToHitObject(current: DifficultyHitObject): void {
         // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
-        currentObject.movementStrain = this.currentStrain;
+        current.movementStrain = this.currentStrain;
     }
 }
