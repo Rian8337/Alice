@@ -70,8 +70,8 @@ export class DifficultyHitObjectCreator {
 
                 // Don't need to jump to reach spinners
                 if (!(object.object instanceof Spinner)) {
-                    object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor)).length;
+                    object.jumpVector = object.object.stackedPosition.scale(scalingFactor)
+                        .subtract(lastCursorPosition.scale(scalingFactor));
                 }
 
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;

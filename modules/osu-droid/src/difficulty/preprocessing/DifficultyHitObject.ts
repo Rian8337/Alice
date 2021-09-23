@@ -1,4 +1,5 @@
 import { HitObject } from '../../beatmap/hitobjects/HitObject';
+import { Vector2 } from '../../mathutil/Vector2';
 
 /**
  * Represents an osu!standard hit object with difficulty calculation values.
@@ -56,7 +57,14 @@ export class DifficultyHitObject {
     /**
      * The normalized distance from the end position of the previous hitobject to the start position of this hitobject.
      */
-    jumpDistance: number = 0;
+    get jumpDistance(): number {
+        return this.jumpVector.length;
+    };
+
+    /**
+     * The normalized vector from the end position of the previous hitobject to the start position of this hitobject.
+     */
+    jumpVector: Vector2 = new Vector2({ x: 0, y: 0 });
 
     /**
      * Angle the player has to take to hit this hitobject.
@@ -71,8 +79,7 @@ export class DifficultyHitObject {
     deltaTime: number = 0;
 
     /**
-     * Milliseconds elapsed since the start time of the previous hitobject, with a minimum of 50ms for droid
-     * and 25ms for PC.
+     * Milliseconds elapsed since the start time of the previous hitobject, with a minimum of 25ms.
      */
     strainTime: number = 0;
 
