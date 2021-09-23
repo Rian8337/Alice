@@ -9,6 +9,7 @@ import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
 import { DroidFlashlight } from './skills/DroidFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
+import { OsuHitWindow } from '../utils/HitWindow';
 
 /**
  * Difficulty calculator for osu!droid gamemode.
@@ -90,7 +91,10 @@ export class DroidStarRating extends StarRating {
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
-        const speedSkill: DroidSpeed = new DroidSpeed(this.mods);
+        const speedSkill: DroidSpeed = new DroidSpeed(
+            this.mods,
+            new OsuHitWindow(this.stats.od!).hitWindowFor300()
+        );
 
         this.calculateSkills(speedSkill);
 
@@ -192,7 +196,10 @@ export class DroidStarRating extends StarRating {
     protected createSkills(): DroidSkill[] {
         return [
             new DroidAim(this.mods),
-            new DroidSpeed(this.mods),
+            new DroidSpeed(
+                this.mods,
+                new OsuHitWindow(this.stats.od!).hitWindowFor300()
+            ),
             new DroidRhythm(this.mods),
             new DroidFlashlight(this.mods)
         ];

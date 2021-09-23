@@ -1,5 +1,8 @@
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
+import { Interpolation } from "../../mathutil/Interpolation";
+import { MathUtils } from "../../mathutil/MathUtils";
+import { Mod } from "../../mods/Mod";
 import { Precision } from "../../utils/Precision";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
@@ -22,15 +25,20 @@ export class DroidSpeed extends DroidSkill {
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
 
-    // ~330 BPM 1/4 streams
-    private readonly maxSpeedBonus: number = 45;
-
     private readonly rhythmMultiplier: number = 1.5;
     private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
 
     private currentTapStrain: number = 1;
     private currentMovementStrain: number = 1;
     private currentRhythm: number = 1;
+
+    private readonly greatWindow: number;
+
+    constructor(mods: Mod[], greatWindow: number) {
+        super(mods);
+
+        this.greatWindow = greatWindow;
+    }
 
     /**
      * @param current The hitobject to calculate.
@@ -40,20 +48,35 @@ export class DroidSpeed extends DroidSkill {
             return 0;
         }
 
-        let speedBonus: number = 1;
-        const deltaTime: number = Math.max(this.maxSpeedBonus, current.deltaTime);
+        let strainTime: number = current.strainTime;
 
-        if (deltaTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - deltaTime) / 40, 2);
+        const greatWindowFull: number = this.greatWindow * 2;
+        const speedWindowRatio: number = strainTime / greatWindowFull;
+
+        // Aim to nerf cheesy rhythms (very fast consecutive doubles with large deltatimes between).
+        if (this.previous[0] && strainTime < greatWindowFull && this.previous[0].strainTime > strainTime) {
+            strainTime = Interpolation.lerp(this.previous[0].strainTime, strainTime, speedWindowRatio);
+        }
+
+        // Cap deltatime to the OD 300 hitwindow.
+        // 0.77 is derived from making sure 260bpm OD7 streams aren't nerfed harshly, whilst 0.95 limits the effect of the cap.
+        strainTime /= MathUtils.clamp(strainTime / greatWindowFull / 0.77, 0.95, 1);
+
+        let speedBonus: number = 1;
+
+        if (strainTime < this.minSpeedBonus) {
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
         }
 
         this.currentRhythm = this.calculateRhythmBonus(current);
 
-        this.currentTapStrain *= this.strainDecay(current.deltaTime);
-        this.currentTapStrain += this.tapStrainOf(current, speedBonus) * this.skillMultiplier;
+        const decay: number = this.strainDecay(current.deltaTime);
 
-        this.currentMovementStrain *= this.strainDecay(current.deltaTime);
-        this.currentMovementStrain += this.movementStrainOf(current, speedBonus) * this.skillMultiplier;
+        this.currentTapStrain *= decay;
+        this.currentTapStrain += this.tapStrainOf(current, speedBonus, strainTime) * this.skillMultiplier;
+
+        this.currentMovementStrain *= decay;
+        this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime) * this.skillMultiplier;
 
         return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
     }
@@ -163,18 +186,18 @@ export class DroidSpeed extends DroidSkill {
     /**
      * Calculates the tap strain of a hitobject.
      */
-    private tapStrainOf(current: DifficultyHitObject, speedBonus: number): number {
+    private tapStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
 
-        return speedBonus / current.strainTime;
+        return speedBonus / strainTime;
     }
 
     /**
      * Calculates the movement strain of a hitobject.
      */
-    private movementStrainOf(current: DifficultyHitObject, speedBonus: number): number {
+    private movementStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
@@ -192,6 +215,6 @@ export class DroidSpeed extends DroidSkill {
             }
         }
 
-        return angleBonus * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / current.strainTime;
+        return angleBonus * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / strainTime;
     }
 }
