@@ -95,7 +95,7 @@ export abstract class StarRating {
             throw new Error("A map must be defined");
         }
 
-        const mod: Mod[] = this.mods = params.mods || this.mods;
+        const mod: Mod[] = this.mods = params.mods ?? this.mods;
 
         this.stats = new MapStats({
             cs: map.cs,
@@ -103,8 +103,8 @@ export abstract class StarRating {
             od: map.od,
             hp: map.hp,
             mods: mod,
-            speedMultiplier: params.stats?.speedMultiplier || 1,
-            oldStatistics: params.stats?.oldStatistics || false
+            speedMultiplier: params.stats?.speedMultiplier ?? 1,
+            oldStatistics: params.stats?.oldStatistics ?? false
         }).calculate({mode: mode});
 
         this.generateDifficultyHitObjects(mode);
