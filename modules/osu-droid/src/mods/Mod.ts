@@ -21,7 +21,7 @@ export abstract class Mod {
      * Whether the mod is ranked in osu!droid.
      */
     abstract readonly droidRanked: boolean;
-    
+
     /**
      * Whether the mod is ranked in osu!standard.
      */
