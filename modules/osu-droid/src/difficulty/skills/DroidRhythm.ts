@@ -1,5 +1,6 @@
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
+import { Mod } from "../../mods/Mod";
 import { Precision } from "../../utils/Precision";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
@@ -13,7 +14,15 @@ export class DroidRhythm extends DroidSkill {
     protected readonly historyLength: number = 32;
     protected readonly strainDecayBase: number = 0.3;
 
-    private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
+    private readonly historyTimeMax: number = 5000; // 3 seconds of calculateRhythmBonus max.
+
+    private readonly greatWindow: number;
+
+    constructor(mods: Mod[], greatWindow: number) {
+        super(mods);
+
+        this.greatWindow = greatWindow;
+    }
 
     strainValueAt(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
@@ -51,8 +60,11 @@ export class DroidRhythm extends DroidSkill {
                 effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 10;
             }
 
-            // Scale with BPM slightly and with time.
-            effectiveRatio *= Math.sqrt(200 / (currentDelta + prevDelta)) * currentHistoricalDecay;
+            // Increase scaling for when hitwindow is large but accuracy range is small.
+            effectiveRatio *= Math.max(currentDelta, prevDelta) / (this.greatWindow * 2);
+
+            // Scale with time.
+            effectiveRatio *= currentHistoricalDecay;
 
             if (firstDeltaSwitch) {
                 if (Precision.almostEqualsNumber(prevDelta, currentDelta, 15)) {
@@ -78,7 +90,7 @@ export class DroidRhythm extends DroidSkill {
 
                     if (prevPrevDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
                         // Previous increase happened a note ago.
-                        // Albeit this is a 1/1->1/2-1/4 type of transition, we dont want to buff this.
+                        // Albeit this is a 1/1->1/2-1/4 type of transition, we don't want to buff this.
                         effectiveRatio /= 8;
                     }
 

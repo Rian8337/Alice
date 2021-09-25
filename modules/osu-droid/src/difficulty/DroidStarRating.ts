@@ -107,7 +107,10 @@ export class DroidStarRating extends StarRating {
      * Calculates the rhythm star rating of the beatmap and stores it in this instance.
      */
     calculateRhythm(): void {
-        const rhythmSkill: DroidRhythm = new DroidRhythm(this.mods);
+        const rhythmSkill: DroidRhythm = new DroidRhythm(
+            this.mods,
+            new OsuHitWindow(this.stats.od!).hitWindowFor300()
+        );
 
         this.calculateSkills(rhythmSkill);
 
@@ -194,13 +197,18 @@ export class DroidStarRating extends StarRating {
      * Creates skills to be calculated.
      */
     protected createSkills(): DroidSkill[] {
+        const greatWindow: number = new OsuHitWindow(this.stats.od!).hitWindowFor300();
+
         return [
             new DroidAim(this.mods),
             new DroidSpeed(
                 this.mods,
-                new OsuHitWindow(this.stats.od!).hitWindowFor300()
+                greatWindow
             ),
-            new DroidRhythm(this.mods),
+            new DroidRhythm(
+                this.mods,
+                greatWindow
+            ),
             new DroidFlashlight(this.mods)
         ];
     }

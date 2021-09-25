@@ -25,8 +25,8 @@ export class DroidSpeed extends DroidSkill {
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
 
-    private readonly rhythmMultiplier: number = 1.5;
-    private readonly historyTimeMax: number = 3000; // 3 seconds of calculateRhythmBonus max.
+    private readonly rhythmMultiplier: number = 0.5;
+    private readonly historyTimeMax: number = 5000; // 5 seconds of calculateRhythmBonus max.
 
     private currentTapStrain: number = 1;
     private currentMovementStrain: number = 1;
@@ -129,8 +129,11 @@ export class DroidSpeed extends DroidSkill {
                 effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 10;
             }
 
-            // Scale with BPM slightly and with time.
-            effectiveRatio *= Math.sqrt(200 / (currentDelta + prevDelta)) * currentHistoricalDecay;
+            // Increase scaling for when hitwindow is large but accuracy range is small.
+            effectiveRatio *= Math.max(currentDelta, prevDelta) / (this.greatWindow * 2);
+
+            // Scale with time.
+            effectiveRatio *= currentHistoricalDecay;
 
             if (firstDeltaSwitch) {
                 if (Precision.almostEqualsNumber(prevDelta, currentDelta, 15)) {
@@ -156,7 +159,7 @@ export class DroidSpeed extends DroidSkill {
 
                     if (prevPrevDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
                         // Previous increase happened a note ago.
-                        // Albeit this is a 1/1->1/2-1/4 type of transition, we dont want to buff this.
+                        // Albeit this is a 1/1->1/2-1/4 type of transition, we don't want to buff this.
                         effectiveRatio /= 8;
                     }
 
