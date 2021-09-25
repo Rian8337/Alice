@@ -157,7 +157,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }
 
     /**
-     * Calculates the tap performance value of the beatmap.
+     * Calculates the speed performance value of the beatmap.
      */
     private calculateSpeedValue(): void {
         // Global variables
@@ -194,11 +194,6 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         // Scale the speed value with # of 50s to punish doubletapping.
         this.speed *= Math.pow(0.98, Math.max(0, this.computedAccuracy.n50 - objectCount / 500));
-
-        // Punish high speed values with low OD to prevent OD abuse on rhythmically complex songs.
-        if (this.speed > 100 && od < 3.33) {
-            this.speed = 100 + (this.speed - 100) * Math.max(0.5, od / 3.33);
-        }
     }
 
     /**
