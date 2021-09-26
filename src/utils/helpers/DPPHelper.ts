@@ -97,7 +97,7 @@ export abstract class DPPHelper {
         const toUpdateList: Collection<string, UserBind> = await DatabaseManager.elainaDb.collections.userBind.get(
             "discordid",
             { "pp.hash": hash },
-            { projection: { _id: 0, pp: 1, playc: 1 } }
+            { projection: { _id: 0, discordid: 1, pp: 1, playc: 1 } }
         );
 
         for await (const toUpdate of toUpdateList.values()) {
