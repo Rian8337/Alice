@@ -1,7 +1,6 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { MessageHelper } from "@alice-utils/helpers/MessageHelper";
 import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageOptions, Snowflake } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 
