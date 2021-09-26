@@ -215,17 +215,15 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         });
 
         collector.on("end", async () => {
-            if (!MessageHelper.messageStillExists(message)) {
-                return;
-            }
-
             // Disable all buttons
 
             component.components.forEach(component => {
                 component.setDisabled(true);
             });
 
-            await interaction.editReply(options);
+            try {
+                await interaction.editReply(options);
+            } catch { }
         });
 
         return message;
