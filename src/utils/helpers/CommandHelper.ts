@@ -237,8 +237,8 @@ export abstract class CommandHelper extends Manager {
     /**
      * Activates a command's cooldown upon a user.
      * 
-     * @param key The cooldown key, which is `{User ID}:{command name}`
-     * @param cooldown The cooldown of the command, in seconds.
+     * @param key The key of the cooldown.
+     * @param cooldown The cooldown to apply, in seconds.
      */
     static setCooldown(key: CooldownKey, cooldown: number): void {
         CacheManager.activeCommandCooldowns.add(key);
