@@ -236,9 +236,9 @@ export class UserBind extends Manager {
         const newList: Collection<string, PPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score = await Score.getFromHash({ uid: this.uid, hash: ppEntry.hash });
+            const score: Score | null = await this.getScoreFromPlayer(ppEntry.hash);
 
-            if (!score.title) {
+            if (!score) {
                 continue;
             }
 
@@ -283,9 +283,9 @@ export class UserBind extends Manager {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score = await Score.getFromHash({ uid: this.uid, hash: ppEntry.hash });
+            const score: Score | null = await this.getScoreFromPlayer(ppEntry.hash);
 
-            if (!score.title) {
+            if (!score) {
                 continue;
             }
 
@@ -677,5 +677,23 @@ export class UserBind extends Manager {
      */
     isUidBinded(uid: number): boolean {
         return this.previous_bind.includes(uid);
+    }
+
+    /**
+     * Gets a score from this player.
+     * 
+     * @param hash The MD5 hash of the played beatmap.
+     * @returns The score, `null` if not found.
+     */
+    async getScoreFromPlayer(hash: string): Promise<Score | null> {
+        for await (const uid of this.previous_bind) {
+            const score: Score = await Score.getFromHash({ uid: uid, hash: hash });
+
+            if (score.title) {
+                return score;
+            }
+        }
+
+        return null;
     }
 }
