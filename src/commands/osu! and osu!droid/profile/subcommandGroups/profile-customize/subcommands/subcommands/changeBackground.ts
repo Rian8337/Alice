@@ -4,15 +4,14 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     const bindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(interaction.user);
@@ -23,38 +22,35 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    const backgroundList: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("name");
+    const backgroundList: Collection<string, ProfileBackground> = await DatabaseManager.aliceDb.collections.profileBackgrounds.get("id");
 
     const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
 
-    const bgName: string | undefined = await MessageInputCreator.createInputDetector(
+    const bgId: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        {
-            embeds: [
-                EmbedCreator.createInputEmbed(
-                    interaction,
-                    "Change Profile Card Background",
-                    `Enter the name of the background that you want to use.\n\nIf you don't own the background, you will be prompted to buy it. A background costs ${coin}\`500\` Alice coins.`
-                )
-            ]
-        },
-        backgroundList.map(v => v.name),
+        "Choose the background that you want to use.",
+        backgroundList.map(v => {
+            return {
+                label: v.name,
+                value: v.id
+            };
+        }),
         [interaction.user.id],
-        20
-    );
+        30
+    ))[0];
 
-    if (!bgName) {
+    if (!bgId) {
         return;
     }
 
-    const background: ProfileBackground = backgroundList.get(bgName)!;
+    const background: ProfileBackground = backgroundList.get(bgId)!;
 
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
 
     const pictureConfig: ProfileImageConfig =
         playerInfo?.picture_config ?? DatabaseManager.aliceDb.collections.playerInfo.defaultDocument.picture_config;
 
-    const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(v => v.name === bgName);
+    const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(v => v.id === bgId);
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.alicecoins ?? 0) < 500) {
@@ -119,7 +115,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(
             profileStrings.switchBackgroundSuccess,
             interaction.user.toString(),
-            bgName,
+            bgId,
             isBackgroundOwned ? "" : ` You now have ${coin}\`${playerInfo?.alicecoins}\` Alice coins.`
         ),
         embeds: [],

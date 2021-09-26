@@ -7,9 +7,8 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -35,17 +34,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const badgeIndexInput = await MessageInputCreator.createInputDetector(
+    const badgeIndexInput: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        { embeds: [ EmbedCreator.createInputEmbed(
-            interaction,
-            "Unequip a Profile Badge",
-            "Enter the slot number where you want to unequip the badge on, from 1 to 10."
-        ) ] },
-        ArrayHelper.initializeArray(10, 1).map((v, i) => (v + i).toString()),
+        "Choose the slot number that you want to unequip the badge on.",
+        ArrayHelper.initializeArray(10, 1).map((v, i) => {
+            return {
+                label: (v + i).toLocaleString(),
+                value: (v + i).toString()
+            };
+        }),
         [interaction.user.id],
         20
-    );
+    ))[0];
 
     if (!badgeIndexInput) {
         return;
