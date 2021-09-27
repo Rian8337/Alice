@@ -61,6 +61,10 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID ?? hash);
 
+    if (beatmapInfo) {
+        BeatmapManager.setChannelLatestBeatmap(interaction.channelId, beatmapInfo.hash);
+    }
+
     // Leaderboard cache, mapped by page number
     const leaderboardCache: Collection<number, Score[]> = new Collection();
 
