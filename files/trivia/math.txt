@@ -1,0 +1,40 @@
+3 | 1 | - | In a complete graph G, which has 12 vertices, how many edges are there? | 66 | 67 | 34 | 11
+3 | 1 | - | In the hexadecimal system, what number comes after 9? | The Letter A | 10 | The Number 0 | 16
+1 | 1 | - | How is the number 9 represented as a binary number? | 1001 | 1000 | 1110 | 1010
+5 | 1 | - | What is the derivative of Acceleration with respect to time? | Jerk | Shift | Bump | Slide
+5 | 1 | - | What is the approximate value of mathematical constant e? | 2.72 | 3.14 | 1.62 | 1.41
+3 | 1 | - | How many zeros are there in a googol? | 100 | 10 | 1,000 | 1,000,000
+3 | 1 | - | The Pythagorean theorem states that the square of the hypotenuse is equal to the product of the squares of the other two sides. | False | True
+3 | 1 | - | What are the first 6 digits of the number "Pi"? | 3.14159 | 3.14169 | 3.12423 | 3.25812
+1 | 1 | - | In Roman Numerals, what does XL equate to? | 40 | 60 | 15 | 90
+3 | 1 | - | What is the Roman numeral for 500? | D | L | C | X
+1 | 1 | - | What's the square root of 49? | 7 | 4 | 12 | 9
+5 | 1 | - | How many zeptometres are inside one femtometre? | 1,000,000 | 10 | 1,000,000,000 | 1000
+3 | 1 | - | What is the first Mersenne prime over 1000? | 1279 | 2203 | 1009 | 1069
+3 | 1 | - | 111,111,111 x 111,111,111 = 12,345,678,987,654,321 | True | False
+1 | 1 | - | The 'Squaring the Circle' problem is solvable. | False | True
+5 | 1 | - | The binary number "101001101" is equivalent to the Decimal number "334" | False | True
+5 | 1 | - | If you could fold a piece of paper in half 50 times, its' thickness will be 3/4th the distance from the Earth to the Sun. | True | False
+3 | 1 | - | What is the alphanumeric representation of the imaginary number? | i | e | n | x
+3 | 1 | - | To the nearest whole number, how many radians are in a whole circle? | 6 | 3 | 4 | 5
+3 | 1 | - | Zero factorial is equal to zero.  | False | True
+1 | 1 | - | The metric prefix "atto-" makes a measurement how much smaller than the base unit? | One Quintillionth | One Billionth | One Quadrillionth | One Septillionth
+5 | 1 | - | What is the plane curve proposed by Descartes to challenge Fermat's extremum-finding techniques called? | Folium of Descartes | Elliptic Paraboloid of Descartes | Cartesian Coordinates | Descarte's Helicoid
+5 | 1 | - | The French mathematician Évariste Galois is primarily known for his work in which? | Galois Theory | Galois' Continued Fractions | Galois' Method for PDE's  | Abelian Integration
+1 | 1 | - | The sum of any two odd integers is odd. | False | True
+3 | 1 | - | You can square root a negative number with an imaginary number "i". | True | False
+3 | 1 | - | The proof for the Chinese Remainder Theorem used in Number Theory was NOT developed by its first publisher, Sun Tzu. | True | False
+1 | 1 | - | What prime number comes next after 19? | 23 | 25 | 21 | 27
+3 | 1 | - | What Greek letter is used to signify summation? | Sigma | Delta | Alpha | Omega
+5 | 1 | - | The decimal number 31 in hexadecimal would be what? | 1F | 3D | 2E | 1B
+3 | 1 | - | E = MC3 | False | True
+5 | 1 | - | What is the 100th digit of Pi? | 9 | 4 | 7 | 2
+3 | 1 | - | A 'Millinillion' is a real number. | True | False
+1 | 1 | - | How many sides does a heptagon have? | 7 | 8 | 6 | 5
+5 | 1 | - | In Topology, the complement of an open set is a closed set. | True | False
+1 | 1 | - | What is the correct order of operations for solving equations? | Parentheses, Exponents, Multiplication, Division, Addition, Subtraction | Addition, Multiplication, Division, Subtraction, Addition, Parentheses | Parentheses, Exponents, Addition, Substraction, Multiplication, Division | The order in which the operations are written.
+3 | 1 | - | What is the area of a circle with a diameter of 20 inches if π= 3.1415? | 314.15 Inches | 380.1215 Inches | 3141.5 Inches | 1256.6 Inches
+1 | 1 | - | A universal set, or a set that contains all sets, exists. | False | True
+1 | 1 | - | What is the symbol for Displacement? | Δr | dr | Dp | r
+3 | 1 | - | The set of all algebraic numbers is countable. | True | False
+5 | 1 | - | L'Hôpital was the mathematician who created the homonymous rule that uses derivatives to evaluate limits with indeterminations. | False | True

@@ -1,0 +1,45 @@
+3 | 1 | - | Which actress's real name was Frances Ethel Gumm? | Judy Garland | Doris Day | Julie Andrews | Marilyn Monroe
+3 | 1 | - | What is the name of Jontron's parrot? | Jacques | Jak | John | Jaques
+3 | 1 | - | Michael Jackson had a pet python named ‘Crusher’. | True | False
+3 | 1 | - | What is the real name of "moot", founder of the imageboard 4chan? | Christopher Poole | Mark Zuckerberg | Allison Harvard | Catie Wayne
+1 | 1 | - | By what name is Carlos Estevez better known?  | Charlie Sheen | Ricky Martin | Bruno Mars | Joaquin Phoenix
+3 | 1 | - | What year did radio icon Howard Stern start a job at radio station WNBC? | 1982 | 1985 | 1984 | 1995
+3 | 1 | - | Which of these people is NOT a part of the Internet comedy group Mega64? | Jon Jafari | Rocco Botte | Derrick Acosta | Shawn Chatfield
+3 | 1 | - | What was the cause of death for Freddie Mercury? | Pneumonia | Stomach Cancer | HIV | Brain Hemorrhage
+3 | 1 | - | When was Elvis Presley born? | January 8, 1935 | December 13, 1931 | July 18, 1940 | April 17, 1938
+5 | 1 | - | What was the religion of famous singer "Freddie Mercury"? | Zoroastrianism | Paganism | Ashurism | Judaism
+1 | 1 | - | What does film maker Dan Bell typically focus his films on? | Abandoned Buildings and Dead Malls | Historic Landmarks | Action Films | Documentaries 
+1 | 1 | - | Gwyneth Paltrow has a daughter named...? | Apple | Lily | French | Dakota
+3 | 1 | - | If he was still alive, in what year would Elvis Presley celebrate his 100th birthday? | 2035 | 2030 | 2040 | 2045
+1 | 1 | - | Aubrey Graham is better known as | Drake | Travis Scott | Lil Wayne | 2 Chainz
+3 | 1 | - | Which famous New York Yankees outfielder did Marilyn Monroe marry? | Joe DiMaggio | Tino Martinez | Babe Ruth | Mason Williams
+1 | 1 | - | Marilyn Monroe was born on July 1, 1926. | False | True
+3 | 1 | - | Which radio personality calls himself "The King of All Media"? | Howard Stern | Rush Limbaugh | Pete Tong | Ryan Seacrest
+3 | 1 | - | How much weight did Chris Pratt lose for his role as Star-Lord in "Guardians of the Galaxy"? | 60 lbs | 30 lbs | 50 lbs | 70 lbs
+5 | 1 | - | Lady Gaga's real name is Stefani Joanne Angelina Germanotta. | True | False
+1 | 1 | - | Tupac Shakur died due to complications from being stabbed in 1996. | False | True
+3 | 1 | - | In which of these TV shows did the chef Gordon Ramsay not appear? | Auction Hunters | Ramsay's Kitchen Nightmares | Hotel Hell | Hell's Kitchen
+5 | 1 | - | Which school in Surrey, England did Steve Backshall attend? | Collingwood College | Tomlinscote School | Kings International College | Lyndhurst School
+1 | 1 | - | Neil Hamburger is played by which comedian? | Gregg Turkington | Nathan Fielder | Tim Heidecker | Todd Glass
+1 | 1 | - | By which name is Ramon Estevez better known as? | Martin Sheen | Charlie Sheen | Ramon Sheen | Emilio Estevez
+5 | 1 | - | Gabe Newell was born in which year? | 1962  | 1970 | 1960 | 1972
+3 | 1 | - | What is Doug Walker's YouTube name? | The Nostalgia Critic | The Angry Video Game Nerd | AngryJoeShow | The Cinema Snob
+1 | 1 | - | Which actress married Michael Douglas in 2000? | Catherine Zeta-Jones | Ruth Jones | Pam Ferris | Sara Sugarman
+5 | 1 | - | How tall is Tom Cruise? | 5′ 7″ | 5′ 9″ | 5′ 4″ | 5′ 5″
+3 | 1 | - | What is generally considered to be William Shakespeare's birth date? | April 23rd, 1564 | July 4th, 1409 | September 29th, 1699 | December 1st, 1750
+3 | 1 | - | Before voicing Pearl in Steven Universe, Deedee Magno Hall was part of which American band? | The Party | The Weather Girls | The Pussycat Dolls | The Cheetah Girls
+3 | 1 | - | Where was Kanye West born? | Atlanta, Georgia | Chicago, Illinois | Los Angeles, California | Detroit, Michigan
+3 | 1 | - | What was the name of Marilyn Monroe's first husband? | James Dougherty | Joe Dimaggio | Kirk Douglas | Arthur Miller
+3 | 1 | - | Nikki Diamond portrayed which Gladiator in the 1992 TV show "Gladiators"? | Scorpio | Jet | Nightshade | Falcon
+3 | 1 | - | Who is "James Rolfe" better known as? | The Angry Video Game Nerd | TotalBiscuit | PeanutButterGamer | PewDiePie
+3 | 1 | - | Which American celebrity died in 1977 playing golf in La Moraleja, Madrid? | Bing Crosby | Elvis Presley | Charlie Chaplin | Groucho Marx
+1 | 1 | - | Named after a character he played in a 1969 film, what is the name of the ski resort in Utah that Robert Redford bought in 1968? | Sundance | Woodward | Turner | Booker
+3 | 1 | - | Paul McCartney has always used his middle name. What is his real first name?  | James | John | Jack | Justin
+3 | 1 | - | Donald J. Trump's Middle Name is... | John | Jeff | Jerald | Jason
+1 | 1 | - | What was the cause of Marilyn Monroes suicide? | Drug Overdose | Knife Attack | House Fire | Gunshot
+1 | 1 | - | Which celebrity announced his presidency in 2015? | Kanye West | Donald Trump | Leonardo DiCaprio | Miley Cyrus
+3 | 1 | - | Who out of these actresses is the youngest? | Kiernan Shipka | Ariel Winter | Emma Watson | Bonnie Wright
+3 | 1 | - | In what year did "Bob Ross" die? | 1995 | 1986 | 1989 | 1997
+5 | 1 | - | The eccentric natural philosopher Tycho Brahe kept what as a pet? | Moose | Dog | Bear | Goat
+5 | 1 | - | Who was Donald Trump's first wife? | Ivana Zelníčková | Melania Knauss | Marla Maples | Nancy Davis
+5 | 1 | - | Billy Herrington is from which US state? | New York | Arizona | California | Georgia

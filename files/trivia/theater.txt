@@ -1,0 +1,20 @@
+3 | 1 | - | When was the play 'Macbeth' written? | 1606 | 1605 | 1723 | 1628
+1 | 1 | - | Which Shakespeare play inspired the musical 'West Side Story'? | Romeo & Juliet | Hamlet | Macbeth | Othello
+3 | 1 | - | In which Shakespeare play does the character Marcellus say, "Something is rotten in the state of Denmark"? | Hamlet | Macbeth | King Lear | Twelfth Night
+5 | 1 | - | What is the name of Broadway's first "long-run" musical? | The Elves | Wicked | Hamilton | The Book of Mormon
+3 | 1 | - | What was George Bizet's last opera? | Carmen | Don Rodrigue | Grisélidis | Les pêcheurs de perles
+3 | 1 | - | What play is the quote "Hell is other people" from? | No Exit | The Devil and the Good Lord | The Condemned of Altona | The Flies
+3 | 1 | - | Which of the following is not a piece from the 1950's musical West Side Story? | The Back Alley | Maria | Tonight | Mambo
+1 | 1 | - | "Doctor Who" star David Tennant performed in a rendition of which Shakespearean play? | Hamlet | The Tempest | Othello | The Taming of the Shrew
+5 | 1 | - | Who serves as the speaker of the prologue in Shakespeare's Romeo and Juliet? | Chorus | Montague | Refrain | Capulet
+5 | 1 | - | Who played "Charlie Price" in the musical "Kinky Boots" on Broadway in New York from May 26th - Aug 6th 2017? | Brendon Urie | Ed Sheeren | Tom Cruise | Dallon Weekes
+1 | 1 | - | In the play Oedipus Rex, Oedipus kills his father due to jealousy in loving his mother. | False | True
+3 | 1 | - | Which of these musicals won the Tony Award for Best Musical? | Rent | The Color Purple | American Idiot | Newsies
+1 | 1 | - | Who wrote the award winning musical "In The Heights"? | Lin-Manuel Miranda | Steven Sondheim | Francis Scott Key | John Phillips Sousa
+5 | 1 | - | In Les Misérables, who is Prison Code 24601? | Jean Valjean | Marius Pontmercy | Javert | Jean Claude Van Damme
+5 | 1 | - | Who wrote the lyrics for Leonard Bernstein's 1957 Brodway musical West Side Story? | Stephen Sondheim | Himself | Oscar Hammerstein | Richard Rodgers
+3 | 1 | - | Who is the musical director for the award winning musical "Hamilton"? | Alex Lacamoire | Lin-Manuel Miranda | Renee Elise-Goldberry | Leslie Odom Jr.
+1 | 1 | - | In Shakespeare's play Julius Caesar, Caesar's last words were... | Et tu, Brute?  | Iacta alea est! | Vidi, vini, vici. | Aegri somnia vana.
+3 | 1 | - | In Jeff Wayne's Musical Version of War of the Worlds, the chances of anything coming from Mars are... | A million to one | A billion to one | A trillion to one | A hundred to one
+1 | 1 | - | How many plays is Shakespeare generally considered to have written? | 37 | 18 | 54 | 25
+5 | 1 | - | In Macbeth, the eyes of what animals were used in the Witches' cauldron? | Newts | Humans | Sharks | Squids
