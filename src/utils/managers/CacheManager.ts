@@ -30,6 +30,11 @@ export abstract class CacheManager {
     static readonly stillHasMathGameActive: Set<Snowflake> = new Set();
 
     /**
+     * The channels that still have a trivia question active.
+     */
+    static readonly stillHasQuestionTriviaActive: Set<Snowflake> = new Set();
+
+    /**
      * Recalculation queue for per-user recalculation, mapped by the user's ID.
      */
     static readonly recalculationQueue: Collection<Snowflake, CommandInteraction> = new Collection();

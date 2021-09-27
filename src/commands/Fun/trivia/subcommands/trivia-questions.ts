@@ -5,10 +5,17 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
+import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { GuildMember, MessageEmbed } from "discord.js";
 import { triviaStrings } from "../triviaStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
+    if (CacheManager.stillHasQuestionTriviaActive.has(interaction.channelId)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(triviaStrings.channelHasTriviaQuestionActive)
+        });
+    }
+
     let category: TriviaQuestionCategory | undefined;
 
     if (interaction.options.getBoolean("forcecategory")) {
@@ -27,11 +34,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         category = parseInt(pickedChoice);
     }
 
+    CacheManager.stillHasQuestionTriviaActive.add(interaction.channelId);
+
     const result: TriviaQuestionResult = await TriviaHelper.askQuestion(
         interaction,
         category,
         interaction.options.getInteger("type") ?? undefined
     );
+
+    CacheManager.stillHasQuestionTriviaActive.delete(interaction.channelId);
 
     if (result.correctAnswers.length === 0) {
         return interaction.editReply({
