@@ -42,6 +42,8 @@ export abstract class TriviaHelper {
 
                 if (availableQuestions.length === 0) {
                     return resolve({
+                        category: category,
+                        type: type,
                         correctAnswers: [],
                         results: []
                     });
@@ -124,6 +126,8 @@ export abstract class TriviaHelper {
 
             collector.on("end", collected => {
                 resolve({
+                    category: category!,
+                    type: type!,
                     correctAnswers: isMultipleChoice ? [ allAnswers.find(v => v.startsWith(correctAnswers[0]))! ] : correctAnswers,
                     results: collected.map(v => {
                         return {
@@ -153,7 +157,7 @@ export abstract class TriviaHelper {
      * 
      * @param category The category.
      */
-    private static getCategoryName(category: TriviaQuestionCategory): string {
+    static getCategoryName(category: TriviaQuestionCategory): string {
         switch (category) {
             case TriviaQuestionCategory.ANIMAL:
                 return "Animals";

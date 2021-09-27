@@ -35,7 +35,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (result.correctAnswers.length === 0) {
         return interaction.editReply({
-            content: MessageCreator.createReject(triviaStrings.categoryHasNoQuestionType)
+            content: MessageCreator.createReject(
+                triviaStrings.categoryHasNoQuestionType, TriviaHelper.getCategoryName(result.category)
+            )
         });
     }
 

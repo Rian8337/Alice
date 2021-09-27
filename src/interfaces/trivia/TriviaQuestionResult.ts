@@ -1,3 +1,5 @@
+import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
+import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
 import { User } from "discord.js";
 
 /**
@@ -8,6 +10,16 @@ export interface TriviaQuestionResult {
      * The correct answer of this trivia question.
      */
     readonly correctAnswers: string[];
+
+    /**
+     * The category of this trivia question.
+     */
+    readonly category: TriviaQuestionCategory;
+
+    /**
+     * The type of this trivia question.
+     */
+    readonly type: TriviaQuestionType;
 
     /**
      * The results of this trivia question.
