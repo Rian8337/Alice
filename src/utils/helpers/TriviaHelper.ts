@@ -2,10 +2,11 @@ import { readFile } from "fs/promises";
 import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
 import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { CommandInteraction, GuildMember, Message, MessageCollector, MessageEmbed, MessageSelectOptionData } from "discord.js";
+import { Collection, CommandInteraction, GuildMember, InteractionCollector, Message, MessageActionRow, MessageButton, MessageCollector, MessageComponentInteraction, MessageEmbed, MessageOptions, MessageSelectOptionData, Snowflake } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
+import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 
 /**
  * Helper methods for trivia-related features.
@@ -92,7 +93,7 @@ export abstract class TriviaHelper {
             );
 
             embed.setTitle("Trivia Question")
-                .setDescription(`${difficulty} ${Symbols.star} - ${this.getCategoryName(category)} Question\n${question}`)
+                .setDescription(`${difficulty} ${Symbols.star} - ${this.getCategoryName(category)} Question\n\n${question}`)
 
             if (isMultipleChoice) {
                 // Convert to letter choices (A, B, etc.) first.
@@ -112,31 +113,91 @@ export abstract class TriviaHelper {
                 embed.setImage(imageLink);
             }
 
-            const questionMessage: Message = <Message> await interaction.editReply({
+            const options: MessageOptions = {
                 components: [],
                 embeds: [ embed ]
-            });
+            };
 
-            const lowercasedCorrectAnswers: string[] = correctAnswers.map(v => v.toLowerCase());
+            if (isMultipleChoice) {
+                const component: MessageActionRow = new MessageActionRow();
 
-            const collector: MessageCollector = interaction.channel!.createMessageCollector({
-                filter: message => lowercasedCorrectAnswers.includes(message.content.toLowerCase()),
-                time: (isMultipleChoice ? 5 + (difficulty * 2) : 7 + (difficulty * 3)) * 1000
-            });
+                for (let i = 0; i < allAnswers.length; ++i) {
+                    const button: MessageButton = new MessageButton()
+                        .setCustomId(String.fromCharCode(65 + i))
+                        .setStyle("PRIMARY")
+                        .setLabel(String.fromCharCode(65 + i));
 
-            collector.on("end", collected => {
-                resolve({
-                    category: category!,
-                    type: type!,
-                    correctAnswers: isMultipleChoice ? [ allAnswers.find(v => v.startsWith(correctAnswers[0]))! ] : correctAnswers,
-                    results: collected.map(v => {
-                        return {
-                            user: v.author,
-                            timeTaken: v.createdTimestamp - questionMessage.createdTimestamp
-                        };
-                    })
+                    component.addComponents(button);
+                }
+
+                options.components!.push(component);
+            }
+
+            const questionMessage: Message = <Message> await interaction.editReply(options);
+
+            const time: number = (isMultipleChoice ? 5 + (difficulty * 2) : 7 + (difficulty * 3)) * 1000;
+
+            if (isMultipleChoice) {
+                const collector: InteractionCollector<MessageComponentInteraction> = questionMessage.createMessageComponentCollector({
+                    filter: i => i.isButton(),
+                    componentType: "BUTTON",
+                    dispose: true,
+                    time: time
                 });
-            });
+
+                // Use a separate collection to prevent multiple answers from users
+                const answers: Collection<Snowflake, MessageComponentInteraction> = new Collection();
+
+                collector.on("collect", i => {
+                    answers.set(i.user.id, i);
+
+                    i.reply({
+                        content: MessageCreator.createAccept(`Your latest choice (${i.customId}) has been recorded!`),
+                        ephemeral: true
+                    });
+                });
+
+                collector.on("end", async () => {
+                    options.components = [];
+
+                    try {
+                        await interaction.editReply(options);
+                    } catch { }
+
+                    resolve({
+                        category: category!,
+                        type: type!,
+                        correctAnswers: [ allAnswers.find(v => v.startsWith(correctAnswers[0]))! ],
+                        results: answers.filter(v => v.customId === correctAnswers[0]).map(v => {
+                            return {
+                                user: v.user,
+                                timeTaken: v.createdTimestamp - questionMessage.createdTimestamp
+                            };
+                        })
+                    });
+                });
+            } else {
+                const lowercasedCorrectAnswers: string[] = correctAnswers.map(v => v.toLowerCase());
+
+                const collector: MessageCollector = interaction.channel!.createMessageCollector({
+                    filter: message => lowercasedCorrectAnswers.includes(message.content.toLowerCase()),
+                    time: time
+                });
+
+                collector.on("end", collected => {
+                    resolve({
+                        category: category!,
+                        type: type!,
+                        correctAnswers: correctAnswers,
+                        results: collected.map(v => {
+                            return {
+                                user: v.author,
+                                timeTaken: v.createdTimestamp - questionMessage.createdTimestamp
+                            };
+                        })
+                    });
+                });
+            }
         });
     }
 
