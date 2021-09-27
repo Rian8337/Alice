@@ -31,6 +31,9 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
             const onPageChange: OnButtonPageChange = async (_, page) => {
                 selectMenu.spliceOptions(0, selectMenu.options.length)
                     .addOptions(choices.slice(25 * (page - 1), 25 + 25 * (page - 1)));
+
+                component.spliceComponents(0, component.components.length)
+                    .addComponents(selectMenu);
             };
 
             const message: Message = await MessageButtonCreator.createLimitedButtonBasedPaging(
