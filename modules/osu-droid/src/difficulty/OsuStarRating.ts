@@ -121,8 +121,6 @@ export class OsuStarRating extends StarRating {
         if (basePerformanceValue > 1e-5) {
             this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4)
         }
-
-        console.log(`${this.total} stars (${this.aim} aim, ${this.speed} speed, ${this.flashlight} flashlight)`);
     }
 
     /**
