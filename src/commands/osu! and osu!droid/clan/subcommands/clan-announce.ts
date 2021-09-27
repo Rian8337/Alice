@@ -54,7 +54,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     finalMessage += `\n\n${announcementMessage}\n\n- ${interaction.user}`;
 
-    interaction.channel!.send({
+    interaction.followUp({
         content: finalMessage,
         allowedMentions: {
             parse: ["everyone"]
