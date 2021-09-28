@@ -160,12 +160,16 @@ export class Challenge extends Manager {
             return this.createOperationResult(false, "a challenge is still ongoing");
         }
 
+        this.status = "ongoing";
+
+        this.timelimit = Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1);
+
         await DatabaseManager.aliceDb.collections.challenge.update(
             { challengeid: this.challengeid },
             {
                 $set: {
                     status: "ongoing",
-                    timelimit: Math.floor(Date.now() / 1000) + 86400 * (this.isWeekly ? 7 : 1)
+                    timelimit: this.timelimit
                 }
             }
         );
@@ -197,8 +201,10 @@ export class Challenge extends Manager {
             return this.createOperationResult(false, "not the time to end challenge yet");
         }
 
+        this.status = "finished";
+
         await DatabaseManager.aliceDb.collections.challenge.update(
-            { challengeid: this.challengeid }, { $set: { status: "finished" } }
+            { challengeid: this.challengeid }, { $set: { status: this.status } }
         );
 
         const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
