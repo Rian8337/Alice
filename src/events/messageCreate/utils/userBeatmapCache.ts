@@ -11,7 +11,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     for await (const arg of message.content.split(/\s+/g)) {
-        if (!arg.startsWith("https://osu.ppy.sh/") || !StringHelper.isValidURL(arg)) {
+        if ((!arg.startsWith("https://osu.ppy.sh/") && !arg.startsWith("https://dev.ppy.sh/")) || !StringHelper.isValidURL(arg)) {
             continue;
         }
 
