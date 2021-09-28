@@ -67,7 +67,11 @@ export abstract class TriviaHelper {
             // Fourth entry is the question itself.
             const question: string = components.shift()!;
 
-            components[components.length - 1] = components.at(-1)!.replace("\r", "");
+            // TODO: this is a bit trippy considering it should never be undefined, but apparently
+            // an error was thrown for that reason.
+            if (components.length > 0) {
+                components[components.length - 1] = components.at(-1)!.replace("\r", "");
+            }
 
             // The rest is a combination of correct answers and all answers.
             const correctAnswers: string[] = [];
