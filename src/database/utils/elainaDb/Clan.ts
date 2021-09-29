@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Collection, Guild, GuildChannel, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
+import { Collection, Guild, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
@@ -332,22 +332,13 @@ export class Clan extends Manager {
      * @returns An object containing information about the operation.
      */
     async disband(): Promise<OperationResult> {
-        const result: OperationResult = await DatabaseManager.elainaDb.collections.clan.delete(
+        await DatabaseManager.elainaDb.collections.clan.delete(
             { name: this.name }
         );
 
-        this.exists = !result.success;
+        await this.deleteClanRole("Clan disbanded");
 
-        if (this.exists) {
-            return result;
-        }
-
-        await this.removeClanRole(...this.member_list.keys());
-
-        // Delete clan channel
-        const mainServer: Guild = await this.client.guilds.fetch(Constants.mainServer);
-
-        const clanChannel: GuildChannel | undefined = <GuildChannel | undefined> mainServer.channels.cache.find(c => c.name === this.name);
+        const clanChannel: TextChannel | undefined = await this.getClanChannel();
 
         if (clanChannel) {
             await clanChannel.delete();
@@ -472,6 +463,19 @@ export class Clan extends Manager {
         }
 
         return this.createOperationResult(true);
+    }
+
+    /**
+     * Deletes this clan's role, if any.
+     * 
+     * @reason The reason for deleting the role.
+     */
+    async deleteClanRole(reason: string): Promise<void> {
+        const clanRole: Role | undefined = await this.getClanRole();
+
+        if (clanRole) {
+            await clanRole.delete(reason);
+        }
     }
 
     /**
