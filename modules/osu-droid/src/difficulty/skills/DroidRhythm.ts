@@ -57,11 +57,8 @@ export class DroidRhythm extends DroidSkill {
 
             if (effectiveRatio > 0.5) {
                 // Large buff for 1/3 -> 1/4 type transitions.
-                effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 10;
+                effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 5;
             }
-
-            // Increase scaling for when hitwindow is large but accuracy range is small.
-            effectiveRatio *= Math.max(currentDelta, prevDelta) / (this.greatWindow * 2);
 
             // Scale with time.
             effectiveRatio *= currentHistoricalDecay;
@@ -79,12 +76,12 @@ export class DroidRhythm extends DroidSkill {
                     }
 
                     if (this.previous[i].object instanceof Slider) {
-                        // BPM change was from a slider, this is typically easier than circle -> circle
+                        // BPM change was from a slider, this is typically easier than circle -> circle.
                         effectiveRatio /= 2;
                     }
 
                     if (previousIslandSize === islandSize) {
-                        // Repeated island size (ex: triplet -> triplet)
+                        // Repeated island size (ex: triplet -> triplet).
                         effectiveRatio /= 4;
                     }
 
@@ -115,7 +112,7 @@ export class DroidRhythm extends DroidSkill {
         }
 
         this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum) / 2 * this.skillMultiplier;
+        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum * Math.sqrt(52 / (this.greatWindow * 2))) / 2 * this.skillMultiplier;
 
         return this.currentStrain;
     }
