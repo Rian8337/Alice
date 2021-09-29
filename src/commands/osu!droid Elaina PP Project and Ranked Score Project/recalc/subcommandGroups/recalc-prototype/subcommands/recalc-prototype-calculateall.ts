@@ -1,13 +1,14 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
+import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
+import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Collection, Snowflake } from "discord.js";
-import { recalcStrings } from "../recalcStrings";
+import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
+    const dbManager: PrototypePPCollectionManager = DatabaseManager.aliceDb.collections.prototypePP;
 
     let calculatedCount: number = 0;
 
@@ -15,8 +16,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(recalcStrings.fullRecalcInProgress)
     });
 
+    if (interaction.options.getBoolean("resetprogress")) {
+        await dbManager.update({}, { $set: { scanDone: false } });
+    }
+
     while (true) {
-        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(50);
+        const players: Collection<Snowflake, PrototypePP> = await dbManager.getUnscannedPlayers(50);
 
         if (players.size === 0) {
             break;
@@ -25,17 +30,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         for await (const player of players.values()) {
             client.logger.info(`Now calculating ID ${player.discordid}`);
 
-            if (interaction.options.getBoolean("full")) {
-                await player.recalculateAllScores(false, true);
-            } else {
-                await player.recalculateDPP();
-            }
+            const bindInfo: UserBind = (await DatabaseManager.elainaDb.collections.userBind.getFromUser(player.discordid))!;
+
+            await bindInfo.calculatePrototypeDPP();
 
             client.logger.info(`${++calculatedCount} players recalculated`);
         }
     }
-
-    await dbManager.update({}, { $unset: { dppScanComplete: "" } });
 
     interaction.channel!.send({
         content: MessageCreator.createAccept(
@@ -45,5 +46,5 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: []
 };

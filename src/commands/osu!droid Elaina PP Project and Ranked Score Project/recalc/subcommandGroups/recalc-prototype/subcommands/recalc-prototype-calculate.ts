@@ -5,7 +5,7 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Snowflake } from "discord.js";
-import { recalcStrings } from "../recalcStrings";
+import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
@@ -59,5 +59,5 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 };
 
 export const config: Subcommand["config"] = {
-    permissions: ["BOT_OWNER"]
+    permissions: []
 };
