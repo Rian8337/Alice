@@ -33,16 +33,17 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (thread && thread.manageable) {
-        await thread.setLocked(true);
-    }
-
-    interaction.editReply({
+    await interaction.editReply({
         content: MessageCreator.createAccept(
             matchStrings.unbindMatchSuccessful,
             match.matchid
         )
     });
+
+    if (thread && thread.manageable) {
+        await thread.setLocked(true);
+        await thread.setArchived(true);
+    }
 };
 
 export const config: Subcommand["config"] = {

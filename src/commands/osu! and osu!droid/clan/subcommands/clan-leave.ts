@@ -26,12 +26,22 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    const result: OperationResult = await clan.removeMember(interaction.user);
+    const firstResult: OperationResult = await clan.removeMember(interaction.user);
 
-    if (!result.success) {
+    if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.leaveClanFailed, result.reason!
+                clanStrings.leaveClanFailed, firstResult.reason!
+            )
+        });
+    }
+
+    const finalResult: OperationResult = await clan.updateClan();
+
+    if (!finalResult.success) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                clanStrings.leaveClanFailed, finalResult.reason!
             )
         });
     }

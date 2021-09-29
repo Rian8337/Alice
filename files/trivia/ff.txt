@@ -1,0 +1,670 @@
+3 | 2 | - | "'Final Fantasy VII: Avenged Children' is a movie. True/False?": | false
+3 | 2 | - | (BRAVE EXVIUS) The Veritas originally comprised of how many members? (Answer without numerics): | Eight
+3 | 2 | - | (BRAVE EXVIUS) What is Lid's occupation? | Airship engineer | Engineer
+3 | 2 | - | (BRAVE EXVIUS) What is the group name of the 6 antagonists clad in black? | Sworn Six of Paladia | Six Sworn Heroes of Paladia | The Veritas
+3 | 2 | - | (BRAVE EXVIUS) What is the name of Lasswell's sword? | Purple Lightning | Shiden
+3 | 2 | - | (BRAVE EXVIUS) What is the name of Rain's father? | Raegen | Sir Raegen
+3 | 2 | - | (BRAVE EXVIUS) What is the name of Rain's mother? | Sophia
+3 | 2 | - | (BRAVE EXVIUS) Which Veritas member destroyed the Earth Crystal? | Veritas of the Dark | Dark
+3 | 2 | - | (BRAVE EXVIUS) Which Veritas member destroyed the Wind Crystal? | Veritas of the Heavens | Heavens
+3 | 2 | - | (BRAVE EXVIUS) Which kingdom do the main characters hail from? | Grandshelt
+3 | 2 | - | (BRAVE EXVIUS) Who crafted the Purple Lightning? | Veritas of the Flame | Flame
+3 | 2 | - | (BRAVE EXVIUS) Who is the "blue" main character? | Lasswell
+3 | 2 | - | (BRAVE EXVIUS) Who is the "red" main character? | Rain
+3 | 2 | - | (BRAVE EXVIUS) Who is the female main character? | Fina
+3 | 2 | - | (BRAVE EXVIUS) Who is the mad scientist? | Dr. Lazarov | Dr Lazarov | Lazarov
+3 | 2 | - | (BRAVE EXVIUS) Who was responsible for awakening Dark Fina? | Veritas of the Waters | Waters
+3 | 2 | - | (DISSIDIA) Who created the Warrior of Light? | Cid of the Lufaine | Cid
+3 | 2 | - | (DISSIDIA) Who is the God of Discord? | Chaos
+3 | 2 | - | (DISSIDIA) Who is the Goddess of Harmony? | Cosmos
+3 | 2 | - | (FFI) The protagonist is known as the...? | Warrior of Light
+3 | 2 | - | (FFI) What are descendants of the "Sky People" called? | Lufenian | Lufaine | Lefeinish
+3 | 2 | - | (FFI) What do you present to Bahamut after clearing the Citadel of Trials? | Rat's Tail | Rat Tail
+3 | 2 | - | (FFI) What is the HP of the final boss (Chaos), in the original NES version? | 2,000 | 2000
+3 | 2 | - | (FFI) What is the name of the secret mini-game? | 15 Puzzle
+3 | 2 | - | (FFI) What is the name of the superboss residing in the deepest level of the Labyrinth of Time? | Chronodia
+3 | 2 | - | (FFI) Who is the blind witch? | Matoya
+3 | 2 | - | (FFI) Who is the fiend of earth? | Lich
+3 | 2 | - | (FFI) Who is the fiend of fire? | Marilith
+3 | 2 | - | (FFI) Who is the fiend of water? | Kraken
+3 | 2 | - | (FFI) Who is the fiend of wind? | Tiamat
+3 | 2 | - | (FFI) Who is the true identity of Chaos? | Garland
+3 | 2 | - | (FFI) Who or what teaches you how to view the map? | Broom
+3 | 2 | - | (FFII) Minwu offers his life in exchange for what? | Ultima Tome | Ultima
+3 | 2 | - | (FFII) Minwu serves which family? | Fynn
+3 | 2 | - | (FFII) Name the key to Kashuan Keep.: | Goddess's Bell | Goddess Bell
+3 | 2 | - | (FFII) Name the largest airship.: | Dreadnought
+3 | 2 | - | (FFII) Princess Hilda is the leader of which organization? | Wild Rose Rebellion
+3 | 2 | - | (FFII) Sunfire can only be carried using? | Egil's Torch | Egil Torch
+3 | 2 | - | (FFII) What is the Emperor's name? | Mateus
+3 | 2 | - | (FFII) What is the only thing that can destroy the Dreadnought? | Sunfire
+3 | 2 | - | (FFII) What sound does the Emperor make when defeated? | Ungaahhh | Ungahhh
+3 | 2 | - | (FFII) What was the object that killed Josef? | A Boulder | Boulder | Rock
+3 | 2 | - | (FFII) Where do you find Ricard? | Inside Leviathan | Within Leviathan | In Leviathan
+3 | 2 | - | (FFII) Where is the Ultima Tome located? | Mysidian Tower
+3 | 2 | - | (FFII) Who has the ability to talk to animals? | Guy | Gus
+3 | 2 | - | (FFII) Who is Gordon's brother? | Scott
+3 | 2 | - | (FFII) Who is Josef's daughter? | Nelly | Nellie | Molly
+3 | 2 | - | (FFII) Who is Maria's brother? | Leon
+3 | 2 | - | (FFII) Who is in love with Princess Hilda? | Gordon | Scott
+3 | 2 | - | (FFII) Who is the "last Dragoon"? | Ricard | Gareth | Edward
+3 | 2 | - | (FFII) Who is the last survivor living in Deist? | Elina | Elena | Kain
+3 | 2 | - | (FFII) Who kidnapped Josef's daughter? | Borghen | Borgan
+3 | 2 | - | (FFII) Who kills Ricard? | Dark Emperor | Emperor | Mateus
+3 | 2 | - | (FFIII) Excluding Xande, name Noah's two other disciples. (\_\_\_ and \_\_\_): | Doga and Unei | Unei and Doga | Dorga and Unei | Unei and Dorga | Doga and Unne | Unne and Doga | Dorga and Unne | Unne and Dorga
+3 | 2 | - | (FFIII) Luneth and Arc were adopted by? | Topapa and Nina | Topapa | Nina
+3 | 2 | - | (FFIII) Name the hometown of Luneth and Arc.: | Ur
+3 | 2 | - | (FFIII) The Djinn's curse turns people into? | Ghosts | Ghost
+3 | 2 | - | (FFIII) What does Gigameth turn into? | Garuda
+3 | 2 | - | (FFIII) What gender is the Legendary Smith? | Female
+3 | 2 | - | (FFIII) What gift did Xande's mentor bestow upon him? | The gift of mortality | Mortality
+3 | 2 | - | (FFIII) What is the "unknown metal" that is required to get Ultima Weapon? | Orichalcum
+3 | 2 | - | (FFIII) What is the gender of the Cloud of Darkness? | Genderless | None
+3 | 2 | - | (FFIII) What item is required to seal the Djinn? | Mythril Ring
+3 | 2 | - | (FFIII) Which animal does Refia hate? | Toad
+3 | 2 | - | (FFIII) Who has feelings for Ingus? | Princess Sara Altney | Sara
+3 | 2 | - | (FFIII) Who is Desch's girlfriend? | Salina
+3 | 2 | - | (FFIII) Who is Refia's adopted father? | Takka | Taca
+3 | 2 | - | (FFIII) Who is known as "The Maiden of Water"? | Aria Benett | Aria | Elia
+3 | 2 | - | (FFIII) Who mind-controlled King Gorn? | Gigameth | Gigames
+3 | 2 | - | (FFIII) Who was Xande's mentor? | Great Magus Noah | Noah
+3 | 2 | - | (FFIV) Cecil marries Rosa. True/False? | true
+3 | 2 | - | (FFIV) It was later revealed that Golbez was being mind-controlled by who? | Zemus
+3 | 2 | - | (FFIV) Name an airship present in the game.: | Enterprise or Falcon | Falcon | Enterprise
+3 | 2 | - | (FFIV) Rosa has feelings for Kain. True/False? | false
+3 | 2 | - | (FFIV) Rydia never learns the spell, Fire, due to trauma. True/False? | false
+3 | 2 | - | (FFIV) Tellah died after casting what magic spell? | Meteor
+3 | 2 | - | (FFIV) The elusive Pink Tail is an item drop from...? | Flan Princess
+3 | 2 | - | (FFIV) What crystal was exchanged for Rosa's safety? | Earth Crystal | Earth
+3 | 2 | - | (FFIV) What does Cid use to seal the entrance to the underworld? | A bomb | Bomb
+3 | 2 | - | (FFIV) What is Barbariccia's epithet? | Empress of the Winds | Empress of the Wind
+3 | 2 | - | (FFIV) What is Cagnazzo's epithet? | The Drowned King | Drowned King
+3 | 2 | - | (FFIV) What is Edge's real name? | Edward Geraldine | Edward
+3 | 2 | - | (FFIV) What is Golbez's real name? | Theodor
+3 | 2 | - | (FFIV) What is Rubicante's epithet? | Autarch of Flame | Autarch of the Flame
+3 | 2 | - | (FFIV) What is Scarmiglione's epithet? | The Blighted Despot | Blighted Despot
+3 | 2 | - | (FFIV) What is the name of Cecil's son? | Ceodore Harvey | Ceodore
+3 | 2 | - | (FFIV) What is the name of Kain's father? | Richard
+3 | 2 | - | (FFIV) What is the name of Tellah's daughter? | Anna
+3 | 2 | - | (FFIV) What is the name of the "Home to all Eidolons"? | Feymarch
+3 | 2 | - | (FFIV) What is the true identity of the King of Baron? | Cagnazzo | Kainazzo
+3 | 2 | - | (FFIV) What item is used to wake Yang up in the Sylph Cave? | Frying Pan
+3 | 2 | - | (FFIV) What item was given to Cecil by Edward to aid in battle against the Dark Elf? | The Whisperweed | Whisperweed | Twin Harp
+3 | 2 | - | (FFIV) What item was used to cure Rosa's desert fever? | Sand Pearl
+3 | 2 | - | (FFIV) Which castle guards the Earth Crystal? | Toroia
+3 | 2 | - | (FFIV) Which castle guards the Fire Crystal? | Damcyan
+3 | 2 | - | (FFIV) Which castle guards the Wind Crystal? | Fabul
+3 | 2 | - | (FFIV) Which floor on the Tower of Zot are the Magus Sisters fought? (Answer without numerics): | Fifth | Five
+3 | 2 | - | (FFIV) Which monster swallowed Rydia? | Leviathan
+3 | 2 | - | (FFIV) Which village guards the Water Crystal? | Mysidia
+3 | 2 | - | (FFIV) Who does Edge have a crush on? | Rydia
+3 | 2 | - | (FFIV) Who is Cecil's brother? | Golbez | Theodor
+3 | 2 | - | (FFIV) Who is Cecil's father? | KluYa
+3 | 2 | - | (FFIV) Who is the Archfiend of Earth? | Scarmiglione | Milon
+3 | 2 | - | (FFIV) Who is the Archfiend of Fire? | Rubicante
+3 | 2 | - | (FFIV) Who is the Archfiend of Water? | Cagnazzo | Kainazzo
+3 | 2 | - | (FFIV) Who is the Archfiend of Wind? | Barbariccia
+3 | 2 | - | (FFIV) Who is the Queen of Eidolons? | Asura
+3 | 2 | - | (FFIV) Who originally summoned the Mist Dragon? | Rydia's mother | Mother of Rydia
+3 | 2 | - | (FFIX) A large amount of various elements in the game draws inspiration from a famous playwright/poet, who is he? | William Shakespeare
+3 | 2 | - | (FFIX) Beatrix can enter Trance. True/False? | false
+3 | 2 | - | (FFIX) Besides Zidane and Kuja, which other Genome possesses a soul? | Mikoto
+3 | 2 | - | (FFIX) Eiko gives Zidane a kiss on the cheek. True/False? | false
+3 | 2 | - | (FFIX) Garnet originally had a horn. True/False? | true
+3 | 2 | - | (FFIX) How many "Black Waltzes" are there? (Answer without numerics): | Three
+3 | 2 | - | (FFIX) How many "Hilda Garde" airships are there? (Answer without numerics): | Three
+3 | 2 | - | (FFIX) How many members of the Nero family are revealed in the game? (Answer without numerics): | Ten
+3 | 2 | - | (FFIX) In the first battle of the game, you fight a man wearing a mask resembling a? | Blue dragon | Dragon | Wyvern | Blue wyvern
+3 | 2 | - | (FFIX) In the game, who wrote the play, I Want To Be Your Canary? | Lord Avon
+3 | 2 | - | (FFIX) It is not possible to marry Quina with Vivi. True/False? | false
+3 | 2 | - | (FFIX) Kuja does not have a tail. True/False? | false
+3 | 2 | - | (FFIX) Lani eventually settles in Madain Sari. True/False? | true
+3 | 2 | - | (FFIX) Name a character who doesn't have a unique Trance command.: | Steiner/Freya | Steiner | Freya
+3 | 2 | - | (FFIX) Name a world present in FFIX.: | Gaia or Terra | Terra | Gaia
+3 | 2 | - | (FFIX) Name the female member of Tantalus.: | Ruby
+3 | 2 | - | (FFIX) Name the monster that traps Vivi/Garnet.: | Prison Cage
+3 | 2 | - | (FFIX) Steiner commands a small army called the...: | Knights of Pluto
+3 | 2 | - | (FFIX) Steiner confesses his love for Beatrix. True/False? | true
+3 | 2 | - | (FFIX) The "eye in the sky" turns out to be? | The Invincible | Invincible
+3 | 2 | - | (FFIX) There is a sidequest to find every member of the Nero family. True/False? | true
+3 | 2 | - | (FFIX) Vivi "expires". True/False? | True, much to everyone's dismay. | true
+3 | 2 | - | (FFIX) What cures Blank's petrification? | Supersoft
+3 | 2 | - | (FFIX) What does Blank throw to Zidane in the Evil/Petrified Forest? | The World Map | World Map
+3 | 2 | - | (FFIX) What does Kuja demand Zidane to obtain for him in exchange for the lives of his friends? | Gulug Stone
+3 | 2 | - | (FFIX) What is Cid's occupation/role? | Regent of Lindblum | Regent
+3 | 2 | - | (FFIX) What is Garnet's nickname? | Dagger
+3 | 2 | - | (FFIX) What is Garnet's true name? | Sarah
+3 | 2 | - | (FFIX) What is Quina's favorite food? | Frogs | Frog
+3 | 2 | - | (FFIX) What is Zidane's race? | Genome
+3 | 2 | - | (FFIX) What is the name of Garnet's true mother? | Jane
+3 | 2 | - | (FFIX) What is the name of Queen Brahne's airship? | Red Rose
+3 | 2 | - | (FFIX) What is the name of Zorn and Thorn's true form? | Meltigemini
+3 | 2 | - | (FFIX) What is the name of the airship owned by the Tantalus Theater Troupe? | Prima Vista
+3 | 2 | - | (FFIX) What is the name of the card game? | Tetra Master
+3 | 2 | - | (FFIX) What is the name of the sailing ship? | Blue Narciss
+3 | 2 | - | (FFIX) What is the name of the state a character enters when they are "riled up"? | Trance
+3 | 2 | - | (FFIX) What is the name of the weapon Beatrix wields? | Save the Queen
+3 | 2 | - | (FFIX) What is the nickname Zidane gives Steiner? | Rusty
+3 | 2 | - | (FFIX) What is the only monster that is fought as a group in the Festival of the Hunt? | Zaghnol
+3 | 2 | - | (FFIX) Which continent does Cleyra belong to? | Mist continent | Mist
+3 | 2 | - | (FFIX) Which continent does Daguerro belong to? | Forgotten continent | Forgotten
+3 | 2 | - | (FFIX) Which moogle wears a leopard skin hood? | Stiltzkin
+3 | 2 | - | (FFIX) While in Trance, Amarant's 'Flair' command changes to? | Elan
+3 | 2 | - | (FFIX) While in Trance, Eiko's 'Wht Mag' command changes to? | Dbl Wht
+3 | 2 | - | (FFIX) While in Trance, Garnet's 'Summon' command changes to? | Eidolon
+3 | 2 | - | (FFIX) While in Trance, Quina's 'Eat' command changes to? | Cook
+3 | 2 | - | (FFIX) While in Trance, Vivi's 'Blk Mag' command changes to? | Dbl Blk
+3 | 2 | - | (FFIX) While in Trance, Zidane's 'Skill' command changes to? | Dyne
+3 | 2 | - | (FFIX) Who adopts Eiko? | Cid and Hilda | Cid | Hilda
+3 | 2 | - | (FFIX) Who are known as the "Nero Brothers"? (\_\_\_ and \_\_\_): | Benero and Zenero
+3 | 2 | - | (FFIX) Who are the "twin jesters"? (\_\_\_ and \_\_\_): | Zorn and Thorn | Thorn and Zorn
+3 | 2 | - | (FFIX) Who does Eiko have a crush on? | Zidane
+3 | 2 | - | (FFIX) Who does Vivi refer to as "grandpa"? | Quan
+3 | 2 | - | (FFIX) Who does some black mages try to keep away from a chocobo egg? | Quina
+3 | 2 | - | (FFIX) Who is Freya's lost love? | Sir Fratley | Fratley
+3 | 2 | - | (FFIX) Who is Garnet's tutor/mentor? | Doctor Tot | Dr Tot | Dr. Tot
+3 | 2 | - | (FFIX) Who is known as "Red"? | Amarant
+3 | 2 | - | (FFIX) Who is the female bounty hunter? | Lani
+3 | 2 | - | (FFIX) Who is the leader of the Tantalus crew? | Baku
+3 | 2 | - | (FFIX) Who is the moogle with the shiniest coat? | Artemicion
+3 | 2 | - | (FFIX) Who is the prince of Burmecia? | Puck
+3 | 2 | - | (FFIX) Who originally requested the Tantalus crew to kidnap Garnet? | Regent Cid | Cid
+3 | 2 | - | (FFIX) Who turned Cid into an oglop? | His wife | Hilda Garde | Hilda
+3 | 2 | - | (FFIX) Who was mainly responsible for saving Blank from petrification? | Marcus
+3 | 2 | - | (FFIX) Who was responsible for turning Cid into a frog? | Doctor Tot | Dr Tot | Dr. Tot | Dr.Tot
+3 | 2 | - | (FFIX) Who wields a hammer in battle? | Cinna
+3 | 2 | - | (FFIX) You first meet Cid when he is not in human form but in the form of what? | An oglop | Oglop
+3 | 2 | - | (FFT) Gaffgarion is employed by who? | Dycedarg Beoulve | Dycedarg
+3 | 2 | - | (FFT) In FFT:WoTL, there is a secret playable character from FFXII, who is it? | Balthier
+3 | 2 | - | (FFT) Name one of Ramza's brothers.: | Dycedarg or Zalbaag | Dycedarg | Zalbaag
+3 | 2 | - | (FFT) Name the recruitable friendly Reaver.: | Byblos
+3 | 2 | - | (FFT) What is Cidolfus Orlandeau's nickname? | Thunder God Cid
+3 | 2 | - | (FFT) What is Mustadio's gift to Agrias for her birthday? | Tynar Rouge | Lip Rouge | Lipstick
+3 | 2 | - | (FFT) What is the catalyst needed to turn Lucavi to Human form and vice versa? | Zodiac Stones | Zodiac Stone | Auracite
+3 | 2 | - | (FFT) What is the name of Ramza's father? | Barbaneth Beoulve | Barbaneth | Balbanes
+3 | 2 | - | (FFT) What is the name of the terrorist organization led by Wiegraf Folles? | Corpse Brigade | Death Corps
+3 | 2 | - | (FFT) When is Agrias's birthday? | 1st of Cancer | Cancer 1 | 1 Cancer
+3 | 2 | - | (FFT) Where was Marquis Elmdore being held hostage/imprisoned at? | Sand Rat Sietch
+3 | 2 | - | (FFT) Who becomes the host of the Lucavi, Adrammelech? | Dycedarg Beoulve | Dycedarg
+3 | 2 | - | (FFT) Who becomes the host of the Lucavi, Belias? | Wiegraf Folles | Wiegraf
+3 | 2 | - | (FFT) Who is Cidolfus Orlandeau's adopted son? | Orran Durai | Olan Durai | Orran | Olan
+3 | 2 | - | (FFT) Who is Delita's sister? | Tietra Heiral | Tietra | Teta
+3 | 2 | - | (FFT) Who is Mustadio's love interest? | Agrias Oaks | Agrias
+3 | 2 | - | (FFT) Who is Princess Ovelia's bodyguard? | Lady Agrias Oaks | Agrias Oaks | Agrias
+3 | 2 | - | (FFT) Who is known as the 'Silver Prince/Demon'? | Marquis Messam Elmdore | Marquis Elmdore | Marquis Messam Elmdore de Limberry | Elmdore de Limberry
+3 | 2 | - | (FFT) Who is the Holy Dragon? | Reis Duelar | Reis | Duelar
+3 | 2 | - | (FFT) Who is the founder of the Church of Glabados? | Saint Ajora Glabados | St Ajora | Saint Ajora | St. Ajora | Ajora | Ajora Glabados
+3 | 2 | - | (FFT) Who is the host of the Lucavi, Cuchulainn? | Alphonse Delacroix | Alphonse | Cardinal Delacroix
+3 | 2 | - | (FFT) Who is the host of the Lucavi, Hashmal? | Folmarv Tengille | Folmarv | Vormav
+3 | 2 | - | (FFT) Who is the host of the Lucavi, Zalera? | Marquis Messam Elmdore | Elmdore | Marquis Elmdore | Elmdore de Limberry | Marquis Messam Elmdore de Limberry
+3 | 2 | - | (FFT) Who is the leader of the Lucavi? | Ultima | Altima
+3 | 2 | - | (FFT) Who is the narrator of Final Fantasy Tactics? | Arazlam Durai | Arazlam
+3 | 2 | - | (FFT) Who is the optional boss found in the lowest level of Midlight's Deep? | Elidibus | Elidibs
+3 | 2 | - | (FFT) Who killed Tietra? | Argath Thadalfus | Argath | Algus
+3 | 2 | - | (FFT) Who was used to be the host of the Lucavi leader, Ultima? | Alma Beoulve | Alma
+3 | 2 | - | (FFTA) Adrammelech is the totema of which race? | Bangaa
+3 | 2 | - | (FFTA) Exodus is the totema of which race? | Viera
+3 | 2 | - | (FFTA) Famfrit is the totema of which race? | Moogles | Moogle
+3 | 2 | - | (FFTA) In real world Ivalice, what caused Cid to fall into depression? | The death of his wife | Death of his wife | Passing of his wife | Death of Remedi | Passing of Remedi | His wife died
+3 | 2 | - | (FFTA) It is possible to recruit Judgemaster Cid to your clan. True/False? | true
+3 | 2 | - | (FFTA) It is possible to recruit Llednar to your clan. True/False? | false
+3 | 2 | - | (FFTA) It was later revealed that the dream world of Ivalice is actually a fantasy of whose? | Mewt Randell | Mewt
+3 | 2 | - | (FFTA) Llednar is a "reverse" image of who? | Mewt Randell | Mewt
+3 | 2 | - | (FFTA) Mateus is the totema of which race? | Humans | Human
+3 | 2 | - | (FFTA) Ritz utilizes the viera job tree. True/False? | true
+3 | 2 | - | (FFTA) Ultima is the totema of which race? | Nu Mou
+3 | 2 | - | (FFTA) What are the lawless areas known as? | Jagds | Jagd
+3 | 2 | - | (FFTA) What did Marche initially thought Bangaas were? | Lizards | Lizard | Lizardmen
+3 | 2 | - | (FFTA) What is Cid's occupation/role? | Judgemaster | Judge Master
+3 | 2 | - | (FFTA) What is Ritz's natural hair color? | White
+3 | 2 | - | (FFTA) What is the game's default Clan name? | Clan Nutsy | Nutsy
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Greatbow in the game? | Max's Oathbow | Max Oathbow
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Greatsword in the game? | Master Sword
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Katana in the game? | Masamune
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Knightsword in the game? | Excalibur2 or Sequence | Excalibur 2 | Excalibur2 | Sequence
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Rapier in the game? | Femme Fatale
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Saber in the game? | Manganese
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Spear in the game? | Odin's Lance | Odin Lance
+3 | 2 | - | (FFTA) What is the name of the strongest (highest ATK) Sword in the game? | Chirijaden
+3 | 2 | - | (FFTA) Which clan does Ritz originally belonged to? | Clan Ritz | Ritz
+3 | 2 | - | (FFTA) Which non-generic character comes with the ability, Astra? | Ezel Berbier | Ezel | Berbier
+3 | 2 | - | (FFTA) Who is Marche's brother? | Doned Radiuju | Doned
+3 | 2 | - | (FFTA) Who is Mewt's mother? | Remedi | Queen Remedi
+3 | 2 | - | (FFTA) Who is Ritz's closest partner/comrade? | Shara
+3 | 2 | - | (FFTA) Who is the first Totema you encounter? | Famfrit
+3 | 2 | - | (FFTA) Who is the inventor of Anti-Laws? | Ezel Berbier | Ezel | Berbier
+3 | 2 | - | (FFTA) Who is the true identity of Queen Remedi? | Li-Grim | Li Grim | Ligrim
+3 | 2 | - | (FFTA) Who saved Marche when he first warped to fantasy Ivalice? | Montblanc
+3 | 2 | - | (FFV) "Lupine Attack" is a move used by who? | Kelger | Kelgar
+3 | 2 | - | (FFV) Besides Galuf & Dorgann, name one of the other two Warriors of Dawn.: | Xezat | Kelger | Kelgar
+3 | 2 | - | (FFV) How many legendary weapons are there? | 12
+3 | 2 | - | (FFV) How many minutes do you have to find & defeat Gogo before you run out of air? (Answer without numerics): | Seven
+3 | 2 | - | (FFV) How many times do you face off against Gilgamesh? (Answer without using numerics): | Five
+3 | 2 | - | (FFV) How many times must the party flee in order to max out the Attack of the Chicken Knife? | 254
+3 | 2 | - | (FFV) What cures wind drakes from sickness? | Dragon Grass
+3 | 2 | - | (FFV) What is Faris's full real name? | Sarisa Scherwil Tycoon
+3 | 2 | - | (FFV) What is the name of Bartz's chocobo? | Boko | Boco
+3 | 2 | - | (FFV) What is the name of Bartz's mother? | Stella
+3 | 2 | - | (FFV) What is the name of Cid's grandson? | Mid
+3 | 2 | - | (FFV) What is the name of Lenna's wind drake? | Hiryu
+3 | 2 | - | (FFV) What prevented Galuf from falling victim to Siren's deception? | Amnesia
+3 | 2 | - | (FFV) Which village has hidden vendors? | Phantom Village | Mirage Village | Phantom | Mirage
+3 | 2 | - | (FFV) Who among the party owns a wind drake? | Lenna and Krile | Lenna | Krile | Reina
+3 | 2 | - | (FFV) Who has the ability to talk to moogles & chocobos? | Krile | Cara | Kururu
+3 | 2 | - | (FFV) Who is Faris's childhood friend + savior + pet? | Syldra
+3 | 2 | - | (FFV) Who is Galuf's granddaughter? | Krile
+3 | 2 | - | (FFV) Who is the "talking turtle"? | Ghido | Gill | Guido
+3 | 2 | - | (FFV) Who is the king of Surgate? | Xezat
+3 | 2 | - | (FFVI) 'Summons' are known as? | Espers | Esper
+3 | 2 | - | (FFVI) Celes posed as who in an opera? | Maria
+3 | 2 | - | (FFVI) Deathgaze is only encountered while riding which mode of transport? | Airship
+3 | 2 | - | (FFVI) General Leo had a Magitek infusion. True/False? | false
+3 | 2 | - | (FFVI) How many espers are there in the game? | 27
+3 | 2 | - | (FFVI) How many permanent playable characters are there? | 14
+3 | 2 | - | (FFVI) Name Setzer's airship.: | The Blackjack | Blackjack
+3 | 2 | - | (FFVI) Name a character that Gau refers to as "Mr. Thou".: | Cyan or Sabin | Cyan | Sabin | Cayenne
+3 | 2 | - | (FFVI) Name an esper who fell in love with a human.: | Maduin or Odin | Maduin | Odin
+3 | 2 | - | (FFVI) Name the esper who found and took care of Terra in esper form.: | Ramuh
+3 | 2 | - | (FFVI) Name the first esper you encounter in the game.: | Valigarmanda | Tritoch
+3 | 2 | - | (FFVI) Name the monster the party must be swallowed by in order to find Gogo.: | Zone Eater
+3 | 2 | - | (FFVI) What can be won by betting Ultima Weapon in the Coliseum? | Gladius
+3 | 2 | - | (FFVI) What do you feed Cid with to help him recover in the World of Ruins? | Fish
+3 | 2 | - | (FFVI) What is Locke's so-called profession? | Treasure Hunter
+3 | 2 | - | (FFVI) What is Shadow's real name? | Clyde
+3 | 2 | - | (FFVI) What is the name of Shadow's dog? | Interceptor
+3 | 2 | - | (FFVI) What name did Edgar go by in the World of Ruins? | Gerad
+3 | 2 | - | (FFVI) What was Rachel doing with Locke that resulted in her loss of memories? | Treasure hunting | Treasure hunt
+3 | 2 | - | (FFVI) What was the command exclusive to Leo? | Shock
+3 | 2 | - | (FFVI) When Ultros says "Oh, that one's a tasty morsel!" who has he set his sights on? | Terra
+3 | 2 | - | (FFVI) Which one of Mog's dances cannot be acquired in the World of Ruin? | Water Rondo
+3 | 2 | - | (FFVI) Who does Relm call a "fuddy duddy"? | Strago
+3 | 2 | - | (FFVI) Who first saves Terra and removes her slave crown? | Arvis
+3 | 2 | - | (FFVI) Who is Edgar's brother? | Sabin
+3 | 2 | - | (FFVI) Who is Terra's father? | Maduin
+3 | 2 | - | (FFVI) Who is Terra's mother? | Madeline | Madonna
+3 | 2 | - | (FFVI) Who is the first esper you receive? | Ramuh
+3 | 2 | - | (FFVI) Who is the leader of The Returners? | Banon
+3 | 2 | - | (FFVI) Who was Shadow's partner-in-crime? | Baram
+3 | 2 | - | (FFVI) Who was responsible for awakening Terra's esper form? | Valigarmanda | Tritoch
+3 | 2 | - | (FFVI) Who was the original owner of The Falcon? | Darill
+3 | 2 | - | (FFVII C.C.) How many fan clubs does Genesis have? (Answer without numerics): | Two
+3 | 2 | - | (FFVII C.C.) It's possible for Zack to have a fan club. True/False? | true
+3 | 2 | - | "(FFVII C.C.) The naming scheme for Angeal's special moves is inspired by? (Hint: Christianity)": | The Seven Deadly Sins | Seven Deadly Sins | 7 Deadly Sins
+3 | 2 | - | (FFVII C.C.) What's the name of Angeal's fan club? | Keepers of Honor
+3 | 2 | - | (FFVII C.C.) What's the name of Genesis's fan club? | Red Leather | Study Group
+3 | 2 | - | (FFVII C.C.) What's the name of Sephiroth's fan club? | Silver Elite
+3 | 2 | - | (FFVII C.C.) What's the real full name of "Project G"? | Project Gillian
+3 | 2 | - | (FFVII C.C.) What's the title of Genesis's favorite book? | LOVELESS
+3 | 2 | - | (FFVII C.C.) What's the true name for dumbapples? | Banora White
+3 | 2 | - | (FFVII C.C.) Which real life singer served as the character design model for Genesis Rhapsodos? | GACKT
+3 | 2 | - | (FFVII C.C.) Who is Angeal's mother? | Gillian Hewley | Gillian
+3 | 2 | - | (FFVII C.C.) Who is Zack's mentor? | Angeal
+3 | 2 | - | (FFVII C.C.) Who is the leader of Sephiroth's fan club? | Professor Hojo | Hojo
+3 | 2 | - | (FFVII C.C.) Who operates under the codename, "Black Suit"? | Cissnei
+3 | 2 | - | (FFVII C.C.) Who was the chief scientist in charge of Project G? | Dr. Hollander | Hollander
+3 | 2 | - | (FFVII) Besides the Gold Chocobo, which Chocobo has the ability to traverse mountains? | Black Chocobo
+3 | 2 | - | (FFVII) Sephiroth is right-handed. True/False? | false
+3 | 2 | - | (FFVII) There exists a female of Red XIII's species. True/False? | true
+3 | 2 | - | (FFVII) Well-known katana.: | Masamune
+3 | 2 | - | (FFVII) What is Cid's occupation/role? | Pilot
+3 | 2 | - | (FFVII) What is Red XIII's real name? | Nanaki
+3 | 2 | - | (FFVII) What is the name of Aerith's level 4 Limit Break? | Great Gospel
+3 | 2 | - | (FFVII) What is the name of Barret's level 4 Limit Break? | Catastrophe
+3 | 2 | - | (FFVII) What is the name of Cait Sith's level 4 Limit Break? | He doesn't have one | None | Nil | Invalid | Doesn't have one | Non-existent | doesnt have one
+3 | 2 | - | (FFVII) What is the name of Cid's level 4 Limit Break? | Highwind
+3 | 2 | - | (FFVII) What is the name of Cloud's level 4 Limit Break? | Omnislash
+3 | 2 | - | (FFVII) What is the name of Red XIII's level 4 Limit Break? | Cosmo Memory
+3 | 2 | - | (FFVII) What is the name of Tifa's level 4 Limit Break? | Final Heaven
+3 | 2 | - | (FFVII) What is the name of Vincent's level 4 Limit Break? | Chaos
+3 | 2 | - | (FFVII) What is the name of Yuffie's level 4 Limit Break? | All Creation
+3 | 2 | - | (FFVII) What is the name of the move with the longest-running animation scene? | Sephiroth's Supernova | Supernova
+3 | 2 | - | (FFVII) What is the one FFVII spin-off that never left Japan? | Before Crisis
+3 | 2 | - | (FFVII) What is the ultimate summon? | Knights of the Round
+3 | 2 | - | (FFVII) What type of weapon does Cait Sith use? | Megaphone
+3 | 2 | - | (FFVII) Who is Sephiroth's mother? | Lucrecia Crescent | Lucrecia
+3 | 2 | - | (FFVII) Who is the Shinra employee controlling Cait Sith? | Reeve
+3 | 2 | - | (FFVII) With whom is Elena in love? | Tseng
+3 | 2 | - | (FFVII) You get the Blue Magic, 'Beta', from which monster? | Midgar Zolom | Midgardsormr
+3 | 2 | - | (FFVIII) 'Eyes on Me' was sung by? | Faye Wong
+3 | 2 | - | (FFVIII) From which tribe do the Mumbaas originate? | Shumi
+3 | 2 | - | (FFVIII) How many attacks are there in Squall's Lionheart limit break? | 17
+3 | 2 | - | (FFVIII) In the entirety of the game, Fujin only gives one-word comments. True/False? | false
+3 | 2 | - | (FFVIII) In two words; what happens to Laguna when he gets nervous? | Leg cramp
+3 | 2 | - | (FFVIII) It is possible to use Selphie's "The End" Limit Break on the final boss. True/False? | true
+3 | 2 | - | (FFVIII) Name the 2 main members of The Forest Owls besides Rinoa. (\_\_\_ and \_\_\_): | Zone and Watts | Watts and Zone
+3 | 2 | - | (FFVIII) Name the only spell which can only be drawn from an enemy.: | Apocalypse
+3 | 2 | - | (FFVIII) Name the phenomenon that causes monsters to fall from the moon.: | Lunar Cry
+3 | 2 | - | (FFVIII) Rinoa is referred to as the "Princess" of which organization? | The Forest Owls | Forest Owls
+3 | 2 | - | (FFVIII) Seifer, Fujin, and Raijin, make up what committee? | Disciplinary Committee | Disciplinary
+3 | 2 | - | (FFVIII) Squall's character design was heavily influenced by which real life actor? | River Phoenix
+3 | 2 | - | (FFVIII) There are absolutely no moogles in Final Fantasy VIII. True/False? | false
+3 | 2 | - | (FFVIII) There is a "hidden" Limit Break combat move for Zell. True/False? | True (Armageddon Fist) | true
+3 | 2 | - | (FFVIII) There is a map of the real world somewhere in Winhill. True/False? | true
+3 | 2 | - | (FFVIII) What always gets sold out in Balamb Garden cafeteria? | Hotdogs | Hot dogs
+3 | 2 | - | (FFVIII) What does GF stand for? | Guardian Force
+3 | 2 | - | (FFVIII) What is Cid's occupation/role? | Headmaster of Balamb Garden | Headmaster
+3 | 2 | - | (FFVIII) What is General Caraway's first name? | Fury
+3 | 2 | - | (FFVIII) What is MiniMog's role? | A GF | GF
+3 | 2 | - | (FFVIII) What is the fictional character mentioned by Seifer, 'Sorceress Knight', named as? | Zefer
+3 | 2 | - | (FFVIII) What is the name Rinoa's dog? | Angelo
+3 | 2 | - | (FFVIII) What is the name of Irvine's ultimate Limit Break/shot? | Hyper Shot
+3 | 2 | - | (FFVIII) What is the name of Quistis's ultimate Limit Break? | Shockwave Pulsar
+3 | 2 | - | (FFVIII) What is the name of Rinoa's ultimate Limit Break? | Wishing Star/Angel Wing | Wishing Star | Angel Wing
+3 | 2 | - | (FFVIII) What is the name of Selphie's ultimate Limit Break? | The End
+3 | 2 | - | (FFVIII) What is the name of Squall's ultimate Limit Break? | Lionheart | Lion Heart
+3 | 2 | - | (FFVIII) What is the name of Zell's ultimate Limit Break? | My Final Heaven/Armageddon Fist | Final Heaven | Armageddon Fist
+3 | 2 | - | (FFVIII) What is the name of the card game? | Triple Triad
+3 | 2 | - | (FFVIII) What is the name of the creature engraved in Squall's Revolver? | Griever
+3 | 2 | - | (FFVIII) What is the name of the dirty magazines present in the game? | Girl Next Door
+3 | 2 | - | (FFVIII) What is the name of the group/organization which exists only to protect Ellone? | White SeeD
+3 | 2 | - | (FFVIII) What is the name of the magazine that reports mysterious sightings? | Occult Fan
+3 | 2 | - | (FFVIII) What is the name of the series of magazines needed to teach Zell new Limit Break moves? | Combat King
+3 | 2 | - | (FFVIII) What is the nickname given to Zell by Seifer? | Chicken wuss
+3 | 2 | - | (FFVIII) What is the only word Moombas know? | Laguna
+3 | 2 | - | (FFVIII) What is the true identity/name of the UFO? | PuPu
+3 | 2 | - | (FFVIII) What is the ultimate GF? | Eden
+3 | 2 | - | (FFVIII) Where can Headmaster Martine be found after Galbadia Garden was overtaken? | Fisherman's Horizon | Fisherman Horizon
+3 | 2 | - | (FFVIII) Where is Edea's orphanage located? | Cape of Good Hope
+3 | 2 | - | (FFVIII) Where is Laguna's hometown? | Winhill
+3 | 2 | - | (FFVIII) Which monster interrupted Laguna while filming? | Ruby Dragon
+3 | 2 | - | (FFVIII) Who are Laguna's sidekicks? (\_\_\_ and \_\_\_): | Ward and Kiros | Kiros and Ward
+3 | 2 | - | (FFVIII) Who are Seifer's sidekicks? (\_\_\_ and \_\_\_): | Fujin and Raijin | Raijin and Fujin
+3 | 2 | - | (FFVIII) Who is Laguna's wife? | Raine
+3 | 2 | - | (FFVIII) Who is Rinoa's father? | General Caraway | Fury | Fury Caraway
+3 | 2 | - | (FFVIII) Who is Rinoa's mother? | Julia Heartilly | Julia
+3 | 2 | - | (FFVIII) Who is Squall's father? | Laguna Loire | Laguna
+3 | 2 | - | (FFVIII) Who is Squall's mother? | Raine Loire | Raine
+3 | 2 | - | (FFVIII) Who is the headmaster of Galbadia Garden? | Martine
+3 | 2 | - | (FFVIII) Who is the owner of Balamb Garden? | NORG
+3 | 2 | - | (FFVIII) Who refers to Laguna as "Uncle Laguna"? | Ellone
+3 | 2 | - | (FFVIII) Within the game, who is widely regarded as the best card player? | Queen of Cards | Card Queen | Ishtar
+3 | 2 | - | (FFVIII) You are never able to enter Zell's room. True/False? | false
+3 | 2 | - | (FFVIII) You need a certain series of magazines in order to upgrade your weapons. True/False? | false
+3 | 2 | - | (FFX) 'Summons' are known as? | Aeons | Aeon
+3 | 2 | - | (FFX) At the end of the game, what advice does Yuna give her people regarding lost friends or faded dreams? | Never forget them
+3 | 2 | - | (FFX) Lulu and Wakka gets married. True/False? | true
+3 | 2 | - | (FFX) What color is Yuna's right eye? | Green
+3 | 2 | - | (FFX) What does Lulu wield as weapons? | Dolls | Doll
+3 | 2 | - | (FFX) What is one of Rikku's biggest fears? | Lightning | Thunder | Snake
+3 | 2 | - | (FFX) What is the name of Rikku's brother? | Brother
+3 | 2 | - | (FFX) What is the name of Tidus's home blitzball team? | Zanarkand Abes
+3 | 2 | - | (FFX) What is the name of Wakka's home blitzball team? | Besaid Aurochs
+3 | 2 | - | (FFX) What was the original name for The Crusaders? | The Crimson Blades | Crimson Blades
+3 | 2 | - | (FFX) Who created Sin? | Yu Yevon
+3 | 2 | - | (FFX) Who is Lady Yunalesca's husband? | Zaon
+3 | 2 | - | (FFX) Who is Wakka's younger brother? | Chappu
+3 | 2 | - | (FFX) Who is Yuna's father? | Braska
+3 | 2 | - | (FFX) Who is the fayth of aeon Anima? | Seymour's mother
+3 | 2 | - | (FFX) Who is the head commander of The Crusaders? | Wen Kinoc
+3 | 2 | - | (FFX) Who refers to Yuna as "Yunie"? | Rikku
+3 | 2 | - | (FFX-2) After the events of FFX-2, Yuna & Tidus breaks up and Sin is revived. True/False? | true
+3 | 2 | - | (FFX-2) Complete the commercial tagline - "Last time she saved the world. This time it's \_\_\_.": | personal
+3 | 2 | - | (FFX-2) What are the names of Leblanc's two lackeys? (\_\_\_ and \_\_\_): | Ormi and Logos | Logos and Ormi
+3 | 2 | - | (FFX-2) What is the name of Yuna's signature pistols? | Tiny Bee
+3 | 2 | - | (FFX-2) What is the name of the Gullwings' airship? | The Celsius | Celsius
+3 | 2 | - | (FFX-2) What is the name of the blitzball team of which Biggs and Wedge are a part of? | Gull Wings
+3 | 2 | - | (FFX-2) What is the name of the rival group to Gullwings? | Leblanc Syndicate
+3 | 2 | - | (FFX-2) What is the title of the song sung during Yuna's concert? | 1000 Words | Thousand Words
+3 | 2 | - | (FFX-2) Who Yuna thought was Tidus from a sphere recording turned out to be \_\_\_.: | Shuyin | Shuiin
+3 | 2 | - | (FFX-2) Who is the leader of the Youth League? | Maevyn Nooj | Nooj
+3 | 2 | - | (FFX-2) Who sings alongside Yuna during her concert? | Lenne
+3 | 2 | - | (FFXIII) How many combat roles are there? (Answer without numerics): | Six
+3 | 2 | - | (FFXIII) How many possible 3-man Paradigms/Optimas are there? | 56
+3 | 2 | - | (FFXIII) Name Fang's eidolon.: | Bahamut
+3 | 2 | - | (FFXIII) Name Hope's eidolon.: | Alexander
+3 | 2 | - | (FFXIII) Name Lightning's eidolon.: | Odin
+3 | 2 | - | (FFXIII) Name Sazh's eidolon.: | Brynhildr
+3 | 2 | - | (FFXIII) Name Snow's eidolon.: | Shiva | Shiva sisters | Stiria and Nix | Nix and Stiria
+3 | 2 | - | (FFXIII) Name Vanille's eidolon.: | Hecatoncheir
+3 | 2 | - | (FFXIII) Sazh's weapons are named after? | Stars & constellations | Constellations | Stars
+3 | 2 | - | (FFXIII) Shiva, Ifrit, Ramuh, Leviathan, Valefor, Carbuncle, Siren. Which one of these eidolons doesn't make an appearance in-game? | Leviathan
+3 | 2 | - | (FFXIII) The En-spell series of spells first originated from which FF series? (Answer in FF_): | FFXI | FF11
+3 | 2 | - | (FFXIII) The act of changing Paradigms/Optimas in battle are officially called \_\_\_.: | Paradigm Shift | Optima Change
+3 | 2 | - | (FFXIII) The city, Palumpolum, is named after? (\_\_\_ and \_\_\_): | Palom and Porom | Porom and Palom
+3 | 2 | - | (FFXIII) The fal'Cie, Anima, is named after a summon of the same name from which FF series? (Answer in FF_): | FFX | FF10
+3 | 2 | - | (FFXIII) The fal'Cie, Eden, is named after a summon of the same name from which FF series? (Answer in FF_): | FFVIII | FF8
+3 | 2 | - | (FFXIII) The fal'Cie, Kujata, is named after a summon of the same name from which FF series? (Answer in FF_): | FFVII | FF7
+3 | 2 | - | (FFXIII) What form does Brynhildr take in Gestalt Mode? | Car
+3 | 2 | - | (FFXIII) What form does Odin take in Gestalt Mode? | Horse
+3 | 2 | - | (FFXIII) What form does Shiva take in Gestalt Mode? | Motorcycle | Motorbike
+3 | 2 | - | (FFXIII) What is Lightning's real name? | Claire Farron | Eclair | Claire
+3 | 2 | - | (FFXIII) What is the name of the enemy boss which resembles the Guard Scorpion from FFVII? | Manasvin Warmech
+3 | 2 | - | (FFXIII) What is the name of the enemy boss which resembles the Proud Clod from FFVII? | The Proudclad | Proudclad
+3 | 2 | - | (FFXIII) What is the ultimate end-goal/Focus of l'Cie? | Destroy Cocoon
+3 | 2 | - | (FFXIII) Where is Lightning's l'Cie brand? | Chest
+3 | 2 | - | (FFXIII) Which fal'Cie branded Dajh? | Kujata
+3 | 2 | - | (FFXIII) Which fal'Cie serves as the main source of power for Cocoon? | Orphan
+3 | 2 | - | (FFXIII) Who has the ability to sense beings from Pulse? | Dajh Katzroy | Dajh
+3 | 2 | - | (FFXIII) Who is Jihl Nabaat's right-hand man? | Yaag Rosch | Yaag | Rosch
+3 | 2 | - | (FFXIII) Who is the PSICOM officer who captured Sazh and Vanille? | Jihl Nabaat | Jihl | Nabaat
+3 | 2 | - | (FFXIII) \_\_\_ and \_\_\_ make up the Shiva sisters.: | Nix and Stiria | Stiria and Nix
+3 | 2 | - | (FFXIII-2) What is Caius's full name? | Paddra Ballad-Caius | Paddra Ballad Caius
+3 | 2 | - | (FFXIV) How many dragon killers are present on the Steps of Faith? (Answer without numerics): | Three
+3 | 2 | - | (FFXIV) In which region is the resort town, Costa del Sol, located in? | La Noscea
+3 | 2 | - | (FFXIV) Ozma from FFIX makes an appearance as a boss in which raid? | Weeping City of Mhach
+3 | 2 | - | (FFXIV) The Cloud of Darkness from FFIII makes an appearance as a boss in which raid? | World of Darkness
+3 | 2 | - | (FFXIV) There was an event which featured Lightning from FFXIII, what is the name of this event? | Lightning Strikes
+3 | 2 | - | (FFXIV) Ultros & Typhon from FFVI makes an appearance as optional bosses in which NPC's storyline? | Hildibrand
+3 | 2 | - | (FFXIV) What does Teledji Adeledji raises as a pet? | Gil Turtle
+3 | 2 | - | (FFXIV) What is Bahamut Prime's signature move? | Tera Flare | Teraflare
+3 | 2 | - | (FFXIV) What is a Magitek Armor used as? | Mount
+3 | 2 | - | (FFXIV) What is the identity of Phoenix? | Louisoix Leveilleur | Louisoix
+3 | 2 | - | (FFXIV) What is the name of The Fiend? | Sephirot
+3 | 2 | - | (FFXIV) What is the password Minfilia uses to identify fellow members of the Scions of the Seventh Dawn? | Wild Rose
+3 | 2 | - | (FFXIV) What species handles the postal system in Eorzea? | Moogles | Moogle
+3 | 2 | - | (FFXIV) Who attempts to steal Tupsimati from The Rising Stones? | Nabriales | Ascian Napriales | Napriales
+3 | 2 | - | (FFXIV) Who is Livia sas Junius's sister? | Lucia goe Junius | Lucia
+3 | 2 | - | (FFXIV) Who is known as 'The Black Wolf'? | Gaius van Baelsar | Gaius
+3 | 2 | - | (FFXIV) Who is the "duelist" who challenges adventurers and takes their weapons upon defeating them? | Gilgamesh
+3 | 2 | - | (FFXIV) Who is the Lady of the Frost? | Shiva
+3 | 2 | - | (FFXIV) Who is the Lady of the Vortex? | Garuda
+3 | 2 | - | (FFXIV) Who is the Legatus of the VIth Imperial Legion? | Regula van Hydrus | Regula
+3 | 2 | - | (FFXIV) Who is the Legatus of the XIVth Imperial Legion? | Gaius van Baelsar | Gaius
+3 | 2 | - | (FFXIV) Who is the Lord of Levin? | Ramuh
+3 | 2 | - | (FFXIV) Who is the Lord of the Crags? | Titan
+3 | 2 | - | (FFXIV) Who is the Lord of the Hive? | Ravana
+3 | 2 | - | (FFXIV) Who is the Lord of the Inferno? | Ifrit
+3 | 2 | - | (FFXIV) Who is the Lord of the Mists? | Bismarck
+3 | 2 | - | (FFXIV) Who is the Lord of the Whorl? | Leviathan
+3 | 2 | - | (FFXIV) Who is the Tribunus of the XIVth Imperial Legion? | Nero tol Scaeva | Nero
+3 | 2 | - | (FFXIV) Who was responsible for the destruction of the first Agrius model? | Midgardsormr
+3 | 2 | - | (FFXV) Biggs & Wedge are the lackeys of who? | Aranea Highwind | Aranea
+3 | 2 | - | (FFXV) Complete this quote from Ignis, "That's it! I've \_\_\_!: | Come up with a new recipe
+3 | 2 | - | (FFXV) How did Gladiolus get the (additional) horizontal scar on his forehead? | Fight with Gilgamesh | Trial of Gilgamesh | Gilgamesh | Gilgamesh trial | Gilgamesh fight
+3 | 2 | - | (FFXV) How did Gladiolus get the scar going down his right eye? | Protecting Noctis from a drunk | Protecting Noctis
+3 | 2 | - | (FFXV) How many floors does the deepest sealed-door dungeon have? | 100
+3 | 2 | - | (FFXV) Name Lunafreya's black dog.: | Umbra
+3 | 2 | - | (FFXV) Name Lunafreya's white dog.: | Pryna
+3 | 2 | - | (FFXV) Name the character who was scrapped and replaced by Lunafreya Nox Fleuret.: | Stella Nox Fleuret | Stella
+3 | 2 | - | (FFXV) Name the lvl 110 superboss.: | Ayakashi
+3 | 2 | - | (FFXV) Name the lvl 120 superboss.: | Nagifar
+3 | 2 | - | (FFXV) Name the lvl 99 superboss.: | Adamantoise
+3 | 2 | - | (FFXV) Pryna was saved by who? | Prompto
+3 | 2 | - | (FFXV) Shiva is also known as? | Gentiana
+3 | 2 | - | (FFXV) The "creatures of the night" are known as? | Daemons | Daemon
+3 | 2 | - | (FFXV) The head of Ramuh's staff is modeled after which other summon from the FF series? | Ixion
+3 | 2 | - | (FFXV) There is a Royal Arm in the form of a gun. True/False? | false
+3 | 2 | - | (FFXV) There is a real-life car modeled after the Regalia produced by which automotive company? | Audi
+3 | 2 | - | (FFXV) There is a sniper rifle (with useable scope) in the game. True/False? | true
+3 | 2 | - | (FFXV) There is/was a glitch in the game which allowed the player to have Aranea join the party (not just assist during battle). True/False? | true
+3 | 2 | - | (FFXV) Those with Lucis royal blood are able to use a skill to conjure specific weapons from thin air, what is this skill called? | Armiger Arsenal | Armiger
+3 | 2 | - | (FFXV) To upgrade your car to the Regalia Type-F, you need the Warped Wings, Unstable Stabilizer, and \_\_\_.: | Strange Engine
+3 | 2 | - | (FFXV) What is the brand of the cup noodles present in game? | Nissin
+3 | 2 | - | (FFXV) What is the most valuable item you can get from playing Justice Monsters Five? | Wind-up Lord Vexxos | Wind up Lord Vexxos
+3 | 2 | - | (FFXV) What is the name of King Regis's car? | Regalia
+3 | 2 | - | (FFXV) What is the name of the monster-bird nesting in the Rock of Ravatogh? | Zu
+3 | 2 | - | (FFXV) What is the name of the puzzle-platformer style dungeon? | Pitioss Ruins | Pitioss
+3 | 2 | - | (FFXV) What was the original/scrapped title of Final Fantasy XV? | Final Fantasy Versus XIII | Versus XIII
+3 | 2 | - | (FFXV) Which fish is generally regarded as the hardest to catch? | Pink Jade Gar
+3 | 2 | - | (FFXV) Who is Gladiolus's father? | Clarus Amicitia | Clarus
+3 | 2 | - | (FFXV) Who is known as "The Dragoon"? | Aranea Highwind | Aranea
+3 | 2 | - | (RECORD KEEPER) "Mythril" is the in-game currency that is bought with real money. True/False? | false
+3 | 2 | - | "(RECORD KEEPER) Final Fantasy: Record Keeper has its own unique OST album. True/False?": | true
+3 | 2 | - | (RECORD KEEPER) It is possible to draw a 5* (or higher) relic from the free daily draw. True/False? | true
+3 | 2 | - | (RECORD KEEPER) It is possible to have a 8* relic. True/False? | true
+3 | 2 | - | (RECORD KEEPER) Name a character who can use books besides Tyro.: | Alphinaud/Onion Knight | Alphinaud | Onion Knight
+3 | 2 | - | (RECORD KEEPER) Name one of the 4 non-core characters available at the release of the game.: | Cloud/Kain/Wakka/Rydia | Cloud | Kain | Wakka | Rydia
+3 | 2 | - | (RECORD KEEPER) Name one of the characters given as a reward for pre-registers.: | Tidus | Warrior
+3 | 2 | - | (RECORD KEEPER) Name the first ever "meta" strategy.: | Retaliate Meta | Retaliate | Reta | Reta Meta
+3 | 2 | - | (RECORD KEEPER) Name the material meant for augmenting.: | Rosetta Stone
+3 | 2 | - | (RECORD KEEPER) Name the material necessary for reforging.: | Dark Matter
+3 | 2 | - | (RECORD KEEPER) The first ever event dungeon released was from which realm? (Answer in "FF_"): | FFVII | FF7
+3 | 2 | - | (RECORD KEEPER) There is a Summon that hits more than 3x. True/False? | true
+3 | 2 | - | (RECORD KEEPER) There is a secret Dress Record for Cloud in cross-dressing form. True/False? | false
+3 | 2 | - | (RECORD KEEPER) There is/was an exclusive invitation-only MVP club which you could join if you spent 20,000USD or more on in-game purchases. True/False? | (The condition is) False | false
+3 | 2 | - | (RECORD KEEPER) What does the term, BSB, stand for? | Burst Soul Break
+3 | 2 | - | (RECORD KEEPER) What does the term, CLSB, stand for? | Chain Limit Soul Break
+3 | 2 | - | (RECORD KEEPER) What does the term, OSB, stand for? | Overflow Soul Break | Overstrike Soul Break
+3 | 2 | - | (RECORD KEEPER) What does the term, SSB, stand for? | Super Soul Break
+3 | 2 | - | (RECORD KEEPER) What does the term, USB, stand for? | Ultra Soul Break
+3 | 2 | - | (RECORD KEEPER) What is the first boss introduced for the official release of Multiplayer Raids? | Gilgamesh
+3 | 2 | - | (RECORD KEEPER) What is the name of the ability that has the power to reduce an enemy's chance of inflicting debuffs? | Affliction Break
+3 | 2 | - | (RECORD KEEPER) What is the name of the buff that prevents fatal damage once? | Last Stand
+3 | 2 | - | (RECORD KEEPER) What is the name of the main character? | Tyro | Deshi
+3 | 2 | - | (RECORD KEEPER) What is the official term for "costumes" which you can use to change your characters' sprite design? | Dress Records | Dress Record
+3 | 2 | - | (RECORD KEEPER) What type of Materia are bound to characters? | Legend Materia | Legend
+3 | 2 | - | (RECORD KEEPER) Which character has the highest growth rate (1-99)? | Onion Knight
+3 | 2 | - | (RECORD KEEPER) Who is known as "the female Tyro"? | Urara
+3 | 2 | - | (RECORD KEEPER) Who is the main character's mentor? | Dr. Mog | Dr Mog
+3 | 2 | - | (RECORD KEEPER) Who is the main character? | Tyro
+3 | 2 | - | (TYPE-0) Name a member of Class Zero who isn't assigned a number.: | Rem Tokimiya or Machina Kunagiri | Rem Tokimiya | Rem | Tokimiya | Machina Kunagiri | Machina | Kunagiri
+3 | 2 | - | (TYPE-0) What is Ace's weapon of choice? | Cards | Card
+3 | 2 | - | (TYPE-0) What is Cater's weapon of choice? | Magicite pistol | Gun | Pistol
+3 | 2 | - | (TYPE-0) What is Cinque's weapon of choice? | Mace
+3 | 2 | - | (TYPE-0) What is Deuce's weapon of choice? | Flute
+3 | 2 | - | (TYPE-0) What is Eight's weapon of choice? | Knuckles | Fists | Fist
+3 | 2 | - | (TYPE-0) What is Jack's weapon of choice? | Katana
+3 | 2 | - | (TYPE-0) What is Joker's real name? | Lean Hampelmann
+3 | 2 | - | (TYPE-0) What is King's weapon of choice? | Dual guns | Guns | Gun
+3 | 2 | - | (TYPE-0) What is Kurasame Susaya's nickname? | Ice Reaper
+3 | 2 | - | (TYPE-0) What is Machina's weapon of choice? | Twin rapiers | Rapiers | Rapier
+3 | 2 | - | (TYPE-0) What is Nine's weapon of choice? | Spear
+3 | 2 | - | (TYPE-0) What is Queen's weapon of choice? | Sword
+3 | 2 | - | (TYPE-0) What is Rem's weapon of choice? | Twin daggers | Daggers | Dagger
+3 | 2 | - | (TYPE-0) What is Seven's weapon of choice? | Whipblade
+3 | 2 | - | (TYPE-0) What is Sice's weapon of choice? | Scythe
+3 | 2 | - | (TYPE-0) What is Tiz's real name? | Tohno Mahoroha
+3 | 2 | - | (TYPE-0) What is Trey's weapon of choice? | Bow
+3 | 2 | - | (TYPE-0) Who is No.00 of Class Zero? | Joker | Lean Hampelmann | Lean | Hampelmann
+3 | 2 | - | (TYPE-0) Who is No.01 of Class Zero? | Ace
+3 | 2 | - | (TYPE-0) Who is No.02 of Class Zero? | Deuce
+3 | 2 | - | (TYPE-0) Who is No.03 of Class Zero? | Trey
+3 | 2 | - | (TYPE-0) Who is No.04 of Class Zero? | Cater
+3 | 2 | - | (TYPE-0) Who is No.05 of Class Zero? | Cinque
+3 | 2 | - | (TYPE-0) Who is No.06 of Class Zero? | Sice
+3 | 2 | - | (TYPE-0) Who is No.07 of Class Zero? | Seven
+3 | 2 | - | (TYPE-0) Who is No.08 of Class Zero? | Eight
+3 | 2 | - | (TYPE-0) Who is No.09 of Class Zero? | Nine
+3 | 2 | - | (TYPE-0) Who is No.10 of Class Zero? | Tiz | Tohno Mahoroha | Tohno | Mahoroha
+3 | 2 | - | (TYPE-0) Who is No.11 of Class Zero? | Jack
+3 | 2 | - | (TYPE-0) Who is No.12 of Class Zero? | Queen
+3 | 2 | - | (TYPE-0) Who is No.13 of Class Zero? | King
+3 | 2 | - | (TYPE-0) Who is the NPC you can spy on to watch her in bikinis? | Emina Hanaharu | Emina
+3 | 2 | - | (TYPE-0) Who is the commanding officer of Class Zero? | Kurasame Susaya | Kurasame | Susaya
+3 | 2 | - | Carbuncle grants what buff? | Reflect
+3 | 2 | - | Complete the name! _____ Adelbert: | Steiner
+3 | 2 | - | Complete the name! _____ Almasy: | Seifer
+3 | 2 | - | Complete the name! _____ Altney: | Sara
+3 | 2 | - | Complete the name! _____ Amicitia: | Gladiolus | Iris | Clarus
+3 | 2 | - | Complete the name! _____ Argentum: | Prompto
+3 | 2 | - | Complete the name! _____ Arrowny: | Relm
+3 | 2 | - | Complete the name! _____ Baldesion: | Krile | Galuf | Cara | Kururu
+3 | 2 | - | Complete the name! _____ Beoulve: | Ramza | Barbaneth | Zalbaag | Dycedarg | Alma | Barbanes
+3 | 2 | - | Complete the name! _____ Branford: | Terra | Tina
+3 | 2 | - | Complete the name! _____ Bunansa: | Mustadio
+3 | 2 | - | Complete the name! _____ Carol: | Eiko
+3 | 2 | - | Complete the name! _____ Chere: | Celes
+3 | 2 | - | Complete the name! _____ Cole: | Locke
+3 | 2 | - | Complete the name! _____ Coral: | Amarant
+3 | 2 | - | Complete the name! _____ Crescent: | Freya
+3 | 2 | - | Complete the name! _____ Duelar: | Reis
+3 | 2 | - | Complete the name! _____ Durai: | Orran | Olan | Arazlam
+3 | 2 | - | Complete the name! _____ Fabool: | Cid | Hildagarde
+3 | 2 | - | Complete the name! _____ Fair: | Zack
+3 | 2 | - | Complete the name! _____ Farron: | Claire | Eclair | Serah
+3 | 2 | - | Complete the name! _____ Figaro: | Edgar Roni | Edgar | Sabin Rene | Sabin
+3 | 2 | - | Complete the name! _____ Folles: | Wiegraf | Milleuda
+3 | 2 | - | Complete the name! _____ Gabbiani: | Setzer
+3 | 2 | - | Complete the name! _____ Gainsborough: | Aerith | Aeris
+3 | 2 | - | Complete the name! _____ Garamonde: | Cyan | Cayenne
+3 | 2 | - | Complete the name! _____ Geraldine: | Edward | Edge
+3 | 2 | - | Complete the name! _____ Guado: | Seymour | Jyscal
+3 | 2 | - | Complete the name! _____ Harvey: | Cecil | Ceodore | Theodor
+3 | 2 | - | Complete the name! _____ Haze: | Cid
+3 | 2 | - | Complete the name! _____ Heartilly: | Rinoa | Julia
+3 | 2 | - | Complete the name! _____ Heiral: | Delita | Tietra | Teta
+3 | 2 | - | Complete the name! _____ Hewley: | Angeal | Gillian
+3 | 2 | - | Complete the name! _____ Izunia: | Ardyn
+3 | 2 | - | Complete the name! _____ Joanna Farrel: | Rosa
+3 | 2 | - | Complete the name! _____ Katzroy: | Sazh | Dajh
+3 | 2 | - | Complete the name! _____ Klauser: | Bartz | Butz
+3 | 2 | - | Complete the name! _____ Kramer: | Cid | Edea
+3 | 2 | - | Complete the name! _____ Kreiss: | Noel
+3 | 2 | - | Complete the name! _____ Leonhart: | Squall
+3 | 2 | - | Complete the name! _____ Loire: | Laguna | Raine
+3 | 2 | - | Complete the name! _____ Madiuju: | Marche
+3 | 2 | - | Complete the name! _____ Magus: | Strago
+3 | 2 | - | Complete the name! _____ Malheur: | Ritz
+3 | 2 | - | Complete the name! _____ Nabaat: | Jihl
+3 | 2 | - | Complete the name! _____ Orlandeau: | Cidolfus
+3 | 2 | - | Complete the name! _____ Ornitier: | Vivi
+3 | 2 | - | Complete the name! _____ Palazzo: | Kefka
+3 | 2 | - | Complete the name! _____ Pollendina: | Cid
+3 | 2 | - | Complete the name! _____ Previa: | Cid | Mid
+3 | 2 | - | Complete the name! _____ Quen: | Quina
+3 | 2 | - | Complete the name! _____ Randell: | Mewt | Cid
+3 | 2 | - | Complete the name! _____ Rhapsodos: | Genesis
+3 | 2 | - | Complete the name! _____ Scherwiz: | Faris
+3 | 2 | - | Complete the name! _____ Scientia: | Ignis
+3 | 2 | - | Complete the name! _____ Seagill: | Kiros
+3 | 2 | - | Complete the name! _____ Strife: | Cloud
+3 | 2 | - | Complete the name! _____ Susaya: | Kurasame
+3 | 2 | - | Complete the name! _____ Swain: | Babus | Abacus
+3 | 2 | - | Complete the name! _____ Thadalfus: | Argath | Algus
+3 | 2 | - | Complete the name! _____ Tokimiya: | Rem
+3 | 2 | - | Complete the name! _____ Tribal: | Zidane
+3 | 2 | - | Complete the name! _____ Tycoon: | Lenna | Reina | Sarisa
+3 | 2 | - | Complete the name! _____ Valentine: | Vincent
+3 | 2 | - | Complete the name! _____ Villiers: | Snow
+3 | 2 | - | Complete the name! _____ Zabac: | Ward
+3 | 2 | - | Flans are generally weak against...: | Black Magic | Magic
+3 | 2 | - | Iconic painting.: | Lakshmi's Portrait | Portrait of Lakshmi
+3 | 2 | - | In the entire FFVII universe, how many known members of Turks are there in total? | 17
+3 | 2 | - | Kirin grants what buff? | Regen
+3 | 2 | - | Many monsters, notably the Mind Flayer and Evil Eye (aka. Beholder), were inspired from which popular tabletop game? | Dungeons & Dragons | Dungeons and Dragons
+3 | 2 | - | Name one title from the main Final Fantasy series that does not feature EXP points. (Answer in "FF_"): | FFII | FFXIII | FFX | FF2 | FF13 | FF10
+3 | 2 | - | Name the accessory that generally grants immunity to most debuffs.: | Ribbon
+3 | 2 | - | Name the first FF title where the logo included Yoshitaka Amano's signature. (Answer in "FF_"): | FFX | FF10
+3 | 2 | - | Name the main character designer for the Final Fantasy series.: | Tetsuya Nomura
+3 | 2 | - | Name the main composer for the Final Fantasy series.: | Nobuo Uematsu
+3 | 2 | - | Name the only non-FF game which is part of Ivalice lore.: | Vagrant Story
+3 | 2 | - | Siren deals what debuff? | Silence
+3 | 2 | - | THE iconic duo. (\_\_\_ and \_\_\_): | Biggs and Wedge | Wedge and Biggs
+3 | 2 | - | THE male white mage.: | Minwu | Ming-Wu | Minh | Mindu
+3 | 2 | - | The names of Biggs & Wedge were inspired by characters sharing the same name in which popular movie & franchise? | Star Wars
+3 | 2 | - | The original North-America release of FFIV was actually Japan's FFII with drastic content cut and lower difficulty. True/False? | true
+3 | 2 | - | "There is an official version of FFIV known as \"Final Fantasy IV: Easy Type\". True/False?": | true
+3 | 2 | - | What armor does Gilgamesh wear? | Genji
+3 | 2 | - | What does the term, 'ATB', stand for? | Active Time Battle
+3 | 2 | - | What is Alexander's signature move? | Divine Judgment | Divine Judgement
+3 | 2 | - | What is Bahamut's signature move? | Mega Flare | Giga Flare | Megaflare | Gigaflare
+3 | 2 | - | What is Cactuar's signature move? | 1000 Needles | 10000 Needles
+3 | 2 | - | What is Diabolos' signature move? | Dark Messenger
+3 | 2 | - | What is Gilgamesh's widely known nickname? | Greg
+3 | 2 | - | What is Goblin's signature move? | Goblin Punch
+3 | 2 | - | What is Ifrit's signature move? | Hellfire | Inferno
+3 | 2 | - | What is Leviathan's signature move? | Tsunami | Tidal Wave
+3 | 2 | - | What is Malboro's signature move? | Bad Breath
+3 | 2 | - | What is Odin's signature move? | Zantetsuken
+3 | 2 | - | What is Ramuh's signature move? | Judgment Bolt | Judgement Bolt
+3 | 2 | - | What is Shiva's signature move? | Diamond Dust
+3 | 2 | - | What is Titan's signature move? | Gaia's Wrath
+3 | 2 | - | What is Tonberry's signature move? | Everyone's Grudge | Karma
+3 | 2 | - | What is a moogle's favorite food? | Kupo nut
+3 | 2 | - | What was 'Final Fantasy' originally named? | Fighting Fantasy
+3 | 2 | - | Which FF title first featured Blue Magic? (Answer in "FF_"): | FFV | FF5
+3 | 2 | - | Which title from the main FF series was the first to feature voice acting? (Answer in "FF_"): | FFX | FF10
+3 | 2 | - | Who is 'The Man with the Machine Gun'? | Laguna
+3 | 2 | - | Who is Gilgamesh's sidekick? | Enkidu
+3 | 2 | - | Who is the 'One Winged Angel'? | Sephiroth
+3 | 2 | - | Who is widely regarded as the 'Father of Final Fantasy'? | Hironobu Sakaguchi | Sakaguchi Hironobu

@@ -55,6 +55,11 @@ export class PrototypePP extends Manager {
     username: string;
 
     /**
+     * Whether this prototype entry has been calculated against the latest changes.
+     */
+    scanDone: boolean;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -71,5 +76,6 @@ export class PrototypePP extends Manager {
         this.uid = data.uid;
         this.previous_bind = data.previous_bind ?? [];
         this.username = data.username;
+        this.scanDone = data.scanDone;
     }
 }

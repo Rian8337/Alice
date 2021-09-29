@@ -31,7 +31,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 await player.recalculateDPP();
             }
 
-            client.logger.info(`${++calculatedCount} players scanned`);
+            client.logger.info(`${++calculatedCount} players recalculated`);
         }
     }
 

@@ -12,7 +12,7 @@ import { musicStrings } from "../../../musicStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const searchResult: SearchResult = await yts(interaction.options.getString("query", true));
 
-    const videos: VideoSearchResult[] = searchResult.videos.slice(0, 26);
+    const videos: VideoSearchResult[] = searchResult.videos;
 
     if (videos.length === 0) {
         return interaction.editReply({
@@ -20,7 +20,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const pickedChoice: string | undefined = (await SelectMenuCreator.createSelectMenu(
+    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
         "Choose the video that you want to queue.",
         videos.map(v => {

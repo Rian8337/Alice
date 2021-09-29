@@ -245,7 +245,7 @@ export class Clan extends Manager {
         }
 
         if (newLeader) {
-            if (!this.member_list.get(newLeader)) {
+            if (!this.member_list.has(newLeader)) {
                 return this.createOperationResult(false, "cannot find new leader");
             }
 
@@ -256,10 +256,10 @@ export class Clan extends Manager {
 
         let member: ClanMember = this.member_list.random();
 
-        if (this.member_list.some(c => c.hasPermission)) {
-            while (!member.hasPermission || member.id === this.leader) {
-                member = this.member_list.random();
-            }
+        const coLeaderExists: boolean = this.member_list.some(c => c.hasPermission);
+
+        while (member.id === this.leader || (coLeaderExists && !member.hasPermission)) {
+            member = this.member_list.random();
         }
 
         member.hasPermission = true;

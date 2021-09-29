@@ -49,4 +49,9 @@ export interface DatabasePrototypePP extends BaseDocument {
      * The username of the account.
      */
     username: string;
+
+    /**
+     * Whether this prototype entry has been calculated against the latest changes.
+     */
+    scanDone: boolean;
 };

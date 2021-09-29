@@ -57,7 +57,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const c: NodeCanvasRenderingContext2D = canvas.getContext("2d");
 
-        c.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 900, 250);
+        c.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, 900, 250);
 
         const attachment: MessageAttachment = new MessageAttachment(canvas.toBuffer(), "banner.png");
 

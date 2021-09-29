@@ -15,6 +15,7 @@ import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { RankedScore } from "@alice-database/utils/aliceDb/RankedScore";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfoDbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
@@ -29,17 +30,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const badgeList: Collection<string, ProfileBadge> = await DatabaseManager.aliceDb.collections.profileBadges.get("id");
 
-    const badgeID: string | undefined = await MessageInputCreator.createInputDetector(
+    const badgeID: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        { embeds: [ EmbedCreator.createInputEmbed(
-            interaction,
-            "Claim a Profile Badge",
-            "Enter the ID of the badge to claim."
-        ) ] },
-        badgeList.map(v => v.id),
+        "Choose the badge that you want to claim.",
+        badgeList.map(v => {
+            return {
+                label: v.name,
+                value: v.id
+            };
+        }),
         [interaction.user.id],
-        20
-    );
+        30
+    ))[0];
 
     if (!badgeID) {
         return;

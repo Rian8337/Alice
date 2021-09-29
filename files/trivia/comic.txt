@@ -1,0 +1,40 @@
+1 | 1 | - | Who is Batman? | Bruce Wayne | Clark Kent | Barry Allen | Tony Stark
+5 | 1 | - | In the Batman comics, by what other name is the villain Dr. Jonathan Crane known? | Scarecrow | Bane | Calendar Man | Clayface
+1 | 1 | - | Who is the creator of the comic series "The Walking Dead"? | Robert Kirkman | Stan Lee | Malcolm Wheeler-Nicholson | Robert Crumb
+5 | 1 | - | In the comic book "Archie", Betty is friends with Veronica because she is rich. | False | True
+3 | 1 | - | What is the name of the main character in the webcomic Gunnerkrigg Court by Tom Siddell? | Antimony | Bismuth | Mercury | Cobalt
+1 | 1 | - | Deadpool's identity is Slade Wilson. | False | True
+3 | 1 | - | Which of the following superheros did Wonder Woman NOT have a love interest in? | Green Arrow | Superman | Batman | Steve Trevor
+1 | 1 | - | The "Pepe" meme originated from a comic drawn by Matt Furie called "Boy's Club"? | True | False
+1 | 1 | - | This Marvel superhero is often called "The man without fear". | Daredevil | Thor | Wolverine | Hulk
+3 | 1 | - | Which issue of the "Sonic the Hedgehog" comic did Scourge the Hedgehog make his first appearance? | Sonic the Hedgehog #11 | Sonic Universe #32 | Sonic the Hedgehog #161 | Sonic the Hedgehog #47
+5 | 1 | - | What year was the first San Diego Comic-Con? | 1970 | 2000 | 1990 | 1985
+3 | 1 | - | Who authored The Adventures of Tintin? | Hergé | E.P. Jacobs | Rin Tin Tin | Chic Young
+3 | 1 | - | What is the designation given to the Marvel Cinematic Universe? | Earth-199999 | Earth-616 | Earth-10005 | Earth-2008
+5 | 1 | - | In what year did the first "The Walking Dead" comic come out? | 2003 | 2001 | 2006 | 1999
+3 | 1 | - | In the comics, which Sonic character took command of the Dark Legion after Luger's assassination? | Lien-Da | Kragok | Dimitri | Remington
+1 | 1 | - | What is the alter-ego of the DC comics character "Superman"? | Clark Kent | Bruce Wayne | Arthur Curry | John Jones
+3 | 1 | - | Which "Green Arrow" sidekick commonly wears a baseball cap? | Roy Harper | Black Canary | Emiko Queen | Dick Grayson
+3 | 1 | - | Which Batman sidekick is the son of Talia al Ghul? | Damian Wayne | Dick Grayson | Tim Drake | Jason Todd
+3 | 1 | - | In the DC Comics 2016 reboot, Rebirth, which speedster escaped from the Speed Force after he had been erased from existance? | Wally West | Johnny Quick | Jay Garrick | Eobard Thawne
+1 | 1 | - | What is the full first name of the babysitter in Calvin and Hobbes? | Rosalyn | Rose | Ruby | Rachel
+3 | 1 | - | In Calvin and Hobbes, what is the name of the babysitter's boyfriend? | Charlie | Dave | Charles | Nathaniel
+3 | 1 | - | The stuffed tiger in Calvin and Hobbes is named after what philosopher? | Thomas Hobbes | David Hobbes | John Hobbes | Nathaniel Hobbes
+3 | 1 | - | In Calvin and Hobbes, what is the name of Susie's stuffed rabbit? | Mr. Bun | Mr. Bunbun | Mr. Rabbit | Mr. Hoppy
+5 | 1 | - | When Batman trolls the online chat rooms, what alias does he use? | JonDoe297 | iAmBatman | BWayne13 | BW1129
+3 | 1 | - | Who was the inspiration for Cuthbert Calculus in the Tintin series? | Auguste Picard | Jacques Piccard | Will Morris | J. Cecil Maby
+3 | 1 | - | What was the name of the first Robin in the Batman comics? | Dick Grayson | Bruce Wayne | Jason Todd | Tim Drake
+3 | 1 | - | What is the name of the comic about a young boy, and a tiger who is actually a stuffed animal? | Calvin and Hobbes | Winnie the Pooh | Albert and Pogo | Peanuts
+5 | 1 | - | In the Homestuck Series, what is the alternate name for the Kingdom of Lights? | Prospit | No Name | Golden City | Yellow Moon
+3 | 1 | - | In "Sonic the Hedgehog" comic, who was the creator of Roboticizer?  | Professor Charles the Hedgehog | Julian Robotnik | Ivo Robotnik | Snively Robotnik
+3 | 1 | - | Who wrote the Batman comic series "The Killing Joke"? | Alan Moore | Bill Finger | Frank Miller | Jerry Siegel
+5 | 1 | - | When was the Garfield comic first published? | 1978 | 1982 | 1973 | 1988
+3 | 1 | - | Who created Ultron of Earth-616? | Henry Pym | Amadeus Cho | Tony Stark | Reed Richards
+5 | 1 | - | In the "Archie" comics, who was Jughead's first girlfriend? | Joani | Ethel | Debbi | Margret
+5 | 1 | - | In the webcomic "Ava's Demon", what sin is "Nevy Nervine" based off of?  | Envy  | Sloth | Wrath  | Lust
+5 | 1 | - | Which of the following rings from the DC Comics' "Lantern Corps" are classified as Parasitic? | Indigo (Compassion) | Green (Willpower) | White (Life) | Yellow (Fear)
+5 | 1 | - | In what Homestuck Update was [S] Game Over released? | October 25th, 2014 | April 13th, 2009 | April 8th, 2012 | August 28th, 2003
+3 | 1 | - | In the webcomic Homestuck, the first character introduced is Dave Strider. | False | True
+3 | 1 | - | In Pre-Super Genesis universe of "Sonic the Hedgehog" comic, what was the name of  Sally Acorn's brother? | Elias Acorn | Maximillian Acorn | Alexis Acorn | Frederick Acorn
+1 | 1 | - | Which universe crossover was introduced in the "Sonic the Hedgehog" comic issue #247? | Mega Man | Super Mario Brothers | Alex Kidd | Super Monkey Ball
+5 | 1 | - | What is the real hair colour of the mainstream comic book version (Earth-616) of Daredevil? | Blonde | Auburn | Brown | Black

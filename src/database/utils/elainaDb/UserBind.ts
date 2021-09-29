@@ -334,7 +334,8 @@ export class UserBind extends Manager {
                     lastUpdate: Date.now(),
                     previous_bind: this.previous_bind,
                     uid: this.uid,
-                    username: this.username
+                    username: this.username,
+                    scanDone: true
                 }
             },
             { upsert: true }

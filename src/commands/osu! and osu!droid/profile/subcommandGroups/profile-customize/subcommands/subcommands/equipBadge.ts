@@ -7,11 +7,9 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { PartialProfileBackground } from "@alice-interfaces/profile/PartialProfileBackground";
 import { ProfileImageConfig } from "@alice-interfaces/profile/ProfileImageConfig";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
+import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfoDbManager: PlayerInfoCollectionManager = DatabaseManager.aliceDb.collections.playerInfo;
@@ -37,19 +35,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: MessageEmbed = EmbedCreator.createInputEmbed(
+    const badgeID: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        "Equip a Profile Badge",
-        "Enter the badge ID that you want to equip."
-    );
-
-    const badgeID: string | undefined = await MessageInputCreator.createInputDetector(
-        interaction,
-        { embeds: [embed] },
-        ownedBadges.map(v => v.id),
+        "Choose the badge that you want to equip.",
+        ownedBadges.map(v => {
+            return {
+                label: v.name,
+                value: v.id
+            };
+        }),
         [interaction.user.id],
-        20
-    );
+        30
+    ))[0];
 
     if (!badgeID) {
         return;
@@ -57,13 +54,18 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const badge: PartialProfileBackground = ownedBadges.find(v => v.id === badgeID)!;
 
-    const badgeIndexInput = await MessageInputCreator.createInputDetector(
+    const badgeIndexInput: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        { embeds: [embed.setDescription("Enter the slot number where you want to put the badge on, from 1 to 10.")] },
-        ArrayHelper.initializeArray(10, 1).map((v, i) => (v + i).toString()),
+        "Choose the slot number where you want to put the badge on.",
+        ArrayHelper.initializeArray(10, 1).map((v, i) => {
+            return {
+                label: (v + i).toLocaleString(),
+                value: (v + i).toString()
+            };
+        }),
         [interaction.user.id],
         20
-    );
+    ))[0];
 
     if (!badgeIndexInput) {
         return;

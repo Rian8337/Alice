@@ -1,0 +1,914 @@
+3 | 2 | - | "...is scared of Jinx because she always wants to hug him?": | Ziggs
+3 | 2 | - | According to the dating service run by Blitzcrank, what is Rammus' best match? | A cactus | cactus
+3 | 2 | - | Against which neutral mob does crowd control last twice as long? | Rift Scuttler
+3 | 2 | - | Ahri's release celebrated the launch of servers in which country? | South Korea
+3 | 2 | - | As a reference to The Little Mermaid, searching what word in the shop will show Boots of Speed for Nami? | Hat
+3 | 2 | - | As the Tidecaller, it is Nami's duty to retrieve what from the landdwellers? | Moonstone
+3 | 2 | - | Aside from Diana, who else is a part of the Lunari? | Zoe
+3 | 2 | - | Aside from Evelynn, which champion could theoretically stay stealthed forever? | Teemo
+3 | 2 | - | Aside from Kindred, who else's champion design is based on the idea of "Yin and Yang"? | Karma
+3 | 2 | - | Aside from Lee Sin, who else is blind? | Lissandra
+3 | 2 | - | Between "The Blood Brothers", who is older? | Darius
+3 | 2 | - | During one April Fools, Wriggle's lantern gained the passive to taunt which champion? | Jax
+3 | 2 | - | Glaive Warrrior Pantheon was released to celebrate the server for which country? | Romania
+3 | 2 | - | How long does Zilean's ultimate ability's resurrection stasis last? | 3 seconds
+3 | 2 | - | How many degrees is the angle of Kassadin's Force Pulse? | 80
+3 | 2 | - | How old is Camille? | 80 | Eighty
+3 | 2 | - | How old is Taliyah? | 16 | sixteen
+3 | 2 | - | If Urfrider Corki crits, what does Urf throw? | Spatula
+3 | 2 | - | If you search for Urf in champion select, whose name pops up? | Warwick
+3 | 2 | - | If you were to destroy this champion's blades, he/she would die (according to old lore)? | Irelia
+3 | 2 | - | In the Bittersweet Lulu skin, what does her Whimsy turn her enemies into? | Cupcakes | cupcake
+3 | 2 | - | In the original lore, who did Professor Stanwick Pididly resurrect? | Urgot
+3 | 2 | - | In their original lore, who cut Urgot in half? | Garen
+3 | 2 | - | Name a champion from the Void destroyed city of Icathia? | Jax or Zilean | Jax | Zilean
+3 | 2 | - | Name a champion whose voice-over has no actual spoken words? | Rek'sai or Bard | Bard | Rek'sai | Reksai | rek sai
+3 | 2 | - | Name a champion with a non-ultimate ability that cannot be taken at level 1? | Azir or Zilean | Azir | Zilean
+3 | 2 | - | Name a member of the "Crimson Elite"? | Katarina or Riven or Talon | Katarina | Riven | Talon
+3 | 2 | - | Name one champion that comes from The Plague Jungles? | Wukong or Rammus | Wukong | Rammus
+3 | 2 | - | Name one of the champions that has the Mantle of Decorum? | Irelia or Karma | Irelia | Karma
+3 | 2 | - | Name one of the champions whose skull Headless Hecarim has on his belt? | Warwick or | Rengar | Warwick | Rengar
+3 | 2 | - | Name one of the owners of Piltover Customs? | Corki or Heimerdinger | Corki | Heimerdinger
+3 | 2 | - | Name one of the two champions whose dance is a reference to Game of Thrones? | Kalista or Riven | Kalista | Riven
+3 | 2 | - | Name one of the two champions with the highest base armor at level 18? | Maokai or Poppy | Poppy | Maokai
+3 | 2 | - | Name one of the two champions with the highest movement speed in the game? | Pantheon or Master Yi | Pantheon | Master Yi | masteryi
+3 | 2 | - | Name one of the two female champions without a humanoid form? | Anivia or Rek'sai | Rek'sai | Reksai | Rek sai | Anivia
+3 | 2 | - | Name one of the two melee champions with the highest range? | Mordekaiser or Tahm Kench | Mordekaiser | Tahm Kench | tahmkench
+3 | 2 | - | Not counting ultimate abilities, who has the largest AoE in the game? | Trundle
+3 | 2 | - | Smiting which neutral mob will give summon a nature spirit that grants vision over the nearby crossroads for 95 seconds? | Greater Murk Wolf
+3 | 2 | - | Smiting which neutral mob will give you the buff "Gift of Heavy Hands"? | Ancient Krug
+3 | 2 | - | The "Tally-men" are followers of whom? | Kindred
+3 | 2 | - | The Mythic Cassiopeia skin was released to celebrate the release of the server for which country? | Greece | Greek
+3 | 2 | - | Warwick betrayed Soraka to get her heart for who? | Singed
+3 | 2 | - | What accessory reduces the amount of damage done by Leona's passive by 1? | sunglasses
+3 | 2 | - | What are Rakan's wings disguised as to blend in with humans? | His Cloak | cloak
+3 | 2 | - | What are the names of Miss Fortune's pistols? | Shock and Awe
+3 | 2 | - | What champion has the same voice actress as Kayle? | Soraka
+3 | 2 | - | What champion has the season 3 victorious skin? | Elise
+3 | 2 | - | What color is Galio in his legendary skin? | Red
+3 | 2 | - | What country was Kayn born in? | Noxus
+3 | 2 | - | What did Lee Sin want to become before he became a monk? | Summoner
+3 | 2 | - | What does Corki fly? | Reconnaissance Operations Front Line (ROFL) Copter | Reconnaissance Operations Front Line Copter | ROFLcopter | ROFL copter
+3 | 2 | - | What does Fizz use as a weapon? | Seastone Trident
+3 | 2 | - | What does Ivern find scary? | Rift Herald
+3 | 2 | - | What does Jax use for a weapon (classic skin)? | Lamppost
+3 | 2 | - | What does Kled's secondary bar measure? | Courage
+3 | 2 | - | What does Pax Jax weild as a weapon? | Cardboard Tube | Cardboardtube
+3 | 2 | - | What does Zoe call Aurelion Sol? | Space Doggy
+3 | 2 | - | What does Zoe like to eat? | Chocolate Mooncakes
+3 | 2 | - | What faction is Leona a part of? | The Solari | Solari
+3 | 2 | - | What immortal species is Kled's mount? | desert drakalops
+3 | 2 | - | What in-game item is Sejuani wearing in her Classic splash art? | Seeker's Armguard | seekers armguard
+3 | 2 | - | What is Annie's last name? | Hastur
+3 | 2 | - | What is Annie's passive skill named? | Pyromania
+3 | 2 | - | What is Baron Nashor's movement speed? | 300 | three hundred
+3 | 2 | - | What is Camille's last name? | Ferros
+3 | 2 | - | What is Dr. Mundo use as a weapon on his Pool Party skin? | Ukelele
+3 | 2 | - | What is Dr. Mundo's first name? | Edmundo
+3 | 2 | - | What is Fiora's last name? | Laurent
+3 | 2 | - | What is Garen and Lux's family name? | Crownguard
+3 | 2 | - | What is Graves' first name? | Malcolm
+3 | 2 | - | What is Heimerdinger's first name? | Cecil
+3 | 2 | - | What is Irelia's family name? | Xan
+3 | 2 | - | What is Irelia's father's name? | Lito
+3 | 2 | - | What is Janna's last name? | Windforce
+3 | 2 | - | What is Kai'sa's original name? | Kaisa
+3 | 2 | - | What is Kayn's first name? | Shieda
+3 | 2 | - | What is Malzahar's pet champion called? | Voidling
+3 | 2 | - | What is Miss Fortune's first name? | Sarah
+3 | 2 | - | What is Orianna's last name? | Reveck
+3 | 2 | - | What is Orianna's occupation? | Dancer
+3 | 2 | - | What is Pantheon's real name? | Atreus
+3 | 2 | - | What is Poppy's favorite food? | Lollipops | Lollypop | lollipop
+3 | 2 | - | What is Rakan's favorite human food? | Chocolate
+3 | 2 | - | What is Sona's last name? | Buvelle
+3 | 2 | - | What is Swain's first name? | Jericho
+3 | 2 | - | What is Taliyah's favorite ice cream flavor? | Rocky Road
+3 | 2 | - | What is Twisted Fate's real name? | Tobias Foxtrot
+3 | 2 | - | What is Vayne's first name? | Shauna
+3 | 2 | - | What is Vladimir's blood type? | AB+ | AB positive | AB | AB +
+3 | 2 | - | What is Yorick's last name? | Mori
+3 | 2 | - | What is the Roman numeral carved into Ekko's bat? | XII | 12 | twelve
+3 | 2 | - | What is the capital city of Freljord? | Rakelstake
+3 | 2 | - | What is the name of Annie's step-sister? | Daisy
+3 | 2 | - | What is the name of Cassiopeia and Katarina's father? | Marcus
+3 | 2 | - | What is the name of Fiora's brother? | Ammdar
+3 | 2 | - | What is the name of Fizz's shark? | Chomper
+3 | 2 | - | What is the name of Graves' new gun? | New Destiny
+3 | 2 | - | What is the name of Graves' old gun? | Destiny
+3 | 2 | - | What is the name of Ivern's summoned sentinel? | Daisy
+3 | 2 | - | What is the name of Janna's bird companion? | Zephyr
+3 | 2 | - | What is the name of Jhin's gun? | Whisper
+3 | 2 | - | What is the name of Jinx's bigger gun? | Fishbones
+3 | 2 | - | What is the name of Jinx's smaller gun? | Pow-pow | pow pow
+3 | 2 | - | What is the name of Kayn's weapon? | Rhaast
+3 | 2 | - | What is the name of Kled's friend and mount? | Skaarl
+3 | 2 | - | What is the name of Lulu's fae spirit companion? | Pix
+3 | 2 | - | What is the name of Miss Fortune's ship? | The Syren | Syren
+3 | 2 | - | What is the name of Mordekaiser's mace? | Nightfall
+3 | 2 | - | What is the name of Quinn's dead brother? | Caleb
+3 | 2 | - | What is the name of Quinn's eagle? | Valor
+3 | 2 | - | What is the name of Rumble's robot? | Tristy
+3 | 2 | - | What is the name of Sejuani's boar? | Bristle
+3 | 2 | - | What is the name of Sona's weapon? | etwahl
+3 | 2 | - | What is the name of Star Guardian Jinx's black gun? | Kuro
+3 | 2 | - | What is the name of Star Guardian Jinx's white gun? | Shiro
+3 | 2 | - | What is the name of Swain's raven? | Beatrice
+3 | 2 | - | What is the name of Tristana's Dragon in her Dragon Trainer Tristana skin? | Riggle
+3 | 2 | - | What is the name of Tristana's Gun? | Boomer
+3 | 2 | - | What is the name of Trundle's club? | Boneshiver
+3 | 2 | - | What is the name of Yasuo's brother? | Yone
+3 | 2 | - | What is the name of the Viking ghost shopkeeper on the Howling Abyss? | Greyor
+3 | 2 | - | What is the name of the continent that League of Legends is located on? | Valoran
+3 | 2 | - | What is the name of the faction led by LeBlanc? | The Black Rose
+3 | 2 | - | What is the name of the faction led by Malzahar? | The Cult of the Void | Cult of the void
+3 | 2 | - | What is the name of the flying robot owned by the Hermit on the Howling Abyss (hint:named after a Rioter)? | Geeves
+3 | 2 | - | "What is the name of the hermit shopkeeper on the Howling Abyss (hint: named after a Rioter)?": | Lyte
+3 | 2 | - | What is the name of the spider that lives in the Twisted Treeline? | Vilemaw
+3 | 2 | - | What is the name of the type minion created by Banner of Command? | Anti-turret Cannon | antiturret cannon
+3 | 2 | - | What is the name of the yeti that Nunu rides? | Willump
+3 | 2 | - | What is the range of Irelia's Bladesurge? | 625
+3 | 2 | - | What is the range of Swain's Vision of Empire? | 3500
+3 | 2 | - | What nation is Kled from? | Noxus
+3 | 2 | - | What other profession has Pantheon always wanted to have? | Baker
+3 | 2 | - | What species are Rakan and Xayah? | Vastaya
+3 | 2 | - | What species is Kayn? | Human
+3 | 2 | - | What species is Kha'zix? | Voidborn
+3 | 2 | - | What species is Lissandra? | Iceborn
+3 | 2 | - | What species is Maokai? | Treant
+3 | 2 | - | What species is Rek'sai? | Xer'Sai | Xersai | Xer sai
+3 | 2 | - | What species is Trundle? | Troll
+3 | 2 | - | What species is Volibear? | Ursine
+3 | 2 | - | What tribe do Rakan and Xayah belong to? | Lhotlan
+3 | 2 | - | What type of food does Kai'sa prefer to eat? | Peaches | Peach
+3 | 2 | - | What type of poison does Teemo use in his blowgun? | Arjunta
+3 | 2 | - | What type of weapon does Yorick weild? | Monk's Spade | monks spade | spade
+3 | 2 | - | What was Fiddlesticks' original occupation? | Executioner
+3 | 2 | - | What was Orianna's father's name? | Corin Reveck | Corin
+3 | 2 | - | What was the name of Lucian's wife? | Senna
+3 | 2 | - | What weapon does Arctic Ops Kennen use? | Kunai
+3 | 2 | - | When Urgot was a soldier, who was his commanding officer? | Sion
+3 | 2 | - | Where (region) did Zyra come from? | Kumungu
+3 | 2 | - | Where did Ekko get his weapon(his "bat")? | clock tower | clock | clock hand
+3 | 2 | - | Where did Ezreal find the amulet that allowed him to use magic? | Shurima Desert | Shurima
+3 | 2 | - | Where does Udyr live? | Freljord
+3 | 2 | - | Where was Ivern originally from when he was human? | Freljord
+3 | 2 | - | Where was Yorick born? | Blessed Isles
+3 | 2 | - | Which Demacian disapproves of Shyvana due to her lack of self-control? | Garen
+3 | 2 | - | Which Voidborn has dwelt the longest in Runeterra? | Rek'sai | Reksai | Rek sai
+3 | 2 | - | Which champion has 3 legendary skins? | Corki
+3 | 2 | - | Which champion is a member of the Brackern species? | Skarner
+3 | 2 | - | Which champion is a member of the Darkin species? | Aatrox
+3 | 2 | - | Which champion is apparently lactose intolerant? | Dr. Mundo | Mundo | dr mundo | drmundo
+3 | 2 | - | Which champion is capable of having the most spell vamp? | Akali
+3 | 2 | - | Which champion is the formed from the fusion of two male lovers? | Varus
+3 | 2 | - | Which champion is the only champion capable of giving full invulnerability to damage? | Kayle
+3 | 2 | - | Which champion shares a voice actress with Lux? | LeBlanc
+3 | 2 | - | Which champion used to have a skill that could kill poros? | Blitzcrank
+3 | 2 | - | Which character cannot max out all of their skills? | Udyr
+3 | 2 | - | Which character displays heterochromia (not counting Lulu's Bittersweet skin)? | Zoe
+3 | 2 | - | Which character's walk cycles can be toggled in game? | Zoe
+3 | 2 | - | Which child has power that Syndra is fascinated by? | Annie
+3 | 2 | - | Which faction did Diana belong to? | Lunari
+3 | 2 | - | Which neutral mob gives +58 gold when killed? | Blue Sentinel
+3 | 2 | - | Which neutral mob gives +62 gold when killed? | Gromp
+3 | 2 | - | Which neutral mob gives the buff "Doom's Eve"? | Rift Herald
+3 | 2 | - | Which neutral mob is the only mob with scaling armor and magic resistance after level 9? | Dragon
+3 | 2 | - | Which neutral mob will dance if Popstar Ahri dances near it? | Blue Sentinel
+3 | 2 | - | Which neutral mob will dance if any champion dances near it? | Rift Herald
+3 | 2 | - | Which of Kai'sa's stats is upgrading her Supercharge dependent on? | Bonus Attack Speed | attack speed
+3 | 2 | - | Which summoner spell has a 240 second cooldown? | Clarity
+3 | 2 | - | Which summoner spell has a 270 second cooldown? | Heal
+3 | 2 | - | Who are the masters of the Void? | Watchers
+3 | 2 | - | Who augmented Warwick? | Singed
+3 | 2 | - | Who betrayed Azir? | Xerath
+3 | 2 | - | Who bound the Viking's ghost to the Howling Abyss? | Avarosa
+3 | 2 | - | Who brought Udyr to Ionia to calm his rage and meet the animal spirits that he uses? | Lee Sin | leesin
+3 | 2 | - | Who calls Ahri a "skank" and a "floozy" when using taunts? | Evelynn
+3 | 2 | - | Who can continuously increase their AP by using a skill? | Veigar
+3 | 2 | - | Who can have the most movable pets on the map? | Elise
+3 | 2 | - | Who can you get a free skin for by subscribing to Riot's twitter? | Garen
+3 | 2 | - | Who can you get a free skin for if you like Riot on Facebook? | Tristana
+3 | 2 | - | Who cannot damage any non-epic neutral monsters? | Ivern
+3 | 2 | - | Who carries two ninjato? | Shen
+3 | 2 | - | Who caused Kassadin to lose his daughter? | Malzahar
+3 | 2 | - | Who considers Lux a rival in love? | Zoe
+3 | 2 | - | Who constructed Blitzcrank? | Viktor
+3 | 2 | - | Who crafted Braum's Enchanted Ram Door? | Ornn
+3 | 2 | - | Who crafted Fizz's Seastone Trident? | Ornn
+3 | 2 | - | Who crafted The Howling Abyss and the bridge above it? | Ornn
+3 | 2 | - | Who created Corki's plane? | Heimerdinger
+3 | 2 | - | Who created Galio? | Durand
+3 | 2 | - | Who created Master Yi's goggles? | Heimerdinger
+3 | 2 | - | Who created Tryndamere (in the lore)? | Aatrox
+3 | 2 | - | Who created Wukong's staff? | Doran
+3 | 2 | - | Who creates the stars? | Aurelion Sol | aurelionsol
+3 | 2 | - | Who cut Urgot in the mines? | Baron Voss | Voss
+3 | 2 | - | Who cut off Swain's hand? | Irelia
+3 | 2 | - | Who did Malzahar lure into Runeterra? | Kog'maw | kog maw | kogmaw
+3 | 2 | - | Who did Professor Stanwick steal credit for creating Blitzcrank's sentience from? | Viktor
+3 | 2 | - | Who did Trundle get his club from? | Lissandra
+3 | 2 | - | Who did Xayah and Rakan fight in the "Wild Magic" Promo video? | Zed
+3 | 2 | - | Who did rengar lose an eye to? | Kha'zix | Khazix | Kha zix
+3 | 2 | - | Who does Captain Gangplank say "Prepare to be boarded." to? | Miss Fortune
+3 | 2 | - | Who does Cassiopeia betray? | Sivir
+3 | 2 | - | Who does Ekko tell to "Never go full robot."? | Viktor
+3 | 2 | - | Who does Elise worship? | Vilemaw
+3 | 2 | - | Who does Evelynn say "I can make you do a lot more than jingle, space man." in one of her taunts? | Bard
+3 | 2 | - | Who does Jhin resent for also being an artist? | Sona
+3 | 2 | - | Who does Karthus follow (in a worshipping manner)? | Kindred
+3 | 2 | - | Who does Katarina treat as an emotional punching bag? | Talon
+3 | 2 | - | Who does Lissandra taunt by saying "Kneel before me and I will unleash your power!" (in game)? | Sejuani
+3 | 2 | - | Who does Nurse Akali give a shot to? | Amumu
+3 | 2 | - | Who does Syndra have an alliance with? | Zed
+3 | 2 | - | Who does Taric supposedly have a crush on? | Ezreal
+3 | 2 | - | Who does Valor (Quinn's eagle) not respect? | Garen
+3 | 2 | - | Who does Vayne refer to as "the Horned Woman"? | Evelynn
+3 | 2 | - | Who does Zilean have an antagonistic relationship with? | Volibear
+3 | 2 | - | Who drove Renekton insane? | Xerath
+3 | 2 | - | Who eats fruit for one of their abilities? | Gangplank
+3 | 2 | - | Who emerged from the Crystal Scar (Dominion map)? | Skarner
+3 | 2 | - | Who established the Order of the Shadow? | Zed
+3 | 2 | - | Who felled the God Willow? | Ivern
+3 | 2 | - | Who found Wriggle's Lantern? | Ezreal
+3 | 2 | - | Who froze Brand for many years? | Lissandra
+3 | 2 | - | Who froze Gnar? | Anivia
+3 | 2 | - | Who gains +1 movement speed when on the same team as Zyra? | Maokai
+3 | 2 | - | Who gains 3.141592 (pi) AD per level? | Vel'koz | vel koz | velkoz
+3 | 2 | - | Who gave Yasuo the thread he uses to tie up his hair? | Taliyah
+3 | 2 | - | Who gets the buff Eureka! when they get a pentakill? | Heimerdinger
+3 | 2 | - | Who guards the Pit of Pallas? | Varus
+3 | 2 | - | Who had a skin released to celebrate League of Legends' first anniversary in Korea? | Shaco
+3 | 2 | - | Who had romantic feelings for a girl named Tabia, a girl who tried to stop their transformation? | Xerath
+3 | 2 | - | Who has a Badger skin? | ""
+3 | 2 | - | Who has a Challenger skin made to celebrate the start of the 2016 season? | Nidalee
+3 | 2 | - | Who has a Corporate skin? | Dr. Mundo | Mundo | dr mundo | drmundo
+3 | 2 | - | Who has a Cosmic Dusk skin? | Xayah
+3 | 2 | - | Who has a Deadly skin which is a parody of Deadpool? | Kennen
+3 | 2 | - | Who has a Deep Terror skin? | Thresh
+3 | 2 | - | Who has a Demonblade skin? | Tryndamere
+3 | 2 | - | Who has a Dryad skin? | Soraka
+3 | 2 | - | Who has a Final Boss skin? | Veigar
+3 | 2 | - | Who has a Firecracker skin? | Jinx
+3 | 2 | - | Who has a Firefighter skin? | Tristana
+3 | 2 | - | Who has a Golden skin? | Alistar
+3 | 2 | - | Who has a Gravelord skin? | Azir
+3 | 2 | - | Who has a Groovy skin? | Zilean
+3 | 2 | - | Who has a Haunting skin? | Nocturne
+3 | 2 | - | Who has a Hazmat skin? | Heimerdinger
+3 | 2 | - | Who has a Hyena skin? | Warwick
+3 | 2 | - | Who has a Leprechaun skin? | Veigar
+3 | 2 | - | Who has a Little Knight skin? | Amumu
+3 | 2 | - | Who has a Loch Ness skin? | Cho'gath | chogath | cho gath
+3 | 2 | - | Who has a Lunar Goddess skin? | Diana
+3 | 2 | - | Who has a Magnificent skin that is both legendary and legacy? | Twisted Fate
+3 | 2 | - | Who has a Masquerade skin? | Evelynn
+3 | 2 | - | Who has a Master Arcanist skin? | Ziggs
+3 | 2 | - | Who has a Molten skin? | Rammus
+3 | 2 | - | Who has a Neon Strike skin? | Vi
+3 | 2 | - | Who has a Nightraven skin? | Fiora
+3 | 2 | - | Who has a Nosferatu skin? | Vladimir
+3 | 2 | - | Who has a Phantom skin? | Karthus
+3 | 2 | - | Who has a Pharoah skin? | Nidalee
+3 | 2 | - | Who has a Phoenix skin? | Quinn
+3 | 2 | - | Who has a Popstar skin? | Ahri
+3 | 2 | - | Who has a Red Card skin? | Katarina
+3 | 2 | - | Who has a Redeemed skin? | Riven
+3 | 2 | - | Who has a Reindeer skin? | Kog'maw | kogmaw | Kog maw
+3 | 2 | - | Who has a Runeborn skin? | Xerath
+3 | 2 | - | Who has a Safari skin? | Caitlyn
+3 | 2 | - | Who has a Sakura skin? | Karma
+3 | 2 | - | Who has a Scuba skin? | Gragas
+3 | 2 | - | Who has a Shadowfire skin? | Kindred
+3 | 2 | - | Who has a Shockblade skin? | Zed
+3 | 2 | - | Who has a Spirit Guard skin? | Udyr
+3 | 2 | - | Who has a Temple skin? | Jax
+3 | 2 | - | Who has a Thunder Lord skin? | Volibear
+3 | 2 | - | Who has a Union Jack skin? | Fiddlesticks
+3 | 2 | - | Who has a Wildfire skin? | Zyra
+3 | 2 | - | Who has a championship skin that was released to celebrate the 2013 Season 3 World Championship? | Thresh
+3 | 2 | - | Who has a free skin obtained by subscribing to Riot's Youtube channel? | Alistar
+3 | 2 | - | Who has a kunai in their head? | Sion
+3 | 2 | - | Who has a passive called "Bravado"? | Taric
+3 | 2 | - | Who has a passive skill called "Flurry"? | Lee Sin | leesin
+3 | 2 | - | Who has a skill called "Ambush"? | Twitch
+3 | 2 | - | Who has a skill called "Arcane Smash"? | Maokai
+3 | 2 | - | Who has a skill called "Arcanopulse"? | Xerath
+3 | 2 | - | Who has a skill called "Battle Dance"? | Rakan
+3 | 2 | - | Who has a skill called "Blade's Reach"? | Kayn
+3 | 2 | - | Who has a skill called "Bladework"? | Fiora
+3 | 2 | - | Who has a skill called "Blast Shield"? | Vi
+3 | 2 | - | Who has a skill called "Brutal Strikes"? | Malphite
+3 | 2 | - | Who has a skill called "Cell Division"? | Zac
+3 | 2 | - | Who has a skill called "Chaos Storm"? | Viktor
+3 | 2 | - | Who has a skill called "Comet of Legend"? | Aurelion Sol | aurelionsol
+3 | 2 | - | Who has a skill called "Consume"? | Nunu
+3 | 2 | - | Who has a skill called "Crystallize"? | Anivia
+3 | 2 | - | Who has a skill called "Curtain Call"? | Jhin
+3 | 2 | - | Who has a skill called "Cutthroat"? | Talon
+3 | 2 | - | Who has a skill called "Dance of Arrows"? | Kindred
+3 | 2 | - | Who has a skill called "Dark Flight"? | Aatrox
+3 | 2 | - | Who has a skill called "Deceive"? | Shaco
+3 | 2 | - | Who has a skill called "Defile"? | Karthus
+3 | 2 | - | Who has a skill called "Devour"? | Tahm Kench | tahmkench
+3 | 2 | - | Who has a skill called "Dominus"? | Renekton
+3 | 2 | - | Who has a skill called "Double Daggers"? | Xayah
+3 | 2 | - | Who has a skill called "Eclipse"? | Leona
+3 | 2 | - | Who has a skill called "Equinox"? | Soraka
+3 | 2 | - | Who has a skill called "Flame Breath"? | Shyvana
+3 | 2 | - | Who has a skill called "Fling"? | Singed
+3 | 2 | - | Who has a skill called "Fracture"? | Skarner
+3 | 2 | - | Who has a skill called "Justice Punch"? | Galio
+3 | 2 | - | Who has a skill called "Leap"? | Kha'zix | Khazix | kha zix
+3 | 2 | - | Who has a skill called "Majestic Roar"? | Volibear
+3 | 2 | - | Who has a skill called "Martial Cadence"? | Jarvan IV | j4 | jarvan 4
+3 | 2 | - | Who has a skill called "Miasma"? | Cassiopeia
+3 | 2 | - | Who has a skill called "Molten Shield"? | Annie or Tibbers | Annie | Tibbers
+3 | 2 | - | Who has a skill called "Neurotoxin"? | Elise
+3 | 2 | - | Who has a skill called "Pierce"? | Kalista
+3 | 2 | - | Who has a skill called "Prey Seeker"? | Rek'sai | Reksai | Rek sai
+3 | 2 | - | Who has a skill called "Renewal"? | Karma
+3 | 2 | - | Who has a skill called "Savagery"? | Rengar
+3 | 2 | - | Who has a skill called "Scatter the Weak"? | Syndra
+3 | 2 | - | Who has a skill called "Sear"? | Brand
+3 | 2 | - | Who has a skill called "Soul Furnace"? | Sion
+3 | 2 | - | Who has a skill called "Steel Tempest"? | Yasuo
+3 | 2 | - | Who has a skill called "The Box"? | Thresh
+3 | 2 | - | Who has a skill called "Undertow"? | Olaf
+3 | 2 | - | Who has a skill called "Void Stone"? | Kassadin
+3 | 2 | - | Who has a skill called "Voracity"? | Katarina
+3 | 2 | - | Who has a skill called "flamespitter"? | Rumble
+3 | 2 | - | Who has a skill named "Relentless Assault"? | Jax
+3 | 2 | - | "Who has a skill that says \"You have opened the box. Your prize: death.\" in the Death Recap?": | Thresh
+3 | 2 | - | Who has a skin released to celebrate the release of the League of Legends Mac client? | Blitzcrank
+3 | 2 | - | Who has a skin that a reference to Sesame Street characters? | Nunu
+3 | 2 | - | Who has a skin that is a reference to Elminster Aumar from Dungeons and Dragons? | Ryze Whitebeard | Ryze
+3 | 2 | - | Who has a skin that is a reference to Wonder Woman? | Sivir
+3 | 2 | - | Who has a skin that is a reference to Zhao Yun? | Xin Zhao
+3 | 2 | - | Who has a skin that references Lu Bu? | Jarvan IV | j4 | jarvan 4
+3 | 2 | - | Who has a skin that references Nightcrawler from the X-men series? | Rengar
+3 | 2 | - | Who has a skin that was made in celebration of the 2014 World Championship? | Shyvana
+3 | 2 | - | Who has a skin that was released to celebrate the Brazil server? | Gangplank
+3 | 2 | - | Who has a skin that was released to celebrate the Latin America server? | Morgana
+3 | 2 | - | Who has a skin that was released to celebrate the release of the server in Turkey? | Tryndamere
+3 | 2 | - | Who has a skin that was released to celebrate the server in Italy? | Draven
+3 | 2 | - | Who has a skin that was released to celebrate the server in Russia? | Sejuani
+3 | 2 | - | Who has a skin to celebrate the launch of League of Legends in Thailand? | Lee Sin | leesin
+3 | 2 | - | Who has an Apocalyptic skin? | Brand
+3 | 2 | - | Who has an Aristocrat skin? | Vayne
+3 | 2 | - | Who has an Ashen Lord skin? | Aurelion Sol | aurelionsol
+3 | 2 | - | Who has an Emerald skin? | Taric
+3 | 2 | - | Who has an Imperial skin? | Lux
+3 | 2 | - | Who has an Outback skin which references Crocodile Dundee? | Renekton
+3 | 2 | - | Who has an ability called "Icathian Surprise"? | Kog'maw | kogmaw | Kog maw
+3 | 2 | - | Who has an ability called "Pale Cascade"? | Diana
+3 | 2 | - | Who has an ability called "Searing Charge"? | Ornn
+3 | 2 | - | Who has an ability called "Shroud of Darkness"? | Nocturne
+3 | 2 | - | Who has an ability called "Takedown"? | Nidalee
+3 | 2 | - | Who has an idle animation where they do the Captain Morgan (rum) pose? | Nautilus
+3 | 2 | - | Who has an owl insignia on his chest? | Varus
+3 | 2 | - | Who has an ultimate ability that can only be ranked up twice? | Ryze
+3 | 2 | - | Who has followers called "The Preservers of Valoran"? | Kassadin
+3 | 2 | - | Who has skin with a quote that references Sjokz ("Sjokz better interview me after this")? | Draven
+3 | 2 | - | Who has the Victorious skin for season 2? | Janna
+3 | 2 | - | Who has the Victorious skin from Season 5? | Sivir
+3 | 2 | - | Who has the crown of Jarvan I embedded in their jaw? | Sion
+3 | 2 | - | Who has the highest base AD among ranged champions at level 18? | Morgana
+3 | 2 | - | Who has the highest base AD at level 1? | Maokai
+3 | 2 | - | Who has the highest base HP at level 18? | Alistar
+3 | 2 | - | Who has the highest base HP at level 1? | Tryndamere
+3 | 2 | - | Who has the highest base armor? | Rammus
+3 | 2 | - | Who has the highest base mana at level 18? | Kassadin
+3 | 2 | - | Who has the highest base mana at level 1? | Janna
+3 | 2 | - | Who has the least base AD at level 18? | Miss Fortune
+3 | 2 | - | Who has the least base AD at level 1? | Orianna
+3 | 2 | - | Who has the least number of quotes? | Rammus
+3 | 2 | - | Who has the longest DoT (damage over time) debuff in the game? | Mordekaiser
+3 | 2 | - | Who has the longest base range at level 1? | Caitlyn
+3 | 2 | - | Who has the lowest base HP at level 18? | Gnar
+3 | 2 | - | Who has the lowest base HP at level 1? | Anivia
+3 | 2 | - | Who has the lowest base armor? | Thresh
+3 | 2 | - | Who has the lowest basic attack range of all ranged champions? | Rakan
+3 | 2 | - | Who has the most laugh emotes? | Veigar
+3 | 2 | - | Who has the most lines in the game? | Tahm Kench | tahmkench
+3 | 2 | - | Who has the only global teleport? | Shen
+3 | 2 | - | Who has the only in-game monologue? | Lissandra
+3 | 2 | - | Who has the only non-ultimate ability with global range? | Ashe
+3 | 2 | - | Who has the only skill in the game that does AD but scales with AP (and armor)? | Malphite
+3 | 2 | - | Who has the same dance reference as Jayce? | Malzahar
+3 | 2 | - | Who has the season 4 Victorious skin? | Morgana
+3 | 2 | - | Who has the skill with the highest AD Ratio in the game? | Wukong
+3 | 2 | - | Who has the skill with the highest AD ratio in the game? | Kalista
+3 | 2 | - | Who has the skill with the largest AP ratio? | Annie
+3 | 2 | - | Who has two peg legs? | Bard
+3 | 2 | - | Who hates being turned into a squirrel by Lulu? | Shyvana
+3 | 2 | - | Who helped Ezreal get into the restricted section of the Piltover library? | Jayce
+3 | 2 | - | Who helped Shyvana kill the dragon who killed her father? | Jarvan IV | Jarvan 4 | j4
+3 | 2 | - | Who impersonated Jarvan IV? | Leblanc
+3 | 2 | - | Who incurred Zed's wrath after ransacking the Temple of the Jagged Knife? | Gangplank
+3 | 2 | - | Who inspired Galio to leave his silent purgatory to fight for the will of Demacia? | Poppy
+3 | 2 | - | Who invented the weapon used to destroy Master Yi's home village? | Singed
+3 | 2 | - | Who is "Valoran's first fully functioning homicidal comic"? | Shaco
+3 | 2 | - | Who is "the Terror of the Void"? | Cho'gath | chogath | cho gath
+3 | 2 | - | Who is Ashe married to? | Tryndamere
+3 | 2 | - | Who is Avarosa' descendant? | Ashe
+3 | 2 | - | Who is Caitlyn's partner? | Vi
+3 | 2 | - | Who is Darius' brother? | Draven
+3 | 2 | - | Who is Freljord's League Emissary? | Nunu
+3 | 2 | - | Who is Gangplank's ex-girlfriend? | Illaoi
+3 | 2 | - | Who is Garen's love interest? | Katarina
+3 | 2 | - | Who is Gragas' drinking buddy? | Jax
+3 | 2 | - | Who is Gregori the Gray's daughter? | Annie
+3 | 2 | - | Who is Jayce's nemesis? | Viktor
+3 | 2 | - | Who is Kassadin's daughter? | Kai'sa | Kaisa | Kai sa
+3 | 2 | - | Who is Katarina's younger sister? | Cassiopeia
+3 | 2 | - | Who is Kayle's sister? | Morgana
+3 | 2 | - | Who is Kha'zix's rival? | Rengar
+3 | 2 | - | Who is Lucian's enemy? | Thresh
+3 | 2 | - | Who is Lux supposedly dating? | Ezreal
+3 | 2 | - | Who is Nasus' brother? | Renekton
+3 | 2 | - | Who is Olaf allied with? | Sejuani
+3 | 2 | - | Who is Orianna's pet and protector? | The Ball | Ball
+3 | 2 | - | Who is Sivir related to? | Azir
+3 | 2 | - | Who is Talon's rival? | Quinn
+3 | 2 | - | Who is Tryndamere's nemesis? | Aatrox
+3 | 2 | - | Who is Twisted Fate's ex-girlfriend? | Evelynn
+3 | 2 | - | Who is Vayne rumored to be investigating? | Leblanc
+3 | 2 | - | Who is Vel'koz searching for? | Zilean
+3 | 2 | - | Who is a Hemomancer? | Vladimir
+3 | 2 | - | Who is a member of the Marai species? | Nami
+3 | 2 | - | Who is a member of the Minotaur species? | Alistar
+3 | 2 | - | Who is a member of the Rakkor tribe? | Pantheon
+3 | 2 | - | Who is a mute? | Sona
+3 | 2 | - | Who is a servant to the Aspects? | Aurelion Sol | aurelionsol
+3 | 2 | - | Who is able to obtain the most magic resist in the game (including items, masteries, abilities, etc)? | Xin Zhao
+3 | 2 | - | Who is allied with Maokai? | Malphite
+3 | 2 | - | Who is also known as "The Crystal Vanguard"? | Skarner
+3 | 2 | - | Who is also known as "The Great Hussar", "The Mountain Admiral", "The High General Marshal Sergeant", "Lord Colonel Major Centurion", "Rear Forward Brigadier Admiral", "Forward Admiral Major", "Sir Admiral Major", "Lieutenant Sergeant Commodore", "Sergeant General Colonel", "Sergeant Double Admiral", "High Major Commodore of the First Legion Third Multiplication Double Admiral Artillery Vanguard Company", and "Lord Major Admiral of the Second Legion's Forward Artillery-Cavalary Multiplication"? | Kled
+3 | 2 | - | Who is also known as "The Purifier"? | Lucian
+3 | 2 | - | Who is also known as "the Iron Revenant"? | Mordekaiser
+3 | 2 | - | Who is also known as "the Rebel"? | Xayah
+3 | 2 | - | Who is also known as "the Shield of Valoran"? | Taric
+3 | 2 | - | Who is also known as "the Uncaged Wrath of Zaun"? | Warwick
+3 | 2 | - | Who is also known as Demacia's Wings? | Quinn
+3 | 2 | - | "Who is also known as Subject #1088?": | Warwick
+3 | 2 | - | Who is also known as the "Artisan of War"? | Pantheon
+3 | 2 | - | Who is also known as the "Battle Mistress"? | Sivir
+3 | 2 | - | Who is also known as the "Berserker"? | Olaf
+3 | 2 | - | Who is also known as the "Butcher of the Sands"? | Renekton
+3 | 2 | - | Who is also known as the "Chain Warden"? | Thresh
+3 | 2 | - | Who is also known as the "Crimison Reaper"? | Vladimir
+3 | 2 | - | Who is also known as the "Curator of the Sands"? | Nasus
+3 | 2 | - | Who is also known as the "Dark Sovereign"? | Syndra
+3 | 2 | - | Who is also known as the "Eternal Nightmare"? | Nocturne
+3 | 2 | - | Who is also known as the "Machine Herald"? | Viktor
+3 | 2 | - | Who is also known as the "Master of Shadows"? | Zed
+3 | 2 | - | Who is also known as the "Maven of the Strings"? | Sona
+3 | 2 | - | Who is also known as the "Mechanized Menace"? | Rumble
+3 | 2 | - | Who is also known as the "Plague Rat"? | Twitch
+3 | 2 | - | Who is also known as the "Pridestalker"? | Rengar
+3 | 2 | - | Who is also known as the "Rise of the Thorns"? | Zyra
+3 | 2 | - | Who is also known as the "Rune Mage"? | Ryze
+3 | 2 | - | Who is also known as the "Secret Weapon"? | Zac
+3 | 2 | - | Who is also known as the "Seneschal of Demacia"? | Xin Zhao
+3 | 2 | - | Who is also known as the "Shadow of War"? | Hecarim
+3 | 2 | - | Who is also known as the "Spirit Walker"? | Udyr
+3 | 2 | - | Who is also known as the "Unforgiven"? | Yasuo
+3 | 2 | - | Who is also known as the "Virtuoso"? | Jhin
+3 | 2 | - | Who is also known as the "Void Burrower"? | Rek'sai | Reksai | Rek sai
+3 | 2 | - | Who is also known as the "Walking National Monument"? | Galio
+3 | 2 | - | Who is also known as the "Winter's Wrath"? | Sejuani
+3 | 2 | - | Who is also known as the Blade's Shadow? | Talon
+3 | 2 | - | Who is also known as the Steel Shadow? | Camille
+3 | 2 | - | Who is dating Jarvan IV (according to Riot Ransom)? | Quinn
+3 | 2 | - | Who is hunting LeBlanc? | Kalista
+3 | 2 | - | Who is known as "The Dark Child"? | Annie
+3 | 2 | - | Who is known as "the Enlightened One"? | Karma
+3 | 2 | - | Who is known as "the Missing Link"? | Gnar
+3 | 2 | - | Who is known as "the River King"? | Tahm Kench | tahmkench
+3 | 2 | - | Who is known as the "Fire Below the Mountain"? | Ornn
+3 | 2 | - | Who is known as the "Harbinger of Doom"? | Fiddlesticks
+3 | 2 | - | Who is known as the "Madman of Zaun"? | Dr. Mundo | Mundo | dr mundo | drmundo
+3 | 2 | - | Who is known as the "Might of Demacia"? | Garen
+3 | 2 | - | Who is known as the "Prophet of the Void"? | Malzahar
+3 | 2 | - | Who is known as the "Rabble Rouser"? | Gragas
+3 | 2 | - | Who is known as the "Revered Inventor"? | Heimerdinger
+3 | 2 | - | Who is known as the "Storm's Fury"? | Janna
+3 | 2 | - | Who is known as the "Voidreaver"? | Kha'zix | Khazix | kha zix
+3 | 2 | - | Who is part of the Spirits species? | Kindred
+3 | 2 | - | Who is related to the Ruined King (Blade of the Ruined King)? | Kalista
+3 | 2 | - | Who is responsible for reviving Irelia and binding her life force to her blades? | Soraka
+3 | 2 | - | Who is rumored to be Teemo's girlfriend? | Tristana
+3 | 2 | - | Who is the "Exemplar of Demacia"? | Jarvan IV | j4 | jarvan 4
+3 | 2 | - | Who is the "Eye of Twilight"? | Shen
+3 | 2 | - | Who is the "Fist of Shadow"? | Akali
+3 | 2 | - | Who is the "Hand of Noxus"? | Darius
+3 | 2 | - | Who is the "Heart of the Tempest"? | Kennen
+3 | 2 | - | Who is the "Mouth of the Abyss"? | Kog'maw | kogmaw | Kog maw
+3 | 2 | - | Who is the Aspect of Twilight? | Zoe
+3 | 2 | - | Who is the Aspect of War? | Pantheon
+3 | 2 | - | Who is the Aspect of the Moon? | Diana
+3 | 2 | - | Who is the Aspect of the Protecter? | Taric
+3 | 2 | - | Who is the Aspect of the Sun? | Leona
+3 | 2 | - | Who is the Dean of Demolitions at the Yordle Academy in Piltover? | Ziggs
+3 | 2 | - | Who is the Duchess of Ionia? | Karma
+3 | 2 | - | Who is the Heir of Shurima? | Sivir
+3 | 2 | - | Who is the Noxian Grand General? | Swain
+3 | 2 | - | Who is the Noxian tool of war? | Sion
+3 | 2 | - | Who is the Trifarix Leader of Might? | Darius
+3 | 2 | - | Who is the Trifarix Leader of Vision? | Swain
+3 | 2 | - | Who is the Zaun Amorphous Combatant? | ZAC
+3 | 2 | - | Who is the antithesis to Diana? | Leona
+3 | 2 | - | Who is the band Pentakill's back up singer? | Kayle
+3 | 2 | - | Who is the champion in the tutorial? | Ashe
+3 | 2 | - | Who is the first champion to have full facial animation in game? | Poppy
+3 | 2 | - | Who is the head of the Du Couteau House? | Katarina
+3 | 2 | - | Who is the hermit shopkeeper on the Howling Abyss related to? | Ezreal
+3 | 2 | - | Who is the lead singer of the band "Pentakill"? | Karthus
+3 | 2 | - | Who is the leader of The Evolution? | Viktor
+3 | 2 | - | Who is the leader of the Iron Order? | Hecarim
+3 | 2 | - | Who is the leader of the Kinkou order? | Shen
+3 | 2 | - | Who is the only Yordle with a tail? | Gnar
+3 | 2 | - | Who is the only champion from Zaun who was raised by two loving parents? | Zac
+3 | 2 | - | Who is the only champion from the Glade? | Lulu
+3 | 2 | - | Who is the only champion from the Void with more than 6 letters in their name? | Cho'gath | chogath | cho gath
+3 | 2 | - | Who is the only champion in game to have a target skill that can be self-cast but not ally-cast? | Lissandra
+3 | 2 | - | Who is the only champion that can C.C. Baron and Dragon? | Bard
+3 | 2 | - | Who is the only champion that can shield turrets? | Janna
+3 | 2 | - | Who is the only champion who emotes without the player making them (i.e. laughing)? | Ziggs
+3 | 2 | - | Who is the only champion who has only one option when leveling skills at level 1? | Azir
+3 | 2 | - | Who is the only champion who says something after recalling? | Braum
+3 | 2 | - | Who is the only champion with 2 laugh animations? | Zac
+3 | 2 | - | Who is the only champion with a Polymorph? | Lulu
+3 | 2 | - | Who is the only champion with a stealth ability who is not classified as an assassin? | Wukong
+3 | 2 | - | Who is the only champion with two Legendary skins available for purchase in the store on a regular basis? | Cho'gath | chogath | cho gath
+3 | 2 | - | Who is the only female Voidborn? | Rek'sai | Reksai | Rek sai
+3 | 2 | - | Who is the only female champion with a Riot skin? | Kayle
+3 | 2 | - | Who is the only female character with an Academy skin? | Ahri
+3 | 2 | - | Who is the only female with a commando skin? | Lux
+3 | 2 | - | Who is the only mage Galio likes? | Lux
+3 | 2 | - | Who is the only male Heartseeker? | Varus
+3 | 2 | - | Who is the only male Star Guardian? | Ezreal
+3 | 2 | - | Who is the smallest champion in the game itself? | Teemo
+3 | 2 | - | Who joined the league to find a cure for chrono-displasia? | Zilean
+3 | 2 | - | Who killed Kalista? | Hecarim
+3 | 2 | - | Who killed Miss Fortune's parents? | Gangplank
+3 | 2 | - | Who killed Shen's father? | Zed
+3 | 2 | - | Who killed Udyr's predecessor and mentor? | Lissandra
+3 | 2 | - | Who killed Urf? | Warwick
+3 | 2 | - | Who killed Vayne's parents? | Evelynn
+3 | 2 | - | Who killed the Ionian elder that Yasuo was trying to protect? | Riven
+3 | 2 | - | Who learns about Valoran by disintegrating subjects? | Vel'koz | vel koz | velkoz
+3 | 2 | - | Who lit themselves on fire to protest Noxus? | Lee Sin | leesin
+3 | 2 | - | Who lives in the Frostguard Citadel? | Lissandra
+3 | 2 | - | Who lives in the Ironspike Mountains? | Anivia
+3 | 2 | - | Who made Tibbers? | Amoline
+3 | 2 | - | Who named Wukong, "Wukong"? | Master Yi | Yi
+3 | 2 | - | Who nicknamed Taliyah "little sparrow"? | Yasuo
+3 | 2 | - | Who occasionally plays cards with Twisted Fate? | Ezreal
+3 | 2 | - | Who owned a bakery in Noxus called "Sinful Succulence" that was shut down by the Valoran Department of Health and now runs a food cart? | Morgana
+3 | 2 | - | Who owns Freljord's Avarosa Iceflow Glacier? | Gragas
+3 | 2 | - | Who performed the ritual to resurrect Sion? | Vladimir
+3 | 2 | - | Who plays Keyboard for the band "Pentakill"? | Sona
+3 | 2 | - | Who plays a Sakuhachi (type of flute) in their dance animation? | Yasuo
+3 | 2 | - | Who plays guitar for the band "Pentakill"? | Mordekaiser
+3 | 2 | - | Who plays the bass in the band 'Pentakill'? | Yorick
+3 | 2 | - | Who plays the drums in the band 'Pentakill'? | Olaf
+3 | 2 | - | Who releases Renekton and Xerath? | Cassiopeia
+3 | 2 | - | Who runs a dating service in the league? | Blitzcrank
+3 | 2 | - | Who says "A demonstration of superior judgement." when picked in champion select? | Shen
+3 | 2 | - | Who says "A whole world to toy with."? | Syndra
+3 | 2 | - | Who says "Accelerated movement, I concur." in game? | Sona
+3 | 2 | - | Who says "Another unworthy opponent." while attacking? | Akali
+3 | 2 | - | Who says "Are you my nightmare, or am I yours?"? | Nocturne
+3 | 2 | - | Who says "Are... You sure you're not in the wrong league?" as a taunt? | Kayle
+3 | 2 | - | Who says "As I live, all will die!"? | Renekton
+3 | 2 | - | Who says "Bring down the sun."? | Diana
+3 | 2 | - | Who says "Don't you trust me?" when picked in champion select? | Ahri
+3 | 2 | - | Who says "Embrace the darkness." when picked in champion select? | Nocturne
+3 | 2 | - | Who says "Everybody dies. Some just need a little help." when picked in champion select? | Lucian
+3 | 2 | - | Who says "Exterminate. Exterminate." while attacking? | Blitzcrank
+3 | 2 | - | Who says "Fight or be forgotten" when attacking? | Aatrox
+3 | 2 | - | Who says "Focus on the battle."? | Lux
+3 | 2 | - | Who says "For tranquility."? | Janna
+3 | 2 | - | Who says "Here comes the boom!" in game? | Tristana
+3 | 2 | - | Who says "I accidentally did that on purpose."? | Jinx
+3 | 2 | - | Who says "I ain't got time to bleed."? | Graves
+3 | 2 | - | Who says "I am forsaken" in game? | Varus
+3 | 2 | - | Who says "I am the blade in the darkness."? | Zed
+3 | 2 | - | Who says "I am the thing under the bed"? | Thresh
+3 | 2 | - | Who says "I do not tolerate cowardice."? | Darius
+3 | 2 | - | Who says "I have sharp things."? | Orianna
+3 | 2 | - | Who says "I live for the applause, you will die for it." as a direct reference to Lady Gaga? | Jhin
+3 | 2 | - | Who says "I only need one shot!" while attacking? | Ashe
+3 | 2 | - | Who says "I seek only the strongest" while in game? | Rengar
+3 | 2 | - | Who says "I shall endure." while attacking? | Anivia
+3 | 2 | - | Who says "I will be free." when picked during champion select? | Xerath
+3 | 2 | - | Who says "I will be free." when picked in champion select? | Xerath
+3 | 2 | - | Who says "I will swallow your soul."? | Veigar
+3 | 2 | - | Who says "I'll be right under their noses." in game? | Twitch
+3 | 2 | - | Who says "I'll show them a watery grave."? | Fizz
+3 | 2 | - | Who says "I'm moving as fast as I can." in game? | Malphite
+3 | 2 | - | Who says "I'm not ugly, but they're about to be!" in game? | Trundle
+3 | 2 | - | Who says "I'm on a short fuse." in game? | Brand
+3 | 2 | - | Who says "If you're buying, I'm in!" when picked at champion select? | Gragas
+3 | 2 | - | Who says "Insolent peasants!"? | Fiora
+3 | 2 | - | Who says "Knowledge through... disintegration." when picked in champion select? | Vel'koz | vel koz | velkoz
+3 | 2 | - | Who says "Leave nothing behind!" when picked in champion select? | Olaf
+3 | 2 | - | Who says "Let the storm follow in my wake." when picked in champion select? | Volibear
+3 | 2 | - | Who says "Let us hunt those who have fallen to darkness." when picked in champion select? | Vayne
+3 | 2 | - | Who says "Let's find some friends." in game? | Amumu
+3 | 2 | - | Who says "Let's get in the fight!" when picked in champion select? | Rumble
+3 | 2 | - | Who says "Man, I'm good."? | Draven
+3 | 2 | - | Who says "Mmm, the taste of coward." in game? | Nidalee
+3 | 2 | - | Who says "My blade is yours." when picked in champion select? | Master Yi | masteryi
+3 | 2 | - | Who says "My spirit is not lost." in game? | Riven
+3 | 2 | - | Who says "On all legs." in game? | Skarner
+3 | 2 | - | Who says "Our future will be bright."? | Jayce
+3 | 2 | - | Who says "Ours is but to do and die."? | Jarvan IV | j4 | jarvan 4
+3 | 2 | - | Who says "People and their air..."? | Nami
+3 | 2 | - | Who says "Please to meet you!" when picked in champion select? | Lulu
+3 | 2 | - | Who says "Precision is the difference between a butcher and a surgeon." when picked? | Camille
+3 | 2 | - | Who says "Savor the misery."? | Tahm Kench | tahmkench
+3 | 2 | - | Who says "Swallowed you whole!" in game? | Nunu
+3 | 2 | - | Who says "Terror coming...daddy coming!"? | Kog'maw | kogmaw | Kog maw
+3 | 2 | - | Who says "The daylight! It burns!" in game? | Cho'gath | chogath | cho gath
+3 | 2 | - | Who says "The endless march." in game? | Nautilus
+3 | 2 | - | Who says "The eyes never lie." when picked during champion select? | Kennen
+3 | 2 | - | Who says "The joke's on you!" in game? | Shaco
+3 | 2 | - | Who says "The rivers will run red." when picked in champion select? | Vladimir
+3 | 2 | - | Who says "Their heartbeats quicken."? | Lee Sin | leesin
+3 | 2 | - | Who says "There is no antidote for me." in game? | Cassiopeia
+3 | 2 | - | Who says "This is my path" in game? | Soraka
+3 | 2 | - | Who says "This'll be a slaughter" when picked in champion select? | Tryndamere
+3 | 2 | - | Who says "Time for a shakedown." in game? | Caitlyn
+3 | 2 | - | Who says "Time to get our hands dirty."? | Ezreal
+3 | 2 | - | Who says "Time to make an appearance."? | LeBlanc
+3 | 2 | - | Who says "Time to start some trouble."? | Ekko
+3 | 2 | - | Who says "Twilight fades."? | Leona
+3 | 2 | - | Who says "Violence is elegance." (in game)? | Aatrox
+3 | 2 | - | Who says "We all have a place among the divine. We have only to accept it."? | Karthus
+3 | 2 | - | Who says "We are the vanguard."? | Garen
+3 | 2 | - | Who says "We demand sacrifice."? | Malzahar
+3 | 2 | - | Who says "We'll bring them pain." when picked during champion select? | Morgana
+3 | 2 | - | Who says "Who's following me?" as a reference to the website twitch.tv? | Twitch
+3 | 2 | - | Who says "You are null and void."? | Kassadin
+3 | 2 | - | Who says "You hit like baby ram! No horns yet!" while attacking? | Braum
+3 | 2 | - | Who says "You only need to click once, fool!" in game (breaking the fourth wall)? | Mordekaiser
+3 | 2 | - | Who says "You will never suffer enough!"? | Kalista
+3 | 2 | - | Who says "Your bidding, master" when picked during champion selection? | Fiddlesticks
+3 | 2 | - | Who says "change is good"? | Kha'zix | khazix | kha zix
+3 | 2 | - | Who says "ok."? | Rammus
+3 | 2 | - | Who spent a millennia locked up with Renekton? | Xerath
+3 | 2 | - | Who stopped Veigar during his evil plan in Bandle City? | Teemo
+3 | 2 | - | Who supplies Gragas with brewing equipment? | Singed
+3 | 2 | - | Who tells you to "Take this scroll and stick it somewhere safe."? | Ryze
+3 | 2 | - | Who thinks Ezreal is a poser? | Ekko
+3 | 2 | - | Who thinks that Heimerdinger is a sellout? | Rumble
+3 | 2 | - | Who thinks that other Yordles are fluffy and disorganized? | Poppy
+3 | 2 | - | Who tried to kill Gnar when he first awoke? | Rengar
+3 | 2 | - | Who tried to steal Bandle City's Mothership? | Veigar
+3 | 2 | - | Who turned Lissandra into an Iceborn? | Watchers
+3 | 2 | - | Who used to be known as the "Rogue Mage"? | Ryze
+3 | 2 | - | Who used to have a crush on Jinx before she went crazy? | Ekko
+3 | 2 | - | Who used to have a skill called "Disgusting Sneeze"? | Amumu
+3 | 2 | - | Who used to wield fans? | Karma
+3 | 2 | - | Who uses cupcakes as a weapon? | Caitlyn
+3 | 2 | - | Who was Graves' partner in crime? | Twisted Fate
+3 | 2 | - | Who was Leona's childhood friend? | Pantheon
+3 | 2 | - | Who was Poppy's mentor (the original owner of the hammer)? | Orlon
+3 | 2 | - | Who was Soraka betrayed by? | Warwick
+3 | 2 | - | Who was Talon's old partner in crime? | Kavyn
+3 | 2 | - | Who was Urf's Corpse sold to? | Butcher Urgot | Urgot
+3 | 2 | - | Who was a silk dancer? | Irelia
+3 | 2 | - | Who was born in the Guardian's Sea? | Fizz
+3 | 2 | - | Who was known as the "Will of the Blades"? | Irelia
+3 | 2 | - | Who was named after the Riot Games CEO? | Tryndamere
+3 | 2 | - | Who was once a member of Zed's Order of Shadows? | Akali
+3 | 2 | - | Who was once known as "the Cruel"? | Ivern
+3 | 2 | - | Who was punished with the Crown of Stone? | Taric
+3 | 2 | - | Who was rescued by Jarvan IV's grandfather? | Xin Zhao
+3 | 2 | - | Who was responsible for capturing and imprisoning Jhin? | Shen
+3 | 2 | - | Who was saved from The Fleshing by a young girl named Ayelia? | Alistar
+3 | 2 | - | Who was the 100th champion released? | Jayce
+3 | 2 | - | Who was the first champion ever created? | Singed
+3 | 2 | - | Who was the first champion to be released with Chroma variants? | Kai'sa | Kai sa | kaisa
+3 | 2 | - | Who was the first champion to have 2 Harrowing skins? | Ryze
+3 | 2 | - | Who was the first champion to have 9 skins? | Ryze
+3 | 2 | - | Who was the first champion to have a recall animation? | Darius
+3 | 2 | - | Who was the first champion to have a unique autoattack animation for turrets? | Braum
+3 | 2 | - | Who was the first champion to have an Ultimate skin? | Ezreal
+3 | 2 | - | Who was the first champion to use energy as a resource? | Shen
+3 | 2 | - | Who was the original Star Guardian? | Lux
+3 | 2 | - | Who was the original member of the Omega Squad? | Teemo
+3 | 2 | - | Who wears an earring on his left ear? | Ziggs
+3 | 2 | - | Who wears the "Seven Lenses of Insight"? | Master Yi | masteryi
+3 | 2 | - | Who wields a pair of kamas? | Akali
+3 | 2 | - | Who woke up Skarner? | Zilean
+3 | 2 | - | Who yells his own name after standing in a bush for a period of time (reference to Pokemon)? | Skarner
+3 | 2 | - | Who's a member of the Gumiho species? | Ahri
+3 | 2 | - | Whose actions caused Riven to decide to wander in self-imposed exile? | Singed
+3 | 2 | - | Whose age is about 4 human years? | Gnar
+3 | 2 | - | Whose champion design is based on an axolotl? | Fizz
+3 | 2 | - | Whose champion design is based on the samurai? | Yasuo
+3 | 2 | - | Whose dance is a reference to Beyonce's Single Ladies dance? | Akali
+3 | 2 | - | Whose dance is a reference to Gangnam Style by Psy? | Twisted Fate
+3 | 2 | - | Whose dance is a reference to Kirby's victory dance? | Urgot
+3 | 2 | - | Whose dance is a reference to Snoop Dogg's "Drop it like it's hot" dance? | Nasus
+3 | 2 | - | Whose dance is a reference to an airflare? | Kennen
+3 | 2 | - | Whose dance is a reference to the "Macarena"? | Blitzcrank
+3 | 2 | - | Whose dance is based on the Michigan J. Frog dance? | Kog'maw | kogmaw | Kog maw
+3 | 2 | - | Whose dance is based on the dance from Run Devil Run by Girl's Generation (SNSD)? | Ahri
+3 | 2 | - | Whose dance is from Beauty and the Beast? | Galio
+3 | 2 | - | Whose dance is the "Dougie"? | Vi
+3 | 2 | - | Whose dance speed increases with their movement speed? | Master Yi | masteryi
+3 | 2 | - | Whose family motto is "For family, I will give."? | Camille
+3 | 2 | - | Whose hidden passive gives nearby lower-leveled allied champions 5 experience every 5 seconds? | Nidalee
+3 | 2 | - | Whose joke is a reference to My Little Pony? | Hecarim
+3 | 2 | - | Whose league page lists them as friends with themselves? | Draven
+3 | 2 | - | Whose lore tells the story of Magga, a famous actress? | Kindred
+3 | 2 | - | Whose name backwards references his weapon? | Gnar
+3 | 2 | - | Whose name comes from the Greek word for "Knowledge"? | Nasus
+3 | 2 | - | Whose name is a marine species of cephalopod? | Nautilus
+3 | 2 | - | Whose name is a pun on the word Mastery? | Master Yi | masteryi
+3 | 2 | - | Whose name is an anagram of "Chaos"? | Shaco
+3 | 2 | - | Whose name is an anagram of "I am Oak"? | Maokai
+3 | 2 | - | Whose name is derived from a Latin word meaning "snow white"? | Anivia
+3 | 2 | - | Whose name is the medical term for a joint deformity causing bowleggedness? | Varus
+3 | 2 | - | Whose name means "Golden Sun" in Latin? | Aurelion Sol | aurelionsol
+3 | 2 | - | Whose name means "Hunter" in Old English? | Draven
+3 | 2 | - | Whose name means "Nose" in Latin? | Nasus
+3 | 2 | - | Whose name means "The White" in French? | LeBlanc
+3 | 2 | - | Whose name means "Wave" in Japanese? | Nami
+3 | 2 | - | Whose name means "sailor" in Greek? | Nautilus
+3 | 2 | - | Whose name means "with force" in Latin? | Vi
+3 | 2 | - | Whose name means the "Murder Emperor" in German? | Mordekaiser
+3 | 2 | - | Whose name translates to "Beast" in Norwegian? | Udyr
+3 | 2 | - | Whose occupation is "Goat Herder"? | Braum
+3 | 2 | - | Whose occupation is "Knowledge Seeker"? | Vel'koz | vel koz | velkoz
+3 | 2 | - | Whose occupation is "Night Hunter"? | Vayne
+3 | 2 | - | Whose occupation is "Undead Hunter"? | Lucian
+3 | 2 | - | Whose occupation is a cartographer? | Ezreal
+3 | 2 | - | Whose occupation is the "Steward of the Lightshield Dynasty"? | Xin Zhao
+3 | 2 | - | Whose passive causes Zyra to grow larger? | Leona
+3 | 2 | - | Whose passive is called "Concussive Blows"? | Braum
+3 | 2 | - | Whose passive is called "Cursed Touch"? | Amumu
+3 | 2 | - | Whose passive is called "Staggering Blow"? | Nautilus
+3 | 2 | - | Whose passive is called "Traveler's Call"? | Bard
+3 | 2 | - | Whose personal warship is called the "Leviathan"? | Swain
+3 | 2 | - | Whose race is "River Demon"? | Tahm Kench | tahmkench
+3 | 2 | - | Whose real name is Elizabeth? | Elise
+3 | 2 | - | Whose real name is Evaine? | LeBlanc
+3 | 2 | - | Whose real name is Kegan Rodhe? | Brand
+3 | 2 | - | Whose shape resembles a Falcon after being in the Temple of the Falcon? | Azir
+3 | 2 | - | Whose species is a scarecrow? | Fiddlesticks
+3 | 2 | - | Whose taunt is "You can't milk those."? | Alistar
+3 | 2 | - | Whose taunt is the "Ali Shuffle"? | Vi
+3 | 2 | - | Whose title is the name of their old ultimate? | Evelynn (Agony's Embrace) | Evelynn
+3 | 2 | - | Whose ult makes the corpses of small champions disappear? | Fizz
+3 | 2 | - | Whose ult was originally named "Finales Funkeln"? | Lux
+3 | 2 | - | Whose ultimate used to be "Omen of Death"? | Yorick
+3 | 2 | - | Whose ultimate used to be called "Hyper-Kinteic Position Reverser"? | Urgot
+3 | 2 | - | Whose warship did Gangplank steal? | Swain
+3 | 2 | - | Whose weapons formerly belonged to someone named Zeonia? | Pantheon
+3 | 2 | - | Winged Hussar Xin Zhao was released to celebrate the server for which country? | Poland
+3 | 2 | - | Yellow Jacket Shen is a reference to Scorpion from which video game series? | Mortal Kombat3 | 2 | - | "Which champion's ultimate is named: Absolute Zero?": | Nunu
+3 | 2 | - | "Which champion's ultimate is named: Abyssal Voyage?": | Tahm Kench | tahmkench
+3 | 2 | - | "Which champion's ultimate is named: Ace in the Hole?": | Caitlyn
+3 | 2 | - | "Which champion's ultimate is named: Aspect of the Cougar?": | Nidalee
+3 | 2 | - | "Which champion's ultimate is named: Assault and Battery?": | Vi
+3 | 2 | - | "Which champion's ultimate is named: Behind Enemy Lines?": | Quinn
+3 | 2 | - | "Which champion's ultimate is named: Blade of the Exile?": | Riven
+3 | 2 | - | "Which champion's ultimate is named: Bullet Time?": | Miss Fortune
+3 | 2 | - | "Which champion's ultimate is named: Buster Shot?": | Tristana
+3 | 2 | - | "Which champion's ultimate is named: Call of the Forge God?": | Ornn
+3 | 2 | - | "Which champion's ultimate is named: Cannon Barrage?": | Gangplank
+3 | 2 | - | "Which champion's ultimate is named: Cataclysm?": | Jarvan
+3 | 2 | - | "Which champion's ultimate is named: Chaaaaaaaarge!!! ?": | Kled
+3 | 2 | - | "Which champion's ultimate is named: Chain of Corruption?": | Varus
+3 | 2 | - | "Which champion's ultimate is named: Chaos Storm?": | Viktor
+3 | 2 | - | "Which champion's ultimate is named: Children of the Grave?": | Mordekaiser
+3 | 2 | - | "Which champion's ultimate is named: Chronobreak?": | Ekko
+3 | 2 | - | "Which champion's ultimate is named: Chronoshift?": | Zilean
+3 | 2 | - | "Which champion's ultimate is named: Chum the Waters?": | Fizz
+3 | 2 | - | "Which champion's ultimate is named: Collateral Damage?": | Graves
+3 | 2 | - | "Which champion's ultimate is named: Command: Shockwave?": | Orianna
+3 | 2 | - | "Which champion's ultimate is named: Cosmic Radiance?": | Taric
+3 | 2 | - | "Which champion's ultimate is named: Crescendo?": | Sona
+3 | 2 | - | "Which champion's ultimate is named: Crescent Sweep?": | Xin Zhao | xinzhao
+3 | 2 | - | "Which champion's ultimate is named: Crowstorm?": | Fiddlesticks
+3 | 2 | - | "Which champion's ultimate is named: Curse of the Sad Mummy?": | Amumu
+3 | 2 | - | "Which champion's ultimate is named: Curtain Call?": | Jhin
+3 | 2 | - | "Which champion's ultimate is named: Cyclone?": | Wukong
+3 | 2 | - | "Which champion's ultimate is named: Daisy!?": | Ivern
+3 | 2 | - | "Which champion's ultimate is named: Death Lotus?": | Katarina
+3 | 2 | - | "Which champion's ultimate is named: Death Mark?": | Zed
+3 | 2 | - | "Which champion's ultimate is named: Demacian Justice?": | Garen
+3 | 2 | - | "Which champion's ultimate is named: Demonic Ascension?": | Swain
+3 | 2 | - | "Which champion's ultimate is named: Depth Charge?": | Nautilus
+3 | 2 | - | "Which champion's ultimate is named: Destiny?": | Twisted Fate
+3 | 2 | - | "Which champion's ultimate is named: Dominus?": | Renekton
+3 | 2 | - | "Which champion's ultimate is named: Dragon's Descent?": | Shyvana
+3 | 2 | - | "Which champion's ultimate is named: Dragon's Rage?": | Lee Sin | leesin
+3 | 2 | - | "Which champion's ultimate is named: Emperor's Divide?": | Azir
+3 | 2 | - | "Which champion's ultimate is named: Enchanted Crystal Arrow?": | Ashe
+3 | 2 | - | "Which champion's ultimate is named: Eulogy of the Isles?": | Yorick
+3 | 2 | - | "Which champion's ultimate is named: Explosive Cask?": | Gragas
+3 | 2 | - | "Which champion's ultimate is named: Fate's Call?": | Kalista
+3 | 2 | - | "Which champion's ultimate is named: Fear Beyond Death?": | Urgot
+3 | 2 | - | "Which champion's ultimate is named: Feast?": | Cho'gath | cho gath | chogath
+3 | 2 | - | "Which champion's ultimate is named: Featherstorm?": | Xayah
+3 | 2 | - | "Which champion's ultimate is named: Final Hour?": | Vayne
+3 | 2 | - | "Which champion's ultimate is named: Final Spark?": | Lux
+3 | 2 | - | "Which champion's ultimate is named: Frozen Tomb?": | Lissandra
+3 | 2 | - | "Which champion's ultimate is named: Fury of the Sands?": | Nasus
+3 | 2 | - | "Which champion's ultimate is named: GNAR!": | Gnar
+3 | 2 | - | "Which champion's ultimate is named: Glacial Fissure?": | Braum
+3 | 2 | - | "Which champion's ultimate is named: Glacial Prison?": | Sejuani
+3 | 2 | - | "Which champion's ultimate is named: Glacial Storm?": | Anivia
+3 | 2 | - | "Which champion's ultimate is named: Grand Challenge?": | Fiora
+3 | 2 | - | "Which champion's ultimate is named: Grand Skyfall?": | Pantheon
+3 | 2 | - | "Which champion's ultimate is named: Grandmaster's Might?": | Jax
+3 | 2 | - | "Which champion's ultimate is named: Hallucinate?": | Shaco
+3 | 2 | - | "Which champion's ultimate is named: Hemoplague?": | Vladimir
+3 | 2 | - | "Which champion's ultimate is named: Hero's Entrance?": | Galio
+3 | 2 | - | "Which champion's ultimate is named: Hextech Ultimatum?": | Camille
+3 | 2 | - | "Which champion's ultimate is named: Highlander?": | Master Yi
+3 | 2 | - | "Which champion's ultimate is named: Impale?": | Skarner
+3 | 2 | - | "Which champion's ultimate is named: Infinite Duress?": | Warwick
+3 | 2 | - | "Which champion's ultimate is named: Insanity Potion?": | Singed
+3 | 2 | - | "Which champion's ultimate is named: Intervention?": | Kayle
+3 | 2 | - | "Which champion's ultimate is named: Keeper's Verdict?": | Poppy
+3 | 2 | - | "Which champion's ultimate is named: Killer Instinct?": | Kai'sa | kaisa | kai sa
+3 | 2 | - | "Which champion's ultimate is named: Lamb's Respite?": | Kindred
+3 | 2 | - | "Which champion's ultimate is named: Last Breath?": | Yasuo
+3 | 2 | - | "Which champion's ultimate is named: Last Caress?": | Evelynn
+3 | 2 | - | "Which champion's ultimate is named: Leap of Faith?": | Illaoi
+3 | 2 | - | "Which champion's ultimate is named: Let's Bounce!": | Zac
+3 | 2 | - | "Which champion's ultimate is named: Life Form Disintegration Ray?": | Vel'koz | vel koz | velkoz
+3 | 2 | - | "Which champion's ultimate is named: Living Artillery?": | Kog'maw | kogmaw | kog maw
+3 | 2 | - | "Which champion's ultimate is named: Lunar Rush?": | Diana
+3 | 2 | - | "Which champion's ultimate is named: Mantra?": | Karma
+3 | 2 | - | "Which champion's ultimate is named: Massacre?": | Aatrox
+3 | 2 | - | "Which champion's ultimate is named: Mega Inferno Bomb?": | Ziggs
+3 | 2 | - | "Which champion's ultimate is named: Mercury Cannon/Mercury Hammer?": | Jayce
+3 | 2 | - | "Which champion's ultimate is named: Mimic?": | Leblanc
+3 | 2 | - | "Which champion's ultimate is named: Missile Barrage?": | Corki
+3 | 2 | - | "Which champion's ultimate is named: Monsoon?": | Janna
+3 | 2 | - | "Which champion's ultimate is named: Nether Grasp?": | Malzahar
+3 | 2 | - | "Which champion's ultimate is named: Noxian Guillotine?": | Darius
+3 | 2 | - | "Which champion's ultimate is named: Noxious Trap?": | Teemo
+3 | 2 | - | "Which champion's ultimate is named: On The Hunt?": | Sivir
+3 | 2 | - | "Which champion's ultimate is named: Onslaught of Shadows?": | Hecarim
+3 | 2 | - | "Which champion's ultimate is named: Paranoia?": | Nocturne
+3 | 2 | - | "Which champion's ultimate is named: Petrifying Gaze?": | Cassiopeia
+3 | 2 | - | "Which champion's ultimate is named: Pheonix Stance?": | Udyr
+3 | 2 | - | "Which champion's ultimate is named: Portal Jump?": | Zoe
+3 | 2 | - | "Which champion's ultimate is named: Primordial Burst?": | Veigar
+3 | 2 | - | "Which champion's ultimate is named: Pyroclasm?": | Brand
+3 | 2 | - | "Which champion's ultimate is named: Ragnarok?": | Olaf
+3 | 2 | - | "Which champion's ultimate is named: Rat-Ta-Tat-Tat?": | Twitch
+3 | 2 | - | "Which champion's ultimate is named: Realm Warp?": | Ryze
+3 | 2 | - | "Which champion's ultimate is named: Requiem?": | Karthus
+3 | 2 | - | "Which champion's ultimate is named: Riftwalk?": | Kassadin
+3 | 2 | - | "Which champion's ultimate is named: Rite of the Arcane?": | Xerath
+3 | 2 | - | "Which champion's ultimate is named: Sadism?": | Dr. Mundo | dr mundo | mundo | drmundo
+3 | 2 | - | "Which champion's ultimate is named: Shadow Assault?": | Talon
+3 | 2 | - | "Which champion's ultimate is named: Shadow Dance?": | Akali
+3 | 2 | - | "Which champion's ultimate is named: Slicing Maelstrom?": | Kennen
+3 | 2 | - | "Which champion's ultimate is named: Solar Flare?": | Leona
+3 | 2 | - | "Which champion's ultimate is named: Soul Shackles?": | Morgana
+3 | 2 | - | "Which champion's ultimate is named: Spider Form/Human Form?": | Elise
+3 | 2 | - | "Which champion's ultimate is named: Spirit Rush?": | Ahri
+3 | 2 | - | "Which champion's ultimate is named: Stand United?": | Shen
+3 | 2 | - | "Which champion's ultimate is named: Static Field?": | Blitzcrank
+3 | 2 | - | "Which champion's ultimate is named: Stranglethorns?": | Zyra
+3 | 2 | - | "Which champion's ultimate is named: Subjugate?": | Trundle
+3 | 2 | - | "Which champion's ultimate is named: Summon: Tibbers?": | Annie
+3 | 2 | - | "Which champion's ultimate is named: Super Mega Death Rocket!": | Jinx
+3 | 2 | - | "Which champion's ultimate is named: Tempered Fate?": | Bard
+3 | 2 | - | "Which champion's ultimate is named: The Box?": | Thresh
+3 | 2 | - | "Which champion's ultimate is named: The Culling?": | Lucian
+3 | 2 | - | "Which champion's ultimate is named: The Equalizer?": | Rumble
+3 | 2 | - | "Which champion's ultimate is named: The Quickness?": | Rakan
+3 | 2 | - | "Which champion's ultimate is named: Thrill of the Hunt?": | Rengar
+3 | 2 | - | "Which champion's ultimate is named: Thunder Claws?": | Volibear
+3 | 2 | - | "Which champion's ultimate is named: Tidal Wave?": | Nami
+3 | 2 | - | "Which champion's ultimate is named: Tremors?": | Rammus
+3 | 2 | - | "Which champion's ultimate is named: Trueshot Barrage?": | Ezreal
+3 | 2 | - | "Which champion's ultimate is named: UPGRADE!!!": | Heimerdinger
+3 | 2 | - | "Which champion's ultimate is named: Umbral Trespass?": | Kayn
+3 | 2 | - | "Which champion's ultimate is named: Unbreakable Will?": | Alistar
+3 | 2 | - | "Which champion's ultimate is named: Undying Rage?": | Tryndamere
+3 | 2 | - | "Which champion's ultimate is named: Unleashed Power?": | Syndra
+3 | 2 | - | "Which champion's ultimate is named: Unstoppable Force?": | Malphite
+3 | 2 | - | "Which champion's ultimate is named: Unstoppable Onslaught?": | Sion
+3 | 2 | - | "Which champion's ultimate is named: Vanguard's Edge?": | Irelia
+3 | 2 | - | "Which champion's ultimate is named: Vengeful Maelstrom?": | Maokai
+3 | 2 | - | "Which champion's ultimate is named: Voice of Light?": | Aurelion Sol | aurelionsol
+3 | 2 | - | "Which champion's ultimate is named: Void Assault?": | Kha'zix | khazix | kha zix
+3 | 2 | - | "Which champion's ultimate is named: Void Rush?": | Rek'sai | rek sai | reksai
+3 | 2 | - | "Which champion's ultimate is named: Weaver's Wall?": | Taliyah
+3 | 2 | - | "Which champion's ultimate is named: Whirling Death?": | Draven
+3 | 2 | - | "Which champion's ultimate is named: Wild Growth?": | Lulu
+3 | 2 | - | "Which champion's ultimate is named: Wish?": | Soraka
