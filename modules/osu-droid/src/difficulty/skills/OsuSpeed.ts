@@ -56,7 +56,7 @@ export class OsuSpeed extends OsuSkill {
 
         // Cap deltatime to the OD 300 hitwindow.
         // 0.93 is derived from making sure 260bpm OD8 streams aren't nerfed harshly, whilst 0.92 limits the effect of the cap.
-        strainTime /= MathUtils.clamp(strainTime / greatWindowFull / 0.93, 0.92, 1);
+        strainTime /= MathUtils.clamp(speedWindowRatio / 0.93, 0.92, 1);
 
         let speedBonus: number = 1;
         if (strainTime < this.minSpeedBonus) {
