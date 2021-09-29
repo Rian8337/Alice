@@ -59,8 +59,8 @@ export class DroidSpeed extends DroidSkill {
         }
 
         // Cap deltatime to the OD 300 hitwindow.
-        // 0.77 is derived from making sure 260bpm OD7 streams aren't nerfed harshly, whilst 0.95 limits the effect of the cap.
-        strainTime /= MathUtils.clamp(strainTime / greatWindowFull / 0.77, 0.95, 1);
+        // 0.485 is derived from making sure 260 BPM 1/4 OD8 (droid) streams aren't nerfed harshly, whilst 0.92 limits the effect of the cap.
+        strainTime /= MathUtils.clamp(speedWindowRatio / 0.485, 0.92, 1);
 
         let speedBonus: number = 1;
 
