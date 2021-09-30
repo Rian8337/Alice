@@ -7,7 +7,7 @@ import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 export abstract class Skill {
     /**
      * The hitobjects that were processed previously. They can affect the strain values of the following objects.
-     * 
+     *
      * The latest hitobject is at index 0.
      */
     protected readonly previous: DifficultyHitObject[] = [];
@@ -38,7 +38,7 @@ export abstract class Skill {
 
     /**
      * Processes a hitobject.
-     * 
+     *
      * @param current The hitobject to process.
      */
     protected abstract process(current: DifficultyHitObject): void;

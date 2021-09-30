@@ -23,6 +23,6 @@ export class OsuBindCollectionManager extends DatabaseCollectionManager<Database
     constructor(collection: MongoDBCollection<DatabaseOsuBind>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>> new OsuBind().constructor 
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>> new OsuBind().constructor
     }
 }

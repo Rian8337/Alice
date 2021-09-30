@@ -28,7 +28,7 @@ export class Voting extends Manager implements DatabaseVoting {
 
     /**
      * Ends this vote.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async end(): Promise<OperationResult> {

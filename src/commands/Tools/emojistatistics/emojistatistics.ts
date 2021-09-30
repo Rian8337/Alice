@@ -10,7 +10,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
 import { emojistatisticsStrings } from "./emoistatisticsStrings";
 
-export const run: Command["run"] = async (_, interaction) => {    
+export const run: Command["run"] = async (_, interaction) => {
     const stats: EmojiStatistics | null = await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(interaction.guild!);
 
     if (!stats) {

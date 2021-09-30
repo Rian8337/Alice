@@ -38,14 +38,14 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the prototype droid performance points (dpp) information of a Discord user.
-     * 
+     *
      * @param user The user.
      */
     getFromUser(user: User): Promise<PrototypePP | null>;
 
     /**
      * Gets the prototype droid performance points (dpp) information of a Discord user.
-     * 
+     *
      * @param userId The ID of the user.
      */
     getFromUser(userId: Snowflake): Promise<PrototypePP | null>;
@@ -56,7 +56,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the prototype droid performance points (dpp) information of an osu!droid account from its uid.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      */
     getFromUid(uid: number): Promise<PrototypePP | null> {
@@ -65,7 +65,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the prototype droid performance points (dpp) information of an osu!droid account from its username.
-     * 
+     *
      * @param username The username of the osu!droid account.
      */
     getFromUsername(username: string): Promise<PrototypePP | null> {
@@ -74,7 +74,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the dpp rank of a specified dpp value.
-     * 
+     *
      * @param totalPP The total PP.
      */
     async getUserDPPRank(totalPP: number): Promise<number> {
@@ -83,7 +83,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the DPP leaderboard.
-     * 
+     *
      * @returns The leaderboard, mapped by the player's Discord ID.
      */
     async getLeaderboard(): Promise<DiscordCollection<Snowflake, PrototypePP>> {
@@ -100,11 +100,11 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets unscanned players based on the given amount.
-     * 
+     *
      * The data returned will only consist of `discordid` and `pptotal`. You should
      * then retrieve player data using {@link UserBindCollectionManager#getFromUser}
      * to perform recalculation.
-     * 
+     *
      * @param amount The amount of unscanned players to retrieve.
      * @returns The players.
      */

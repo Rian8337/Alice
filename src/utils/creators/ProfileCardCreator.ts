@@ -440,7 +440,7 @@ export class ProfileCardCreator {
 
     /**
      * Gets the weighted accuracy of a player.
-     * 
+     *
      * @param ppEntries The droid performance points (dpp) entries of the player.
      * @returns The player's weighted accuracy.
      */

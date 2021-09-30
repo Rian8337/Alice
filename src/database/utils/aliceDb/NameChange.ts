@@ -33,7 +33,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Accepts the name change request if this account requests a name change.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async accept(): Promise<OperationResult> {
@@ -80,7 +80,7 @@ export class NameChange extends Manager implements DatabaseNameChange {
 
     /**
      * Accepts the name change request if this account requests a name change.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async deny(): Promise<OperationResult> {

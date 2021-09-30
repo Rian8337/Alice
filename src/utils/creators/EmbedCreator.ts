@@ -28,7 +28,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates a normal embed.
-     * 
+     *
      * @param embedOptions Options to override default message embed behavior.
      */
     static createNormalEmbed(embedOptions: {
@@ -77,7 +77,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates a beatmap embed.
-     * 
+     *
      * @param beatmapInfo The beatmap to create the beatmap embed from.
      * @param calcParams Calculation parameters to be used for beatmap statistics.
      */
@@ -104,7 +104,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed for displaying DPP list.
-     * 
+     *
      * @param interaction The interaction that triggered the embed creation.
      * @param bindInfo The bind information of the player.
      * @param ppRank The DPP rank of the player.
@@ -130,7 +130,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed for input detector.
-     * 
+     *
      * @param interaction The interaction that triggered the input detector.
      * @param title The title of the embed.
      * @param description The description of the embed.
@@ -149,7 +149,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed with beatmap calculation result.
-     * 
+     *
      * @param calculationParams The parameters of the calculation.
      * @param calculationResult The calculation result.
      * @param graphColor The color of the strain graph.
@@ -205,7 +205,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates a recent play embed.
-     * 
+     *
      * @param score The score to create recent play from.
      * @param playerAvatarURL The avatar URL of the player.
      * @param embedColor The color of the embed.
@@ -320,7 +320,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates a challenge embed.
-     * 
+     *
      * @param challenge The challenge to create the challenge embed for.
      * @returns The options for the embed.
      */
@@ -372,7 +372,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates a clan auction embed.
-     * 
+     *
      * @param auction The auction to create the embed for.
      * @param coinEmoji Alice coin emoji.
      * @returns The embed.
@@ -404,7 +404,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed for report broadcast in a guild.
-     * 
+     *
      * @param guild The guild.
      * @returns The embed.
      */
@@ -424,7 +424,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed summarizing a tournament match.
-     * 
+     *
      * @param match The match.
      * @returns The embed.
      */
@@ -442,7 +442,7 @@ export abstract class EmbedCreator {
 
     /**
      * Creates an embed for a map share submission.
-     * 
+     *
      * @param submission The submission.
      * @returns The options for the embed.
      */
@@ -484,7 +484,7 @@ export abstract class EmbedCreator {
 
     /**
      * Gets an embed representing a music queue.
-     * 
+     *
      * @param queue The music queue.
      * @returns The embed.
      */

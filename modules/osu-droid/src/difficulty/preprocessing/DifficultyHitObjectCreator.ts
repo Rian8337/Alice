@@ -149,7 +149,7 @@ export class DifficultyHitObjectCreator {
 
     /**
      * Gets the scaling factor of a radius.
-     * 
+     *
      * @param mode The mode to get the scaling factor from.
      * @param radius The radiust to get the scaling factor from.
      */

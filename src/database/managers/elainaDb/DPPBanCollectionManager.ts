@@ -28,7 +28,7 @@ export class DPPBanCollectionManager extends DatabaseCollectionManager<DatabaseD
 
     /**
      * Checks whether a uid is dpp-banned.
-     * 
+     *
      * @param uid The uid to check.
      * @returns Whether the uid is dpp-banned.
      */

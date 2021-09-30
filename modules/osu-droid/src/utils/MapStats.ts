@@ -12,7 +12,7 @@ import { ModReallyEasy } from '../mods/ModReallyEasy';
 import { ModUtil } from './ModUtil';
 
 /**
- * Holds general beatmap statistics for further modifications. 
+ * Holds general beatmap statistics for further modifications.
  */
 export class MapStats {
     /**
@@ -282,7 +282,7 @@ export class MapStats {
 
     /**
      * Utility function to apply speed and flat multipliers to stats where speed changes apply for AR.
-     * 
+     *
      * @param baseAR The base AR value.
      * @param speedMultiplier The speed multiplier to calculate.
      * @param statisticsMultiplier The statistics multiplier to calculate from map-changing nonspeed-changing mods.
@@ -307,7 +307,7 @@ export class MapStats {
 
     /**
      * Utility function to apply speed and flat multipliers to stats where speed changes apply for OD.
-     * 
+     *
      * @param baseOD The base OD value.
      * @param speedMultiplier The speed multiplier to calculate.
      * @param statisticsMultiplier The statistics multiplier to calculate from map-changing nonspeed-changing mods.

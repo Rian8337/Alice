@@ -180,7 +180,7 @@ export class SliderPath {
     /**
      * Computes the position on the slider at a given progress that ranges from 0 (beginning of the path)
      * to 1 (end of the path).
-     * 
+     *
      * @param progress Ranges from 0 (beginning of the path) to 1 (end of the path).
      */
     positionAt(progress: number): Vector2 {

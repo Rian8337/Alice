@@ -10,7 +10,7 @@ import { leaderboardStrings } from "../leaderboardStrings";
 
 /**
  * Retrieves the global leaderboard.
- * 
+ *
  * @param page The page to retrieve.
  * @returns The scores at that page.
  */

@@ -21,7 +21,7 @@ export abstract class ProfileManager extends Manager {
 
     /**
      * Gets the statistics of a player.
-     * 
+     *
      * @param uid The uid of the player.
      * @param player The player instance, if available (this will save an API request towards the osu!droid server).
      * @param bindInfo The bind information, if available (this will save a request towards bot database).
@@ -57,7 +57,7 @@ export abstract class ProfileManager extends Manager {
 
     /**
      * Gets a link to a player's profile.
-     * 
+     *
      * @param uid The uid of the player.
      * @returns The link to the player's profile.
      */
@@ -68,7 +68,7 @@ export abstract class ProfileManager extends Manager {
 
     /**
      * Gets profile statistics template of a player for badges.
-     * 
+     *
      * @param uid The uid of the player.
      * @param bindInfo The bind information of the player.
      * @returns A profile statistics template.

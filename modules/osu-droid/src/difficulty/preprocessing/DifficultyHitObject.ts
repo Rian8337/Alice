@@ -47,7 +47,7 @@ export class DifficultyHitObject {
 
     /**
      * Angle the player has to take to hit this hitobject.
-     * 
+     *
      * Calculated as the angle between the circles (current-2, current-1, current).
      */
     angle: number = 0;

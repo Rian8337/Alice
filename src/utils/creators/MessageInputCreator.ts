@@ -7,7 +7,7 @@ import { MessageCreator } from "./MessageCreator";
 export abstract class MessageInputCreator {
     /**
      * Creates an input detector.
-     * 
+     *
      * @param interaction The interaction that triggered the input detector.
      * @param options Options for the message notifying that an input detector is active.
      * @param choices Messages that are accepted by the detector. Use an empty array to accept any kind of message.

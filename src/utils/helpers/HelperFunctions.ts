@@ -7,7 +7,7 @@ export abstract class HelperFunctions {
     /**
      * Pauses the execution of a function for
      * the specified duration.
-     * 
+     *
      * @param duration The duration to pause for, in seconds.
      */
     static sleep(duration: number): Promise<void> {
@@ -16,7 +16,7 @@ export abstract class HelperFunctions {
 
     /**
      * Converts a CSS RGB string to hex code.
-     * 
+     *
      * @param rgb The CSS RGB string.
      * @returns The hex code from the RGB string.
      */
@@ -32,7 +32,7 @@ export abstract class HelperFunctions {
 
     /**
      * Gets the execution time of a function.
-     * 
+     *
      * @param fn The function to execute.
      * @param args The arguments for the function.
      * @returns The execution time of the function, in milliseconds.

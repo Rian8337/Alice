@@ -52,7 +52,7 @@ export interface DatabasePlayerInfo extends BaseDocument {
     /**
      * The epoch time at which daily coins claim will be reset,
      * in seconds.
-     * 
+     *
      * This is only available under user ID `386742340968120321`.
      */
     dailyreset?: number;

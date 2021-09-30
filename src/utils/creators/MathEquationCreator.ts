@@ -8,7 +8,7 @@ import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 export class MathEquationCreator {
     /**
      * Creates a math equation.
-     * 
+     *
      * @param level The difficulty of the equation.
      * @param operatorAmount The amount of operators in the equation.
      * @returns The created equation along with its answer.
@@ -115,7 +115,7 @@ export class MathEquationCreator {
 
     /**
      * Generates a number based on given operator.
-     * 
+     *
      * @param level The difficulty of the equation.
      * @param operator The operator to generate the number for.
      * @returns The generated number.
@@ -135,7 +135,7 @@ export class MathEquationCreator {
 
     /**
      * Generates a random number.
-     * 
+     *
      * @param min The minimum threshold of the number.
      * @param max The maximum threshold of the number.
      * @returns The generated number.
@@ -148,7 +148,7 @@ export class MathEquationCreator {
 
     /**
      * Checks if a number is a prime number.
-     * 
+     *
      * @param num The number to check.
      * @returns Whether the number is a prime number.
      */
@@ -166,7 +166,7 @@ export class MathEquationCreator {
 
     /**
      * Calculates the factorial value of a number.
-     * 
+     *
      * @param num The number to calculate.
      * @returns The calculated factrial value.
      */

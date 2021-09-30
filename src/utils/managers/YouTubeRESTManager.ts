@@ -11,7 +11,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
 
     /**
      * Gets the information of a YouTube video.
-     * 
+     *
      * @param id The ID of the video.
      * @returns The information of the video, `null` if not found.
      */
@@ -48,7 +48,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
 
     /**
      * Searches for videos in YouTube.
-     * 
+     *
      * @param query The query to search for.
      */
     static async searchVideos(query: string): Promise<YouTubeVideoInformation[]> {

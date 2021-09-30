@@ -31,7 +31,7 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Gets a user's lounge lock information.
-     * 
+     *
      * @param userId The ID of the user.
      * @returns The lock information, `null` if not found.
      */
@@ -41,7 +41,7 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Inserts a new lounge lock.
-     * 
+     *
      * @param userId The ID of the user to lock.
      * @param duration The duration of the lock, in seconds.
      * @param reason Reason for locking the user.

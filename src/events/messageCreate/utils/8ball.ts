@@ -10,7 +10,7 @@ import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
 
 /**
  * Gets the response type to a message.
- * 
+ *
  * @param message The message to get the response type of.
  * @param filter The filter for 8ball.
  * @returns The response type.

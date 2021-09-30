@@ -21,7 +21,7 @@ export class MapStars {
 
     /**
      * Calculates the star rating of a beatmap.
-     * 
+     *
      * The beatmap will be automatically parsed using parser utilities.
      */
     calculate(params: {

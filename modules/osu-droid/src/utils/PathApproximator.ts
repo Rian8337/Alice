@@ -16,10 +16,10 @@ export class PathApproximator {
 
     /**
      * Approximates a bezier slider's path.
-     * 
+     *
      * Creates a piecewise-linear approximation of a bezier curve by adaptively repeatedly subdividing
      * the control points until their approximation error vanishes below a given threshold.
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      */
     approximateBezier(controlPoints: Vector2[]): Vector2[] {
@@ -96,9 +96,9 @@ export class PathApproximator {
 
     /**
      * Approximates a catmull slider's path.
-     * 
+     *
      * Creates a piecewise-linear approximation of a Catmull-Rom spline.
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      */
     approximateCatmull(controlPoints: Vector2[]): Vector2[] {
@@ -121,9 +121,9 @@ export class PathApproximator {
 
     /**
      * Approximates a slider's circular arc.
-     * 
+     *
      * Creates a piecewise-linear approximation of a circular arc curve.
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      */
     approximateCircularArc(controlPoints: Vector2[]): Vector2[] {
@@ -202,7 +202,7 @@ export class PathApproximator {
      *
      * Creates a piecewise-linear approximation of a linear curve.
      * Basically, returns the input.
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      */
     approximateLinear(controlPoints: Vector2[]): Vector2[] {
@@ -211,13 +211,13 @@ export class PathApproximator {
 
     /**
      * Checks if a bezier slider is flat enough to be approximated.
-     * 
+     *
      * Make sure the 2nd order derivative (approximated using finite elements) is within tolerable bounds.
-     * 
+     *
      * NOTE: The 2nd order derivative of a 2D curve represents its curvature, so intuitively this function
      * checks (as the name suggests) whether our approximation is _locally_ "flat". More curvy parts
      * need to have a denser approximation to be more "flat".
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      */
     private bezierIsFlatEnough(controlPoints: Vector2[]): boolean {
@@ -238,10 +238,10 @@ export class PathApproximator {
 
     /**
      * Approximates a bezier slider's path.
-     * 
+     *
      * This uses {@link https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm De Casteljau's algorithm} to obtain an optimal
      * piecewise-linear approximation of the bezier curve with the same amount of points as there are control points.
-     * 
+     *
      * @param controlPoints The control points describing the bezier curve to be approximated.
      * @param output The points representing the resulting piecewise-linear approximation.
      * @param subdivisionBuffer1 The first buffer containing the current subdivision state.
@@ -271,7 +271,7 @@ export class PathApproximator {
      * Subdivides `n` control points representing a bezier curve into 2 sets of `n` control points, each
      * describing a bezier curve equivalent to a half of the original curve. Effectively this splits
      * the original curve into 2 curves which result in the original curve when pieced back together.
-     * 
+     *
      * @param controlPoints The anchor points of the slider.
      * @param l Parts of the slider for approximation.
      * @param r Parts of the slider for approximation.
@@ -297,7 +297,7 @@ export class PathApproximator {
 
     /**
      * Finds a point on the spline at the position of a parameter.
-     * 
+     *
      * @param vec1 The first vector.
      * @param vec2 The second vector.
      * @param vec3 The third vector.

@@ -177,7 +177,7 @@ export class OsuStarRating extends StarRating {
 
     /**
      * Calculates the base performance value of a difficulty rating.
-     * 
+     *
      * @param rating The difficulty rating.
      */
     private basePerformanceValue(rating: number): number {
@@ -186,7 +186,7 @@ export class OsuStarRating extends StarRating {
 
     /**
      * Calculates the star rating value of a difficulty.
-     * 
+     *
      * @param difficulty The difficulty to calculate.
      */
     private starValue(difficulty: number): number {

@@ -11,7 +11,7 @@ import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalc
 export abstract class BeatmapDifficultyHelper {
     /**
      * Gets calculation parameters from a user's message.
-     * 
+     *
      * @param message The user's message.
      * @returns The calculation parameters from the user's message.
      */
@@ -78,7 +78,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Gets calculation parameters from a score.
-     * 
+     *
      * @param score The score.
      * @param useReplay Whether to use replay in the calculation. Defaults to `true`.
      * @returns Calculation parameters of the score.
@@ -107,7 +107,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the difficulty and performance value of a score.
-     * 
+     *
      * @param score The score.
      * @param useReplay Whether to use replay in the calculation. Defaults to `true`.
      * @param calcParams Calculation parameters to override the score's default calculation parameters.
@@ -122,7 +122,7 @@ export abstract class BeatmapDifficultyHelper {
 
         if (!score.replay && useReplay) {
             await score.downloadReplay();
-        }   
+        }
 
         calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
@@ -138,7 +138,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the difficulty and performance value of a beatmap.
-     * 
+     *
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @param replay The replay to use in calculation, used for calculating a replay's performance.
@@ -165,7 +165,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the difficulty of the beatmap being played in a score.
-     * 
+     *
      * @param score The score to calculate.
      * @returns The calculation result.
      */
@@ -184,7 +184,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the difficulty of a beatmap.
-     * 
+     *
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
@@ -201,7 +201,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the difficulty of a beatmap.
-     * 
+     *
      * @param beatmap The beatmap to calculate.
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
@@ -224,7 +224,7 @@ export abstract class BeatmapDifficultyHelper {
 
     /**
      * Calculates the performance value of a beatmap.
-     * 
+     *
      * @param beatmap The beatmap.
      * @param calculationParams Calculation parameters.
      * @param replay The replay of the score in the beatmap, if available. This will be used to analyze if the score uses 3 finger abuse.

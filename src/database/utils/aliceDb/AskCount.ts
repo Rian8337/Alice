@@ -23,7 +23,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
 
     /**
      * Increase the amount of times this user has asked the bot.
-     * 
+     *
      * @param value The value to increase.
      * @returns An object containing information about the operation.
      */
@@ -38,7 +38,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
 
     /**
      * Sets the amount of times this user has asked the bot.
-     * 
+     *
      * @param value The value to increase.
      * @returns An object containing information about the operation.
      */

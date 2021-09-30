@@ -4,7 +4,7 @@
 export abstract class Utils {
     /**
      * Returns a random element of an array.
-     * 
+     *
      * @param array The array to get the element from.
      */
     static getRandomArrayElement<T>(array: T[]): T {
@@ -13,7 +13,7 @@ export abstract class Utils {
 
     /**
      * Deep copies an instance.
-     * 
+     *
      * @param instance The instance to deep copy.
      */
     static deepCopy<T>(instance: T): T {
@@ -27,7 +27,7 @@ export abstract class Utils {
 
     /**
      * Creates an array with specific length that's prefilled with an initial value.
-     * 
+     *
      * @param length The length of the array.
      * @param initialValue The initial value of each array value.
      */

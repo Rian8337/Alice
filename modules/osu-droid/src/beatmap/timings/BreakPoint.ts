@@ -40,7 +40,7 @@
 
     /**
      * Whether this break period contains a specified time.
-     * 
+     *
      * @param time The time to check in milliseconds.
      * @returns Whether the time falls within this break period.
      */

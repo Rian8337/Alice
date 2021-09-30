@@ -8,7 +8,7 @@ import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const allPlayers: Collection<number, PlayerInfo> =   
+    const allPlayers: Collection<number, PlayerInfo> =
         await DatabaseManager.aliceDb.collections.playerInfo.get(
             "uid",
             {},

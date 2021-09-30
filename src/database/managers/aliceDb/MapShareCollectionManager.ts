@@ -35,7 +35,7 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets map share submissions that have the specified status.
-     * 
+     *
      * @param status The status.
      * @returns The map share submissions, mapped by beatmap ID.
      */
@@ -45,7 +45,7 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets a map share submission from its beatmap ID.
-     * 
+     *
      * @param id The beatmap ID that is used in the submission.
      * @returns The submission, `null` if not found.
      */

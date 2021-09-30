@@ -26,7 +26,7 @@ export class StarRatingCalculationParameters {
 
     /**
      * Applies a beatmap to alter this parameter.
-     * 
+     *
      * @param beatmap The beatmap.
      */
     applyFromBeatmap(beatmap: MapInfo): void {

@@ -36,7 +36,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the dpp rank of a specified dpp value.
-     * 
+     *
      * @param totalPP The total PP.
      */
     async getUserDPPRank(totalPP: number): Promise<number> {
@@ -45,7 +45,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets unscanned players based on the given amount.
-     * 
+     *
      * @param amount The amount of unscanned players to retrieve.
      * @returns The players.
      */
@@ -59,7 +59,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets unscanned players based on the given amount.
-     * 
+     *
      * @param amount The amount of unscanned players to retrieve.
      * @returns The players.
      */
@@ -73,14 +73,14 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the bind information of a Discord user.
-     * 
+     *
      * @param user The user.
      */
     getFromUser(user: User): Promise<UserBind | null>;
 
     /**
      * Gets the bind information of a Discord user.
-     * 
+     *
      * @param userId The ID of the user.
      */
     getFromUser(userId: Snowflake): Promise<UserBind | null>;
@@ -91,7 +91,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the bind information of an osu!droid account from its uid.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      */
     getFromUid(uid: number): Promise<UserBind | null> {
@@ -100,7 +100,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the bind information of an osu!droid account from its username.
-     * 
+     *
      * @param username The username of the osu!droid account.
      */
     getFromUsername(username: string): Promise<UserBind | null> {
@@ -109,7 +109,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the DPP leaderboard.
-     * 
+     *
      * @param clan The clan to get the leaderboard for.
      */
     async getDPPLeaderboard(clan?: string): Promise<DiscordCollection<string, UserBind>> {
