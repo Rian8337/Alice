@@ -15,7 +15,7 @@ import { Subcommand } from "@alice-interfaces/core/Subcommand";
 
 /**
  * Converts days to milliseconds.
- *
+ * 
  * @param days The days to convert.
  * @returns The days converted in milliseconds.
  */

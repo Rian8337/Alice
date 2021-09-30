@@ -62,7 +62,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Disables an event utility in a channel.
-     *
+     * 
      * @param channel The channel.
      * @param event The name of the event.
      * @param utility The name of the event utility.
@@ -90,7 +90,7 @@ export abstract class CommandUtilManager extends Manager {
 
             return DatabaseManager.aliceDb.collections.guildSettings.update(
                 { id: channel.guildId },
-                {
+                { 
                     $set: {
                         channelSettings: [...channelSettings.values()]
                     }
@@ -104,7 +104,7 @@ export abstract class CommandUtilManager extends Manager {
 
             const channelSettings: Collection<Snowflake, GuildChannelSettings> = guildSettings?.channelSettings ?? new Collection();
 
-            const channelSetting: GuildChannelSettings = channelSettings.get(channel.id) ??
+            const channelSetting: GuildChannelSettings = channelSettings.get(channel.id) ?? 
                 { id: channel.id, disabledCommands: [], disabledEventUtils: [] };
 
             channelSetting.disabledEventUtils.push({
@@ -116,7 +116,7 @@ export abstract class CommandUtilManager extends Manager {
 
             return DatabaseManager.aliceDb.collections.guildSettings.update(
                 { id: channel.guildId },
-                {
+                { 
                     $set: {
                         channelSettings: [...channelSettings.values()]
                     },
@@ -132,7 +132,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Disables an event utility in a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param event The name of the event.
      * @param utility The name of the event utility.
@@ -169,7 +169,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Disables an event utility globally.
-     *
+     * 
      * @param event The name of the event.
      * @param utility The name of the event utility.
      */
@@ -183,7 +183,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Enables an event utility in a channel.
-     *
+     * 
      * @param channel The channel.
      * @param event The name of the event.
      * @param utility The name of the event utility.
@@ -216,7 +216,7 @@ export abstract class CommandUtilManager extends Manager {
 
         return DatabaseManager.aliceDb.collections.guildSettings.update(
             { id: channel.guildId },
-            {
+            { 
                 $set: {
                     channelSettings: [...channelSettings.values()]
                 }
@@ -226,7 +226,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Enables an event utility in a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param event The name of the event.
      * @param utility The name of the event utility.
@@ -261,7 +261,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Enables an event utility globally.
-     *
+     * 
      * @param event The name of the event.
      * @param utility The name of the event utility.
      */
@@ -277,7 +277,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Sets a command's cooldown in a channel.
-     *
+     * 
      * @param channel The channel.
      * @param commandName The name of the command.
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
@@ -347,7 +347,7 @@ export abstract class CommandUtilManager extends Manager {
 
             return DatabaseManager.aliceDb.collections.guildSettings.update(
                 { id: channel.guildId },
-                {
+                { 
                     $set: {
                         channelSettings: [...channelSettings.values()]
                     },
@@ -363,7 +363,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Sets a command's cooldown in a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param commandName The name of the command.
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
@@ -405,7 +405,7 @@ export abstract class CommandUtilManager extends Manager {
 
     /**
      * Sets a command's cooldown globally.
-     *
+     * 
      * @param commandName The name of the command.
      * @param cooldown The cooldown to set, ranging from 5 to 3600 seconds. Use 0 to enable the command and -1 to disable the command.
      */

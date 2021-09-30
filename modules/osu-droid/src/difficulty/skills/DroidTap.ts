@@ -50,7 +50,7 @@ export class DroidTap extends DroidSkill {
             ),
             // Use a separate strain for singles to not complete nuke boring 1-2 maps.
             this.singleStrain
-        );
+        ); 
 
         return strain;
     }

@@ -119,7 +119,7 @@ export class ThreeFingerChecker {
 
     /**
      * The strain threshold to start detecting for 3-fingered section.
-     *
+     * 
      * Increasing this number will result in less sections being flagged.
      */
     private readonly strainThreshold: number = 30;
@@ -127,7 +127,7 @@ export class ThreeFingerChecker {
     /**
      * The distance threshold between cursors to assume that two cursors are
      * actually pressed with 1 finger in osu!pixels.
-     *
+     * 
      * This is used to prevent cases where a player would lift their finger
      * too fast to the point where the 4th cursor instance or beyond is recorded
      * as 1st, 2nd, or 3rd cursor instance.
@@ -153,7 +153,7 @@ export class ThreeFingerChecker {
 
     /**
      * The ratio threshold between non-3 finger cursors and 3-finger cursors.
-     *
+     * 
      * Increasing this number will increase detection accuracy, however
      * it also increases the chance of falsely flagged plays.
      */
@@ -161,9 +161,9 @@ export class ThreeFingerChecker {
 
     /**
      * The maximum delta time allowed between two beatmap sections.
-     *
+     * 
      * Increasing this number decreases the amount of beatmap sections in general.
-     *
+     * 
      * Note that this value does not account for the speed multiplier of
      * the play, similar to the way replay object data is stored.
      */
@@ -171,7 +171,7 @@ export class ThreeFingerChecker {
 
     /**
      * The minimum object count required to make a beatmap section.
-     *
+     * 
      * Increasing this number decreases the amount of beatmap sections.
      */
     private readonly minSectionObjectCount: number = 5;
@@ -183,7 +183,7 @@ export class ThreeFingerChecker {
 
     /**
      * This threshold is used to filter out accidental taps.
-     *
+     * 
      * Increasing this number makes the filtration more sensitive, however it
      * will also increase the chance of 3-fingered plays getting out from
      * being flagged.
@@ -197,7 +197,7 @@ export class ThreeFingerChecker {
 
     /**
      * A reprocessed break points to match right on object time.
-     *
+     * 
      * This is used to increase detection accuracy since break points do not start right at the
      * start of the hitobject before it and do not end right at the first hitobject after it.
      */
@@ -231,10 +231,10 @@ export class ThreeFingerChecker {
 
     /**
      * Checks if the given beatmap is 3-fingered and also returns the final penalty.
-     *
+     * 
      * The beatmap will be separated into sections and each section will be determined
      * whether or not it is dragged.
-     *
+     * 
      * After that, each section will be assigned a nerf factor based on whether or not
      * the section is 3-fingered. These nerf factors will be summed up into a final
      * nerf factor, taking beatmap difficulty into account.
@@ -265,7 +265,7 @@ export class ThreeFingerChecker {
 
     /**
      * Generates a new set of "accurate break points".
-     *
+     * 
      * This is done to increase detection accuracy since break points do not start right at the
      * start of the hitobject before it and do not end right at the first hitobject after it.
      */
@@ -321,7 +321,7 @@ export class ThreeFingerChecker {
 
     /**
      * Filters the original cursor instances, returning only those with `movementType.DOWN` movement ID.
-     *
+     * 
      * This also filters cursors that are in break period or happen before start/after end of the beatmap.
      */
     private filterCursorInstances(): void {
@@ -443,9 +443,9 @@ export class ThreeFingerChecker {
     
     /**
      * Checks if a section is dragged and returns the index of the drag finger.
-     *
+     * 
      * If the section is not dragged, -1 will be returned.
-     *
+     * 
      * @param section The section to check.
      */
     private checkDrag(section: BeatmapSection): number {
@@ -488,7 +488,7 @@ export class ThreeFingerChecker {
             lastObjectMaxHitTime += this.hitWindow.hitWindowFor50(isPrecise);
         }
 
-        // Since there may be more than 1 cursor instance index,
+        // Since there may be more than 1 cursor instance index, 
         // we check which cursor instance follows hitobjects all over.
         const cursorIndexes: number[] = [];
         for (let i = 0; i < this.data.cursorMovement.length; ++i) {
@@ -520,7 +520,7 @@ export class ThreeFingerChecker {
 
     /**
      * Finds the drag index of the section.
-     *
+     * 
      * @param sectionObjects The objects in the section.
      * @param sectionReplayObjectData The hitobject data of all objects in the section.
      * @param cursorIndexes The indexes of the cursor instance that has at least an occurrence in the section.
@@ -598,7 +598,7 @@ export class ThreeFingerChecker {
 
     /**
      * Redivides the beatmap into sections.
-     *
+     * 
      * The result will be used to detect for three-fingered
      * sections.
      */
@@ -645,7 +645,7 @@ export class ThreeFingerChecker {
 
     /**
      * Attempts to prevent accidental taps from being flagged.
-     *
+     * 
      * This detection will filter cursors that don't hit
      * any object in beatmap sections, thus eliminating any
      * unnecessary taps.
@@ -684,7 +684,7 @@ export class ThreeFingerChecker {
 
     /**
      * Creates nerf factors by scanning through objects.
-     *
+     * 
      * This check will ignore all objects with speed strain below `strainThreshold`.
      */
     private calculateNerfFactors(): void {
@@ -700,7 +700,7 @@ export class ThreeFingerChecker {
             const startTime: number = objects[beatmapSection.firstObjectIndex].object.startTime +
                 (
                     objectData[beatmapSection.firstObjectIndex].result !== hitResult.RESULT_0 ?
-                    objectData[beatmapSection.firstObjectIndex].accuracy :
+                    objectData[beatmapSection.firstObjectIndex].accuracy : 
                     -this.hitWindow.hitWindowFor50(isPrecise)
                 );
 

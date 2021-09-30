@@ -78,7 +78,7 @@ export class Player {
 
     /**
      * Retrieves a player's info based on uid or username.
-     *
+     * 
      * Either uid or username must be specified.
      */
     static getInformation(params: {

@@ -47,7 +47,7 @@ export class DroidAim extends DroidSkill {
     }
 
     protected saveToHitObject(current: DifficultyHitObject): void {
-        current.aimStrain = this.strains.at(-1)!;
+        current.aimStrain = this.strains.at(-1)!; 
     }
 
     /**

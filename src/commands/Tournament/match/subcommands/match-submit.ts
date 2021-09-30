@@ -14,7 +14,7 @@ import { matchStrings } from "../matchStrings";
 export const run: Subcommand["run"] = async (_, interaction) => {
     const id: string | null = interaction.options.getString("id");
 
-    const match: TournamentMatch | null = id ?
+    const match: TournamentMatch | null = id ? 
         await DatabaseManager.elainaDb.collections.tournamentMatch.getById(id) :
         await DatabaseManager.elainaDb.collections.tournamentMatch.getByChannel(interaction.channelId);
 
@@ -38,7 +38,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(poolId);
 
     if (!mappoolMainData) {
-        interaction.replied ?
+        interaction.replied ? 
             interaction.channel!.send({
                 content: MessageCreator.createReject(matchStrings.mappoolNotFound)
             })

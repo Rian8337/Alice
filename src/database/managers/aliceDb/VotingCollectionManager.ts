@@ -31,7 +31,7 @@ export class VotingCollectionManager extends DatabaseCollectionManager<DatabaseV
 
     /**
      * Gets a current ongoing vote in a channel.
-     *
+     * 
      * @param channelId The ID of the channel.
      */
     getCurrentVoteInChannel(channelId: Snowflake): Promise<Voting | null> {

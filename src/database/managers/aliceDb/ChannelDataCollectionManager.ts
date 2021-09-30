@@ -33,7 +33,7 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets channel statistics based on the given range.
-     *
+     * 
      * @param from The minimum time range.
      * @param to The maximum time range.
      * @returns The channel statistics from the given range.

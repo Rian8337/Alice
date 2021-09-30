@@ -92,14 +92,14 @@ export = {
 
     /**
      * Utility to draw a graph with only node-canvas.
-     *
+     * 
      * Used for creating strain graph of beatmaps.
      */
     Chart,
 
     /**
      * Represents a circle in a beatmap.
-     *
+     * 
      * All we need from circles is their position. All positions
      * stored in the objects are in playfield coordinates (512*384
      * rectangle).
@@ -108,9 +108,9 @@ export = {
 
     /**
      * Represents a cursor instance in an osu!droid replay.
-     *
+     * 
      * Stores cursor movement data such as x and y coordinates, movement size, etc.
-     *
+     * 
      * This is used when analyzing replays using replay analyzer.
      */
     CursorData,
@@ -118,7 +118,7 @@ export = {
     /**
      * Represents an osu!standard hit object with difficulty calculation values.
      */
-    DifficultyHitObject,
+    DifficultyHitObject, 
     
     /**
      * A converter used to convert normal hitobjects into difficulty hitobjects.
@@ -190,7 +190,7 @@ export = {
     MapStars,
 
     /**
-     * Holds general beatmap statistics for further modifications.
+     * Holds general beatmap statistics for further modifications. 
      */
     MapStats,
 
@@ -386,25 +386,25 @@ export = {
     
     /**
      * A replay analyzer that analyzes a replay from osu!droid with given score ID. This is mainly used to detect whether or not a play is considered using >=3 fingers abuse.
-     *
+     * 
      * Once analyzed, the result can be accessed via the `data` property.
      */
     ReplayAnalyzer,
 
     /**
      * Represents a replay data in an osu!droid replay.
-     *
+     * 
      * Stores generic information about an osu!droid replay such as player name, MD5 hash, time set, etc.
-     *
+     * 
      * This is used when analyzing replays using replay analyzer.
      */
     ReplayData,
 
     /**
      * Represents a hitobject in an osu!droid replay.
-     *
+     * 
      * Stores information about hitobjects in an osu!droid replay such as hit offset, tickset, and hit result.
-     *
+     * 
      * This is used when analyzing replays using replay analyzer.
      */
     ReplayObjectData,
@@ -441,7 +441,7 @@ export = {
 
     /**
      * Represents a spinner in a beatmap.
-     *
+     * 
      * All we need from spinners is their duration. The
      * position of a spinner is always at 256x192.
      */

@@ -33,7 +33,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Gets a guild's punishment configuration.
-     *
+     * 
      * @param guild The guild to get the punishment configuration from.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
@@ -41,7 +41,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Gets a guild's punishment configuration.
-     *
+     * 
      * @param guildId The ID of the guild to get the punishment configuration from.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
@@ -49,7 +49,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Gets a guild's punishment configuration.
-     *
+     * 
      * @param guildOrGuildId The guild to get the punishment configuration from or its ID.
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
@@ -59,7 +59,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Sets a guild's punishment log channel.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param channelId The ID of the channel.
      * @returns An object containing information about the database operation.
@@ -82,7 +82,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
 
     /**
      * Unsets a guild's punishment log channel.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @returns An object containing information about the database operation.
      */

@@ -57,7 +57,7 @@ export class PlayerInfo extends Manager {
     /**
      * The epoch time at which daily coins claim will be reset,
      * in seconds.
-     *
+     * 
      * This is only available under user ID `386742340968120321`.
      */
     dailyreset?: number;
@@ -108,7 +108,7 @@ export class PlayerInfo extends Manager {
 
     /**
      * Increments the user's coins.
-     *
+     * 
      * @param amount The amount to increment.
      * @returns An object containing information about the operation.
      */
@@ -128,7 +128,7 @@ export class PlayerInfo extends Manager {
 
     /**
      * Claims daily coins.
-     *
+     * 
      * @param coinAmount The amount of coins the user has gained.
      */
     async claimDailyCoins(coinAmount: number): Promise<OperationResult> {
@@ -155,14 +155,14 @@ export class PlayerInfo extends Manager {
                 $set: {
                     hasClaimedDaily: this.hasClaimedDaily,
                     streak: this.streak
-                }
+                } 
             }
         );
     }
 
     /**
      * Transfers this user's coins to another user.
-     *
+     * 
      * @param amount The amount of coins to transfer.
      * @param thisPlayer The `Player` instance of this user.
      * @param to The player to transfer the Alice coins to.

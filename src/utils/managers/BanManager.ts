@@ -11,7 +11,7 @@ import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunish
 export abstract class BanManager extends PunishmentManager {
     /**
      * Bans a user.
-     *
+     * 
      * @param interaction The message that triggered the ban.
      * @param banned The guild member who was banned.
      * @param reason The reason for banning.
@@ -52,7 +52,7 @@ export abstract class BanManager extends PunishmentManager {
 
     /**
      * Unbans a user.
-     *
+     * 
      * @param interaction The interaction that triggered the unban.
      * @param toUnban The user to unban.
      * @param reason The reason for unbanning.

@@ -58,19 +58,19 @@ export abstract class StarRating {
 
     /**
      * Calculates the star rating of the specified beatmap.
-     *
+     * 
      * The beatmap is analyzed in chunks of `sectionLength` duration.
      * For each chunk the highest hitobject strains are added to
      * a list which is then collapsed into a weighted sum, much
      * like scores are weighted on a user's profile.
-     *
+     * 
      * For subsequent chunks, the initial max strain is calculated
      * by decaying the previous hitobject's strain until the
      * beginning of the new chunk.
-     *
+     * 
      * The first object doesn't generate a strain
      * so we begin calculating from the second object.
-     *
+     * 
      * Also don't forget to manually add the peak strain for the last
      * section which would otherwise be ignored.
      */
@@ -115,7 +115,7 @@ export abstract class StarRating {
 
     /**
      * Generates difficulty hitobjects for this calculator.
-     *
+     * 
      * @param mode The gamemode to generate difficulty hitobjects for.
      */
     generateDifficultyHitObjects(mode: modes): void {
@@ -130,7 +130,7 @@ export abstract class StarRating {
 
     /**
      * Calculates the skills provided.
-     *
+     * 
      * @param skills The skills to calculate.
      */
     protected calculateSkills(...skills: Skill[]): void {
@@ -153,7 +153,7 @@ export abstract class StarRating {
 
     /**
      * Generates the strain chart of this beatmap and returns the chart as a buffer.
-     *
+     * 
      * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
      * @param color The color of the graph.
      */

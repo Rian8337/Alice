@@ -70,8 +70,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             `[Avatar Link](${player.avatarURL})\n\n` +
             `**Uid**: ${player.uid}\n` +
             `**Rank**: ${player.rank.toLocaleString()}\n` +
-            `**Play Count**: ${player.playCount.toLocaleString()}\n` +
-            `**Country**: ${player.location}\n\n` +
+            `**Play Count**: ${player.playCount.toLocaleString()}\n` + 
+            `**Country**: ${player.location}\n\n` + 
             `**Bind Information**: ${bindInfo ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})` : "Not binded"}`
         );
 

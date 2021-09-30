@@ -30,7 +30,7 @@ export abstract class OsuSkill extends Skill {
 
     /**
      * Determines how quickly strain decays for the given skill.
-     *
+     * 
      * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
      */
     protected abstract readonly strainDecayBase: number;
@@ -62,7 +62,7 @@ export abstract class OsuSkill extends Skill {
 
     /**
      * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-     *
+     * 
      * @param current The hitobject to process.
      */
     protected process(current: DifficultyHitObject): void {
@@ -96,7 +96,7 @@ export abstract class OsuSkill extends Skill {
 
     /**
      * Sets the initial strain level for a new section.
-     *
+     * 
      * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
      */
     private startNewSectionFrom(offset: number): void {
@@ -146,7 +146,7 @@ export abstract class OsuSkill extends Skill {
 
     /**
      * Calculates strain decay for a specified time frame.
-     *
+     * 
      * @param ms The time frame to calculate.
      */
     private strainDecay(ms: number): number {

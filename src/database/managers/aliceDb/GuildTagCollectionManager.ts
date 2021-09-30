@@ -34,7 +34,7 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets a guild tag by its name.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param name The name of the tag.
      * @returns The guild tag, `null` if not found.
@@ -48,7 +48,7 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets a user's guild tags in a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      * @param userId The ID of the user.
      * @returns The user's tags in the specified guild, mapped by their name.

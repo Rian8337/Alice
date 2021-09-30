@@ -29,7 +29,7 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets the ask count data of a user.
-     *
+     * 
      * @param userId The ID of the user.
      */
     getUserAskCount(userId: Snowflake): Promise<AskCount | null> {

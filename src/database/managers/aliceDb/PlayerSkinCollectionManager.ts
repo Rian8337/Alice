@@ -30,14 +30,14 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Gets a user's skin.
-     *
+     * 
      * @param user The user to get the skin from.
      */
     getUserSkin(user: User): Promise<PlayerSkin | null>;
 
     /**
      * Gets a user's skin.
-     *
+     * 
      * @param id The ID of the user to get the skin from.
      */
     getUserSkin(id: Snowflake): Promise<PlayerSkin | null>;
@@ -48,7 +48,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Inserts or updates a user's skin.
-     *
+     * 
      * @param id The ID of the user.
      * @param link The link to the skin.
      */
@@ -56,7 +56,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Inserts or updates a user's skin.
-     *
+     * 
      * @param user The user.
      * @param link The link to the skin.
      */

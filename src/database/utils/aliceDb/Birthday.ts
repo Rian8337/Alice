@@ -29,7 +29,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
 
     /**
      * Forcefully sets the birthday of this user.
-     *
+     * 
      * @param date The new birthday date.
      * @param month The new birthday month.
      * @param timezone The new timezone of the user.

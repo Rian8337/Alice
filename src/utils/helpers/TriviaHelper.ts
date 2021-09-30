@@ -14,7 +14,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 export abstract class TriviaHelper {
     /**
      * Asks a trivia question to the given interaction.
-     *
+     * 
      * @param interaction The interaction.
      * @param category The question category to force.
      * @param type The question type to force.
@@ -219,7 +219,7 @@ export abstract class TriviaHelper {
 
     /**
      * Gets the name of the category.
-     *
+     * 
      * @param category The category.
      */
     static getCategoryName(category: TriviaQuestionCategory): string {
