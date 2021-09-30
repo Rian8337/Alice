@@ -8,7 +8,7 @@ import { Guild, GuildMember, Message, ReactionCollector, Role, Snowflake } from 
 export abstract class RoleReactionCreator extends Manager {
     /**
      * Creates a reaction-based role assignment.
-     *
+     * 
      * @param guild The guild to create the reaction-based role assignment in.
      * @param message The message to create the reaction-based role assignment on.
      * @param role The role to assign.

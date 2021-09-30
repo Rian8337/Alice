@@ -41,7 +41,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
 
     /**
      * Gets a challenge by its ID.
-     *
+     * 
      * @param id The ID of the challenge.
      * @returns The challenge, `null` if not found.
      */
@@ -51,7 +51,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
 
     /**
      * Gets the ongoing challenge of the specified type.
-     *
+     * 
      * @param type The type of the challenge.
      * @returns The ongoing challenge, `null` if there are no ongoing challenges of such type.
      */
@@ -70,7 +70,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<Databa
 
     /**
      * Gets a challenge by its hash.
-     *
+     * 
      * @param hash The hash of the challenge.
      * @returns The challenge, `null` if not found.
      */

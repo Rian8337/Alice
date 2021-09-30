@@ -16,7 +16,7 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
 
 /**
  * Generates an equation and loops the game.
- *
+ * 
  * @param level The level to generate equation for.
  * @param operatorAmount The amount of operators in the equation.
  * @param callback Callback function.
@@ -27,7 +27,7 @@ function generateEquation(level: number, operatorAmount: number, callback: (math
 
 /**
  * Ends an ongoing game.
- *
+ * 
  * @param interaction The interaction that started the game.
  * @param mode The mode of the game.
  * @param gameStats The statistics of the game.

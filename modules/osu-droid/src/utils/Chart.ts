@@ -92,7 +92,7 @@ interface Data {
 
 /**
  * Utility to draw a graph with only node-canvas.
- *
+ * 
  * Used for creating strain graph of beatmaps.
  */
 export class Chart implements ChartInitializer {
@@ -182,7 +182,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws a line graph with specified data, color, and line width.
-     *
+     * 
      * @param data The data to make the graph.
      * @param color The color of the line.
      * @param width The width of the line.
@@ -220,7 +220,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws an area graph with specified data and color.
-     *
+     * 
      * @param data The data to make the graph.
      * @param color The color of the area.
      */
@@ -256,7 +256,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the X axis of the graph.
-     *
+     * 
      * @param drawLabel Whether or not to draw the axis label.
      */
     private drawXAxis(drawLabel?: boolean): void {
@@ -310,7 +310,7 @@ export class Chart implements ChartInitializer {
 
     /**
      * Draws the Y axis of the graph.
-     *
+     * 
      * @param drawLabel Whether or not to draw the axis label.
      */
     private drawYAxis(drawLabel?: boolean): void {

@@ -50,7 +50,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<Datab
     /**
      * Gets a Discord user's info with respect to bot-related features
      * using its binded uid.
-     *
+     * 
      * @param uid The uid of the binded osu!droid account.
      */
     getFromUid(uid: number): Promise<PlayerInfo | null> {
@@ -60,7 +60,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<Datab
     /**
      * Gets a Discord user's info with respect to bot-related features
      * using its binded username.
-     *
+     * 
      * @param username The username of the binded osu!droid account.
      */
     getFromUsername(username: string): Promise<PlayerInfo | null> {
@@ -69,14 +69,14 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Gets a Discord user's info with respect to bot-related features.
-     *
+     * 
      * @param id The ID of the user.
      */
     getFromUser(id: Snowflake): Promise<PlayerInfo | null>;
 
     /**
      * Gets a Discord user's info with respect to bot-related features.
-     *
+     * 
      * @param user The Discord user.
      */
     getFromUser(user: User): Promise<PlayerInfo | null>;

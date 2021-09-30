@@ -97,7 +97,7 @@ export abstract class ModUtil {
 
     /**
      * Gets a list of mods from a droid mod string, such as "hd".
-     *
+     * 
      * @param str The string.
      */
     static droidStringToMods(str: string): Mod[] {
@@ -106,7 +106,7 @@ export abstract class ModUtil {
 
     /**
      * Gets a list of mods from a PC modbits.
-     *
+     * 
      * @param modbits The modbits.
      */
     static pcModbitsToMods(modbits: number): Mod[] {
@@ -115,7 +115,7 @@ export abstract class ModUtil {
 
     /**
      * Gets a list of mods from a PC mod string, such as "HDHR".
-     *
+     * 
      * @param str The string.
      */
     static pcStringToMods(str: string): Mod[] {
@@ -142,7 +142,7 @@ export abstract class ModUtil {
 
     /**
      * Checks for mods that are duplicate and incompatible with each other.
-     *
+     * 
      * @param mods The mods to check for.
      */
     private static checkDuplicateMods(mods: Mod[]): Mod[] {

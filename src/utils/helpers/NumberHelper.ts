@@ -6,7 +6,7 @@ import { MathUtils } from "osu-droid";
 export abstract class NumberHelper extends MathUtils {
     /**
      * Determines whether a number is in a specific range.
-     *
+     * 
      * @param num The number to determine.
      * @param min The minimum value of the range.
      * @param max The maximum value of the range.
@@ -23,7 +23,7 @@ export abstract class NumberHelper extends MathUtils {
 
     /**
      * Checks if a value is a numeric value.
-     *
+     * 
      * @param value The value.
      * @returns Whether the value is a numeric value.
      */
@@ -33,7 +33,7 @@ export abstract class NumberHelper extends MathUtils {
 
     /**
      * Checks whether a number is positive.
-     *
+     * 
      * @param num The number.
      * @returns Whether the number is positive.
      */

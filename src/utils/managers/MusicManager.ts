@@ -16,7 +16,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Enqueues a YouTube video to a channel.
-     *
+     * 
      * @param channel The channel.
      * @param executionChannel The channel at which the user plays the video.
      * @param queue The queue to enqueue.
@@ -66,7 +66,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Dequeues an audio from a channel.
-     *
+     * 
      * @param channel The channel.
      * @param index The index of the audio in the queue to dequeue.
      */
@@ -88,7 +88,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Leaves a voice or stage channel.
-     *
+     * 
      * @param channel The channel.
      * @returns An object containing information about the operation.
      */
@@ -114,7 +114,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Pauses the currently playing music in a channel.
-     *
+     * 
      * @param channel The channel.
      * @returns An object containing information about the operation.
      */
@@ -140,7 +140,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Resumes a paused audio playback in a channel.
-     *
+     * 
      * @param channel The channel.
      * @returns An object containing information about the operation.
      */
@@ -166,7 +166,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Skips an audio in the channel's audio queue.
-     *
+     * 
      * @param channel The channel.
      * @param executionChannel The channel at which the user plays an audio.
      * @returns An object containing information about the operation.
@@ -197,7 +197,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Sets the repeat mode of a music in a channel.
-     *
+     * 
      * @param channel The channel.
      * @param repeat Whether to enable repeat mode.
      */
@@ -219,7 +219,7 @@ export abstract class MusicManager extends Manager {
 
     /**
      * Shuffles a music queue in a voice channel.
-     *
+     * 
      * @param channel The channel.
      */
     static shuffle(channel: VoiceChannel | StageChannel): OperationResult {

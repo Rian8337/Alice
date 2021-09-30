@@ -29,7 +29,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Initializes the manager.
-     *
+     * 
      * @param client The instance of the bot.
      */
     static async init(): Promise<void> {
@@ -42,7 +42,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Locks a user from lounge or extends its duration.
-     *
+     * 
      * @param userId The ID of the user.
      * @param reason The reason for locking the user.
      * @param duration The duration of the lock or the extension, in seconds. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
@@ -102,7 +102,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Unlocks a user from lounge.
-     *
+     * 
      * @param userId The ID of the user.
      * @param reason The reason for unlocking the user.
      * @returns An object containing information about the operation.
@@ -148,7 +148,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Inserts a lock permission to the lounge channel.
-     *
+     * 
      * @param userId The ID of the user to lock.
      */
     static async insertLockPermissionToChannel(userId: Snowflake): Promise<void> {
@@ -157,7 +157,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Removes a lock permission to the lounge channel.
-     *
+     * 
      * @param userId The ID of the user to remove.
      */
     static async removeLockPermissionFromChannel(userId: Snowflake): Promise<void> {
@@ -166,7 +166,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
 
     /**
      * Updates the lounge channel's permission with respect to a user.
-     *
+     * 
      * @param userId The ID of the user.
      * @param lock Whether to lock the user.
      */

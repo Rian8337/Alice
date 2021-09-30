@@ -13,7 +13,7 @@ export abstract class PermissionHelper {
     /**
      * Gets a guild member's permission position
      * compared to another guild member.
-     *
+     * 
      * @param member The guild member to get the permission position from.
      * @param toCompare The guild member to compare.
      * @returns Information about the guild member's position compared to the other guild member.
@@ -33,7 +33,7 @@ export abstract class PermissionHelper {
     /**
      * Gets the permission string representation of
      * a list of permissions.
-     *
+     * 
      * @param permissions The permissions to get the string from.
      * @returns The string that represents the permission.
      */
@@ -62,7 +62,7 @@ export abstract class PermissionHelper {
 
     /**
      * Gets a list of staff members in the main guild.
-     *
+     * 
      * @param client The instance of the bot.
      */
     static async getMainGuildStaffMembers(client: Bot): Promise<Collection<Snowflake, GuildMember>> {

@@ -15,7 +15,7 @@ export namespace rankImage {
 
     /**
      * Returns an image of specified rank.
-     *
+     * 
      * @param rank The rank to get image from.
      */
     export function get(rank: string = ""): string {

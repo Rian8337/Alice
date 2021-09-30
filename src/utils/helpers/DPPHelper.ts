@@ -14,7 +14,7 @@ import { MapInfo, Score } from "osu-droid";
 export abstract class DPPHelper {
     /**
      * Checks a score's submission validity.
-     *
+     * 
      * @param score The score.
      * @returns The validity of the score.
      */
@@ -44,7 +44,7 @@ export abstract class DPPHelper {
 
     /**
      * Inserts a score into a list of dpp plays.
-     *
+     * 
      * @param dppList The list of dpp plays, mapped by hash.
      * @param score The score.
      * @param calculationResult The calculation result of the score. If omitted, the score will be calculated on fly.
@@ -73,7 +73,7 @@ export abstract class DPPHelper {
 
     /**
      * Calculates the final performance points from a list of pp entries.
-     *
+     * 
      * @param list The list.
      * @returns The final performance points.
      */
@@ -87,7 +87,7 @@ export abstract class DPPHelper {
 
     /**
      * Deletes a beatmap with specific hash from all players.
-     *
+     * 
      * @param hash The beatmap's hash.
      */
     static async deletePlays(hash: string): Promise<void> {

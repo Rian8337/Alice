@@ -41,11 +41,11 @@ export class Accuracy implements AccuracyInformation {
 
     /**
      * Calculates accuracy based on given parameters.
-     *
+     * 
      * If `percent` and `nobjects` are specified, `n300`, `n100`, and `n50` will
      * be automatically calculated to be the closest to the given
      * acc percent.
-     *
+     * 
      * @param values Function parameters.
      */
     constructor(values: AccuracyInformation) {
@@ -128,7 +128,7 @@ export class Accuracy implements AccuracyInformation {
 
     /**
      * Calculates the accuracy value (0.0 - 1.0).
-     *
+     * 
      * @param nobjects The amount of objects in the beatmap. If `n300` was not specified in the constructor, this is required.
      */
     value(nobjects?: number): number {

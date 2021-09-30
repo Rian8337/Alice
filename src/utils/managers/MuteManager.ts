@@ -26,7 +26,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Initializes the manager.
-     *
+     * 
      * This will:
      * - Continue temporary mutes upon bot restart
      * - Remove temporary mutes that have expired (if it's not already taken off)
@@ -42,14 +42,14 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Adds a mute, be it temporary or permanent.
-     *
+     * 
      * The user will be given the mute role if they have not been muted yet.
-     *
+     * 
      * If the role has not been created yet, it will be created and applied
      * to every channel automatically.
-     *
+     * 
      * This will also send a log to the guild's log channel.
-     *
+     * 
      * @param interaction The interaction that triggered the mute.
      * @param member The guild member to mute.
      * @param reason Reason for muting.
@@ -196,9 +196,9 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Removes a mute.
-     *
+     * 
      * The user's mute role will be taken if it hasn't been done yet.
-     *
+     * 
      * @param member The guild member to unmute.
      * @param interaction The interaction that triggered the unmute, if any.
      * @param reason The reason for unmuting, if this unmute is triggered by an interaction.
@@ -300,7 +300,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Checks if a guild member can mute a user with specified duration.
-     *
+     * 
      * @param member The guild member executing the mute.
      * @param duration The duration the guild member wants to mute for, in seconds.
      * @returns A boolean indicating whether the guild member can mute the user.
@@ -338,7 +338,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Checks if a guild member is immune.
-     *
+     * 
      * @param member The guild member to check.
      * @returns A boolean indicating whether the guild member is immune.
      */
@@ -358,7 +358,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Gets the mute role of a guild.
-     *
+     * 
      * @param guild The guild to get the mute role from.
      * @returns The mute role, `undefined` if not found.
      */
@@ -368,7 +368,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Gets a guild member's mute log.
-     *
+     * 
      * @param member The guild member to get the mute log from.
      * @returns The mute log of the guild member.
      */
@@ -384,7 +384,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Continues a mute.
-     *
+     * 
      * @param client The instance of the bot.
      * @param member The guild member to mute.
      * @param muteInformation Additional information about the mute.
@@ -422,7 +422,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Caches ongoing mutes upon bot startup to continue mute tracking.
-     *
+     * 
      * @param client The instance of the bot.
      */
     private static async cacheOngoingMute(): Promise<void> {
@@ -455,7 +455,7 @@ export abstract class MuteManager extends PunishmentManager {
 
     /**
      * Notifies a guild member about their mute status.
-     *
+     * 
      * @param client The instance of the bot.
      * @param member The member to notify.
      * @param content The content of the notification.

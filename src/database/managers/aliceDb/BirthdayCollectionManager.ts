@@ -36,7 +36,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Gets a user's birthday data.
-     *
+     * 
      * @param userId The ID of the user.
      */
     getUserBirthday(userId: Snowflake): Promise<Birthday | null> {
@@ -45,7 +45,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Sets a user's birthday.
-     *
+     * 
      * @param userId The ID of the user.
      * @param date The birthday date, ranging from 1 to the month's maximum date.
      * @param month The birthday month, ranging from 0 to 11.
@@ -104,7 +104,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<Databas
 
     /**
      * Checks if a Discord user has set their birthday.
-     *
+     * 
      * @param userId The ID of the user.
      * @returns Whether the user has set their birthday.
      */

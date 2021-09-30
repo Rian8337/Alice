@@ -10,7 +10,7 @@ import { Config } from '@alice-core/Config';
 export abstract class EventHelper {
     /**
      * Runs the utilities of an event.
-     *
+     * 
      * @param client The instance of the bot.
      * @param eventDirectory The directory of the event.
      * @param guild The guild at which the event was triggered.
@@ -48,7 +48,7 @@ export abstract class EventHelper {
 
     /**
      * Checks whether an event utility is disabled in a channel.
-     *
+     * 
      * @param channel The channel.
      * @param eventName The name of the event.
      * @param utilityName The name of the event's utility.
@@ -64,7 +64,7 @@ export abstract class EventHelper {
 
     /**
      * Checks whether an event utility is disabled in a guild.
-     *
+     * 
      * @param guild The guild.
      * @param eventName The name of the event.
      * @param utilityName The name of the event's utility.
@@ -80,7 +80,7 @@ export abstract class EventHelper {
 
     /**
      * Checks whether an event utility is disabled globally.
-     *
+     * 
      * @param eventName The name of the event.
      * @param utilityName The name of the event's utility.
      * @returns Whether the event utility is disabled globally.
@@ -105,7 +105,7 @@ export abstract class EventHelper {
      * Checks whether an event utility is contained inside
      * a list of disabled event utilities (whether from
      * a channel, guild, or globally).
-     *
+     * 
      * @param eventName The name of the event.
      * @param utilityName The name of the event's utility.
      * @param disabledEventUtils The event utilities that are disabled in the channel, guild, or global.

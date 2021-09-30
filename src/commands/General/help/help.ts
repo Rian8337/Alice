@@ -14,7 +14,7 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 
 /**
  * Gets the list of commands that the bot has.
- *
+ * 
  * @param client The instance of the bot.
  * @returns The list of commands, mapped by their category.
  */
@@ -136,7 +136,7 @@ export const run: Command["run"] = async (client, interaction) => {
         embed.setTitle("Alice Synthesis Thirty Help")
             .setDescription(
                 "Made by <@132783516176875520> and <@386742340968120321>.\n\n" +
-                "For detailed information about a command, use `/help [command name]`.\n" +
+                "For detailed information about a command, use `/help [command name]`.\n" + 
                 "If you encounter any bugs or issues with the bot, please contact bot creators."
             )
             .setThumbnail(<string> client.user?.avatarURL({dynamic: true}));

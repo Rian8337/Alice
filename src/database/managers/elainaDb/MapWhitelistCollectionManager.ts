@@ -39,7 +39,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<Dat
 
     /**
      * Gets beatmaps that are not scanned.
-     *
+     * 
      * @param amount The amount of beatmaps to get.
      */
     async getUnscannedBeatmaps(amount: number): Promise<DiscordCollection<number, MapWhitelist>> {

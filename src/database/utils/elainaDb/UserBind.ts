@@ -60,7 +60,7 @@ export class UserBind extends Manager {
 
     /**
      * The UID of osu!droid accounts that are binded to the user.
-     *
+     * 
      * A user can only bind up to 2 osu!droid accounts, therefore
      * the maximum length of this array will never exceed 2.
      */
@@ -136,7 +136,7 @@ export class UserBind extends Manager {
 
     /**
      * Scans the dpp list of this player, removing those that are outdated.
-     *
+     * 
      * @returns An object containing information about the operation.
      */
     async scanDPP(): Promise<OperationResult> {
@@ -198,7 +198,7 @@ export class UserBind extends Manager {
 
     /**
      * Sets the dpp list for the player to a new list.
-     *
+     * 
      * @param list The new list.
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.
@@ -344,7 +344,7 @@ export class UserBind extends Manager {
 
     /**
      * Recalculates all of the player's scores for dpp and ranked score.
-     *
+     * 
      * @param markAsSlotFulfill Whether to set `hasAskedForRecalc` to `true`.
      * @param isDPPRecalc Whether this recalculation is a part of a full recalculation triggered by bot owners.
      */
@@ -469,7 +469,7 @@ export class UserBind extends Manager {
     /**
      * Moves the bind of a binded osu!droid account in this Discord account to another
      * Discord account.
-     *
+     * 
      * @param uid The uid of the osu!droid account.
      * @param to The ID of the Discord account to move to.
      * @returns An object containing information about the operation.
@@ -544,7 +544,7 @@ export class UserBind extends Manager {
 
     /**
      * Binds an osu!droid account to this Discord account.
-     *
+     * 
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -552,7 +552,7 @@ export class UserBind extends Manager {
 
     /**
      * Binds an osu!droid account to this Discord account.
-     *
+     * 
      * @param username The username of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -560,7 +560,7 @@ export class UserBind extends Manager {
 
     /**
      * Binds an osu!droid account to this Discord account.
-     *
+     * 
      * @param player The `Player` instance of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -607,7 +607,7 @@ export class UserBind extends Manager {
 
     /**
      * Unbinds an osu!droid account from this Discord account.
-     *
+     * 
      * @param uid The uid of the osu!droid account.
      * @returns An object containing information about the operation.
      */
@@ -655,7 +655,7 @@ export class UserBind extends Manager {
 
     /**
      * Sets the clan of this Discord account.
-     *
+     * 
      * @param name The name of the clan.
      */
     async setClan(name: string): Promise<OperationResult> {
@@ -673,7 +673,7 @@ export class UserBind extends Manager {
 
     /**
      * Determines whether a uid has been binded to this Discord account.
-     *
+     * 
      * @param uid The uid to determine.
      */
     isUidBinded(uid: number): boolean {
@@ -682,7 +682,7 @@ export class UserBind extends Manager {
 
     /**
      * Gets a score from this player.
-     *
+     * 
      * @param hash The MD5 hash of the played beatmap.
      * @returns The score, `null` if not found.
      */

@@ -38,7 +38,7 @@ export abstract class DatabaseManager {
 
     /**
      * Initializes the manager.
-     *
+     * 
      * @param elainaDb The database that is shared with the old bot (Nero's database).
      * @param aliceDb The database that is only used by this bot (my database).
      */

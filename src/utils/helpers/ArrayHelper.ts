@@ -6,7 +6,7 @@ import { Collection } from "discord.js";
 export abstract class ArrayHelper {
     /**
      * Gets a random element from an array.
-     *
+     * 
      * @param array The array to get the element from.
      * @returns A random element of the array.
      */
@@ -16,7 +16,7 @@ export abstract class ArrayHelper {
 
     /**
      * Creates an array with specific length that's prefilled with an initial value.
-     *
+     * 
      * @param length The length of the array.
      * @param initialValue The initial value of each array value.
      */
@@ -38,7 +38,7 @@ export abstract class ArrayHelper {
 
     /**
      * Converts a collection into an array of `{key, value}` pairs.
-     *
+     * 
      * @param collection The collection.
      * @returns The array from the collection.
      */
@@ -50,7 +50,7 @@ export abstract class ArrayHelper {
 
     /**
      * Converts an array into a collection.
-     *
+     * 
      * @param array The array.
      * @param key The key that will be used to map each value in the array.
      * @returns The collection from the array.
@@ -67,7 +67,7 @@ export abstract class ArrayHelper {
 
     /**
      * Removes duplicates from an array.
-     *
+     * 
      * @param array The array.
      * @returns The array with duplicates removed.
      */
@@ -77,11 +77,11 @@ export abstract class ArrayHelper {
 
     /**
      * Shuffles an array.
-     *
+     * 
      * The original array will be modified.
-     *
+     * 
      * This uses Richard Durstenfeld's shuffle algorithm.
-     *
+     * 
      * @param array The array to shuffle.
      */
     static shuffle<T>(array: T[]): void {

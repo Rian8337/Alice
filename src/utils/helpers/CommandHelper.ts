@@ -20,9 +20,9 @@ import { Manager } from '@alice-utils/base/Manager';
 export abstract class CommandHelper extends Manager {
     /**
      * Runs a subcommand that isn't directly picked by the user via an interaction.
-     *
+     * 
      * The user will be prompted to choose which subcommand to run using a select menu.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand.
      * @param mainCommandDirectory The directory of the subcommand.
      * @param subcommandChoices The subcommands of the command. The user will be prompted to choose one of these subcommands in order.
@@ -47,9 +47,9 @@ export abstract class CommandHelper extends Manager {
     /**
      * Runs a subcommand or subcommand group that is directly picked
      * by the user via an interaction.
-     *
+     * 
      * Use this if a command has both subcommands and subcommand groups.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand or subcommand group.
      */
     static runSubcommandOrGroup(interaction: CommandInteraction): Promise<any> {
@@ -62,7 +62,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Runs a subcommand that is directly picked by the user via an interaction.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand.
      */
     static runSubcommandFromInteraction(interaction: CommandInteraction): Promise<any> {
@@ -71,9 +71,9 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Runs a subcommand group picked by the user via an interaction.
-     *
+     * 
      * This should only be used inside a command.
-     *
+     * 
      * @param interaction The interaction that triggered the command.
      */
     static runSubcommandGroup(interaction: CommandInteraction): Promise<any> {
@@ -82,7 +82,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Runs a subcommand group or subcommand.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand group or subcommand.
      * @param subcommand The subcommand to run.
      */
@@ -106,7 +106,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the subcommand that is run by the user via an interaction.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand.
      * @returns The subcommand, if found.
      */
@@ -131,7 +131,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Gets the subcommand group that is run by the user via an interaction.
-     *
+     * 
      * @param interaction The interaction that triggered the subcommand group.
      * @returns The subcommand group, if found.
      */
@@ -150,7 +150,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks if an interaction fulfills a command's permissions.
-     *
+     * 
      * @param message The interaction that executed the command.
      * @param permissions The command's permissions.
      * @returns Whether the interaction can run the command.
@@ -172,9 +172,9 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks whether an interaction has all the specified permissions.
-     *
+     * 
      * Both channel-specific and guild-wide permissions will be considered.
-     *
+     * 
      * @param interaction The interaction.
      * @param permissions The permissions to check for.
      * @returns Whether the guild member has all the specified permissions.
@@ -195,7 +195,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks if a command is executable based on its scope.
-     *
+     * 
      * @param interaction The interaction that triggered the command.
      * @param scope The command's scope.
      * @returns Whether the command can be executed in the scope.
@@ -213,7 +213,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks if a command triggered by an interaction is enabled globally, in the guild, or in the channel.
-     *
+     * 
      * @param interaction The interaction.
      * @returns Whether the command is enabled.
      */
@@ -236,7 +236,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Activates a command's cooldown upon a user.
-     *
+     * 
      * @param key The key of the cooldown.
      * @param cooldown The cooldown to apply, in seconds.
      */
@@ -250,7 +250,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks whether a cooldown still exists.
-     *
+     * 
      * @param key The key of the cooldown.
      * @returns Whether the cooldown with the specified key still exists.
      */
@@ -260,7 +260,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Checks if a command triggered by an interaction is executed by a bot owner.
-     *
+     * 
      * @param interaction The interaction.
      * @returns Whether the command is executed by a bot owner.
      */
@@ -270,7 +270,7 @@ export abstract class CommandHelper extends Manager {
 
     /**
      * Converts a time format duration input to seconds.
-     *
+     * 
      * @param input The input.
      * @returns The amount of seconds represented by the input.
      */

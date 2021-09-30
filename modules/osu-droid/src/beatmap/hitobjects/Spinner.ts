@@ -3,7 +3,7 @@ import { HitObject } from './HitObject';
 
 /**
  * Represents a spinner in a beatmap.
- *
+ * 
  * All we need from spinners is their duration. The
  * position of a spinner is always at 256x192.
  */

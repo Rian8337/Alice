@@ -52,7 +52,7 @@ export class TwoHandChecker {
 
     /**
      * The minimum count of a cursor index occurrence to be valid.
-     *
+     * 
      * This is used to prevent excessive penalty by splitting the beatmap into
      * those that do not worth any strain.
      */
@@ -165,7 +165,7 @@ export class TwoHandChecker {
 
     /**
      * Gets the cursor index that hits the given object.
-     *
+     * 
      * @param object The object to check.
      * @param data The replay data of the object.
      * @returns The cursor index that hits the given object, -1 if the index is not found, the object is a spinner, or the object was missed.

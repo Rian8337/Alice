@@ -10,9 +10,9 @@ import { MessageCreator } from "./MessageCreator";
 export abstract class MessageButtonCreator extends InteractionCollectorCreator {
     /**
      * Creates a button-based paging with limited page.
-     *
+     * 
      * If there is only 1 page to view, no buttons will be enabled.
-     *
+     * 
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
@@ -41,7 +41,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Creates a button-based paging with limitless page.
-     *
+     * 
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
@@ -69,7 +69,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Creates a confirmation interaction using buttons.
-     *
+     * 
      * @param interaction The interaction that triggered the confirmation buttons.
      * @param options Options of the confirmation message.
      * @param users The users who can perform confirmation.
@@ -119,9 +119,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Creates a button-based paging.
-     *
+     * 
      * If there is only 1 page to view, no buttons will be shown.
-     *
+     * 
      * @param interaction The interaction that triggered the button-based paging.
      * @param options Options to be used when sending the button-based paging message.
      * @param users The IDs of users who can interact with the buttons.
@@ -172,7 +172,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             return message;
         }
 
-        const collector: InteractionCollector<MessageComponentInteraction> =
+        const collector: InteractionCollector<MessageComponentInteraction> =    
             this.createButtonCollector(message, users, duration);
 
         collector.on("collect", async i => {
@@ -230,9 +230,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Creates buttons used in paging.
-     *
+     * 
      * ID order: `[backward, back, none, next, forward]`
-     *
+     * 
      * @param currentPage The current page to be used for button label.
      * @param maxPage The maximum page possible to be used for button label.
      */
@@ -268,7 +268,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
     /**
      * Creates buttons used in confirmation.
-     *
+     * 
      * ID order: `[yes, no]`
      */
     private static createConfirmationButtons(): MessageButton[] {

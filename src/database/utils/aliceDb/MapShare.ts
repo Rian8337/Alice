@@ -40,7 +40,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Accepts this submission.
-     *
+     * 
      * @returns An object containing the result of the operation.
      */
     accept(): Promise<OperationResult> {
@@ -58,7 +58,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Denies this submission.
-     *
+     * 
      * @returns An object containing the result of the operation.
      */
     deny(): Promise<OperationResult> {
@@ -76,9 +76,9 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Deletes this submission.
-     *
+     * 
      * This is done if a beatmap is updated after it is submitted.
-     *
+     * 
      * @returns An object containing the result of the operation.
      */
     delete(): Promise<OperationResult> {
@@ -89,7 +89,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     /**
      * Posts this submission in the map share channel.
-     *
+     * 
      * @returns An object containing the result of the operation.
      */
     async post(): Promise<OperationResult> {

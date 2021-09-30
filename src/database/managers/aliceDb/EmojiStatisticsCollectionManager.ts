@@ -29,21 +29,21 @@ export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Gets the emoji statistics of a guild.
-     *
+     * 
      * @param guild The guild.
      */
     getGuildStatistics(guild: Guild): Promise<EmojiStatistics | null>;
 
     /**
      * Gets the emoji statistics of a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      */
     getGuildStatistics(guildId: Snowflake): Promise<EmojiStatistics | null>;
 
     /**
      * Gets the emoji statistics of a guild.
-     *
+     * 
      * @param guildId The ID of the guild.
      */
     getGuildStatistics(guildOrId: Guild | Snowflake): Promise<EmojiStatistics | null> {

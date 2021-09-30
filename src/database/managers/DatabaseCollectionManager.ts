@@ -42,7 +42,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Updates multiple documents in the collection.
-     *
+     * 
      * @param filter The filter used to select the documents to update.
      * @param query The update operations to be applied to the documents.
      * @param options Options for the update operation.
@@ -63,7 +63,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     *
+     * 
      * @param key The key to index.
      * @param filter The document filter.
      * @returns The indexed documents in a discord.js collection.
@@ -73,10 +73,10 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     *
+     * 
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents.
+     * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
     async get<K extends keyof T>(key: K, filter: FilterQuery<T>, options?: WithoutProjection<FindOneOptions<T>>): Promise<DiscordCollection<T[K], C>>;
@@ -84,10 +84,10 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     *
+     * 
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents.
+     * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
     async get<K extends keyof T>(key: K, filter: FilterQuery<T>, options: FindOneOptions<T extends T ? T : T>): Promise<DiscordCollection<T[K], C>>;
@@ -95,10 +95,10 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets multiple documents from the collection and then
      * index them based on the given key.
-     *
+     * 
      * @param key The key to index.
      * @param filter The document filter.
-     * @param options The options for retrieving the documents.
+     * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
     async get<K extends keyof T>(key: K, filter: FilterQuery<T> = { }, options?: WithoutProjection<FindOneOptions<T>> | FindOneOptions<T extends T ? T : T>): Promise<DiscordCollection<T[K], C>> {
@@ -117,7 +117,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     *
+     * 
      * @param filter The document filter.
      * @returns The converted document.
      */
@@ -126,7 +126,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     *
+     * 
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
@@ -136,7 +136,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     *
+     * 
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
@@ -146,7 +146,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
     /**
      * Gets a document from the collection and convert it
      * to its utility.
-     *
+     * 
      * @param filter The document filter.
      * @param options The options for retrieving the documents.
      * @returns The converted document.
@@ -159,7 +159,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Delete multiple documents from the collection.
-     *
+     * 
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
@@ -177,7 +177,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
 
     /**
      * Inserts multiple documents into the collection.
-     *
+     * 
      * @param docs The part of documents to insert. Each document will be assigned to the default document with `Object.assign()`.
      */
     insert(...docs: Partial<T>[]): Promise<OperationResult> {

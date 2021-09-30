@@ -35,7 +35,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Blacklists a beatmap.
-     *
+     * 
      * @param beatmap The beatmap to blacklist.
      * @param reason The reason for blacklisting the beatmap.
      * @returns An object containing information about the operation.
@@ -63,7 +63,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Unblacklists a beatmap.
-     *
+     * 
      * @param beatmap The beatmap to unblacklist.
      * @returns An object containing information about the operation.
      */
@@ -85,7 +85,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Whitelists a beatmap.
-     *
+     * 
      * @param beatmaps The beatmap to whitelist.
      * @returns An object containing information about the operation.
      */
@@ -124,7 +124,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Unwhitelists a beatmap.
-     *
+     * 
      * @param beatmap The beatmap to unwhitelist.
      * @returns An object containing information about the operation.
      */
@@ -148,7 +148,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Checks if a beatmap is whitelisted.
-     *
+     * 
      * @param hash The MD5 hash of the beatmap.
      * @returns Whether the beatmap is whitelisted.
      */
@@ -169,7 +169,7 @@ export abstract class WhitelistManager extends Manager {
     /**
      * Determines whether a beatmap needs to be whitelisted
      * to be submitted into the droid pp system.
-     * @param status
+     * @param status 
      */
     static beatmapNeedsWhitelisting(status: rankedStatus): boolean {
         return status === rankedStatus.QUALIFIED || status <= rankedStatus.PENDING;
@@ -177,7 +177,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Checks if a beatmap is blacklisted.
-     *
+     * 
      * @param beatmapID The ID of the beatmap.
      * @returns Whether the beatmap is blacklisted.
      */
@@ -187,7 +187,7 @@ export abstract class WhitelistManager extends Manager {
 
     /**
      * Checks if a beatmap is eligible to be whitelisted.
-     *
+     * 
      * @param beatmap The beatmap.
      * @returns Whether the beatmap is eligible.
      */

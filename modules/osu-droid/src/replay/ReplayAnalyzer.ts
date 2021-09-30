@@ -27,9 +27,9 @@ interface HitErrorInformation {
 
 /**
  * A replay analyzer that analyzes a replay from osu!droid.
- *
+ * 
  * Created by reverse engineering the replay parser from the game itself, which can be found {@link https://github.com/osudroid/osu-droid/blob/master/src/ru/nsu/ccfit/zuev/osu/scoring/Replay.java here}.
- *
+ * 
  * Once analyzed, the result can be accessed via the `data` property.
  */
 export class ReplayAnalyzer {
@@ -91,7 +91,7 @@ export class ReplayAnalyzer {
 
         /**
          * The beatmap to analyze.
-         *
+         * 
          * Using `DroidStarRating` is required to analyze for 3 finger play.
          */
         map?: Beatmap|DroidStarRating
@@ -144,7 +144,7 @@ export class ReplayAnalyzer {
 
     /**
      * Decompresses a replay.
-     *
+     * 
      * The decompressed replay is in a form of Java object. This will be converted to a buffer and deserialized to read data from the replay.
      */
     private decompress(): Promise<Buffer> {
@@ -439,7 +439,7 @@ export class ReplayAnalyzer {
 
     /**
      * Gets hit error information of the replay.
-     *
+     * 
      * `analyze()` must be called before calling this.
      */
     calculateHitError(): HitErrorInformation|null {
@@ -523,7 +523,7 @@ export class ReplayAnalyzer {
 
     /**
      * Checks if a play is using 3 fingers.
-     *
+     * 
      * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
      */
     checkFor3Finger(): void {
@@ -540,7 +540,7 @@ export class ReplayAnalyzer {
 
     /**
      * Checks if a play is using 2 hands.
-     *
+     * 
      * Requires `analyze()` to be called first and `map` to be defined as `DroidStarRating`.
      */
     checkFor2Hand(): void {

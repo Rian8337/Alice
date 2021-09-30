@@ -4,7 +4,7 @@
 export abstract class StringHelper {
     /**
      * Capitalizes the beginning of a string.
-     *
+     * 
      * @param string The string to capitalize.
      * @param lowercaseRest Whether to lowercase the rest of the string.
      * @returns The capitalized string.
@@ -22,9 +22,9 @@ export abstract class StringHelper {
     /**
      * Tidies a string, entering a new line on a whitespace if the specified
      * length is exceeded.
-     *
+     * 
      * Note that this function will trim _any_ whitespace-related characters.
-     *
+     * 
      * @param string The string to tidy.
      * @param maxLineLength The maximum amount of characters in a line.
      * @returns The tidied string.
@@ -57,7 +57,7 @@ export abstract class StringHelper {
 
     /**
      * Obtains a section of a string, sliced by whitespace.
-     *
+     * 
      * @param str The string to slice.
      * @param wordIndexStart The word index to start slicing from.
      * @param wordIndexEnd The word index to end slicing to.
@@ -81,7 +81,7 @@ export abstract class StringHelper {
 
     /**
      * Formats a string, replacing %s with placeholders.
-     *
+     * 
      * @param str The string to format.
      * @param replacements The replacements.
      * @returns The formatted string.
@@ -99,7 +99,7 @@ export abstract class StringHelper {
 
     /**
      * Gets the proper length of a unicode string.
-     *
+     * 
      * @param str The unicode string to get the proper length from.
      */
     static getUnicodeStringLength(str: string): number {
@@ -126,7 +126,7 @@ export abstract class StringHelper {
 
     /**
      * Checks if a string is a valid hex code.
-     *
+     * 
      * @param str The string to check.
      */
     static isValidHexCode(str: string): boolean {
@@ -135,7 +135,7 @@ export abstract class StringHelper {
 
     /**
      * Checks if a link returns a valid image.
-     *
+     * 
      * @param link The link to check.
      * @returns Whether the link returns a valid image.
      */
@@ -154,7 +154,7 @@ export abstract class StringHelper {
 
     /**
      * Determines if a string is a valid URL.
-     *
+     * 
      * @param str The string to determine.
      */
     static isValidURL(str: string): boolean {
@@ -170,7 +170,7 @@ export abstract class StringHelper {
 
     /**
      * Checks if a string contains a unicode character.
-     *
+     * 
      * @param str The string.
      * @returns Whether the string contains a unicode character.
      */
@@ -180,7 +180,7 @@ export abstract class StringHelper {
 
     /**
      * Sorts a string alphabetically.
-     *
+     * 
      * @param str The string.
      * @returns The sorted string.
      */
