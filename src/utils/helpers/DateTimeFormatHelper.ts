@@ -9,6 +9,8 @@ export abstract class DateTimeFormatHelper {
      * @returns The formatted date.
      */
     static secondsToDHMS(seconds: number): string {
+        seconds = Math.trunc(seconds);
+
         const days: number = Math.floor(seconds / 86400);
         seconds -= days * 86400;
 
