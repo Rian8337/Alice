@@ -76,7 +76,7 @@ export class ClanAuction extends Manager {
 
     /**
      * Bids to the auction.
-     * 
+     *
      * @param clan The clan who bid.
      * @param amount The amount of Alice coins to bid.
      * @returns An object containing information about the operation.
@@ -99,7 +99,7 @@ export class ClanAuction extends Manager {
 
     /**
      * Ends the auction.
-     * 
+     *
      * @param force Whether to forcefully end the auction.
      * @returns An object containing information about the operation.
      */
@@ -113,7 +113,7 @@ export class ClanAuction extends Manager {
 
     /**
      * Gets the clan who won the auction.
-     * 
+     *
      * @returns The clan who won the auction, `null` if there are none (possibly for various reasons (disbanded, database error, etc)).
      */
     async getWinnerClan(): Promise<Clan | null> {
@@ -130,7 +130,7 @@ export class ClanAuction extends Manager {
 
     /**
      * Gives the auctioned item into a clan.
-     * 
+     *
      * @param clan The clan. If unspecified, the winning clan will be given. This can also be used to save database requests.
      * @returns An object containing information about the operation.
      */
@@ -172,10 +172,10 @@ export class ClanAuction extends Manager {
 
     /**
      * Updates the auction in auction database.
-     * 
+     *
      * This should only be called after changing everything needed
      * as this will perform a database operation.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async updateAuction(): Promise<OperationResult> {

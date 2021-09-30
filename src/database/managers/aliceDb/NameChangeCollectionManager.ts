@@ -35,7 +35,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Gets name change request from a uid.
-     * 
+     *
      * @param uid The uid.
      */
     getFromUid(uid: number): Promise<NameChange | null> {
@@ -51,7 +51,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<Datab
 
     /**
      * Requests a name change.
-     * 
+     *
      * @param discordId The Discord ID of the player.
      * @param uid The uid of the player.
      * @param currentUsername The current username of the player.

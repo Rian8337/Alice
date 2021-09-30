@@ -232,7 +232,7 @@ export class MapInfo {
 
     /**
      * Retrieve a beatmap's general information.
-     * 
+     *
      * Either beatmap ID or MD5 hash of the beatmap must be specified. If both are specified, beatmap ID is taken.
      */
     static getInformation(params: {
@@ -296,7 +296,7 @@ export class MapInfo {
 
     /**
      * Fills the current instance with map data.
-     * 
+     *
      * @param mapinfo The map data.
      */
     fillMetadata(mapinfo: OsuAPIResponse): MapInfo {
@@ -341,7 +341,7 @@ export class MapInfo {
 
     /**
      * Retrieves the .osu file of the beatmap.
-     * 
+     *
      * @param forceDownload Whether or not to download the file regardless if it's already available.
      */
     retrieveBeatmapFile(forceDownload?: boolean): Promise<MapInfo> {
@@ -418,7 +418,7 @@ export class MapInfo {
 
     /**
      * Shows the beatmap's statistics based on applied mods and option.
-     * 
+     *
      * - Option `0`: return map title and mods used if defined
      * - Option `1`: return song source and map download link to beatmap mirrors
      * - Option `2`: return CS, AR, OD, HP
@@ -484,7 +484,7 @@ export class MapInfo {
                 const maxScore: number = this.maxScore(mapStatistics);
                 const convertedBPM: number = this.convertBPM(mapStatistics);
                 let string = "**BPM**: ";
-                if (this.map) {    
+                if (this.map) {
                     const uninheritedTimingPoints: TimingControlPoint[] = this.map.timingPoints;
 
                     if (uninheritedTimingPoints.length === 1) {
@@ -532,7 +532,7 @@ export class MapInfo {
 
     /**
      * Returns a color integer based on the beatmap's ranking status.
-     * 
+     *
      * Useful to make embed messages.
      */
     get statusColor(): number {
@@ -550,7 +550,7 @@ export class MapInfo {
 
     /**
      * Calculates the osu!droid maximum score of the beatmap.
-     * 
+     *
      * This requires .osu file to be downloaded.
      */
     maxScore(stats: MapStats): number {
@@ -602,9 +602,9 @@ export class MapInfo {
 
     /**
      * Fetches the droid leaderboard of the beatmap.
-     * 
+     *
      * The scores are sorted based on score.
-     * 
+     *
      * @param page The page of the leaderboard to fetch. Each page contains at most 100 scores. If unspecified, defaults to the first page.
      */
     fetchDroidLeaderboard(page?: number): Promise<Score[]> {

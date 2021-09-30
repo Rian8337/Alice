@@ -48,14 +48,14 @@ abstract class APIRequestBuilder {
 
     /**
      * Sets the API endpoint.
-     * 
+     *
      * @param endpoint The endpoint to set.
      */
     abstract setEndpoint(endpoint: DroidAPIEndpoint|OsuAPIEndpoint): this;
 
     /**
      * Sets if this builder includes the API key in the request URL.
-     * 
+     *
      * @param requireAPIkey Whether or not to include the API key in the request URL.
      */
     setRequireAPIkey(requireAPIkey: boolean): this {
@@ -118,7 +118,7 @@ abstract class APIRequestBuilder {
 
     /**
      * Adds a parameter to the builder.
-     * 
+     *
      * @param param The parameter to add.
      * @param value The value to add for the parameter.
      */
@@ -129,7 +129,7 @@ abstract class APIRequestBuilder {
 
     /**
      * Removes a parameter from the builder.
-     * 
+     *
      * @param param The parameter to remove.
      */
     removeParameter(param: string): this {

@@ -9,7 +9,7 @@ export abstract class MessageCreator {
     /**
      * Creates a message indicating a success to be sent
      * to the user.
-     * 
+     *
      * @param content The content of the message. This will automatically be formatted.
      * @param args Additional arguments to format the content of the message.
      * @returns The message to be sent to the user.
@@ -21,7 +21,7 @@ export abstract class MessageCreator {
     /**
      * Creates a message indicating a rejection to be sent
      * to the user.
-     * 
+     *
      * @param content The content of the message. This will automatically be formatted.
      * @param args Additional arguments to format the content of the message.
      * @returns The message to be sent to the user.
@@ -33,7 +33,7 @@ export abstract class MessageCreator {
     /**
      * Creates a message indicating a warning to be sent
      * to the user.
-     * 
+     *
      * @param content The content of the message. This will automatically be formatted.
      * @param args Additional arguments to format the content of the message.
      * @returns The message to be sent to the user.
@@ -46,7 +46,7 @@ export abstract class MessageCreator {
     /**
      * Creates a custom prefixed message to be sent
      * to the user.
-     * 
+     *
      * @param content The content of the message. This will automatically be formatted.
      * @param prefix The prefix of the message.
      * @param args Additional arguments to format the content of the message.

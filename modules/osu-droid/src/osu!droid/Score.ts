@@ -168,7 +168,7 @@ export class Score {
 
     /**
      * Retrieves play information.
-     * 
+     *
      * @param values Function parameters.
      */
     static getFromHash(params: {
@@ -213,7 +213,7 @@ export class Score {
 
     /**
      * Fills this instance with score information.
-     * 
+     *
      * @param info The score information to from API response to fill with.
      */
     fillInformation(info: string): Score {

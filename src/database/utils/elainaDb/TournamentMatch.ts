@@ -51,10 +51,10 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
 
     /**
      * Updates the match in match database.
-     * 
+     *
      * This should only be called after changing everything needed
      * as this will perform a database operation.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     updateMatch(): Promise<OperationResult> {
@@ -75,7 +75,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
 
     /**
      * Gets the last played beatmap from players.
-     * 
+     *
      * @param poolMainData The tournament mappool of this match.
      * @param poolDurationData The mappool duration data of this match's mappool.
      * @param players The list of players who played in this match.
@@ -113,7 +113,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
 
     /**
      * Verifies whether a score fulfills the criteria of submitting a score.
-     * 
+     *
      * @param score The score to verify.
      * @param map The beatmap data to verify for.
      * @param forcePR Whether this match enforces the PR mod.
@@ -169,7 +169,7 @@ export class TournamentMatch extends Manager implements DatabaseTournamentMatch 
 
     /**
      * Calculates ScoreV2 of a score.
-     * 
+     *
      * @param score The score achieved.
      * @param accuracy The accuracy achieved.
      * @param misses The amount of misses achieved.

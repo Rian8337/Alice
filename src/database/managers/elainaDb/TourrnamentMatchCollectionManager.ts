@@ -33,7 +33,7 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Gets a match by its ID.
-     * 
+     *
      * @param id The ID of the match.
      * @returns The match, `null` if not found.
      */
@@ -43,7 +43,7 @@ export class TournamentMatchCollectionManager extends DatabaseCollectionManager<
 
     /**
      * Gets a match by its binded channel.
-     * 
+     *
      * @param channelId The ID of the channel.
      * @returns The match, `null` if not found.
      */

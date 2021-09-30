@@ -28,7 +28,7 @@ export class TournamentMapLengthInfoCollectionManager extends DatabaseCollection
 
     /**
      * Gets a tournament mappool from its id.
-     * 
+     *
      * @param id The ID of the mappool.
      * @returns The mappool, `null` if not found.
      */

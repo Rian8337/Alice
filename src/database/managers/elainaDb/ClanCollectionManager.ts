@@ -97,7 +97,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
 
     /**
      * Gets the clan of a user.
-     * 
+     *
      * @param user The user to get the clan from.
      * @returns The user's clan, `null` if not found.
      */
@@ -105,7 +105,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
 
     /**
      * Gets the clan of a user.
-     * 
+     *
      * @param userID The ID of the user to get the clan from.
      * @returns The user's clan, `null` if not found.
      */
@@ -117,7 +117,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
 
     /**
      * Gets a clan from its name.
-     * 
+     *
      * @param name The name of the clan.
      * @returns The clan, `null` if not found.
      */
@@ -127,7 +127,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
 
     /**
      * Gets clans that are due to weekly fee within the specified time limit.
-     * 
+     *
      * @param weeklyFeeTimeLimit The time limit.
      */
     async getClansDueToWeeklyFee(weeklyFeeTimeLimit: number): Promise<DiscordCollection<string, Clan>> {

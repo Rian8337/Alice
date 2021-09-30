@@ -11,14 +11,14 @@ export interface DatabaseLoungeLock extends BaseDocument {
 
     /**
      * The reason the user was locked.
-     * 
+     *
      * In old locks, this doesn't exist.
      */
     reason?: string;
 
     /**
      * The epoch time at which the lock will expire, in milliseconds.
-     * 
+     *
      * In old locks, the user is locked permanently until the lock is
      * taken out.
      */

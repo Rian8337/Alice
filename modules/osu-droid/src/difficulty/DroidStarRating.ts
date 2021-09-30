@@ -31,19 +31,19 @@ export class DroidStarRating extends StarRating {
 
     /**
      * Calculates the star rating of the specified beatmap.
-     * 
+     *
      * The beatmap is analyzed in chunks of `sectionLength` duration.
      * For each chunk the highest hitobject strains are added to
      * a list which is then collapsed into a weighted sum, much
      * like scores are weighted on a user's profile.
-     * 
+     *
      * For subsequent chunks, the initial max strain is calculated
      * by decaying the previous hitobject's strain until the
      * beginning of the new chunk.
-     * 
+     *
      * The first object doesn't generate a strain
      * so we begin calculating from the second object.
-     * 
+     *
      * Also don't forget to manually add the peak strain for the last
      * section which would otherwise be ignored.
      */

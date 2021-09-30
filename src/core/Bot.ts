@@ -19,7 +19,7 @@ import { Subcommand } from '@alice-interfaces/core/Subcommand';
 
 /**
  * The starting point of the bot.
- * 
+ *
  * Upon initialization, the bot will automatically log in.
  */
 export class Bot extends Client {
@@ -164,7 +164,7 @@ export class Bot extends Client {
 
     /**
      * Loads subcommand groups from the specified directory and caches them.
-     * 
+     *
      * @param commandName The name of the command.
      * @param commandDirectory The directory of the command.
      */
@@ -196,7 +196,7 @@ export class Bot extends Client {
 
     /**
      * Loads subcommands from the specified directory and caches them.
-     * 
+     *
      * @param commandName The name of the command.
      * @param commandDirectory The directory of the command.
      */
@@ -267,7 +267,7 @@ export class Bot extends Client {
 
     /**
      * Initializes utilities.
-     * 
+     *
      * @param client The instance of the bot.
      */
     private async initUtils(): Promise<void> {
@@ -280,7 +280,7 @@ export class Bot extends Client {
 
     /**
      * Registers deploy and undeploy commands to register other commands.
-     * 
+     *
      * @param forceRegister Whether to force register the commands.
      */
     private async registerDeployCommands(forceRegister?: boolean): Promise<void> {

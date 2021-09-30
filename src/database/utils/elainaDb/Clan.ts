@@ -155,7 +155,7 @@ export class Clan extends Manager {
 
     /**
      * Notifies the clan leader of a clan.
-     * 
+     *
      * @param message The message for the clan leader.
      * @returns An object containing information about the operation.
      */
@@ -177,13 +177,13 @@ export class Clan extends Manager {
 
     /**
      * Removes a member from the clan.
-     * 
+     *
      * If the user is the leader of the clan, a random member will be promoted to leader,
      * with co-leaders being the priority in mind.
-     * 
+     *
      * If the user is the only member in the clan, the clan will be disbanded. This can
      * be checked by using the `exists` field.
-     * 
+     *
      * @param user The user to remove.
      * @returns An object containing information about the operation.
      */
@@ -191,13 +191,13 @@ export class Clan extends Manager {
 
     /**
      * Removes a member from the clan.
-     * 
+     *
      * If the user is the leader of the clan, a random member will be promoted to leader,
      * with co-leaders being the priority in mind.
-     * 
+     *
      * If the user is the only member in the clan, the clan will be disbanded. This can
      * be checked by using the `exists` field.
-     * 
+     *
      * @param userID The ID of the user to remove.
      * @returns An object containing information about the operation.
      */
@@ -235,7 +235,7 @@ export class Clan extends Manager {
 
     /**
      * Changes the leader of the clan.
-     * 
+     *
      * @param newLeader The Discord ID of the new leader. If unspecified, a random clan member will be picked.
      * @returns An object containing information about the operation.
      */
@@ -273,14 +273,14 @@ export class Clan extends Manager {
 
     /**
      * Checks whether a user is the clan leader.
-     * 
+     *
      * @param user The user.
      */
     isLeader(user: User): boolean;
 
     /**
      * Checks whether a user is the clan leader.
-     * 
+     *
      * @param userId The ID of the user.
      */
     isLeader(userId: Snowflake): boolean;
@@ -291,14 +291,14 @@ export class Clan extends Manager {
 
     /**
      * Checks whether a user is a co-leader.
-     * 
+     *
      * @param user The user.
      */
     isCoLeader(user: User): boolean;
 
     /**
      * Checks whether a user is a co-leader.
-     * 
+     *
      * @param userId The ID of the user.
      */
     isCoLeader(userId: Snowflake): boolean;
@@ -309,14 +309,14 @@ export class Clan extends Manager {
 
     /**
      * Checks whether a user has administrative powers in the clan.
-     * 
+     *
      * @param user The user.
      */
     hasAdministrativePower(user: User): boolean;
 
     /**
      * Checks whether a user has administrative powers in the clan.
-     * 
+     *
      * @param userId The ID of the user.
      */
     hasAdministrativePower(userId: Snowflake): boolean;
@@ -327,7 +327,7 @@ export class Clan extends Manager {
 
     /**
      * Disbands the clan.
-     * 
+     *
      * @param reason The reason for disbanding the clan.
      * @returns An object containing information about the operation.
      */
@@ -359,10 +359,10 @@ export class Clan extends Manager {
 
     /**
      * Updates the clan in clan database.
-     * 
+     *
      * This should only be called after changing everything needed
      * as this will perform a database operation.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async updateClan(): Promise<OperationResult> {
@@ -393,7 +393,7 @@ export class Clan extends Manager {
 
     /**
      * Sets the clan's match mode.
-     * 
+     *
      * @param matchMode Whether the clan is in match mode.
      * @returns An object containing information about the operation.
      */
@@ -409,7 +409,7 @@ export class Clan extends Manager {
 
     /**
      * Adds clan roles to users.
-     * 
+     *
      * @param users The users to add clan roles to.
      */
     async addClanRole(...users: (User | Snowflake)[]): Promise<OperationResult> {
@@ -438,7 +438,7 @@ export class Clan extends Manager {
 
     /**
      * Removes clan roles from users.
-     * 
+     *
      * @param users The users to remove clan roles from.
      */
     async removeClanRole(...users: (User | Snowflake)[]): Promise<OperationResult> {
@@ -467,7 +467,7 @@ export class Clan extends Manager {
 
     /**
      * Deletes this clan's role, if any.
-     * 
+     *
      * @reason The reason for deleting the role.
      */
     async deleteClanRole(reason: string): Promise<void> {
@@ -507,14 +507,14 @@ export class Clan extends Manager {
 
     /**
      * Calculates the upkeep of a clan member.
-     * 
+     *
      * @param user The user.
      */
     calculateUpkeep(user: User): number;
 
     /**
      * Calculates the upkeep of a clan member.
-     * 
+     *
      * @param userId The ID of the user.
      */
     calculateUpkeep(userId: Snowflake): number;
@@ -573,7 +573,7 @@ export class Clan extends Manager {
 
     /**
      * Sets the clan's icon.
-     * 
+     *
      * @param iconURL The URL of the icon. Omit this parameter to delete the current icon.
      */
     async setIcon(iconURL?: string): Promise<OperationResult> {
@@ -609,7 +609,7 @@ export class Clan extends Manager {
 
     /**
      * Sets the clan's banner.
-     * 
+     *
      * @param bannerURL The URL of the banner. Omit this parameter to delete the current banner.
      */
     async setBanner(bannerURL?: string): Promise<OperationResult> {
@@ -651,7 +651,7 @@ export class Clan extends Manager {
 
     /**
      * Sets the clan's description.
-     * 
+     *
      * @param description The clan's new description. Omit this parameter to clear the current description.
      */
     setDescription(description?: string): OperationResult {
@@ -670,7 +670,7 @@ export class Clan extends Manager {
 
     /**
      * Increments the clan's power by the specified amount.
-     * 
+     *
      * @param amount The amount to increment the clan power for.
      */
     incrementPower(amount: number): OperationResult {

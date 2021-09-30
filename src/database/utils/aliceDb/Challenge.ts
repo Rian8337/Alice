@@ -50,7 +50,7 @@ export class Challenge extends Manager {
 
     /**
      * The download links to the challenge beatmapset.
-     * 
+     *
      * The first element is the download link via Google Drive,
      * the second element is the download link via OneDrive.
      */
@@ -147,7 +147,7 @@ export class Challenge extends Manager {
 
     /**
      * Starts the challenge.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     async start(): Promise<OperationResult> {
@@ -188,7 +188,7 @@ export class Challenge extends Manager {
 
     /**
      * Ends the challenge.
-     * 
+     *
      * @param force Whether to force end the challenge.
      * @returns An object containing information about the operation.
      */
@@ -253,7 +253,7 @@ export class Challenge extends Manager {
 
     /**
      * Checks whether a score fulfills the challenge requirement.
-     * 
+     *
      * @param score The score.
      * @returns An object containing information about the operation.
      */
@@ -295,7 +295,7 @@ export class Challenge extends Manager {
 
     /**
      * Checks whether a replay fulfills the challenge requirement.
-     * 
+     *
      * @param score The data of the replay.
      * @returns An object containing information about the operation.
      */
@@ -335,7 +335,7 @@ export class Challenge extends Manager {
 
     /**
      * Calculates the bonus level achieved by a replay with respect to the challenge.
-     * 
+     *
      * @param replay The replay.
      * @returns The bonus level.
      */
@@ -343,7 +343,7 @@ export class Challenge extends Manager {
 
     /**
      * Calculates the bonus level achieved by a score with respect to the challenge.
-     * 
+     *
      * @param score The score.
      * @returns The bonus level.
      */
@@ -460,7 +460,7 @@ export class Challenge extends Manager {
 
     /**
      * Gets the top 100 leaderboard of the challenge.
-     * 
+     *
      * @returns The scores that are in the leaderboard of the challenge, sorted by score.
      */
     async getCurrentLeaderboard(): Promise<Score[]> {
@@ -499,7 +499,7 @@ export class Challenge extends Manager {
 
     /**
      * Checks if a sequence of mods fulfills the challenge's constrain.
-     * 
+     *
      * @param mods The mods.
      */
     private isConstrainFulfilled(mods: Mod[]): boolean {
@@ -508,7 +508,7 @@ export class Challenge extends Manager {
 
     /**
      * Checks if a sequence of mods fulfills general challenge requirement.
-     * 
+     *
      * @param mods The mods.
      */
     private isModFulfilled(mods: Mod[]): boolean {
@@ -517,7 +517,7 @@ export class Challenge extends Manager {
 
     /**
      * Verifies whether a score passes the challenge.
-     * 
+     *
      * @param score The score to verify.
      * @param calcResult The calculation result of the score.
      * @param hitErrorInformation The hit error information of the score.
@@ -526,7 +526,7 @@ export class Challenge extends Manager {
 
     /**
      * Verifies whether a replay passes the challenge.
-     * 
+     *
      * @param replay The replay to verify.
      * @param calcResult The calculation result of the replay.
      * @param hitErrorInformation The hit error information of the replay.
@@ -575,31 +575,31 @@ export class Challenge extends Manager {
 
     /**
      * Converts a bonus ID into its string literal.
-     * 
+     *
      * @param id The bonus ID.
      * @returns The string literal of the corresponding ID.
      */
     private bonusIdToString(id: BonusID): string {
         switch (id) {
-            case "score": 
+            case "score":
                 return "ScoreV1";
-            case "acc": 
+            case "acc":
                 return "Accuracy";
-            case "scorev2": 
+            case "scorev2":
                 return "ScoreV2";
-            case "miss": 
+            case "miss":
                 return "Miss Count";
-            case "combo": 
+            case "combo":
                 return "Combo";
-            case "rank": 
+            case "rank":
                 return "Rank";
             case "mod":
                 return "Mods";
-            case "dpp": 
+            case "dpp":
                 return "Droid PP";
-            case "pp": 
+            case "pp":
                 return "PC PP";
-            case "m300": 
+            case "m300":
                 return "Minimum 300";
             case "m100":
                 return "Maximum 100";
@@ -612,7 +612,7 @@ export class Challenge extends Manager {
 
     /**
      * Gets the description of a pass or bonus requirement.
-     * 
+     *
      * @param id The ID of the pass or bonus requirement.
      * @param value The value that must be fulfilled to pass the requirement.
      * @returns The description of the requirement.
@@ -621,23 +621,23 @@ export class Challenge extends Manager {
         switch (id) {
             case "score":
                 return `Score V1 at least **${value.toLocaleString()}**`;
-            case "acc": 
+            case "acc":
                 return `Accuracy at least **${value}%**`;
-            case "scorev2": 
+            case "scorev2":
                 return `Score V2 at least **${value.toLocaleString()}**`;
-            case "miss": 
+            case "miss":
                 return value === 0 ? "No misses" : `Miss count below **${value}**`;
             case "mod":
                 return `Usage of **${(<string> value).toUpperCase()}** mod only`;
-            case "combo": 
+            case "combo":
                 return `Combo at least **${value}**`;
-            case "rank": 
+            case "rank":
                 return `**${(<string> value).toUpperCase()}** rank or above`;
-            case "dpp": 
+            case "dpp":
                 return `**${value}** dpp or more`;
-            case "pp": 
+            case "pp":
                 return `**${value}** pp or more`;
-            case "m300": 
+            case "m300":
                 return `300 hit result at least **${value}**`;
             case "m100":
                 return `100 hit result less than or equal to **${value}**`;
@@ -650,7 +650,7 @@ export class Challenge extends Manager {
 
     /**
      * Gets the tier of a rank.
-     * 
+     *
      * @param rank The rank.
      * @returns The tier of the rank.
      */
@@ -670,7 +670,7 @@ export class Challenge extends Manager {
 
     /**
      * Calculates a replay with respect to the challenge.
-     * 
+     *
      * @param replay The replay to calculate.
      * @returns The calculation result.
      */
@@ -702,14 +702,14 @@ export class Challenge extends Manager {
 
     /**
      * Calculates the ScoreV2 of a replay.
-     * 
+     *
      * @param replay The data of the replay.
      */
     private async calculateChallengeScoreV2(replay: ReplayData): Promise<number>;
 
     /**
      * Calculates the ScoreV2 of a score.
-     * 
+     *
      * @param score The score.
      */
     private async calculateChallengeScoreV2(score: Score): Promise<number>;

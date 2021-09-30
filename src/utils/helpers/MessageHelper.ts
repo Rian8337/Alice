@@ -6,7 +6,7 @@ import { Message } from "discord.js";
 export abstract class MessageHelper {
     /**
      * Checks if the specified message still exists in the channel.
-     * 
+     *
      * @param message The message.
      * @returns Whether the message still exists.
      */

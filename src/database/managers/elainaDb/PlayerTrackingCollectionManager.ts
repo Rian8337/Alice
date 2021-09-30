@@ -27,7 +27,7 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<D
 
     /**
      * Adds a player to the tracking list.
-     * 
+     *
      * @param uid The uid of the player.
      * @returns An object containing information about the operation.
      */
@@ -37,7 +37,7 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<D
 
     /**
      * Removes a player from the tracking list.
-     * 
+     *
      * @param uid The uid of the player.
      * @returns An object containing information about the operation.
      */

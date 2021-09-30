@@ -60,7 +60,7 @@ export class RankedScore extends Manager {
 
     /**
      * Sets a new ranked score based on the given list.
-     * 
+     *
      * @param list The list of scores.
      * @param playCountIncrement The amount to increment towards play count.
      * @returns An object containing information about the operation.

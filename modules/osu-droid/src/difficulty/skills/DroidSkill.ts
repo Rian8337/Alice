@@ -24,7 +24,7 @@ export abstract class DroidSkill extends Skill {
 
     /**
      * The calculated strain value associated with this difficulty hitobject.
-     * 
+     *
      * @param current The current difficulty hitobject being processed.
      */
     protected abstract strainValueOf(current: DifficultyHitObject): number;
@@ -36,7 +36,7 @@ export abstract class DroidSkill extends Skill {
 
     /**
      * Utility to decay strain over a period of deltaTime.
-     * 
+     *
      * @param deltaTime The time between objects.
      */
     protected computeDecay(deltaTime: number): number {
@@ -70,7 +70,7 @@ export abstract class DroidSkill extends Skill {
 
     /**
      * The probability of a player of the given skill to full combo a map of the given difficulty.
-     * 
+     *
      * @param skill The skill level of the player.
      * @param difficulty The difficulty of a range of notes.
      */
@@ -114,7 +114,7 @@ export abstract class DroidSkill extends Skill {
 
     /**
      * The final estimated skill level necessary to full combo the entire beatmap.
-     * 
+     *
      * @param totalDifficulty The total difficulty of all objects in the beatmap.
      */
     private fcTimeSkillLevel(totalDifficulty: number): number {

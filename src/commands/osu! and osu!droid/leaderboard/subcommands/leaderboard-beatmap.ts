@@ -17,7 +17,7 @@ import { leaderboardStrings } from "../leaderboardStrings";
 
 /**
  * Fetches leaderboard for beatmaps that are not available in osu! beatmap listing.
- * 
+ *
  * @param hash The MD5 hash of the beatmap.
  * @param page The page to fetch.
  * @returns The scores in the page.
@@ -89,7 +89,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const pageRemainder: number = (page - 1) % 20;
 
-        const scores: Score[] = leaderboardCache.get(actualPage) ?? 
+        const scores: Score[] = leaderboardCache.get(actualPage) ??
             (beatmapInfo ? await beatmapInfo.fetchDroidLeaderboard(actualPage) : await fetchLeaderboard(<string> hash, page));
 
         if (!leaderboardCache.has(actualPage)) {

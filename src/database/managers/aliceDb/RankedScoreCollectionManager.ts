@@ -45,7 +45,7 @@ export class RankedScoreCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets the ranked score information of an osu!droida ccount.
-     * 
+     *
      * @param uid The uid of the osu!droid account.
      */
     getFromUid(uid: number): Promise<RankedScore | null> {

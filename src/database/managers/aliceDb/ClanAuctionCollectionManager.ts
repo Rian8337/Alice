@@ -37,7 +37,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets a clan auction from its name.
-     * 
+     *
      * @param name The name of the auction.
      */
     getFromName(name: string): Promise<ClanAuction | null> {
@@ -46,7 +46,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets a clan's auctions.
-     * 
+     *
      * @param clanName The name of the clan.
      * @returns The clan's auctions, mapped by their name.
      */
@@ -56,7 +56,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<Data
 
     /**
      * Gets clan auctions that have expired within the specified time limit.
-     * 
+     *
      * @param timelimit The time limit.
      * @returns Auctions that have expired within the time limit.
      */

@@ -38,7 +38,7 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
 
     /**
      * Updates this tag in the tag database.
-     * 
+     *
      * @returns An object containing information about the operation.
      */
     updateTag(): Promise<OperationResult> {

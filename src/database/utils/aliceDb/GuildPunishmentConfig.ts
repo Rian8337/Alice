@@ -55,7 +55,7 @@ export class GuildPunishmentConfig extends Manager {
 
     /**
      * Gets the guild's log channel.
-     * 
+     *
      * @param guild The guild instance.
      * @returns The guild's log channel, `null` if not found.
      */
@@ -65,7 +65,7 @@ export class GuildPunishmentConfig extends Manager {
 
     /**
      * Grants mute immunity for a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
@@ -88,7 +88,7 @@ export class GuildPunishmentConfig extends Manager {
 
     /**
      * Revokes mute immunity from a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */
@@ -113,7 +113,7 @@ export class GuildPunishmentConfig extends Manager {
 
     /**
      * Grants mute permission for a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @param maxTime The maximum time the role is allowed to mute for. -1 means the role can mute indefinitely.
      */
@@ -138,7 +138,7 @@ export class GuildPunishmentConfig extends Manager {
 
     /**
      * Revokes mute permission from a role.
-     * 
+     *
      * @param roleId The ID of the role.
      * @returns An object containing information about the operation.
      */

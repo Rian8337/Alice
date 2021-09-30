@@ -24,7 +24,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets a beatmap from the beatmap cache.
-     * 
+     *
      * @param beatmapIDorHash The beatmap ID or MD5 hash of the beatmap.
      * @param checkFile Whether to check if the beatmap's `.osu` file is downloaded, and downloads it if it's not. Defaults to `true`.
      * @param forceCheck Whether to skip the cache check and request the osu! API. Defaults to `false`.
@@ -58,7 +58,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets the list of beatmaps from a beatmapset.
-     * 
+     *
      * @param beatmapsetID The ID of the beatmapset.
      * @param checkFile Whether to check if beatmap file for each beatmap is downloaded, and downloads it if it's not downloaded. Defaults to `true`.
      * @returns An array of `MapInfo` instance representing each beatmap in the beatmapset.
@@ -108,7 +108,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets the latest cached beatmap in a channel.
-     * 
+     *
      * @param channelID The ID of the channel.
      * @returns The MD5 hash of the beatmap, `undefined` if not found.
      */
@@ -118,7 +118,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Sets the latest cached beatmap in a channel.
-     * 
+     *
      * @param channelID The ID of the channel.
      * @param hash The MD5 hash of the beatmap.
      */
@@ -128,7 +128,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets beatmap IDs from a string.
-     * 
+     *
      * @param str The string to get the beatmap IDs from.
      * @returns All beatmap IDs from the string.
      */
@@ -173,7 +173,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets beatmapset IDs from a string.
-     * 
+     *
      * @param str The string to get the beatmapset IDs from.
      * @returns All beatmapset IDs from the string.
      */
@@ -207,7 +207,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets the difficulty icon of a beatmap.
-     * 
+     *
      * @param rating The difficulty rating of the beatmap.
      * @returns A difficulty icon representing the beatmap's difficulty.
      */
@@ -241,7 +241,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets a color representing a difficulty value.
-     * 
+     *
      * @param rating The difficulty value.
      * @returns The color in hex code.
      */
@@ -251,7 +251,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Generates a `MessageAttachment` of a beatmap's difficulty icon.
-     * 
+     *
      * @param rating The difficulty rating of the beatmap.
      * @returns The generated `MessageAttachment`.
      */
@@ -264,7 +264,7 @@ export abstract class BeatmapManager extends Manager {
 
     /**
      * Gets an emoji that represents a rank.
-     * 
+     *
      * @param rank The rank.
      * @returns The emoji representing the rank.
      */

@@ -42,7 +42,7 @@ export class MusicInfo {
 
     /**
      * The music queue of the voice channel.
-     * 
+     *
      * The first item is the music that is being played.
      */
     readonly queue: MusicQueue[] = [];
@@ -153,7 +153,7 @@ export class MusicInfo {
 
     /**
      * Enqueues a music queue.
-     * 
+     *
      * @param queue The music queue to enqueue.
      * @param index The index to enqueue this music queue on. Defaults to latest.
      */
@@ -165,7 +165,7 @@ export class MusicInfo {
 
     /**
      * Dequeues a music queue.
-     * 
+     *
      * @param index The index of the queue to dequeue.
      */
     dequeue(index: number): void {
@@ -192,7 +192,7 @@ export class MusicInfo {
 
     /**
 	 * Attempts to play a queue.
-     * 
+     *
      * @param queueToRepeat The music queue that will be repeated if repeat mode is enabled.
      * @param forceSkip Whether to skip the previously played queue if repeat mode is enabled.
 	 */

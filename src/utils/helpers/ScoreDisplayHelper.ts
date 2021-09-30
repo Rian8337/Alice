@@ -13,7 +13,7 @@ import { NumberHelper } from "./NumberHelper";
 export abstract class ScoreDisplayHelper {
     /**
      * Shows a player's recent plays.
-     * 
+     *
      * @param interaction The interaction that triggered the command.
      * @param player The player.
      * @returns A message showing the player's recent plays.
@@ -53,7 +53,7 @@ export abstract class ScoreDisplayHelper {
 
     /**
      * Gets the emote ID of a rank.
-     * 
+     *
      * @param rank The rank.
      * @returns The emote ID.
      */

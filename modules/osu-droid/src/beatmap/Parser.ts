@@ -48,9 +48,9 @@ export class Parser {
 
     /**
      * Parses a beatmap.
-     * 
+     *
      * This will process a `.osu` file and returns the current instance of the parser for easy chaining.
-     * 
+     *
      * @param str The `.osu` file to parse.
      * @param mods The mods to parse the beatmap for.
      */
@@ -160,7 +160,7 @@ export class Parser {
 
     /**
      * Sets the last position of the current parser state.
-     * 
+     *
      * This is useful to debug syntax errors.
      */
     private setPosition(str: string): string {
@@ -178,7 +178,7 @@ export class Parser {
 
     /**
      * Processes a property of the beatmap. This takes the current line as parameter.
-     * 
+     *
      * For example, `ApproachRate:9` will be split into `[ApproachRate, 9]`.
      */
     private property(): string[] {
@@ -419,7 +419,7 @@ export class Parser {
      * Converts string slider path to a `PathType`.
      */
     private convertPathType(input: string): PathType {
-        switch (input) { 
+        switch (input) {
             case "B":
                 return PathType.Bezier;
             case "L":
@@ -433,7 +433,7 @@ export class Parser {
 
     /**
      * Gets the timing point that applies at given time.
-     * 
+     *
      * @param time The time to search.
      * @param list The timing points to search in.
      */
@@ -556,7 +556,7 @@ export class Parser {
                         extendedStartIndex = n;
                     }
 
-                    const endPositionDistanceCheck: boolean = 
+                    const endPositionDistanceCheck: boolean =
                         objectN instanceof Slider ?
                         objectN.endPosition.getDistance(objectI.position) < stackDistance
                         :
@@ -651,7 +651,7 @@ export class Parser {
 
     /**
      * Checks if a number is within a given threshold.
-     * 
+     *
      * @param num The number to check.
      * @param min The minimum threshold. Defaults to `-ParserConstants.MAX_PARSE_VALUE`.
      * @param max The maximum threshold. Defaults to `ParserConstants.MAX_PARSE_VALUE`.
@@ -662,7 +662,7 @@ export class Parser {
 
     /**
      * Checks if each coordinates of a vector is within a given threshold.
-     * 
+     *
      * @param vec The vector to check.
      * @param limit The threshold. Defaults to `ParserConstants.MAX_COORDINATE_VALUE`.
      */

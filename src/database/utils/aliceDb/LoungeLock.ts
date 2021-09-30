@@ -32,7 +32,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     /**
      * Extends this lock.
-     * 
+     *
      * @param duration The duration to extend for, in seconds.
      * @param reason The reason for extending the reason.
      * @returns An object containing information about the database operation.
@@ -49,7 +49,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     /**
      * Releases this lock.
-     * 
+     *
      * @returns An object containing information about the database operation.
      */
     async unlock(): Promise<OperationResult> {
@@ -58,7 +58,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     /**
      * Makes this lock permanent.
-     * 
+     *
      * @returns An object containing information about the database operation.
      */
     async makePermanent(): Promise<OperationResult> {

@@ -41,9 +41,9 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
     /**
      * Fetches messages on a daily basis.
-     * 
+     *
      * Run each time daily counter is reset.
-     * 
+     *
      * @param client The instance of the bot.
      * @param newDailyTime The new daily time, in milliseconds.
      */
@@ -76,7 +76,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
     /**
      * Gets the amount of messages sent by users in a channel within
      * the specified period of time, counting in threads in the channel.
-     * 
+     *
      * @param channel The channel.
      * @param fetchStartTime The time at which messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which messages will stop being counted, in milliseconds.
@@ -137,11 +137,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
     /**
      * Gets the amount of messages sent by users in a channel within the specified period of time.
-     * 
+     *
      * IMPORTANT: The bot will start searching from the most recent message instead of
      * from the specified time, therefore this operation is quite expensive. Make sure that
      * you don't specify the time limit to be too far unless you really need it.
-     * 
+     *
      * @param channel The channel.
      * @param fetchStartTime The time at which user messages will start being counted, in milliseconds.
      * @param fetchEndTime The time at which user messages will stop being counted, in milliseconds.
@@ -209,7 +209,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
     /**
      * Checks whether a channel is filtered.
-     * 
+     *
      * @param channel The channel to check.
      * @returns Whether the channel is filtered.
      */

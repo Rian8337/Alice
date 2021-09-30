@@ -10,7 +10,7 @@ import { MessageButtonCreator } from "./MessageButtonCreator";
 export abstract class SelectMenuCreator extends InteractionCollectorCreator {
     /**
      * Creates a select menu.
-     * 
+     *
      * @param interaction The interaction that triggered the select menu.
      * @param placeholder The placeholder text of the select menu.
      * @param choices The choices that the user can choose.

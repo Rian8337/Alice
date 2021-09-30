@@ -24,7 +24,7 @@ export abstract class CacheManager {
 
     /**
      * The users/channels that still have a math game active.
-     * 
+     *
      * This is used to prevent users from starting more than one game at once.
      */
     static readonly stillHasMathGameActive: Set<Snowflake> = new Set();

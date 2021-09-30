@@ -8,7 +8,7 @@ export abstract class Precision {
 
     /**
      * Checks if two numbers are equal with a given tolerance.
-     * 
+     *
      * @param value1 The first number.
      * @param value2 The second number.
      * @param acceptableDifference The acceptable difference as threshold. Default is `Precision.FLOAT_EPSILON = 1e-3`.
@@ -19,7 +19,7 @@ export abstract class Precision {
 
     /**
      * Checks if two vectors are equal with a given tolerance.
-     * 
+     *
      * @param vec1 The first vector.
      * @param vec2 The second vector.
      * @param acceptableDifference The acceptable difference as threshold. Default is `Precision.FLOAT_EPSILON = 1e-3`.

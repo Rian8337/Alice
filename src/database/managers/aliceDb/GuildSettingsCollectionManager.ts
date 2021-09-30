@@ -31,7 +31,7 @@ export class GuildSettingsCollectionManager extends DatabaseCollectionManager<Da
 
     /**
      * Gets the settings of a guild.
-     * 
+     *
      * @param guildId The ID of the guild.
      * @returns The guild setting, `null` if not found.
      */

@@ -8,7 +8,7 @@ import { BeatmapSection } from "./data/BeatmapSection";
 export abstract class BeatmapSectionGenerator {
     /**
      * Generates `BeatmapSection`s for the specified beatmap.
-     * 
+     *
      * @param map The beatmap to generate.
      * @param minSectionObjectCount The maximum delta time allowed between two beatmap sections.
      * Increasing this number decreases the amount of beatmap sections in general. Note that this value does not account for the speed multiplier of

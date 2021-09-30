@@ -9,7 +9,7 @@ import { ArrayHelper } from "./ArrayHelper";
 export abstract class RankedScoreHelper {
     /**
      * Calculates the level of a ranked score.
-     * 
+     *
      * @param rankedScore The ranked score.
      * @returns The level represented by the ranked score.
      */
@@ -29,13 +29,13 @@ export abstract class RankedScoreHelper {
 
     /**
      * Calculates the ranked score requirement to reach a level.
-     * 
+     *
      * @param level The level.
      * @returns The ranked score requirement.
      */
     static calculateScoreRequirement(level: number): number {
         return Math.round(
-            level <= 100 ? 
+            level <= 100 ?
             (5000 / 3 * (4 * Math.pow(level, 3) - 3 * Math.pow(level, 2) - level) + 1.25 * Math.pow(1.8, level - 60)) / 1.128 :
             23875169174 + 15000000000 * (level - 100)
         );
@@ -43,7 +43,7 @@ export abstract class RankedScoreHelper {
 
     /**
      * Determines whether a score in a beatmap can be submitted into the ranked score system.
-     * 
+     *
      * @param rankedStatus The ranking status of the beatmap.
      * @returns Whether a score in the beatmap can be submitted.
      */
@@ -53,9 +53,9 @@ export abstract class RankedScoreHelper {
 
     /**
      * Inserts a score into a list of ranked score plays.
-     * 
+     *
      * Make sure to use `RankedScoreHelper.isBeatmapEligible()` before calling this method.
-     * 
+     *
      * @param scoreList The list of ranked score plays.
      * @param score The score.
      * @returns The score difference between the given score and the play inside the ranked score list, if any.
@@ -70,7 +70,7 @@ export abstract class RankedScoreHelper {
 
     /**
      * Converts a score list back into its array form.
-     * 
+     *
      * @param scoreList The list.
      */
     static toArray(scoreList: Collection<string, number>): [number, string][] {
