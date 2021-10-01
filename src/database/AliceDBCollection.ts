@@ -22,6 +22,7 @@ import { ProfileBackgroundCollectionManager } from "./managers/aliceDb/ProfileBa
 import { VotingCollectionManager } from "./managers/aliceDb/VotingCollectionManager";
 import { PrototypePPCollectionManager } from "./managers/aliceDb/PrototypePPCollectionManager";
 import { ProfileBadgeCollectionManager } from "./managers/aliceDb/ProfileBadgeCollectionManager";
+import { MusicCollectionManager } from "./managers/aliceDb/MusicCollectionManager";
 
 /**
  * Contains collections from Alice DB.
@@ -76,6 +77,11 @@ export class AliceDBCollection {
      * The database collection for shared beatmaps.
      */
     readonly mapShare: MapShareCollectionManager;
+
+    /**
+     * The database collection for music collections.
+     */
+    readonly musicCollection: MusicCollectionManager;
 
     /**
      * The database collection for name changes.
@@ -159,6 +165,7 @@ export class AliceDBCollection {
         this.loungeLock = new LoungeLockCollectionManager(aliceDb.collection("loungelock"));
         this.tournamentMapLengthInfo = new TournamentMapLengthInfoCollectionManager(aliceDb.collection("mapinfolength"));
         this.mapShare = new MapShareCollectionManager(aliceDb.collection("mapshare"));
+        this.musicCollection = new MusicCollectionManager(aliceDb.collection("musiccollection"));
         this.nameChange = new NameChangeCollectionManager(aliceDb.collection("namechange"));
         this.osuBind = new OsuBindCollectionManager(aliceDb.collection("osubind"));
         this.playerInfo = new PlayerInfoCollectionManager(aliceDb.collection("playerpoints"));

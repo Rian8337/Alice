@@ -24,5 +24,19 @@ export enum musicStrings {
     addQueueSuccess = "Successfully added `%s` into the music queue.",
     removeQueueFailed = "I'm sorry, I couldn't remove `%s` from the music queue: %s.",
     removeQueueSuccess = "Successfully removed `%s` from the music queue.",
-    queueIsEmpty = "I'm sorry, there is no music queued!"
+    createCollectionFailed = "I'm sorry, I couldn't create the collection: %s.",
+    createCollectionSuccess = "Successfully created collection `%s`.",
+    deleteCollectionFailed = "I'm sorry, I couldn't delete the collection: %s.",
+    deleteCollectionSuccess = "Successfully deleted collection `%s`.",
+    addVideoToCollectionFailed = "I'm sorry, I couldn't add the video into the collection: %s.",
+    addVideoToCollectionSuccess = "Successfully added video into collection `%s` at position `%s`.",
+    removeVideoFromCollectionFailed = "I'm sorry, I couldn't remove the link in the specified position: %s.",
+    removeVideoFromCollectionSuccess = "Successfully removed link at position `%s` from collection `%s`.",
+    queueIsEmpty = "I'm sorry, there is no music queued!",
+    userHasNoCollection = "I'm sorry, %s no music collections!",
+    noCollectionWithName = "I'm sorry, there is no music collection with that name!",
+    collectionWithNameAlreadyExists = "I'm sorry, a music collection with that name already exists!",
+    userDoesntOwnCollection = "I'm sorry, you don't own this music collection!",
+    collectionLimitReached = "I'm sorry, you can only insert up to 10 videos into a music collection!",
+    enqueueFromCollectionSuccess = "Successfully enqueued %s video(s) from the music collection."
 };
