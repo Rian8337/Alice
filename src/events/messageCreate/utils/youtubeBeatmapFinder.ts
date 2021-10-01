@@ -44,8 +44,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         // Limit to 3 beatmaps to prevent spam
         let validCount: number = 0;
 
-        for await (const link of description.split("\n")) {
-            if (!link.startsWith("https://osu.ppy.sh")) {
+        for await (const link of description.split(/\s+/g)) {
+            if (!link.startsWith("https://osu.ppy.sh/")) {
                 continue;
             }
 
