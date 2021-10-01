@@ -24,7 +24,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
         return;
     }
 
-    await LoungeLockManager.lock(target.id, "Banned from server", Number.POSITIVE_INFINITY);
+    await LoungeLockManager.lock(target.id, "Banned from server", Number.POSITIVE_INFINITY, false);
 };
 
 export const config: EventUtil["config"] = {
