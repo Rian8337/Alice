@@ -1,7 +1,7 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageOptions, Snowflake } from "discord.js";
+import { ButtonInteraction, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed, MessageOptions, Snowflake } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 
 /**
@@ -88,7 +88,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             const message: Message = <Message> await interaction.editReply(options);
 
-            const collector: InteractionCollector<MessageComponentInteraction> =
+            const collector: InteractionCollector<ButtonInteraction> =
                 this.createButtonCollector(message, users, duration);
 
             collector.on("collect", () => {
@@ -172,7 +172,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             return message;
         }
 
-        const collector: InteractionCollector<MessageComponentInteraction> =    
+        const collector: InteractionCollector<ButtonInteraction> =    
             this.createButtonCollector(message, users, duration);
 
         collector.on("collect", async i => {

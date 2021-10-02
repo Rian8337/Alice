@@ -1,4 +1,4 @@
-import { InteractionCollector, Message, MessageComponentInteraction, Snowflake } from "discord.js";
+import { ButtonInteraction, InteractionCollector, Message, MessageComponentInteraction, SelectMenuInteraction, Snowflake } from "discord.js";
 
 export abstract class InteractionCollectorCreator {
     /**
@@ -9,7 +9,7 @@ export abstract class InteractionCollectorCreator {
      * @param duration The duration this collector will remain active.
      * @returns The collector.
      */
-    protected static createButtonCollector(message: Message, users: Snowflake[], duration: number): InteractionCollector<MessageComponentInteraction> {
+    protected static createButtonCollector(message: Message, users: Snowflake[], duration: number): InteractionCollector<ButtonInteraction> {
         return message.createMessageComponentCollector({
             filter: (i) => i.isButton() && users.includes(i.user.id),
             componentType: "BUTTON",
@@ -26,7 +26,7 @@ export abstract class InteractionCollectorCreator {
      * @param duration The duration this collector will remain active.
      * @returns The collector.
      */
-    protected static createSelectMenuCollector(message: Message, users: Snowflake[], duration: number): InteractionCollector<MessageComponentInteraction> {
+    protected static createSelectMenuCollector(message: Message, users: Snowflake[], duration: number): InteractionCollector<SelectMenuInteraction> {
         return message.createMessageComponentCollector({
             filter: (i) => i.isSelectMenu() && users.includes(i.user.id),
             componentType: "SELECT_MENU",
