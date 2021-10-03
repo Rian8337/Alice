@@ -314,8 +314,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 if (artistGuessData.replacedStrings.length === 0 && titleGuessData.replacedStrings.length === 0) {
                     // All characters have been guessed
-                    ++level;
-
                     collector.stop();
                 } else {
                     // There are still more characters to guess left
@@ -327,7 +325,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
 
             collector.on("end", async () => {
-                const embed: MessageEmbed = createEmbed(level - 1, beatmapInfo, beatmapInfo.artist, beatmapInfo.title);
+                const embed: MessageEmbed = createEmbed(level, beatmapInfo, beatmapInfo.artist, beatmapInfo.title);
 
                 // Remove buttons from original message
                 await message.edit({
@@ -346,6 +344,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         content: MessageCreator.createAccept(`Everyone got the beatmap correct (it took ${((Date.now() - message.createdTimestamp) / 1000).toFixed(2)} seconds)!`),
                         embeds: [ embed ]
                     });
+
+                    ++level;
                 } else {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject("No one guessed the beatmap!"),
