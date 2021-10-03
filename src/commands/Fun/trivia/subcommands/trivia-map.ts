@@ -230,10 +230,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         await new Promise<void>(resolve => {
             collector.on("collect", async i => {
-                await i.deferUpdate();
-
-                const char: string = i.customId;
-
                 const playerStats: MapTriviaPlayer =
                     statistics.get(i.user.id) ??
                     {
@@ -241,6 +237,19 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                         lives: 10,
                         score: 0
                     };
+
+                if (playerStats.lives === 0) {
+                    i.reply({
+                        content: MessageCreator.createReject("I'm sorry, you have run out of lives to guess!"),
+                        ephemeral: true
+                    });
+
+                    return;
+                }
+
+                await i.deferUpdate();
+
+                const char: string = i.customId;
 
                 statistics.set(i.user.id, playerStats);
 
