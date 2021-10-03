@@ -312,8 +312,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     )
                 });
 
-                const embed: MessageEmbed = createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim());
-
                 if (artistGuessData.replacedStrings.length === 0 && titleGuessData.replacedStrings.length === 0) {
                     // All characters have been guessed
                     ++level;
@@ -322,7 +320,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 } else {
                     // There are still more characters to guess left
                     await message.edit({
-                        embeds: [ embed ],
+                        embeds: [ createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim()) ],
                         components: components
                     });
                 }
