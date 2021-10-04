@@ -87,7 +87,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.editDescriptionSuccessful)
+        content: MessageCreator.createAccept(clanStrings.clearDescriptionSuccessful)
     });
 };
 

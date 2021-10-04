@@ -133,7 +133,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     interaction.editReply({
-        content: MessageCreator.createReject(clanStrings.clanAuctionCancelSuccessful)
+        content: MessageCreator.createReject(clanStrings.clanAuctionCreateSuccessful)
     });
 };
 

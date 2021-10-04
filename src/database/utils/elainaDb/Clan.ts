@@ -13,6 +13,7 @@ import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
 import { Precision } from "osu-droid";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { UserBind } from "./UserBind";
 
 /**
  * Represents a clan.
@@ -173,6 +174,52 @@ export class Clan extends Manager {
                 resolve(this.createOperationResult(false, e.message));
             });
         });
+    }
+
+    /**
+     * Adds a member to the clan.
+     * 
+     * @param user The user to add.
+     * @returns An object containing information about the operation.
+     */
+    async addMember(user: User): Promise<OperationResult>;
+
+    /**
+     * Adds a member to the clan.
+     * 
+     * @param userID The ID of the user to add.
+     * @returns An object containing information about the operation.
+     */
+    async addMember(userID: Snowflake): Promise<OperationResult>;
+
+    async addMember(userOrId: User | Snowflake): Promise<OperationResult> {
+        const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
+
+        if (this.member_list.has(id)) {
+            return this.createOperationResult(false, "user is already in this clan");
+        }
+
+        const toAcceptBindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(id);
+
+        if (!toAcceptBindInfo) {
+            return this.createOperationResult(false, Constants.userNotBindedReject);
+        }
+
+        if (toAcceptBindInfo.clan) {
+            return this.createOperationResult(false, "user is already in another clan");
+        }
+
+        await this.addClanRole(userOrId);
+
+        return DatabaseManager.elainaDb.collections.userBind.update(
+            { discordid: id },
+            {
+                $set: {
+                    clan: this.name
+                }
+            }
+        );
     }
 
     /**

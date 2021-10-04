@@ -44,7 +44,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!editDescResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clearDescriptionFailed, editDescResult.reason!)
+            content: MessageCreator.createReject(clanStrings.editDescriptionFailed, editDescResult.reason!)
         });
     }
 
@@ -52,12 +52,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!finalResult.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.clearDescriptionFailed, finalResult.reason!)
+            content: MessageCreator.createReject(clanStrings.editDescriptionFailed, finalResult.reason!)
         });
     }
 
     interaction.editReply({
-        content: MessageCreator.createAccept(clanStrings.clearDescriptionSuccessful)
+        content: MessageCreator.createAccept(clanStrings.editDescriptionSuccessful)
     });
 };
 
