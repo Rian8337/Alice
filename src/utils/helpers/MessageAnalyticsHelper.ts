@@ -12,6 +12,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
      * The IDs of channel categories that are ignored.
      */
     static readonly filteredCategories: Snowflake[] = [
+        "894382622787137596",
         "360714803691388928",
         "415559968062963712",
         "360715303149240321",
