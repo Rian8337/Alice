@@ -1,4 +1,4 @@
-import { GuildMember, Role, TextChannel } from "discord.js";
+import { GuildMember, Role, TextChannel, ThreadChannel } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
@@ -6,6 +6,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { verifyStrings } from "./verifyStrings";
+import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 
 export const run: Command["run"] = async(_, interaction) => {
     if (!(<GuildMember> interaction.member).roles.cache.hasAny(...Config.verifyPerm)) {
@@ -14,21 +15,45 @@ export const run: Command["run"] = async(_, interaction) => {
         });
     }
 
+    if (!(interaction.channel instanceof ThreadChannel) || interaction.channel.parentId !== Constants.verificationChannel) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(verifyStrings.commandNotAvailableInChannel)
+        });
+    }
+
     const toVerify: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
 
-    const role: Role = interaction.guild!.roles.cache.find(r => r.name === "Member")!;
+    if (!interaction.channel!.members.cache.has(toVerify.id)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(verifyStrings.userIsNotInThread)
+        });
+    }
 
-    if (toVerify.roles.cache.has(role.id)) {
+    const onVerificationRole: Role = interaction.guild!.roles.cache.find(v => v.name === "On Verification")!;
+
+    const memberRole: Role = interaction.guild!.roles.cache.find(r => r.name === "Member")!;
+
+    if (!toVerify.roles.cache.has(onVerificationRole.id)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(verifyStrings.userIsNotInVerification)
+        });
+    }
+
+    if (toVerify.roles.cache.has(memberRole.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(verifyStrings.userIsAlreadyVerifiedError)
         });
     }
 
-    await toVerify.roles.add(role, "Verification");
+    await toVerify.roles.set([ memberRole ], "Verification");
 
-    interaction.editReply({
+    await interaction.editReply({
         content: MessageCreator.createAccept(verifyStrings.verificationSuccess)
     });
+
+    await HelperFunctions.sleep(1);
+
+    await interaction.channel.delete("User has been verified");
 
     const general: TextChannel = <TextChannel> interaction.guild!.channels.cache.get(Constants.mainServer);
 

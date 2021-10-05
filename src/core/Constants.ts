@@ -55,6 +55,11 @@ export class Constants {
     static readonly loungeChannel: Snowflake = "667400988801368094";
 
     /**
+     * The ID of verification channel in main server.
+     */
+    static readonly verificationChannel: Snowflake = "885365138453041152";
+
+    /**
      * The link to welcome image (used to welcome new members to the server).
      */
     static readonly welcomeImageLink: string = "https://i.imgur.com/LLzteLz.jpg";
