@@ -53,7 +53,9 @@ export const run: Command["run"] = async(_, interaction) => {
 
     await HelperFunctions.sleep(1);
 
-    await interaction.channel.delete("User has been verified");
+    await interaction.channel.setLocked(true);
+
+    await interaction.channel.setArchived(true);
 
     const general: TextChannel = <TextChannel> interaction.guild!.channels.cache.get(Constants.mainServer);
 
