@@ -23,6 +23,8 @@ export const run: Command["run"] = async(_, interaction) => {
 
     const toVerify: GuildMember = await interaction.guild!.members.fetch(interaction.options.getUser("user", true));
 
+    await interaction.channel!.members.fetch();
+
     if (!interaction.channel!.members.cache.has(toVerify.id)) {
         return interaction.editReply({
             content: MessageCreator.createReject(verifyStrings.userIsNotInThread)
