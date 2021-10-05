@@ -73,7 +73,8 @@ export const run: EventUtil["run"] = async client => {
         embed.setDescription(
             `This is the thread that will be used for your verification process.\n\n` +
             `For information on how to verify, please check [this](${verificationMessage.url}) message.\n\n` +
-            `If you need help, you may ping the <@&369108742077284353> and/or <@&595667274707370024> role for assistance. **Remember to do so or else they will most likely not come to you!**`
+            `If you need help, you may ping the <@&369108742077284353> and/or <@&595667274707370024> role for assistance. You may ping them too when you're ready to verify.\n\n` +
+            `**Remember to do so or else they will most likely not come to you!**`
         );
 
         await thread.send({
