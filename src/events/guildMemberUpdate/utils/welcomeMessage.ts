@@ -13,12 +13,12 @@ export const run: EventUtil["run"] = async (_, oldMember: GuildMember, newMember
         return;
     }
 
-    if (!oldMember.roles.cache.find(r => r.name === "Member") && newMember.roles.cache.find(r => r.name === "Member")) {
-        general.send({
-            content: `Welcome to ${newMember.guild.name}, ${newMember}!`,
-            files: [ Constants.welcomeImageLink ]
-        });
-    }
+    // if (!oldMember.roles.cache.find(r => r.name === "Member") && newMember.roles.cache.find(r => r.name === "Member")) {
+    //     general.send({
+    //         content: `Welcome to ${newMember.guild.name}, ${newMember}!`,
+    //         files: [ Constants.welcomeImageLink ]
+    //     });
+    // }
 };
 
 export const config: EventUtil["config"] = {
