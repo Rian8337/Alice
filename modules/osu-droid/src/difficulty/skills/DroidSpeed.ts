@@ -25,7 +25,7 @@ export class DroidSpeed extends DroidSkill {
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
 
-    private readonly rhythmMultiplier: number = 2;
+    private readonly rhythmMultiplier: number = 0.75;
     private readonly historyTimeMax: number = 5000; // 5 seconds of calculateRhythmBonus max.
 
     private currentTapStrain: number = 1;
@@ -78,7 +78,7 @@ export class DroidSpeed extends DroidSkill {
         this.currentMovementStrain *= decay;
         this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime) * this.skillMultiplier;
 
-        return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
+        return (this.currentMovementStrain + this.currentTapStrain) * this.currentRhythm;
     }
 
     /**
@@ -102,6 +102,9 @@ export class DroidSpeed extends DroidSkill {
         let rhythmComplexitySum: number = 0;
         let islandSize: number = 0;
 
+        // Store the ratio of the current start of an island to buff for tighter rhythms.
+        let startRatio: number = 0;
+
         let firstDeltaSwitch: boolean = false;
 
         for (let i = this.previous.length - 2; i > 0; --i) {
@@ -120,47 +123,64 @@ export class DroidSpeed extends DroidSkill {
 
             const currentDelta: number = this.previous[i - 1].strainTime;
             const prevDelta: number = this.previous[i].strainTime;
-            const prevPrevDelta: number = this.previous[i + 1].strainTime;
+            const lastDelta: number = this.previous[i + 1].strainTime;
 
-            let effectiveRatio: number = Math.min(prevDelta, currentDelta) / Math.max(prevDelta, currentDelta);
+            const currentRatio: number = 1 + 6 * Math.min(
+                0.5,
+                Math.pow(
+                    Math.sin(
+                        Math.PI / (Math.min(prevDelta, currentDelta) / Math.max(prevDelta, currentDelta))
+                    ),
+                    2
+                )
+            );
 
-            if (effectiveRatio > 0.5) {
-                // Large buff for 1/3 -> 1/4 type transitions.
-                effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 5;
-            }
+            const windowPenalty: number = Math.min(
+                1,
+                Math.max(
+                    0,
+                    Math.abs(prevDelta - currentDelta) - this.greatWindow * 0.6
+                ) / (this.greatWindow * 0.6)
+            );
 
-            // Scale with time.
-            effectiveRatio *= currentHistoricalDecay;
+            let effectiveRatio: number = windowPenalty * currentRatio;
 
             if (firstDeltaSwitch) {
-                if (Precision.almostEqualsNumber(prevDelta, currentDelta, 15)) {
+                if (prevDelta <= 1.25 * currentDelta && prevDelta * 1.25 >= currentDelta) {
                     // Island is still progressing, count size.
-                    ++islandSize;
+                    if (islandSize < 7) {
+                        ++islandSize;
+                    }
                 } else {
-                    islandSize = Math.min(islandSize, 6);
-
                     if (this.previous[i - 1].object instanceof Slider) {
                         // BPM change is into slider, this is easy acc window.
-                        effectiveRatio /= 4;
-                    }
-
-                    if (this.previous[i].object instanceof Slider) {
-                        // BPM change was from a slider, this is typically easier than circle -> circle
-                        effectiveRatio /= 2;
-                    }
-
-                    if (previousIslandSize === islandSize) {
-                        // Repeated island size (ex: triplet -> triplet)
-                        effectiveRatio /= 4;
-                    }
-
-                    if (prevPrevDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
-                        // Previous increase happened a note ago.
-                        // Albeit this is a 1/1->1/2-1/4 type of transition, we don't want to buff this.
                         effectiveRatio /= 8;
                     }
 
-                    rhythmComplexitySum += effectiveRatio;
+                    if (this.previous[i].object instanceof Slider) {
+                        // BPM change was from a slider, this is typically easier than circle -> circle.
+                        effectiveRatio /= 4;
+                    }
+
+                    if (previousIslandSize === islandSize) {
+                        // Repeated island size (ex: triplet -> triplet).
+                        effectiveRatio /= 4;
+                    }
+
+                    if (previousIslandSize % 2 === islandSize % 2) {
+                        // Repeated island polarity (2 -> 4, 3 -> 5).
+                        effectiveRatio /= 2;
+                    }
+
+                    if (lastDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
+                        // Previous increase happened a note ago.
+                        // Albeit this is a 1/1 -> 1/2-1/4 type of transition, we don't want to buff this.
+                        effectiveRatio /= 8;
+                    }
+
+                    rhythmComplexitySum += Math.sqrt(effectiveRatio * startRatio) * currentHistoricalDecay * Math.sqrt(4 + islandSize) / 2 * Math.sqrt(4 + previousIslandSize) / 2;
+
+                    startRatio = effectiveRatio;
 
                     previousIslandSize = islandSize;
 
@@ -170,17 +190,18 @@ export class DroidSpeed extends DroidSkill {
                         firstDeltaSwitch = false;
                     }
 
-                    islandSize = 0;
+                    islandSize = 1;
                 }
             } else if (prevDelta > 1.25 * currentDelta) {
                 // We want to be speeding up.
                 // Begin counting island until we change speed again.
                 firstDeltaSwitch = true;
-                islandSize = 0;
+                startRatio = effectiveRatio;
+                islandSize = 1;
             }
         }
 
-        return Math.sqrt(4 + rhythmComplexitySum * this.rhythmMultiplier * Math.sqrt(52 / (this.greatWindow * 2))) / 2;
+        return Math.sqrt(4 + rhythmComplexitySum * this.rhythmMultiplier) / 2;
     }
 
     /**
@@ -204,17 +225,6 @@ export class DroidSpeed extends DroidSkill {
 
         const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
 
-        let angleBonus: number = 1;
-        if (current.angle !== null) {
-            if (current.angle < Math.PI / 2) {
-                angleBonus += 0.25;
-            } else if (current.angle < this.angleBonusBegin) {
-                angleBonus += Math.pow(
-                    Math.sin(1.5 * (this.angleBonusBegin - current.angle)), 2
-                ) / 4;
-            }
-        }
-
-        return angleBonus * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / strainTime;
+        return speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / strainTime;
     }
 }

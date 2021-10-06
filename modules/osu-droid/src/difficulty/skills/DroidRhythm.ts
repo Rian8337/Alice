@@ -33,6 +33,9 @@ export class DroidRhythm extends DroidSkill {
         let rhythmComplexitySum: number = 0;
         let islandSize: number = 0;
 
+        // Store the ratio of the current start of an island to buff for tighter rhythms.
+        let startRatio: number = 0;
+
         let firstDeltaSwitch: boolean = false;
 
         for (let i = this.previous.length - 2; i > 0; --i) {
@@ -51,33 +54,43 @@ export class DroidRhythm extends DroidSkill {
 
             const currentDelta: number = this.previous[i - 1].strainTime;
             const prevDelta: number = this.previous[i].strainTime;
-            const prevPrevDelta: number = this.previous[i + 1].strainTime;
+            const lastDelta: number = this.previous[i + 1].strainTime;
 
-            let effectiveRatio: number = Math.min(prevDelta, currentDelta) / Math.max(prevDelta, currentDelta);
+            const currentRatio: number = 1 + 6 * Math.min(
+                0.5,
+                Math.pow(
+                    Math.sin(
+                        Math.PI / (Math.min(prevDelta, currentDelta) / Math.max(prevDelta, currentDelta))
+                    ),
+                    2
+                )
+            );
 
-            if (effectiveRatio > 0.5) {
-                // Large buff for 1/3 -> 1/4 type transitions.
-                effectiveRatio = 0.5 + (effectiveRatio - 0.5) * 5;
-            }
+            const windowPenalty: number = Math.min(
+                1,
+                Math.max(
+                    0,
+                    Math.abs(prevDelta - currentDelta) - this.greatWindow * 0.6
+                ) / (this.greatWindow * 0.6)
+            );
 
-            // Scale with time.
-            effectiveRatio *= currentHistoricalDecay;
+            let effectiveRatio: number = windowPenalty * currentRatio;
 
             if (firstDeltaSwitch) {
-                if (Precision.almostEqualsNumber(prevDelta, currentDelta, 15)) {
+                if (prevDelta <= 1.25 * currentDelta && prevDelta * 1.25 >= currentDelta) {
                     // Island is still progressing, count size.
-                    ++islandSize;
+                    if (islandSize < 7) {
+                        ++islandSize;
+                    }
                 } else {
-                    islandSize = Math.min(islandSize, 6);
-
                     if (this.previous[i - 1].object instanceof Slider) {
                         // BPM change is into slider, this is easy acc window.
-                        effectiveRatio /= 4;
+                        effectiveRatio /= 8;
                     }
 
                     if (this.previous[i].object instanceof Slider) {
                         // BPM change was from a slider, this is typically easier than circle -> circle.
-                        effectiveRatio /= 2;
+                        effectiveRatio /= 4;
                     }
 
                     if (previousIslandSize === islandSize) {
@@ -85,13 +98,20 @@ export class DroidRhythm extends DroidSkill {
                         effectiveRatio /= 4;
                     }
 
-                    if (prevPrevDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
+                    if (previousIslandSize % 2 === islandSize % 2) {
+                        // Repeated island polarity (2 -> 4, 3 -> 5).
+                        effectiveRatio /= 2;
+                    }
+
+                    if (lastDelta > prevDelta + 10 && prevDelta > currentDelta + 10) {
                         // Previous increase happened a note ago.
-                        // Albeit this is a 1/1->1/2-1/4 type of transition, we don't want to buff this.
+                        // Albeit this is a 1/1 -> 1/2-1/4 type of transition, we don't want to buff this.
                         effectiveRatio /= 8;
                     }
 
-                    rhythmComplexitySum += effectiveRatio;
+                    rhythmComplexitySum += Math.sqrt(effectiveRatio * startRatio) * currentHistoricalDecay * Math.sqrt(4 + islandSize) / 2 * Math.sqrt(4 + previousIslandSize) / 2;
+
+                    startRatio = effectiveRatio;
 
                     previousIslandSize = islandSize;
 
@@ -101,18 +121,19 @@ export class DroidRhythm extends DroidSkill {
                         firstDeltaSwitch = false;
                     }
 
-                    islandSize = 0;
+                    islandSize = 1;
                 }
             } else if (prevDelta > 1.25 * currentDelta) {
                 // We want to be speeding up.
                 // Begin counting island until we change speed again.
                 firstDeltaSwitch = true;
-                islandSize = 0;
+                startRatio = effectiveRatio;
+                islandSize = 1;
             }
         }
 
         this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum * Math.sqrt(52 / (this.greatWindow * 2))) / 2 * this.skillMultiplier;
+        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum) / 2 * this.skillMultiplier;
 
         return this.currentStrain;
     }
