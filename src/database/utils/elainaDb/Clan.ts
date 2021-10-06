@@ -11,7 +11,7 @@ import { Constants } from "@alice-core/Constants";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
-import { Precision } from "osu-droid";
+import { Player, Precision } from "osu-droid";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "./UserBind";
 
@@ -221,6 +221,34 @@ export class Clan extends Manager {
         if (toAcceptBindInfo.clan) {
             return this.createOperationResult(false, "user is already in another clan");
         }
+
+        let player: Player | undefined = new Player();
+
+        player.rank = Number.POSITIVE_INFINITY;
+
+        for await (const uid of toAcceptBindInfo.previous_bind) {
+            const tempPlayer = await Player.getInformation({ uid: uid });
+
+            if (player.rank > tempPlayer.rank) {
+                player = tempPlayer;
+                break;
+            }
+        }
+
+        if (!player?.username) {
+            return this.createOperationResult(false, "user's binded accounts not found");
+        }
+
+        this.member_list.set(
+            id,
+            {
+                id: id,
+                uid: player.uid,
+                rank: player.rank,
+                hasPermission: false,
+                battle_cooldown: 0
+            }
+        );
 
         await this.addClanRole(userOrId);
 
