@@ -108,8 +108,9 @@ export abstract class MuteManager extends PunishmentManager {
 
         member.guild.channels.cache.forEach(async channel => {
             if (channel instanceof TextChannel || channel instanceof VoiceChannel) {
-                await channel.permissionOverwrites.edit(<Role> muteRole, {
+                await channel.permissionOverwrites.edit(muteRole!, {
                     SEND_MESSAGES: false,
+                    SEND_MESSAGES_IN_THREADS: false,
                     ADD_REACTIONS: false,
                     SPEAK: false,
                     CONNECT: false
