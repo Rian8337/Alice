@@ -5,7 +5,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { ButtonInteraction, Collection, InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed, Snowflake } from "discord.js";
+import { Collection, InteractionCollector, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Snowflake } from "discord.js";
 import { MapInfo, OsuAPIRequestBuilder, OsuAPIResponse, RequestResponse } from "osu-droid";
 import { triviaStrings } from "../triviaStrings";
 
@@ -224,7 +224,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             components: components
         });
 
-        const collector: InteractionCollector<ButtonInteraction> = message.createMessageComponentCollector({
+        const collector: InteractionCollector<MessageComponentInteraction> = message.createMessageComponentCollector({
             time: 45000
         });
 

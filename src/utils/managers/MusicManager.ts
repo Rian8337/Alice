@@ -1,5 +1,5 @@
 import { Manager } from "@alice-utils/base/Manager";
-import { AudioPlayerStatus, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
+import { AudioPlayerStatus, DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
 import { Collection, Snowflake, StageChannel, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MusicInfo } from "@alice-utils/music/MusicInfo";
@@ -30,7 +30,7 @@ export abstract class MusicManager extends Manager {
                 joinVoiceChannel({
                     channelId: channel.id,
                     guildId: channel.guild.id,
-                    adapterCreator: channel.guild.voiceAdapterCreator
+                    adapterCreator: <DiscordGatewayAdapterCreator> channel.guild.voiceAdapterCreator
                 }),
                 channel.id,
                 executionChannel

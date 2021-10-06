@@ -3,7 +3,7 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
-import { ButtonInteraction, Collection, Guild, GuildMember, InteractionCollector, Message, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import { Collection, Guild, GuildMember, InteractionCollector, Message, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async client => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
@@ -16,7 +16,7 @@ export const run: EventUtil["run"] = async client => {
 
     const arrivalMessage: Message = await arrivalChannel.messages.fetch("894379931121876992");
 
-    const collector: InteractionCollector<ButtonInteraction> = arrivalMessage.createMessageComponentCollector();
+    const collector: InteractionCollector<MessageComponentInteraction> = arrivalMessage.createMessageComponentCollector();
 
     const onVerificationRole: Role = guild.roles.cache.find(v => v.name === "On Verification")!;
 

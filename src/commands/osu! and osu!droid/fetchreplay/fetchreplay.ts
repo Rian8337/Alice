@@ -128,7 +128,7 @@ export const run: Command["run"] = async (_, interaction) => {
         (<GuildMember | null> interaction.member)?.displayHexColor
     );
 
-    (<MessageEmbed> calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, calcEmbedOptions.embeds![0].author?.iconURL)
+    (<MessageEmbed> calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, (<MessageEmbed> calcEmbedOptions.embeds![0]).author?.iconURL)
         .addField("Hit Error Information", `${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(2)} UR`);
 
     calcEmbedOptions.files = [ replayAttachment ];
