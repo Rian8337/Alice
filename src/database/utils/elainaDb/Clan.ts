@@ -673,6 +673,13 @@ export class Clan extends Manager {
                 return this.createOperationResult(false, "invalid image");
             }
 
+            // Delete original message
+            if (this.iconMessage) {
+                const message: Message = await channel.messages.fetch(this.iconMessage);
+
+                await message.delete();
+            }
+
             const attachment: MessageAttachment = new MessageAttachment(iconURL, "icon.png");
 
             const message: Message = await channel.send({
@@ -713,6 +720,13 @@ export class Clan extends Manager {
 
             if (!Precision.almostEqualsNumber(image.naturalWidth / image.naturalHeight, 3.6)) {
                 return this.createOperationResult(false, "image ratio is not 18:5");
+            }
+
+            // Delete original message
+            if (this.bannerMessage) {
+                const message: Message = await channel.messages.fetch(this.bannerMessage);
+
+                await message.delete();
             }
 
             const attachment: MessageAttachment = new MessageAttachment(bannerURL, "banner.png");
