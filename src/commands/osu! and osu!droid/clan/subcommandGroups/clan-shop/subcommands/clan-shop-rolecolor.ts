@@ -23,6 +23,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    const powerReq: number = 2500;
+
+    if (clan.power < powerReq) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(
+                clanStrings.clanPowerNotEnoughToBuyItem, powerReq.toLocaleString()
+            )
+        });
+    }
+
     const clanRole: Role | undefined = await clan.getClanRole();
 
     if (!clanRole) {
