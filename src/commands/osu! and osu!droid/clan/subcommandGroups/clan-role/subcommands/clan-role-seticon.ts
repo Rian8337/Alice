@@ -6,7 +6,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { Role } from "discord.js";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const iconURL: string | null = interaction.options.getString("iconurl");
+    const iconURL: string | null = interaction.options.getString("url");
 
     const clan: Clan | null = await DatabaseManager.elainaDb.collections.clan.getFromUser(interaction.user);
 

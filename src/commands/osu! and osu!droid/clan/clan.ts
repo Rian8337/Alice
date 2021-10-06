@@ -522,9 +522,9 @@ export const config: Command["config"] = {
                     description: "Sets or clears your clan role's icon.",
                     options: [
                         {
-                            name: "iconurl",
+                            name: "url",
                             type: CommandArgumentType.STRING,
-                            description: "The URL of your new clan role icon. Omit this option to clear your clan role's icon."
+                            description: "The URL of your new clan role icon. Omit to clear the icon."
                         }
                     ]
                 },
@@ -536,7 +536,7 @@ export const config: Command["config"] = {
                         {
                             name: "color",
                             type: CommandArgumentType.STRING,
-                            description: "The new color of the role. Must be a hex code. Omit this option to clear your clan role's color."
+                            description: "The new color of the role. Must be a hex code. Omit to clear the color."
                         }
                     ]
                 }
