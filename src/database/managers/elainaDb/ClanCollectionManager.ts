@@ -82,6 +82,8 @@ export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseCla
                     amount: 0
                 }
             ],
+            roleColorUnlocked: false,
+            roleIconUnlocked: false,
             weeklyfee: currentTime + 86400 * 7 // Weekly upkeep every week
         };
     }

@@ -95,6 +95,16 @@ export class Clan extends Manager {
     isMatch: boolean;
 
     /**
+     * Whether the clan can change their role's color.
+     */
+    roleColorUnlocked: boolean;
+
+    /**
+     * Whether the clan can change their role's icon.
+     */
+    roleIconUnlocked: boolean;
+
+    /**
      * The powerups that the clan own, mapped by their name.
      */
     powerups: Collection<PowerupType, Powerup>;
@@ -149,6 +159,8 @@ export class Clan extends Manager {
         this.namecooldown = data.namecooldown;
         this.weeklyfee = data.weeklyfee;
         this.isMatch = data.isMatch;
+        this.roleColorUnlocked = data.roleColorUnlocked;
+        this.roleIconUnlocked = data.roleIconUnlocked;
         this.powerups = ArrayHelper.arrayToCollection(data.powerups ?? [], "name");
         this.active_powerups = data.active_powerups ?? [];
         this.member_list = ArrayHelper.arrayToCollection(data.member_list ?? [], "id");
@@ -430,6 +442,8 @@ export class Clan extends Manager {
                     namecooldown: this.namecooldown,
                     weeklyfee: this.weeklyfee,
                     isMatch: this.isMatch,
+                    roleIconUnlocked: this.roleIconUnlocked,
+                    roleColorUnlocked: this.roleColorUnlocked,
                     powerups: [...this.powerups.values()],
                     active_powerups: this.active_powerups,
                     member_list: [...this.member_list.values()]
