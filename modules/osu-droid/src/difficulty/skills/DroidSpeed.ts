@@ -16,7 +16,6 @@ export class DroidSpeed extends DroidSkill {
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
-    private readonly angleBonusBegin: number = 5 * Math.PI / 6;
     protected readonly historyLength: number = 32;
     protected readonly skillMultiplier: number = 1375;
     protected readonly strainDecayBase: number = 0.3;
@@ -78,7 +77,7 @@ export class DroidSpeed extends DroidSkill {
         this.currentMovementStrain *= decay;
         this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime) * this.skillMultiplier;
 
-        return (this.currentMovementStrain + this.currentTapStrain) * this.currentRhythm;
+        return this.currentMovementStrain + this.currentTapStrain * this.currentRhythm;
     }
 
     /**

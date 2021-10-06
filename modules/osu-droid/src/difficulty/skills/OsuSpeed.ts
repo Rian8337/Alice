@@ -93,6 +93,5 @@ export class OsuSpeed extends OsuSkill {
     saveToHitObject(current: DifficultyHitObject): void {
         // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
         current.movementStrain = this.currentStrain;
-        current.rhythmMultiplier = 1;
     }
 }
