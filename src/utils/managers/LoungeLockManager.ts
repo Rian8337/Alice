@@ -46,9 +46,10 @@ export abstract class LoungeLockManager extends PunishmentManager {
      * @param userId The ID of the user.
      * @param reason The reason for locking the user.
      * @param duration The duration of the lock or the extension, in seconds. For permanent locks, use `Number.POSITIVE_INFINITY` or -1.
+     * @param updateChannelPermission Whether to update lounge channel permission. Defaults to `true`.
      * @returns An object containing information about the operation.
      */
-    static async lock(userId: Snowflake, reason: string, duration: number): Promise<OperationResult> {
+    static async lock(userId: Snowflake, reason: string, duration: number, updateChannelPermission: boolean = true): Promise<OperationResult> {
         if (duration < 0) {
             duration = Number.POSITIVE_INFINITY;
         }
@@ -84,7 +85,9 @@ export abstract class LoungeLockManager extends PunishmentManager {
             // Insert new lock
             await this.loungeLockDb.insertNewLock(userId, duration, reason);
 
-            await this.insertLockPermissionToChannel(userId);
+            if (updateChannelPermission) {
+                await this.insertLockPermissionToChannel(userId);
+            }
 
             logEmbed.setColor("#a5de6f")
                 .setTitle("Lounge Lock Added")

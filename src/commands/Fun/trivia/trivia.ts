@@ -14,6 +14,11 @@ export const config: Command["config"] = {
     description: "Main command for trivia-related features.",
     options: [
         {
+            name: "map",
+            type: CommandArgumentType.SUB_COMMAND,
+            description: "Starts a beatmap trivia in the channel."
+        },
+        {
             name: "questions",
             type: CommandArgumentType.SUB_COMMAND,
             description: "The default quiz command.",

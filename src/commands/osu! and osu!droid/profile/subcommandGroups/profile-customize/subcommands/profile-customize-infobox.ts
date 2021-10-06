@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             },
             {
                 label: "Change Text Color",
-                value: "viewInfoBoxTextColor",
+                value: "changeInfoBoxTextColor",
                 description: "Change the text color of your profile card's information box."
             }
         ],

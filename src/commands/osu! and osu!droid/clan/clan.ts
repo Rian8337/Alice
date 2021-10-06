@@ -512,6 +512,37 @@ export const config: Command["config"] = {
             ]
         },
         {
+            name: "role",
+            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            description: "Manages your clan role.",
+            options: [
+                {
+                    name: "seticon",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Sets or clears your clan role's icon.",
+                    options: [
+                        {
+                            name: "iconurl",
+                            type: CommandArgumentType.STRING,
+                            description: "The URL of your new clan role icon. Omit this option to clear your clan role's icon."
+                        }
+                    ]
+                },
+                {
+                    name: "setcolor",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Sets or clears your clan role's color.",
+                    options: [
+                        {
+                            name: "color",
+                            type: CommandArgumentType.STRING,
+                            description: "The new color of the role. Must be a hex code. Omit this option to clear your clan role's color."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             name: "shop",
             type: CommandArgumentType.SUB_COMMAND_GROUP,
             description: "Main point of clan shop.",
@@ -547,15 +578,12 @@ export const config: Command["config"] = {
                 {
                     name: "rolecolor",
                     type: CommandArgumentType.SUB_COMMAND,
-                    description: "Changes your clan role color, if any.",
-                    options: [
-                        {
-                            name: "color",
-                            required: true,
-                            type: CommandArgumentType.STRING,
-                            description: "The new color of the role. Must be in hex code."
-                        }
-                    ]
+                    description: "Unlocks the ability to change your clan role's color."
+                },
+                {
+                    name: "roleicon",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Unlocks the ability to change your clan role's icon."
                 },
                 {
                     name: "special",

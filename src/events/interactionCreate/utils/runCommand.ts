@@ -3,7 +3,7 @@ import { Constants } from "@alice-core/Constants";
 import { Command } from "@alice-interfaces/core/Command";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { CooldownKey } from "@alice-types/core/CooldownKey";
+import { ChannelCooldownKey, GlobalCooldownKey } from "@alice-types/core/CooldownKey";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
@@ -70,9 +70,11 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 
     // Command cooldown
     if (!botOwnerExecution) {
-        const cooldownKey: CooldownKey = <CooldownKey> `${interaction.user.id}:${interaction.channelId}:${interaction.commandName}`;
+        const channelCooldownKey: ChannelCooldownKey = <ChannelCooldownKey> `${interaction.user.id}:${interaction.channelId}:${interaction.commandName}`;
 
-        if (CommandHelper.isCooldownActive(cooldownKey)) {
+        const globalCooldownKey: GlobalCooldownKey = <GlobalCooldownKey> `${interaction.user.id}:${interaction.commandName}`;
+
+        if (CommandHelper.isCooldownActive(channelCooldownKey) || CommandHelper.isCooldownActive(globalCooldownKey)) {
             return interaction.reply({
                 content: MessageCreator.createReject(
                     "Hey, calm down with the command! I need to rest too, you know."
@@ -80,6 +82,8 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
                 ephemeral: true
             });
         }
+
+        const globalCooldown: number = CommandUtilManager.globallyDisabledCommands.get(interaction.commandName) ?? 0;
 
         const finalCooldown: number = Math.max(
             // Local command cooldown
@@ -89,14 +93,14 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             // Local subcommand group cooldown
             subcommandGroup?.config.cooldown ?? 0,
             // Global command cooldown
-            CommandUtilManager.globallyDisabledCommands.get(interaction.commandName) ?? 0,
+            globalCooldown,
             // Guild command cooldown
             CommandUtilManager.guildDisabledCommands.get(interaction.guildId!)?.get(interaction.commandName)?.cooldown ?? 0,
             // Channel command cooldown
             CommandUtilManager.channelDisabledCommands.get(interaction.channelId)?.get(interaction.commandName)?.cooldown ?? 0
         );
 
-        CommandHelper.setCooldown(cooldownKey, finalCooldown);
+        CommandHelper.setCooldown(globalCooldown ? globalCooldownKey : channelCooldownKey, finalCooldown);
     }
 
     client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`);

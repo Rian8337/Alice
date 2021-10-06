@@ -2,13 +2,10 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
-import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { Collection, CommandInteraction, MessageEmbed } from "discord.js";
+import { Collection } from "discord.js";
 import { MapInfo, Score } from "osu-droid";
 
 /**

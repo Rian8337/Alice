@@ -23,6 +23,118 @@ export const config: Command["config"] = {
     description: "Main command for music.",
     options: [
         {
+            name: "collections",
+            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            description: "Manages music collections.",
+            options: [
+                {
+                    name: "add",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Adds a YouTube URL to a music collection.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The name of the collection."
+                        },
+                        {
+                            name: "query",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The query to search for the YouTube video."
+                        },
+                        {
+                            name: "position",
+                            type: CommandArgumentType.INTEGER,
+                            description: "The position at which to insert the new YouTube URL on, ranging from 1 to 10. Defaults to latest."
+                        }
+                    ]
+                },
+                {
+                    name: "create",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Creates a new music collection.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The name of the collection."
+                        },
+                        {
+                            name: "query",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The query to search for the YouTube video."
+                        }
+                    ]
+                },
+                {
+                    name: "delete",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Deletes a music collection.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The name of the collection."
+                        }
+                    ]
+                },
+                {
+                    name: "enqueue",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Enqueues this music collection into the music queue."
+                },
+                {
+                    name: "list",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Lists all music collections owned by a user.",
+                    options: [
+                        {
+                            name: "user",
+                            type: CommandArgumentType.USER,
+                            description: "The user. Defaults to yourself."
+                        }
+                    ]
+                },
+                {
+                    name: "remove",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Removes a YouTube URL from a music collection.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The name of the collection."
+                        },
+                        {
+                            name: "position",
+                            required: true,
+                            type: CommandArgumentType.INTEGER,
+                            description: "The position of the YouTube URL to remove in the music collection's links list."
+                        }
+                    ]
+                },
+                {
+                    name: "view",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Views a music collection's information.",
+                    options: [
+                        {
+                            name: "name",
+                            required: true,
+                            type: CommandArgumentType.STRING,
+                            description: "The name of the collection."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             name: "info",
             type: CommandArgumentType.SUB_COMMAND,
             description: "Shows information about my music status."

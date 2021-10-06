@@ -79,6 +79,16 @@ export interface DatabaseClan extends BaseDocument {
     isMatch: boolean;
 
     /**
+     * Whether the clan can change their role's color.
+     */
+    roleColorUnlocked: boolean;
+
+    /**
+     * Whether the clan can change their role's icon.
+     */
+    roleIconUnlocked: boolean;
+
+    /**
      * The powerups that the clan owns.
      */
     powerups: Powerup[];

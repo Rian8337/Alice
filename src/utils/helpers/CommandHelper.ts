@@ -4,7 +4,7 @@ import { CacheManager } from '../managers/CacheManager';
 import { CommandScope } from '@alice-types/core/CommandScope';
 import { DisabledCommand } from '@alice-interfaces/moderation/DisabledCommand';
 import { Constants } from '@alice-core/Constants';
-import { CooldownKey } from '@alice-types/core/CooldownKey';
+import { ChannelCooldownKey, GlobalCooldownKey } from '@alice-types/core/CooldownKey';
 import { Permission } from '@alice-types/core/Permission';
 import { Config } from '@alice-core/Config';
 import { SelectMenuCreator } from '@alice-utils/creators/SelectMenuCreator';
@@ -240,7 +240,7 @@ export abstract class CommandHelper extends Manager {
      * @param key The key of the cooldown.
      * @param cooldown The cooldown to apply, in seconds.
      */
-    static setCooldown(key: CooldownKey, cooldown: number): void {
+    static setCooldown(key: ChannelCooldownKey | GlobalCooldownKey, cooldown: number): void {
         CacheManager.activeCommandCooldowns.add(key);
 
         setTimeout(() => {
@@ -254,7 +254,7 @@ export abstract class CommandHelper extends Manager {
      * @param key The key of the cooldown.
      * @returns Whether the cooldown with the specified key still exists.
      */
-    static isCooldownActive(key: CooldownKey): boolean {
+    static isCooldownActive(key: ChannelCooldownKey | GlobalCooldownKey): boolean {
         return CacheManager.activeCommandCooldowns.has(key);
     }
 

@@ -108,8 +108,9 @@ export abstract class MuteManager extends PunishmentManager {
 
         member.guild.channels.cache.forEach(async channel => {
             if (channel instanceof TextChannel || channel instanceof VoiceChannel) {
-                await channel.permissionOverwrites.edit(<Role> muteRole, {
+                await channel.permissionOverwrites.edit(muteRole!, {
                     SEND_MESSAGES: false,
+                    SEND_MESSAGES_IN_THREADS: false,
                     ADD_REACTIONS: false,
                     SPEAK: false,
                     CONNECT: false
@@ -118,7 +119,7 @@ export abstract class MuteManager extends PunishmentManager {
         });
 
         // Check if the user is already muted via role
-        if (member.roles.cache.has(muteRole.id)) {
+        if (this.isUserMuted(member)) {
             return this.createOperationResult(false, "The user is already muted");
         }
 
@@ -221,8 +222,8 @@ export abstract class MuteManager extends PunishmentManager {
             return this.createOperationResult(false, "Unable to find mute role in the server");
         }
 
-        if (!member.roles.cache.has(muteRole.id)) {
-            return this.createOperationResult(false, "The user is already muted");
+        if (!this.isUserMuted(member)) {
+            return this.createOperationResult(false, "The user is not muted");
         }
 
         const logChannel: GuildChannel | ThreadChannel | null = member.guild.channels.resolve(muteInformation.logChannelID);
@@ -383,6 +384,22 @@ export abstract class MuteManager extends PunishmentManager {
     }
 
     /**
+     * Checks if a guild member is muted.
+     * 
+     * @param member The member.
+     * @returns Whether the guild member is muted.
+     */
+    static isUserMuted(member: GuildMember): boolean {
+        const muteRole: Role | undefined = this.getGuildMuteRole(member.guild);
+
+        if (!muteRole) {
+            return false;
+        }
+
+        return member.roles.cache.has(muteRole.id);
+    }
+
+    /**
      * Continues a mute.
      * 
      * @param client The instance of the bot.
@@ -396,7 +413,7 @@ export abstract class MuteManager extends PunishmentManager {
             return;
         }
 
-        if (!member.roles.cache.has(muteRole.id)) {
+        if (!this.isUserMuted(member)) {
             await member.roles.add(muteRole, "Mute continuation");
         }
 

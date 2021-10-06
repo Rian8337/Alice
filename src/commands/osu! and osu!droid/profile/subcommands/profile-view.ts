@@ -66,29 +66,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
     }
 
-    const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
-        interaction,
-        "Choose the type of profile to view.",
-        [
-            {
-                label: "Simplified Profile",
-                value: "simplified",
-                description: "View the simplified version."
-            },
-            {
-                label: "Detailed Profile",
-                value: "detailed",
-                description: "View the detailed version."
-            }
-        ],
-        [interaction.user.id],
-        20
-    ))[0];
-
-    if (!pickedChoice) {
-        return;
-    }
-
     player ??= await Player.getInformation({ uid: uid });
 
     if (!player.username) {
@@ -99,7 +76,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(uid, player, bindInfo, undefined, undefined, pickedChoice === "detailed"))!;
+    const profileImage: Buffer = (await ProfileManager.getProfileStatistics(
+        uid, player, bindInfo, undefined, undefined, (interaction.options.getString("type") ?? "simplified") === "detailed"
+    ))!;
 
     interaction.editReply({
         content: MessageCreator.createAccept(

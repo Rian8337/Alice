@@ -1,4 +1,4 @@
-import { CooldownKey } from "@alice-types/core/CooldownKey";
+import { ChannelCooldownKey, GlobalCooldownKey } from "@alice-types/core/CooldownKey";
 import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
 import { CommandInteraction, Snowflake, Collection } from "discord.js";
 import { MapInfo } from "osu-droid";
@@ -20,7 +20,7 @@ export abstract class CacheManager {
     /**
      * The command cooldowns that are currently active.
      */
-    static readonly activeCommandCooldowns: Set<CooldownKey> = new Set();
+    static readonly activeCommandCooldowns: Set<ChannelCooldownKey | GlobalCooldownKey> = new Set();
 
     /**
      * The users/channels that still have a math game active.
@@ -33,6 +33,11 @@ export abstract class CacheManager {
      * The channels that still have a trivia question active.
      */
     static readonly stillHasQuestionTriviaActive: Set<Snowflake> = new Set();
+
+    /**
+     * The channels that still have a map trivia active.
+     */
+    static readonly stillHasMapTriviaActive: Set<Snowflake> = new Set();
 
     /**
      * Recalculation queue for per-user recalculation, mapped by the user's ID.

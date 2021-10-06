@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { Collection, Guild, GuildChannel, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
+import { Collection, Guild, GuildMember, Message, MessageAttachment, Role, Snowflake, TextChannel, User } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { ClanMember } from "@alice-interfaces/clan/ClanMember";
 import { Powerup } from "@alice-interfaces/clan/Powerup";
@@ -13,6 +13,7 @@ import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
 import { Precision } from "osu-droid";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
+import { UserBind } from "./UserBind";
 
 /**
  * Represents a clan.
@@ -94,6 +95,16 @@ export class Clan extends Manager {
     isMatch: boolean;
 
     /**
+     * Whether the clan can change their role's color.
+     */
+    roleColorUnlocked: boolean;
+
+    /**
+     * Whether the clan can change their role's icon.
+     */
+    roleIconUnlocked: boolean;
+
+    /**
      * The powerups that the clan own, mapped by their name.
      */
     powerups: Collection<PowerupType, Powerup>;
@@ -148,6 +159,8 @@ export class Clan extends Manager {
         this.namecooldown = data.namecooldown;
         this.weeklyfee = data.weeklyfee;
         this.isMatch = data.isMatch;
+        this.roleColorUnlocked = data.roleColorUnlocked;
+        this.roleIconUnlocked = data.roleIconUnlocked;
         this.powerups = ArrayHelper.arrayToCollection(data.powerups ?? [], "name");
         this.active_powerups = data.active_powerups ?? [];
         this.member_list = ArrayHelper.arrayToCollection(data.member_list ?? [], "id");
@@ -173,6 +186,52 @@ export class Clan extends Manager {
                 resolve(this.createOperationResult(false, e.message));
             });
         });
+    }
+
+    /**
+     * Adds a member to the clan.
+     * 
+     * @param user The user to add.
+     * @returns An object containing information about the operation.
+     */
+    async addMember(user: User): Promise<OperationResult>;
+
+    /**
+     * Adds a member to the clan.
+     * 
+     * @param userID The ID of the user to add.
+     * @returns An object containing information about the operation.
+     */
+    async addMember(userID: Snowflake): Promise<OperationResult>;
+
+    async addMember(userOrId: User | Snowflake): Promise<OperationResult> {
+        const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
+
+        if (this.member_list.has(id)) {
+            return this.createOperationResult(false, "user is already in this clan");
+        }
+
+        const toAcceptBindInfo: UserBind | null =
+            await DatabaseManager.elainaDb.collections.userBind.getFromUser(id);
+
+        if (!toAcceptBindInfo) {
+            return this.createOperationResult(false, Constants.userNotBindedReject);
+        }
+
+        if (toAcceptBindInfo.clan) {
+            return this.createOperationResult(false, "user is already in another clan");
+        }
+
+        await this.addClanRole(userOrId);
+
+        return DatabaseManager.elainaDb.collections.userBind.update(
+            { discordid: id },
+            {
+                $set: {
+                    clan: this.name
+                }
+            }
+        );
     }
 
     /**
@@ -332,22 +391,13 @@ export class Clan extends Manager {
      * @returns An object containing information about the operation.
      */
     async disband(): Promise<OperationResult> {
-        const result: OperationResult = await DatabaseManager.elainaDb.collections.clan.delete(
+        await DatabaseManager.elainaDb.collections.clan.delete(
             { name: this.name }
         );
 
-        this.exists = !result.success;
+        await this.deleteClanRole("Clan disbanded");
 
-        if (this.exists) {
-            return result;
-        }
-
-        await this.removeClanRole(...this.member_list.keys());
-
-        // Delete clan channel
-        const mainServer: Guild = await this.client.guilds.fetch(Constants.mainServer);
-
-        const clanChannel: GuildChannel | undefined = <GuildChannel | undefined> mainServer.channels.cache.find(c => c.name === this.name);
+        const clanChannel: TextChannel | undefined = await this.getClanChannel();
 
         if (clanChannel) {
             await clanChannel.delete();
@@ -392,6 +442,8 @@ export class Clan extends Manager {
                     namecooldown: this.namecooldown,
                     weeklyfee: this.weeklyfee,
                     isMatch: this.isMatch,
+                    roleIconUnlocked: this.roleIconUnlocked,
+                    roleColorUnlocked: this.roleColorUnlocked,
                     powerups: [...this.powerups.values()],
                     active_powerups: this.active_powerups,
                     member_list: [...this.member_list.values()]
@@ -472,6 +524,19 @@ export class Clan extends Manager {
         }
 
         return this.createOperationResult(true);
+    }
+
+    /**
+     * Deletes this clan's role, if any.
+     * 
+     * @reason The reason for deleting the role.
+     */
+    async deleteClanRole(reason: string): Promise<void> {
+        const clanRole: Role | undefined = await this.getClanRole();
+
+        if (clanRole) {
+            await clanRole.delete(reason);
+        }
     }
 
     /**

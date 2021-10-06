@@ -49,7 +49,7 @@ export abstract class Config {
 
     static readonly reportChannel: string = "reports";
 
-    static readonly activityList: [string, ActivityType][] = [
+    static readonly activityList: [ string, Exclude<ActivityType, "CUSTOM"> ][] = [
 		["Underworld Console", "PLAYING"],
 		["Rulid Village", "WATCHING"],
 		["/help", "LISTENING"],

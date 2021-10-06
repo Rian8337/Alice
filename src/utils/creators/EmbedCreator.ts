@@ -82,9 +82,7 @@ export abstract class EmbedCreator {
      * @param calcParams Calculation parameters to be used for beatmap statistics.
      */
     static async createBeatmapEmbed(beatmapInfo: MapInfo, calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]), calcResult?: StarRatingCalculationResult): Promise<MessageOptions> {
-        if (!calcResult) {
-            calcResult = (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
-        }
+        calcResult ??= (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
 
         return {
             embeds: [new MessageEmbed()
@@ -115,9 +113,7 @@ export abstract class EmbedCreator {
             { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
         );
 
-        if (!ppRank) {
-            ppRank = await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
-        }
+        ppRank ??= await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
 
         embed.setDescription(
             `**PP Profile for <@${bindInfo.discordid}> (${bindInfo.username})**\n` +
@@ -337,7 +333,7 @@ export abstract class EmbedCreator {
 
         embed.setImage("attachment://chart.png")
             .setFooter(
-                embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000)))}`,
+                embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000) / 1000))}`,
                 embed.footer!.iconURL
             )
             .setAuthor(

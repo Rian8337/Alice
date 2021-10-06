@@ -1,4 +1,4 @@
-import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction, Snowflake } from "discord.js";
+import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction, Snowflake } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -50,7 +50,7 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                 onPageChange
             );
 
-            const collector: InteractionCollector<MessageComponentInteraction> =
+            const collector: InteractionCollector<SelectMenuInteraction> =
                 this.createSelectMenuCollector(message, users, duration);
 
             collector.on("collect", async i => {

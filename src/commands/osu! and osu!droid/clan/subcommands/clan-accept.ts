@@ -26,26 +26,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    if (clan.member_list.has(toAccept.id)) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.userIsAlreadyInClan)
-        });
-    }
-
-    const toAcceptBindInfo: UserBind | null = await DatabaseManager.elainaDb.collections.userBind.getFromUser(toAccept);
-
-    if (!toAcceptBindInfo) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(Constants.userNotBindedReject)
-        });
-    }
-
-    if (toAcceptBindInfo.clan) {
-        return interaction.editReply({
-            content: MessageCreator.createReject(clanStrings.userIsAlreadyInClan)
-        });
-    }
-
     const confirmation: boolean = await MessageButtonCreator.createConfirmation(
         interaction,
         {
@@ -62,21 +42,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         return;
     }
 
-    await clan.addClanRole(toAccept);
+    const firstResult: OperationResult = await clan.addMember(toAccept);
 
-    const bindUpdateResult: OperationResult = await DatabaseManager.elainaDb.collections.userBind.update(
-        { discordid: toAccept.id },
-        {
-            $set: {
-                clan: clan.name
-            }
-        }
-    );
-
-    if (!bindUpdateResult.success) {
+    if (!firstResult.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                clanStrings.acceptClanInvitationFailed, toAccept.toString(), bindUpdateResult.reason!
+                clanStrings.acceptClanInvitationFailed, toAccept.toString(), firstResult.reason!
             )
         });
     }

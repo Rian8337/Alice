@@ -20,7 +20,12 @@ export enum clanStrings {
     userNotInOldJoinCooldown = "%s currently not in cooldown to join %s old clan.",
     userInJoinCooldown = "%s cannot join a clan for %s.",
     userNotInJoinCooldown = "%s currently not in cooldown to join a clan.",
+    roleIconIsNotUnlocked = "I'm sorry, your clan has not unlocked the ability to change clan role icon!",
+    roleColorIsNotUnlocked = "I'm sorry, your clan has not unlocked the ability to change clan role color!",
+    invalidRoleIconURL = "I'm sorry, the URL that you have entered doesn't direct to an image!",
+    invalidRoleIconSize = "I'm sorry, role icons must be at least 64x64 pixels and ",
     clanPowerNotEnoughToBuyItem = "I'm sorry, your clan doesn't have enough power points! You need at least %s!",
+    shopItemIsUnlocked = "I'm sorry, your clan has bought this shop item before!",
     noSpecialClanShopEvent = "I'm sorry, there is no ongoing special event now! Please check back soon!",
     invalidClanRoleHexCode = "I'm sorry, that doesn't look like a valid hex code color!",
     clanRoleHexCodeIsRestricted = "I'm sorry, you cannot change your role color into the same role color as referees and staff members!",
@@ -112,5 +117,7 @@ export enum clanStrings {
     clanAuctionBidFailed = "I'm sorry, I couldn't process your bid: %s.",
     clanAuctionBidSuccessful = "Successfully bid to the auction.",
     clanPowerTransferFailed = "I'm sorry, I couldn't perform the power points transfer: %s.",
-    clanPowerTransferSuccessful = "Successfully transferred `%s` power points from `%s` clan to `%s` clan."
+    clanPowerTransferSuccessful = "Successfully transferred `%s` power points from `%s` clan to `%s` clan.",
+    changeRoleColorSuccessful = "Successfully changed your clan's role color.",
+    changeRoleIconSuccessful = "Successfully changed your clan's role icon."
 };

@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
 import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { Collection, CommandInteraction, GuildMember, InteractionCollector, Message, MessageActionRow, MessageButton, MessageCollector, MessageComponentInteraction, MessageEmbed, MessageOptions, MessageSelectOptionData, Snowflake } from "discord.js";
+import { ButtonInteraction, Collection, CommandInteraction, GuildMember, InteractionCollector, Message, MessageActionRow, MessageButton, MessageCollector, MessageEmbed, MessageOptions, MessageSelectOptionData, Snowflake } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { TriviaQuestionResult } from "@alice-interfaces/trivia/TriviaQuestionResult";
@@ -142,7 +142,7 @@ export abstract class TriviaHelper {
             const time: number = (isMultipleChoice ? 5 + (difficulty * 2) : 7 + (difficulty * 3)) * 1000;
 
             if (isMultipleChoice) {
-                const collector: InteractionCollector<MessageComponentInteraction> = questionMessage.createMessageComponentCollector({
+                const collector: InteractionCollector<ButtonInteraction> = questionMessage.createMessageComponentCollector({
                     filter: i => i.isButton(),
                     componentType: "BUTTON",
                     dispose: true,
@@ -150,7 +150,7 @@ export abstract class TriviaHelper {
                 });
 
                 // Use a separate collection to prevent multiple answers from users
-                const answers: Collection<Snowflake, MessageComponentInteraction> = new Collection();
+                const answers: Collection<Snowflake, ButtonInteraction> = new Collection();
 
                 collector.on("collect", i => {
                     answers.set(i.user.id, i);

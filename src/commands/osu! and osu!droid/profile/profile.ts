@@ -54,6 +54,21 @@ export const config: Command["config"] = {
                     name: "user",
                     type: CommandArgumentType.USER,
                     description: "The Discord user."
+                },
+                {
+                    name: "type",
+                    type: CommandArgumentType.STRING,
+                    description: "The type of the profile to show. Defaults to simplified.",
+                    choices: [
+                        {
+                            name: "Simplified Profile",
+                            value: "simplified"
+                        },
+                        {
+                            name: "Detailed Profile",
+                            value: "detailed"
+                        }
+                    ]
                 }
             ]
         },
