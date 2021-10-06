@@ -16,6 +16,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     if ([
+        '894382622787137596',
         '360714803691388928',
         '415559968062963712',
         '360715303149240321',
@@ -41,6 +42,12 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     if (coinCooldown.has(message.author.id)) {
         return;
     }
+
+    coinCooldown.add(message.author.id);
+
+    setTimeout(() => {
+        coinCooldown.delete(message.author.id);
+    }, 10000);
 
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(message.author);
 
