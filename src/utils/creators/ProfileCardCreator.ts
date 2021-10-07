@@ -126,7 +126,13 @@ export class ProfileCardCreator {
         await this.drawPlayerAvatar();
         await this.drawFlag();
         this.drawPlayerRank();
-        this.drawPlayerLevel();
+
+        if (!this.detailed && !this.template) {
+            // Draw player level for detailed or template profile card in description
+            // box so that description box's initialization doesn't overlap the drawing.
+            this.drawPlayerLevel();
+        }
+
         await this.writePlayerProfile();
     }
 
@@ -139,7 +145,8 @@ export class ProfileCardCreator {
         }
 
         this.initDescriptionBox();
-        this.drawAliceCoinsInformation();
+        this.drawPlayerLevel();
+        await this.drawAliceCoinsInformation();
 
         if (this.template) {
             this.drawTemplateBadges();
@@ -432,6 +439,9 @@ export class ProfileCardCreator {
         const coinImage: Image = await loadImage(Constants.aliceCoinImage);
 
         this.context.drawImage(coinImage, 15, 255, 50, 50);
+
+        this.context.font = "18px Exo";
+        this.context.textBaseline = "middle";
 
         this.context.fillText(`${(this.playerInfo?.alicecoins ?? 0).toLocaleString()} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString()} Challenge Points`, 75, 280);
 
