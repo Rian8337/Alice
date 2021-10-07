@@ -1,4 +1,4 @@
-import { ButtonInteraction, InteractionCollector, Message, MessageComponentInteraction, SelectMenuInteraction, Snowflake } from "discord.js";
+import { ButtonInteraction, InteractionCollector, Message, SelectMenuInteraction, Snowflake } from "discord.js";
 
 export abstract class InteractionCollectorCreator {
     /**

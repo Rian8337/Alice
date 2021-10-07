@@ -1,3 +1,5 @@
+import { deserialize, serialize } from "v8";
+
 /**
  * Some utilities, no biggie.
  */
@@ -17,12 +19,7 @@ export abstract class Utils {
      * @param instance The instance to deep copy.
      */
     static deepCopy<T>(instance: T): T {
-        return Object.assign(
-            Object.create(
-                Object.getPrototypeOf(instance)
-            ),
-            instance
-        );
+        return deserialize(serialize(instance));
     }
 
     /**

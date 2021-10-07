@@ -96,11 +96,24 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             });
 
             collector.on("end", async collected => {
-                if (collected.size > 0) {
-                    await interaction.editReply({
-                        content: MessageCreator.createPrefixedMessage("Please wait...", Symbols.timer),
-                        components: []
-                    });
+                const pressed: ButtonInteraction | undefined = collected.first();
+
+                if (pressed) {
+                    if (pressed.customId === "yes") {
+                        await interaction.editReply({
+                            content: MessageCreator.createPrefixedMessage("Please wait...", Symbols.timer),
+                            components: []
+                        });
+                    } else {
+                        await interaction.editReply({
+                            content: MessageCreator.createReject("Action cancelled."),
+                            components: []
+                        });
+
+                        setTimeout(() => {
+                            interaction.deleteReply();
+                        }, 5 * 1000);
+                    }
                 } else {
                     await interaction.editReply({
                         content: MessageCreator.createReject("Timed out."),

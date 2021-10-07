@@ -457,7 +457,7 @@ export class UserBind extends Manager {
         };
 
         if (isDPPRecalc) {
-            Object.defineProperty(query, "dppRecalcComplete", { value: true, writable: true, configurable: true, enumerable: true });
+            Object.defineProperty(query.$set, "dppRecalcComplete", { value: true, writable: true, configurable: true, enumerable: true });
         }
 
         return DatabaseManager.elainaDb.collections.userBind.update(

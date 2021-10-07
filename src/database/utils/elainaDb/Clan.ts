@@ -11,7 +11,7 @@ import { Constants } from "@alice-core/Constants";
 import { PowerupType } from "@alice-types/clan/PowerupType";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
 import { Image } from "canvas";
-import { Precision } from "osu-droid";
+import { Player, Precision } from "osu-droid";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "./UserBind";
 
@@ -221,6 +221,40 @@ export class Clan extends Manager {
         if (toAcceptBindInfo.clan) {
             return this.createOperationResult(false, "user is already in another clan");
         }
+
+        if (toAcceptBindInfo.clan === this.name && Date.now() / 1000 < (toAcceptBindInfo.oldjoincooldown ?? 0)) {
+            return this.createOperationResult(false, "user is still in cooldown to join old clan");
+        } else if (Date.now() / 1000 < (toAcceptBindInfo.joincooldown ?? 0)) {
+            return this.createOperationResult(false, "user is still in cooldown to join a clan");
+        }
+
+        let player: Player | undefined = new Player();
+
+        player.rank = Number.POSITIVE_INFINITY;
+
+        for await (const uid of toAcceptBindInfo.previous_bind) {
+            const tempPlayer = await Player.getInformation({ uid: uid });
+
+            if (player.rank > tempPlayer.rank) {
+                player = tempPlayer;
+                break;
+            }
+        }
+
+        if (!player?.username) {
+            return this.createOperationResult(false, "user's binded accounts not found");
+        }
+
+        this.member_list.set(
+            id,
+            {
+                id: id,
+                uid: player.uid,
+                rank: player.rank,
+                hasPermission: false,
+                battle_cooldown: 0
+            }
+        );
 
         await this.addClanRole(userOrId);
 
@@ -645,6 +679,13 @@ export class Clan extends Manager {
                 return this.createOperationResult(false, "invalid image");
             }
 
+            // Delete original message
+            if (this.iconMessage) {
+                const message: Message = await channel.messages.fetch(this.iconMessage);
+
+                await message.delete();
+            }
+
             const attachment: MessageAttachment = new MessageAttachment(iconURL, "icon.png");
 
             const message: Message = await channel.send({
@@ -685,6 +726,13 @@ export class Clan extends Manager {
 
             if (!Precision.almostEqualsNumber(image.naturalWidth / image.naturalHeight, 3.6)) {
                 return this.createOperationResult(false, "image ratio is not 18:5");
+            }
+
+            // Delete original message
+            if (this.bannerMessage) {
+                const message: Message = await channel.messages.fetch(this.bannerMessage);
+
+                await message.delete();
             }
 
             const attachment: MessageAttachment = new MessageAttachment(bannerURL, "banner.png");
