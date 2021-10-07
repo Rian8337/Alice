@@ -5,7 +5,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 export const run: EventUtil["run"] = async (_, oldMessage: Message, newMessage: Message) => {
     await oldMessage.fetch();
 
-    if (oldMessage.author.bot) {
+    if (!oldMessage.author || oldMessage.author.bot) {
         return;
     }
 
