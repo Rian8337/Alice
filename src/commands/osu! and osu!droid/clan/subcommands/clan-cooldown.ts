@@ -67,7 +67,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
             let responses: string[] = [];
 
-            const oldJoinCooldownDifference = DateTimeFormatHelper.getTimeDifference(bindInfo.oldjoincooldown ?? 0);
+            const oldJoinCooldownDifference = DateTimeFormatHelper.getTimeDifference((bindInfo.oldjoincooldown ?? 0) * 1000);
 
             if (oldJoinCooldownDifference > 0) {
                 responses.push(MessageCreator.createAccept(
@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 ));
             }
 
-            const joinCooldownDifference: number = DateTimeFormatHelper.getTimeDifference(bindInfo.joincooldown ?? 0);
+            const joinCooldownDifference: number = DateTimeFormatHelper.getTimeDifference((bindInfo.joincooldown ?? 0) * 1000);
 
             if (joinCooldownDifference > 0) {
                 responses.push(MessageCreator.createAccept(

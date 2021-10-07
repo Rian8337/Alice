@@ -222,6 +222,12 @@ export class Clan extends Manager {
             return this.createOperationResult(false, "user is already in another clan");
         }
 
+        if (toAcceptBindInfo.clan === this.name && Date.now() / 1000 < (toAcceptBindInfo.oldjoincooldown ?? 0)) {
+            return this.createOperationResult(false, "user is still in cooldown to join old clan");
+        } else if (Date.now() / 1000 < (toAcceptBindInfo.joincooldown ?? 0)) {
+            return this.createOperationResult(false, "user is still in cooldown to join a clan");
+        }
+
         let player: Player | undefined = new Player();
 
         player.rank = Number.POSITIVE_INFINITY;
