@@ -1,7 +1,9 @@
 import { Constants } from "@alice-core/Constants";
+import { Symbols } from "@alice-enums/utils/Symbols";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
 import { Collection, Guild, GuildMember, InteractionCollector, Message, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
 
@@ -66,11 +68,22 @@ export const run: EventUtil["run"] = async client => {
             await verificationChannel.bulkDelete(messagesToDelete, true);
         }
 
-        const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+        const infoEmbed: MessageEmbed = EmbedCreator.createNormalEmbed(
             { color: "#ffdd00" }
         );
 
-        embed.setDescription(
+        infoEmbed.setAuthor("User Information")
+            .addField("Account Creation Date", member.user.createdAt.toUTCString());
+
+        if (DateTimeFormatHelper.getTimeDifference(member.user.createdAt) < -86400 * 1000 * 7) {
+            infoEmbed.addField(`${Symbols.exclamationMark} Account Age`, DateTimeFormatHelper.secondsToDHMS(-DateTimeFormatHelper.getTimeDifference(member.user.createdAt)));
+        }
+
+        const mainEmbed: MessageEmbed = EmbedCreator.createNormalEmbed(
+            { color: "#ffdd00" }
+        );
+
+        mainEmbed.setDescription(
             `This is the thread that will be used for your verification process.\n\n` +
             `For information on how to verify, please check [this](${verificationMessage.url}) message.\n\n` +
             `If you need help, you may ping the <@&369108742077284353> and/or <@&595667274707370024> role for assistance. You may ping them too when you're ready to verify.\n\n` +
@@ -79,7 +92,7 @@ export const run: EventUtil["run"] = async client => {
 
         await thread.send({
             content: member.toString(),
-            embeds: [ embed ]
+            embeds: [ infoEmbed, mainEmbed ]
         });
     });
 };
