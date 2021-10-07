@@ -15,15 +15,17 @@ export const run: EventUtil["run"] = async (_, oldMembers: Collection<Snowflake,
 
     const memberLeft: ThreadMember = oldMembers.difference(newMembers).first()!;
 
-    const onVerificationRole: Role = thread.guild.roles.cache.find(v => v.name === "On Verification")!;
+    // Try to readd the user into the thread, otherwise assume the user left (it can only be the case)
+    try {
+        await thread.guild.members.fetch(memberLeft.id);
 
-    if (memberLeft.guildMember?.roles.cache.has(onVerificationRole.id)) {
-        // Try to readd the user into the thread, otherwise assume the user left (it can only be the case)
-        try {
+        const onVerificationRole: Role = thread.guild.roles.cache.find(v => v.name === "On Verification")!;
+
+        if (memberLeft.guildMember!.roles.cache.has(onVerificationRole.id)) {
             await thread.members.add(memberLeft);
-        } catch {
-            await thread.delete("Verifying user left the server");
         }
+    } catch {
+        await thread.delete("Verifying user left the server");
     }
 };
 
