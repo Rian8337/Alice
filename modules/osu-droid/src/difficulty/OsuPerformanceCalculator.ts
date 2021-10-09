@@ -93,7 +93,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
 
-        this.aim = this.baseValue(this.stars.aim);
+        this.aim = this.baseValue(Math.pow(this.stars.aim, this.stars.mods.some(m => m instanceof ModTouchDevice) ? 0.8 : 1));
 
         // Longer maps are worth more
         let lengthBonus = 0.95 + 0.4 * Math.min(1, objectCount / 2000);

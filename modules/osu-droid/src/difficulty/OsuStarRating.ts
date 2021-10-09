@@ -5,7 +5,6 @@ import { OsuAim } from './skills/OsuAim';
 import { OsuSpeed } from './skills/OsuSpeed';
 import { StarRating } from './base/StarRating';
 import { OsuSkill } from './skills/OsuSkill';
-import { ModTouchDevice } from '../mods/ModTouchDevice';
 import { Mod } from '../mods/Mod';
 import { OsuFlashlight } from './skills/OsuFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
@@ -63,10 +62,6 @@ export class OsuStarRating extends StarRating {
         this.aimStrainPeaks = aimSkill.strainPeaks;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
-
-        if (this.mods.some(m => m instanceof ModTouchDevice)) {
-            this.aim = Math.pow(this.aim, 0.8);
-        }
     }
 
     /**
@@ -164,10 +159,6 @@ export class OsuStarRating extends StarRating {
 
         this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
-
-        if (this.mods.some(m => m instanceof ModTouchDevice)) {
-            this.aim = Math.pow(this.aim, 0.8);
-        }
 
         this.calculateTotal();
     }
