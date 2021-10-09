@@ -10,6 +10,7 @@ import { Mod } from '../mods/Mod';
 import { DroidFlashlight } from './skills/DroidFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { OsuHitWindow } from '../utils/HitWindow';
+import { ModRelax } from '../mods/ModRelax';
 
 /**
  * Difficulty calculator for osu!droid gamemode.
@@ -82,7 +83,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(aimSkill);
 
-        this.aimStrainPeaks = aimSkill.strainPeaks;
+        this.aimStrainPeaks = aimSkill.strains;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
     }
@@ -98,7 +99,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(speedSkill);
 
-        this.speedStrainPeaks = speedSkill.strainPeaks;
+        this.speedStrainPeaks = speedSkill.strains;
 
         this.speed = this.starValue(speedSkill.difficultyValue());
     }
@@ -107,6 +108,10 @@ export class DroidStarRating extends StarRating {
      * Calculates the rhythm star rating of the beatmap and stores it in this instance.
      */
     calculateRhythm(): void {
+        if (this.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         const rhythmSkill: DroidRhythm = new DroidRhythm(
             this.mods,
             new OsuHitWindow(this.stats.od!).hitWindowFor300()
@@ -125,7 +130,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(flashlightSkill);
 
-        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+        this.flashlightStrainPeaks = flashlightSkill.strains;
 
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
     }
@@ -159,24 +164,35 @@ export class DroidStarRating extends StarRating {
     calculateAll(): void {
         const skills: DroidSkill[] = this.createSkills();
 
+        const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
+
+        if (isRelax) {
+            // Remove tap and rhythm skill to prevent overhead
+            skills.splice(1, 2);
+        }
+
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        const speedSkill: DroidSpeed = <DroidSpeed> skills[1];
-        const rhythmSkill: DroidRhythm = <DroidRhythm> skills[2];
-        const flashlightSkill: DroidFlashlight = <DroidFlashlight> skills[3];
+        let speedSkill: DroidSpeed | undefined;
+        let rhythmSkill: DroidRhythm | undefined;
 
-        this.aimStrainPeaks = aimSkill.strainPeaks;
-        this.speedStrainPeaks = speedSkill.strainPeaks;
-        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+        if (!isRelax) {
+            speedSkill = <DroidSpeed> skills[1];
+            rhythmSkill = <DroidRhythm> skills[2];
+        }
 
+        this.aimStrainPeaks = aimSkill.strains;
         this.aim = this.starValue(aimSkill.difficultyValue());
 
-        this.speed = this.starValue(speedSkill.difficultyValue());
+        if (speedSkill) {
+            this.speedStrainPeaks = speedSkill.strains;
+            this.speed = this.starValue(speedSkill.difficultyValue());
+        }
 
-        this.rhythm = this.starValue(rhythmSkill.difficultyValue());
-
-        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
+        if (rhythmSkill) {
+            this.rhythm = this.starValue(rhythmSkill.difficultyValue());
+        }
 
         this.calculateTotal();
     }

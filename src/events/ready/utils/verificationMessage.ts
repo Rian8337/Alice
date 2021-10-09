@@ -57,7 +57,7 @@ export const run: EventUtil["run"] = async client => {
             name: `User Verification Thread -- ${i.user.tag} (${i.user.id})`,
             autoArchiveDuration: 1440,
             type: isThreadPrivate ? "GUILD_PRIVATE_THREAD" : "GUILD_PUBLIC_THREAD",
-            invitable: isThreadPrivate ? true : undefined
+            invitable: isThreadPrivate ? false : undefined
         });
 
         if (!isThreadPrivate) {
@@ -76,8 +76,15 @@ export const run: EventUtil["run"] = async client => {
         infoEmbed.setAuthor("User Information")
             .addField("Account Creation Date", member.user.createdAt.toUTCString());
 
-        if (DateTimeFormatHelper.getTimeDifference(member.user.createdAt) < -86400 * 1000 * 7) {
-            infoEmbed.addField(`${Symbols.exclamationMark} Account Age`, DateTimeFormatHelper.secondsToDHMS(-DateTimeFormatHelper.getTimeDifference(member.user.createdAt)));
+        if (DateTimeFormatHelper.getTimeDifference(member.user.createdAt) > -86400 * 1000 * 7) {
+            infoEmbed.addField(
+                `${Symbols.exclamationMark} Account Age`,
+                DateTimeFormatHelper.secondsToDHMS(
+                    Math.floor(
+                        -DateTimeFormatHelper.getTimeDifference(member.user.createdAt) / 1000
+                    )
+                )
+            );
         }
 
         const mainEmbed: MessageEmbed = EmbedCreator.createNormalEmbed(

@@ -3,18 +3,18 @@ import { modes } from '../constants/modes';
 import { OsuStarRating } from './OsuStarRating';
 import { MapStats } from '../utils/MapStats';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
-import { ModNoFail } from '../mods/ModNoFail';
-import { ModSpunOut } from '../mods/ModSpunOut';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
 import { ModTouchDevice } from '../mods/ModTouchDevice';
+import { ModRelax } from '../mods/ModRelax';
 
 /**
  * A performance points calculator that calculates performance points for osu!standard gamemode.
  */
 export class OsuPerformanceCalculator extends PerformanceCalculator {
     stars: OsuStarRating = new OsuStarRating();
+    finalMultiplier = 1.12;
 
     /**
      * The aim performance value.
@@ -64,7 +64,6 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     }): this {
         this.handleParams(params, modes.osu);
 
-        const objectCount: number = this.stars.objects.length;
         const maxCombo: number = this.stars.map.maxCombo();
         const miss: number = this.computedAccuracy.nmiss;
         const combo: number = params.combo || maxCombo - miss;
@@ -77,21 +76,11 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         this.calculateAccuracyValue();
         this.calculateFlashlightValue();
 
-        // Custom multiplier for SO and NF.
-        // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
-        let finalMultiplier: number = 1.12;
-        if (this.stars.mods.some(m => m instanceof ModNoFail)) {
-            finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
-        }
-        if (this.stars.mods.some(m => m instanceof ModSpunOut)) {
-            finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / objectCount, 0.85);
-        }
-
         this.total = Math.pow(
             Math.pow(this.aim, 1.1) + Math.pow(this.speed, 1.1) +
             Math.pow(this.accuracy, 1.1) + Math.pow(this.flashlight, 1.1),
             1 / 1.1
-        ) * finalMultiplier;
+        ) * this.finalMultiplier;
 
         return this;
     }
@@ -104,7 +93,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         const objectCount: number = this.stars.objects.length;
         const calculatedAR: number = <number> this.mapStatistics.ar;
 
-        this.aim = this.baseValue(this.stars.aim);
+        this.aim = this.baseValue(Math.pow(this.stars.aim, this.stars.mods.some(m => m instanceof ModTouchDevice) ? 0.8 : 1));
 
         // Longer maps are worth more
         let lengthBonus = 0.95 + 0.4 * Math.min(1, objectCount / 2000);
@@ -206,6 +195,10 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
      * Calculates the accuracy performance value of the beatmap.
      */
     private calculateAccuracyValue(): void {
+        if (this.stars.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         // Global variables
         const n300: number = this.computedAccuracy.n300;
         const n100: number = this.computedAccuracy.n100;
