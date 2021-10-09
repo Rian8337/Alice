@@ -83,7 +83,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(aimSkill);
 
-        this.aimStrainPeaks = aimSkill.strains;
+        this.aimStrainPeaks = aimSkill.strainPeaks;
 
         this.aim = this.starValue(aimSkill.difficultyValue());
     }
@@ -99,7 +99,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(speedSkill);
 
-        this.speedStrainPeaks = speedSkill.strains;
+        this.speedStrainPeaks = speedSkill.strainPeaks;
 
         this.speed = this.starValue(speedSkill.difficultyValue());
     }
@@ -130,7 +130,7 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(flashlightSkill);
 
-        this.flashlightStrainPeaks = flashlightSkill.strains;
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
 
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
     }
@@ -182,11 +182,11 @@ export class DroidStarRating extends StarRating {
             rhythmSkill = <DroidRhythm> skills[2];
         }
 
-        this.aimStrainPeaks = aimSkill.strains;
+        this.aimStrainPeaks = aimSkill.strainPeaks;
         this.aim = this.starValue(aimSkill.difficultyValue());
 
         if (speedSkill) {
-            this.speedStrainPeaks = speedSkill.strains;
+            this.speedStrainPeaks = speedSkill.strainPeaks;
             this.speed = this.starValue(speedSkill.difficultyValue());
         }
 
