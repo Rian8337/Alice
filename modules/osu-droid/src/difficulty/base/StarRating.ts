@@ -159,24 +159,26 @@ export abstract class StarRating {
      */
     getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
-            if (this.aimStrainPeaks.length === 0 || this.speedStrainPeaks.length === 0 || this.aimStrainPeaks.length !== this.speedStrainPeaks.length) {
-                return resolve(null);
-            }
-
             const sectionLength: number = this.sectionLength * this.stats.speedMultiplier;
             const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
 
             const strainInformations: {
                 readonly time: number,
                 readonly strain: number
-            }[] = this.aimStrainPeaks.map((v, i) => {
-                return {
+            }[] = new Array(Math.max(this.aimStrainPeaks.length, this.speedStrainPeaks.length, this.flashlightStrainPeaks.length));
+
+            for (let i = 0; i < strainInformations.length; ++i) {
+                const aimStrain: number = this.aimStrainPeaks[i] ?? 0;
+                const speedStrain: number = this.speedStrainPeaks[i] ?? 0;
+                const flashlightStrain: number = this.flashlightStrainPeaks[i] ?? 0;
+
+                strainInformations[i] = {
                     time: (currentSectionEnd + sectionLength * i) / 1000,
                     strain: this.mods.some(m => m instanceof ModFlashlight) ?
-                        (v + this.speedStrainPeaks[i] + this.flashlightStrainPeaks[i]) / 3 :
-                        (v + this.speedStrainPeaks[i]) / 2
+                        (aimStrain + speedStrain + flashlightStrain) / 3 :
+                        (aimStrain + speedStrain) / 2
                 };
-            });
+            }
 
             const maxTime: number = strainInformations.at(-1)!.time ?? this.objects.at(-1)!.object.endTime / 1000;
             const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}), 1);

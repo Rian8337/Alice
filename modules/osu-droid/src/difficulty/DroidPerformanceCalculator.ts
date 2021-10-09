@@ -4,17 +4,17 @@ import { DroidStarRating } from './DroidStarRating';
 import { MapStats } from '../utils/MapStats';
 import { OsuHitWindow } from '../utils/HitWindow';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
-import { ModNoFail } from '../mods/ModNoFail';
-import { ModSpunOut } from '../mods/ModSpunOut';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
+import { ModRelax } from '../mods/ModRelax';
 
 /**
  * A performance points calculator that calculates performance points for osu!droid gamemode.
  */
 export class DroidPerformanceCalculator extends PerformanceCalculator {
     stars: DroidStarRating = new DroidStarRating();
+    finalMultiplier = 1.24;
 
     /**
      * The aim performance value.
@@ -25,7 +25,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      * The tap performance value.
      */
     tap: number = 0;
-    
+
     /**
      * The accuracy performance value.
      */
@@ -64,7 +64,6 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }): this {
         this.handleParams(params, modes.droid);
 
-        const objectCount: number = this.stars.objects.length;
         const maxCombo: number = this.stars.map.maxCombo();
         const miss: number = this.computedAccuracy.nmiss;
         const combo: number = params.combo || maxCombo - miss;
@@ -76,16 +75,6 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.calculateTapValue();
         this.calculateAccuracyValue();
 
-        // Custom multiplier for SO and NF.
-        // This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
-        let finalMultiplier: number = 1.24;
-        if (this.stars.mods.some(m => m instanceof ModNoFail)) {
-            finalMultiplier *= Math.max(0.9, 1 - 0.02 * miss);
-        }
-        if (this.stars.mods.some(m => m instanceof ModSpunOut)) {
-            finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / objectCount, 0.85);
-        }
-
         // Apply tap penalty for penalized plays.
         this.tap /= (params.tapPenalty ?? 1);
 
@@ -93,7 +82,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             Math.pow(this.aim, 1.1) + Math.pow(this.tap, 1.1) +
             Math.pow(this.accuracy, 1.1),
             1 / 1.1
-        ) * finalMultiplier;
+        ) * this.finalMultiplier;
 
         return this;
     }
@@ -204,6 +193,10 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      * Calculates the accuracy performance value of the beatmap.
      */
     protected calculateAccuracyValue(): void {
+        if (this.stars.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         // Global variables
         const ncircles: number = this.stars.mods.some(m => m instanceof ModScoreV2) ? this.stars.objects.length - this.stars.map.spinners : this.stars.map.circles;
 

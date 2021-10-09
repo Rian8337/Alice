@@ -10,6 +10,7 @@ import { Mod } from '../mods/Mod';
 import { OsuFlashlight } from './skills/OsuFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { OsuHitWindow } from '../utils/HitWindow';
+import { ModRelax } from '../mods/ModRelax';
 
 /**
  * Difficulty calculator for osu!standard gamemode.
@@ -72,6 +73,10 @@ export class OsuStarRating extends StarRating {
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
+        if (this.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         const speedSkill: OsuSpeed = new OsuSpeed(
             this.mods,
             new OsuHitWindow(this.stats.od!).hitWindowFor300()
@@ -129,18 +134,35 @@ export class OsuStarRating extends StarRating {
     calculateAll(): void {
         const skills: OsuSkill[] = this.createSkills();
 
+        const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
+
+        if (isRelax) {
+            // Remove speed skill to prevent overhead
+            skills.splice(1, 1);
+        }
+
         this.calculateSkills(...skills);
 
         const aimSkill: OsuAim = <OsuAim> skills[0];
-        const speedSkill: OsuSpeed = <OsuSpeed> skills[1];
-        const flashlightSkill: OsuFlashlight = <OsuFlashlight> skills[2];
+        let speedSkill: OsuSpeed | undefined;
+        let flashlightSkill: OsuFlashlight;
+
+        if (isRelax) {
+            flashlightSkill = <OsuFlashlight> skills[1];
+        } else {
+            speedSkill = <OsuSpeed> skills[1];
+            flashlightSkill = <OsuFlashlight> skills[2];
+        }
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
-        this.speedStrainPeaks = speedSkill.strainPeaks;
-        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
-
         this.aim = this.starValue(aimSkill.difficultyValue());
-        this.speed = this.starValue(speedSkill.difficultyValue());
+
+        if (speedSkill) {
+            this.speedStrainPeaks = speedSkill.strainPeaks;
+            this.speed = this.starValue(speedSkill.difficultyValue());
+        }
+
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
 
         if (this.mods.some(m => m instanceof ModTouchDevice)) {

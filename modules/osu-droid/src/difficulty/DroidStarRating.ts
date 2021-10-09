@@ -7,6 +7,7 @@ import { DroidRhythm } from './skills/DroidRhythm';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
+import { ModRelax } from '../mods/ModRelax';
 
 /**
  * Difficulty calculator for osu!droid gamemode.
@@ -83,6 +84,10 @@ export class DroidStarRating extends StarRating {
      * Calculates the tap star rating of the beatmap and stores it in this instance.
      */
     calculateTap(): void {
+        if (this.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         const tapSkill: DroidTap = new DroidTap(this.mods);
 
         this.calculateSkills(tapSkill);
@@ -93,6 +98,10 @@ export class DroidStarRating extends StarRating {
     }
 
     calculateRhythm(): void {
+        if (this.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         const rhythmSkill: DroidRhythm = new DroidRhythm(this.mods);
 
         this.calculateSkills(rhythmSkill);
@@ -113,20 +122,35 @@ export class DroidStarRating extends StarRating {
     calculateAll(): void {
         const skills: DroidSkill[] = this.createSkills();
 
+        const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
+
+        if (isRelax) {
+            // Remove tap and rhythm skill to prevent overhead
+            skills.splice(1, 2);
+        }
+
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        const tapSkill: DroidTap = <DroidTap> skills[1];
-        const rhythmSkill: DroidRhythm = <DroidRhythm> skills[2];
+        let tapSkill: DroidTap | undefined;
+        let rhythmSkill: DroidRhythm | undefined;
+
+        if (!isRelax) {
+            tapSkill = <DroidTap> skills[1];
+            rhythmSkill = <DroidRhythm> skills[2];
+        }
 
         this.aimStrainPeaks = aimSkill.strains;
-        this.speedStrainPeaks = tapSkill.strains;
-
         this.aim = this.baseRatingValue(aimSkill.difficultyValue());
 
-        this.tap = this.baseRatingValue(tapSkill.difficultyValue());
+        if (tapSkill) {
+            this.speedStrainPeaks = tapSkill.strains;
+            this.tap = this.baseRatingValue(tapSkill.difficultyValue());
+        }
 
-        this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
+        if (rhythmSkill) {
+            this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
+        }
 
         this.calculateTotal();
     }
