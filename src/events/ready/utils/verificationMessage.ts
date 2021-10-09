@@ -55,9 +55,9 @@ export const run: EventUtil["run"] = async client => {
 
         const thread: ThreadChannel = await verificationChannel.threads.create({
             name: `User Verification Thread -- ${i.user.tag} (${i.user.id})`,
-            autoArchiveDuration: 1440,
+            autoArchiveDuration: 60,
             type: isThreadPrivate ? "GUILD_PRIVATE_THREAD" : "GUILD_PUBLIC_THREAD",
-            invitable: isThreadPrivate ? true : undefined
+            invitable: isThreadPrivate ? false : undefined
         });
 
         if (!isThreadPrivate) {
