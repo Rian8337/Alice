@@ -34,10 +34,10 @@ interface AccuracyInformation {
  * An accuracy calculator that calculates accuracy based on given parameters.
  */
 export class Accuracy implements AccuracyInformation {
-    readonly n300: number;
-    readonly n100: number;
-    readonly n50: number;
-    readonly nmiss: number;
+    n300: number;
+    n100: number;
+    n50: number;
+    nmiss: number;
 
     /**
      * Calculates accuracy based on given parameters.
