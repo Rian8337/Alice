@@ -156,8 +156,7 @@ export abstract class StarRating {
      */
     getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
-            const sectionLength: number = this.sectionLength * this.stats.speedMultiplier;
-            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
+            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / this.sectionLength) * this.sectionLength;
 
             const strainInformations: {
                 readonly time: number,
@@ -170,7 +169,7 @@ export abstract class StarRating {
                 const flashlightStrain: number = this.flashlightStrainPeaks[i] ?? 0;
 
                 strainInformations[i] = {
-                    time: (currentSectionEnd + sectionLength * i) / 1000,
+                    time: (currentSectionEnd + this.sectionLength * i) / 1000,
                     strain: this.mods.some(m => m instanceof ModFlashlight) ?
                         (aimStrain + speedStrain + flashlightStrain) / 3 :
                         (aimStrain + speedStrain) / 2
