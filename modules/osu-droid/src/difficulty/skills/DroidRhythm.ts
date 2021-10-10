@@ -1,7 +1,6 @@
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { Mod } from "../../mods/Mod";
-import { Precision } from "../../utils/Precision";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
 
