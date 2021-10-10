@@ -91,9 +91,6 @@ export abstract class StarRating {
         stats?: MapStats
     }, mode: modes): this {
         const map: Beatmap = this.map = params.map;
-        if (!map) {
-            throw new Error("A map must be defined");
-        }
 
         const mod: Mod[] = this.mods = params.mods ?? this.mods;
 
