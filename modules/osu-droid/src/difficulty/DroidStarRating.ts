@@ -135,9 +135,6 @@ export class DroidStarRating extends StarRating {
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
     }
 
-    /**
-     * Calculates the total star rating of the beatmap and stores it in this instance.
-     */
     calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
         const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
@@ -158,9 +155,6 @@ export class DroidStarRating extends StarRating {
         }
     }
 
-    /**
-     * Calculates every star rating of the beatmap and stores it in this instance.
-     */
     calculateAll(): void {
         const skills: DroidSkill[] = this.createSkills();
 
