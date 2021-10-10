@@ -14,7 +14,7 @@ export class OsuFlashlight extends OsuSkill {
     protected readonly difficultyMultiplier: number = 1.06;
     protected readonly decayWeight: number = 1;
 
-    strainValueOf(current: DifficultyHitObject): number {
+    protected strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
@@ -50,6 +50,16 @@ export class OsuFlashlight extends OsuSkill {
         }
 
         return Math.pow(smallDistNerf * result, 2);
+    }
+
+    /**
+     * @param current The hitobject to calculate.
+     */
+    protected strainValueAt(current: DifficultyHitObject): number {
+        this.currentStrain *= this.strainDecay(current.deltaTime);
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+
+        return this.currentStrain;
     }
 
     saveToHitObject(current: DifficultyHitObject): void {

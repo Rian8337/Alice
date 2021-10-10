@@ -11,7 +11,7 @@ export class DroidFlashlight extends DroidSkill {
     protected readonly strainDecayBase: number = 0.15;
     protected readonly starsPerDouble: number = 1.1;
 
-    strainValueOf(current: DifficultyHitObject): number {
+    protected strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
@@ -47,6 +47,16 @@ export class DroidFlashlight extends DroidSkill {
         }
 
         return Math.pow(smallDistNerf * result, 2) * this.skillMultiplier;
+    }
+
+    /**
+     * @param current The hitobject to calculate.
+     */
+    protected strainValueAt(current: DifficultyHitObject): number {
+        this.currentStrain *= this.strainDecay(current.deltaTime);
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+
+        return this.currentStrain;
     }
 
     saveToHitObject(current: DifficultyHitObject): void {

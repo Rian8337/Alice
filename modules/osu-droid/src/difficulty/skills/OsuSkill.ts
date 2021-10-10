@@ -29,31 +29,6 @@ export abstract class OsuSkill extends StrainSkill {
      */
     protected abstract readonly decayWeight: number;
 
-    /**
-     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-     * 
-     * @param current The hitobject to process.
-     */
-    protected process(current: DifficultyHitObject): void {
-        // The first object doesn't generate a strain, so we begin with an incremented section end
-        if (this.previous.length === 0) {
-            this.currentSectionEnd = Math.ceil(current.startTime / this.sectionLength) * this.sectionLength;
-        }
-
-        while (current.startTime > this.currentSectionEnd) {
-            this.saveCurrentPeak();
-            this.startNewSectionFrom(this.currentSectionEnd);
-            this.currentSectionEnd += this.sectionLength;
-        }
-
-        this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
-
-        this.saveToHitObject(current);
-
-        this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
-    }
-
     difficultyValue(): number {
         let difficulty: number = 0;
         let weight: number = 1;

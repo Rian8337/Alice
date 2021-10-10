@@ -23,7 +23,7 @@ export class DroidRhythm extends DroidSkill {
         this.greatWindow = greatWindow;
     }
 
-    strainValueOf(current: DifficultyHitObject): number {
+    protected strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
@@ -131,8 +131,15 @@ export class DroidRhythm extends DroidSkill {
             }
         }
 
+        return Math.sqrt(4 + rhythmComplexitySum) / 2;
+    }
+
+    /**
+     * @param current The hitobject to calculate.
+     */
+    protected strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += Math.sqrt(4 + rhythmComplexitySum) / 2 * this.skillMultiplier;
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
 
         return this.currentStrain;
     }

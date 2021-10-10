@@ -38,6 +38,30 @@ export abstract class StrainSkill extends Skill {
     protected currentSectionEnd: number = 0;
 
     /**
+     * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
+     * 
+     * @param current The hitobject to process.
+     */
+    protected process(current: DifficultyHitObject): void {
+        // The first object doesn't generate a strain, so we begin with an incremented section end
+        if (this.previous.length === 0) {
+            this.currentSectionEnd = Math.ceil(current.startTime / this.sectionLength) * this.sectionLength;
+        }
+
+        while (current.startTime > this.currentSectionEnd) {
+            this.saveCurrentPeak();
+            this.startNewSectionFrom(this.currentSectionEnd);
+            this.currentSectionEnd += this.sectionLength;
+        }
+
+        this.currentStrain = this.strainValueAt(current);
+
+        this.saveToHitObject(current);
+
+        this.currentSectionPeak = Math.max(this.currentStrain, this.currentSectionPeak);
+    }
+
+    /**
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
     protected saveCurrentPeak(): void {
@@ -69,7 +93,12 @@ export abstract class StrainSkill extends Skill {
     }
 
     /**
-     * Calculates the strain value of a hitobject.
+     * Calculates the strain value at a hitobject.
+     */
+    protected abstract strainValueAt(current: DifficultyHitObject): number;
+
+    /**
+     * Calculates the strain value at a hitobject.
      */
     protected abstract strainValueOf(current: DifficultyHitObject): number;
 
