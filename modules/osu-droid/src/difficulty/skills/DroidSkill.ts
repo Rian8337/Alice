@@ -1,4 +1,3 @@
-import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { StrainSkill } from "../base/StrainSkill";
 
 /**

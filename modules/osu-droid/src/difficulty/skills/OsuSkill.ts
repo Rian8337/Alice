@@ -1,4 +1,3 @@
-import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { Interpolation } from "../../mathutil/Interpolation";
 import { MathUtils } from "../../mathutil/MathUtils";
 import { StrainSkill } from "../base/StrainSkill";
