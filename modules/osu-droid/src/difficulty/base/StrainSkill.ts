@@ -65,9 +65,7 @@ export abstract class StrainSkill extends Skill {
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
     protected saveCurrentPeak(): void {
-        if (this.previous.length > 0) {
-            this.strainPeaks.push(this.currentSectionPeak);
-        }
+        this.strainPeaks.push(this.currentSectionPeak);
     }
 
     /**
@@ -78,9 +76,7 @@ export abstract class StrainSkill extends Skill {
     protected startNewSectionFrom(offset: number): void {
         // The maximum strain of the new section is not zero by default, strain decays as usual regardless of section boundaries.
         // This means we need to capture the strain level at the beginning of the new section, and use that as the initial peak level.
-        if (this.previous.length > 0) {
-            this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
-        }
+        this.currentSectionPeak = this.currentStrain * this.strainDecay(offset - this.previous[0].startTime);
     }
 
     /**
@@ -96,11 +92,6 @@ export abstract class StrainSkill extends Skill {
      * Calculates the strain value at a hitobject.
      */
     protected abstract strainValueAt(current: DifficultyHitObject): number;
-
-    /**
-     * Calculates the strain value at a hitobject.
-     */
-    protected abstract strainValueOf(current: DifficultyHitObject): number;
 
     /**
      * Saves the current strain to a hitobject.
