@@ -9,7 +9,7 @@ export class DroidFlashlight extends DroidSkill {
     protected readonly historyLength: number = 10;
     protected readonly skillMultiplier: number = 0.15;
     protected readonly strainDecayBase: number = 0.15;
-    protected readonly starsPerDouble: number = 1.06;
+    protected readonly starsPerDouble: number = 1.1;
 
     strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
@@ -37,7 +37,7 @@ export class DroidFlashlight extends DroidSkill {
 
             // We want to nerf objects that can be easily seen within the Flashlight circle radius.
             if (i === 0) {
-                smallDistNerf = Math.min(1, jumpDistance / 125);
+                smallDistNerf = Math.min(1, jumpDistance / 50);
             }
 
             // We also want to nerf stacks so that only the first object of the stack is accounted for.
