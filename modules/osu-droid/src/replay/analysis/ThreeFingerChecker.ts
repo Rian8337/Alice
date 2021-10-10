@@ -232,6 +232,10 @@ export class ThreeFingerChecker {
         this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
 
+        if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
+            return { is3Finger: false, penalty: 1 };
+        }
+
         this.calculateNerfFactors();
 
         const finalPenalty: number = this.calculateFinalPenalty();
