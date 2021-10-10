@@ -98,7 +98,7 @@ export class ThreeFingerChecker {
      * 
      * Increasing this number will result in less sections being flagged.
      */
-    private readonly strainThreshold: number = 200;
+    private readonly strainThreshold: number = 175;
 
     /**
      * The distance threshold between cursors to assume that two cursors are
@@ -199,7 +199,7 @@ export class ThreeFingerChecker {
 
         const stats: MapStats = new MapStats({od: this.map.map.od, mods: this.map.mods.filter(m => !ModUtil.speedChangingMods.map(v => v.droidString).includes(m.droidString))}).calculate();
 
-        this.hitWindow = new DroidHitWindow(<number> stats.od);
+        this.hitWindow = new DroidHitWindow(stats.od!);
 
         const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.tapStrain >= this.strainThreshold);
         this.strainNoteCount = strainNotes.length;
