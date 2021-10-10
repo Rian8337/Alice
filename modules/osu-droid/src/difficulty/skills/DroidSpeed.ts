@@ -3,7 +3,6 @@ import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { Interpolation } from "../../mathutil/Interpolation";
 import { MathUtils } from "../../mathutil/MathUtils";
 import { Mod } from "../../mods/Mod";
-import { Precision } from "../../utils/Precision";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
 
