@@ -4,7 +4,7 @@ import { modes } from '../../constants/modes';
 import { MapStats } from '../../utils/MapStats';
 import { DifficultyHitObject } from '../preprocessing/DifficultyHitObject';
 import { DifficultyHitObjectCreator } from '../preprocessing/DifficultyHitObjectCreator';
-import { Skill } from './Skill';
+import { StrainSkill } from './StrainSkill';
 import { Chart } from '../../utils/Chart';
 import { Mod } from '../../mods/Mod';
 import { ModFlashlight } from '../../mods/ModFlashlight';
@@ -130,10 +130,15 @@ export abstract class StarRating {
      * 
      * @param skills The skills to calculate.
      */
-    protected calculateSkills(...skills: Skill[]): void {
-        this.objects.slice(1).forEach(h => {
+    protected calculateSkills(...skills: StrainSkill[]): void {
+        this.objects.slice(1).forEach((h, i) => {
             skills.forEach(skill => {
                 skill.processInternal(h);
+
+                if (i === this.objects.length - 2) {
+                    // Don't forget to save the last strain peak, which would otherwise be ignored.
+                    skill.saveCurrentPeak();
+                }
             });
         });
     }
@@ -215,7 +220,7 @@ export abstract class StarRating {
     /**
      * Creates skills to be calculated.
      */
-    protected abstract createSkills(): Skill[];
+    protected abstract createSkills(): StrainSkill[];
 
     /**
      * Calculates the star rating value of a difficulty.

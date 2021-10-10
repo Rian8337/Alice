@@ -64,7 +64,7 @@ export abstract class StrainSkill extends Skill {
     /**
      * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
      */
-    protected saveCurrentPeak(): void {
+    saveCurrentPeak(): void {
         this.strainPeaks.push(this.currentSectionPeak);
     }
 
