@@ -280,13 +280,13 @@ export abstract class MuteManager extends PunishmentManager {
             await this.notifyMember(member, `Hey, you were unmuted for ${reason}.`, unmuteEmbed);
         }
 
-        await member.roles.remove(muteRole, reason ?? "Mute time is over");
+        this.currentMutes.delete(member.id);
 
         await this.punishmentDb.update(
             { guildID: member.guild.id }, { $pull: { currentMutes: { userID: member.id } } }
         );
 
-        this.currentMutes.delete(member.id);
+        await member.roles.remove(muteRole, reason ?? "Mute time is over");
 
         const muteEmbed: MessageEmbed = logMessage.embeds[0];
 
