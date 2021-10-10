@@ -11,7 +11,7 @@ export class DroidFlashlight extends DroidSkill {
     protected readonly strainDecayBase: number = 0.15;
     protected readonly starsPerDouble: number = 1.06;
 
-    strainValueAt(current: DifficultyHitObject): number {
+    strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }

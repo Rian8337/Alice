@@ -23,7 +23,7 @@ export class DroidRhythm extends DroidSkill {
         this.greatWindow = greatWindow;
     }
 
-    strainValueAt(current: DifficultyHitObject): number {
+    strainValueOf(current: DifficultyHitObject): number {
         if (current.object instanceof Spinner) {
             return 0;
         }
