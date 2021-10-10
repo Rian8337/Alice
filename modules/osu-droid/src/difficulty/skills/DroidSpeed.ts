@@ -98,7 +98,7 @@ export class DroidSpeed extends DroidSkill {
 
         let previousIslandSize: number = -1;
         let rhythmComplexitySum: number = 0;
-        let islandSize: number = 0;
+        let islandSize: number = 1;
 
         // Store the ratio of the current start of an island to buff for tighter rhythms.
         let startRatio: number = 0;
