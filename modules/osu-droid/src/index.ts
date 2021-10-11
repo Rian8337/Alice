@@ -8,6 +8,7 @@ import { DifficultyHitObject } from './difficulty/preprocessing/DifficultyHitObj
 import { DifficultyHitObjectCreator } from './difficulty/preprocessing/DifficultyHitObjectCreator';
 import { DroidAim } from './difficulty/skills/DroidAim';
 import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
+import { DroidFlashlight } from './difficulty/skills/DroidFlashlight';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
 import { DroidStarRating } from './difficulty/DroidStarRating';
@@ -134,6 +135,11 @@ export = {
      * API request builder for osu!droid.
      */
     DroidAPIRequestBuilder,
+
+    /**
+     * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
+     */
+    DroidFlashlight,
 
     /**
      * Represents the hit window of osu!droid.
