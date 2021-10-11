@@ -142,8 +142,8 @@ export class Accuracy implements AccuracyInformation {
             nobjects = n300 + this.n100 + this.n50 + this.nmiss;
         }
         let res = (
-            (n300 * 300 + this.n100 * 100 + this.n50 * 50) /
-            (nobjects * 300)
+            (n300 * 6 + this.n100 * 2 + this.n50) /
+            (nobjects * 6)
         );
         return Math.max(0, Math.min(res, 1));
     }
