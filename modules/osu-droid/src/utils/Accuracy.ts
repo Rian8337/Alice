@@ -1,3 +1,5 @@
+import { MathUtils } from "../mathutil/MathUtils";
+
 interface AccuracyInformation {
     /**
      * The amount of objects in the beatmap.
@@ -145,6 +147,6 @@ export class Accuracy implements AccuracyInformation {
             (n300 * 6 + this.n100 * 2 + this.n50) /
             (nobjects * 6)
         );
-        return Math.max(0, Math.min(res, 1));
+        return MathUtils.clamp(res, 0, 1);
     }
 }
