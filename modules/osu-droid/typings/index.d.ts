@@ -460,13 +460,17 @@ declare module "osu-droid" {
         protected readonly strainDecayBase: number;
         protected readonly starsPerDouble: number;
         /**
-         * @param currentObject The hitobject to calculate.
+         * @param current The hitobject to calculate.
          */
-        strainValueAt(currentObject: DifficultyHitObject): number;
+        protected strainValueOf(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to calculate.
+         */
+        protected strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param currentObject The hitobject to save to.
          */
-        saveToHitObject(currentObject: DifficultyHitObject): void;
+        saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -477,6 +481,28 @@ declare module "osu-droid" {
         protected readonly APIkey: string;
         protected readonly APIkeyParam: string;
         setEndpoint(endpoint: DroidAPIEndpoint): this;
+    }
+
+    /**
+     * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
+     */
+    export class DroidFlashlight extends DroidSkill {
+        protected readonly historyLength: number;
+        protected readonly skillMultiplier: number;
+        protected readonly strainDecayBase: number;
+        protected readonly starsPerDouble: number;
+        /**
+         * @param current The hitobject to calculate.
+         */
+        protected strainValueOf(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to calculate.
+         */
+        protected strainValueAt(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to save to.
+         */
+        saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -566,8 +592,18 @@ declare module "osu-droid" {
         protected readonly skillMultiplier: number;
         protected readonly strainDecayBase: number;
         private readonly historyTimeMax: number;
+        /**
+         * @param current The hitobject to calculate.
+         */
+        protected strainValueOf(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to calculate.
+         */
         protected strainValueAt(current: DifficultyHitObject): number;
-        protected saveToHitObject(current: DifficultyHitObject): void;
+        /**
+         * @param current The hitobject to save to.
+         */
+        saveToHitObject(current: DifficultyHitObject): void;
         private isRatioEqual(ratio: number, a: number, b: number): boolean;
     }
 
@@ -674,25 +710,29 @@ declare module "osu-droid" {
         private currentTapStrain: number;
         private currentMovementStrain: number;
         /**
-         * @param currentObject The hitobject to calculate.
+         * @param current The hitobject to calculate.
          */
-        strainValueAt(currentObject: DifficultyHitObject): number;
+        protected strainValueOf(current: DifficultyHitObject): number;
         /**
-         * @param currentObject The hitobject to save to.
+         * @param current The hitobject to calculate.
          */
-        saveToHitObject(currentObject: DifficultyHitObject): void;
+        protected strainValueAt(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to save to.
+         */
+        saveToHitObject(current: DifficultyHitObject): void;
         /**
          * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current object.
          */
-        private calculateRhythmBonus(currentObject: DifficultyHitObject): number;
+        private calculateRhythmBonus(current: DifficultyHitObject): number;
         /**
          * Calculates the tap strain of a hitobject.
          */
-        private tapStrainOf(currentObject: DifficultyHitObject): number;
+        private tapStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number;
         /**
          * Calculates the movement strain of a hitobject.
          */
-        private movementStrainOf(currentObject: DifficultyHitObject, speedBonus: number): number;
+        private movementStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number;
     }
 
     /**
@@ -1535,13 +1575,17 @@ declare module "osu-droid" {
         protected readonly difficultyMultiplier: number;
         protected readonly decayWeight: number;
         /**
-         * @param currentObject The hitobject to calculate.
+         * @param current The hitobject to calculate.
          */
-        strainValueOf(currentObject: DifficultyHitObject): number;
+        protected strainValueOf(current: DifficultyHitObject): number;
         /**
-         * @param currentObject The hitobject to save to.
+         * @param current The hitobject to calculate.
          */
-        saveToHitObject(currentObject: DifficultyHitObject): void;
+        protected strainValueAt(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to save to.
+         */
+        saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -1568,7 +1612,11 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        strainValueOf(current: DifficultyHitObject): number;
+        protected strainValueOf(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to calculate.
+         */
+        protected strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
@@ -1667,13 +1715,17 @@ declare module "osu-droid" {
         private readonly maxSpeedBonus: number;
         private readonly angleBonusScale: number;
         /**
-         * @param currentObject The hitobject to calculate.
+         * @param current The hitobject to calculate.
          */
-        strainValueOf(currentObject: DifficultyHitObject): number;
+        protected strainValueOf(current: DifficultyHitObject): number;
         /**
-         * @param currentObject The hitobject to save to.
+         * @param current The hitobject to calculate.
          */
-        saveToHitObject(currentObject: DifficultyHitObject): void;
+        protected strainValueAt(current: DifficultyHitObject): number;
+        /**
+         * @param current The hitobject to save to.
+         */
+        saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -3326,66 +3378,13 @@ declare module "osu-droid" {
      * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
      * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
      */
-    abstract class DroidSkill extends Skill {
-        /**
-         * The strain of currently calculated hitobject.
-         */
-        protected currentStrain: number;
-        /**
-         * The current section's strain peak.
-         */
-        private currentSectionPeak;
-        /**
-         * Strain peaks are stored here.
-         */
-        readonly strainPeaks: number[];
-        /**
-         * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
-         */
-        protected abstract readonly skillMultiplier: number;
-        /**
-         * Determines how quickly strain decays for the given skill.
-         *
-         * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
-         */
-        protected abstract readonly strainDecayBase: number;
+    abstract class DroidSkill extends StrainSkill {
         /**
          * The bonus multiplier that is given for a sequence of notes of equal difficulty.
          */
         protected abstract readonly starsPerDouble: number;
-        private readonly sectionLength: number;
-        private currentSectionEnd: number;
-        /**
-         * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-         *
-         * @param current The hitobject to process.
-         */
-        protected process(current: DifficultyHitObject): void;
-        /**
-         * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
-         */
-        private saveCurrentPeak(): void;
-        /**
-         * Sets the initial strain level for a new section.
-         *
-         * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
-         */
-        private startNewSectionFrom(offset: number): void;
+
         difficultyValue(): number;
-        /**
-         * Calculates the strain value of a hitobject.
-         */
-        protected abstract strainValueAt(current: DifficultyHitObject): number;
-        /**
-         * Saves the current strain to a hitobject.
-         */
-        protected abstract saveToHitObject(current: DifficultyHitObject): void;
-        /**
-         * Calculates strain decay for a specified time frame.
-         *
-         * @param ms The time frame to calculate.
-         */
-        private strainDecay(ms: number): number;
     }
 
     abstract class HitWindow {
@@ -3417,66 +3416,29 @@ declare module "osu-droid" {
      * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
      * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
      */
-    abstract class OsuSkill extends Skill {
+    abstract class OsuSkill extends StrainSkill {
         /**
-         * The strain of currently calculated hitobject.
+         * The number of sections with the highest strains, which the peak strain reductions will apply to.
+         * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
          */
-        protected currentStrain: number;
+        protected abstract readonly reducedSectionCount: number;
+
         /**
-         * The current section's strain peak.
+         * The baseline multiplier applied to the section with the biggest strain.
          */
-        private currentSectionPeak;
+        protected abstract readonly reducedSectionBaseline: number;
+
         /**
-         * Strain peaks are stored here.
+         * The final multiplier to be applied to the final difficulty value after all other calculations.
          */
-        readonly strainPeaks: number[];
-        /**
-         * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
-         */
-        protected abstract readonly skillMultiplier: number;
-        /**
-         * Determines how quickly strain decays for the given skill.
-         *
-         * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
-         */
-        protected abstract readonly strainDecayBase: number;
+        protected abstract readonly difficultyMultiplier: number;
+
         /**
          * The weight by which each strain value decays.
          */
         protected abstract readonly decayWeight: number;
-        private readonly sectionLength: number;
-        private currentSectionEnd: number;
-        /**
-         * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
-         *
-         * @param current The hitobject to process.
-         */
-        protected process(current: DifficultyHitObject): void;
-        /**
-         * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
-         */
-        private saveCurrentPeak(): void;
-        /**
-         * Sets the initial strain level for a new section.
-         *
-         * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
-         */
-        private startNewSectionFrom(offset: number): void;
+
         difficultyValue(): number;
-        /**
-         * Calculates the strain value of a hitobject.
-         */
-        protected abstract strainValueOf(current: DifficultyHitObject): number;
-        /**
-         * Saves the current strain to a hitobject.
-         */
-        protected abstract saveToHitObject(current: DifficultyHitObject): void;
-        /**
-         * Calculates strain decay for a specified time frame.
-         *
-         * @param ms The time frame to calculate.
-         */
-        private strainDecay(ms: number): number;
     }
 
     /**
@@ -3719,6 +3681,79 @@ declare module "osu-droid" {
          * Creates skills to be calculated.
          */
         protected abstract createSkills(): Skill[];
+    }
+
+    /**
+     * Used to processes strain values of difficulty hitobjects, keep track of strain levels caused by the processed objects
+     * and to calculate a final difficulty value representing the difficulty of hitting all the processed objects.
+     */
+    abstract class StrainSkill extends Skill {
+        /**
+         * The strain of currently calculated hitobject.
+         */
+        protected currentStrain: number;
+
+        /**
+         * The current section's strain peak.
+         */
+        protected currentSectionPeak: number;
+
+        /**
+         * Strain peaks are stored here.
+         */
+        readonly strainPeaks: number[];
+
+        /**
+         * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
+         */
+        protected abstract readonly skillMultiplier: number;
+
+        /**
+         * Determines how quickly strain decays for the given skill.
+         * 
+         * For example, a value of 0.15 indicates that strain decays to 15% of its original value in one second.
+         */
+        protected abstract readonly strainDecayBase: number;
+
+        protected readonly sectionLength: number;
+
+        protected currentSectionEnd: number;
+
+        /**
+         * Calculates the strain value of a hitobject and stores the value in it. This value is affected by previously processed objects.
+         * 
+         * @param current The hitobject to process.
+         */
+        protected process(current: DifficultyHitObject): void;
+
+        /**
+         * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.
+         */
+        saveCurrentPeak(): void;
+
+        /**
+         * Sets the initial strain level for a new section.
+         * 
+         * @param offset The beginning of the new section in milliseconds, adjusted by speed multiplier.
+         */
+        protected startNewSectionFrom(offset: number): void;
+
+        /**
+         * Calculates strain decay for a specified time frame.
+         * 
+         * @param ms The time frame to calculate.
+         */
+        protected strainDecay(ms: number): number;
+
+        /**
+         * Calculates the strain value at a hitobject.
+         */
+        protected abstract strainValueAt(current: DifficultyHitObject): number;
+
+        /**
+         * Saves the current strain to a hitobject.
+         */
+        protected abstract saveToHitObject(current: DifficultyHitObject): void;
     }
 
     //#endregion
