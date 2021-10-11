@@ -92,6 +92,10 @@ export class DroidStarRating extends StarRating {
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
     calculateSpeed(): void {
+        if (this.mods.some(m => m instanceof ModRelax)) {
+            return;
+        }
+
         const speedSkill: DroidSpeed = new DroidSpeed(
             this.mods,
             new OsuHitWindow(this.stats.od!).hitWindowFor300()
@@ -161,7 +165,7 @@ export class DroidStarRating extends StarRating {
         const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
 
         if (isRelax) {
-            // Remove tap and rhythm skill to prevent overhead
+            // Remove speed and rhythm skill to prevent overhead
             skills.splice(1, 2);
         }
 
