@@ -172,12 +172,25 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
+        // Calculate accuracy assuming the worst case scenario.
+        const countGreat: number = this.computedAccuracy.n300;
+        const countOk: number = this.computedAccuracy.n100;
+        const countMeh: number = this.computedAccuracy.n50;
+
+        const relevantTotalDiff: number = objectCount - this.stars.attributes.speedNoteCount;
+        const relevantAccuracy: Accuracy = new Accuracy({
+            n300: Math.max(0, countGreat - relevantTotalDiff),
+            n100: Math.max(0, countOk - Math.max(0, relevantTotalDiff - countGreat)),
+            n50: Math.max(0, countMeh - Math.max(0, relevantTotalDiff - countGreat - countOk)),
+            nobjects: relevantTotalDiff
+        });
+
         // Scale the speed value with accuracy and OD.
         const od: number = <number> this.mapStatistics.od;
         const odScaling: number = Math.pow(od, 2) / 750;
         this.speed *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
             Math.pow(
-                this.computedAccuracy.value(objectCount),
+                (this.computedAccuracy.value(objectCount) + relevantAccuracy.value(relevantTotalDiff)) / 2,
                 (12 - Math.max(od, 2.5)) / 2
             );
 

@@ -106,6 +106,15 @@ export class DroidStarRating extends StarRating {
         this.speedStrainPeaks = speedSkill.strainPeaks;
 
         this.speed = this.starValue(speedSkill.difficultyValue());
+
+        const objectStrains: number[] = this.objects.map(v => v.speedStrain);
+
+        const maxStrain: number = Math.max(...objectStrains);
+
+        this.attributes.speedNoteCount = objectStrains.reduce(
+            (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+            0
+        );
     }
 
     /**
@@ -185,7 +194,17 @@ export class DroidStarRating extends StarRating {
 
         if (speedSkill) {
             this.speedStrainPeaks = speedSkill.strainPeaks;
+
             this.speed = this.starValue(speedSkill.difficultyValue());
+
+            const objectStrains: number[] = this.objects.map(v => v.speedStrain);
+
+            const maxStrain: number = Math.max(...objectStrains);
+
+            this.attributes.speedNoteCount = objectStrains.reduce(
+                (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+                0
+            );
         }
 
         if (rhythmSkill) {
