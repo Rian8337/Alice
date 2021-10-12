@@ -182,7 +182,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             n300: Math.max(0, countGreat - relevantTotalDiff),
             n100: Math.max(0, countOk - Math.max(0, relevantTotalDiff - countGreat)),
             n50: Math.max(0, countMeh - Math.max(0, relevantTotalDiff - countGreat - countOk)),
-            nobjects: relevantTotalDiff
+            nmiss: this.computedAccuracy.nmiss
         });
 
         // Scale the speed value with accuracy and OD.
