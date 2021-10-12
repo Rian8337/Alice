@@ -122,6 +122,12 @@ export class PathApproximator {
 
         // See: https://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates_2
         const d: number = 2 * (a.x - b.subtract(c).y + b.x * c.subtract(a).y + c.x * a.subtract(b).y);
+
+        // Prevent a division-by-zero error
+        if (Precision.almostEqualsNumber(d, 0)) {
+            return [];
+        }
+
         const aSq: number = Math.pow(a.length, 2);
         const bSq: number = Math.pow(b.length, 2);
         const cSq: number = Math.pow(c.length, 2);
