@@ -72,7 +72,7 @@ export class SliderPath {
         if (this.isInitialized) {
             return;
         }
-        
+
         this.isInitialized = true;
         this.calculatedPath.length = 0;
         this.cumulativeLength.length = 0;
@@ -88,25 +88,22 @@ export class SliderPath {
         this.calculatedPath.length = 0;
 
         let start: number = 0;
-        let end: number = 0;
 
         for (let i = 0; i < this.controlPoints.length; i++) {
-            ++end;
             if (
                 i === this.controlPoints.length - 1 ||
-                (this.controlPoints[i].x === this.controlPoints[i + 1].x && this.controlPoints[i].y === this.controlPoints[i + 1].y)
+                this.controlPoints[i].equals(this.controlPoints[i + 1])
             ) {
-                const cpSpan: Vector2[] = this.controlPoints.slice(start, end);
+                const cpSpan: Vector2[] = this.controlPoints.slice(start, i + 1);
                 this.calculateSubPath(cpSpan).forEach(t => {
                     if (
                         this.calculatedPath.length === 0 ||
-                        this.calculatedPath.at(-1)!.x !== t.x ||
-                        this.calculatedPath.at(-1)!.y !== t.y
+                        !this.calculatedPath.at(-1)!.equals(t)
                     ) {
                         this.calculatedPath.push(t);
                     }
                 });
-                start = end;
+                start = i;
             }
         }
     }
@@ -119,7 +116,7 @@ export class SliderPath {
             case PathType.Linear:
                 return this.pathApproximator.approximateLinear(subControlPoints);
             case PathType.PerfectCurve:
-                if (this.controlPoints.length !== 3 || subControlPoints.length !== 3) {
+                if (subControlPoints.length !== 3) {
                     break;
                 }
                 const subPath: Vector2[] = this.pathApproximator.approximateCircularArc(subControlPoints);
@@ -218,6 +215,7 @@ export class SliderPath {
         const d0: number = this.cumulativeLength[i - 1];
         const d1: number = this.cumulativeLength[i];
 
+        // Avoid division by and almost-zero number in case two points are extremely close to each other.
         if (Precision.almostEqualsNumber(d0, d1)) {
             return p0;
         }

@@ -25,19 +25,13 @@ export class PathApproximator {
     approximateBezier(controlPoints: Vector2[]): Vector2[] {
         const output: Vector2[] = [];
         const count: number = controlPoints.length - 1;
-        if (count === 0) {
+
+        if (count < 0) {
             return output;
         }
 
-        const subdivisionBuffer1: Vector2[] = [];
-        const subdivisionBuffer2: Vector2[] = [];
-        for (let i = 0; i < count; ++i) {
-            subdivisionBuffer1.push(new Vector2({x: 0, y: 0}));
-        }
-
-        for (let i = 0; i < count * 2 + 1; ++i) {
-            subdivisionBuffer2.push(new Vector2({x: 0, y: 0}));
-        }
+        const subdivisionBuffer1: Vector2[] = new Array(count + 1);
+        const subdivisionBuffer2: Vector2[] = new Array(count * 2 + 1);
 
         // "toFlatten" contains all the curves which are not yet approximated well enough.
         // We use a stack to emulate recursion without the risk of running into a stack overflow.
@@ -47,17 +41,13 @@ export class PathApproximator {
         const toFlatten: Vector2[][] = [];
         const freeBuffers: Vector2[][] = [];
 
-        const deepCopy: Vector2[] = [];
-        controlPoints.forEach(c => {
-            deepCopy.push(new Vector2({x: c.x, y: c.y}));
-        });
-
-        toFlatten.push(deepCopy);
+        // Deep copy
+        toFlatten.push(controlPoints.map(c => new Vector2({ x: c.x, y: c.y })));
 
         const leftChild: Vector2[] = subdivisionBuffer2;
 
         while (toFlatten.length > 0) {
-            const parent: Vector2[] = toFlatten.pop() as Vector2[];
+            const parent: Vector2[] = toFlatten.pop()!;
             if (this.bezierIsFlatEnough(parent)) {
                 // If the control points we currently operate on are sufficiently "flat", we use
                 // an extension to De Casteljau's algorithm to obtain a piecewise-linear approximation
@@ -70,14 +60,7 @@ export class PathApproximator {
 
             // If we do not yet have a sufficiently "flat" (in other words, detailed) approximation we keep
             // subdividing the curve we are currently operating on.
-            let rightChild: Vector2[] = [];
-            if (freeBuffers.length > 0) {
-                rightChild = freeBuffers.pop() as Vector2[];
-            } else {
-                for (let i = 0; i < count + 1; ++i) {
-                    rightChild.push(new Vector2({x: 0, y: 0}));
-                }
-            }
+            const rightChild: Vector2[] = freeBuffers.length > 0 ? freeBuffers.pop()! : new Array(count + 1);
 
             this.bezierSubdivide(parent, leftChild, rightChild, subdivisionBuffer1, count + 1);
 
@@ -131,29 +114,23 @@ export class PathApproximator {
         const b: Vector2 = controlPoints[1];
         const c: Vector2 = controlPoints[2];
 
-        const aSq: number = Math.pow(b.subtract(c).length, 2);
-        const bSq: number = Math.pow(a.subtract(c).length, 2);
-        const cSq: number = Math.pow(a.subtract(b).length, 2);
-
         // If we have a degenerate triangle where a side-length is almost zero, then give up and fall
         // back to a more numerically stable method.
-        if ([aSq, bSq, cSq].some(v => Precision.almostEqualsNumber(v, 0))) {
+        if (Precision.almostEqualsNumber(0, (b.y - a.y) * (c.x - a.x) - (b.x - a.x) * (c.y - a.y))) {
             return [];
         }
 
-        const s: number = aSq * (bSq + cSq - aSq);
-        const t: number = bSq * (aSq + cSq - bSq);
-        const u: number = cSq * (aSq + bSq - cSq);
-        const sum: number = s + t + u;
+        // See: https://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates_2
+        const d: number = 2 * (a.x - b.subtract(c).y + b.x * c.subtract(a).y + c.x * a.subtract(b).y);
+        const aSq: number = Math.pow(a.length, 2);
+        const bSq: number = Math.pow(b.length, 2);
+        const cSq: number = Math.pow(c.length, 2);
 
-        // If we have a degenerate triangle with an almost-zero size, then give up and fall
-        // back to a more numerically stable method.
-        if (Precision.almostEqualsNumber(sum, 0)) {
-            return [];
-        }
+        const center: Vector2 = new Vector2({
+            x: aSq * b.subtract(c).y + bSq * c.subtract(a).y + cSq * a.subtract(b).y,
+            y: aSq * c.subtract(b).x + bSq * a.subtract(c).x + cSq * b.subtract(a).x
+        }).divide(d);
 
-        const scaledVec: Vector2 = a.scale(s).add(b.scale(t)).add(c.scale(u));
-        const center: Vector2 = scaledVec.divide(sum);
         const dA: Vector2 = a.subtract(center);
         const dC: Vector2 = c.subtract(center);
 
@@ -262,7 +239,7 @@ export class PathApproximator {
 
         for (let i = 1; i < count - 1; ++i) {
             const index: number = 2 * i;
-            const p: Vector2 = (l[index - 1].add(l[index].scale(2)).add(l[index + 1])).scale(0.25);
+            const p: Vector2 = l[index - 1].add(l[index].scale(2)).add(l[index + 1]).scale(0.25);
             output.push(p);
         }
     }
