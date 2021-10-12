@@ -57,14 +57,7 @@ export class DifficultyHitObject {
     /**
      * The normalized distance from the end position of the previous hitobject to the start position of this hitobject.
      */
-    get jumpDistance(): number {
-        return this.jumpVector.length;
-    };
-
-    /**
-     * The normalized vector from the end position of the previous hitobject to the start position of this hitobject.
-     */
-    jumpVector: Vector2 = new Vector2({ x: 0, y: 0 });
+    jumpDistance: number = 0;
 
     /**
      * Angle the player has to take to hit this hitobject.

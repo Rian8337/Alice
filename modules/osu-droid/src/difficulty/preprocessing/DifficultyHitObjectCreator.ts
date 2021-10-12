@@ -70,8 +70,8 @@ export class DifficultyHitObjectCreator {
 
                 // Don't need to jump to reach spinners
                 if (!(object.object instanceof Spinner)) {
-                    object.jumpVector = object.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor));
+                    object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
+                        .subtract(lastCursorPosition.scale(scalingFactor)).length;
                 }
 
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
@@ -127,14 +127,14 @@ export class DifficultyHitObjectCreator {
                 progress %= 1;
             }
 
-            const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition as Vector2);
+            const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition!);
             let dist: number = diff.length;
 
             if (dist > approxFollowCircleRadius) {
                 // The cursor would be outside the follow circle, we need to move it
                 diff.normalize(); // Obtain direction of diff
                 dist -= approxFollowCircleRadius;
-                slider.lazyEndPosition = (slider.lazyEndPosition as Vector2).add(diff.scale(dist));
+                slider.lazyEndPosition = slider.lazyEndPosition!.add(diff.scale(dist));
                 slider.lazyTravelDistance += dist;
             }
         });
