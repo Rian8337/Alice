@@ -200,24 +200,22 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         }
 
         // Global variables
-        const n300: number = this.computedAccuracy.n300;
-        const n100: number = this.computedAccuracy.n100;
-        const n50: number = this.computedAccuracy.n50;
-
         const nobjects: number = this.stars.objects.length;
         const ncircles: number = this.stars.mods.some(m => m instanceof ModScoreV2) ? nobjects - this.stars.map.spinners : this.stars.map.circles;
 
-        const realAccuracy: number = Math.max(
-            ncircles > 0 ?
-            ((n300 - (nobjects - ncircles)) * 6 + n100 * 2 + n50) / (ncircles * 6) :
-            0,
-            0
-        );
+        if (ncircles === 0) {
+            return;
+        }
+
+        const realAccuracy: Accuracy = new Accuracy({
+            nobjects: ncircles,
+            ...this.computedAccuracy
+        });
 
         // Lots of arbitrary values from testing.
         // Considering to use derivation from perfect accuracy in a probabilistic manner - assume normal distribution
         this.accuracy = Math.pow(1.52163, <number> this.mapStatistics.od) *
-            Math.pow(realAccuracy, 24) * 2.83;
+            Math.pow(realAccuracy.value(ncircles), 24) * 2.83;
 
         // Bonus for many hitcircles - it's harder to keep good accuracy up for longer
         this.accuracy *= Math.min(1.15, Math.pow(ncircles / 1000, 0.3));
