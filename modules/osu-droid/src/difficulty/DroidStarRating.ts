@@ -107,7 +107,7 @@ export class DroidStarRating extends StarRating {
 
         this.speed = this.starValue(speedSkill.difficultyValue());
 
-        const objectStrains: number[] = this.objects.map(v => v.speedStrain);
+        const objectStrains: number[] = this.objects.map(v => v.tapStrain);
 
         const maxStrain: number = Math.max(...objectStrains);
 
@@ -197,7 +197,7 @@ export class DroidStarRating extends StarRating {
 
             this.speed = this.starValue(speedSkill.difficultyValue());
 
-            const objectStrains: number[] = this.objects.map(v => v.speedStrain);
+            const objectStrains: number[] = this.objects.map(v => v.tapStrain);
 
             const maxStrain: number = Math.max(...objectStrains);
 
