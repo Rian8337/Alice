@@ -201,7 +201,7 @@ export class ThreeFingerChecker {
 
         this.hitWindow = new DroidHitWindow(stats.od!);
 
-        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.tapStrain >= this.strainThreshold);
+        const strainNotes: DifficultyHitObject[] = map.objects.filter(v => v.originalTapStrain >= this.strainThreshold);
         this.strainNoteCount = strainNotes.length;
     }
 
@@ -583,13 +583,13 @@ export class ThreeFingerChecker {
             let newFirstObjectIndex = beatmapSection.firstObjectIndex;
 
             for (let i = beatmapSection.firstObjectIndex; i <= beatmapSection.lastObjectIndex; ++i) {
-                if (!inSpeedSection && objects[i].tapStrain >= this.strainThreshold) {
+                if (!inSpeedSection && objects[i].originalTapStrain >= this.strainThreshold) {
                     inSpeedSection = true;
                     newFirstObjectIndex = i;
                     continue;
                 }
 
-                if (inSpeedSection && objects[i].tapStrain < this.strainThreshold) {
+                if (inSpeedSection && objects[i].originalTapStrain < this.strainThreshold) {
                     inSpeedSection = false;
                     newBeatmapSections.push({
                         firstObjectIndex: newFirstObjectIndex,
@@ -768,7 +768,7 @@ export class ThreeFingerChecker {
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
                 const strainFactor: number = Math.sqrt(
                     objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex)
-                        .map(v => {return v.tapStrain;})
+                        .map(v => {return v.originalTapStrain;})
                         .sort((a, b) => {return b - a;})
                         .reduce((acc, value) => acc + value / this.strainThreshold, 0)
                 );

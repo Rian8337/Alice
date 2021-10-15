@@ -22,8 +22,9 @@ export class DroidSpeed extends DroidSkill {
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
 
-    private currentTapStrain: number = 1;
-    private currentMovementStrain: number = 1;
+    private currentTapStrain: number = 0;
+    private currentMovementStrain: number = 0;
+    private currentOriginalTapStrain: number = 0;
 
     private readonly greatWindow: number;
 
@@ -61,10 +62,19 @@ export class DroidSpeed extends DroidSkill {
             speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
         }
 
+        let originalSpeedBonus: number = 1;
+
+        if (current.strainTime < this.minSpeedBonus) {
+            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
+        }
+
         const decay: number = this.strainDecay(current.deltaTime);
 
         this.currentTapStrain *= decay;
         this.currentTapStrain += this.tapStrainOf(speedBonus, strainTime);
+
+        this.currentOriginalTapStrain *= decay;
+        this.currentOriginalTapStrain += this.tapStrainOf(originalSpeedBonus, current.strainTime);
 
         this.currentMovementStrain *= decay;
         this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime);
@@ -87,6 +97,7 @@ export class DroidSpeed extends DroidSkill {
     saveToHitObject(current: DifficultyHitObject): void {
         current.movementStrain = this.currentMovementStrain;
         current.tapStrain = this.currentTapStrain;
+        current.originalTapStrain = this.currentOriginalTapStrain;
     }
 
     /**
