@@ -61,6 +61,13 @@ export class DifficultyHitObjectCreator {
             const lastLastObject: DifficultyHitObject = difficultyObjects[i - 2];
 
             if (lastObject) {
+                object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
+                // Capp to 25ms to prevent difficulty calculation breaking from simulatenous objects.
+                object.strainTime = Math.max(25, object.deltaTime);
+                object.startTime = object.object.startTime / params.speedMultiplier;
+            }
+
+            if (!(object.object instanceof Spinner) && !(lastObject?.object instanceof Spinner)) {
                 if (lastObject.object instanceof Slider) {
                     this.calculateSliderCursorPosition(lastObject.object);
                     object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
@@ -68,17 +75,10 @@ export class DifficultyHitObjectCreator {
 
                 const lastCursorPosition: Vector2 = this.getEndCursorPosition(lastObject.object);
 
-                // Don't need to jump to reach spinners
-                if (!(object.object instanceof Spinner)) {
-                    object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor)).length;
-                }
+                object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
+                    .subtract(lastCursorPosition.scale(scalingFactor)).length;
 
-                object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
-                object.strainTime = Math.max(25, object.deltaTime);
-                object.startTime = object.object.startTime / params.speedMultiplier;
-
-                if (lastLastObject) {
+                if (lastLastObject && !(lastLastObject instanceof Spinner)) {
                     const lastLastCursorPosition: Vector2 = this.getEndCursorPosition(lastLastObject.object);
 
                     const v1: Vector2 = lastLastCursorPosition.subtract(lastObject.object.stackedPosition);
