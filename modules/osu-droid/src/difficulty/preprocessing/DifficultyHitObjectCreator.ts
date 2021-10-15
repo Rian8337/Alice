@@ -62,12 +62,12 @@ export class DifficultyHitObjectCreator {
 
             if (lastObject) {
                 object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
-                // Capp to 25ms to prevent difficulty calculation breaking from simulatenous objects.
+                // Cap to 25ms to prevent difficulty calculation breaking from simulatenous objects.
                 object.strainTime = Math.max(25, object.deltaTime);
                 object.startTime = object.object.startTime / params.speedMultiplier;
             }
 
-            if (!(object.object instanceof Spinner) && !(lastObject?.object instanceof Spinner)) {
+            if (lastObject && !(object.object instanceof Spinner) && !(lastObject.object instanceof Spinner)) {
                 if (lastObject.object instanceof Slider) {
                     this.calculateSliderCursorPosition(lastObject.object);
                     object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
