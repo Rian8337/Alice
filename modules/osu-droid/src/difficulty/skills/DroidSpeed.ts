@@ -71,13 +71,13 @@ export class DroidSpeed extends DroidSkill {
         const decay: number = this.strainDecay(current.deltaTime);
 
         this.currentTapStrain *= decay;
-        this.currentTapStrain += this.tapStrainOf(speedBonus, strainTime);
+        this.currentTapStrain += this.tapStrainOf(speedBonus, strainTime) * this.skillMultiplier;
 
         this.currentOriginalTapStrain *= decay;
-        this.currentOriginalTapStrain += this.tapStrainOf(originalSpeedBonus, current.strainTime);
+        this.currentOriginalTapStrain += this.tapStrainOf(originalSpeedBonus, current.strainTime) * this.skillMultiplier;
 
         this.currentMovementStrain *= decay;
-        this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime);
+        this.currentMovementStrain += this.movementStrainOf(current, speedBonus, strainTime) * this.skillMultiplier;
 
         return this.currentMovementStrain + this.currentTapStrain;
     }
@@ -86,7 +86,7 @@ export class DroidSpeed extends DroidSkill {
      * @param current The hitobject to calculate.
      */
     protected strainValueAt(current: DifficultyHitObject): number {
-        this.currentStrain = this.strainValueOf(current) * this.skillMultiplier;
+        this.currentStrain = this.strainValueOf(current);
 
         return this.currentStrain;
     }
