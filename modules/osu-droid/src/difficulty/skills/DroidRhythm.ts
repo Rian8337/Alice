@@ -8,7 +8,7 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly process rhythm.
  */
 export class DroidRhythm extends DroidSkill {
-    protected readonly skillMultiplier: number = 1.5;
+    protected readonly skillMultiplier: number = 5;
     protected readonly starsPerDouble: number = 1.01;
     protected readonly historyLength: number = 32;
     protected readonly strainDecayBase: number = 0.3;
