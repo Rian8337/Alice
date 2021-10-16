@@ -23,7 +23,7 @@ export class OsuSpeed extends OsuSkill {
     protected override readonly decayWeight: number = 0.9;
 
     private readonly rhythmMultiplier: number = 0.75;
-    private readonly historyTimeMax: number = 5000;
+    private readonly historyTimeMax: number = 5000; // 5 seconds of calculateRhythmBonus max.
     private currentRhythm: number = 1;
 
     // ~200 1/4 BPM streams
@@ -201,5 +201,6 @@ export class OsuSpeed extends OsuSkill {
     override saveToHitObject(current: DifficultyHitObject): void {
         // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
         current.movementStrain = this.currentStrain;
+        current.rhythmMultiplier = this.currentRhythm;
     }
 }
