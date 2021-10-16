@@ -3,7 +3,6 @@ import { modes } from '../constants/modes';
 import { MapStats } from '../utils/MapStats';
 import { DroidAim } from './skills/DroidAim';
 import { DroidSpeed } from './skills/DroidSpeed';
-import { DroidRhythm } from './skills/DroidRhythm';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
@@ -25,11 +24,6 @@ export class DroidStarRating extends StarRating {
      * The tap star rating of the beatmap.
      */
     speed: number = 0;
-
-    /**
-     * The rhythm star rating of the beatmap.
-     */
-    rhythm: number = 0;
 
     /**
      * The flashlight star rating of the beatmap.
@@ -109,24 +103,6 @@ export class DroidStarRating extends StarRating {
     }
 
     /**
-     * Calculates the rhythm star rating of the beatmap and stores it in this instance.
-     */
-    calculateRhythm(): void {
-        if (this.mods.some(m => m instanceof ModRelax)) {
-            return;
-        }
-
-        const rhythmSkill: DroidRhythm = new DroidRhythm(
-            this.mods,
-            new OsuHitWindow(this.stats.od!).hitWindowFor300()
-        );
-
-        this.calculateSkills(rhythmSkill);
-
-        this.rhythm = this.starValue(rhythmSkill.difficultyValue());
-    }
-
-    /**
      * Calculates the flashlight star rating of the beatmap and stores it in this instance.
      */
     calculateFlashlight(): void {
@@ -173,11 +149,9 @@ export class DroidStarRating extends StarRating {
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
         let speedSkill: DroidSpeed | undefined;
-        let rhythmSkill: DroidRhythm | undefined;
 
         if (!isRelax) {
             speedSkill = <DroidSpeed> skills[1];
-            rhythmSkill = <DroidRhythm> skills[2];
         }
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
@@ -187,10 +161,6 @@ export class DroidStarRating extends StarRating {
             this.speedStrainPeaks = speedSkill.strainPeaks;
 
             this.speed = this.starValue(speedSkill.difficultyValue());
-        }
-
-        if (rhythmSkill) {
-            this.rhythm = this.starValue(rhythmSkill.difficultyValue());
         }
 
         this.calculateTotal();
@@ -203,7 +173,6 @@ export class DroidStarRating extends StarRating {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
             " aim, " + this.speed.toFixed(2) + " speed, " +
-            this.rhythm.toFixed(2) + " rhythm, " +
             this.flashlight.toFixed(2) + " flashlight)"
         );
     }
@@ -217,10 +186,6 @@ export class DroidStarRating extends StarRating {
             new DroidSpeed(
                 this.mods,
                 this.stats.od!
-            ),
-            new DroidRhythm(
-                this.mods,
-                new OsuHitWindow(this.stats.od!).hitWindowFor300()
             ),
             new DroidFlashlight(this.mods)
         ];

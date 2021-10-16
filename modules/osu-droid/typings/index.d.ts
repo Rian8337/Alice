@@ -586,29 +586,6 @@ declare module "osu-droid" {
     }
 
     /**
-     * Represents the skill required to correctly process rhythm.
-     */
-    export class DroidRhythm extends DroidSkill {
-        protected readonly historyLength: number;
-        protected readonly starsPerDouble: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        private readonly historyTimeMax: number;
-        /**
-         * @param current The hitobject to calculate.
-         */
-        protected strainValueOf(current: DifficultyHitObject): number;
-        /**
-         * @param current The hitobject to calculate.
-         */
-        protected override strainValueAt(current: DifficultyHitObject): number;
-        /**
-         * @param current The hitobject to save to.
-         */
-        override saveToHitObject(current: DifficultyHitObject): void;
-    }
-
-    /**
      * Difficulty calculator for osu!droid gamemode.
      */
     export class DroidStarRating extends StarRating {
@@ -621,10 +598,10 @@ declare module "osu-droid" {
          */
         speed: number;
         /**
-         * The rhythm star rating of the beatmap.
+         * The flashlight star rating of the beatmap.
          */
-        rhythm: number;
-        protected readonly difficultyMultiplier: number;
+        flashlight: number;
+        protected override readonly difficultyMultiplier: number;
         /**
          * Calculates the star rating of the specified beatmap.
          *
@@ -666,9 +643,9 @@ declare module "osu-droid" {
          */
         calculateSpeed(): void;
         /**
-         * Calculates the rhythm star rating of the beatmap and stores it in this instance.
+         * Calculates the flashlight star rating of the beatmap and stores it in this instance.
          */
-        calculateRhythm(): void;
+        calculateFlashlight(): void;
         /**
          * Calculates the total star rating of the beatmap and stores it in this instance.
          */
@@ -684,11 +661,17 @@ declare module "osu-droid" {
         /**
          * Creates skills to be calculated.
          */
-        protected createSkills(): DroidSkill[];
+        protected override createSkills(): DroidSkill[];
         /**
          * Calculates the base rating value of a difficulty.
          */
         private baseRatingValue(difficulty: number): number;
+        /**
+         * Calculates the base performance value of a difficulty rating.
+         * 
+         * @param rating The difficulty rating.
+         */
+        private basePerformanceValue(rating: number): number;
     }
 
     /**
@@ -1788,7 +1771,7 @@ declare module "osu-droid" {
         /**
          * Creates skills to be calculated.
          */
-        protected createSkills(): OsuSkill[];
+        protected override createSkills(): OsuSkill[];
         /**
          * Calculates the base performance value of a difficulty rating.
          * 

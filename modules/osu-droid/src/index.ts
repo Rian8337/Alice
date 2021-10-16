@@ -12,7 +12,6 @@ import { DroidFlashlight } from './difficulty/skills/DroidFlashlight';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
 import { DroidStarRating } from './difficulty/DroidStarRating';
-import { DroidRhythm } from './difficulty/skills/DroidRhythm';
 import { DroidSpeed } from './difficulty/skills/DroidSpeed';
 import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
@@ -150,11 +149,6 @@ export = {
      * A performance points calculator that calculates performance points for osu!standard gamemode.
      */
     DroidPerformanceCalculator,
-
-    /**
-     * Represents the skill required to correctly process rhythm.
-     */
-    DroidRhythm,
 
     /**
      * Difficulty calculator for osu!droid gamemode.
