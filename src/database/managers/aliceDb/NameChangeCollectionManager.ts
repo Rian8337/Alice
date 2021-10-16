@@ -10,9 +10,9 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
  * A manager for the `namechange` collection.
  */
 export class NameChangeCollectionManager extends DatabaseCollectionManager<DatabaseNameChange, NameChange> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseNameChange, NameChange>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseNameChange, NameChange>;
 
-    get defaultDocument(): DatabaseNameChange {
+    override get defaultDocument(): DatabaseNameChange {
         return {
             cooldown: Math.floor(Date.now() / 1000),
             current_username: "",

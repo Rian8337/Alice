@@ -32,7 +32,7 @@ export abstract class LoungeLockManager extends PunishmentManager {
      * 
      * @param client The instance of the bot.
      */
-    static async init(): Promise<void> {
+    static override async init(): Promise<void> {
         this.loungeLockDb = DatabaseManager.aliceDb.collections.loungeLock;
 
         this.mainServer = await this.client.guilds.fetch(Constants.mainServer);

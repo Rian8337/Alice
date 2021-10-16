@@ -9,9 +9,9 @@ import { Snowflake, User } from "discord.js";
  * A manager for the `playerinfo` collection.
  */
 export class PlayerInfoCollectionManager extends DatabaseCollectionManager<DatabasePlayerInfo, PlayerInfo> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerInfo, PlayerInfo>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerInfo, PlayerInfo>;
 
-    get defaultDocument(): DatabasePlayerInfo {
+    override get defaultDocument(): DatabasePlayerInfo {
         return {
             alicecoins: 0,
             challenges: [],

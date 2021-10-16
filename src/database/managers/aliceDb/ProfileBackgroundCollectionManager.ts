@@ -8,9 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `profilebackgrounds` collection.
  */
 export class ProfileBackgroundCollectionManager extends DatabaseCollectionManager<DatabaseProfileBackground, ProfileBackground> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseProfileBackground, ProfileBackground>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseProfileBackground, ProfileBackground>;
 
-    get defaultDocument(): DatabaseProfileBackground {
+    override get defaultDocument(): DatabaseProfileBackground {
         return {
             id: "bg",
             name: "Default"

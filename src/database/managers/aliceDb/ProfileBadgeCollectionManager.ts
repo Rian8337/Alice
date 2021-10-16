@@ -10,9 +10,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `profilebadges` collection.
  */
 export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<DatabaseProfileBadge, ProfileBadge> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseProfileBadge, ProfileBadge>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseProfileBadge, ProfileBadge>;
 
-    get defaultDocument(): DatabaseProfileBadge {
+    override get defaultDocument(): DatabaseProfileBadge {
         return {
             description: "",
             id: "",

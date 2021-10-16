@@ -8,9 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `mapinfolength` collection.
  */
 export class TournamentMapLengthInfoCollectionManager extends DatabaseCollectionManager<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMapLengthInfo, TournamentMapLengthInfo>;
 
-    get defaultDocument(): DatabaseTournamentMapLengthInfo {
+    override get defaultDocument(): DatabaseTournamentMapLengthInfo {
         return {
             map: [],
             poolid: ""

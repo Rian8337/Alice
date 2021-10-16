@@ -8,9 +8,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `dppapikey` collection.
  */
 export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<DatabaseDPPAPIKey, DPPAPIKey> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseDPPAPIKey, DPPAPIKey>;
 
-    get defaultDocument(): DatabaseDPPAPIKey {
+    override get defaultDocument(): DatabaseDPPAPIKey {
         return {
             key: "",
             owner: ""

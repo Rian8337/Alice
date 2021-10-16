@@ -71,7 +71,7 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
      * @param value The value of the element to add.
      * @returns This `LimitedCapacityCollection` object.
      */
-    set(key: K, value: V): this {
+    override set(key: K, value: V): this {
         while (this.size >= this.capacity) {
             this.addedTime.delete(this.firstKey()!);
             this.delete(this.firstKey()!);

@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection, FilterQuery } from "mongodb";
  * A manager for the `channeldata` collection.
  */
 export class ChannelDataCollectionManager extends DatabaseCollectionManager<DatabaseChannelData, ChannelData> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>;
 
-    get defaultDocument(): DatabaseChannelData {
+    override get defaultDocument(): DatabaseChannelData {
         const date: Date = new Date();
 
         date.setUTCHours(0, 0, 0, 0);

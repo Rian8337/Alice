@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `tags` collection.
  */
 export class GuildTagCollectionManager extends DatabaseCollectionManager<DatabaseGuildTag, GuildTag> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildTag, GuildTag>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildTag, GuildTag>;
 
-    get defaultDocument(): DatabaseGuildTag {
+    override get defaultDocument(): DatabaseGuildTag {
         return {
             attachment_message: "",
             attachments: [],

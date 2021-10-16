@@ -32,7 +32,7 @@ export abstract class MuteManager extends PunishmentManager {
      * - Remove temporary mutes that have expired (if it's not already taken off)
      * - Reapply mutes that were manually taken off
      */
-    static async init(): Promise<void> {
+    static override async init(): Promise<void> {
         this.punishmentDb = DatabaseManager.aliceDb.collections.guildPunishmentConfig;
 
         if (!Config.isDebug) {
@@ -280,13 +280,13 @@ export abstract class MuteManager extends PunishmentManager {
             await this.notifyMember(member, `Hey, you were unmuted for ${reason}.`, unmuteEmbed);
         }
 
-        await member.roles.remove(muteRole, reason ?? "Mute time is over");
+        this.currentMutes.delete(member.id);
 
         await this.punishmentDb.update(
             { guildID: member.guild.id }, { $pull: { currentMutes: { userID: member.id } } }
         );
 
-        this.currentMutes.delete(member.id);
+        await member.roles.remove(muteRole, reason ?? "Mute time is over");
 
         const muteEmbed: MessageEmbed = logMessage.embeds[0];
 

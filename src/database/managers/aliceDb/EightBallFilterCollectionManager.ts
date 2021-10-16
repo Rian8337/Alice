@@ -8,9 +8,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `responsefilter` collection.
  */
 export class EightBallFilterCollectionManager extends DatabaseCollectionManager<DatabaseEightBallFilter, EightBallFilter> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseEightBallFilter, EightBallFilter>;
 
-    get defaultDocument(): DatabaseEightBallFilter {
+    override get defaultDocument(): DatabaseEightBallFilter {
         return {
             badwords: [],
             hate: [],

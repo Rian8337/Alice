@@ -56,7 +56,7 @@ export class DroidStarRating extends StarRating {
      * Also don't forget to manually add the peak strain for the last
      * section which would otherwise be ignored.
      */
-    calculate(params: {
+    override calculate(params: {
         /**
          * The beatmap to calculate.
          */

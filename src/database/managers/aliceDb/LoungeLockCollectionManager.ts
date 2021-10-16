@@ -10,9 +10,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `loungelock` collection.
  */
 export class LoungeLockCollectionManager extends DatabaseCollectionManager<DatabaseLoungeLock, LoungeLock> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseLoungeLock, LoungeLock>;
 
-    get defaultDocument(): DatabaseLoungeLock {
+    override get defaultDocument(): DatabaseLoungeLock {
         return {
             discordid: "",
             expiration: Number.POSITIVE_INFINITY,

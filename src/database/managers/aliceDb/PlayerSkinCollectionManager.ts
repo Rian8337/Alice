@@ -10,9 +10,9 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
  * A manager for the `playerskin` collection.
  */
 export class PlayerSkinCollectionManager extends DatabaseCollectionManager<DatabasePlayerSkin, PlayerSkin> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerSkin, PlayerSkin>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerSkin, PlayerSkin>;
 
-    get defaultDocument(): DatabasePlayerSkin {
+    override get defaultDocument(): DatabasePlayerSkin {
         return {
             discordid: "",
             skin: ""

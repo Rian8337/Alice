@@ -9,9 +9,9 @@ import { Snowflake } from "discord.js";
  * A manager for the `voting` collection.
  */
 export class VotingCollectionManager extends DatabaseCollectionManager<DatabaseVoting, Voting> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseVoting, Voting>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseVoting, Voting>;
 
-    get defaultDocument(): DatabaseVoting {
+    override get defaultDocument(): DatabaseVoting {
         return {
             channel: "",
             choices: [],

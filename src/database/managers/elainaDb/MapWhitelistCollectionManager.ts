@@ -10,9 +10,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `mapwhitelist` command.
  */
 export class MapWhitelistCollectionManager extends DatabaseCollectionManager<DatabaseMapWhitelist, MapWhitelist> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapWhitelist, MapWhitelist>;
 
-    get defaultDocument(): DatabaseMapWhitelist {
+    override get defaultDocument(): DatabaseMapWhitelist {
         return {
             diffstat: {
                 cs: 0,

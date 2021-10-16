@@ -9,9 +9,9 @@ import { Collection as DiscordCollection } from "discord.js";
  * A manager for the `clanauction` collection.
  */
 export class ClanAuctionCollectionManager extends DatabaseCollectionManager<DatabaseClanAuction, ClanAuction> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseClanAuction, ClanAuction>;
 
-    get defaultDocument(): DatabaseClanAuction {
+    override get defaultDocument(): DatabaseClanAuction {
         const currentTime: number = Math.floor(Date.now() / 1000);
 
         return {

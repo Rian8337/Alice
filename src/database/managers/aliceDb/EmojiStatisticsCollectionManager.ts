@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `emojistatistics` collection.
  */
 export class EmojiStatisticsCollectionManager extends DatabaseCollectionManager<DatabaseEmojiStatistics, EmojiStatistics> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseEmojiStatistics, EmojiStatistics>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseEmojiStatistics, EmojiStatistics>;
 
-    get defaultDocument(): DatabaseEmojiStatistics {
+    override get defaultDocument(): DatabaseEmojiStatistics {
         return {
             emojiStats: [],
             guildID: ""

@@ -32,7 +32,7 @@ export class OsuStarRating extends StarRating {
 
     protected override readonly difficultyMultiplier: number = 0.0675;
 
-    calculate(params: {
+    override calculate(params: {
         /**
          * The beatmap to calculate.
          */

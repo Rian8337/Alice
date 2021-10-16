@@ -8,8 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `mapinfo` collection.
  */
 export class TournamentMappoolCollectionManager extends DatabaseCollectionManager<DatabaseTournamentMappool, TournamentMappool> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMappool, TournamentMappool>;
-    get defaultDocument(): DatabaseTournamentMappool {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMappool, TournamentMappool>;
+
+    override get defaultDocument(): DatabaseTournamentMappool {
         return {
             forcePR: false,
             map: [],
