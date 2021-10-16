@@ -1,5 +1,6 @@
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
+import { MathUtils } from "../../mathutil/MathUtils";
 import { Mod } from "../../mods/Mod";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
@@ -8,7 +9,7 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly process rhythm.
  */
 export class DroidRhythm extends DroidSkill {
-    protected readonly skillMultiplier: number = 1.5;
+    protected readonly skillMultiplier: number = 1.15;
     protected readonly starsPerDouble: number = 1.01;
     protected readonly historyLength: number = 32;
     protected readonly strainDecayBase: number = 0.3;
@@ -65,12 +66,10 @@ export class DroidRhythm extends DroidSkill {
                 )
             );
 
-            const windowPenalty: number = Math.min(
-                1,
-                Math.max(
-                    0,
-                    Math.abs(prevDelta - currentDelta) - this.greatWindow * 0.6
-                ) / (this.greatWindow * 0.6)
+            const windowPenalty: number = MathUtils.clamp(
+                (Math.abs(prevDelta - currentDelta) - this.greatWindow * 0.6) / (this.greatWindow * 0.6),
+                0,
+                1
             );
 
             let effectiveRatio: number = windowPenalty * currentRatio;
