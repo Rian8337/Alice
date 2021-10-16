@@ -2,6 +2,7 @@ import { Spinner } from "../../beatmap/hitobjects/Spinner";
 import { Interpolation } from "../../mathutil/Interpolation";
 import { MathUtils } from "../../mathutil/MathUtils";
 import { Mod } from "../../mods/Mod";
+import { OsuHitWindow } from "../../utils/HitWindow";
 import { DifficultyHitObject } from "../preprocessing/DifficultyHitObject";
 import { DroidSkill } from "./DroidSkill";
 
@@ -26,12 +27,12 @@ export class DroidSpeed extends DroidSkill {
     private currentMovementStrain: number = 0;
     private currentOriginalTapStrain: number = 0;
 
-    private readonly greatWindow: number;
+    private readonly overallDifficulty: number;
 
-    constructor(mods: Mod[], greatWindow: number) {
+    constructor(mods: Mod[], overallDifficulty: number) {
         super(mods);
 
-        this.greatWindow = greatWindow;
+        this.overallDifficulty = overallDifficulty;
     }
 
     /**
@@ -44,17 +45,16 @@ export class DroidSpeed extends DroidSkill {
 
         let strainTime: number = current.strainTime;
 
-        const greatWindowFull: number = this.greatWindow * 2;
-        const speedWindowRatio: number = strainTime / greatWindowFull;
+        const greatWindowFull: number = new OsuHitWindow(this.overallDifficulty).hitWindowFor300() * 2;
 
         // Aim to nerf cheesy rhythms (very fast consecutive doubles with large deltatimes between).
         if (this.previous[0] && strainTime < greatWindowFull && this.previous[0].strainTime > strainTime) {
-            strainTime = Interpolation.lerp(this.previous[0].strainTime, strainTime, speedWindowRatio);
+            strainTime = Interpolation.lerp(this.previous[0].strainTime, strainTime, strainTime / greatWindowFull);
         }
 
         // Cap deltatime to the OD 300 hitwindow.
-        // 0.485 is derived from making sure 260 BPM 1/4 OD8 (droid) streams aren't nerfed harshly, whilst 0.92 limits the effect of the cap.
-        strainTime /= MathUtils.clamp(speedWindowRatio / 0.485, 0.92, 1);
+        // This equation is derived from making sure 260 BPM 1/4 OD7 streams aren't nerfed harshly.
+        strainTime /= MathUtils.clamp(strainTime / new OsuHitWindow(this.overallDifficulty - 122).hitWindowFor300() / 0.075, 0.92, 1);
 
         let speedBonus: number = 1;
 

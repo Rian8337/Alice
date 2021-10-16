@@ -212,17 +212,15 @@ export class DroidStarRating extends StarRating {
      * Creates skills to be calculated.
      */
     protected createSkills(): DroidSkill[] {
-        const greatWindow: number = new OsuHitWindow(this.stats.od!).hitWindowFor300();
-
         return [
             new DroidAim(this.mods),
             new DroidSpeed(
                 this.mods,
-                greatWindow
+                this.stats.od!
             ),
             new DroidRhythm(
                 this.mods,
-                greatWindow
+                new OsuHitWindow(this.stats.od!).hitWindowFor300()
             ),
             new DroidFlashlight(this.mods)
         ];
