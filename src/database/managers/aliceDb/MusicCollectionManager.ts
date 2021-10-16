@@ -9,9 +9,9 @@ import { Snowflake, User, Collection as DiscordCollection } from "discord.js";
  * A manager for the `musiccollection` collection.
  */
 export class MusicCollectionManager extends DatabaseCollectionManager<DatabaseMusicCollection, MusicCollection> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMusicCollection, MusicCollection>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMusicCollection, MusicCollection>;
 
-    get defaultDocument(): DatabaseMusicCollection {
+    override get defaultDocument(): DatabaseMusicCollection {
         return {
             createdAt: Date.now(),
             name: "",

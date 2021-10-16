@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `guildsettings` collection.
  */
 export class GuildSettingsCollectionManager extends DatabaseCollectionManager<DatabaseGuildSettings, GuildSettings> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildSettings, GuildSettings>;
 
-    get defaultDocument(): DatabaseGuildSettings {
+    override get defaultDocument(): DatabaseGuildSettings {
         return {
             channelSettings: [],
             disabledCommands: [],

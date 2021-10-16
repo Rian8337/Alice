@@ -10,9 +10,9 @@ import { Collection as DiscordCollection } from "discord.js";
  * A manager for the `mapshare` collection.
  */
 export class MapShareCollectionManager extends DatabaseCollectionManager<DatabaseMapShare, MapShare> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapShare, MapShare>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapShare, MapShare>;
 
-    get defaultDocument(): DatabaseMapShare {
+    override get defaultDocument(): DatabaseMapShare {
         return {
             beatmap_id: 0,
             date: Math.floor(Date.now() / 1000),

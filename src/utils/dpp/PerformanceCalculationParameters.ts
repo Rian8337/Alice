@@ -47,7 +47,7 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
         this.inputAccuracy = inputAccuracy;
     }
 
-    applyFromBeatmap(beatmap: MapInfo): void {
+    override applyFromBeatmap(beatmap: MapInfo): void {
         if (this.accuracy.n50 || this.accuracy.n100) {
             this.accuracy = new Accuracy({
                 n300: beatmap.objects - this.accuracy.n100 - this.accuracy.n50 - this.accuracy.nmiss,

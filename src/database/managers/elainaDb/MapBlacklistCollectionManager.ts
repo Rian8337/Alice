@@ -8,9 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `mapblacklist` collection.
  */
 export class MapBlacklistCollectionManager extends DatabaseCollectionManager<DatabaseMapBlacklist, MapBlacklist> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapBlacklist, MapBlacklist>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseMapBlacklist, MapBlacklist>;
 
-    get defaultDocument(): DatabaseMapBlacklist {
+    override get defaultDocument(): DatabaseMapBlacklist {
         return {
             beatmapID: 0,
             reason: ""

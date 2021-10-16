@@ -9,8 +9,9 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
  * A manager for the `tracking` collection.
  */
 export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<DatabasePlayerTracking, PlayerTracking> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerTracking, PlayerTracking>;
-    get defaultDocument(): DatabasePlayerTracking {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabasePlayerTracking, PlayerTracking>;
+
+    override get defaultDocument(): DatabasePlayerTracking {
         return {
             uid: 0
         };

@@ -32,7 +32,7 @@ export abstract class MuteManager extends PunishmentManager {
      * - Remove temporary mutes that have expired (if it's not already taken off)
      * - Reapply mutes that were manually taken off
      */
-    static async init(): Promise<void> {
+    static override async init(): Promise<void> {
         this.punishmentDb = DatabaseManager.aliceDb.collections.guildPunishmentConfig;
 
         if (!Config.isDebug) {

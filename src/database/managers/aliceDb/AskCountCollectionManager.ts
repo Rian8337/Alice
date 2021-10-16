@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `askcount` collection.
  */
 export class AskCountCollectionManager extends DatabaseCollectionManager<DatabaseAskCount, AskCount> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseAskCount, AskCount>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseAskCount, AskCount>;
 
-    get defaultDocument(): DatabaseAskCount {
+    override get defaultDocument(): DatabaseAskCount {
         return {
             discordid: "",
             count: 0

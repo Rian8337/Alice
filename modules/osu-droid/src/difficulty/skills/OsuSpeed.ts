@@ -15,12 +15,12 @@ export class OsuSpeed extends OsuSkill {
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
     private readonly angleBonusBegin: number = 5 * Math.PI / 6;
-    protected readonly skillMultiplier: number = 1400;
-    protected readonly strainDecayBase: number = 0.3;
-    protected readonly reducedSectionCount: number = 5;
-    protected readonly reducedSectionBaseline: number = 0.75;
-    protected readonly difficultyMultiplier: number = 1.04;
-    protected readonly decayWeight: number = 0.9;
+    protected override readonly skillMultiplier: number = 1400;
+    protected override readonly strainDecayBase: number = 0.3;
+    protected override readonly reducedSectionCount: number = 5;
+    protected override readonly reducedSectionBaseline: number = 0.75;
+    protected override readonly difficultyMultiplier: number = 1.04;
+    protected override readonly decayWeight: number = 0.9;
 
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;

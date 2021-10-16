@@ -12,10 +12,10 @@ export class OsuAim extends OsuSkill {
     private readonly timingThreshold: number = 107;
     
     private readonly angleBonusBegin: number = Math.PI / 3;
-    protected readonly skillMultiplier: number = 26.25;
-    protected readonly strainDecayBase: number = 0.15;
-    protected readonly reducedSectionCount: number = 10;
-    protected readonly reducedSectionBaseline: number = 0.75;
+    protected override readonly skillMultiplier: number = 26.25;
+    protected override readonly strainDecayBase: number = 0.15;
+    protected override readonly reducedSectionCount: number = 10;
+    protected override readonly reducedSectionBaseline: number = 0.75;
     protected readonly difficultyMultiplier: number = 1.06;
     protected readonly decayWeight: number = 0.9;
 

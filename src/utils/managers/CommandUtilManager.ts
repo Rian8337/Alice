@@ -46,7 +46,7 @@ export abstract class CommandUtilManager extends Manager {
     /**
      * Initializes the manager.
      */
-    static async init(): Promise<void> {
+    static override async init(): Promise<void> {
         const guildSettings: Collection<string, GuildSettings> = await DatabaseManager.aliceDb.collections.guildSettings.get("id", {});
 
         for (const guildSetting of guildSettings.values()) {

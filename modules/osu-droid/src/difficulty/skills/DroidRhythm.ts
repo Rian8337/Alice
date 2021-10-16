@@ -8,13 +8,10 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly process rhythm.
  */
 export class DroidRhythm extends DroidSkill {
-    protected readonly historyLength: number = 16;
-
-    protected readonly baseDecay: number = 0.75;
-
-    protected readonly starsPerDouble: number = 1.075;
-
-    protected readonly decayExcessThreshold: number = 500;
+    protected override readonly historyLength: number = 16;
+    protected override readonly baseDecay: number = 0.75;
+    protected override readonly starsPerDouble: number = 1.075;
+    protected override readonly decayExcessThreshold: number = 500;
 
     private readonly strainMultiplier: number = 5;
 

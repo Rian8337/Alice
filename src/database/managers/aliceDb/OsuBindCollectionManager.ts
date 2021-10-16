@@ -8,9 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `osubind` collection.
  */
 export class OsuBindCollectionManager extends DatabaseCollectionManager<DatabaseOsuBind, OsuBind> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseOsuBind, OsuBind>;
 
-    get defaultDocument(): DatabaseOsuBind {
+    override get defaultDocument(): DatabaseOsuBind {
         return {
             discordid: "",
             username: ""

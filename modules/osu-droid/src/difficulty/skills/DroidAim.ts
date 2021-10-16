@@ -7,10 +7,10 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly aim at every object in the map with a uniform CircleSize and normalized distances.
  */
 export class DroidAim extends DroidSkill {
-    protected readonly starsPerDouble: number = 1.1;
-    protected readonly historyLength: number = 2;
-    protected readonly decayExcessThreshold: number = 500;
-    protected readonly baseDecay: number = 0.75;
+    protected override readonly starsPerDouble: number = 1.1;
+    protected override readonly historyLength: number = 2;
+    protected override readonly decayExcessThreshold: number = 500;
+    protected override readonly baseDecay: number = 0.75;
 
     private readonly distanceConstant: number = 3.5;
 

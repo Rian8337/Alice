@@ -10,9 +10,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `playerscore` collection.
  */
 export class RankedScoreCollectionManager extends DatabaseCollectionManager<DatabaseRankedScore, RankedScore> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseRankedScore, RankedScore>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseRankedScore, RankedScore>;
 
-    get defaultDocument(): DatabaseRankedScore {
+    override get defaultDocument(): DatabaseRankedScore {
         return {
             level: 0,
             playc: 0,

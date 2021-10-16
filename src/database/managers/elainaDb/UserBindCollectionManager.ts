@@ -10,9 +10,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `userbind` collection.
  */
 export class UserBindCollectionManager extends DatabaseCollectionManager<DatabaseUserBind, UserBind> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseUserBind, UserBind>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseUserBind, UserBind>;
 
-    get defaultDocument(): DatabaseUserBind {
+    override get defaultDocument(): DatabaseUserBind {
         return {
             discordid: "",
             hasAskedForRecalc: false,

@@ -10,9 +10,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `punishmentconfig` collection.
  */
 export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionManager<DatabaseGuildPunishmentConfig, GuildPunishmentConfig> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseGuildPunishmentConfig, GuildPunishmentConfig>;
 
-    get defaultDocument(): DatabaseGuildPunishmentConfig {
+    override get defaultDocument(): DatabaseGuildPunishmentConfig {
         return {
             allowedMuteRoles: [],
             currentMutes: [],

@@ -9,8 +9,9 @@ import { Snowflake } from "discord.js";
  * A manager for the `matchinfo` command.
  */
 export class TournamentMatchCollectionManager extends DatabaseCollectionManager<DatabaseTournamentMatch, TournamentMatch> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMatch, TournamentMatch>;
-    get defaultDocument(): DatabaseTournamentMatch {
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseTournamentMatch, TournamentMatch>;
+
+    override get defaultDocument(): DatabaseTournamentMatch {
         return {
             matchid: "",
             channelId: "",

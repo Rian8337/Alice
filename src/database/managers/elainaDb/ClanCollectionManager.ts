@@ -11,9 +11,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `clan` collection.
  */
 export class ClanCollectionManager extends DatabaseCollectionManager<DatabaseClan, Clan> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseClan, Clan>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseClan, Clan>;
 
-    get defaultDocument(): DatabaseClan {
+    override get defaultDocument(): DatabaseClan {
         const currentTime: number = Math.floor(Date.now() / 1000);
 
         return {

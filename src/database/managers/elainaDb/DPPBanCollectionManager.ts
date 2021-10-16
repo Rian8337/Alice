@@ -8,9 +8,9 @@ import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilit
  * A manager for the `dppban` collection.
  */
 export class DPPBanCollectionManager extends DatabaseCollectionManager<DatabaseDPPBan, DPPBan> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseDPPBan, DPPBan>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseDPPBan, DPPBan>;
 
-    get defaultDocument(): DatabaseDPPBan {
+    override get defaultDocument(): DatabaseDPPBan {
         return {
             uid: 0,
             reason: ""

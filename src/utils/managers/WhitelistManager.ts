@@ -29,7 +29,7 @@ export abstract class WhitelistManager extends Manager {
     /**
      * Initializes the manager.
      */
-    static async init(): Promise<void> {
+    static override async init(): Promise<void> {
         this.whitelistLogChannel = <TextChannel> await (await this.client.guilds.fetch(Constants.testingServer)).channels.fetch("638671295470370827");
     }
 

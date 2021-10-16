@@ -11,9 +11,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `birthday` collection.
  */
 export class BirthdayCollectionManager extends DatabaseCollectionManager<DatabaseBirthday, Birthday> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseBirthday, Birthday>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseBirthday, Birthday>;
 
-    get defaultDocument(): DatabaseBirthday {
+    override get defaultDocument(): DatabaseBirthday {
         const date: Date = new Date();
 
         return {

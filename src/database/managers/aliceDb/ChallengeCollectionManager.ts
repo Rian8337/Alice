@@ -9,9 +9,9 @@ import { Collection as MongoDBCollection } from "mongodb";
  * A manager for the `challenge` collection.
  */
 export class ChallengeCollectionManager extends DatabaseCollectionManager<DatabaseChallenge, Challenge> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabaseChallenge, Challenge>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabaseChallenge, Challenge>;
 
-    get defaultDocument(): DatabaseChallenge {
+    override get defaultDocument(): DatabaseChallenge {
         return {
             beatmapid: 0,
             bonus: [],

@@ -14,7 +14,7 @@ export abstract class ProfileManager extends Manager {
     /**
      * Initializes the manager.
      */
-    static init(): void {
+    static override init(): void {
         registerFont(`${process.cwd()}/files/fonts/Exo-Regular.ttf`, { family: "Exo" });
         registerFont(`${process.cwd()}/files/fonts/Exo-Bold.ttf`, { family: "Exo", weight: "bold" });
     }

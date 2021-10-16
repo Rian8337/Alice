@@ -1,7 +1,6 @@
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { DatabasePrototypePP } from "@alice-interfaces/database/aliceDb/DatabasePrototypePP";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { UserBindCollectionManager } from "../elainaDb/UserBindCollectionManager";
 import { Collection as MongoDBCollection } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
@@ -11,9 +10,9 @@ import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
  * A manager for the `prototypepp` collection.
  */
 export class PrototypePPCollectionManager extends DatabaseCollectionManager<DatabasePrototypePP, PrototypePP> {
-    protected readonly utilityInstance: DatabaseUtilityConstructor<DatabasePrototypePP, PrototypePP>;
+    protected override readonly utilityInstance: DatabaseUtilityConstructor<DatabasePrototypePP, PrototypePP>;
 
-    get defaultDocument(): DatabasePrototypePP {
+    override get defaultDocument(): DatabasePrototypePP {
         return {
             discordid: "",
             lastUpdate: Date.now(),
