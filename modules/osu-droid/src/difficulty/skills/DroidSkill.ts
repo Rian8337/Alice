@@ -10,7 +10,7 @@ export abstract class DroidSkill extends StrainSkill {
      */
     protected abstract readonly starsPerDouble: number;
 
-    difficultyValue(): number {
+    override difficultyValue(): number {
         // Math here preserves the property that two notes of equal difficulty x, we have their summed difficulty = x * starsPerDouble.
         // This also applies to two sets of notes with equal difficulty.
         return Math.pow(

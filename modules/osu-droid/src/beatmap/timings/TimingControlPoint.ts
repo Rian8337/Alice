@@ -17,7 +17,7 @@ export class TimingControlPoint extends TimingPoint {
         this.msPerBeat = values.msPerBeat;
     }
 
-    toString(): string {
+    override toString(): string {
         return "{ time: " + this.time.toFixed(2) + ", "
             + "ms_per_beat: " + this.msPerBeat.toFixed(2) + " }";
     }

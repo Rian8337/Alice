@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the Perfect mod.
  */
 export class ModPerfect extends Mod {
-    readonly scoreMultiplier: number = 1;
-    readonly acronym: string = "PF";
-    readonly name: string = "Perfect";
-    readonly droidRanked: boolean = false;
-    readonly pcRanked: boolean = true;
-    readonly bitwise: number = 1 << 14;
-    readonly droidString: string = "f";
-    readonly droidOnly: boolean = false;
+    override readonly scoreMultiplier: number = 1;
+    override readonly acronym: string = "PF";
+    override readonly name: string = "Perfect";
+    override readonly droidRanked: boolean = false;
+    override readonly pcRanked: boolean = true;
+    override readonly bitwise: number = 1 << 14;
+    override readonly droidString: string = "f";
+    override readonly droidOnly: boolean = false;
 }

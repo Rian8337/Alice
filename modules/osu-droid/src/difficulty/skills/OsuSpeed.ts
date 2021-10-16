@@ -15,12 +15,12 @@ export class OsuSpeed extends OsuSkill {
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
-    protected readonly skillMultiplier: number = 1400;
-    protected readonly strainDecayBase: number = 0.3;
-    protected readonly reducedSectionCount: number = 5;
-    protected readonly reducedSectionBaseline: number = 0.75;
-    protected readonly difficultyMultiplier: number = 1.04;
-    protected readonly decayWeight: number = 0.9;
+    protected override readonly skillMultiplier: number = 1400;
+    protected override readonly strainDecayBase: number = 0.3;
+    protected override readonly reducedSectionCount: number = 5;
+    protected override readonly reducedSectionBaseline: number = 0.75;
+    protected override readonly difficultyMultiplier: number = 1.04;
+    protected override readonly decayWeight: number = 0.9;
 
     private readonly rhythmMultiplier: number = 0.75;
     private readonly historyTimeMax: number = 5000;
@@ -72,7 +72,7 @@ export class OsuSpeed extends OsuSkill {
     /**
      * @param current The hitobject to calculate.
      */
-    protected strainValueAt(current: DifficultyHitObject): number {
+    protected override strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain *= this.strainDecay(current.deltaTime);
         this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
 
@@ -198,7 +198,7 @@ export class OsuSpeed extends OsuSkill {
     /**
      * @param current The hitobject to save to.
      */
-    saveToHitObject(current: DifficultyHitObject): void {
+    override saveToHitObject(current: DifficultyHitObject): void {
         // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
         current.movementStrain = this.currentStrain;
     }

@@ -9,10 +9,10 @@ import { DroidSkill } from "./DroidSkill";
  * Represents the skill required to correctly process rhythm.
  */
 export class DroidRhythm extends DroidSkill {
-    protected readonly skillMultiplier: number = 1.15;
-    protected readonly starsPerDouble: number = 1.01;
-    protected readonly historyLength: number = 32;
-    protected readonly strainDecayBase: number = 0.3;
+    protected override readonly skillMultiplier: number = 1.15;
+    protected override readonly starsPerDouble: number = 1.01;
+    protected override readonly historyLength: number = 32;
+    protected override readonly strainDecayBase: number = 0.3;
 
     private readonly historyTimeMax: number = 5000; // 5 seconds of calculateRhythmBonus max.
 
@@ -136,14 +136,14 @@ export class DroidRhythm extends DroidSkill {
     /**
      * @param current The hitobject to calculate.
      */
-    protected strainValueAt(current: DifficultyHitObject): number {
+    protected override strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain *= this.strainDecay(current.deltaTime);
         this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
 
         return this.currentStrain;
     }
 
-    protected saveToHitObject(current: DifficultyHitObject): void {
+    override saveToHitObject(current: DifficultyHitObject): void {
         current.rhythmStrain = this.currentStrain;
     }
 }

@@ -36,7 +36,7 @@ export class DroidStarRating extends StarRating {
      */
     flashlight: number = 0;
 
-    protected readonly difficultyMultiplier: number = 0.18;
+    protected override readonly difficultyMultiplier: number = 0.18;
 
     /**
      * Calculates the star rating of the specified beatmap.
@@ -139,7 +139,7 @@ export class DroidStarRating extends StarRating {
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
     }
 
-    calculateTotal(): void {
+    override calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
         const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
         const flashlightPerformanceValue: number =
@@ -159,7 +159,7 @@ export class DroidStarRating extends StarRating {
         }
     }
 
-    calculateAll(): void {
+    override calculateAll(): void {
         const skills: DroidSkill[] = this.createSkills();
 
         const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
@@ -199,7 +199,7 @@ export class DroidStarRating extends StarRating {
     /**
      * Returns a string representative of the class.
      */
-    toString(): string {
+    override toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
             " aim, " + this.speed.toFixed(2) + " speed, " +
@@ -211,7 +211,7 @@ export class DroidStarRating extends StarRating {
     /**
      * Creates skills to be calculated.
      */
-    protected createSkills(): DroidSkill[] {
+    protected override createSkills(): DroidSkill[] {
         return [
             new DroidAim(this.mods),
             new DroidSpeed(

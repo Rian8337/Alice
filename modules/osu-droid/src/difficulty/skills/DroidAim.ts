@@ -12,9 +12,9 @@ export class DroidAim extends DroidSkill {
     private readonly timingThreshold: number = 107;
 
     private readonly angleBonusBegin: number = Math.PI / 3;
-    protected readonly skillMultiplier: number = 26.25;
-    protected readonly strainDecayBase: number = 0.15;
-    protected readonly starsPerDouble: number = 1.05;
+    protected override readonly skillMultiplier: number = 26.25;
+    protected override readonly strainDecayBase: number = 0.15;
+    protected override readonly starsPerDouble: number = 1.05;
 
     /**
      * @param current The hitobject to calculate.
@@ -54,7 +54,7 @@ export class DroidAim extends DroidSkill {
     /**
      * @param current The hitobject to calculate.
      */
-    protected strainValueAt(current: DifficultyHitObject): number {
+    protected override strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain *= this.strainDecay(current.deltaTime);
         this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
 
@@ -64,7 +64,7 @@ export class DroidAim extends DroidSkill {
     /**
      * @param current The hitobject to save to.
      */
-    saveToHitObject(current: DifficultyHitObject): void {
+    override saveToHitObject(current: DifficultyHitObject): void {
         current.aimStrain = this.currentStrain;
     }
 }

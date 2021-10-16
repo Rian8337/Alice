@@ -17,7 +17,7 @@ export class DifficultyControlPoint extends TimingPoint {
         this.speedMultiplier = values.speedMultiplier;
     }
 
-    toString(): string {
+    override toString(): string {
         return "{ time: " + this.time.toFixed(2) + ", "
             + "speed multiplier: " + this.speedMultiplier.toFixed(2) + " }";
     }

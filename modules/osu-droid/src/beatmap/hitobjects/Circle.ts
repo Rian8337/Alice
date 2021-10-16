@@ -17,7 +17,7 @@ export class Circle extends HitObject {
         super(values);
     }
 
-    toString(): string {
+    override toString(): string {
         return `Position: [${this.position.x}, ${this.position.y}]`;
     }
 }

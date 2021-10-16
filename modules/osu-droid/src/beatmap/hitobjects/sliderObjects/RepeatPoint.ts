@@ -30,7 +30,7 @@ export class RepeatPoint extends HitObject {
         this.spanDuration = values.spanDuration;
     }
 
-    toString(): string {
+    override toString(): string {
         return `Position: [${this.position.x}, ${this.position.y}], repeat index: ${this.repeatIndex}, span duration: ${this.spanDuration}`;
     }
 }

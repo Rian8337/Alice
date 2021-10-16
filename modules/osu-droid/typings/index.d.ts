@@ -289,7 +289,7 @@ declare module "osu-droid" {
             type: number;
             position: Vector2;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -320,7 +320,7 @@ declare module "osu-droid" {
             time: number;
             speedMultiplier: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -454,10 +454,10 @@ declare module "osu-droid" {
          * Minimum timing threshold.
          */
         private readonly timingThreshold: number;
-        protected readonly angleBonusBegin: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly starsPerDouble: number;
+        private readonly angleBonusBegin: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly starsPerDouble: number;
         /**
          * @param current The hitobject to calculate.
          */
@@ -465,31 +465,31 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param currentObject The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
      * API request builder for osu!droid.
      */
     export class DroidAPIRequestBuilder extends APIRequestBuilder {
-        protected readonly host: string;
-        protected readonly APIkey: string;
-        protected readonly APIkeyParam: string;
-        setEndpoint(endpoint: DroidAPIEndpoint): this;
+        protected override readonly host: string;
+        protected override readonly APIkey: string;
+        protected override readonly APIkeyParam: string;
+        override setEndpoint(endpoint: DroidAPIEndpoint): this;
     }
 
     /**
      * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
      */
     export class DroidFlashlight extends DroidSkill {
-        protected readonly historyLength: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly starsPerDouble: number;
+        protected override readonly historyLength: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly starsPerDouble: number;
         /**
          * @param current The hitobject to calculate.
          */
@@ -497,38 +497,37 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
      * Represents the hit window of osu!droid.
      */
     export class DroidHitWindow extends HitWindow {
-        readonly overallDifficulty: number;
-        constructor(overallDifficulty: number);
         /**
          * @param isPrecise Whether or not to calculate for Precise mod.
          */
-        hitWindowFor300(isPrecise?: boolean): number;
+        override hitWindowFor300(isPrecise?: boolean): number;
         /**
          * @param isPrecise Whether or not to calculate for Precise mod.
          */
-        hitWindowFor100(isPrecise?: boolean): number;
+        override hitWindowFor100(isPrecise?: boolean): number;
         /**
          * @param isPrecise Whether or not to calculate for Precise mod.
          */
-        hitWindowFor50(isPrecise?: boolean): number;
+        override hitWindowFor50(isPrecise?: boolean): number;
     }
 
     /**
      * A performance points calculator that calculates performance points for osu!droid gamemode.
      */
     export class DroidPerformanceCalculator extends PerformanceCalculator {
-        stars: DroidStarRating;
+        override stars: DroidStarRating;
+        override finalMultiplier: number;
         /**
          * The aim performance value.
          */
@@ -541,7 +540,7 @@ declare module "osu-droid" {
          * The accuracy performance value.
          */
         accuracy: number;
-        calculate(params: {
+        override calculate(params: {
             /**
              * The star rating instance to calculate.
              */
@@ -570,16 +569,20 @@ declare module "osu-droid" {
         /**
          * Calculates the aim performance value of the beatmap.
          */
-        protected calculateAimValue(): void;
+        private calculateAimValue(): void;
         /**
          * Calculates the speed performance value of the beatmap.
          */
-        protected calculateSpeedValue(): void;
+        private calculateSpeedValue(): void;
         /**
          * Calculates the accuracy performance value of the beatmap.
          */
-        protected calculateAccuracyValue(): void;
-        toString(): string;
+        private calculateAccuracyValue(): void;
+        /**
+         * Calculates the flashlight performance value of the beatmap.
+         */
+        private calculateFlashlightValue(): void;
+        override toString(): string;
     }
 
     /**
@@ -598,12 +601,11 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
-        private isRatioEqual(ratio: number, a: number, b: number): boolean;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -697,18 +699,19 @@ declare module "osu-droid" {
          * Spacing threshold for a single hitobject spacing.
          */
         private readonly SINGLE_SPACING_THRESHOLD: number;
-        protected readonly angleBonusBegin: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly starsPerDouble: number;
+        private readonly angleBonusBegin: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly starsPerDouble: number;
         private readonly minSpeedBonus: number;
         private readonly maxSpeedBonus: number;
         private readonly angleBonusScale: number;
-        private readonly rhythmMultiplier: number;
         private readonly historyTimeMax: number;
         private currentTapStrain: number;
         private currentOriginalTapStrain: number;
         private currentMovementStrain: number;
+        private readonly overallDifficulty: number;
+        constructor(mods: Mod[], overallDifficulty: number);
         /**
          * @param current The hitobject to calculate.
          */
@@ -716,15 +719,11 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
-        /**
-         * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current object.
-         */
-        private calculateRhythmBonus(current: DifficultyHitObject): number;
+        override saveToHitObject(current: DifficultyHitObject): void;
         /**
          * Calculates the tap strain of a hitobject.
          */
@@ -1251,266 +1250,266 @@ declare module "osu-droid" {
      * Represents the Auto mod.
      */
     export class ModAuto extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Autopilot mod.
      */
     export class ModAutopilot extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the DoubleTime mod.
      */
     export class ModDoubleTime extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Easy mod.
      */
     export class ModEasy extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Flashlight mod.
      */
     export class ModFlashlight extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the HalfTime mod.
      */
     export class ModHalfTime extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the HardRock mod.
      */
     export class ModHardRock extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Hidden mod.
      */
     export class ModHidden extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the NightCore mod.
      */
     export class ModNightCore extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the NoFail mod.
      */
     export class ModNoFail extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Perfect mod.
      */
     export class ModPerfect extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Precise mod.
      */
     export class ModPrecise extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the ReallyEasy mod.
      */
     export class ModReallyEasy extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the Relax mod.
      */
     export class ModRelax extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the ScoreV2 mod.
      */
     export class ModScoreV2 extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the SmallCircle mod.
      */
     export class ModSmallCircle extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the SpunOut mod.
      */
     export class ModSpunOut extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the SuddenDeath mod.
      */
     export class ModSuddenDeath extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
      * Represents the TouchDevice mod.
      */
     export class ModTouchDevice extends Mod {
-        readonly scoreMultiplier: number;
-        readonly acronym: string;
-        readonly name: string;
-        readonly droidRanked: boolean;
-        readonly pcRanked: boolean;
-        readonly bitwise: number;
-        readonly droidString: string;
-        readonly droidOnly: boolean;
+        override readonly scoreMultiplier: number;
+        override readonly acronym: string;
+        override readonly name: string;
+        override readonly droidRanked: boolean;
+        override readonly pcRanked: boolean;
+        override readonly bitwise: number;
+        override readonly droidString: string;
+        override readonly droidOnly: boolean;
     }
 
     /**
@@ -1567,13 +1566,13 @@ declare module "osu-droid" {
          * Minimum timing threshold.
          */
         private readonly timingThreshold: number;
-        protected readonly angleBonusBegin: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly reducedSectionCount: number;
-        protected readonly reducedSectionBaseline: number;
-        protected readonly difficultyMultiplier: number;
-        protected readonly decayWeight: number;
+        private readonly angleBonusBegin: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionCount: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly difficultyMultiplier: number;
+        protected override readonly decayWeight: number;
         /**
          * @param current The hitobject to calculate.
          */
@@ -1581,34 +1580,34 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
      * API request builder for osu!standard.
      */
     export class OsuAPIRequestBuilder extends APIRequestBuilder {
-        protected readonly host: string;
-        protected readonly APIkey: string;
-        protected readonly APIkeyParam: string;
-        setEndpoint(endpoint: OsuAPIEndpoint): this;
+        protected override readonly host: string;
+        protected override readonly APIkey: string;
+        protected override readonly APIkeyParam: string;
+        override setEndpoint(endpoint: OsuAPIEndpoint): this;
     }
 
     /**
      * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
      */
     export class OsuFlashlight extends OsuSkill {
-        protected readonly historyLength: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly reducedSectionCount: number;
-        protected readonly reducedSectionBaseline: number;
-        protected readonly difficultyMultiplier: number;
-        protected readonly decayWeight: number;
+        protected override readonly historyLength: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionCount: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly difficultyMultiplier: number;
+        protected override readonly decayWeight: number;
         /**
          * @param current The hitobject to calculate.
          */
@@ -1616,29 +1615,28 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
      * Represents the hit window of osu!standard.
      */
     export class OsuHitWindow extends HitWindow {
-        readonly overallDifficulty: number;
-        constructor(overallDifficulty: number);
-        hitWindowFor300(): number;
-        hitWindowFor100(): number;
-        hitWindowFor50(): number;
+        override hitWindowFor300(): number;
+        override hitWindowFor100(): number;
+        override hitWindowFor50(): number;
     }
 
     /**
      * A performance points calculator that calculates performance points for osu!standard gamemode.
      */
     export class OsuPerformanceCalculator extends PerformanceCalculator {
-        stars: OsuStarRating;
+        override stars: OsuStarRating;
+        override finalMultiplier: number;
         /**
          * The aim performance value.
          */
@@ -1655,7 +1653,7 @@ declare module "osu-droid" {
          * The flashlight performance value.
          */
         flashlight: number;
-        calculate(params: {
+        override calculate(params: {
             /**
              * The star rating instance to calculate.
              */
@@ -1680,20 +1678,20 @@ declare module "osu-droid" {
         /**
          * Calculates the aim performance value of the beatmap.
          */
-        protected calculateAimValue(): void;
+        private calculateAimValue(): void;
         /**
          * Calculates the speed performance value of the beatmap.
          */
-        protected calculateSpeedValue(): void;
+        private calculateSpeedValue(): void;
         /**
          * Calculates the accuracy performance value of the beatmap.
          */
-        protected calculateAccuracyValue(): void;
+        private calculateAccuracyValue(): void;
         /**
          * Calculates the flashlight performance value of the beatmap.
          */
         private calculateFlashlightValue(): void;
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -1704,13 +1702,13 @@ declare module "osu-droid" {
          * Spacing threshold for a single hitobject spacing.
          */
         private readonly SINGLE_SPACING_THRESHOLD: number;
-        protected readonly angleBonusBegin: number;
-        protected readonly skillMultiplier: number;
-        protected readonly strainDecayBase: number;
-        protected readonly reducedSectionCount: number;
-        protected readonly reducedSectionBaseline: number;
-        protected readonly difficultyMultiplier: number;
-        protected readonly decayWeight: number;
+        private readonly angleBonusBegin: number;
+        protected override readonly skillMultiplier: number;
+        protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionCount: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly difficultyMultiplier: number;
+        protected override readonly decayWeight: number;
         private readonly minSpeedBonus: number;
         private readonly maxSpeedBonus: number;
         private readonly angleBonusScale: number;
@@ -1721,11 +1719,15 @@ declare module "osu-droid" {
         /**
          * @param current The hitobject to calculate.
          */
-        protected strainValueAt(current: DifficultyHitObject): number;
+        protected override strainValueAt(current: DifficultyHitObject): number;
+        /**
+         * Calculates a rhythm multiplier for the difficulty of the tap associated with historic data of the current object.
+         */
+        private calculateRhythmBonus(current: DifficultyHitObject): number;
         /**
          * @param current The hitobject to save to.
          */
-        saveToHitObject(current: DifficultyHitObject): void;
+        override saveToHitObject(current: DifficultyHitObject): void;
     }
 
     /**
@@ -2107,7 +2109,7 @@ declare module "osu-droid" {
             repeatIndex: number;
             spanDuration: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -2464,7 +2466,7 @@ declare module "osu-droid" {
             mapTickRate: number;
             tickDistanceMultiplier: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -2568,7 +2570,7 @@ declare module "osu-droid" {
             spanIndex: number;
             spanStartTime: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -2587,7 +2589,7 @@ declare module "osu-droid" {
             type: number;
             duration: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -2607,7 +2609,7 @@ declare module "osu-droid" {
             time: number;
             msPerBeat: number;
         });
-        toString(): string;
+        override toString(): string;
     }
 
     /**
@@ -3470,6 +3472,12 @@ declare module "osu-droid" {
          */
         protected comboPenalty: number;
         /**
+         * The global multiplier to be applied to the final performance value.
+         * 
+         * This is being adjusted to keep the final value scaled around what it used to be when changing things.
+         */
+        protected abstract finalMultiplier: number;
+        /**
          * Calculates the performance points of a beatmap.
          */
         abstract calculate(params: {
@@ -3724,7 +3732,7 @@ declare module "osu-droid" {
          * 
          * @param current The hitobject to process.
          */
-        protected process(current: DifficultyHitObject): void;
+        protected override process(current: DifficultyHitObject): void;
 
         /**
          * Saves the current peak strain level to the list of strain peaks, which will be used to calculate an overall difficulty.

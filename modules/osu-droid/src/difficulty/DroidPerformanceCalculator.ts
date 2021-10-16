@@ -14,8 +14,8 @@ import { ModRelax } from '../mods/ModRelax';
  * A performance points calculator that calculates performance points for osu!droid gamemode.
  */
 export class DroidPerformanceCalculator extends PerformanceCalculator {
-    stars: DroidStarRating = new DroidStarRating();
-    finalMultiplier = 1.24;
+    override stars: DroidStarRating = new DroidStarRating();
+    override finalMultiplier = 1.24;
 
     /**
      * The aim performance value.
@@ -37,7 +37,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      */
     flashlight: number = 0;
 
-    calculate(params: {
+    override calculate(params: {
         /**
          * The star rating instance to calculate.
          */
@@ -282,7 +282,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.flashlight *= 0.98 + (this.mapStatistics.od! >= 0 ? odScaling : -odScaling);
     }
 
-    toString(): string {
+    override toString(): string {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
             + " aim, " + this.speed.toFixed(2) + " speed, "

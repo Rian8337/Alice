@@ -28,7 +28,7 @@ export abstract class OsuSkill extends StrainSkill {
      */
     protected abstract readonly decayWeight: number;
 
-    difficultyValue(): number {
+    override difficultyValue(): number {
         let difficulty: number = 0;
         let weight: number = 1;
 

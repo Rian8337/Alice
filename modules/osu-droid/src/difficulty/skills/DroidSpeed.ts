@@ -15,10 +15,10 @@ export class DroidSpeed extends DroidSkill {
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
-    protected readonly historyLength: number = 2;
-    protected readonly skillMultiplier: number = 1375;
-    protected readonly strainDecayBase: number = 0.3;
-    protected readonly starsPerDouble: number = 1.1;
+    protected override readonly historyLength: number = 2;
+    protected override readonly skillMultiplier: number = 1375;
+    protected override readonly strainDecayBase: number = 0.3;
+    protected override readonly starsPerDouble: number = 1.1;
 
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
@@ -85,7 +85,7 @@ export class DroidSpeed extends DroidSkill {
     /**
      * @param current The hitobject to calculate.
      */
-    protected strainValueAt(current: DifficultyHitObject): number {
+    protected override strainValueAt(current: DifficultyHitObject): number {
         this.currentStrain = this.strainValueOf(current);
 
         return this.currentStrain;
@@ -94,7 +94,7 @@ export class DroidSpeed extends DroidSkill {
     /**
      * @param current The hitobject to save to.
      */
-    saveToHitObject(current: DifficultyHitObject): void {
+    override saveToHitObject(current: DifficultyHitObject): void {
         current.movementStrain = this.currentMovementStrain;
         current.tapStrain = this.currentTapStrain;
         current.originalTapStrain = this.currentOriginalTapStrain;

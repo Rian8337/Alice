@@ -13,8 +13,8 @@ import { ModRelax } from '../mods/ModRelax';
  * A performance points calculator that calculates performance points for osu!standard gamemode.
  */
 export class OsuPerformanceCalculator extends PerformanceCalculator {
-    stars: OsuStarRating = new OsuStarRating();
-    finalMultiplier = 1.12;
+    override stars: OsuStarRating = new OsuStarRating();
+    override finalMultiplier = 1.12;
 
     /**
      * The aim performance value.
@@ -36,7 +36,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
      */
     flashlight: number = 0;
 
-    calculate(params: {
+    override calculate(params: {
         /**
          * The star rating instance to calculate.
          */
@@ -269,7 +269,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         this.flashlight *= 0.98 + odScaling;
     }
 
-    toString(): string {
+    override toString(): string {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
             + " aim, " + this.speed.toFixed(2) + " speed, "

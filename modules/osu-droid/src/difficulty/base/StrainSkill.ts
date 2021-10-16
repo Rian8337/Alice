@@ -42,7 +42,7 @@ export abstract class StrainSkill extends Skill {
      * 
      * @param current The hitobject to process.
      */
-    protected process(current: DifficultyHitObject): void {
+    protected override process(current: DifficultyHitObject): void {
         // The first object doesn't generate a strain, so we begin with an incremented section end
         if (this.previous.length === 0) {
             this.currentSectionEnd = Math.ceil(current.startTime / this.sectionLength) * this.sectionLength;

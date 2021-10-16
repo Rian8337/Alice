@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the SuddenDeath mod.
  */
 export class ModSuddenDeath extends Mod {
-    readonly scoreMultiplier: number = 1;
-    readonly acronym: string = "SD";
-    readonly name: string = "Sudden Death";
-    readonly droidRanked: boolean = false;
-    readonly pcRanked: boolean = true;
-    readonly bitwise: number = 1 << 5;
-    readonly droidString: string = "u";
-    readonly droidOnly: boolean = false;
+    override readonly scoreMultiplier: number = 1;
+    override readonly acronym: string = "SD";
+    override readonly name: string = "Sudden Death";
+    override readonly droidRanked: boolean = false;
+    override readonly pcRanked: boolean = true;
+    override readonly bitwise: number = 1 << 5;
+    override readonly droidString: string = "u";
+    override readonly droidOnly: boolean = false;
 }
