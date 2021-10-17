@@ -19,7 +19,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const message: Message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
-            recalcStrings.fullRecalcTrackProgress, "0", uncalculatedCount.toLocaleString()
+            recalcStrings.fullRecalcTrackProgress, "0", uncalculatedCount.toLocaleString(), "0.00"
         )
     });
 
@@ -43,7 +43,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             await message.edit({
                 content: MessageCreator.createWarn(
-                    recalcStrings.fullRecalcTrackProgress, calculatedCount.toLocaleString(), uncalculatedCount.toLocaleString()
+                    recalcStrings.fullRecalcTrackProgress,
+                    calculatedCount.toLocaleString(),
+                    uncalculatedCount.toLocaleString(),
+                    (calculatedCount * 100 / uncalculatedCount).toFixed(2)
                 )
             });
         }
