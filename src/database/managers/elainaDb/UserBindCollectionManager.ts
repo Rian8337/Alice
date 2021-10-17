@@ -71,6 +71,10 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
         return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
     }
 
+    async getRecalcUncalculatedPlayerCount(): Promise<number> {
+        return this.collection.countDocuments({ dppRecalcComplete: { $ne: true } });
+    }
+
     /**
      * Gets the bind information of a Discord user.
      * 

@@ -3,7 +3,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, Snowflake } from "discord.js";
+import { Collection, Message, Snowflake } from "discord.js";
 import { recalcStrings } from "../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -15,8 +15,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(recalcStrings.fullRecalcInProgress)
     });
 
+    const uncalculatedCount: number = await dbManager.getRecalcUncalculatedPlayerCount();
+
+    const message: Message = await interaction.channel!.send({
+        content: MessageCreator.createWarn(
+            recalcStrings.fullRecalcTrackProgress, "0", uncalculatedCount.toLocaleString()
+        )
+    });
+
     while (true) {
-        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(20);
+        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(5);
 
         if (players.size === 0) {
             break;
@@ -32,6 +40,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             }
 
             client.logger.info(`${++calculatedCount} players recalculated`);
+
+            await message.edit({
+                content: MessageCreator.createWarn(
+                    recalcStrings.fullRecalcTrackProgress, calculatedCount.toLocaleString(), uncalculatedCount.toLocaleString()
+                )
+            });
         }
     }
 
