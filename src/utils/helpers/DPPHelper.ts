@@ -47,7 +47,7 @@ export abstract class DPPHelper {
      * 
      * @param dppList The list of dpp plays, mapped by hash.
      * @param score The score.
-     * @param calculationResult The calculation result of the score. If omitted, the score will be calculated on fly.
+     * @param calculationResult The calculation result of the score.
      */
     static insertScore(dppList: Collection<string, PPEntry>, score: Score, calculationResult: PerformanceCalculationResult): void {
         const ppEntry: PPEntry = {
