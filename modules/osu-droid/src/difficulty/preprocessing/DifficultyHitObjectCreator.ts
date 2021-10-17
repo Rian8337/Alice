@@ -78,7 +78,7 @@ export class DifficultyHitObjectCreator {
                 object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
                     .subtract(lastCursorPosition.scale(scalingFactor)).length;
 
-                if (lastLastObject && !(lastLastObject instanceof Spinner)) {
+                if (lastLastObject && !(lastLastObject.object instanceof Spinner)) {
                     const lastLastCursorPosition: Vector2 = this.getEndCursorPosition(lastLastObject.object);
 
                     const v1: Vector2 = lastLastCursorPosition.subtract(lastObject.object.stackedPosition);
