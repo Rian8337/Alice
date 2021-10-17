@@ -19,7 +19,7 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
         const general: TextChannel = <TextChannel> member.guild.channels.cache.get(Constants.mainServer);
 
         general.send({
-            content: `Welcome to ${member.guild.name}, ${member}!`,
+            content: `Welcome back to ${member.guild.name}, ${member}!`,
             files: [ Constants.welcomeImageLink ]
         });
     }
