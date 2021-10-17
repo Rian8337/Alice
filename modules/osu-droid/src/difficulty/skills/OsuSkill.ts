@@ -8,17 +8,6 @@ import { StrainSkill } from "../base/StrainSkill";
  */
 export abstract class OsuSkill extends StrainSkill {
     /**
-     * The number of sections with the highest strains, which the peak strain reductions will apply to.
-     * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
-     */
-    protected abstract readonly reducedSectionCount: number;
-
-    /**
-     * The baseline multiplier applied to the section with the biggest strain.
-     */
-    protected abstract readonly reducedSectionBaseline: number;
-
-    /**
      * The final multiplier to be applied to the final difficulty value after all other calculations.
      */
     protected abstract readonly difficultyMultiplier: number;

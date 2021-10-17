@@ -18,6 +18,8 @@ export class DroidSpeed extends DroidSkill {
 
     protected override readonly historyLength: number = 32;
     protected override readonly skillMultiplier: number = 1375;
+    protected override readonly reducedSectionCount: number = 5;
+    protected override readonly reducedSectionBaseline: number = 0.75;
     protected override readonly strainDecayBase: number = 0.3;
     protected override readonly starsPerDouble: number = 1.1;
 
