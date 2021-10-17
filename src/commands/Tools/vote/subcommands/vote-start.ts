@@ -39,3 +39,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(voteStrings.voteStartSuccess) + `\n${string}`
     });
 };
+
+export const config: Subcommand["config"] = {
+    permissions: []
+};
