@@ -64,13 +64,6 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     }): this {
         this.handleParams(params, modes.osu);
 
-        const maxCombo: number = this.stars.map.maxCombo();
-        const miss: number = this.computedAccuracy.nmiss;
-        const combo: number = params.combo || maxCombo - miss;
-
-        // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-        this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
-
         this.calculateAimValue();
         this.calculateSpeedValue();
         this.calculateAccuracyValue();
@@ -91,7 +84,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     private calculateAimValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
+        const calculatedAR: number = this.mapStatistics.ar!;
 
         this.aim = this.baseValue(Math.pow(this.stars.aim, this.stars.mods.some(m => m instanceof ModTouchDevice) ? 0.8 : 1));
 
@@ -145,7 +138,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
     private calculateSpeedValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
+        const calculatedAR: number = this.mapStatistics.ar!;
         const n50: number = this.computedAccuracy.n50;
 
         this.speed = this.baseValue(this.stars.speed);
@@ -181,7 +174,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         }
 
         // Scale the speed value with accuracy and OD.
-        this.speed *= (0.95 + Math.pow(<number> this.mapStatistics.od, 2) / 750) *
+        this.speed *= (0.95 + Math.pow(this.mapStatistics.od!, 2) / 750) *
             Math.pow(
                 this.computedAccuracy.value(objectCount),
                 (14.5 - Math.max(<number> this.mapStatistics.od, 8)) / 2
@@ -214,7 +207,7 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         // Lots of arbitrary values from testing.
         // Considering to use derivation from perfect accuracy in a probabilistic manner - assume normal distribution
-        this.accuracy = Math.pow(1.52163, <number> this.mapStatistics.od) *
+        this.accuracy = Math.pow(1.52163, this.mapStatistics.od!) *
             Math.pow(realAccuracy.value(ncircles), 24) * 2.83;
 
         // Bonus for many hitcircles - it's harder to keep good accuracy up for longer

@@ -139,9 +139,15 @@ export abstract class PerformanceCalculator {
             throw new Error("params.stars must be in StarRating instance");
         }
 
+        const maxCombo: number = this.stars.map.maxCombo();
+        const miss: number = this.computedAccuracy.nmiss;
+        const combo: number = params.combo ?? maxCombo - miss;
         const mod: Mod[] = this.stars.mods;
         const baseAR: number = this.stars.map.ar!;
         const baseOD: number = this.stars.map.od;
+
+        // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
+        this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
 
         if (params.accPercent instanceof Accuracy) {
             // Copy into new instance to not modify the original

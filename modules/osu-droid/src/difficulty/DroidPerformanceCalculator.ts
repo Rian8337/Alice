@@ -37,6 +37,8 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      */
     flashlight: number = 0;
 
+    private aggregatedRhythmMultiplier: number = 0;
+
     override calculate(params: {
         /**
          * The star rating instance to calculate.
@@ -70,19 +72,14 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }): this {
         this.handleParams(params, modes.droid);
 
-        const maxCombo: number = this.stars.map.maxCombo();
-        const miss: number = this.computedAccuracy.nmiss;
-        const combo: number = params.combo || maxCombo - miss;
-
-        // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-        this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
+        this.calculateAggregatedRhythmMultiplier();
 
         this.calculateAimValue();
         this.calculateSpeedValue();
         this.calculateAccuracyValue();
         this.calculateFlashlightValue();
 
-        // Apply tap penalty for penalized plays.
+        // Apply speed penalty for penalized plays.
         this.speed /= (params.speedPenalty ?? 1);
 
         this.total = Math.pow(
@@ -95,12 +92,25 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }
 
     /**
+     * Calculates the aggregated rhythm multiplier of the beatmap.
+     */
+    private calculateAggregatedRhythmMultiplier(): void {
+        const rhythmMultipliers: number[] = this.stars.objects.map(v => v.rhythmMultiplier);
+
+        const maxMultiplier: number = Math.max(...rhythmMultipliers);
+
+        const aggregatedResult: number = rhythmMultipliers.reduce((total, next) => total + (1 / (1 + Math.exp(6 - next / maxMultiplier * 9))), 0);
+
+        this.aggregatedRhythmMultiplier = aggregatedResult / rhythmMultipliers.length;
+    }
+
+    /**
      * Calculates the aim performance value of the beatmap.
      */
     private calculateAimValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
+        const calculatedAR: number = this.mapStatistics.ar!;
 
         this.aim = this.baseValue(Math.pow(this.stars.aim, 0.8));
 
@@ -141,8 +151,8 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.aim *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
 
         // It is also important to consider accuracy difficulty when doing that.
-        const odScaling: number = Math.pow(<number> this.mapStatistics.od, 2) / 2500;
-        this.aim *= 0.98 + (<number> this.mapStatistics.od >= 0 ? odScaling : -odScaling);
+        const odScaling: number = Math.pow(this.mapStatistics.od!, 2) / 2500;
+        this.aim *= 0.98 + (this.mapStatistics.od! >= 0 ? odScaling : -odScaling);
     }
 
     /**
@@ -151,7 +161,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     private calculateSpeedValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
+        const calculatedAR: number = this.mapStatistics.ar!;
 
         this.speed = this.baseValue(this.stars.speed);
 
@@ -226,7 +236,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
 
         // Scale the accuracy value with rhythm complexity.
-        this.accuracy *= Math.pow(Math.exp(this.stars.rhythm - 1), 0.85);
+        this.accuracy *= Math.pow(Math.exp(this.aggregatedRhythmMultiplier - 1), 0.85);
 
         // Scale the accuracy value with amount of accuracy objects (objects that
         // depends on hit window for hit result).
@@ -286,7 +296,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
             + " aim, " + this.speed.toFixed(2) + " speed, "
-            + this.accuracy.toFixed(2) + " acc)"
+            + this.accuracy.toFixed(2) + " acc, " + this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 }
