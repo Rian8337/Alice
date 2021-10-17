@@ -457,6 +457,8 @@ declare module "osu-droid" {
         private readonly angleBonusBegin: number;
         protected override readonly skillMultiplier: number;
         protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly reducedSectionCount: number;
         protected override readonly starsPerDouble: number;
         /**
          * @param current The hitobject to calculate.
@@ -489,6 +491,8 @@ declare module "osu-droid" {
         protected override readonly historyLength: number;
         protected override readonly skillMultiplier: number;
         protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly reducedSectionCount: number;
         protected override readonly starsPerDouble: number;
         /**
          * @param current The hitobject to calculate.
@@ -540,6 +544,11 @@ declare module "osu-droid" {
          * The accuracy performance value.
          */
         accuracy: number;
+        /**
+         * The flashlight performance value.
+         */
+        flashlight: number;
+        private aggregatedRhythmMultiplier: number;
         override calculate(params: {
             /**
              * The star rating instance to calculate.
@@ -566,6 +575,10 @@ declare module "osu-droid" {
              */
             stats?: MapStats;
         }): this;
+        /**
+         * Calculates the aggregated rhythm multiplier of the beatmap.
+         */
+        private calculateAggregatedRhythmMultiplier(): void;
         /**
          * Calculates the aim performance value of the beatmap.
          */
@@ -685,6 +698,8 @@ declare module "osu-droid" {
         private readonly angleBonusBegin: number;
         protected override readonly skillMultiplier: number;
         protected override readonly strainDecayBase: number;
+        protected override readonly reducedSectionBaseline: number;
+        protected override readonly reducedSectionCount: number;
         protected override readonly starsPerDouble: number;
         private readonly minSpeedBonus: number;
         private readonly maxSpeedBonus: number;
@@ -3693,6 +3708,16 @@ declare module "osu-droid" {
          * Strain peaks are stored here.
          */
         readonly strainPeaks: number[];
+        /**
+         * The number of sections with the highest strains, which the peak strain reductions will apply to.
+         * This is done in order to decrease their impact on the overall difficulty of the map for this skill.
+         */
+        protected abstract readonly reducedSectionCount: number;
+
+        /**
+         * The baseline multiplier applied to the section with the biggest strain.
+         */
+        protected abstract readonly reducedSectionBaseline: number;
 
         /**
          * Strain values are multiplied by this number for the given skill. Used to balance the value of different skills between each other.
