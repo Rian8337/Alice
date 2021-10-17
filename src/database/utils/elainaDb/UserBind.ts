@@ -405,9 +405,15 @@ export class UserBind extends Manager {
             while (true) {
                 const scores: Score[] = await getScores(uid, ++page);
 
-                if (scores.length === 0) {
+                const scoreCount: number = scores.length;
+
+                if (scoreCount === 0) {
                     break;
                 }
+
+                this.client.logger.info(`Calculating ${scoreCount} scores`);
+
+                let calculatedCount: number = 0;
 
                 const rankedScoreCollection: Collection<string, number> = new Collection();
 
@@ -415,6 +421,8 @@ export class UserBind extends Manager {
 
                 while (score = scores.shift()) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
+
+                    this.client.logger.info(`${++calculatedCount}/${scoreCount} scores calculated`);
 
                     if (!beatmapInfo) {
                         continue;
