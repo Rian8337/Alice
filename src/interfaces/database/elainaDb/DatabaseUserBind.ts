@@ -1,4 +1,5 @@
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
+import { RecalculationProgress } from "@alice-interfaces/dpp/RecalculationProgress";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
@@ -78,4 +79,9 @@ export interface DatabaseUserBind extends BaseDocument {
      * Whether the ongoing dpp recalculation is completed for this user.
      */
     dppRecalcComplete?: boolean;
+
+    /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress;
 };

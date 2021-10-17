@@ -4,6 +4,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
+import { RecalculationProgress } from "@alice-interfaces/dpp/RecalculationProgress";
 import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -97,6 +98,11 @@ export class UserBind extends Manager {
     dppRecalcComplete?: boolean;
 
     /**
+     * Progress of ongoing dpp calculation.
+     */
+    calculationInfo?: RecalculationProgress;
+
+    /**
      * The BSON object ID of this document in the database.
      */
     readonly _id?: ObjectId;
@@ -119,6 +125,7 @@ export class UserBind extends Manager {
         this.hasAskedForRecalc = data.hasAskedForRecalc;
         this.dppScanComplete = data.dppScanComplete;
         this.dppRecalcComplete = data.dppRecalcComplete;
+        this.calculationInfo = data.calculationInfo;
     }
 
     /**
@@ -379,11 +386,21 @@ export class UserBind extends Manager {
                 continue;
             }
 
-            // Do manual operations to reduce memory usage (we don't need to cache
-            // submitted scores)
-            await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: uid });
-
             let page = 0;
+
+            if (isDPPRecalc && this.calculationInfo) {
+                if (uid !== this.calculationInfo.uid) {
+                    continue;
+                }
+
+                page = this.calculationInfo.page - 1;
+
+                newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [v.hash, v])));
+            } else {
+                // Do manual operations to reduce memory usage (we don't need to cache
+                // submitted scores)
+                await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: uid });
+            }
 
             while (true) {
                 const scores: Score[] = await getScores(uid, ++page);
@@ -440,6 +457,19 @@ export class UserBind extends Manager {
                     },
                     { upsert: true }
                 );
+
+                await DatabaseManager.elainaDb.collections.userBind.update(
+                    { discordid: this.discordid },
+                    {
+                        $set: {
+                            calcInfo: {
+                                uid: uid,
+                                page: page,
+                                currentPPEntries: [...newList.values()]
+                            }
+                        }
+                    }
+                );
             }
         }
 
@@ -453,6 +483,9 @@ export class UserBind extends Manager {
                 playc: this.playc,
                 // Only set to true if hasAskedForRecalc is originally false
                 hasAskedForRecalc: markAsSlotFulfill || this.hasAskedForRecalc
+            },
+            $unset: {
+                calculationInfo: ""
             }
         };
 
