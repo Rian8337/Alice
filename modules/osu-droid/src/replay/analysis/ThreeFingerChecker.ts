@@ -123,7 +123,7 @@ export class ThreeFingerChecker {
     private readonly cursorDistancingTimeThreshold: number = 1000;
 
     /**
-     * The amount of notes that has a speed strain exceeding `strainThreshold`.
+     * The amount of notes that has a tap strain exceeding `strainThreshold`.
      */
     private readonly strainNoteCount: number;
 
@@ -223,6 +223,8 @@ export class ThreeFingerChecker {
         this.getAccurateBreakPoints();
         this.filterCursorInstances();
 
+        console.log(this.downCursorInstances.map(v => v.size));
+
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
         }
@@ -231,6 +233,8 @@ export class ThreeFingerChecker {
         this.detectDragPlay();
         this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
+
+        console.log(this.downCursorInstances.map(v => v.size));
 
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
@@ -766,11 +770,12 @@ export class ThreeFingerChecker {
             if ((threeFingerRatio > this.threeFingerRatioThreshold && cursorAmounts.filter(v => v > 1).length > 3) || validPresses.length > 0) {
                 // Strain factor
                 const objectCount: number = beatmapSection.lastObjectIndex - beatmapSection.firstObjectIndex + 1;
-                const strainFactor: number = Math.sqrt(
+                const strainFactor: number = Math.pow(
                     objects.slice(beatmapSection.firstObjectIndex, beatmapSection.lastObjectIndex)
                         .map(v => {return v.originalTapStrain;})
                         .sort((a, b) => {return b - a;})
-                        .reduce((acc, value) => acc + value / this.strainThreshold, 0)
+                        .reduce((acc, value) => acc + value / this.strainThreshold, 0),
+                    0.75
                 );
 
                 // We can ignore the first 3 (2 for drag) filled cursor instances
