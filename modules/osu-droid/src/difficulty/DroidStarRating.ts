@@ -2,11 +2,13 @@ import { Beatmap } from '../beatmap/Beatmap';
 import { modes } from '../constants/modes';
 import { MapStats } from '../utils/MapStats';
 import { DroidAim } from './skills/DroidAim';
-import { DroidTap } from './skills/DroidTap';
-import { DroidRhythm } from './skills/DroidRhythm';
+import { DroidSpeed } from './skills/DroidSpeed';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
+import { DroidFlashlight } from './skills/DroidFlashlight';
+import { ModFlashlight } from '../mods/ModFlashlight';
+import { OsuHitWindow } from '../utils/HitWindow';
 import { ModRelax } from '../mods/ModRelax';
 
 /**
@@ -21,14 +23,14 @@ export class DroidStarRating extends StarRating {
     /**
      * The tap star rating of the beatmap.
      */
-    tap: number = 0;
+    speed: number = 0;
 
     /**
-     * The rhythm star rating of the beatmap.
+     * The flashlight star rating of the beatmap.
      */
-    rhythm: number = 0;
+    flashlight: number = 0;
 
-    protected readonly difficultyMultiplier: number = 0.18;
+    protected override readonly difficultyMultiplier: number = 0.18;
 
     /**
      * Calculates the star rating of the specified beatmap.
@@ -55,7 +57,7 @@ export class DroidStarRating extends StarRating {
         map: Beatmap,
 
         /**
-         * Applied modifications in osu!standard format.
+         * Applied modifications.
          */
         mods?: Mod[],
 
@@ -75,81 +77,90 @@ export class DroidStarRating extends StarRating {
 
         this.calculateSkills(aimSkill);
 
-        this.aimStrainPeaks = aimSkill.strains;
+        this.aimStrainPeaks = aimSkill.strainPeaks;
 
-        this.aim = this.baseRatingValue(aimSkill.difficultyValue());
+        this.aim = this.starValue(aimSkill.difficultyValue());
     }
 
     /**
-     * Calculates the tap star rating of the beatmap and stores it in this instance.
+     * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
-    calculateTap(): void {
+    calculateSpeed(): void {
         if (this.mods.some(m => m instanceof ModRelax)) {
             return;
         }
 
-        const tapSkill: DroidTap = new DroidTap(this.mods);
+        const speedSkill: DroidSpeed = new DroidSpeed(
+            this.mods,
+            new OsuHitWindow(this.stats.od!).hitWindowFor300()
+        );
 
-        this.calculateSkills(tapSkill);
+        this.calculateSkills(speedSkill);
 
-        this.speedStrainPeaks = tapSkill.strains;
+        this.speedStrainPeaks = speedSkill.strainPeaks;
 
-        this.tap = this.baseRatingValue(tapSkill.difficultyValue());
+        this.speed = this.starValue(speedSkill.difficultyValue());
     }
 
-    calculateRhythm(): void {
-        if (this.mods.some(m => m instanceof ModRelax)) {
-            return;
+    /**
+     * Calculates the flashlight star rating of the beatmap and stores it in this instance.
+     */
+    calculateFlashlight(): void {
+        const flashlightSkill: DroidFlashlight = new DroidFlashlight(this.mods);
+
+        this.calculateSkills(flashlightSkill);
+
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
+    }
+
+    override calculateTotal(): void {
+        const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
+        const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const flashlightPerformanceValue: number =
+            this.mods.some(m => m instanceof ModFlashlight) ? 
+            Math.pow(this.flashlight, 2) * 25 :
+            0;
+
+        const basePerformanceValue: number = Math.pow(
+            Math.pow(aimPerformanceValue, 1.1) +
+            Math.pow(speedPerformanceValue, 1.1) +
+            Math.pow(flashlightPerformanceValue, 1.1),
+            1 / 1.1
+        );
+
+        if (basePerformanceValue > 1e-5) {
+            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4);
         }
-
-        const rhythmSkill: DroidRhythm = new DroidRhythm(this.mods);
-
-        this.calculateSkills(rhythmSkill);
-
-        this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
     }
 
-    /**
-     * Calculates the total star rating of the beatmap and stores it in this instance.
-     */
-    calculateTotal(): void {
-        this.total = this.aim + this.tap + Math.pow(this.rhythm, 0.4);
-    }
-
-    /**
-     * Calculates every star rating of the beatmap and stores it in this instance.
-     */
-    calculateAll(): void {
+    override calculateAll(): void {
         const skills: DroidSkill[] = this.createSkills();
 
         const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
 
         if (isRelax) {
-            // Remove tap and rhythm skill to prevent overhead
+            // Remove speed and rhythm skill to prevent overhead
             skills.splice(1, 2);
         }
 
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        let tapSkill: DroidTap | undefined;
-        let rhythmSkill: DroidRhythm | undefined;
+        let speedSkill: DroidSpeed | undefined;
 
         if (!isRelax) {
-            tapSkill = <DroidTap> skills[1];
-            rhythmSkill = <DroidRhythm> skills[2];
+            speedSkill = <DroidSpeed> skills[1];
         }
 
-        this.aimStrainPeaks = aimSkill.strains;
-        this.aim = this.baseRatingValue(aimSkill.difficultyValue());
+        this.aimStrainPeaks = aimSkill.strainPeaks;
+        this.aim = this.starValue(aimSkill.difficultyValue());
 
-        if (tapSkill) {
-            this.speedStrainPeaks = tapSkill.strains;
-            this.tap = this.baseRatingValue(tapSkill.difficultyValue());
-        }
+        if (speedSkill) {
+            this.speedStrainPeaks = speedSkill.strainPeaks;
 
-        if (rhythmSkill) {
-            this.rhythm = this.baseRatingValue(rhythmSkill.difficultyValue());
+            this.speed = this.starValue(speedSkill.difficultyValue());
         }
 
         this.calculateTotal();
@@ -158,29 +169,25 @@ export class DroidStarRating extends StarRating {
     /**
      * Returns a string representative of the class.
      */
-    toString(): string {
+    override toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
-            " aim, " + this.tap.toFixed(2) + " tap, " +
-            this.rhythm.toFixed(2) + " rhythm)"
+            " aim, " + this.speed.toFixed(2) + " speed, " +
+            this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 
     /**
      * Creates skills to be calculated.
      */
-    protected createSkills(): DroidSkill[] {
+    protected override createSkills(): DroidSkill[] {
         return [
             new DroidAim(this.mods),
-            new DroidTap(this.mods),
-            new DroidRhythm(this.mods)
+            new DroidSpeed(
+                this.mods,
+                this.stats.od!
+            ),
+            new DroidFlashlight(this.mods)
         ];
-    }
-
-    /**
-     * Calculates the base rating value of a difficulty.
-     */
-    private baseRatingValue(difficulty: number): number {
-        return Math.pow(difficulty, 0.75) * this.difficultyMultiplier;
     }
 }

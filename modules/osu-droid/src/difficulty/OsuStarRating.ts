@@ -30,7 +30,7 @@ export class OsuStarRating extends StarRating {
      */
     flashlight: number = 0;
 
-    protected readonly difficultyMultiplier: number = 0.0675;
+    protected override readonly difficultyMultiplier: number = 0.0675;
 
     override calculate(params: {
         /**
@@ -97,12 +97,7 @@ export class OsuStarRating extends StarRating {
         this.flashlight = this.starValue(flashlightSkill.difficultyValue());
     }
 
-    /**
-     * Calculates the total star rating of the beatmap and stores it in this instance.
-     */
-    calculateTotal(): void {
-        // Total stars mixes speed and aim in such a way that
-        // heavily aim or speed focused maps get a bonus
+    override calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
         const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
         let flashlightPerformanceValue: number = 0;
@@ -119,14 +114,11 @@ export class OsuStarRating extends StarRating {
         );
 
         if (basePerformanceValue > 1e-5) {
-            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4)
+            this.total = Math.cbrt(1.12) * 0.027 * (Math.cbrt(100000 / Math.pow(2, 1 / 1.1) * basePerformanceValue) + 4);
         }
     }
 
-    /**
-     * Calculates every star rating of the beatmap and stores it in this instance.
-     */
-    calculateAll(): void {
+    override calculateAll(): void {
         const skills: OsuSkill[] = this.createSkills();
 
         const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
@@ -166,7 +158,7 @@ export class OsuStarRating extends StarRating {
     /**
      * Returns a string representative of the class.
      */
-    toString(): string {
+    override toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
             " aim, " + this.speed.toFixed(2) + " speed, " +
@@ -177,7 +169,7 @@ export class OsuStarRating extends StarRating {
     /**
      * Creates skills to be calculated.
      */
-    protected createSkills(): OsuSkill[] {
+    protected override createSkills(): OsuSkill[] {
         return [
             new OsuAim(this.mods),
             new OsuSpeed(
@@ -186,23 +178,5 @@ export class OsuStarRating extends StarRating {
             ),
             new OsuFlashlight(this.mods)
         ];
-    }
-
-    /**
-     * Calculates the base performance value of a difficulty rating.
-     * 
-     * @param rating The difficulty rating.
-     */
-    private basePerformanceValue(rating: number): number {
-        return Math.pow(5 * Math.max(1, rating / 0.0675) - 4, 3) / 100000;
-    }
-
-    /**
-     * Calculates the star rating value of a difficulty.
-     * 
-     * @param difficulty The difficulty to calculate.
-     */
-    private starValue(difficulty: number): number {
-        return Math.sqrt(difficulty) * this.difficultyMultiplier;
     }
 }

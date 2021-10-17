@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the NoFail mod.
  */
 export class ModNoFail extends Mod {
-    readonly scoreMultiplier: number = 0.5;
-    readonly acronym: string = "NF";
-    readonly name: string = "NoFail";
-    readonly droidRanked: boolean = true;
-    readonly pcRanked: boolean = true;
-    readonly bitwise: number = 1 << 0;
-    readonly droidString: string = "n";
-    readonly droidOnly: boolean = false;
+    override readonly scoreMultiplier: number = 0.5;
+    override readonly acronym: string = "NF";
+    override readonly name: string = "NoFail";
+    override readonly droidRanked: boolean = true;
+    override readonly pcRanked: boolean = true;
+    override readonly bitwise: number = 1 << 0;
+    override readonly droidString: string = "n";
+    override readonly droidOnly: boolean = false;
 }

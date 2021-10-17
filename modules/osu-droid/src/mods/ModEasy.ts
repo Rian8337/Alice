@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the Easy mod.
  */
 export class ModEasy extends Mod {
-    readonly scoreMultiplier: number = 0.5;
-    readonly acronym: string = "EZ";
-    readonly name: string = "Easy";
-    readonly droidRanked: boolean = true;
-    readonly pcRanked: boolean = true;
-    readonly bitwise: number = 1 << 1;
-    readonly droidString: string = "e";
-    readonly droidOnly: boolean = false;
+    override readonly scoreMultiplier: number = 0.5;
+    override readonly acronym: string = "EZ";
+    override readonly name: string = "Easy";
+    override readonly droidRanked: boolean = true;
+    override readonly pcRanked: boolean = true;
+    override readonly bitwise: number = 1 << 1;
+    override readonly droidString: string = "e";
+    override readonly droidOnly: boolean = false;
 }

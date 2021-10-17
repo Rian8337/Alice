@@ -37,7 +37,7 @@ abstract class HitWindow {
  * Represents the hit window of osu!droid.
  */
 export class DroidHitWindow extends HitWindow {
-    hitWindowFor300(isPrecise?: boolean): number {
+    override hitWindowFor300(isPrecise?: boolean): number {
         if (isPrecise) {
             return 55 + 6 * (5 - this.overallDifficulty);
         } else {
@@ -45,7 +45,7 @@ export class DroidHitWindow extends HitWindow {
         }
     }
 
-    hitWindowFor100(isPrecise?: boolean): number {
+    override hitWindowFor100(isPrecise?: boolean): number {
         if (isPrecise) {
             return 120 + 8 * (5 - this.overallDifficulty);
         } else {
@@ -53,7 +53,7 @@ export class DroidHitWindow extends HitWindow {
         }
     }
 
-    hitWindowFor50(isPrecise?: boolean): number {
+    override hitWindowFor50(isPrecise?: boolean): number {
         if (isPrecise) {
             return 180 + 10 * (5 - this.overallDifficulty);
         } else {
@@ -66,15 +66,15 @@ export class DroidHitWindow extends HitWindow {
  * Represents the hit window of osu!standard.
  */
 export class OsuHitWindow extends HitWindow {
-    hitWindowFor300(): number {
+    override hitWindowFor300(): number {
         return 80 - 6 * this.overallDifficulty;
     }
 
-    hitWindowFor100(): number {
+    override hitWindowFor100(): number {
         return 140 - 8 * this.overallDifficulty;
     }
 
-    hitWindowFor50(): number {
+    override hitWindowFor50(): number {
         return 200 - 10 * this.overallDifficulty;
     }
 }

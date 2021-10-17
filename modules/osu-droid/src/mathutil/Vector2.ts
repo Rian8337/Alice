@@ -86,4 +86,13 @@ export class Vector2 {
         this.x /= length;
         this.y /= length;
     }
+
+    /**
+     * Checks whether this vector is equal to another vector.
+     * 
+     * @param other The other vector.
+     */
+    equals(other: Vector2): boolean {
+        return this.x === other.x && this.y === other.y;
+    }
 }

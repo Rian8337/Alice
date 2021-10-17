@@ -4,7 +4,6 @@ import { DifficultyHitObject } from "./DifficultyHitObject";
 import { Slider } from "../../beatmap/hitobjects/Slider";
 import { Precision } from "../../utils/Precision";
 import { modes } from "../../constants/modes";
-import { MathUtils } from "../../mathutil/MathUtils";
 import { Spinner } from "../../beatmap/hitobjects/Spinner";
 
 /**
@@ -62,6 +61,13 @@ export class DifficultyHitObjectCreator {
             const lastLastObject: DifficultyHitObject = difficultyObjects[i - 2];
 
             if (lastObject) {
+                object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
+                // Cap to 25ms to prevent difficulty calculation breaking from simulatenous objects.
+                object.strainTime = Math.max(25, object.deltaTime);
+                object.startTime = object.object.startTime / params.speedMultiplier;
+            }
+
+            if (lastObject && !(object.object instanceof Spinner) && !(lastObject.object instanceof Spinner)) {
                 if (lastObject.object instanceof Slider) {
                     this.calculateSliderCursorPosition(lastObject.object);
                     object.travelDistance = lastObject.object.lazyTravelDistance * scalingFactor;
@@ -69,18 +75,10 @@ export class DifficultyHitObjectCreator {
 
                 const lastCursorPosition: Vector2 = this.getEndCursorPosition(lastObject.object);
 
-                // Don't need to jump to reach spinners
-                if (!(object.object instanceof Spinner)) {
-                    object.distanceVector = object.object.stackedPosition.scale(scalingFactor)
-                        .subtract(lastCursorPosition.scale(scalingFactor));
-                    object.jumpDistance = object.distanceVector.length;
-                }
+                object.jumpDistance = object.object.stackedPosition.scale(scalingFactor)
+                    .subtract(lastCursorPosition.scale(scalingFactor)).length;
 
-                object.deltaTime = (object.object.startTime - lastObject.object.startTime) / params.speedMultiplier;
-                object.strainTime = Math.max(params.mode === modes.droid ? 50 : 25, object.deltaTime);
-                object.startTime = object.object.startTime / params.speedMultiplier;
-
-                if (lastLastObject) {
+                if (lastLastObject && !(lastLastObject.object instanceof Spinner)) {
                     const lastLastCursorPosition: Vector2 = this.getEndCursorPosition(lastLastObject.object);
 
                     const v1: Vector2 = lastLastCursorPosition.subtract(lastObject.object.stackedPosition);
@@ -90,11 +88,6 @@ export class DifficultyHitObjectCreator {
 
                     object.angle = Math.abs(Math.atan2(det, dot));
                 }
-
-                const angleOffset: number = 10 * Math.sin(1.5 * (Math.PI / 2 - MathUtils.clamp(object.angle, Math.PI / 6, Math.PI / 2)));
-                const distanceOffset: number = Math.pow(object.jumpDistance, 1.7) / 325;
-
-                object.flowProbability = 1 / (1 + Math.exp(object.deltaTime - 126 + distanceOffset + angleOffset));
             }
 
             difficultyObjects.push(object);
@@ -134,14 +127,14 @@ export class DifficultyHitObjectCreator {
                 progress %= 1;
             }
 
-            const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition as Vector2);
+            const diff: Vector2 = slider.stackedPosition.add(slider.path.positionAt(progress)).subtract(slider.lazyEndPosition!);
             let dist: number = diff.length;
 
             if (dist > approxFollowCircleRadius) {
                 // The cursor would be outside the follow circle, we need to move it
                 diff.normalize(); // Obtain direction of diff
                 dist -= approxFollowCircleRadius;
-                slider.lazyEndPosition = (slider.lazyEndPosition as Vector2).add(diff.scale(dist));
+                slider.lazyEndPosition = slider.lazyEndPosition!.add(diff.scale(dist));
                 slider.lazyTravelDistance += dist;
             }
         });

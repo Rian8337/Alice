@@ -2,19 +2,20 @@ import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
 import { DroidStarRating } from './DroidStarRating';
 import { MapStats } from '../utils/MapStats';
-import { OsuHitWindow } from '../utils/HitWindow';
+import { DroidHitWindow } from '../utils/HitWindow';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
+import { ModPrecise } from '../mods/ModPrecise';
 import { ModRelax } from '../mods/ModRelax';
 
 /**
  * A performance points calculator that calculates performance points for osu!droid gamemode.
  */
 export class DroidPerformanceCalculator extends PerformanceCalculator {
-    stars: DroidStarRating = new DroidStarRating();
-    finalMultiplier = 1.24;
+    override stars: DroidStarRating = new DroidStarRating();
+    override finalMultiplier = 1.24;
 
     /**
      * The aim performance value.
@@ -22,16 +23,23 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     aim: number = 0;
 
     /**
-     * The tap performance value.
+     * The speed performance value.
      */
-    tap: number = 0;
+    speed: number = 0;
 
     /**
      * The accuracy performance value.
      */
     accuracy: number = 0;
 
-    calculate(params: {
+    /**
+     * The flashlight performance value.
+     */
+    flashlight: number = 0;
+
+    private aggregatedRhythmMultiplier: number = 0;
+
+    override calculate(params: {
         /**
          * The star rating instance to calculate.
          */
@@ -55,7 +63,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         /**
          * The tap penalty to apply for penalized scores.
          */
-        tapPenalty?: number,
+        speedPenalty?: number,
 
         /**
          * Custom map statistics to apply custom tap multiplier and force AR values as well as old statistics.
@@ -64,23 +72,19 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }): this {
         this.handleParams(params, modes.droid);
 
-        const maxCombo: number = this.stars.map.maxCombo();
-        const miss: number = this.computedAccuracy.nmiss;
-        const combo: number = params.combo || maxCombo - miss;
-
-        // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-        this.comboPenalty = Math.min(Math.pow(combo / maxCombo, 0.8), 1);
+        this.calculateAggregatedRhythmMultiplier();
 
         this.calculateAimValue();
-        this.calculateTapValue();
+        this.calculateSpeedValue();
         this.calculateAccuracyValue();
+        this.calculateFlashlightValue();
 
-        // Apply tap penalty for penalized plays.
-        this.tap /= (params.tapPenalty ?? 1);
+        // Apply speed penalty for penalized plays.
+        this.speed /= (params.speedPenalty ?? 1);
 
         this.total = Math.pow(
-            Math.pow(this.aim, 1.1) + Math.pow(this.tap, 1.1) +
-            Math.pow(this.accuracy, 1.1),
+            Math.pow(this.aim, 1.1) + Math.pow(this.speed, 1.1) +
+            Math.pow(this.accuracy, 1.1) + Math.pow(this.flashlight, 1.1),
             1 / 1.1
         ) * this.finalMultiplier;
 
@@ -88,12 +92,25 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     }
 
     /**
+     * Calculates the aggregated rhythm multiplier of the beatmap.
+     */
+    private calculateAggregatedRhythmMultiplier(): void {
+        const rhythmMultipliers: number[] = this.stars.objects.map(v => v.rhythmMultiplier);
+
+        const maxMultiplier: number = Math.max(...rhythmMultipliers);
+
+        const aggregatedResult: number = rhythmMultipliers.reduce((total, next) => total + (1 / (1 + Math.exp(6 - next / maxMultiplier * 9))), 0);
+
+        this.aggregatedRhythmMultiplier = aggregatedResult / rhythmMultipliers.length;
+    }
+
+    /**
      * Calculates the aim performance value of the beatmap.
      */
-    protected calculateAimValue(): void {
+    private calculateAimValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
+        const calculatedAR: number = this.mapStatistics.ar!;
 
         this.aim = this.baseValue(Math.pow(this.stars.aim, 0.8));
 
@@ -118,81 +135,70 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
         this.aim *= hiddenBonus;
 
+        // AR scaling
         let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            arFactor = 0.15 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         } else if (calculatedAR < 8) {
-            arFactor = 0.05 * (8 - calculatedAR);
+            arFactor += 0.025 * (8 - calculatedAR);
         }
 
-        // Scale aim with AR, sensitive to object count.
-        this.aim *= 1 + arFactor * (0.33 + 0.66 * Math.min(1, objectCount / 1250));
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
 
-        if (this.stars.mods.some(m => m instanceof ModFlashlight)) {
-            // Apply object-based bonus for flashlight.
-            let flBonus: number = 1 + 0.25 * Math.min(1, objectCount / 200);
-            if (objectCount > 200) {
-                flBonus += 0.3 * Math.min(1, (objectCount - 200) / 300);
-            }
-            if (objectCount > 500) {
-                flBonus += (objectCount - 500) / 1200;
-            }
-            this.aim *= flBonus;
-        }
-
-        if (this.stars.mods.some(m => m instanceof ModHidden) && this.stars.mods.some(m => m instanceof ModFlashlight)) {
-            this.aim *= 1.2;
-        }
+        this.aim *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
 
         // Scale the aim value with accuracy slightly.
         this.aim *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
 
         // It is also important to consider accuracy difficulty when doing that.
-        const odScaling: number = Math.pow(<number> this.mapStatistics.od, 2) / 2500;
-        this.aim *= 0.98 + (<number> this.mapStatistics.od >= 0 ? odScaling : -odScaling);
+        const odScaling: number = Math.pow(this.mapStatistics.od!, 2) / 2500;
+        this.aim *= 0.98 + (this.mapStatistics.od! >= 0 ? odScaling : -odScaling);
     }
 
     /**
-     * Calculates the tap performance value of the beatmap.
+     * Calculates the speed performance value of the beatmap.
      */
-    protected calculateTapValue(): void {
+    private calculateSpeedValue(): void {
         // Global variables
         const objectCount: number = this.stars.objects.length;
-        const calculatedAR: number = <number> this.mapStatistics.ar;
-        const n50: number = this.computedAccuracy.n50;
+        const calculatedAR: number = this.mapStatistics.ar!;
 
-        this.tap = this.baseValue(this.stars.tap);
+        this.speed = this.baseValue(this.stars.speed);
 
         if (this.computedAccuracy.nmiss > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.tap *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
         }
 
         // Combo scaling
-        this.tap *= this.comboPenalty;
+        this.speed *= this.comboPenalty;
 
-        // Scale tap sensitive to AR, without respect to object count.
+        let arFactor: number = 0;
         if (calculatedAR > 10.33) {
-            this.tap *= 1 + 0.3 * (calculatedAR - 10.33);
+            arFactor += calculatedAR - 10.33;
         }
 
-        // Scale the tap value with accuracy and OD.
+        const arTotalHitsFactor: number = 1 / (1 + Math.exp(-(0.007 * (objectCount - 400))));
+
+        this.speed *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
+
+        // Scale the speed value with accuracy and OD.
         const od: number = <number> this.mapStatistics.od;
         const odScaling: number = Math.pow(od, 2) / 750;
-        this.tap *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
+        this.speed *= (0.95 + (od > 0 ? odScaling : -odScaling)) *
             Math.pow(
                 this.computedAccuracy.value(objectCount),
-                12 - Math.max(od, 2.5) / 2
+                (12 - Math.max(od, 2.5)) / 2
             );
 
-        // Scale the tap value with # of 50s to punish doubletapping.
-        this.tap *= Math.pow(0.98, Math.max(0, n50 - objectCount / 500));
+        // Scale the speed value with # of 50s to punish doubletapping.
+        this.speed *= Math.pow(0.98, Math.max(0, this.computedAccuracy.n50 - objectCount / 500));
     }
 
     /**
      * Calculates the accuracy performance value of the beatmap.
      */
-    protected calculateAccuracyValue(): void {
+    private calculateAccuracyValue(): void {
         if (this.stars.mods.some(m => m instanceof ModRelax)) {
             return;
         }
@@ -204,37 +210,37 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             return;
         }
 
-        // Drastically change acc calculation to fit droid meta.
-
         // We calculate a variance based on the object count and # of 50s, 100s, etc. This prevents us from having cases
         // where an SS on lower OD is actually worth more than a 95% on OD11, even though OD11 requires a greater window
         // of precision.
-
         const p100: number = this.computedAccuracy.n100 / ncircles;
         const p50: number = this.computedAccuracy.n50 / ncircles;
         const pm: number = this.computedAccuracy.nmiss / ncircles;
-        const p300: number = 1 - pm - p50 - p100;
+        const p300: number = Math.max(0, 1 - pm - p50 - p100);
 
-        const hitWindow: OsuHitWindow = new OsuHitWindow(<number> this.mapStatistics.od);
-        const m300: number = hitWindow.hitWindowFor300();
-        const m100: number = hitWindow.hitWindowFor100();
-        const m50: number = hitWindow.hitWindowFor50();
+        // Convert converted droid OD back to original droid OD first before calculating variance.
+        let droidMS: number = 50 - 6 * (this.mapStatistics.od! - 5);
+        const isPrecise: boolean = this.stars.mods.some(m => m instanceof ModPrecise);
+        const od: number = 5 - (droidMS - (isPrecise ? 55 : 75)) / (isPrecise ? 6 : 5);
+
+        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
+
+        const m300: number = hitWindow.hitWindowFor300(isPrecise);
+        const m100: number = hitWindow.hitWindowFor100(isPrecise);
+        const m50: number = hitWindow.hitWindowFor50(isPrecise);
 
         const variance: number = p300 * Math.pow(m300 / 2, 2) +
             p100 * Math.pow((m300 + m100) / 2, 2) +
-            p50 * Math.pow((m100 + m50) / 2, 2) +
-            pm * Math.pow(229.5 - 11 * <number> this.mapStatistics.od, 2);
+            p50 * Math.pow((m100 + m50) / 2, 2);
 
         this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
 
         // Scale the accuracy value with rhythm complexity.
-        const rhythmScaling: number = Math.pow(Math.exp(this.stars.rhythm - 1), 0.75);
-        this.accuracy *= rhythmScaling;
+        this.accuracy *= Math.pow(Math.exp(this.aggregatedRhythmMultiplier - 1), 0.85);
 
         // Scale the accuracy value with amount of accuracy objects (objects that
-        // depends on hit window for hit result)
-        const lengthScaling: number = Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 2400) / 1500));
-        this.accuracy *= lengthScaling;
+        // depends on hit window for hit result).
+        this.accuracy *= Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
 
         if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.accuracy *= 1.08;
@@ -245,11 +251,52 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
     }
 
-    toString(): string {
+    /**
+     * Calculates the flashlight performance value of the beatmap.
+     */
+    private calculateFlashlightValue(): void {
+        if (!this.stars.mods.some(m => m instanceof ModFlashlight)) {
+            return;
+        }
+
+        // Global variables
+        const objectCount: number = this.stars.objects.length;
+
+        this.flashlight = Math.pow(
+            Math.pow(this.stars.flashlight, 0.8),
+            2
+        ) * 25;
+
+        // Add an additional bonus for HDFL.
+        if (this.stars.mods.some(m => m instanceof ModHidden)) {
+            this.flashlight *= 1.3;
+        }
+
+        // Combo scaling
+        this.flashlight *= this.comboPenalty;
+
+        if (this.computedAccuracy.nmiss > 0) {
+            // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
+            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+        }
+
+        // Account for shorter maps having a higher ratio of 0 combo/100 combo flashlight radius.
+        this.flashlight *= 0.7 + 0.1 * Math.min(1, objectCount / 200) +
+            (objectCount > 200 ? 0.2 * Math.min(1, (objectCount - 200) / 200) : 0);
+
+        // Scale the aim value with accuracy slightly.
+        this.flashlight *= 0.5 + this.computedAccuracy.value(objectCount) / 2;
+
+        // It is also important to consider accuracy difficulty when doing that.
+        const odScaling: number = Math.pow(this.mapStatistics.od!, 2) / 2500;
+        this.flashlight *= 0.98 + (this.mapStatistics.od! >= 0 ? odScaling : -odScaling);
+    }
+
+    override toString(): string {
         return (
             this.total.toFixed(2) + " pp (" + this.aim.toFixed(2)
-            + " aim, " + this.tap.toFixed(2) + " tap, "
-            + this.accuracy.toFixed(2) + " acc)"
+            + " aim, " + this.speed.toFixed(2) + " speed, "
+            + this.accuracy.toFixed(2) + " acc, " + this.flashlight.toFixed(2) + " flashlight)"
         );
     }
 }

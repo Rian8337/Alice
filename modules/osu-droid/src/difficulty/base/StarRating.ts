@@ -4,7 +4,7 @@ import { modes } from '../../constants/modes';
 import { MapStats } from '../../utils/MapStats';
 import { DifficultyHitObject } from '../preprocessing/DifficultyHitObject';
 import { DifficultyHitObjectCreator } from '../preprocessing/DifficultyHitObjectCreator';
-import { Skill } from './Skill';
+import { StrainSkill } from './StrainSkill';
 import { Chart } from '../../utils/Chart';
 import { Mod } from '../../mods/Mod';
 import { ModFlashlight } from '../../mods/ModFlashlight';
@@ -91,11 +91,8 @@ export abstract class StarRating {
         stats?: MapStats
     }, mode: modes): this {
         const map: Beatmap = this.map = params.map;
-        if (!map) {
-            throw new Error("A map must be defined");
-        }
 
-        const mod: Mod[] = this.mods = params.mods || this.mods;
+        const mod: Mod[] = this.mods = params.mods ?? this.mods;
 
         this.stats = new MapStats({
             cs: map.cs,
@@ -103,8 +100,8 @@ export abstract class StarRating {
             od: map.od,
             hp: map.hp,
             mods: mod,
-            speedMultiplier: params.stats?.speedMultiplier || 1,
-            oldStatistics: params.stats?.oldStatistics || false
+            speedMultiplier: params.stats?.speedMultiplier ?? 1,
+            oldStatistics: params.stats?.oldStatistics ?? false
         }).calculate({mode: mode});
 
         this.generateDifficultyHitObjects(mode);
@@ -133,10 +130,15 @@ export abstract class StarRating {
      * 
      * @param skills The skills to calculate.
      */
-    protected calculateSkills(...skills: Skill[]): void {
-        this.objects.slice(1).forEach(h => {
+    protected calculateSkills(...skills: StrainSkill[]): void {
+        this.objects.slice(1).forEach((h, i) => {
             skills.forEach(skill => {
                 skill.processInternal(h);
+
+                if (i === this.objects.length - 2) {
+                    // Don't forget to save the last strain peak, which would otherwise be ignored.
+                    skill.saveCurrentPeak();
+                }
             });
         });
     }
@@ -159,8 +161,7 @@ export abstract class StarRating {
      */
     getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
         return new Promise(async resolve => {
-            const sectionLength: number = this.sectionLength * this.stats.speedMultiplier;
-            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / sectionLength) * sectionLength;
+            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / this.sectionLength) * this.sectionLength;
 
             const strainInformations: {
                 readonly time: number,
@@ -173,7 +174,7 @@ export abstract class StarRating {
                 const flashlightStrain: number = this.flashlightStrainPeaks[i] ?? 0;
 
                 strainInformations[i] = {
-                    time: (currentSectionEnd + sectionLength * i) / 1000,
+                    time: (currentSectionEnd + this.sectionLength * i) / 1000,
                     strain: this.mods.some(m => m instanceof ModFlashlight) ?
                         (aimStrain + speedStrain + flashlightStrain) / 3 :
                         (aimStrain + speedStrain) / 2
@@ -219,5 +220,23 @@ export abstract class StarRating {
     /**
      * Creates skills to be calculated.
      */
-    protected abstract createSkills(): Skill[];
+    protected abstract createSkills(): StrainSkill[];
+
+    /**
+     * Calculates the star rating value of a difficulty.
+     * 
+     * @param difficulty The difficulty to calculate.
+     */
+    protected starValue(difficulty: number): number {
+        return Math.sqrt(difficulty) * this.difficultyMultiplier;
+    }
+
+    /**
+     * Calculates the base performance value of a difficulty rating.
+     * 
+     * @param rating The difficulty rating.
+     */
+    protected basePerformanceValue(rating: number): number {
+        return Math.pow(5 * Math.max(1, rating / 0.0675) - 4, 3) / 100000;
+    }
 }

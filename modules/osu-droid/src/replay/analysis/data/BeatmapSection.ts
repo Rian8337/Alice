@@ -1,7 +1,7 @@
 /**
  * Represents a section of a beatmap.
  */
- export class BeatmapSection {
+export class BeatmapSection {
     /**
      * The index of the first `DifficultyHitObject` of this beatmap section.
      */

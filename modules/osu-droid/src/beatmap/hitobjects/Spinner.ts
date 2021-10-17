@@ -26,7 +26,7 @@ export class Spinner extends HitObject {
         this.duration = values.duration;
     }
 
-    toString(): string {
+    override toString(): string {
         return `Position: [${this.position.x}, ${this.position.y}], duration: ${this.duration}`;
     }
 }

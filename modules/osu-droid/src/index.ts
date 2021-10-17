@@ -8,11 +8,11 @@ import { DifficultyHitObject } from './difficulty/preprocessing/DifficultyHitObj
 import { DifficultyHitObjectCreator } from './difficulty/preprocessing/DifficultyHitObjectCreator';
 import { DroidAim } from './difficulty/skills/DroidAim';
 import { DroidAPIRequestBuilder, OsuAPIRequestBuilder } from './utils/APIRequestBuilder';
+import { DroidFlashlight } from './difficulty/skills/DroidFlashlight';
 import { DroidHitWindow, OsuHitWindow } from './utils/HitWindow';
 import { DroidPerformanceCalculator } from './difficulty/DroidPerformanceCalculator';
 import { DroidStarRating } from './difficulty/DroidStarRating';
-import { DroidRhythm } from './difficulty/skills/DroidRhythm';
-import { DroidTap } from './difficulty/skills/DroidTap';
+import { DroidSpeed } from './difficulty/skills/DroidSpeed';
 import { gamemode } from './constants/gamemode';
 import { HeadCircle } from './beatmap/hitobjects/sliderObjects/HeadCircle';
 import { HitObject } from './beatmap/hitobjects/HitObject';
@@ -136,6 +136,11 @@ export = {
     DroidAPIRequestBuilder,
 
     /**
+     * Represents the skill required to memorize and hit every object in a beatmap with the Flashlight mod enabled.
+     */
+    DroidFlashlight,
+
+    /**
      * Represents the hit window of osu!droid.
      */
     DroidHitWindow,
@@ -146,11 +151,6 @@ export = {
     DroidPerformanceCalculator,
 
     /**
-     * Represents the skill required to correctly process rhythm.
-     */
-    DroidRhythm,
-
-    /**
      * Difficulty calculator for osu!droid gamemode.
      */
     DroidStarRating,
@@ -158,7 +158,7 @@ export = {
     /**
      * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
      */
-    DroidTap,
+    DroidSpeed: DroidSpeed,
 
     /**
      * Bitwise enum for gamemodes.

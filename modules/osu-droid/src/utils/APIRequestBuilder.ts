@@ -144,11 +144,11 @@ abstract class APIRequestBuilder {
  * API request builder for osu!droid.
  */
 export class DroidAPIRequestBuilder extends APIRequestBuilder {
-    protected readonly host: string = "http://ops.dgsrz.com/api/";
-    protected readonly APIkey: string = process.env.DROID_API_KEY as string;
-    protected readonly APIkeyParam: string = `apiKey=${this.APIkey}&`;
+    protected override readonly host: string = "http://ops.dgsrz.com/api/";
+    protected override readonly APIkey: string = process.env.DROID_API_KEY as string;
+    protected override readonly APIkeyParam: string = `apiKey=${this.APIkey}&`;
 
-    setEndpoint(endpoint: DroidAPIEndpoint): this {
+    override setEndpoint(endpoint: DroidAPIEndpoint): this {
         this.endpoint = endpoint;
         return this;
     }
@@ -158,11 +158,11 @@ export class DroidAPIRequestBuilder extends APIRequestBuilder {
  * API request builder for osu!standard.
  */
 export class OsuAPIRequestBuilder extends APIRequestBuilder {
-    protected readonly host: string = "https://osu.ppy.sh/api/";
-    protected readonly APIkey: string = process.env.OSU_API_KEY as string;
-    protected readonly APIkeyParam: string = `k=${this.APIkey}&`;
+    protected override readonly host: string = "https://osu.ppy.sh/api/";
+    protected override readonly APIkey: string = process.env.OSU_API_KEY as string;
+    protected override readonly APIkeyParam: string = `k=${this.APIkey}&`;
 
-    setEndpoint(endpoint: OsuAPIEndpoint): this {
+    override setEndpoint(endpoint: OsuAPIEndpoint): this {
         this.endpoint = endpoint;
         return this;
     }

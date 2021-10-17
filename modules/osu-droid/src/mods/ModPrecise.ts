@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the Precise mod.
  */
 export class ModPrecise extends Mod {
-    readonly scoreMultiplier: number = 1.06;
-    readonly acronym: string = "PR";
-    readonly name: string = "Precise";
-    readonly droidRanked: boolean = true;
-    readonly pcRanked: boolean = false;
-    readonly bitwise: number = Number.NaN;
-    readonly droidString: string = "s";
-    readonly droidOnly: boolean = true;
+    override readonly scoreMultiplier: number = 1.06;
+    override readonly acronym: string = "PR";
+    override readonly name: string = "Precise";
+    override readonly droidRanked: boolean = true;
+    override readonly pcRanked: boolean = false;
+    override readonly bitwise: number = Number.NaN;
+    override readonly droidString: string = "s";
+    override readonly droidOnly: boolean = true;
 }

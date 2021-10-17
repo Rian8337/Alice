@@ -4,12 +4,12 @@ import { Mod } from "./Mod";
  * Represents the NightCore mod.
  */
 export class ModNightCore extends Mod {
-    readonly scoreMultiplier: number = 1.12;
-    readonly acronym: string = "NC";
-    readonly name: string = "NightCore";
-    readonly droidRanked: boolean = true;
-    readonly pcRanked: boolean = true;
-    readonly bitwise: number = 1 << 9;
-    readonly droidString: string = "c";
-    readonly droidOnly: boolean = false;
+    override readonly scoreMultiplier: number = 1.12;
+    override readonly acronym: string = "NC";
+    override readonly name: string = "NightCore";
+    override readonly droidRanked: boolean = true;
+    override readonly pcRanked: boolean = true;
+    override readonly bitwise: number = 1 << 9;
+    override readonly droidString: string = "c";
+    override readonly droidOnly: boolean = false;
 }

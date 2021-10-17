@@ -31,7 +31,7 @@ export class SliderTick extends HitObject {
         this.spanStartTime = values.spanStartTime;
     }
 
-    toString(): string {
+    override toString(): string {
         return `Position: [${this.position.x}, ${this.position.y}], span index: ${this.spanIndex}, span start time: ${this.spanStartTime}`;
     }
 }

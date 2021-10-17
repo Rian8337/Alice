@@ -14,7 +14,7 @@ import { IndexedHitObject } from "./objects/IndexedHitObject";
 import { Beatmap } from "../../beatmap/Beatmap";
 import { Utils } from "../../utils/Utils";
 import { ModUtil } from "../../utils/ModUtil";
-import { ModPrecise } from "osu-droid";
+import { ModPrecise } from "../../mods/ModPrecise";
 
 interface CursorInformation {
     readonly cursorIndex: number;
@@ -280,7 +280,6 @@ export class TwoHandChecker {
         this.indexedHitObjects.forEach(o => {
             if (!beatmaps[o.cursorIndex]) {
                 const map: Beatmap = Utils.deepCopy(this.map.map);
-                map.objects.length = 0;
                 beatmaps[o.cursorIndex] = map;
             }
 

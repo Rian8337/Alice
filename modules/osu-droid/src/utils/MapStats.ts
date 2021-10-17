@@ -203,7 +203,7 @@ export class MapStats {
                         * (54.42 - this.cs * 4.48)
                         * 2 / 128)
                         + 0.5 * (11 - 5.2450170716245195) / 5;
-                    
+
                     if (this.mods.some(m => m instanceof ModHardRock)) {
                         scale -= 0.125;
                     }

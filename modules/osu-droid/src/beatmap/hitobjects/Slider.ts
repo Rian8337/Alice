@@ -192,7 +192,7 @@ export class Slider extends HitObject {
         this.nestedHitObjects.push(this.tailCircle);
     }
 
-    toString(): string {
+    override toString(): string {
         return `Position: [${this.position.x}, ${this.position.y}], distance: ${this.path.expectedDistance}, repetitions: ${this.repetitions}, slider ticks: ${this.nestedHitObjects.filter(v => v instanceof SliderTick).length}`;
     }
 }

@@ -16,14 +16,14 @@ export class OsuAim extends OsuSkill {
     protected override readonly strainDecayBase: number = 0.15;
     protected override readonly reducedSectionCount: number = 10;
     protected override readonly reducedSectionBaseline: number = 0.75;
-    protected readonly difficultyMultiplier: number = 1.06;
-    protected readonly decayWeight: number = 0.9;
+    protected override readonly difficultyMultiplier: number = 1.06;
+    protected override readonly decayWeight: number = 0.9;
 
     /**
-     * @param currentObject The hitobject to calculate.
+     * @param current The hitobject to calculate.
      */
-    strainValueOf(currentObject: DifficultyHitObject): number {
-        if (currentObject.object instanceof Spinner) {
+    protected strainValueOf(current: DifficultyHitObject): number {
+        if (current.object instanceof Spinner) {
             return 0;
         }
 
@@ -34,32 +34,40 @@ export class OsuAim extends OsuSkill {
             return Math.pow(val, 0.99);
         };
 
-        if (this.previous.length > 0) {
-            if (currentObject.angle !== null && currentObject.angle > this.angleBonusBegin) {
-                const angleBonus: number = Math.sqrt(
-                    Math.max(this.previous[0].jumpDistance - scale, 0) *
-                    Math.pow(Math.sin(currentObject.angle - this.angleBonusBegin), 2) *
-                    Math.max(currentObject.jumpDistance - scale, 0)
-                );
-                result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
-                    Math.max(this.timingThreshold, this.previous[0].strainTime);
-            }
+        if (this.previous.length > 0 && current.angle !== null && current.angle > this.angleBonusBegin) {
+            const angleBonus: number = Math.sqrt(
+                Math.max(this.previous[0].jumpDistance - scale, 0) *
+                Math.pow(Math.sin(current.angle - this.angleBonusBegin), 2) *
+                Math.max(current.jumpDistance - scale, 0)
+            );
+            result = 1.4 * applyDiminishingExp(Math.max(0, angleBonus)) /
+                Math.max(this.timingThreshold, this.previous[0].strainTime);
         }
 
-        const jumpDistanceExp: number = applyDiminishingExp(currentObject.jumpDistance);
-        const travelDistanceExp: number = applyDiminishingExp(currentObject.travelDistance);
+        const jumpDistanceExp: number = applyDiminishingExp(current.jumpDistance);
+        const travelDistanceExp: number = applyDiminishingExp(current.travelDistance);
         const weightedDistance: number = jumpDistanceExp + travelDistanceExp + Math.sqrt(travelDistanceExp * jumpDistanceExp);
 
         return Math.max(
-            result + weightedDistance / Math.max(currentObject.strainTime, this.timingThreshold),
-            weightedDistance / currentObject.strainTime
+            result + weightedDistance / Math.max(current.strainTime, this.timingThreshold),
+            weightedDistance / current.strainTime
         );
     }
 
     /**
-     * @param currentObject The hitobject to save to.
+     * @param current The hitobject to calculate.
      */
-    saveToHitObject(currentObject: DifficultyHitObject): void {
-        currentObject.aimStrain = this.currentStrain;
+    protected override strainValueAt(current: DifficultyHitObject): number {
+        this.currentStrain *= this.strainDecay(current.deltaTime);
+        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+
+        return this.currentStrain;
+    }
+
+    /**
+     * @param current The hitobject to save to.
+     */
+    override saveToHitObject(current: DifficultyHitObject): void {
+        current.aimStrain = this.currentStrain;
     }
 }
