@@ -223,8 +223,6 @@ export class ThreeFingerChecker {
         this.getAccurateBreakPoints();
         this.filterCursorInstances();
 
-        console.log(this.downCursorInstances.map(v => v.size));
-
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
         }
@@ -233,8 +231,6 @@ export class ThreeFingerChecker {
         this.detectDragPlay();
         this.getDetailedBeatmapSections();
         this.preventAccidentalTaps();
-
-        console.log(this.downCursorInstances.map(v => v.size));
 
         if (this.downCursorInstances.filter(v => v.size > 0).length <= 3) {
             return { is3Finger: false, penalty: 1 };
@@ -812,6 +808,6 @@ export class ThreeFingerChecker {
      * Calculates the final penalty.
      */
     private calculateFinalPenalty(): number {
-        return 1 + this.nerfFactors.reduce((a, n) => a + 0.01 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.05), 0);
+        return 1 + this.nerfFactors.reduce((a, n) => a + 0.015 * Math.pow(n.strainFactor * n.fingerFactor * n.lengthFactor, 1.05), 0);
     }
 }
