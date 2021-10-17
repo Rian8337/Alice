@@ -470,7 +470,7 @@ export class UserBind extends Manager {
                     { discordid: this.discordid },
                     {
                         $set: {
-                            calcInfo: {
+                            calculationInfo: {
                                 uid: uid,
                                 page: page,
                                 currentPPEntries: [...newList.values()]
