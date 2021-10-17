@@ -246,7 +246,7 @@ export abstract class EmbedCreator {
 
         beatmapInformation += `**${calcResult.droid.total.toFixed(2)}DPP**${(calcResult.replay?.speedPenalty ?? 1) !== 1 ? " (*penalized*)" : ""} | **${calcResult.osu.total.toFixed(2)}PP** `;
 
-        if (score.accuracy.nmiss > 0 || calcResult.replay?.data?.isFullCombo) {
+        if (score.accuracy.nmiss > 0 || !(calcResult.replay?.data?.isFullCombo ?? true)) {
             const calcParams: PerformanceCalculationParameters = await BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
 
             calcParams.combo = calcResult.map.maxCombo;
