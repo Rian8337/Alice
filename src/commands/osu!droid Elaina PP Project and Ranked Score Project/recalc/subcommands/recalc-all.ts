@@ -16,7 +16,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     while (true) {
-        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(50);
+        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(20);
 
         if (players.size === 0) {
             break;
