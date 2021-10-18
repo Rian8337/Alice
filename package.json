@@ -62,7 +62,7 @@
     "unzipper": "^0.10.11",
     "utf-8-validate": "^5.0.5",
     "youtube-dl-exec": "^1.2.6",
-    "yt-search": "^2.10.1",
+    "yt-search": "^2.10.2",
     "zlib-sync": "^0.1.7"
   },
   "_moduleAliases": {
