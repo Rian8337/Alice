@@ -210,41 +210,21 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             return;
         }
 
-        // We calculate a variance based on the object count and # of 50s, 100s, etc. This prevents us from having cases
-        // where an SS on lower OD is actually worth more than a 95% on OD11, even though OD11 requires a greater window
-        // of precision.
-        const p100: number = this.computedAccuracy.n100 / ncircles;
-        const p50: number = this.computedAccuracy.n50 / ncircles;
-        const pm: number = this.effectiveMissCount / ncircles;
-        const p300: number = Math.max(0, 1 - pm - p50 - p100);
+        const realAccuracy: Accuracy = new Accuracy({
+            nobjects: ncircles,
+            ...this.computedAccuracy
+        });
 
-        // Convert converted droid OD back to original droid OD first before calculating variance.
-        let droidMS: number = 50 - 6 * (this.mapStatistics.od! - 5);
-        const isPrecise: boolean = this.stars.mods.some(m => m instanceof ModPrecise);
-        const od: number = 5 - (droidMS - (isPrecise ? 55 : 75)) / (isPrecise ? 6 : 5);
+        // Lots of arbitrary values from testing.
+        // Considering to use derivation from perfect accuracy in a probabilistic manner - assume normal distribution
+        this.accuracy = Math.pow(1.4, this.mapStatistics.od!) *
+            Math.pow(realAccuracy.value(ncircles), 12) * 10;
 
-        const hitWindow: DroidHitWindow = new DroidHitWindow(od);
-
-        const m300: number = hitWindow.hitWindowFor300(isPrecise);
-        const m100: number = hitWindow.hitWindowFor100(isPrecise);
-        const m50: number = hitWindow.hitWindowFor50(isPrecise);
-
-        const variance: number = p300 * Math.pow(m300 / 2, 2) +
-            p100 * Math.pow((m300 + m100) / 2, 2) +
-            p50 * Math.pow((m100 + m50) / 2, 2);
-
-        if (variance <= 0) {
-            return;
-        }
-
-        this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
+        // Bonus for many hitcircles - it's harder to keep good accuracy up for longer
+        this.accuracy *= Math.min(1.15, Math.pow(ncircles / 1000, 0.3));
 
         // Scale the accuracy value with rhythm complexity.
         this.accuracy *= Math.pow(Math.exp(this.aggregatedRhythmMultiplier - 1), 0.85);
-
-        // Scale the accuracy value with amount of accuracy objects (objects that
-        // depends on hit window for hit result).
-        this.accuracy *= Math.sqrt(Math.log(1 + (Math.E - 1) * Math.min(ncircles, 1600) / 1000));
 
         if (this.stars.mods.some(m => m instanceof ModHidden)) {
             this.accuracy *= 1.08;
