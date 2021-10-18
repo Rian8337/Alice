@@ -114,9 +114,9 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         this.aim = this.baseValue(Math.pow(this.stars.aim, 0.8));
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.aim *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), this.computedAccuracy.nmiss);
+            this.aim *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), this.effectiveMissCount);
         }
 
         // Combo scaling
@@ -165,9 +165,9 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
 
         this.speed = this.baseValue(this.stars.speed);
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), Math.pow(this.effectiveMissCount, 0.875));
         }
 
         // Combo scaling
@@ -215,7 +215,7 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // of precision.
         const p100: number = this.computedAccuracy.n100 / ncircles;
         const p50: number = this.computedAccuracy.n50 / ncircles;
-        const pm: number = this.computedAccuracy.nmiss / ncircles;
+        const pm: number = this.effectiveMissCount / ncircles;
         const p300: number = Math.max(0, 1 - pm - p50 - p100);
 
         // Convert converted droid OD back to original droid OD first before calculating variance.
@@ -275,9 +275,9 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         // Combo scaling
         this.flashlight *= this.comboPenalty;
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), Math.pow(this.effectiveMissCount, 0.875));
         }
 
         // Account for shorter maps having a higher ratio of 0 combo/100 combo flashlight radius.

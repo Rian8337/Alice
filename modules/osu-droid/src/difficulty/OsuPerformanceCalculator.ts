@@ -96,9 +96,9 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         this.aim *= lengthBonus;
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.aim *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), this.computedAccuracy.nmiss);
+            this.aim *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), this.effectiveMissCount);
         }
 
         // Combo scaling
@@ -151,9 +151,9 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         this.speed *= lengthBonus;
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.speed *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), Math.pow(this.effectiveMissCount, 0.875));
         }
 
         // Combo scaling
@@ -245,9 +245,9 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
         // Combo scaling
         this.flashlight *= this.comboPenalty;
 
-        if (this.computedAccuracy.nmiss > 0) {
+        if (this.effectiveMissCount > 0) {
             // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of misses.
-            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.computedAccuracy.nmiss / objectCount, 0.775), Math.pow(this.computedAccuracy.nmiss, 0.875));
+            this.flashlight *= 0.97 * Math.pow(1 - Math.pow(this.effectiveMissCount / objectCount, 0.775), Math.pow(this.effectiveMissCount, 0.875));
         }
 
         // Account for shorter maps having a higher ratio of 0 combo/100 combo flashlight radius.

@@ -141,7 +141,7 @@ export class Accuracy implements AccuracyInformation {
             }
             n300 = nobjects - this.n100 - this.n50 - this.nmiss;
         } else {
-            nobjects = n300 + this.n100 + this.n50 + this.nmiss;
+            nobjects ??= n300 + this.n100 + this.n50 + this.nmiss;
         }
         let res = (
             (n300 * 6 + this.n100 * 2 + this.n50) /

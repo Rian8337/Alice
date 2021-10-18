@@ -44,6 +44,11 @@ export abstract class PerformanceCalculator {
     protected abstract finalMultiplier: number;
 
     /**
+     * The amount of misses that are filtered out from sliderbreaks.
+     */
+    protected effectiveMissCount: number = 0;
+
+    /**
      * Calculates the performance points of a beatmap.
      */
     abstract calculate(params: {
@@ -164,12 +169,14 @@ export abstract class PerformanceCalculator {
             this.finalMultiplier *= Math.max(0.9, 1 - 0.02 * this.computedAccuracy.nmiss);
         }
         if (this.stars.mods.some(m => m instanceof ModSpunOut)) {
-            this.finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / this.stars.map.objects.length, 0.85);
+            this.finalMultiplier *= 1 - Math.pow(this.stars.map.spinners / this.stars.objects.length, 0.85);
         }
         if (this.stars.mods.some(m => m instanceof ModRelax)) {
             this.computedAccuracy.nmiss += this.computedAccuracy.n100 + this.computedAccuracy.n50;
             this.finalMultiplier *= 0.6;
         }
+
+        this.effectiveMissCount = this.calculateEffectiveMissCount(combo, maxCombo);
 
         this.mapStatistics = new MapStats({
             ar: baseAR,
@@ -185,5 +192,24 @@ export abstract class PerformanceCalculator {
         }
 
         this.mapStatistics.calculate({mode: mode});
+    }
+
+    /**
+     * Calculates the amount of misses + sliderbreaks from combo.
+     */
+    private calculateEffectiveMissCount(combo: number, maxCombo: number): number {
+        let comboBasedMissCount: number = 0;
+
+        if (this.stars.map.sliders > 0) {
+            const fullComboThreshold: number = maxCombo - 0.1 * this.stars.map.sliders;
+
+            if (combo < fullComboThreshold) {
+                // We're clamping miss count because since it's derived from combo, it can
+                // be higher than the amount of objects and that breaks some calculations.
+                comboBasedMissCount = Math.min(fullComboThreshold / Math.max(1, combo), this.stars.objects.length);
+            }
+        }
+
+        return Math.max(this.computedAccuracy.nmiss, Math.floor(comboBasedMissCount));
     }
 }
