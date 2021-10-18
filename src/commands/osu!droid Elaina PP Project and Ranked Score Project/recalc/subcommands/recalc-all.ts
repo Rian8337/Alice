@@ -23,13 +23,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         )
     });
 
-    while (true) {
-        const player: UserBind | undefined = (await dbManager.getRecalcUnscannedPlayers(1)).first();
+    let player: UserBind | undefined;
 
-        if (!player) {
-            break;
-        }
-
+    while (player = (await dbManager.getRecalcUnscannedPlayers(1)).first()) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
         if (interaction.options.getBoolean("full")) {
