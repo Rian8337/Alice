@@ -3,7 +3,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, Message, Snowflake } from "discord.js";
+import { Message } from "discord.js";
 import { recalcStrings } from "../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -24,32 +24,30 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     while (true) {
-        const players: Collection<Snowflake, UserBind> = await dbManager.getRecalcUnscannedPlayers(5);
+        const player: UserBind | undefined = (await dbManager.getRecalcUnscannedPlayers(1)).first();
 
-        if (players.size === 0) {
+        if (!player) {
             break;
         }
 
-        for await (const player of players.values()) {
-            client.logger.info(`Now calculating ID ${player.discordid}`);
+        client.logger.info(`Now calculating ID ${player.discordid}`);
 
-            if (interaction.options.getBoolean("full")) {
-                await player.recalculateAllScores(false, true);
-            } else {
-                await player.recalculateDPP();
-            }
-
-            client.logger.info(`${++calculatedCount} players recalculated`);
-
-            await message.edit({
-                content: MessageCreator.createWarn(
-                    recalcStrings.fullRecalcTrackProgress,
-                    calculatedCount.toLocaleString(),
-                    uncalculatedCount.toLocaleString(),
-                    (calculatedCount * 100 / uncalculatedCount).toFixed(2)
-                )
-            });
+        if (interaction.options.getBoolean("full")) {
+            await player.recalculateAllScores(false, true);
+        } else {
+            await player.recalculateDPP();
         }
+
+        client.logger.info(`${++calculatedCount} players recalculated`);
+
+        await message.edit({
+            content: MessageCreator.createWarn(
+                recalcStrings.fullRecalcTrackProgress,
+                calculatedCount.toLocaleString(),
+                uncalculatedCount.toLocaleString(),
+                (calculatedCount * 100 / uncalculatedCount).toFixed(2)
+            )
+        });
     }
 
     await dbManager.update({}, { $unset: { dppScanComplete: "" } });
