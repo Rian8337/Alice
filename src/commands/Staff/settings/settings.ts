@@ -32,7 +32,7 @@ export const config: Command["config"] = {
                         {
                             name: "duration",
                             required: true,
-                            type: CommandArgumentType.INTEGER,
+                            type: CommandArgumentType.NUMBER,
                             description: "The duration of the cooldown in seconds, ranging from 5 to 3600."
                         },
                         {
@@ -117,6 +117,19 @@ export const config: Command["config"] = {
                                     value: "global"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    name: "globalcooldown",
+                    type: CommandArgumentType.SUB_COMMAND,
+                    description: "Sets a cooldown for all available commands.",
+                    options: [
+                        {
+                            name: "duration",
+                            required: true,
+                            type: CommandArgumentType.NUMBER,
+                            description: "The duration of the cooldown, ranging from 5 to 3600."
                         }
                     ]
                 }

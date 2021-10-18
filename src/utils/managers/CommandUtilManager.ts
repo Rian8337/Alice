@@ -29,6 +29,11 @@ export abstract class CommandUtilManager extends Manager {
     static readonly globallyDisabledCommands: Collection<string, number> = new Collection();
 
     /**
+     * The global cooldown for all commands.
+     */
+    static globalCommandCooldown: number = 0;
+
+    /**
      * The event utilities that are disabled in channels, mapped by channel ID.
      */
     static readonly channelDisabledEventUtils: Collection<Snowflake, DisabledEventUtil[]> = new Collection();

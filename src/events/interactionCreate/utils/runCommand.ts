@@ -83,24 +83,34 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
             });
         }
 
-        const globalCooldown: number = CommandUtilManager.globallyDisabledCommands.get(interaction.commandName) ?? 0;
-
-        const finalCooldown: number = Math.max(
+        const channelCooldown: number = Math.max(
             // Local command cooldown
             command.config.cooldown ?? 0,
             // Local subcommand cooldown
             subcommand?.config.cooldown ?? 0,
             // Local subcommand group cooldown
             subcommandGroup?.config.cooldown ?? 0,
-            // Global command cooldown
-            globalCooldown,
             // Guild command cooldown
             CommandUtilManager.guildDisabledCommands.get(interaction.guildId!)?.get(interaction.commandName)?.cooldown ?? 0,
             // Channel command cooldown
             CommandUtilManager.channelDisabledCommands.get(interaction.channelId)?.get(interaction.commandName)?.cooldown ?? 0
         );
 
-        CommandHelper.setCooldown(globalCooldown ? globalCooldownKey : channelCooldownKey, finalCooldown);
+        const globalCooldown: number = Math.max(
+            // Global command cooldown
+            CommandUtilManager.globallyDisabledCommands.get(interaction.commandName) ?? 0,
+            // Global cooldown
+            CommandUtilManager.globalCommandCooldown
+        );
+
+        CommandHelper.setCooldown(
+            globalCooldown > channelCooldown ||
+            (
+                globalCooldown === channelCooldown &&
+                (CommandUtilManager.globallyDisabledCommands.get(interaction.commandName) || CommandUtilManager.globalCommandCooldown)
+            ) ? globalCooldownKey : channelCooldownKey,
+            Math.max(channelCooldown, globalCooldown)
+        );
     }
 
     client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`);
