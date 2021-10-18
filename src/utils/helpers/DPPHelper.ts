@@ -19,9 +19,9 @@ export abstract class DPPHelper {
      * @returns The validity of the score.
      */
     static async checkSubmissionValidity(score: Score): Promise<DPPSubmissionValidity> {
-        const calculationResult: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
+        const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false);
 
-        if (!calculationResult) {
+        if (!beatmapInfo) {
             return DPPSubmissionValidity.BEATMAP_NOT_FOUND;
         }
 
@@ -32,10 +32,10 @@ export abstract class DPPHelper {
                 return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
             case score.speedMultiplier !== 1:
                 return DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED;
-            case await WhitelistManager.isBlacklisted(calculationResult.beatmapID):
+            case await WhitelistManager.isBlacklisted(beatmapInfo.beatmapID):
                 return DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED;
-            case WhitelistManager.beatmapNeedsWhitelisting(calculationResult.approved) &&
-                await WhitelistManager.getBeatmapWhitelistStatus(calculationResult.hash) !== "updated":
+            case WhitelistManager.beatmapNeedsWhitelisting(beatmapInfo.approved) &&
+                await WhitelistManager.getBeatmapWhitelistStatus(beatmapInfo.hash) !== "updated":
                 return DPPSubmissionValidity.BEATMAP_NOT_WHITELISTED;
             default:
                 return DPPSubmissionValidity.VALID;
