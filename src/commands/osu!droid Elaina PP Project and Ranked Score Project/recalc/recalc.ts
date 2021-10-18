@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
-    CommandHelper.runSubcommandFromInteraction(interaction);
+    CommandHelper.runSubcommandOrGroup(interaction);
 };
 
 export const category: Command["category"] = CommandCategory.PP_AND_RANKED;
