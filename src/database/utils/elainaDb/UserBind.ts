@@ -411,7 +411,9 @@ export class UserBind extends Manager {
                     break;
                 }
 
-                this.client.logger.info(`Calculating ${scoreCount} scores`);
+                if (isDPPRecalc) {
+                    this.client.logger.info(`Calculating ${scoreCount} scores from page ${page}`);
+                }
 
                 let calculatedCount: number = 0;
 
@@ -422,7 +424,9 @@ export class UserBind extends Manager {
                 while (score = scores.shift()) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
-                    this.client.logger.info(`${++calculatedCount}/${scoreCount} scores calculated`);
+                    if (isDPPRecalc) {
+                        this.client.logger.info(`${++calculatedCount}/${scoreCount} scores calculated`);
+                    }
 
                     if (!beatmapInfo) {
                         continue;
