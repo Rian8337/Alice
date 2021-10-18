@@ -233,6 +233,10 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
             p100 * Math.pow((m300 + m100) / 2, 2) +
             p50 * Math.pow((m100 + m50) / 2, 2);
 
+        if (variance <= 0) {
+            return;
+        }
+
         this.accuracy = Math.pow(1.45, (79.5 - 2 * Math.sqrt(variance)) / 6) * 10;
 
         // Scale the accuracy value with rhythm complexity.
