@@ -380,6 +380,10 @@ export class UserBind extends Manager {
         };
 
         for await (const uid of this.previous_bind) {
+            if (isDPPRecalc && this.calculationInfo && uid !== this.calculationInfo.uid) {
+                continue;
+            }
+
             const player: Player = await Player.getInformation({ uid: uid });
 
             if (!player.username) {
@@ -389,10 +393,6 @@ export class UserBind extends Manager {
             let page = 0;
 
             if (isDPPRecalc && this.calculationInfo) {
-                if (uid !== this.calculationInfo.uid) {
-                    continue;
-                }
-
                 page = this.calculationInfo.page - 1;
 
                 newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [v.hash, v])));
