@@ -211,14 +211,15 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
         }
 
         const realAccuracy: Accuracy = new Accuracy({
+            ...this.computedAccuracy,
             nobjects: ncircles,
-            ...this.computedAccuracy
+            n300: this.computedAccuracy.n300 - (this.stars.objects.length - ncircles)
         });
 
         // Lots of arbitrary values from testing.
         // Considering to use derivation from perfect accuracy in a probabilistic manner - assume normal distribution
         this.accuracy = Math.pow(1.4, this.mapStatistics.od!) *
-            Math.pow(realAccuracy.value(ncircles), 12) * 10;
+            Math.pow(Math.max(0, realAccuracy.value(ncircles)), 12) * 10;
 
         // Bonus for many hitcircles - it's harder to keep good accuracy up for longer
         this.accuracy *= Math.min(1.15, Math.pow(ncircles / 1000, 0.3));
