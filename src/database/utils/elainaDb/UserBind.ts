@@ -422,7 +422,7 @@ export class UserBind extends Manager {
                 let score: Score | undefined;
 
                 while (score = scores.shift()) {
-                    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false);
+                    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false).catch(() => null);
 
                     await HelperFunctions.sleep(0.1);
 
