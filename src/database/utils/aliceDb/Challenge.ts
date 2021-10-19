@@ -464,7 +464,7 @@ export class Challenge extends Manager {
      * @returns The scores that are in the leaderboard of the challenge, sorted by score.
      */
     async getCurrentLeaderboard(): Promise<Score[]> {
-        const beatmapInfo: MapInfo = <MapInfo> await BeatmapManager.getBeatmap(this.beatmapid);
+        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(this.beatmapid, false))!;
 
         const oldHash: string = beatmapInfo.hash;
 
@@ -715,7 +715,7 @@ export class Challenge extends Manager {
     private async calculateChallengeScoreV2(score: Score): Promise<number>;
 
     private async calculateChallengeScoreV2(scoreOrReplay: Score | ReplayData): Promise<number> {
-        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(this.beatmapid))!;
+        const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(this.beatmapid, false))!;
 
         const maximumScore: number = beatmapInfo.maxScore(
             new MapStats({

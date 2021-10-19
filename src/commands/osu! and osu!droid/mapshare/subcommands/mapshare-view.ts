@@ -33,7 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapId);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapId, false);
 
     if (!beatmapInfo || (beatmapInfo.hash !== submission.hash && submission.status !== "pending")) {
         await submission.delete();

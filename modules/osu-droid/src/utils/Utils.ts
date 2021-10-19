@@ -1,4 +1,4 @@
-import { deserialize, serialize } from "v8";
+import { cloneDeep } from "lodash";
 
 /**
  * Some utilities, no biggie.
@@ -14,12 +14,12 @@ export abstract class Utils {
     }
 
     /**
-     * Deep copies an instance.
+     * Deep copies an object.
      * 
-     * @param instance The instance to deep copy.
+     * @param obj The object to deep copy.
      */
-    static deepCopy<T>(instance: T): T {
-        return deserialize(serialize(instance));
+    static deepCopy<T>(obj: T): T {
+        return cloneDeep(obj);
     }
 
     /**
@@ -33,11 +33,7 @@ export abstract class Utils {
 
         if (initialValue !== undefined) {
             for (let i = 0; i < length; ++i) {
-                if (Array.isArray(initialValue)) {
-                    array.push(JSON.parse(JSON.stringify(initialValue)));
-                } else {
-                    array.push(initialValue);
-                }
+                array.push(cloneDeep(initialValue));
             }
         }
 

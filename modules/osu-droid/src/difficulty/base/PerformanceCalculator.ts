@@ -144,7 +144,7 @@ export abstract class PerformanceCalculator {
             throw new Error("params.stars must be in StarRating instance");
         }
 
-        const maxCombo: number = this.stars.map.maxCombo();
+        const maxCombo: number = this.stars.map.maxCombo;
         const miss: number = this.computedAccuracy.nmiss;
         const combo: number = params.combo ?? maxCombo - miss;
         const mod: Mod[] = this.stars.mods;

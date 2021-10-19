@@ -108,7 +108,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 });
             }
 
-            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID);
+            const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID, false);
 
             if (!beatmapInfo) {
                 return interaction.editReply({
@@ -129,7 +129,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                     continue;
                 }
 
-                const star: MapStars = new MapStars().calculate({ file: beatmapInfo.osuFile, mods: score.mods });
+                await beatmapInfo.retrieveBeatmapFile();
+
+                const star: MapStars = new MapStars().calculate({ map: beatmapInfo.map!, mods: score.mods });
 
                 if (star.pcStars.total >= badge.requirement) {
                     canUserClaimBadge = true;

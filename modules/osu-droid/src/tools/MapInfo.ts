@@ -12,6 +12,7 @@ import { Precision } from '../utils/Precision';
 import { TimingControlPoint } from '../beatmap/timings/TimingControlPoint';
 import { Score } from '../osu!droid/Score';
 import { Mod } from '../mods/Mod';
+import { Utils } from '../utils/Utils';
 
 interface OsuAPIResponse {
     readonly approved: string;
@@ -221,14 +222,13 @@ export class MapInfo {
     videoAvailable: boolean = false;
 
     /**
-     * The `.osu` file of the beatmap.
-     */
-    osuFile: string = "";
-
-    /**
      * The parsed beatmap from beatmap parser.
      */
-    map?: Beatmap;
+    get map(): Beatmap | undefined {
+        return Utils.deepCopy(this.cachedBeatmap);
+    };
+
+    private cachedBeatmap?: Beatmap;
 
     /**
      * Retrieve a beatmap's general information.
@@ -346,7 +346,7 @@ export class MapInfo {
      */
     retrieveBeatmapFile(forceDownload?: boolean): Promise<MapInfo> {
         return new Promise(resolve => {
-            if (this.osuFile && !forceDownload) {
+            if (this.cachedBeatmap && !forceDownload) {
                 return resolve(this);
             }
 
@@ -360,8 +360,7 @@ export class MapInfo {
                     if (response.statusCode !== 200) {
                         return resolve(this);
                     }
-                    this.osuFile = Buffer.concat(dataArray).toString("utf8");
-                    this.map = new Parser().parse(this.osuFile).map;
+                    this.cachedBeatmap = new Parser().parse(Buffer.concat(dataArray).toString("utf8")).map;
                     resolve(this);
                 });
         });

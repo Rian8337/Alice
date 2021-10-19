@@ -1,9 +1,9 @@
 import { Beatmap } from '../beatmap/Beatmap';
 import { MapStats } from '../utils/MapStats';
-import { Parser } from '../beatmap/Parser';
 import { DroidStarRating } from '../difficulty/DroidStarRating';
 import { OsuStarRating } from '../difficulty/OsuStarRating';
 import { Mod } from '../mods/Mod';
+import { Utils } from '../utils/Utils';
 
 /**
  * A star rating calculator that configures which mode to calculate difficulty for and what mods are applied.
@@ -21,17 +21,15 @@ export class MapStars {
 
     /**
      * Calculates the star rating of a beatmap.
-     * 
-     * The beatmap will be automatically parsed using parser utilities.
      */
     calculate(params: {
         /**
-         * The .osu file of the beatmap.
+         * The beatmap to calculate.
          */
-        file: string,
+        map: Beatmap,
 
         /**
-         * Applied modifications in osu!standard format.
+         * Applied modifications.
          */
         mods?: Mod[],
 
@@ -40,34 +38,16 @@ export class MapStars {
          */
         stats?: MapStats
     }): MapStars {
-        if (!params.file) {
-            throw new Error("Please enter an osu file!");
-        }
-
         const mod: Mod[] = params.mods ?? [];
 
-        // Wish JavaScript has an actual clone method...
-        const droidParser: Parser = new Parser();
-        const pcParser: Parser = new Parser();
-        try {
-            droidParser.parse(params.file, mod);
-            pcParser.parse(params.file, mod);
-        } catch (e) {
-            console.log("Invalid osu file");
-            return this;
-        }
-
-        const droidMap: Beatmap = droidParser.map;
-        const pcMap: Beatmap = pcParser.map;
-
         const stats: MapStats = new MapStats({
-            speedMultiplier: params.stats?.speedMultiplier || 1,
-            isForceAR: params.stats?.isForceAR || false,
-            oldStatistics: params.stats?.oldStatistics || false
+            speedMultiplier: params.stats?.speedMultiplier ?? 1,
+            isForceAR: params.stats?.isForceAR ?? false,
+            oldStatistics: params.stats?.oldStatistics ?? false
         });
 
-        this.droidStars.calculate({map: droidMap, mods: mod, stats});
-        this.pcStars.calculate({map: pcMap, mods: mod, stats});
+        this.droidStars.calculate({ map: Utils.deepCopy(params.map), mods: mod, stats });
+        this.pcStars.calculate({ map: Utils.deepCopy(params.map), mods: mod, stats });
 
         return this;
     }

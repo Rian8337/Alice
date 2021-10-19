@@ -59,7 +59,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID ?? hash);
+    const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(beatmapID ?? hash, false);
 
     if (beatmapInfo) {
         BeatmapManager.setChannelLatestBeatmap(interaction.channelId, beatmapInfo.hash);
@@ -79,6 +79,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             content: MessageCreator.createReject(leaderboardStrings.beatmapHasNoScores)
         });
     }
+
+    await beatmapInfo?.retrieveBeatmapFile();
 
     leaderboardCache.set(1, firstPageScores);
 

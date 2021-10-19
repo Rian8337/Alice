@@ -77,7 +77,7 @@ export class Parser {
         this.map.objects.forEach(h => {
             h.calculateStackedPosition(scale);
         });
-        
+
         return this;
     }
 

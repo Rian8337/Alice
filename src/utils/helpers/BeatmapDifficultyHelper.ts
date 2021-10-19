@@ -126,12 +126,8 @@ export abstract class BeatmapDifficultyHelper {
 
         calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
-        const calcResult: PerformanceCalculationResult = this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined);
-
         return {
-            map: beatmap,
-            droid: calcResult.droid,
-            osu: calcResult.osu,
+            ...this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined),
             replay: score.replay
         };
     }
@@ -210,7 +206,7 @@ export abstract class BeatmapDifficultyHelper {
         calculationParams.applyFromBeatmap(beatmap);
 
         const star: MapStars = new MapStars().calculate({
-            file: beatmap.osuFile,
+            map: beatmap.map!,
             mods: calculationParams.mods,
             stats: calculationParams.customStatistics
         });

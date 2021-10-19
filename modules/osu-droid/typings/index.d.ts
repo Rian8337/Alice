@@ -132,9 +132,9 @@ declare module "osu-droid" {
          */
         get sliderRepeatPoints(): number;
         /**
-         * Gets the maximum combo of the beatmap.
+         * The maximum combo of the beatmap.
          */
-        maxCombo(): number;
+        get maxCombo(): number;
         /**
          * Returns a string representative of the class.
          */
@@ -926,17 +926,10 @@ declare module "osu-droid" {
          */
         videoAvailable: boolean;
         /**
-         * The `.osu` file of the beatmap.
-         */
-        osuFile: string;
-        /**
          * The parsed beatmap from beatmap parser.
          */
-        map?: Beatmap;
-        /**
-         * Whether or not the fetch result from `getInformation()` returns an error. This should be immediately checked after calling said method.
-         */
-        error: boolean;
+        get map(): Beatmap | undefined;
+        private cachedBeatmap?: Beatmap;
         /**
          * Retrieve a beatmap's general information.
          *
@@ -1035,14 +1028,12 @@ declare module "osu-droid" {
         readonly pcStars: OsuStarRating;
         /**
          * Calculates the star rating of a beatmap.
-         *
-         * The beatmap will be automatically parsed using parser utilities.
          */
         calculate(params: {
             /**
-             * The .osu file of the beatmap.
+             * The beatmap to calculate.
              */
-            file: string;
+            map: Beatmap;
             /**
              * Applied modifications.
              */
