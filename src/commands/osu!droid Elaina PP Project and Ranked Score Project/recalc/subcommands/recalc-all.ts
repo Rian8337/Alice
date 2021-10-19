@@ -17,12 +17,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const uncalculatedCount: number = await dbManager.getRecalcUncalculatedPlayerCount();
 
+    const total: number = calculatedCount + uncalculatedCount;
+
     const message: Message = await interaction.channel!.send({
         content: MessageCreator.createWarn(
             recalcStrings.fullRecalcTrackProgress,
             calculatedCount.toLocaleString(),
-            uncalculatedCount.toLocaleString(),
-            (calculatedCount * 100 / uncalculatedCount).toFixed(2)
+            total.toLocaleString(),
+            (calculatedCount * 100 / total).toFixed(2)
         )
     });
 
@@ -43,8 +45,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             content: MessageCreator.createWarn(
                 recalcStrings.fullRecalcTrackProgress,
                 calculatedCount.toLocaleString(),
-                uncalculatedCount.toLocaleString(),
-                (calculatedCount * 100 / uncalculatedCount).toFixed(2)
+                total.toLocaleString(),
+                (calculatedCount * 100 / total).toFixed(2)
             )
         });
     }
