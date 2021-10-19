@@ -173,8 +173,7 @@ export abstract class EmbedCreator {
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
-        embed.setImage("attachment://chart.png")
-            .spliceFields(embed.fields.length - 1, 1)
+        embed.spliceFields(embed.fields.length - 1, 1)
             .addField(
                 map.showStatistics(4, mods, customStatistics),
                 `${map.showStatistics(5, mods, customStatistics)}\n**Result**: ${combo}/${map.maxCombo}x | ${(accuracy.value() * 100).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${accuracy.nmiss}]`
@@ -184,18 +183,22 @@ export abstract class EmbedCreator {
                 `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
             );
 
+        const chart: Buffer | null = await pcPP.stars.getStrainChart(
+            map.beatmapsetID,
+            graphColor
+        );
+
+        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
+
+        if (chart) {
+            embed.setImage("attachment://chart.png");
+
+            files.push(new MessageAttachment(chart, "chart.png"));
+        }
+
         return {
             embeds: [ embed ],
-            files: [
-                new MessageAttachment(
-                    (await pcPP.stars.getStrainChart(
-                        map.beatmapsetID,
-                        graphColor
-                    ))!,
-                    "chart.png"
-                ),
-                ...embedOptions.files!
-            ]
+            files: files
         };
     }
 
@@ -331,8 +334,7 @@ export abstract class EmbedCreator {
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
-        embed.setImage("attachment://chart.png")
-            .setFooter(
+        embed.setFooter(
                 embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000) / 1000))}`,
                 embed.footer!.iconURL
             )
@@ -354,15 +356,22 @@ export abstract class EmbedCreator {
                 "Use \`/daily challenges\` to check bonuses."
             );
 
+        const chart: Buffer | null = await calcResult.osu.getStrainChart(
+            calcResult.map.beatmapsetID,
+            graphColor
+        );
+
+        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
+
+        if (chart) {
+            embed.setImage("attachment://chart.png");
+
+            files.push(new MessageAttachment(chart, "chart.png"));
+        }
+
         return {
             embeds: [ embed ],
-            files: [new MessageAttachment(
-                (await calcResult.osu.getStrainChart(
-                    calcResult.map.beatmapsetID,
-                    graphColor
-                ))!,
-                "chart.png"
-            ), ...embedOptions.files!]
+            files: files
         };
     }
 
@@ -466,15 +475,22 @@ export abstract class EmbedCreator {
                 `**Summary**:\n${submission.summary}`
             );
 
+        const chart: Buffer | null = await calcResult.osu.getStrainChart(
+            calcResult.map.beatmapsetID,
+            "#28ebda"
+        );
+
+        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
+
+        if (chart) {
+            embed.setImage("attachment://chart.png");
+
+            files.push(new MessageAttachment(chart, "chart.png"));
+        }
+
         return {
             embeds: [ embed ],
-            files: [new MessageAttachment(
-                (await calcResult.osu.getStrainChart(
-                    calcResult.map.beatmapsetID,
-                    "#28ebda"
-                ))!,
-                "chart.png"
-            ), ...embedOptions.files!]
+            files: files
         };
     }
 

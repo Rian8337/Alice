@@ -159,57 +159,59 @@ export abstract class StarRating {
      * @param beatmapsetID The beatmapset ID to get background image from. If omitted, the background will be plain white.
      * @param color The color of the graph.
      */
-    getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
-        return new Promise(async resolve => {
-            const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / this.sectionLength) * this.sectionLength;
+    async getStrainChart(beatmapsetID?: number, color: string = "#000000"): Promise<Buffer|null> {
+        if ([this.aimStrainPeaks.length, this.speedStrainPeaks.length, this.flashlightStrainPeaks.length].some(v => v === 0)) {
+            return null;
+        }
 
-            const strainInformations: {
-                readonly time: number,
-                readonly strain: number
-            }[] = new Array(Math.max(this.aimStrainPeaks.length, this.speedStrainPeaks.length, this.flashlightStrainPeaks.length));
+        const currentSectionEnd: number = Math.ceil(this.map.objects[0].startTime / this.sectionLength) * this.sectionLength;
 
-            for (let i = 0; i < strainInformations.length; ++i) {
-                const aimStrain: number = this.aimStrainPeaks[i] ?? 0;
-                const speedStrain: number = this.speedStrainPeaks[i] ?? 0;
-                const flashlightStrain: number = this.flashlightStrainPeaks[i] ?? 0;
+        const strainInformations: {
+            readonly time: number,
+            readonly strain: number
+        }[] = new Array(Math.max(this.aimStrainPeaks.length, this.speedStrainPeaks.length, this.flashlightStrainPeaks.length));
 
-                strainInformations[i] = {
-                    time: (currentSectionEnd + this.sectionLength * i) / 1000,
-                    strain: this.mods.some(m => m instanceof ModFlashlight) ?
-                        (aimStrain + speedStrain + flashlightStrain) / 3 :
-                        (aimStrain + speedStrain) / 2
-                };
-            }
+        for (let i = 0; i < strainInformations.length; ++i) {
+            const aimStrain: number = this.aimStrainPeaks[i] ?? 0;
+            const speedStrain: number = this.speedStrainPeaks[i] ?? 0;
+            const flashlightStrain: number = this.flashlightStrainPeaks[i] ?? 0;
 
-            const maxTime: number = strainInformations.at(-1)!.time ?? this.objects.at(-1)!.object.endTime / 1000;
-            const maxStrain: number = Math.max(...strainInformations.map(v => {return v.strain;}), 1);
+            strainInformations[i] = {
+                time: (currentSectionEnd + this.sectionLength * i) / 1000,
+                strain: this.mods.some(m => m instanceof ModFlashlight) ?
+                    (aimStrain + speedStrain + flashlightStrain) / 3 :
+                    (aimStrain + speedStrain) / 2
+            };
+        }
 
-            const maxXUnits: number = 10;
-            const maxYUnits: number = 10;
+        const maxTime: number = strainInformations.at(-1)!.time ?? this.objects.at(-1)!.object.endTime / 1000;
+        const maxStrain: number = Math.max(...strainInformations.map(v => { return v.strain; }), 1);
 
-            const unitsPerTickX: number = Math.ceil(maxTime / maxXUnits / 10) * 10;
-            const unitsPerTickY: number = Math.ceil(maxStrain / maxYUnits / 20) * 20;
+        const maxXUnits: number = 10;
+        const maxYUnits: number = 10;
 
-            const chart: Chart = new Chart({
-                graphWidth: 900,
-                graphHeight: 250,
-                minX: 0,
-                minY: 0,
-                maxX: Math.ceil(maxTime / unitsPerTickX) * unitsPerTickX,
-                maxY: Math.ceil(maxStrain / unitsPerTickY) * unitsPerTickY,
-                unitsPerTickX,
-                unitsPerTickY,
-                background: await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`).catch(() => {return undefined;}),
-                xLabel: "Time",
-                yLabel: "Strain",
-                pointRadius: 0,
-                xValueType: "time"
-            });
+        const unitsPerTickX: number = Math.ceil(maxTime / maxXUnits / 10) * 10;
+        const unitsPerTickY: number = Math.ceil(maxStrain / maxYUnits / 20) * 20;
 
-            chart.drawArea(strainInformations.map(v => {return {x: v.time, y: v.strain};}), color);
-
-            resolve(chart.getBuffer());
+        const chart: Chart = new Chart({
+            graphWidth: 900,
+            graphHeight: 250,
+            minX: 0,
+            minY: 0,
+            maxX: Math.ceil(maxTime / unitsPerTickX) * unitsPerTickX,
+            maxY: Math.ceil(maxStrain / unitsPerTickY) * unitsPerTickY,
+            unitsPerTickX,
+            unitsPerTickY,
+            background: await loadImage(`https://assets.ppy.sh/beatmaps/${beatmapsetID}/covers/cover.jpg`).catch(() => {return undefined;}),
+            xLabel: "Time",
+            yLabel: "Strain",
+            pointRadius: 0,
+            xValueType: "time"
         });
+
+        chart.drawArea(strainInformations.map(v => { return { x: v.time, y: v.strain }; }), color);
+
+        return chart.getBuffer();
     }
 
     /**
