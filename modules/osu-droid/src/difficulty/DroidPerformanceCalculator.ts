@@ -97,6 +97,10 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
     private calculateAggregatedRhythmMultiplier(): void {
         const rhythmMultipliers: number[] = this.stars.objects.map(v => v.rhythmMultiplier);
 
+        if (rhythmMultipliers.length === 0) {
+            return;
+        }
+
         const maxMultiplier: number = Math.max(...rhythmMultipliers);
 
         const aggregatedResult: number = rhythmMultipliers.reduce((total, next) => total + (1 / (1 + Math.exp(6 - next / maxMultiplier * 9))), 0);
