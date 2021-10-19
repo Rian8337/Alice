@@ -8,7 +8,6 @@ import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
 import { DroidFlashlight } from './skills/DroidFlashlight';
 import { ModFlashlight } from '../mods/ModFlashlight';
-import { OsuHitWindow } from '../utils/HitWindow';
 import { ModRelax } from '../mods/ModRelax';
 
 /**
@@ -92,7 +91,7 @@ export class DroidStarRating extends StarRating {
 
         const speedSkill: DroidSpeed = new DroidSpeed(
             this.mods,
-            new OsuHitWindow(this.stats.od!).hitWindowFor300()
+            this.stats.od!
         );
 
         this.calculateSkills(speedSkill);
@@ -141,17 +140,21 @@ export class DroidStarRating extends StarRating {
         const isRelax: boolean = this.mods.some(m => m instanceof ModRelax);
 
         if (isRelax) {
-            // Remove speed and rhythm skill to prevent overhead
-            skills.splice(1, 2);
+            // Remove speed skill to prevent overhead
+            skills.splice(1, 1);
         }
 
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
         let speedSkill: DroidSpeed | undefined;
+        let flashlightSkill: DroidFlashlight;
 
         if (!isRelax) {
             speedSkill = <DroidSpeed> skills[1];
+            flashlightSkill = <DroidFlashlight> skills[2];
+        } else {
+            flashlightSkill = <DroidFlashlight> skills[1];
         }
 
         this.aimStrainPeaks = aimSkill.strainPeaks;
@@ -162,6 +165,9 @@ export class DroidStarRating extends StarRating {
 
             this.speed = this.starValue(speedSkill.difficultyValue());
         }
+
+        this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
+        this.flashlight = this.starValue(flashlightSkill.difficultyValue());
 
         this.calculateTotal();
     }
