@@ -71,8 +71,18 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
         return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
     }
 
+    /**
+     * Gets the amount of players that have not been recalculated in a droid performance points (dpp) recalculation.
+     */
     async getRecalcUncalculatedPlayerCount(): Promise<number> {
         return this.collection.countDocuments({ dppRecalcComplete: { $ne: true } });
+    }
+
+    /**
+     * Gets the amount of players that have been recalculated in a droid performance points (dpp) recalculation.
+     */
+    async getRecalcCalculatedPlayerCount(): Promise<number> {
+        return this.collection.countDocuments({ dppRecalcComplete: true });
     }
 
     /**
