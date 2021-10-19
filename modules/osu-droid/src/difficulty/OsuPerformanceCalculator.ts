@@ -202,7 +202,6 @@ export class OsuPerformanceCalculator extends PerformanceCalculator {
 
         const realAccuracy: Accuracy = new Accuracy({
             ...this.computedAccuracy,
-            nobjects: ncircles,
             n300: this.computedAccuracy.n300 - (this.stars.objects.length - ncircles)
         });
 
