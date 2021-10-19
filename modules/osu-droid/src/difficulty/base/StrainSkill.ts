@@ -9,7 +9,7 @@ export abstract class StrainSkill extends Skill {
     /**
      * The strain of currently calculated hitobject.
      */
-    protected currentStrain: number = 0;
+    protected currentStrain: number = 1;
 
     /**
      * The current section's strain peak.
