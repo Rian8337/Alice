@@ -70,13 +70,13 @@ export class DroidSpeed extends DroidSkill {
         let speedBonus: number = 1;
 
         if (strainTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 50, 2);
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
         }
 
         let originalSpeedBonus: number = 1;
 
         if (current.strainTime < this.minSpeedBonus) {
-            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 50, 2);
+            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
         }
 
         const decay: number = this.strainDecay(current.deltaTime);
