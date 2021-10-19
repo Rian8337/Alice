@@ -1,5 +1,6 @@
 import { Vector2 } from '../mathutil/Vector2';
 import { Precision } from './Precision';
+import { Utils } from './Utils';
 
 /**
  * Path approximator for sliders.
@@ -38,11 +39,8 @@ export class PathApproximator {
         // (More specifically, we iteratively and adaptively refine our curve with a
         // depth-first search (https://en.wikipedia.org/wiki/Depth-first_search)
         // over the tree resulting from the subdivisions we make.)
-        const toFlatten: Vector2[][] = [];
+        const toFlatten: Vector2[][] = [Utils.deepCopy(controlPoints)];
         const freeBuffers: Vector2[][] = [];
-
-        // Deep copy
-        toFlatten.push(controlPoints.map(c => new Vector2({ x: c.x, y: c.y })));
 
         const leftChild: Vector2[] = subdivisionBuffer2;
 
