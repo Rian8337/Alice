@@ -14,14 +14,14 @@ export class DroidSpeed extends DroidSkill {
     /**
      * Spacing threshold for a single hitobject spacing.
      */
-    private readonly SINGLE_SPACING_THRESHOLD: number = 125;
+    private readonly SINGLE_SPACING_THRESHOLD: number = 175;
 
     protected override readonly historyLength: number = 32;
     protected override readonly skillMultiplier: number = 1375;
     protected override readonly reducedSectionCount: number = 5;
     protected override readonly reducedSectionBaseline: number = 0.75;
     protected override readonly strainDecayBase: number = 0.3;
-    protected override readonly starsPerDouble: number = 1.1;
+    protected override readonly starsPerDouble: number = 1.075;
 
     // ~200 1/4 BPM streams
     private readonly minSpeedBonus: number = 75;
@@ -65,18 +65,18 @@ export class DroidSpeed extends DroidSkill {
 
         // Cap deltatime to the OD 300 hitwindow.
         // This equation is derived from making sure 260 BPM 1/4 OD7 streams aren't nerfed harshly.
-        strainTime /= MathUtils.clamp(strainTime / new OsuHitWindow(this.overallDifficulty - 122).hitWindowFor300() / 0.075, 0.92, 1);
+        strainTime /= MathUtils.clamp(strainTime / new OsuHitWindow(this.overallDifficulty - 21.5).hitWindowFor300() / 0.35, 0.9, 1);
 
         let speedBonus: number = 1;
 
         if (strainTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 50, 2);
         }
 
         let originalSpeedBonus: number = 1;
 
         if (current.strainTime < this.minSpeedBonus) {
-            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
+            originalSpeedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 50, 2);
         }
 
         const decay: number = this.strainDecay(current.deltaTime);
@@ -103,7 +103,7 @@ export class DroidSpeed extends DroidSkill {
             return 0;
         }
 
-        let previousIslandSize: number = -1;
+        let previousIslandSize: number = 0;
         let rhythmComplexitySum: number = 0;
         let islandSize: number = 1;
 
@@ -241,6 +241,6 @@ export class DroidSpeed extends DroidSkill {
     private movementStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number {
         const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
 
-        return speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 3.5) / strainTime;
+        return speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 5) / strainTime;
     }
 }
