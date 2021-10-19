@@ -15,7 +15,8 @@ export class OsuSpeed extends OsuSkill {
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 125;
 
-    protected override readonly skillMultiplier: number = 1400;
+    protected override readonly historyLength: number = 32;
+    protected override readonly skillMultiplier: number = 1375;
     protected override readonly strainDecayBase: number = 0.3;
     protected override readonly reducedSectionCount: number = 5;
     protected override readonly reducedSectionBaseline: number = 0.75;
@@ -24,6 +25,7 @@ export class OsuSpeed extends OsuSkill {
 
     private readonly rhythmMultiplier: number = 0.75;
     private readonly historyTimeMax: number = 5000; // 5 seconds of calculateRhythmBonus max.
+    private currentSpeedStrain: number = 1;
     private currentRhythm: number = 1;
 
     // ~200 1/4 BPM streams
@@ -57,11 +59,11 @@ export class OsuSpeed extends OsuSkill {
 
         // Cap deltatime to the OD 300 hitwindow.
         // 0.93 is derived from making sure 260bpm OD8 streams aren't nerfed harshly, whilst 0.92 limits the effect of the cap.
-        strainTime /= MathUtils.clamp(speedWindowRatio / 0.93, 0.92, 1);
+        strainTime /= MathUtils.clamp(strainTime / greatWindowFull / 0.93, 0.92, 1);
 
         let speedBonus: number = 1;
         if (strainTime < this.minSpeedBonus) {
-            speedBonus += Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - strainTime) / 40, 2);
         }
 
         const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
@@ -73,12 +75,12 @@ export class OsuSpeed extends OsuSkill {
      * @param current The hitobject to calculate.
      */
     protected override strainValueAt(current: DifficultyHitObject): number {
-        this.currentStrain *= this.strainDecay(current.deltaTime);
-        this.currentStrain += this.strainValueOf(current) * this.skillMultiplier;
+        this.currentSpeedStrain *= this.strainDecay(current.deltaTime);
+        this.currentSpeedStrain += this.strainValueOf(current) * this.skillMultiplier;
 
         this.currentRhythm = this.calculateRhythmBonus(current);
 
-        return this.currentStrain * this.currentRhythm;
+        return this.currentSpeedStrain * this.currentRhythm;
     }
 
     /**
@@ -89,7 +91,7 @@ export class OsuSpeed extends OsuSkill {
             return 0;
         }
 
-        let previousIslandSize: number = -1;
+        let previousIslandSize: number = 0;
         let rhythmComplexitySum: number = 0;
         let islandSize: number = 1;
 
@@ -199,8 +201,8 @@ export class OsuSpeed extends OsuSkill {
      * @param current The hitobject to save to.
      */
     override saveToHitObject(current: DifficultyHitObject): void {
-        // Assign it to movement strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
-        current.movementStrain = this.currentStrain;
+        // Assign it to tap strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
+        current.tapStrain = this.currentSpeedStrain;
         current.rhythmMultiplier = this.currentRhythm;
     }
 }
