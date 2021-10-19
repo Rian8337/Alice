@@ -95,7 +95,8 @@ export class DroidPerformanceCalculator extends PerformanceCalculator {
      * Calculates the aggregated rhythm multiplier of the beatmap.
      */
     private calculateAggregatedRhythmMultiplier(): void {
-        const rhythmMultipliers: number[] = this.stars.objects.map(v => v.rhythmMultiplier);
+        // The first object doesn't have any rhythm multiplier, so we begin with the second object
+        const rhythmMultipliers: number[] = this.stars.objects.map(v => v.rhythmMultiplier).slice(1);
 
         if (rhythmMultipliers.length === 0) {
             return;
