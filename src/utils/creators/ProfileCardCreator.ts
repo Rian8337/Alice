@@ -333,7 +333,7 @@ export class ProfileCardCreator {
         increaseYOffset();
 
         if (this.bindInfo) {
-            const ppRank: number = await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(this.bindInfo.pptotal);
+            const ppRank: number = await this.getPlayerPPRank(this.bindInfo);
             this.context.fillText(`Droid pp: ${this.bindInfo.pptotal.toFixed(2)}pp (#${ppRank.toLocaleString()})`, x, y + yOffset);
             increaseYOffset();
 
@@ -467,5 +467,12 @@ export class ProfileCardCreator {
         }
 
         return accSum / weight;
+    }
+
+    /**
+     * Gets the player's dpp rank.
+     */
+    private async getPlayerPPRank(bindInfo: UserBind): Promise<number> {
+        return (await DatabaseManager.elainaDb?.collections.userBind.getUserDPPRank(bindInfo.pptotal)) ?? 0;
     }
 }
