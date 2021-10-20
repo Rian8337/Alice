@@ -1,7 +1,6 @@
 import { Canvas, createCanvas, Image, loadImage, NodeCanvasRenderingContext2D } from "canvas";
 import { Player } from "osu-droid";
 import { promises, Stats } from "fs";
-import { Constants } from "@alice-core/Constants";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -436,7 +435,7 @@ export class ProfileCardCreator {
     private async drawAliceCoinsInformation(): Promise<void> {
         this.context.save();
 
-        const coinImage: Image = await loadImage(Constants.aliceCoinImage);
+        const coinImage: Image = await loadImage(`${process.cwd()}/files/images/alicecoin.png`);
 
         this.context.drawImage(coinImage, 15, 255, 50, 50);
 

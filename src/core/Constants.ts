@@ -65,11 +65,6 @@ export class Constants {
     static readonly welcomeImageLink: string = "https://i.imgur.com/LLzteLz.jpg";
 
     /**
-     * The link to Alice coin emoji image.
-     */
-    static readonly aliceCoinImage: string = "https://cdn.discordapp.com/emojis/669532330980802561.png";
-
-    /**
      * The uid limit that is used to check if a uid from a user's input is too small.
      */
     static readonly uidMinLimit: number = 2417;
