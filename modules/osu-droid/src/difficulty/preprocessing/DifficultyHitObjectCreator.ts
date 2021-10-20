@@ -100,7 +100,7 @@ export class DifficultyHitObjectCreator {
      * Calculates a slider's cursor position.
      */
     private calculateSliderCursorPosition(slider: Slider): void {
-        if (slider.lazyEndPosition !== null && slider.lazyEndPosition !== undefined) {
+        if (slider.lazyEndPosition) {
             return;
         }
         slider.lazyEndPosition = slider.stackedPosition;
