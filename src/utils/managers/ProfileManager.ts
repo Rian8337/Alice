@@ -71,10 +71,11 @@ export abstract class ProfileManager extends Manager {
      * 
      * @param uid The uid of the player.
      * @param bindInfo The bind information of the player.
+     * @param player The player instance, if available (this will save an API request towards the osu!droid server).
      * @returns A profile statistics template.
      */
-    static async getProfileTemplate(uid: number, bindInfo: UserBind): Promise<Buffer> {
-        const player: Player = await Player.getInformation({ uid: uid });
+    static async getProfileTemplate(uid: number, bindInfo: UserBind, player?: Player): Promise<Buffer> {
+        player ??= await Player.getInformation({ uid: uid });
 
         return new ProfileCardCreator(player, false, bindInfo).generateTemplateCard();
     }
