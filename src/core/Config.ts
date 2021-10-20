@@ -64,20 +64,21 @@ export abstract class Config {
 	];
 
     static readonly avatarList: string[] = [
-        "https://i.imgur.com/FAWi2Yl.png",
-        "https://i.imgur.com/Fspbt08.png",
-        "https://i.imgur.com/IXgYLNh.png",
-        "https://i.imgur.com/E7EbgS4.png",
-        "https://i.imgur.com/lFbSoEK.png",
-        "https://i.imgur.com/FJbkaPi.png",
-        "https://i.imgur.com/AaeiXgt.png",
-        "https://i.imgur.com/5yFCD3N.png",
-        "https://i.imgur.com/bXrgwzF.png",
-        "https://i.imgur.com/AYXXNS7.png",
-        "https://i.imgur.com/dtB1jf8.png",
-        "https://i.imgur.com/zSJuARr.png",
-        "https://i.imgur.com/ORVeEIS.jpg",
-        "https://i.imgur.com/luf34Ql.png",
-        "https://i.imgur.com/hAdTeAU.jpg"
+        "https://media.discordapp.net/attachments/546135349533868072/900419922151231528/png-transparent-soviet-union-communist-symbolism-communism-hammer-and-sickle-soviet-union-angle-tria.png"
+        // "https://i.imgur.com/FAWi2Yl.png",
+        // "https://i.imgur.com/Fspbt08.png",
+        // "https://i.imgur.com/IXgYLNh.png",
+        // "https://i.imgur.com/E7EbgS4.png",
+        // "https://i.imgur.com/lFbSoEK.png",
+        // "https://i.imgur.com/FJbkaPi.png",
+        // "https://i.imgur.com/AaeiXgt.png",
+        // "https://i.imgur.com/5yFCD3N.png",
+        // "https://i.imgur.com/bXrgwzF.png",
+        // "https://i.imgur.com/AYXXNS7.png",
+        // "https://i.imgur.com/dtB1jf8.png",
+        // "https://i.imgur.com/zSJuARr.png",
+        // "https://i.imgur.com/ORVeEIS.jpg",
+        // "https://i.imgur.com/luf34Ql.png",
+        // "https://i.imgur.com/hAdTeAU.jpg"
     ];
 };

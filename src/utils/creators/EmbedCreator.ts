@@ -24,7 +24,7 @@ import { MusicQueue } from "@alice-utils/music/MusicQueue";
  * Utility to create message embeds.
  */
 export abstract class EmbedCreator {
-    private static readonly botSign: string = "Alice Synthesis Thirty";
+    private static readonly botSign: string = "The Supreme Leader";
 
     /**
      * Creates a normal embed.
