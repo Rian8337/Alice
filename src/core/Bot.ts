@@ -213,7 +213,7 @@ export class Bot extends Client {
 
         const collection: Collection<string, Subcommand> = new Collection();
 
-        for await (const subcommand of subcommands) {
+        for await (const subcommand of subcommands.filter(v => v.endsWith(".js"))) {
             const filePath: string = `${subcommandPath}/${subcommand}`;
 
             const fileStat = await fs.lstat(filePath);
@@ -255,7 +255,7 @@ export class Bot extends Client {
 
             let j = 0;
 
-            for await (const eventUtil of eventUtils.map(v => v.substring(0, v.length - 3))) {
+            for await (const eventUtil of eventUtils.filter(v => v.endsWith(".js")).map(v => v.substring(0, v.length - 3))) {
                 this.logger.success("%d.%d. %s :: %s event utility loaded", i, ++j, event, eventUtil);
 
                 const eventUtility: EventUtil = await import(`${eventsPath}/${event}/utils/${eventUtil}`);
