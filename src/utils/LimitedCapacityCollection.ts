@@ -24,6 +24,8 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
      */
     private readonly lifetime: number;
 
+    private interval?: NodeJS.Timeout;
+
     /**
      * @param capacity The capacity of the collection.
      * @param lifetime The lifetime of each cache data in the collection, in seconds.
@@ -41,8 +43,6 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
         if (lifetime <= 0) {
             throw new Error(`Invalid limited collection lifetime: ${lifetime}`);
         }
-
-        this.startInterval();
     }
 
     /**
@@ -50,7 +50,11 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
      * were unused for the specified duration.
      */
     private startInterval(): void {
-        setInterval(() => {
+        if (this.interval) {
+            return;
+        }
+
+        this.interval = setInterval(() => {
             const executionTime: number = Date.now();
 
             this.addedTime.forEach((value, key) => {
@@ -59,6 +63,11 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
                     this.delete(key);
                 }
             });
+
+            if (this.size === 0) {
+                clearInterval(this.interval!);
+                this.interval = undefined;
+            }
         }, this.sweepInterval * 1000);
     }
 
@@ -81,6 +90,8 @@ export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
         this.delete(key);
 
         super.set(key, value);
+
+        this.startInterval();
 
         this.addedTime.set(key, Date.now());
 
