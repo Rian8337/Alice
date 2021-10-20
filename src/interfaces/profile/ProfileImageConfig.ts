@@ -24,10 +24,10 @@ export interface ProfileImageConfig {
     /**
      * The color of description box background.
      */
-    bgColor?: string;
+    bgColor: string;
 
     /**
      * The text color for description box.
      */
-    textColor?: string;
+    textColor: string;
 }
