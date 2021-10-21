@@ -2,12 +2,10 @@ import { Accuracy } from '../utils/Accuracy';
 import { modes } from '../constants/modes';
 import { DroidStarRating } from './DroidStarRating';
 import { MapStats } from '../utils/MapStats';
-import { DroidHitWindow } from '../utils/HitWindow';
 import { PerformanceCalculator } from './base/PerformanceCalculator';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
 import { ModScoreV2 } from '../mods/ModScoreV2';
-import { ModPrecise } from '../mods/ModPrecise';
 import { ModRelax } from '../mods/ModRelax';
 
 /**
@@ -15,7 +13,7 @@ import { ModRelax } from '../mods/ModRelax';
  */
 export class DroidPerformanceCalculator extends PerformanceCalculator {
     override stars: DroidStarRating = new DroidStarRating();
-    override finalMultiplier = 1.24;
+    protected override finalMultiplier = 1.45;
 
     /**
      * The aim performance value.
