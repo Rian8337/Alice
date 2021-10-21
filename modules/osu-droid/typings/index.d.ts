@@ -533,9 +533,9 @@ declare module "osu-droid" {
          */
         aim: number;
         /**
-         * The speed performance value.
+         * The tap performance value.
          */
-        speed: number;
+        tap: number;
         /**
          * The accuracy performance value.
          */
@@ -563,9 +563,9 @@ declare module "osu-droid" {
              */
             miss?: number;
             /**
-             * The speed penalty to apply for penalized scores.
+             * The tap penalty to apply for penalized scores.
              */
-            speedPenalty?: number;
+            tapPenalty?: number;
             /**
              * Custom map statistics to apply custom tap multiplier and force AR values as well as old statistics.
              */
@@ -580,9 +580,9 @@ declare module "osu-droid" {
          */
         private calculateAimValue(): void;
         /**
-         * Calculates the speed performance value of the beatmap.
+         * Calculates the tap performance value of the beatmap.
          */
-        private calculateSpeedValue(): void;
+        private calculateTapValue(): void;
         /**
          * Calculates the accuracy performance value of the beatmap.
          */
@@ -603,9 +603,9 @@ declare module "osu-droid" {
          */
         aim: number;
         /**
-         * The speed star rating of the beatmap.
+         * The tap star rating of the beatmap.
          */
-        speed: number;
+        tap: number;
         /**
          * The flashlight star rating of the beatmap.
          */
@@ -648,9 +648,9 @@ declare module "osu-droid" {
          */
         calculateAim(): void;
         /**
-         * Calculates the speed star rating of the beatmap and stores it in this instance.
+         * Calculates the tap star rating of the beatmap and stores it in this instance.
          */
-        calculateSpeed(): void;
+        calculateTap(): void;
         /**
          * Calculates the flashlight star rating of the beatmap and stores it in this instance.
          */
@@ -686,12 +686,8 @@ declare module "osu-droid" {
     /**
      * Represents the skill required to press keys or tap with regards to keeping up with the speed at which objects need to be hit.
      */
-    export class DroidSpeed extends DroidSkill {
-        /**
-         * Spacing threshold for a single hitobject spacing.
-         */
-        private readonly SINGLE_SPACING_THRESHOLD: number;
-        private readonly angleBonusBegin: number;
+    export class DroidTap extends DroidSkill {
+        protected override readonly historyLength: number;
         protected override readonly skillMultiplier: number;
         protected override readonly strainDecayBase: number;
         protected override readonly reducedSectionBaseline: number;
@@ -703,13 +699,16 @@ declare module "osu-droid" {
         private readonly historyTimeMax: number;
         private currentTapStrain: number;
         private currentOriginalTapStrain: number;
-        private currentMovementStrain: number;
         private readonly overallDifficulty: number;
         constructor(mods: Mod[], overallDifficulty: number);
         /**
          * @param current The hitobject to calculate.
          */
         protected strainValueOf(current: DifficultyHitObject): number;
+        /**
+         * Calculates the tap strain of a hitobject given a specific speed bonus and strain time.
+         */
+        private tapStrainOf(speedBonus: number, strainTime: number): number;
         /**
          * @param current The hitobject to calculate.
          */
@@ -718,14 +717,6 @@ declare module "osu-droid" {
          * @param current The hitobject to save to.
          */
         override saveToHitObject(current: DifficultyHitObject): void;
-        /**
-         * Calculates the tap strain of a hitobject.
-         */
-        private tapStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number;
-        /**
-         * Calculates the movement strain of a hitobject.
-         */
-        private movementStrainOf(current: DifficultyHitObject, speedBonus: number, strainTime: number): number;
     }
 
     /**
@@ -2140,7 +2131,7 @@ declare module "osu-droid" {
         /**
          * Penalty value used to penalize dpp for 3 finger abuse.
          */
-        speedPenalty: number;
+        tapPenalty: number;
         private readonly BYTE_LENGTH: number;
         private readonly SHORT_LENGTH: number;
         private readonly INT_LENGTH: number;
@@ -2934,6 +2925,13 @@ declare module "osu-droid" {
     }
 
     /**
+     * Holds additional data that is used in difficulty calculation.
+     */
+    export interface DifficultyAttributes {
+        speedNoteCount: number;
+    }
+
+    /**
      * Represents a replay's hit error information.
      */
     export interface HitErrorInformation {
@@ -3605,6 +3603,10 @@ declare module "osu-droid" {
          * The strain peaks of flashlight difficulty.
          */
         flashlightStrainPeaks: number[];
+        /**
+         * Additional data that is used in performance calculation.
+         */
+        readonly attributes: DifficultyAttributes;
         protected readonly sectionLength: number;
         protected abstract readonly difficultyMultiplier: number;
         /**

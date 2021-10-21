@@ -130,9 +130,9 @@ export abstract class PerformanceCalculator {
         mode?: modes,
 
         /**
-         * The speed penalty to apply for penalized scores.
+         * The tap penalty to apply for penalized scores.
          */
-        speedPenalty?: number,
+        tapPenalty?: number,
 
         /**
          * Custom map statistics to apply custom speed multiplier and force AR values as well as old statistics.

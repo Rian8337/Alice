@@ -8,6 +8,7 @@ import { StrainSkill } from './StrainSkill';
 import { Chart } from '../../utils/Chart';
 import { Mod } from '../../mods/Mod';
 import { ModFlashlight } from '../../mods/ModFlashlight';
+import { DifficultyAttributes } from './DifficultyAttributes';
 
 /**
  * The base of difficulty calculation.
@@ -52,6 +53,13 @@ export abstract class StarRating {
      * The strain peaks of flashlight difficulty.
      */
     flashlightStrainPeaks: number[] = [];
+
+    /**
+     * Additional data that is used in performance calculation.
+     */
+    readonly attributes: DifficultyAttributes = {
+        speedNoteCount: 0
+    };
 
     protected readonly sectionLength: number = 400;
     protected abstract readonly difficultyMultiplier: number;

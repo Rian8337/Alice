@@ -201,8 +201,7 @@ export class OsuSpeed extends OsuSkill {
      * @param current The hitobject to save to.
      */
     override saveToHitObject(current: DifficultyHitObject): void {
-        // Assign it to tap strain (the value will be equal at the end, see speedStrain getter in `DifficultyHitObject`)
-        current.tapStrain = this.currentSpeedStrain;
+        current.tapStrain = this.currentStrain;
         current.rhythmMultiplier = this.currentRhythm;
     }
 }

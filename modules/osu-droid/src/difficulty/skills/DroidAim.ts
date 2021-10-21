@@ -11,7 +11,15 @@ export class DroidAim extends DroidSkill {
      */
     private readonly timingThreshold: number = 107;
 
+    /**
+     * Spacing threshold for a single hitobject spacing.
+     */
+    private readonly SINGLE_SPACING_THRESHOLD: number = 175;
+
+    // ~200 1/4 BPM streams
+    private readonly minSpeedBonus: number = 75;
     private readonly angleBonusBegin: number = Math.PI / 3;
+
     protected override readonly skillMultiplier: number = 26.25;
     protected override readonly strainDecayBase: number = 0.15;
     protected override readonly reducedSectionCount: number = 10;
@@ -26,6 +34,13 @@ export class DroidAim extends DroidSkill {
             return 0;
         }
 
+        return this.aimStrainOf(current) + this.movementStrainOf(current);
+    }
+
+    /**
+     * Calculates the aim strain of a hitobject.
+     */
+    private aimStrainOf(current: DifficultyHitObject): number {
         let result: number = 0;
         const scale: number = 90;
 
@@ -51,6 +66,21 @@ export class DroidAim extends DroidSkill {
             result + weightedDistance / Math.max(current.strainTime, this.timingThreshold),
             weightedDistance / current.strainTime
         );
+    }
+
+    /**
+     * Calculates the movement strain of a hitobject.
+     */
+    private movementStrainOf(current: DifficultyHitObject): number {
+        let speedBonus: number = 1;
+
+        if (current.strainTime < this.minSpeedBonus) {
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
+        }
+
+        const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
+
+        return 50 * speedBonus * Math.pow(distance / this.SINGLE_SPACING_THRESHOLD, 5) / current.strainTime;
     }
 
     /**

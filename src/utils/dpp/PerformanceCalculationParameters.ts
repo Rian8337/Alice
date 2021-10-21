@@ -16,9 +16,9 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
     accuracy: Accuracy;
 
     /**
-     * The speed penalty to apply for penalized scores.
+     * The tap penalty to apply for penalized scores.
      */
-    speedPenalty: number;
+    tapPenalty: number;
 
     /**
      * The accuracy that a user inputs, if any. Defaults to 100.
@@ -43,7 +43,7 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
 
         this.accuracy = accuracy;
         this.combo = combo;
-        this.speedPenalty = tapPenalty;
+        this.tapPenalty = tapPenalty;
         this.inputAccuracy = inputAccuracy;
     }
 

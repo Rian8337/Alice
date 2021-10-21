@@ -2,7 +2,7 @@ import { Beatmap } from '../beatmap/Beatmap';
 import { modes } from '../constants/modes';
 import { MapStats } from '../utils/MapStats';
 import { DroidAim } from './skills/DroidAim';
-import { DroidSpeed } from './skills/DroidSpeed';
+import { DroidTap } from './skills/DroidTap';
 import { StarRating } from './base/StarRating';
 import { DroidSkill } from './skills/DroidSkill';
 import { Mod } from '../mods/Mod';
@@ -22,7 +22,7 @@ export class DroidStarRating extends StarRating {
     /**
      * The tap star rating of the beatmap.
      */
-    speed: number = 0;
+    tap: number = 0;
 
     /**
      * The flashlight star rating of the beatmap.
@@ -84,21 +84,30 @@ export class DroidStarRating extends StarRating {
     /**
      * Calculates the speed star rating of the beatmap and stores it in this instance.
      */
-    calculateSpeed(): void {
+    calculateTap(): void {
         if (this.mods.some(m => m instanceof ModRelax)) {
             return;
         }
 
-        const speedSkill: DroidSpeed = new DroidSpeed(
+        const tapSkill: DroidTap = new DroidTap(
             this.mods,
             this.stats.od!
         );
 
-        this.calculateSkills(speedSkill);
+        this.calculateSkills(tapSkill);
 
-        this.speedStrainPeaks = speedSkill.strainPeaks;
+        this.speedStrainPeaks = tapSkill.strainPeaks;
 
-        this.speed = this.starValue(speedSkill.difficultyValue());
+        this.tap = this.starValue(tapSkill.difficultyValue());
+
+        const objectStrains: number[] = this.objects.map(v => v.tapStrain);
+
+        const maxStrain: number = Math.max(...objectStrains);
+
+        this.attributes.speedNoteCount = objectStrains.reduce(
+            (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+            0
+        );
     }
 
     /**
@@ -116,7 +125,7 @@ export class DroidStarRating extends StarRating {
 
     override calculateTotal(): void {
         const aimPerformanceValue: number = this.basePerformanceValue(this.aim);
-        const speedPerformanceValue: number = this.basePerformanceValue(this.speed);
+        const speedPerformanceValue: number = this.basePerformanceValue(this.tap);
         const flashlightPerformanceValue: number =
             this.mods.some(m => m instanceof ModFlashlight) ? 
             Math.pow(this.flashlight, 2) * 25 :
@@ -147,11 +156,11 @@ export class DroidStarRating extends StarRating {
         this.calculateSkills(...skills);
 
         const aimSkill: DroidAim = <DroidAim> skills[0];
-        let speedSkill: DroidSpeed | undefined;
+        let tapSkill: DroidTap | undefined;
         let flashlightSkill: DroidFlashlight;
 
         if (!isRelax) {
-            speedSkill = <DroidSpeed> skills[1];
+            tapSkill = <DroidTap> skills[1];
             flashlightSkill = <DroidFlashlight> skills[2];
         } else {
             flashlightSkill = <DroidFlashlight> skills[1];
@@ -160,10 +169,19 @@ export class DroidStarRating extends StarRating {
         this.aimStrainPeaks = aimSkill.strainPeaks;
         this.aim = this.starValue(aimSkill.difficultyValue());
 
-        if (speedSkill) {
-            this.speedStrainPeaks = speedSkill.strainPeaks;
+        if (tapSkill) {
+            this.speedStrainPeaks = tapSkill.strainPeaks;
 
-            this.speed = this.starValue(speedSkill.difficultyValue());
+            this.tap = this.starValue(tapSkill.difficultyValue());
+
+            const objectStrains: number[] = this.objects.map(v => v.tapStrain);
+
+            const maxStrain: number = Math.max(...objectStrains);
+
+            this.attributes.speedNoteCount = objectStrains.reduce(
+                (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+                0
+            );
         }
 
         this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
@@ -178,7 +196,7 @@ export class DroidStarRating extends StarRating {
     override toString(): string {
         return (
             this.total.toFixed(2) + " stars (" + this.aim.toFixed(2) +
-            " aim, " + this.speed.toFixed(2) + " speed, " +
+            " aim, " + this.tap.toFixed(2) + " tap, " +
             this.flashlight.toFixed(2) + " flashlight)"
         );
     }
@@ -189,7 +207,7 @@ export class DroidStarRating extends StarRating {
     protected override createSkills(): DroidSkill[] {
         return [
             new DroidAim(this.mods),
-            new DroidSpeed(
+            new DroidTap(
                 this.mods,
                 this.stats.od!
             ),
