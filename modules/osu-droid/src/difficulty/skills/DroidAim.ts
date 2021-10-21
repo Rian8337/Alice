@@ -16,8 +16,8 @@ export class DroidAim extends DroidSkill {
      */
     private readonly SINGLE_SPACING_THRESHOLD: number = 175;
 
-    // ~200 1/4 BPM streams
-    private readonly minSpeedBonus: number = 75;
+    // ~200 1/2 BPM jumps
+    private readonly minSpeedBonus: number = 150;
     private readonly angleBonusBegin: number = Math.PI / 3;
 
     protected override readonly skillMultiplier: number = 26.25;
@@ -75,7 +75,7 @@ export class DroidAim extends DroidSkill {
         let speedBonus: number = 1;
 
         if (current.strainTime < this.minSpeedBonus) {
-            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 40, 2);
+            speedBonus += 0.75 * Math.pow((this.minSpeedBonus - current.strainTime) / 45, 2);
         }
 
         const distance: number = Math.min(this.SINGLE_SPACING_THRESHOLD, current.jumpDistance + current.travelDistance);
