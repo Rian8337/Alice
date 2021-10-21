@@ -17,13 +17,7 @@ import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
  */
 function getResponseType(message: Message, filter: DatabaseEightBallFilter): EightBallResponseType {
     function containsWord(words: string[]): boolean {
-        for (const word of words) {
-            if (message.content.search(new RegExp(word, "i"))) {
-                return true;
-            }
-        }
-
-        return false;
+        return words.some(w => message.content.search(new RegExp(w, "i")) !== -1);
     }
 
     let returnValue: EightBallResponseType = EightBallResponseType.UNDECIDED;
@@ -56,7 +50,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 
     const res: EightBallFilter =
-        <EightBallFilter> (await DatabaseManager.aliceDb.collections.eightBallFilter.get("name", { name: "response" })).first();
+        (await DatabaseManager.aliceDb.collections.eightBallFilter.get("name", { name: "response" })).first()!;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({ author: message.author, color: message.member?.displayColor });
     const responseType: EightBallResponseType = getResponseType(message, res);
