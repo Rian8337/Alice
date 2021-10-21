@@ -14,7 +14,7 @@ import { ModRelax } from '../mods/ModRelax';
  */
 export class OsuPerformanceCalculator extends PerformanceCalculator {
     override stars: OsuStarRating = new OsuStarRating();
-    override finalMultiplier = 1.12;
+    protected override finalMultiplier = 1.12;
 
     /**
      * The aim performance value.

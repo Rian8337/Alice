@@ -527,7 +527,7 @@ declare module "osu-droid" {
      */
     export class DroidPerformanceCalculator extends PerformanceCalculator {
         override stars: DroidStarRating;
-        override finalMultiplier: number;
+        protected override finalMultiplier: number;
         /**
          * The aim performance value.
          */
@@ -1612,7 +1612,7 @@ declare module "osu-droid" {
      */
     export class OsuPerformanceCalculator extends PerformanceCalculator {
         override stars: OsuStarRating;
-        override finalMultiplier: number;
+        protected override finalMultiplier: number;
         /**
          * The aim performance value.
          */
