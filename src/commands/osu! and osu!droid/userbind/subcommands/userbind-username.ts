@@ -27,6 +27,12 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const player: Player = await Player.getInformation({ username: username });
 
+    if (!player.username) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(userbindStrings.profileNotFound)
+        });
+    }
+
     if (userBindInfo) {
         if (!userBindInfo.isUidBinded(player.uid)) {
             // Binding a new account must be done inside main server
