@@ -39,7 +39,7 @@ export const config: Command["config"] = {
                 {
                     name: "timezone",
                     required: true,
-                    type: CommandArgumentType.NUMBER,
+                    type: CommandArgumentType.INTEGER,
                     description: "The timezone of the user, ranging from -12 to 14. Decimals are supported (e.g. UTC+5:30 = 5.5)."
                 }
             ]
