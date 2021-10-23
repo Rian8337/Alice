@@ -5,7 +5,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
-import { Collection, Guild, GuildMember, InteractionCollector, Message, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import { Collection, Guild, GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async client => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
@@ -18,11 +18,18 @@ export const run: EventUtil["run"] = async client => {
 
     const arrivalMessage: Message = await arrivalChannel.messages.fetch("894379931121876992");
 
-    const collector: InteractionCollector<MessageComponentInteraction> = arrivalMessage.createMessageComponentCollector();
-
     const onVerificationRole: Role = guild.roles.cache.find(v => v.name === "On Verification")!;
 
-    collector.on("collect", async i => {
+    const actionRow: MessageActionRow = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setStyle("LINK")
+                .setURL(verificationMessage.url)
+                .setEmoji(Symbols.memo)
+                .setLabel("How to Verify")
+        );
+
+    arrivalMessage.createMessageComponentCollector().on("collect", async i => {
         const member: GuildMember = <GuildMember> i.member;
 
         if (MuteManager.isUserMuted(member)) {
@@ -92,14 +99,15 @@ export const run: EventUtil["run"] = async client => {
 
         mainEmbed.setDescription(
             `This is the thread that will be used for your verification process.\n\n` +
-            `For information on how to verify, please check [this](${verificationMessage.url}) message.\n\n` +
+            `For information on how to verify, please click the button below.\n\n` +
             `If you need help, you may ping the <@&369108742077284353> and/or <@&595667274707370024> role for assistance. You may ping them too when you're ready to verify.\n\n` +
             `**Remember to do so or else they will most likely not come to you!**`
         );
 
         await thread.send({
             content: member.toString(),
-            embeds: [ infoEmbed, mainEmbed ]
+            embeds: [ infoEmbed, mainEmbed ],
+            components: [ actionRow ]
         });
     });
 };
