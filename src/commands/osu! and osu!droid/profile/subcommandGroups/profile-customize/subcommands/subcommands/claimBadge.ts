@@ -54,6 +54,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const pictureConfig: ProfileImageConfig =
         playerInfo?.picture_config ?? playerInfoDbManager.defaultDocument.picture_config;
 
+    if (pictureConfig.badges.find(b => b.id === badge.id)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(profileStrings.badgeIsAlreadyClaimed)
+        });
+    }
+
     const player: Player = await Player.getInformation({ uid: bindInfo.uid });
 
     if (!player.username) {

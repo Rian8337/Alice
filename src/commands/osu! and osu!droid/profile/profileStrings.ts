@@ -15,6 +15,7 @@ export enum profileStrings {
     switchBackgroundConfirmation = "%s, are you sure you want to change your background profile picture?",
     switchBackgroundSuccess = "%s, successfully set your background profile picture to \`%s\`.%s",
     userDoesntOwnAnyBadge = "I'm sorry, you don't own any badges!",
+    badgeIsAlreadyClaimed = "I'm sorry, you've already owned this badge!",
     equipBadgeSuccess = "%s, successfully equipped badge \`%s\` at slot %s.",
     unequipBadgeSuccess = "%s, successfully unequipped badge at slot %s.",
     badgeUnclaimable = "I'm sorry, this badge cannot be claimed!",
