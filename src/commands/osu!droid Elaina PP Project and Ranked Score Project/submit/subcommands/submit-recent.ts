@@ -40,6 +40,12 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(player.uid)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(submitStrings.uidIsBanned)
+        });
+    }
+
     const submissionAmount: number = NumberHelper.clamp(interaction.options.getInteger("amount") ?? 1, 1, 5);
     const submissionOffset: number = interaction.options.getInteger("offset") ?? 1;
 
@@ -76,9 +82,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
 
         switch (submissionValidity) {
-            case DPPSubmissionValidity.UID_IS_BANNED:
-                fieldContent += "Uid banned";
-                break;
             case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
                 fieldContent += "Blacklisted beatmap";
                 break;

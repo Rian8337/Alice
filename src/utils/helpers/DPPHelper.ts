@@ -26,8 +26,6 @@ export abstract class DPPHelper {
         }
 
         switch (true) {
-            case await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(score.uid):
-                return DPPSubmissionValidity.UID_IS_BANNED;
             case score.forcedAR !== undefined:
                 return DPPSubmissionValidity.SCORE_USES_FORCE_AR;
             case score.speedMultiplier !== 1:

@@ -380,6 +380,10 @@ export class UserBind extends Manager {
         };
 
         for await (const uid of this.previous_bind) {
+            if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(uid)) {
+                continue;
+            }
+
             if (isDPPRecalc && this.calculationInfo && uid !== this.calculationInfo.uid) {
                 continue;
             }

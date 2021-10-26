@@ -55,13 +55,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
+    if (await DatabaseManager.elainaDb.collections.dppBan.isPlayerBanned(score.uid)) {
+        return interaction.editReply({
+            content: MessageCreator.createReject(submitStrings.uidIsBanned)
+        });
+    }
+
     const submissionValidity: DPPSubmissionValidity = await DPPHelper.checkSubmissionValidity(score);
 
     switch (submissionValidity) {
-        case DPPSubmissionValidity.UID_IS_BANNED:
-            return interaction.editReply({
-                content: MessageCreator.createReject(submitStrings.uidIsBanned)
-            });
         case DPPSubmissionValidity.BEATMAP_IS_BLACKLISTED:
             return interaction.editReply({
                 content: MessageCreator.createReject(submitStrings.beatmapIsBlacklisted)
