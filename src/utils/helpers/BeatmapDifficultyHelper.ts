@@ -122,7 +122,7 @@ export abstract class BeatmapDifficultyHelper {
 
         if (!score.replay && useReplay) {
             await score.downloadReplay();
-        }   
+        }
 
         calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
