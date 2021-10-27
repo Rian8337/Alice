@@ -80,23 +80,26 @@ export abstract class EmbedCreator {
      * 
      * @param beatmapInfo The beatmap to create the beatmap embed from.
      * @param calcParams Calculation parameters to be used for beatmap statistics.
+     * @param calcResult Calculation result to be used for beatmap statistics. If unspecified, it will be calculated on fly.
      */
     static async createBeatmapEmbed(beatmapInfo: MapInfo, calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]), calcResult?: StarRatingCalculationResult): Promise<MessageOptions> {
         calcResult ??= (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
 
+        const embed: MessageEmbed = this.createNormalEmbed(
+            { color: <ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calcResult.osu.total) }
+        );
+
         return {
-            embeds: [new MessageEmbed()
-                .setFooter(this.botSign, ArrayHelper.getRandomArrayElement(Config.avatarList))
-                .setAuthor("Beatmap Information", `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)
-                .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
-                .setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calcResult.osu.total))
-                .setTitle(beatmapInfo.showStatistics(0, calcParams.mods))
-                .setDescription(beatmapInfo.showStatistics(1, calcParams.mods))
-                .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
-                .addField(beatmapInfo.showStatistics(2, calcParams.mods), beatmapInfo.showStatistics(3, calcParams.mods))
-                .addField(beatmapInfo.showStatistics(4, calcParams.mods), beatmapInfo.showStatistics(5, calcParams.mods))
+            embeds: [
+                embed.setAuthor("Beatmap Information", `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)
+                    .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
+                    .setTitle(beatmapInfo.showStatistics(0, calcParams.mods))
+                    .setDescription(beatmapInfo.showStatistics(1, calcParams.mods))
+                    .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
+                    .addField(beatmapInfo.showStatistics(2, calcParams.mods), beatmapInfo.showStatistics(3, calcParams.mods))
+                    .addField(beatmapInfo.showStatistics(4, calcParams.mods), beatmapInfo.showStatistics(5, calcParams.mods))
             ],
-            files: [BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(calcResult.osu.total.toFixed(2)))]
+            files: [ BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(calcResult.osu.total.toFixed(2))) ]
         };
     }
 
