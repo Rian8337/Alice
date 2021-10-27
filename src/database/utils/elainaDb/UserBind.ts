@@ -244,17 +244,9 @@ export class UserBind extends Manager {
         const newList: Collection<string, PPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreFromPlayer(ppEntry.hash);
+            const score: Score | null = await this.getScoreRelativeToPP(ppEntry);
 
-            // Check for score equality.
-            if (
-                !score ||
-                score.scoreID !== ppEntry.scoreID ||
-                score.combo !== ppEntry.combo ||
-                !Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) ||
-                score.accuracy.nmiss !== ppEntry.miss ||
-                StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(ppEntry.mods)
-            ) {
+            if (!score) {
                 continue;
             }
 
@@ -299,17 +291,9 @@ export class UserBind extends Manager {
         const newList: Collection<string, PrototypePPEntry> = new Collection();
 
         for await (const ppEntry of this.pp.values()) {
-            const score: Score | null = await this.getScoreFromPlayer(ppEntry.hash);
+            const score: Score | null = await this.getScoreRelativeToPP(ppEntry);
 
-            // Check for score equality.
-            if (
-                !score ||
-                score.scoreID !== ppEntry.scoreID ||
-                score.combo !== ppEntry.combo ||
-                !Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) ||
-                score.accuracy.nmiss !== ppEntry.miss ||
-                StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(ppEntry.mods)
-            ) {
+            if (!score) {
                 continue;
             }
 
@@ -745,16 +729,23 @@ export class UserBind extends Manager {
     }
 
     /**
-     * Gets a score from this player.
+     * Gets a score from this binded Discord account with respect to a pp entry.
      * 
-     * @param hash The MD5 hash of the played beatmap.
+     * @param ppEntry The pp entry to retrieve.
      * @returns The score, `null` if not found.
      */
-    async getScoreFromPlayer(hash: string): Promise<Score | null> {
+    private async getScoreRelativeToPP(ppEntry: PPEntry): Promise<Score | null> {
         for await (const uid of this.previous_bind) {
-            const score: Score = await Score.getFromHash({ uid: uid, hash: hash });
+            const score: Score = await Score.getFromHash({ uid: uid, hash: ppEntry.hash });
 
-            if (score.title) {
+            // Check for score equality.
+            if (
+                score.scoreID === ppEntry.scoreID &&
+                score.combo === ppEntry.combo &&
+                Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) &&
+                score.accuracy.nmiss === ppEntry.miss &&
+                StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet(ppEntry.mods)
+            ) {
                 return score;
             }
         }
