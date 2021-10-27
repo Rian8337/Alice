@@ -69,7 +69,9 @@ export class MapInfo {
     /**
      * The full title of the beatmap, which is `Artist - Title (Creator) [Difficulty Name]`.
      */
-    fullTitle: string = "";
+    get fullTitle(): string {
+        return `${this.artist} - ${this.title} (${this.creator}) [${this.version}]`;
+    };
 
     /**
      * The artist of the song of the beatmap.
@@ -300,7 +302,6 @@ export class MapInfo {
      * @param mapinfo The map data.
      */
     fillMetadata(mapinfo: OsuAPIResponse): MapInfo {
-        this.fullTitle = `${mapinfo.artist} - ${mapinfo.title} (${mapinfo.creator}) [${mapinfo.version}]`;
         this.title = mapinfo.title;
         this.artist = mapinfo.artist;
         this.creator = mapinfo.creator;
