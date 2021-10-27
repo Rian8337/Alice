@@ -189,6 +189,15 @@ export abstract class EmbedCreator {
 
         const newRating: OsuStarRating = calculationResult instanceof PerformanceCalculationResult ? calculationResult.osu.stars : calculationResult.osu;
 
+        if (!Precision.almostEqualsNumber(calculationResult.map.totalDifficulty, newRating.total)) {
+            // Recreate difficulty icon if difficulty is different.
+            files.length = 0;
+
+            files.push(BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(newRating.total.toFixed(2))));
+
+            embed.setAuthor("Beatmap Information", `attachment://osu-${newRating.total.toFixed(2)}.png`);
+        }
+
         const chart: Buffer | null = await newRating.getStrainChart(
             map.beatmapsetID,
             graphColor
@@ -198,15 +207,6 @@ export abstract class EmbedCreator {
             embed.setImage("attachment://chart.png");
 
             files.push(new MessageAttachment(chart, "chart.png"));
-        }
-
-        if (!Precision.almostEqualsNumber(calculationResult.map.totalDifficulty, newRating.total)) {
-            // Recreate difficulty icon if difficulty is different.
-            files.length = 0;
-
-            files.push(BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(newRating.total.toFixed(2))));
-
-            embed.setAuthor("Beatmap Information", `attachment://osu-${newRating.total.toFixed(2)}.png`);
         }
 
         return {
