@@ -4,7 +4,6 @@ import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, Snowflake } from "discord.js";
 import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -20,22 +19,16 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         await dbManager.update({}, { $set: { scanDone: false } });
     }
 
-    while (true) {
-        const players: Collection<Snowflake, PrototypePP> = await dbManager.getUnscannedPlayers(50);
+    let player: PrototypePP | undefined;
 
-        if (players.size === 0) {
-            break;
-        }
+    while (player = (await dbManager.getUnscannedPlayers(1)).first()) {
+        client.logger.info(`Now calculating ID ${player.discordid}`);
 
-        for await (const player of players.values()) {
-            client.logger.info(`Now calculating ID ${player.discordid}`);
+        const bindInfo: UserBind = (await DatabaseManager.elainaDb.collections.userBind.getFromUser(player.discordid))!;
 
-            const bindInfo: UserBind = (await DatabaseManager.elainaDb.collections.userBind.getFromUser(player.discordid))!;
+        await bindInfo.calculatePrototypeDPP();
 
-            await bindInfo.calculatePrototypeDPP();
-
-            client.logger.info(`${++calculatedCount} players recalculated`);
-        }
+        client.logger.info(`${++calculatedCount} players recalculated`);
     }
 
     interaction.channel!.send({
