@@ -3,13 +3,13 @@ import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { MapInfo, MapStats } from "osu-droid";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { Symbols } from "@alice-enums/utils/Symbols";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
 import { YouTubeVideoInformation } from "@alice-interfaces/youtube/YouTubeVideoInformation";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot) {
@@ -67,19 +67,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 // Beatmap cache
                 BeatmapManager.setChannelLatestBeatmap(message.channel.id, beatmapInfo.hash);
 
-                const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapID, calcParams);
+                const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmapInfo);
 
-                if (!calcResult) {
-                    continue;
-                }
+                const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
-                const calcEmbedOptions: MessageOptions = await EmbedCreator.createCalculationEmbed(
-                    calcParams,
-                    calcResult,
-                    message.member?.displayHexColor
-                );
+                embed.spliceFields(0, embed.fields.length);
 
-                message.channel.send(calcEmbedOptions);
+                message.channel.send(embedOptions);
             } else if (beatmapsetID) {
                 // Retrieve beatmap file one by one to not overcreate requests
                 const beatmapInformations: MapInfo[] = await BeatmapManager.getBeatmaps(beatmapsetID, false);
@@ -112,7 +106,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     embedOptions.content = string;
                 }
 
-                // Empty files first, we will reenter all attachments later
+                // Empty files, we don't need it here.
                 embedOptions.files = [];
 
                 const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
@@ -133,14 +127,13 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     );
 
                 for await (const beatmapInfo of beatmapInformations) {
-                    const calcResult: PerformanceCalculationResult =
-                        (await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapInfo.hash, calcParams))!;
+                    const calcResult: StarRatingCalculationResult =
+                        (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
 
                     embed.addField(
-                        `__${beatmapInfo.version}__ (${calcResult.droid.stars.total.toFixed(2)} ${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)} ${Symbols.star})`,
+                        `__${beatmapInfo.version}__ (${calcResult.droid.total.toFixed(2)} ${Symbols.star} | ${calcResult.osu.total.toFixed(2)} ${Symbols.star})`,
                         `${beatmapInfo.showStatistics(2, calcParams.mods)}\n` +
-                        `**Max score**: ${beatmapInfo.maxScore(stats).toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo}x\n` +
-                        `**${calcResult.droid.total.toFixed(2)}**dpp - ${calcResult.osu.total.toFixed(2)}pp`
+                        `**Max score**: ${beatmapInfo.maxScore(stats).toLocaleString()} - **Max combo**: ${beatmapInfo.maxCombo}x`
                     );
                 }
 

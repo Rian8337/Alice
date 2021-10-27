@@ -5,7 +5,7 @@ import { Bonus } from "@alice-interfaces/challenge/Bonus";
 import { BonusDescription } from "@alice-interfaces/challenge/BonusDescription";
 import { PassRequirement } from "@alice-interfaces/challenge/PassRequirement";
 import { DatabaseChallenge } from "@alice-interfaces/database/aliceDb/DatabaseChallenge";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BonusID } from "@alice-types/challenge/BonusID";
 import { ChallengeStatusType } from "@alice-types/challenge/ChallengeStatusType";
 import { ChallengeType } from "@alice-types/challenge/ChallengeType";

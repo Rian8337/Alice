@@ -1,8 +1,8 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
-import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 import { ScoreRank } from "@alice-types/utils/ScoreRank";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
@@ -86,54 +86,52 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const arrow: Symbols = Symbols.rightArrowSmall;
 
+    const getCalculationResult = async (score: Score): Promise<PerformanceCalculationResult | null> => {
+        const calcResult: PerformanceCalculationResult | null =
+            beatmapInfo ? (
+                calculationCache.get(score) ??
+                await BeatmapDifficultyHelper.calculateScorePerformance(score, false)
+            ) : null;
+
+        if (!calculationCache.has(score)) {
+            calculationCache.set(score, calcResult);
+        }
+
+        return calcResult;
+    };
+
+    const getScoreDescription = async (score: Score): Promise<string> => {
+        const calcResult: PerformanceCalculationResult | null = await getCalculationResult(score);
+
+        return `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
+            `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
+            `\`${score.date.toUTCString()}\``;
+    };
+
     const onPageChange: OnButtonPageChange = async (options, page) => {
         const actualPage: number = Math.floor((page - 1) / 20);
 
         const pageRemainder: number = (page - 1) % 20;
 
         const scores: Score[] = leaderboardCache.get(actualPage) ?? 
-            (beatmapInfo ? await beatmapInfo.fetchDroidLeaderboard(actualPage) : await fetchLeaderboard(<string> hash, page));
+            (beatmapInfo ? await beatmapInfo.fetchDroidLeaderboard(actualPage) : await fetchLeaderboard(hash!, page));
 
         if (!leaderboardCache.has(actualPage)) {
             leaderboardCache.set(actualPage, scores);
         }
 
-        const getCalculationResult = async (score: Score): Promise<PerformanceCalculationResult | null> => {
-            const calcResult: PerformanceCalculationResult | null =
-                beatmapInfo ? (
-                    calculationCache.get(score) ??
-                    await BeatmapDifficultyHelper.calculateScorePerformance(score, false)
-                ) : null;
-
-            if (!calculationCache.has(score)) {
-                calculationCache.set(score, calcResult);
-            }
-
-            return calcResult;
-        };
-
-        const getScoreDescription = async (score: Score): Promise<string> => {
-            const calcResult: PerformanceCalculationResult | null = await getCalculationResult(score);
-
-            return `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${calcResult ? `${arrow} **${calcResult.droid.total.toFixed(2)}DPP | ${calcResult.osu.total.toFixed(2)}PP**` : ""} ${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
-                `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]\n` +
-                `\`${score.date.toUTCString()}\``;
-        };
+        const noModCalcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]);
 
         const noModCalcResult: StarRatingCalculationResult | null =
             beatmapInfo ?
                 await BeatmapDifficultyHelper.calculateBeatmapDifficulty(
-                    beatmapInfo.hash, new StarRatingCalculationParameters([])
+                    beatmapInfo.hash, noModCalcParams
                 )
                 :
                 null;
 
         const embedOptions: MessageOptions = beatmapInfo ?
-            await EmbedCreator.createBeatmapEmbed(
-                beatmapInfo,
-                undefined,
-                noModCalcResult!
-            ) : { embeds: [EmbedCreator.createNormalEmbed()] };
+            EmbedCreator.createBeatmapEmbed(beatmapInfo) : { embeds: [ EmbedCreator.createNormalEmbed() ] };
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 

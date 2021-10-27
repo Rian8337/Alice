@@ -1,7 +1,7 @@
 import { Accuracy, DroidPerformanceCalculator, MapInfo, MapStars, MapStats, Mod, ModUtil, OsuPerformanceCalculator, ReplayAnalyzer, Score } from "osu-droid";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
 import { StarRatingCalculationParameters } from "@alice-utils/dpp/StarRatingCalculationParameters";
 
@@ -126,10 +126,7 @@ export abstract class BeatmapDifficultyHelper {
 
         calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
-        return {
-            ...this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined),
-            replay: score.replay
-        };
+        return this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined);
     }
 
     /**
@@ -211,11 +208,7 @@ export abstract class BeatmapDifficultyHelper {
             stats: calculationParams.customStatistics
         });
 
-        return {
-            map: beatmap,
-            droid: star.droidStars,
-            osu: star.pcStars
-        };
+        return new StarRatingCalculationResult(beatmap, star.droidStars, star.pcStars);
     }
 
     /**
@@ -252,10 +245,6 @@ export abstract class BeatmapDifficultyHelper {
             stats: calculationParams.customStatistics
         });
 
-        return {
-            map: beatmap,
-            droid: dpp,
-            osu: pp
-        };
+        return new PerformanceCalculationResult(beatmap, dpp, pp, replay);
     }
 }

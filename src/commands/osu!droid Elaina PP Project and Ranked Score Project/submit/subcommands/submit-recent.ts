@@ -8,7 +8,7 @@ import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity"
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";

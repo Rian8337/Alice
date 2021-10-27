@@ -2,7 +2,7 @@ import { GuildMember, MessageOptions } from "discord.js";
 import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";

@@ -1,14 +1,14 @@
-import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModUtil, OsuPerformanceCalculator, ReplayData, ReplayObjectData, Score, Slider, SliderTick, TailCircle } from "osu-droid";
+import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModUtil, OsuPerformanceCalculator, OsuStarRating, Precision, ReplayData, ReplayObjectData, Score, Slider, SliderTick, TailCircle } from "osu-droid";
 import { ColorResolvable, CommandInteraction, Guild, GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions, User } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { StarRatingCalculationResult } from "@alice-interfaces/utils/StarRatingCalculationResult";
+import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
 import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
@@ -46,7 +46,7 @@ export abstract class EmbedCreator {
          * The footer text of the embed. If specified, will be written before bot's sign.
          */
         footerText?: string,
-    
+
         /**
          * Whether to use a timestamp.
          */
@@ -55,7 +55,7 @@ export abstract class EmbedCreator {
         const iconURL: string = ArrayHelper.getRandomArrayElement(Config.avatarList);
         const embed: MessageEmbed = new MessageEmbed()
             .setFooter(this.botSign, iconURL);
-        
+
         if (embedOptions.author) {
             embed.setAuthor(embedOptions.author.tag, <string> embedOptions.author.avatarURL({ dynamic: true }));
         }
@@ -79,27 +79,24 @@ export abstract class EmbedCreator {
      * Creates a beatmap embed.
      * 
      * @param beatmapInfo The beatmap to create the beatmap embed from.
-     * @param calcParams Calculation parameters to be used for beatmap statistics.
-     * @param calcResult Calculation result to be used for beatmap statistics. If unspecified, it will be calculated on fly.
+     * @param mods The modifications applied towards beatmap statistics.
      */
-    static async createBeatmapEmbed(beatmapInfo: MapInfo, calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]), calcResult?: StarRatingCalculationResult): Promise<MessageOptions> {
-        calcResult ??= (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(beatmapInfo.hash, calcParams))!;
-
+    static createBeatmapEmbed(beatmapInfo: MapInfo, mods: Mod[] = []): MessageOptions {
         const embed: MessageEmbed = this.createNormalEmbed(
-            { color: <ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calcResult.osu.total) }
+            { color: <ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) }
         );
 
         return {
             embeds: [
-                embed.setAuthor("Beatmap Information", `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)
+                embed.setAuthor("Beatmap Information", `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(2)}.png`)
                     .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
-                    .setTitle(beatmapInfo.showStatistics(0, calcParams.mods))
-                    .setDescription(beatmapInfo.showStatistics(1, calcParams.mods))
+                    .setTitle(beatmapInfo.showStatistics(0, mods))
+                    .setDescription(beatmapInfo.showStatistics(1, mods))
                     .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
-                    .addField(beatmapInfo.showStatistics(2, calcParams.mods), beatmapInfo.showStatistics(3, calcParams.mods))
-                    .addField(beatmapInfo.showStatistics(4, calcParams.mods), beatmapInfo.showStatistics(5, calcParams.mods))
+                    .addField(beatmapInfo.showStatistics(2, mods), beatmapInfo.showStatistics(3, mods))
+                    .addField(beatmapInfo.showStatistics(4, mods), beatmapInfo.showStatistics(5, mods))
             ],
-            files: [ BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(calcResult.osu.total.toFixed(2))) ]
+            files: [ BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) ]
         };
     }
 
@@ -149,54 +146,67 @@ export abstract class EmbedCreator {
     /**
      * Creates an embed with beatmap calculation result.
      * 
-     * @param calculationParams The parameters of the calculation.
-     * @param calculationResult The calculation result.
+     * @param calculationParams The parameters of the calculation. If `PerformanceCalculationParameters` is specified and `calculationResult` is specified as `PerformanceCalculationResult`, the beatmap's performance values will be shown.
+     * @param calculationResult The calculation result. If `PerformanceCalculationResult` is specified and `calculationParams` is specified as `PerformanceCalculationParameters`, the beatmap's performance values will be shown.
      * @param graphColor The color of the strain graph.
      * @returns The message options that contains the embed.
      */
-    static async createCalculationEmbed(calculationParams: PerformanceCalculationParameters, calculationResult: PerformanceCalculationResult, graphColor?: string): Promise<MessageOptions> {
-        const embedOptions: MessageOptions = await this.createBeatmapEmbed(
+    static async createCalculationEmbed(calculationParams: StarRatingCalculationParameters, calculationResult: StarRatingCalculationResult | PerformanceCalculationResult, graphColor?: string): Promise<MessageOptions> {
+        const embedOptions: MessageOptions = this.createBeatmapEmbed(
             calculationResult.map,
-            calculationParams,
-            {
-                map: calculationResult.map,
-                droid: calculationResult.droid.stars,
-                osu: calculationResult.osu.stars
-            }
+            calculationParams.mods
         );
 
-        const map: MapInfo = calculationResult.map;
-        const droidPP: DroidPerformanceCalculator = calculationResult.droid;
-        const pcPP: OsuPerformanceCalculator = calculationResult.osu;
-
-        const combo: number = calculationParams.combo ?? map.maxCombo;
-        const accuracy: Accuracy = calculationParams.accuracy;
-        const mods: Mod[] = calculationParams.mods;
-        const customStatistics: MapStats | undefined = calculationParams.customStatistics;
-
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+        const map: MapInfo = calculationResult.map;
+        const mods: Mod[] = calculationParams.mods;
+        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
 
-        embed.spliceFields(embed.fields.length - 1, 1)
-            .addField(
-                map.showStatistics(4, mods, customStatistics),
-                `${map.showStatistics(5, mods, customStatistics)}\n**Result**: ${combo}/${map.maxCombo}x | ${(accuracy.value() * 100).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${accuracy.nmiss}]`
+        if (calculationParams instanceof PerformanceCalculationParameters && calculationResult instanceof PerformanceCalculationResult) {
+            const droidPP: DroidPerformanceCalculator = calculationResult.droid;
+            const pcPP: OsuPerformanceCalculator = calculationResult.osu;
+
+            const combo: number = calculationParams.combo ?? map.maxCombo;
+            const accuracy: Accuracy = calculationParams.accuracy;
+            const customStatistics: MapStats | undefined = calculationParams.customStatistics;
+
+            embed.spliceFields(embed.fields.length - 1, 1)
+                .addField(
+                    map.showStatistics(4, mods, customStatistics),
+                    `${map.showStatistics(5, mods, customStatistics)}\n**Result**: ${combo}/${map.maxCombo}x | ${(accuracy.value() * 100).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${accuracy.nmiss}]`
+                )
+                .addField(
+                    `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated ? " (estimated)" : ""} - ${droidPP.stars.total.toFixed(2)} stars`,
+                    `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
+                );
+        } else {
+            embed.addField(
+                `**Star Rating**`,
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.droid.total)))} ${calculationResult.droid.total.toFixed(2)} droid stars\n` +
+                `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.osu.total)))} ${calculationResult.osu.total.toFixed(2)} PC stars`
             )
-            .addField(
-                `**Droid pp**: __${droidPP.total.toFixed(2)} pp__${calculationParams.isEstimated ? " (estimated)" : ""} - ${droidPP.stars.total.toFixed(2)} stars`,
-                `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
-            );
+        }
 
-        const chart: Buffer | null = await pcPP.stars.getStrainChart(
+        const newRating: OsuStarRating = calculationResult instanceof PerformanceCalculationResult ? calculationResult.osu.stars : calculationResult.osu;
+
+        const chart: Buffer | null = await newRating.getStrainChart(
             map.beatmapsetID,
             graphColor
         );
-
-        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
 
         if (chart) {
             embed.setImage("attachment://chart.png");
 
             files.push(new MessageAttachment(chart, "chart.png"));
+        }
+
+        if (!Precision.almostEqualsNumber(calculationResult.map.totalDifficulty, newRating.total)) {
+            // Recreate difficulty icon if difficulty is different.
+            files.length = 0;
+
+            files.push(BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(newRating.total.toFixed(2))));
+
+            embed.setAuthor("Beatmap Information", `attachment://osu-${newRating.total.toFixed(2)}.png`);
         }
 
         return {
@@ -333,7 +343,7 @@ export abstract class EmbedCreator {
             (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(challenge.beatmapid, calcParams))!;
 
         const embedOptions: MessageOptions =
-            await this.createBeatmapEmbed(calcResult.map, calcParams, calcResult);
+            await this.createCalculationEmbed(calcParams, calcResult);
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
@@ -454,14 +464,14 @@ export abstract class EmbedCreator {
      * @param submission The submission.
      * @returns The options for the embed.
      */
-    static async createMapShareEmbed(submission: MapShare): Promise<MessageOptions | null> {
+    static async createMapShareEmbed(submission: MapShare): Promise<MessageOptions> {
         const calcParams: StarRatingCalculationParameters = new StarRatingCalculationParameters([]);
 
         const calcResult: StarRatingCalculationResult =
             (await BeatmapDifficultyHelper.calculateBeatmapDifficulty(submission.beatmap_id, calcParams))!;
 
         const embedOptions: MessageOptions =
-            await this.createBeatmapEmbed(calcResult.map, calcParams, calcResult);
+            await this.createCalculationEmbed(calcParams, calcResult, "#28ebda");
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 
@@ -478,23 +488,7 @@ export abstract class EmbedCreator {
                 `**Summary**:\n${submission.summary}`
             );
 
-        const chart: Buffer | null = await calcResult.osu.getStrainChart(
-            calcResult.map.beatmapsetID,
-            "#28ebda"
-        );
-
-        const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
-
-        if (chart) {
-            embed.setImage("attachment://chart.png");
-
-            files.push(new MessageAttachment(chart, "chart.png"));
-        }
-
-        return {
-            embeds: [ embed ],
-            files: files
-        };
+        return embedOptions;
     }
 
     /**

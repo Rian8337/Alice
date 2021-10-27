@@ -5,7 +5,7 @@ import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUs
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
 import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
 import { RecalculationProgress } from "@alice-interfaces/dpp/RecalculationProgress";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { Manager } from "@alice-utils/base/Manager";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";

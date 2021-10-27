@@ -5,7 +5,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { submitStrings } from "../submitStrings";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
-import { PerformanceCalculationResult } from "@alice-interfaces/utils/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
