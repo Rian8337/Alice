@@ -251,7 +251,7 @@ export class UserBind extends Manager {
                 !score ||
                 score.scoreID !== ppEntry.scoreID ||
                 score.combo !== ppEntry.combo ||
-                !Precision.almostEqualsNumber(score.accuracy.value() * 100, ppEntry.accuracy) ||
+                !Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) ||
                 score.accuracy.nmiss !== ppEntry.miss ||
                 StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(ppEntry.mods)
             ) {
@@ -306,7 +306,7 @@ export class UserBind extends Manager {
                 !score ||
                 score.scoreID !== ppEntry.scoreID ||
                 score.combo !== ppEntry.combo ||
-                !Precision.almostEqualsNumber(score.accuracy.value() * 100, ppEntry.accuracy) ||
+                !Precision.almostEqualsNumber(parseFloat((score.accuracy.value() * 100).toFixed(2)), ppEntry.accuracy) ||
                 score.accuracy.nmiss !== ppEntry.miss ||
                 StringHelper.sortAlphabet(score.mods.map(v => v.acronym).join("")) !== StringHelper.sortAlphabet(ppEntry.mods)
             ) {
