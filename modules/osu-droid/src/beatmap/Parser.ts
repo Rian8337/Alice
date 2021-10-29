@@ -172,8 +172,8 @@ export class Parser {
      * Logs any syntax errors into the console.
      */
     private warn(message: string): void {
-        console.warn(message);
-        console.warn(this.logError());
+        // console.warn(message);
+        // console.warn(this.logError());
     }
 
     /**
@@ -277,7 +277,7 @@ export class Parser {
         if (!this.isNumberValid(time)) {
             return this.warn("Ignoring malformed timing point: Value is too low or high");
         }
-        
+
         const msPerBeat: number = parseFloat(this.setPosition(s[1]));
         if (!this.isNumberValid(msPerBeat)) {
             return this.warn("Ignoring malformed timing point: Value is too low or high");
