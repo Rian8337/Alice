@@ -119,7 +119,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             profileStrings.changeInfoBoxColorSuccess,
             interaction.user.toString(),
-            "background",
             color
         )
     });
