@@ -1,5 +1,5 @@
 import { GuildBan, Snowflake, User } from "discord.js";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
@@ -50,13 +50,13 @@ export const config: Command["config"] = {
         {
             name: "user",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The ID of the user to unban."
         },
         {
             name: "reason",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The reason for unbanning the user."
         }
     ],

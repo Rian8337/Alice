@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -26,26 +26,26 @@ export const config: Command["config"] = {
     options: [
         {
             name: "add",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Adds a player into the tracking list.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the player."
                 }
             ]
         },
         {
             name: "delete",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Deletes a player from the tracking list.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the player."
                 }
             ]

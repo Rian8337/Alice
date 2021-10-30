@@ -3,7 +3,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { unbindStrings } from "./unbindStrings";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Constants } from "@alice-core/Constants";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -55,7 +55,7 @@ export const config: Command["config"] = {
         {
             name: "uid",
             required: true,
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The uid to unbind."
         }
     ],

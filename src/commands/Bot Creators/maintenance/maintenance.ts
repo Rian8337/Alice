@@ -1,5 +1,5 @@
 import { Config } from "@alice-core/Config";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -32,7 +32,7 @@ export const config: Command["config"] = {
     options: [
         {
             name: "reason",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The reason to toggle maintenance mode. Defaults to \"Unknown\"."
         }
     ],

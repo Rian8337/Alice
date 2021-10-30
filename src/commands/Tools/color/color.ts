@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { Canvas, createCanvas, NodeCanvasRenderingContext2D } from 'canvas';
-import { CommandArgumentType } from '@alice-enums/core/CommandArgumentType';
+import { ApplicationCommandOptionTypes } from 'discord.js/typings/enums';
 import { CommandCategory } from '@alice-enums/core/CommandCategory';
 import { Command } from '@alice-interfaces/core/Command';
 import { MessageCreator } from '@alice-utils/creators/MessageCreator';
@@ -41,7 +41,7 @@ export const config: Command["config"] = {
         {
             name: "hexcode",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The hex code of the color."
         }
     ],

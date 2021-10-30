@@ -2,7 +2,7 @@ import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { PPEntry } from "@alice-interfaces/dpp/PPEntry";
@@ -114,22 +114,22 @@ export const config: Command["config"] = {
     options: [
         {
             name: "user",
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to check."
         },
         {
             name: "uid",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The uid of the player."
         },
         {
             name: "username",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The username of the player."
         },
         {
             name: "page",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1."
         }
     ],

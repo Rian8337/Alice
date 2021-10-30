@@ -1,6 +1,6 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -97,7 +97,7 @@ export const config: Command["config"] = {
     options: [
         {
             name: "sortoption",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "Whether to sort based on overall or average per month usage. Defaults to overall.",
             choices: [
                 {

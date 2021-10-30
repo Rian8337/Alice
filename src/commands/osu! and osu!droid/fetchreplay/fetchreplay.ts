@@ -3,7 +3,7 @@ import { ExportedReplayJSON, HitErrorInformation, MapInfo, ReplayData, Score } f
 import { GuildMember, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -145,12 +145,12 @@ export const config: Command["config"] = {
         {
             name: "beatmap",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The beatmap ID or link."
         },
         {
             name: "uid",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The uid of the player. Defaults to your current binded uid."
         }
     ],

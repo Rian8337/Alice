@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,25 +15,25 @@ export const config: Command["config"] = {
     options: [
         {
             name: "set",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Set your skin.",
             options: [
                 {
                     name: "url",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The URL to the skin."
                 }
             ]
         },
         {
             name: "view",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View a user's skin.",
             options: [
                 {
                     name: "user",
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to view. Defaults to yourself"
                 }
             ]

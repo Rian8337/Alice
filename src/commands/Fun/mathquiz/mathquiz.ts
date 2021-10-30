@@ -5,7 +5,7 @@ import { MathEquation } from "@alice-interfaces/utils/MathEquation";
 import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { mathquizStrings } from "./mathquizStrings";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 
@@ -113,12 +113,12 @@ export const config: Command["config"] = {
     options: [
         {
             name: "difflevel",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The difficulty level of the equation, ranging from 1 to 20. Defaults to 1."
         },
         {
             name: "operatoramount",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The amount of operators to be used in the equation, ranging from 1 to 10. Defaults to 4."
         }
     ],

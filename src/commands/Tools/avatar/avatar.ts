@@ -1,5 +1,5 @@
 import { GuildMember, MessageEmbed, User } from "discord.js";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -44,7 +44,7 @@ export const config: Command["config"] = {
     options: [
         {
             name: "user",
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to get the avatar and/or profile banner from. If unspecified, will default to yourself."
         }
     ],

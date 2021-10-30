@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { TournamentMapLengthInfo } from "@alice-database/utils/aliceDb/TournamentMapLengthInfo";
 import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -64,7 +64,7 @@ export const config: Command["config"] = {
         {
             name: "id",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The ID of the mappool."
         }
     ],

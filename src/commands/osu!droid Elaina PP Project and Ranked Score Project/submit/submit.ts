@@ -1,5 +1,5 @@
 import { Config } from "@alice-core/Config";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -27,30 +27,30 @@ export const config: Command["config"] = {
     options: [
         {
             name: "beatmap",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Submit a score from a beatmap.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The beatmap ID or link."
                 }
             ]
         },
         {
             name: "recent",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Submit score(s) from your recent plays.",
             options: [
                 {
                     name: "amount",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The amount of score(s) to submit, ranging from 1 to 5. Defaults to 1."
                 },
                 {
                     name: "offset",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The index offset in your recent play list that you want to start submitting, ranging from 1 to 50."
                 }
             ]

@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,12 +15,12 @@ export const config: Command["config"] = {
     options: [
         {
             name: "dpp",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Scans the entire dpp database for unranked plays."
         },
         {
             name: "whitelist",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Scans the entire whitelisting and dpp database for unwhitelisted/unavailable beatmaps."
         }
     ],

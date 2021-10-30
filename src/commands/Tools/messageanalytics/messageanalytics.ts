@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,23 +15,23 @@ export const config: Command["config"] = {
     options: [
         {
             name: "fetch",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Fetches message data for the main server.",
             options: [
                 {
                     name: "fromdate",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The UTC-based date to start fetching from, in <year>-<month>-<date> format."
                 },
                 {
                     name: "untildate",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The UTC-based date to stop fetching, in <year>-<month>-<date> format. Defaults to the current time."
                 },
                 {
                     name: "scope",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The scope at which to fetch the message data. Defaults to channel.",
                     choices: [
                         {
@@ -48,12 +48,12 @@ export const config: Command["config"] = {
         },
         {
             name: "info",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Views message analytics for the main server.",
             options: [
                 {
                     name: "type",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The activity interval type to view. Defaults to overall.",
                     choices: [
                         {
@@ -76,7 +76,7 @@ export const config: Command["config"] = {
                 },
                 {
                     name: "date",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The UTC-based date to view, in <year>-<month>-<date> format. Defaults on the current time."
                 }
             ]

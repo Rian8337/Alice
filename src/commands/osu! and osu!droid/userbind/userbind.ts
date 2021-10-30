@@ -1,6 +1,6 @@
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandHelper } from '@alice-utils/helpers/CommandHelper';
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -15,33 +15,33 @@ export const config: Command["config"] = {
     options: [
         {
             name: "uid",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Switches your currently binded osu!droid account or binds an osu!droid account using its uid.",
             options: [
                 {
                     name: "uid",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the osu!droid account."
                 }
             ]
         },
         {
             name: "username",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Switches your currently binded osu!droid account or binds an osu!droid account using its username.",
             options: [
                 {
                     name: "username",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The username of the osu!droid account."
                 }
             ]
         },
         {
             name: "verifymap",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Gets the beatmap needed for account verification."
         }
     ],

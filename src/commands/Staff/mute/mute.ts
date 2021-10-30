@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,44 +15,44 @@ export const config: Command["config"] = {
     options: [
         {
             name: "temporary",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Temporarily mutes a user.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to mute."
                 },
                 {
                     name: "duration",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The duration to mute for, in time format (e.g. 6:01:24:33 or 2d14h55m34s). Minimum is 30 seconds."
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The reason for muting the user. Maximum length is 1500 characters."
                 }
             ]
         },
         {
             name: "permanent",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Permanently mutes a user.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to mute."
                 },
                 {
                     name: "reason",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The reason for muting the user. Maximum length is 1500 characters."
                 }
             ]

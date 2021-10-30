@@ -8,7 +8,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
 import { blacklistStrings } from "./blacklistStrings";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
 export const run: Command["run"] = async (_, interaction) => {
     const beatmapID: number = BeatmapManager.getBeatmapID(interaction.options.getString("beatmap")!)[0];
@@ -107,13 +107,13 @@ export const config: Command["config"] = {
         {
             name: "beatmap",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The beatmap ID or link to take an action with."
         },
         {
             name: "reason",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The reason for taking the action. Required for blacklisting action."
         }
     ],

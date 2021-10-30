@@ -1,5 +1,5 @@
 import { GuildMember, MessageOptions } from "discord.js";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
@@ -95,57 +95,57 @@ export const config: Command["config"] = {
     options: [
         {
             name: "beatmap",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The beatmap ID or link to calculate. Defaults to the latest cached beatmap in the channel, if any."
         },
         {
             name: "mods",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "Applied game modifications (HD, HR, etc). Defaults to No Mod."
         },
         {
             name: "combo",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "Maximum combo reached, from 0 to the beatmap's maximum combo. Defaults to maximum combo."
         },
         {
             name: "accuracy",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The accuracy gained, from 0 to 100. Defaults to 100."
         },
         {
             name: "x100",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The amount of 100s gained. If specified, overrides the accuracy option. Defaults to 0."
         },
         {
             name: "x50",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The amount of 50s gained. If specified, overrides the accuracy option. Defaults to 0."
         },
         {
             name: "misses",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The amount of misses gained. Defaults to 0."
         },
         {
             name: "approachrate",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The Approach Rate (AR) to be forced in calculation, from 0 to 12.5. Defaults to the beatmap's AR."
         },
         {
             name: "speedmultiplier",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The speed multiplier to calculate for (stackable with modifications) from 0.5 to 2. Defaults to 1."
         },
         {
             name: "showdroiddetail",
-            type: CommandArgumentType.BOOLEAN,
+            type: ApplicationCommandOptionTypes.BOOLEAN,
             description: "Whether to show detailed response for droid pp."
         },
         {
             name: "showosudetail",
-            type: CommandArgumentType.BOOLEAN,
+            type: ApplicationCommandOptionTypes.BOOLEAN,
             description: "Whether to show detailed response for PC pp."
         }
     ],

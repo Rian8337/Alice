@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,38 +15,38 @@ export const config: Command["config"] = {
     options: [
         {
             name: "check",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Checks if a beatmap is whitelisted.",
             options: [
                 {
                     name: "beatmap",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The beatmap ID or link. Defaults the latest beatmap cache from the channel (if any)."
                 }
             ]
         },
         {
             name: "unwhitelist",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Unwhitelist a beatmap or beatmapset.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The beatmap ID, beatmap link, or beatmapset link."
                 }
             ]
         },
         {
             name: "whitelist",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Whitelist a beatmap or beatmapset.",
             options: [
                 {
                     name: "beatmap",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The beatmap ID, beatmap link, or beatmapset link."
                 }
             ]

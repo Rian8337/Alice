@@ -4,7 +4,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { coinsStrings } from "./coinsStrings";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 
 export const run: Command["run"] = async (_, interaction) => {
@@ -25,74 +25,74 @@ export const config: Command["config"] = {
     options: [
         {
             name: "add",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Adds Alice coins to a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to add Alice coins to."
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The amount of Alice coins to add."
                 }
             ]
         },
         {
             name: "claim",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Claim daily Alice coins."
         },
         {
             name: "remove",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Remove Alice coins from a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to remove Alice coins from."
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The amount of Alice coins to remove."
                 }
             ]
         },
         {
             name: "transfer",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Transfer your Alice coins to a user",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to transfer Alice coins to."
                 },
                 {
                     name: "amount",
                     required: true,
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The amount of Alice coins to transfer."
                 }
             ]
         },
         {
             name: "view",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View a user's Alice coins.",
             options: [
                 {
                     name: "user",
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to view. Defaults to yourself."
                 }
             ]

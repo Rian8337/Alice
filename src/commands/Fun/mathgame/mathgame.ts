@@ -8,7 +8,7 @@ import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { mathgameStrings } from "./mathgameStrings";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -204,7 +204,7 @@ export const config: Command["config"] = {
     options: [
         {
             name: "mode",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             choices: [
                 {
                     name: "Singleplayer",

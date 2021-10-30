@@ -1,6 +1,6 @@
 import { GuildMember, Role, TextChannel, ThreadChannel } from "discord.js";
 import { Config } from "@alice-core/Config";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
@@ -76,7 +76,7 @@ export const config: Command["config"] = {
         {
             name: "user",
             required: true,
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to verify."
         }
     ],

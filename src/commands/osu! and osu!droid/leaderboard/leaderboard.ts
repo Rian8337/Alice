@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,70 +15,70 @@ export const config: Command["config"] = {
     options: [
         {
             name: "beatmap",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View a beatmap's leaderboard.",
             options: [
                 {
                     name: "beatmap",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The beatmap ID or link to view. If unspecified, will take the latest cached beatmap in the channel."
                 },
                 {
                     name: "page",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The page of the leaderboard. Defaults to 1."
                 }
             ]
         },
         {
             name: "dpp",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View the droid pp (dpp) leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The page of the leaderboard. Defaults to 1."
                 },
                 {
                     name: "clan",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The clan name to view the leaderboard from."
                 }
             ]
         },
         {
             name: "global",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View the global score leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The page of the leaderboard. Defaults to 1."
                 }
             ]
         },
         {
             name: "prototype",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View the droid pp (dpp) prototype leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The page of the leaderboard. Defaults to 1."
                 }
             ]
         },
         {
             name: "ranked",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View the ranked score leaderboard.",
             options: [
                 {
                     name: "page",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The page of the leaderboard. Defaults to 1."
                 }
             ]

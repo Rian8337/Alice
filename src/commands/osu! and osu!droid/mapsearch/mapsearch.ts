@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Command } from "@alice-interfaces/core/Command";
@@ -107,77 +107,77 @@ export const config: Command["config"] = {
     options: [
         {
             name: "keyword",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The keyword to search for."
         },
         {
             name: "minstars",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum star rating to search for."
         },
         {
             name: "maxstars",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum star rating to search for."
         },
         {
             name: "mincs",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum CS (Circle Size) to search for."
         },
         {
             name: "maxcs",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum CS (Circle Size) to search for."
         },
         {
             name: "minar",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum AR (Approach Rate) to search for."
         },
         {
             name: "maxar",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum AR (Approach Rate) to search for."
         },
         {
             name: "minod",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum OD (Overall Difficulty) to search for."
         },
         {
             name: "maxod",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum OD (Overall Difficulty) to search for."
         },
         {
             name: "minhp",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum HP (health drain rate) to search for."
         },
         {
             name: "maxhp",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum HP (health drain rate) to search for."
         },
         {
             name: "minduration",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The minimum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s)."
         },
         {
             name: "maxduration",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The maximum duration to search for, in time format (e.g. 6:01:24:33 or 2d14h55m34s)."
         },
         {
             name: "minbpm",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The minimum BPM to search for."
         },
         {
             name: "maxbpm",
-            type: CommandArgumentType.NUMBER,
+            type: ApplicationCommandOptionTypes.NUMBER,
             description: "The maximum BPM to search for."
         }
     ],

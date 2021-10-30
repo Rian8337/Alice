@@ -33,8 +33,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (!thread) {
         thread = await channel.threads.create({
-            name: `${match.matchid} ${match.name}`,
-            autoArchiveDuration: 60
+            name: `${match.matchid} ${match.name}`
         });
     } else if (thread.archived && thread.unarchivable) {
         await thread.setArchived(false);

@@ -1,5 +1,5 @@
 import { Constants } from "@alice-core/Constants";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -43,12 +43,12 @@ export const config: Command["config"] = {
         {
             name: "command",
             required: true,
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The command name."
         },
         {
             name: "debug",
-            type: CommandArgumentType.BOOLEAN,
+            type: ApplicationCommandOptionTypes.BOOLEAN,
             description: "Whether to deploy the command in debug server."
         }
     ],

@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,51 +15,51 @@ export const config: Command["config"] = {
     options: [
         {
             name: "all",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Recalculates all users in the droid performance points (dpp) system.",
             options: [
                 {
                     name: "full",
-                    type: CommandArgumentType.BOOLEAN,
+                    type: ApplicationCommandOptionTypes.BOOLEAN,
                     description: "Whether to consider all plays or only top 75 submitted plays."
                 }
             ]
         },
         {
             name: "prototype",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
             description: "Main subcommand for prototype droid performance points (dpp) system.",
             options: [
                 {
                     name: "calculate",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Recalculates a user as prototype droid performance points (dpp).",
                     options: [
                         {
                             name: "user",
-                            type: CommandArgumentType.USER,
+                            type: ApplicationCommandOptionTypes.USER,
                             description: "The user to recalculate."
                         },
                         {
                             name: "uid",
-                            type: CommandArgumentType.INTEGER,
+                            type: ApplicationCommandOptionTypes.INTEGER,
                             description: "The uid of the user."
                         },
                         {
                             name: "username",
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The username of the user."
                         }
                     ]
                 },
                 {
                     name: "calculateall",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Recalculates all players in the current prototype droid performance points (dpp) system.",
                     options: [
                         {
                             name: "resetprogress",
-                            type: CommandArgumentType.BOOLEAN,
+                            type: ApplicationCommandOptionTypes.BOOLEAN,
                             description: "Whether to reset the progress of the previous recalculation."
                         }
                     ]
@@ -68,13 +68,13 @@ export const config: Command["config"] = {
         },
         {
             name: "user",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Recalculates all scores of a user.",
             options: [
                 {
                     name: "user",
                     required: true,
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The user to recalculate."
                 }
             ]

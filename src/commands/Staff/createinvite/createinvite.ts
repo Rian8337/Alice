@@ -1,5 +1,5 @@
 import { GuildMember, MessageEmbed, NewsChannel, TextChannel } from "discord.js";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -53,17 +53,17 @@ export const config: Command["config"] = {
     options: [
         {
             name: "validduration",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "In time format (e.g. 6:01:24:33 or 2d14h55m34s). Defaults to never expire."
         },
         {
             name: "usage",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The maximum usage until the invite link expires. Defaults to no limit."
         },
         {
             name: "reason",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The reason for creating the invite link."
         }
     ],

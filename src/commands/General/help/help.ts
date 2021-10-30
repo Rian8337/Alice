@@ -1,4 +1,4 @@
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, ApplicationCommandSubGroupData, Collection, GuildMember, MessageEmbed } from "discord.js";
 import { Bot } from "@alice-core/Bot";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
@@ -8,9 +8,9 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { helpStrings } from "./helpStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
 /**
  * Gets the list of commands that the bot has.
@@ -59,7 +59,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 let isOptional: boolean = false;
 
                 switch (arg.type) {
-                    case CommandArgumentType.SUB_COMMAND_GROUP:
+                    case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
                         precedingKeywords.push(arg.name);
                         for (const localArg of (arg.options ?? [])) {
                             precedingKeywords.push(localArg.name);
@@ -74,7 +74,7 @@ export const run: Command["run"] = async (client, interaction) => {
                             }
                         }
                         break;
-                    case CommandArgumentType.SUB_COMMAND:
+                    case ApplicationCommandOptionTypes.SUB_COMMAND:
                         precedingKeywords.push(arg.name);
                         for (const localArg of (arg.options ?? [])) {
                             isOptional ||= !localArg.required;
@@ -87,7 +87,8 @@ export const run: Command["run"] = async (client, interaction) => {
                         }
                         break;
                     default:
-                        isOptional ||= !arg.required;
+                        isOptional ||=
+                            !(<Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>> arg).required;
 
                         if (isOptional) {
                             mappedArgs.push(`[${arg.name}]`);
@@ -171,7 +172,7 @@ export const config: Command["config"] = {
     options: [
         {
             name: "commandname",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The command to see the help section from. If unspecified, lists all available commands."
         }
     ],

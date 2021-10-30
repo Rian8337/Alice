@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
@@ -42,12 +42,12 @@ export const config: Command["config"] = {
         {
             name: "user",
             required: true,
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to unmute."
         },
         {
             name: "reason",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The reason for unmuting the user. Maximum length is 1500 characters."
         }
     ],

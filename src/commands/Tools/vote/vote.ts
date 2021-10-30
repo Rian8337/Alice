@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,22 +15,22 @@ export const config: Command["config"] = {
     options: [
         {
             name: "check",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Checks the ongoing vote in the channel."
         },
         {
             name: "end",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Ends the ongoing vote in the channel."
         },
         {
             name: "contribute",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Contributes to the ongoing vote.",
             options: [
                 {
                     name: "option",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     required: true,
                     description: "The option to vote for."
                 }
@@ -38,19 +38,19 @@ export const config: Command["config"] = {
         },
         {
             name: "start",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Starts a vote in the channel.",
             options: [
                 {
                     name: "topic",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The topic of the vote."
                 },
                 {
                     name: "choices",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The choices of the vote, separated by \"|\"."
                 }
             ]

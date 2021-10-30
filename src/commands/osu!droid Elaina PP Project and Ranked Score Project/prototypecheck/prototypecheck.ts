@@ -1,7 +1,7 @@
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PrototypePPCollectionManager } from "@alice-database/managers/aliceDb/PrototypePPCollectionManager";
 import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { PrototypePPEntry } from "@alice-interfaces/dpp/PrototypePPEntry";
@@ -122,22 +122,22 @@ export const config: Command["config"] = {
     options: [
         {
             name: "user",
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to check."
         },
         {
             name: "uid",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The uid of the player."
         },
         {
             name: "username",
-            type: CommandArgumentType.STRING,
+            type: ApplicationCommandOptionTypes.STRING,
             description: "The username of the player."
         },
         {
             name: "page",
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The page to view, ranging from 1 to 15. Maximum page can be less than 15. Defaults to 1."
         }
     ],

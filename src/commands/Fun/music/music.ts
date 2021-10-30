@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -24,110 +24,110 @@ export const config: Command["config"] = {
     options: [
         {
             name: "collections",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
             description: "Manages music collections.",
             options: [
                 {
                     name: "add",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Adds a YouTube URL to a music collection.",
                     options: [
                         {
                             name: "name",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The name of the collection."
                         },
                         {
                             name: "query",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The query to search for the YouTube video."
                         },
                         {
                             name: "position",
-                            type: CommandArgumentType.INTEGER,
+                            type: ApplicationCommandOptionTypes.INTEGER,
                             description: "The position at which to insert the new YouTube URL on, ranging from 1 to 10. Defaults to latest."
                         }
                     ]
                 },
                 {
                     name: "create",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Creates a new music collection.",
                     options: [
                         {
                             name: "name",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The name of the collection."
                         },
                         {
                             name: "query",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The query to search for the YouTube video."
                         }
                     ]
                 },
                 {
                     name: "delete",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Deletes a music collection.",
                     options: [
                         {
                             name: "name",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The name of the collection."
                         }
                     ]
                 },
                 {
                     name: "enqueue",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Enqueues this music collection into the music queue."
                 },
                 {
                     name: "list",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Lists all music collections owned by a user.",
                     options: [
                         {
                             name: "user",
-                            type: CommandArgumentType.USER,
+                            type: ApplicationCommandOptionTypes.USER,
                             description: "The user. Defaults to yourself."
                         }
                     ]
                 },
                 {
                     name: "remove",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Removes a YouTube URL from a music collection.",
                     options: [
                         {
                             name: "name",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The name of the collection."
                         },
                         {
                             name: "position",
                             required: true,
-                            type: CommandArgumentType.INTEGER,
+                            type: ApplicationCommandOptionTypes.INTEGER,
                             description: "The position of the YouTube URL to remove in the music collection's links list."
                         }
                     ]
                 },
                 {
                     name: "view",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Views a music collection's information.",
                     options: [
                         {
                             name: "name",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The name of the collection."
                         }
                     ]
@@ -136,106 +136,106 @@ export const config: Command["config"] = {
         },
         {
             name: "info",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Shows information about my music status."
         },
         {
             name: "leave",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Leaves the current voice channel I'm in."
         },
         {
             name: "nowplaying",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Shows the music that is being played."
         },
         {
             name: "pause",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Pauses the currently played audio in a voice channel."
         },
         {
             name: "play",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Plays or enqueues a YouTube video into a voice channel.",
             options: [
                 {
                     name: "query",
                     required: true,
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The query to search for the YouTube video."
                 }
             ]
         },
         {
             name: "queue",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
             description: "Manages music queue.",
             options: [
                 {
                     name: "add",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Adds a YouTube video into the music queue.",
                     options: [
                         {
                             name: "query",
                             required: true,
-                            type: CommandArgumentType.STRING,
+                            type: ApplicationCommandOptionTypes.STRING,
                             description: "The query to search for the YouTube video."
                         },
                         {
                             name: "position",
-                            type: CommandArgumentType.INTEGER,
+                            type: ApplicationCommandOptionTypes.INTEGER,
                             description: "The position at which to insert this queue in, ranging from 1 to 10. Defaults to latest."
                         }
                     ]
                 },
                 {
                     name: "remove",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Removes an item from the music queue.",
                     options: [
                         {
                             name: "position",
                             required: true,
-                            type: CommandArgumentType.INTEGER,
+                            type: ApplicationCommandOptionTypes.INTEGER,
                             description: "The position of the item to remove, ranging from 1 to 10."
                         }
                     ]
                 },
                 {
                     name: "view",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Views the current music queue."
                 }
             ]
         },
         {
             name: "repeat",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Sets repeat mode (whether to repeat music during playback).",
             options: [
                 {
                     name: "repeat",
                     required: true,
-                    type: CommandArgumentType.BOOLEAN,
+                    type: ApplicationCommandOptionTypes.BOOLEAN,
                     description: "Whether to enable repeat mode."
                 }
             ]
         },
         {
             name: "resume",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Resumes the currently played audio in a voice channel."
         },
         {
             name: "shuffle",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Shuffles the current music queue."
         },
         {
             name: "skip",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "Skips the currently played audio in a voice channel."
         }
     ],

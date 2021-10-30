@@ -5,7 +5,7 @@ import { Command } from "@alice-interfaces/core/Command";
 import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { switchbindStrings } from "./switchbindStrings";
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
@@ -54,13 +54,13 @@ export const config: Command["config"] = {
         {
             name: "uid",
             required: true,
-            type: CommandArgumentType.INTEGER,
+            type: ApplicationCommandOptionTypes.INTEGER,
             description: "The uid of the osu!droid account to switch."
         },
         {
             name: "user",
             required: true,
-            type: CommandArgumentType.USER,
+            type: ApplicationCommandOptionTypes.USER,
             description: "The user to switch the bind to."
         }
     ],

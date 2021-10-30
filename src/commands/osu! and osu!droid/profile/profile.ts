@@ -1,4 +1,4 @@
-import { CommandArgumentType } from "@alice-enums/core/CommandArgumentType";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
@@ -15,49 +15,49 @@ export const config: Command["config"] = {
     options: [
         {
             name: "bindinfo",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View your bind information or an osu!droid account.",
             options: [
                 {
                     name: "uid",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The Discord user."
                 }
             ]
         },
         {
             name: "view",
-            type: CommandArgumentType.SUB_COMMAND,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND,
             description: "View your osu!droid account's profile or someone else's.",
             options: [
                 {
                     name: "uid",
-                    type: CommandArgumentType.INTEGER,
+                    type: ApplicationCommandOptionTypes.INTEGER,
                     description: "The uid of the osu!droid account."
                 },
                 {
                     name: "username",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The username the osu!droid account."
                 },
                 {
                     name: "user",
-                    type: CommandArgumentType.USER,
+                    type: ApplicationCommandOptionTypes.USER,
                     description: "The Discord user."
                 },
                 {
                     name: "type",
-                    type: CommandArgumentType.STRING,
+                    type: ApplicationCommandOptionTypes.STRING,
                     description: "The type of the profile to show. Defaults to simplified.",
                     choices: [
                         {
@@ -74,22 +74,22 @@ export const config: Command["config"] = {
         },
         {
             name: "customize",
-            type: CommandArgumentType.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
             description: "Customize your profile card.",
             options: [
                 {
                     name: "background",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Customize your profile card's background."
                 },
                 {
                     name: "badge",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Customize your profile card's badge."
                 },
                 {
                     name: "infobox",
-                    type: CommandArgumentType.SUB_COMMAND,
+                    type: ApplicationCommandOptionTypes.SUB_COMMAND,
                     description: "Customize your profile card's information box."
                 }
             ]
