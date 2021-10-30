@@ -275,12 +275,12 @@ export class Parser {
         // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
         const time: number = parseFloat(this.setPosition(s[0])) + (this.map.formatVersion < 5 ? 24 : 0);
         if (!this.isNumberValid(time)) {
-            return this.warn("Ignoring malformed timing point: Value is too low or high");
+            return this.warn("Ignoring malformed timing point: Value is invalid, too low, or too high");
         }
 
         const msPerBeat: number = parseFloat(this.setPosition(s[1]));
         if (!this.isNumberValid(msPerBeat)) {
-            return this.warn("Ignoring malformed timing point: Value is too low or high");
+            return this.warn("Ignoring malformed timing point: Value is invalid, too low, or too high");
         }
         const speedMultiplier = msPerBeat < 0 ? 100 / -msPerBeat : 1;
 
@@ -290,7 +290,7 @@ export class Parser {
                 msPerBeat: msPerBeat
             }));
         }
-        
+
         this.map.difficultyTimingPoints.push(new DifficultyControlPoint({
             time: time,
             speedMultiplier: speedMultiplier
@@ -310,15 +310,15 @@ export class Parser {
         const time: number = parseFloat(this.setPosition(s[2]));
         const type: number = parseInt(this.setPosition(s[3]));
         if (!this.isNumberValid(time) || isNaN(type)) {
-            return this.warn("Ignoring malformed hitobject: Value is too low or high");
+            return this.warn("Ignoring malformed hitobject: Value is invalid, too low, or too high");
         }
-        
+
         const position: Vector2 = new Vector2({
             x: parseFloat(this.setPosition(s[0])),
             y: parseFloat(this.setPosition(s[1]))
         });
         if (!this.isVectorValid(position)) {
-            return this.warn("Ignoring malformed hitobject: Value is too low or high");
+            return this.warn("Ignoring malformed hitobject: Value is invalid, too low, or too high");
         }
 
         if (type & objectTypes.circle) {
@@ -329,20 +329,21 @@ export class Parser {
             });
             ++this.map.circles;
             this.map.objects.push(object);
-        }
-        else if (type & objectTypes.slider) {
+        } else if (type & objectTypes.slider) {
             if (s.length < 8) {
                 return this.warn("Ignoring malformed slider");
             }
             const repetitions: number = Math.max(parseInt(this.setPosition(s[6])), ParserConstants.MIN_REPETITIONS_VALUE);
-            
+
             if (!this.isNumberValid(repetitions, 0, ParserConstants.MAX_REPETITIONS_VALUE)) {
-                return this.warn("Ignoring malformed slider: Value is too low or high");
+                return this.warn("Ignoring malformed slider: Value is invalid, too low, or too high");
             }
 
-            // In lazer, this is checked if the value exceeds `ParserConstants.MAX_COORDINATE_VALUE`.
-            // If lazer is final, this should be revisited.
             const distance: number = Math.max(0, parseFloat(this.setPosition(s[7])));
+
+            if (!this.isNumberValid(distance, 0, ParserConstants.MAX_COORDINATE_VALUE)) {
+                return this.warn("Ignoring malformed slider: Value is invalid, too low, or too high");
+            }
 
             const speedMultiplierTimingPoint: DifficultyControlPoint = this.getTimingPoint(time, this.map.difficultyTimingPoints);
             const msPerBeatTimingPoint: TimingControlPoint = this.getTimingPoint(time, this.map.timingPoints);
@@ -355,7 +356,7 @@ export class Parser {
                 const temp: string[] = point.split(":");
                 const vec: Vector2 = new Vector2({x: +temp[0], y: +temp[1]});
                 if (!this.isVectorValid(vec)) {
-                    return this.warn("Ignoring malformed slider: Value is too low or high");
+                    return this.warn("Ignoring malformed slider: Value is invalid, too low, or too high");
                 }
 
                 points.push(vec.subtract(position));
@@ -400,15 +401,14 @@ export class Parser {
             });
             ++this.map.sliders;
             this.map.objects.push(object);
-        }
-        else if (type & objectTypes.spinner) {
+        } else if (type & objectTypes.spinner) {
             const object = new Spinner({
                 startTime: time,
                 type: type,
                 duration: parseInt(this.setPosition(s[5])) - time
             });
             if (!this.isNumberValid(object.duration)) {
-                return this.warn("Ignoring malformed spinner: Value is too low or high");
+                return this.warn("Ignoring malformed spinner: Value is invalid, too low, or too high");
             }
             ++this.map.spinners;
             this.map.objects.push(object);
@@ -657,7 +657,7 @@ export class Parser {
      * @param max The maximum threshold. Defaults to `ParserConstants.MAX_PARSE_VALUE`.
      */
     private isNumberValid(num: number, min: number = -ParserConstants.MAX_PARSE_VALUE, max: number = ParserConstants.MAX_PARSE_VALUE): boolean {
-        return !isNaN(num) && num >= min && num <= max;
+        return num >= min && num <= max;
     }
 
     /**
