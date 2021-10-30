@@ -38,9 +38,13 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     );
 
     embed.setTitle("Ban Executed")
-        .setThumbnail(<string> user.avatarURL({ dynamic: true }))
+        .setThumbnail(user.avatarURL({ dynamic: true })!)
         .addField(`Banned user: ${user.tag}`, `User ID: ${user.id}`)
         .addField("=========================", `Reason: ${banLog.reason ?? "Not specified."}`);
+
+    if (banLog.executor) {
+        embed.setAuthor(banLog.executor.tag, banLog.executor.avatarURL({ dynamic: true })!);
+    }
 
     logChannel.send({ embeds: [embed] });
 };
