@@ -10,7 +10,7 @@ export abstract class CacheManager {
     /**
      * The beatmaps that have been cached, mapped by beatmap ID.
      */
-    static readonly beatmapCache: LimitedCapacityCollection<number, MapInfo> = new LimitedCapacityCollection(100, 600);
+    static readonly beatmapCache: LimitedCapacityCollection<number, MapInfo> = new LimitedCapacityCollection(50, 600);
 
     /**
      * The beatmap cache of each channel, mapped by channel ID.
