@@ -79,8 +79,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const mapData: MainBeatmapData = mappoolMainData.map[pickIndex];
 
-    console.log(mapData);
-
     const scoreList: number[] = [];
 
     let team1OverallScore: number = 0;
@@ -101,8 +99,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 )
             });
         }
-
-        console.log(scoreData);
 
         let scoreV2: number = match.calculateScoreV2(
             parseInt(scoreData[0]),
