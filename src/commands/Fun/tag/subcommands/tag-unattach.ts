@@ -4,7 +4,7 @@ import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Collection, Message, MessageAttachment, Permissions, TextChannel } from "discord.js";
+import { Message, MessageAttachment, Permissions, TextChannel } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {

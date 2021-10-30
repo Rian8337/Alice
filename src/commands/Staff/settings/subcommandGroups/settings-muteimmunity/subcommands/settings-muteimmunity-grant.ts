@@ -6,7 +6,7 @@ import { Role } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
@@ -15,7 +15,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(interaction.guildId);
 
-    if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild!)) {
+    if (!guildConfig || !guildConfig.getGuildLogChannel(interaction.guild)) {
         return interaction.editReply({
             content: MessageCreator.createReject(settingsStrings.noLogChannelConfigured)
         });

@@ -4,10 +4,6 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
-        return;
-    }
-
     await DatabaseManager.aliceDb.collections.guildPunishmentConfig.unsetGuildLogChannel(interaction.guildId);
 
     interaction.editReply({

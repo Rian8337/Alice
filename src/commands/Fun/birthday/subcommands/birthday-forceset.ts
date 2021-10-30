@@ -19,7 +19,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (!result.success) {
         return interaction.editReply({
             content: MessageCreator.createReject(
-                birthdayStrings.setBirthdayFailed, <string> result.reason
+                birthdayStrings.setBirthdayFailed, result.reason!
             )
         });
     }

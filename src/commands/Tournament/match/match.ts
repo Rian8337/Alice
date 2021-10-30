@@ -4,7 +4,7 @@ import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { GuildMember, Snowflake } from "discord.js";
+import { Snowflake } from "discord.js";
 
 export const run: Command["run"] = async (_, interaction) => {
     const whitelistedGuilds: Snowflake[] = [
@@ -13,13 +13,13 @@ export const run: Command["run"] = async (_, interaction) => {
         "526214018269184001"
     ];
 
-    if (!interaction.inGuild() || !whitelistedGuilds.includes(interaction.guildId)) {
+    if (!interaction.inCachedGuild() || !whitelistedGuilds.includes(interaction.guildId)) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.notAvailableInServerReject)
         });
     }
 
-    if (!(<GuildMember> interaction.member).roles.cache.find(r => r.name === "Referee")) {
+    if (!interaction.member.roles.cache.find(r => r.name === "Referee")) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.noPermissionReject)
         });

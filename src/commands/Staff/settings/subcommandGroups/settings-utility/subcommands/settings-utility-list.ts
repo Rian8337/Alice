@@ -6,15 +6,15 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: interaction.member.displayColor }
     );
 
     const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: Collection<string, EventUtil> }[]) => {

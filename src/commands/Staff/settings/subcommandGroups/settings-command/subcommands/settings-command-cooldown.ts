@@ -10,10 +10,6 @@ import { NewsChannel, TextChannel } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    if (!interaction.inGuild()) {
-        return;
-    }
-
     const commandName: string = interaction.options.getString("command", true);
 
     const cooldown: number = interaction.options.getInteger("duration", true);

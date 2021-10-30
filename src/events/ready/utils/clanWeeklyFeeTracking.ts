@@ -92,11 +92,11 @@ export const run: EventUtil["run"] = async (client) => {
                     // Clan member doesn't have enough Alice coins to pay upkeep.
                     // If the penalized member is the leader, kick a random member.
                     let userToKick: Snowflake = member.id;
-                    let kickedGuildMember: GuildMember | undefined = await guild.members.fetch(userToKick).catch(() => {return undefined;});
+                    let kickedGuildMember: GuildMember | undefined = await guild.members.fetch(userToKick).catch(() => { return undefined; });
 
                     while (clan.leader === userToKick && clan.member_list.size > 1) {
-                        userToKick = clan.member_list.random().id;
-                        kickedGuildMember = await guild.members.fetch(userToKick).catch(() => {return undefined;});
+                        userToKick = clan.member_list.random()!.id;
+                        kickedGuildMember = await guild.members.fetch(userToKick).catch(() => { return undefined; });
 
                         if (!kickedGuildMember) {
                             userToKick = clan.leader;

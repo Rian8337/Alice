@@ -6,10 +6,6 @@ import { Role } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
-        return;
-    }
-
     const role: Role = <Role> interaction.options.getRole("role", true);
 
     const guildConfig: GuildPunishmentConfig | null =

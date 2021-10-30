@@ -21,7 +21,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
     );
 
     embed.setDescription(

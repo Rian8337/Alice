@@ -9,10 +9,6 @@ import { Collection, NewsChannel, TextChannel } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    if (!interaction.inGuild()) {
-        return;
-    }
-
     const event: string = interaction.options.getString("event", true);
 
     const utility: string = interaction.options.getString("utility", true);

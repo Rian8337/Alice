@@ -9,7 +9,7 @@ import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
@@ -25,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const immuneMuteRoles: Snowflake[] = guildConfig.immuneMuteRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: interaction.member.displayColor }
     );
 
     embed.setTitle("Roles with Mute Immunity");

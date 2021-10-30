@@ -347,12 +347,12 @@ export class Clan extends Manager {
             return this.createOperationResult(true);
         }
 
-        let member: ClanMember = this.member_list.random();
+        let member: ClanMember = this.member_list.random()!;
 
         const coLeaderExists: boolean = this.member_list.some(c => c.hasPermission);
 
         while (member.id === this.leader || (coLeaderExists && !member.hasPermission)) {
-            member = this.member_list.random();
+            member = this.member_list.random()!;
         }
 
         member.hasPermission = true;

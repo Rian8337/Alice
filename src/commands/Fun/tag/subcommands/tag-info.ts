@@ -3,11 +3,11 @@ import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildMember, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
@@ -22,7 +22,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: interaction.member.displayColor }
     );
 
     embed.setTitle("Tag Information")

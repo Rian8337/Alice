@@ -7,11 +7,11 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { Collection, GuildMember, MessageEmbed } from "discord.js";
+import { Collection, MessageEmbed } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
@@ -27,7 +27,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const allowedMuteRoles: Collection<string, RoleMutePermission> = guildConfig.allowedMuteRoles;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: interaction.member.displayColor }
     );
 
     embed.setTitle("Roles with Mute Immunity");

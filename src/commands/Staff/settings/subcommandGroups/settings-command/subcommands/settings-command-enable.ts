@@ -10,10 +10,6 @@ import { NewsChannel, TextChannel } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
-    if (!interaction.inGuild()) {
-        return;
-    }
-
     const commandName: string = interaction.options.getString("command", true);
 
     const scope: CommandUtilScope = <CommandUtilScope> interaction.options.getString("scope") ?? "channel";

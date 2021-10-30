@@ -5,11 +5,11 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Collection, GuildMember, MessageEmbed, User } from "discord.js";
+import { Collection, MessageEmbed, User } from "discord.js";
 import { tagStrings } from "../tagStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!interaction.inGuild()) {
+    if (!interaction.inCachedGuild()) {
         return;
     }
 
@@ -28,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: interaction.member.displayColor }
     );
 
     const onPageChange: OnButtonPageChange = async (_, page, contents: GuildTag[]) => {
