@@ -398,7 +398,7 @@ export class UserBind extends Manager {
             let page = 0;
 
             if (isDPPRecalc && this.calculationInfo) {
-                page = this.calculationInfo.page - 1;
+                page = this.calculationInfo.page;
 
                 newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [ v.hash, v ])));
             } else {
