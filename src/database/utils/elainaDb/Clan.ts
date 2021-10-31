@@ -299,16 +299,16 @@ export class Clan extends Manager {
     async removeMember(userOrId: User | Snowflake): Promise<OperationResult> {
         const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
 
+        if (id === this.leader) {
+            return this.createOperationResult(false, "clan leader cannot leave the clan");
+        }
+
         if (!this.member_list.delete(id)) {
             return this.createOperationResult(false, "user is not in the clan");
         }
 
         if (this.member_list.size === 0) {
             return this.disband();
-        }
-
-        if (id === this.leader) {
-            this.changeLeader();
         }
 
         await this.removeClanRole(userOrId);
