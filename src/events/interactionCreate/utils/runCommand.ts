@@ -131,7 +131,9 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
 
     // Partial data handling
     await client.channels.fetch(interaction.channelId);
-    await interaction.channel?.fetch();
+    if (!(interaction.channel instanceof DMChannel)) {
+        await interaction.channel?.fetch();
+    }
 
     if (interaction.inGuild()) {
         await client.guilds.fetch(interaction.guildId);
