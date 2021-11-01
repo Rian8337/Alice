@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const changeLeaderResult: OperationResult = clan.changeLeader(toTransfer.id);
+    const changeLeaderResult: OperationResult = await clan.changeLeader(toTransfer.id);
 
     if (!changeLeaderResult.success) {
         return interaction.editReply({

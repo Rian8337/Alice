@@ -332,7 +332,7 @@ export class Clan extends Manager {
      * @param newLeader The Discord ID of the new leader. If unspecified, a random clan member will be picked.
      * @returns An object containing information about the operation.
      */
-    changeLeader(newLeader?: Snowflake): OperationResult {
+    async changeLeader(newLeader?: Snowflake): Promise<OperationResult> {
         if (newLeader === this.leader) {
             return this.createOperationResult(false, "new leader is the same as the old leader");
         }
@@ -340,6 +340,13 @@ export class Clan extends Manager {
         if (newLeader) {
             if (!this.member_list.has(newLeader)) {
                 return this.createOperationResult(false, "cannot find new leader");
+            }
+
+            const channel: TextChannel | undefined = await this.getClanChannel();
+
+            if (channel) {
+                await channel.permissionOverwrites.delete(this.leader);
+                await channel.permissionOverwrites.create(newLeader, { MANAGE_MESSAGES: true });
             }
 
             this.leader = newLeader;
@@ -356,6 +363,13 @@ export class Clan extends Manager {
         }
 
         member.hasPermission = true;
+
+        const channel: TextChannel | undefined = await this.getClanChannel();
+
+        if (channel) {
+            await channel.permissionOverwrites.delete(this.leader);
+            await channel.permissionOverwrites.create(member.id, { MANAGE_MESSAGES: true });
+        }
 
         this.leader = member.id;
 
