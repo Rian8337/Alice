@@ -20,7 +20,7 @@ export abstract class EventHelper {
     static async runUtilities(client: Bot, eventDirectory: string, guild?: Guild | null, channel?: Channel | null, ...utilArgs: any[]): Promise<void> {
         const eventName: string = <string> eventDirectory.split(/[\/\\]/g).pop();
 
-        for await (const [utilityName, utility] of (client.eventUtilities.get(eventName) ?? new Collection()).entries()) {
+        for await (const [ utilityName, utility ] of client.eventUtilities.get(eventName) ?? new Collection()) {
             if (Config.isDebug && !utility.config.debugEnabled) {
                 continue;
             }
