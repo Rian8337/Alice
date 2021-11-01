@@ -127,9 +127,9 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
     let usedOptions: readonly CommandInteractionOption<CacheType>[];
 
     if (interaction.options.getSubcommandGroup(false)) {
-        usedOptions = interaction.options.data[0].options![0].options!;
+        usedOptions = interaction.options.data[0].options![0].options ?? [];
     } else if (interaction.options.getSubcommand(false)) {
-        usedOptions = interaction.options.data[0].options!;
+        usedOptions = interaction.options.data[0].options ?? [];
     } else {
         usedOptions = interaction.options.data;
     }
