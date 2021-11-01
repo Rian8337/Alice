@@ -8,7 +8,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { DMChannel, GuildMember, Interaction, NewsChannel, TextChannel, ThreadChannel } from "discord.js";
+import { CacheType, CommandInteractionOption, DMChannel, GuildMember, Interaction, NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client, interaction: Interaction) => {
     if (!interaction.isCommand()) {
@@ -113,7 +113,49 @@ export const run: EventUtil["run"] = async (client, interaction: Interaction) =>
         );
     }
 
-    client.logger.info(`${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`);
+    // Log used command along with its subcommand group, subcommand, and options
+    let logMessage: string = `${interaction.user.tag} (${interaction.channel instanceof DMChannel ? "DM" : `#${(<TextChannel | NewsChannel | ThreadChannel> interaction.channel!).name}`}): ${interaction.commandName}`;
+
+    if (interaction.options.getSubcommandGroup(false)) {
+        logMessage += ` ${interaction.options.getSubcommandGroup()}`;
+    }
+
+    if (interaction.options.getSubcommand(false)) {
+        logMessage += ` ${interaction.options.getSubcommand()}`;
+    }
+
+    let usedOptions: readonly CommandInteractionOption<CacheType>[];
+
+    if (interaction.options.getSubcommandGroup(false)) {
+        usedOptions = interaction.options.data[0].options![0].options!;
+    } else if (interaction.options.getSubcommand(false)) {
+        usedOptions = interaction.options.data[0].options!;
+    } else {
+        usedOptions = interaction.options.data;
+    }
+
+    const optionsStr: string = usedOptions.map(v => {
+        let str: string = `${v.name}:`;
+
+        switch (true) {
+            case !!v.channel:
+                str += `#${v.channel?.name}`;
+                break;
+            case !!v.user:
+                str += `@${v.user?.tag}`;
+                break;
+            case !!v.role:
+                str += `@${v.role?.name}`;
+                break;
+            case !!v.value:
+                str += v.value;
+                break;
+        }
+
+        return str;
+    }).join(" ");
+
+    client.logger.info(`${logMessage} ${optionsStr}`);
 
     // Ephemeral handling
     try {
