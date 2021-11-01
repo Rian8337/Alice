@@ -113,8 +113,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 },
                 {
                     id: "369108742077284353",
-                    allow: ["VIEW_CHANNEL"],
+                    allow: ["VIEW_CHANNEL", "MANAGE_MESSAGES"],
                     type: "role"
+                },
+                {
+                    id: clan.leader,
+                    allow: ["MANAGE_MESSAGES"],
+                    type: "member"
                 }
             ]
         }
