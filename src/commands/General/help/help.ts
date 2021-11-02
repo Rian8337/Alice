@@ -11,6 +11,7 @@ import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
 /**
  * Gets the list of commands that the bot has.
@@ -124,7 +125,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 `\`${cmd.config.name}${argsString ? ` ${argsString}` : ""}\``,
                 "**Details**\n" +
                 cmd.config.options.map(v =>
-                    "`" + v.name + "`: *" + (<string> v.type).split("_").map(v => StringHelper.capitalizeString(v, true)).join(" ") + "*\n" +
+                    "`" + v.name + "`: *" + CommandHelper.optionTypeToString(<ApplicationCommandOptionTypes> v.type) + "*\n" +
                     v.description
                 ).join("\n\n") || "None",
                 true
@@ -140,7 +141,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 "For detailed information about a command, use `/help [command name]`.\n" + 
                 "If you encounter any bugs or issues with the bot, please contact bot creators."
             )
-            .setThumbnail(<string> client.user?.avatarURL({dynamic: true}));
+            .setThumbnail(client.user?.avatarURL({dynamic: true})!);
 
         const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: string[] }[]) => {
             const list: { key: string, value: string[] } = contents[page - 1];

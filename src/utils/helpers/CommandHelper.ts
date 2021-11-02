@@ -13,6 +13,7 @@ import { PermissionHelper } from './PermissionHelper';
 import { CommandUtilManager } from '@alice-utils/managers/CommandUtilManager';
 import { DateTimeFormatHelper } from './DateTimeFormatHelper';
 import { Manager } from '@alice-utils/base/Manager';
+import { ApplicationCommandOptionTypes } from 'discord.js/typings/enums';
 
 /**
  * Helpers for commands.
@@ -232,6 +233,37 @@ export abstract class CommandHelper extends Manager {
         }
 
         return CommandUtilManager.channelDisabledCommands.get(interaction.channel!.id)?.get(interaction.commandName)?.cooldown !== -1;
+    }
+
+    /**
+     * Converts a command option type to its string representation.
+     * 
+     * @param type The command option type to convert.
+     * @returns The command option type's string representation.
+     */
+    static optionTypeToString(type: ApplicationCommandOptionTypes): string {
+        switch (type) {
+            case ApplicationCommandOptionTypes.BOOLEAN:
+                return "Boolean";
+            case ApplicationCommandOptionTypes.CHANNEL:
+                return "Channel";
+            case ApplicationCommandOptionTypes.INTEGER:
+                return "Integer";
+            case ApplicationCommandOptionTypes.MENTIONABLE:
+                return "Mentionable";
+            case ApplicationCommandOptionTypes.NUMBER:
+                return "Number";
+            case ApplicationCommandOptionTypes.ROLE:
+                return "Role";
+            case ApplicationCommandOptionTypes.STRING:
+                return "String";
+            case ApplicationCommandOptionTypes.SUB_COMMAND:
+                return "Subcommand";
+            case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
+                return "Subcommand Group";
+            case ApplicationCommandOptionTypes.USER:
+                return "User";
+        }
     }
 
     /**
