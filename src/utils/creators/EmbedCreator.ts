@@ -79,9 +79,9 @@ export abstract class EmbedCreator {
      * Creates a beatmap embed.
      * 
      * @param beatmapInfo The beatmap to create the beatmap embed from.
-     * @param mods The modifications applied towards beatmap statistics.
+     * @param calculationParams The calculation parameters to be applied towards beatmap statistics.
      */
-    static createBeatmapEmbed(beatmapInfo: MapInfo, mods: Mod[] = []): MessageOptions {
+    static createBeatmapEmbed(beatmapInfo: MapInfo, calculationParams?: StarRatingCalculationParameters): MessageOptions {
         const embed: MessageEmbed = this.createNormalEmbed(
             { color: <ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) }
         );
@@ -90,11 +90,11 @@ export abstract class EmbedCreator {
             embeds: [
                 embed.setAuthor("Beatmap Information", `attachment://osu-${beatmapInfo.totalDifficulty.toFixed(2)}.png`)
                     .setThumbnail(`https://b.ppy.sh/thumb/${beatmapInfo.beatmapsetID}l.jpg`)
-                    .setTitle(beatmapInfo.showStatistics(0, mods))
-                    .setDescription(beatmapInfo.showStatistics(1, mods))
+                    .setTitle(beatmapInfo.showStatistics(0, calculationParams?.mods, calculationParams?.customStatistics))
+                    .setDescription(beatmapInfo.showStatistics(1, calculationParams?.mods, calculationParams?.customStatistics))
                     .setURL(`https://osu.ppy.sh/b/${beatmapInfo.beatmapID}`)
-                    .addField(beatmapInfo.showStatistics(2, mods), beatmapInfo.showStatistics(3, mods))
-                    .addField(beatmapInfo.showStatistics(4, mods), beatmapInfo.showStatistics(5, mods))
+                    .addField(beatmapInfo.showStatistics(2, calculationParams?.mods, calculationParams?.customStatistics), beatmapInfo.showStatistics(3, calculationParams?.mods, calculationParams?.customStatistics))
+                    .addField(beatmapInfo.showStatistics(4, calculationParams?.mods, calculationParams?.customStatistics), beatmapInfo.showStatistics(5, calculationParams?.mods, calculationParams?.customStatistics))
             ],
             files: [ BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) ]
         };
@@ -154,7 +154,7 @@ export abstract class EmbedCreator {
     static async createCalculationEmbed(calculationParams: StarRatingCalculationParameters, calculationResult: StarRatingCalculationResult | PerformanceCalculationResult, graphColor?: string): Promise<MessageOptions> {
         const embedOptions: MessageOptions = this.createBeatmapEmbed(
             calculationResult.map,
-            calculationParams.mods
+            calculationParams
         );
 
         const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];

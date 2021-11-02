@@ -100,7 +100,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 const firstBeatmap: MapInfo = beatmapInformations[0];
 
-                const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(firstBeatmap);
+                const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(firstBeatmap);
 
                 if (string) {
                     embedOptions.content = string;

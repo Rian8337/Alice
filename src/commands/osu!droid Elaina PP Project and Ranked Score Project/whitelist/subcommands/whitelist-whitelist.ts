@@ -60,7 +60,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmaps[0]);
+    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmaps[0]);
 
     const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 

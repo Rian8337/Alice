@@ -52,7 +52,7 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
             { content: MessageCreator.createAccept(`Successfully blacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
@@ -74,7 +74,7 @@ export abstract class WhitelistManager extends Manager {
 
         await DatabaseManager.elainaDb.collections.mapBlacklist.delete({ beatmapID: beatmap.beatmapID });
 
-        const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
             { content: MessageCreator.createAccept(`Successfully unblacklisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
@@ -113,7 +113,7 @@ export abstract class WhitelistManager extends Manager {
             { mapid: beatmap.beatmapID }, updateQuery, { upsert: true }
         );
 
-        const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
             { content: MessageCreator.createAccept(`Successfully whitelisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
@@ -137,7 +137,7 @@ export abstract class WhitelistManager extends Manager {
 
         await DPPHelper.deletePlays(beatmap.hash);
 
-        const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmap);
+        const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmap);
 
         await this.whitelistLogChannel.send(
             { content: MessageCreator.createAccept(`Successfully unwhitelisted \`${beatmap.fullTitle}\`.`), ...embedOptions }
