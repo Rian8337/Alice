@@ -104,10 +104,12 @@ export class DroidStarRating extends StarRating {
 
         const maxStrain: number = Math.max(...objectStrains);
 
-        this.attributes.speedNoteCount = objectStrains.reduce(
-            (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
-            0
-        );
+        if (maxStrain) {
+            this.attributes.speedNoteCount = objectStrains.reduce(
+                (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+                0
+            );
+        }
     }
 
     /**
@@ -178,10 +180,12 @@ export class DroidStarRating extends StarRating {
 
             const maxStrain: number = Math.max(...objectStrains);
 
-            this.attributes.speedNoteCount = objectStrains.reduce(
-                (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
-                0
-            );
+            if (maxStrain) {
+                this.attributes.speedNoteCount = objectStrains.reduce(
+                    (total, next) => total + (1 / (1 + Math.exp(-(next / maxStrain * 12 - 6)))),
+                    0
+                );
+            }
         }
 
         this.flashlightStrainPeaks = flashlightSkill.strainPeaks;
