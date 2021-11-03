@@ -13,6 +13,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
 import { MessageEmbed, Snowflake } from "discord.js";
 import { ppcheckStrings } from "./ppcheckStrings";
+import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Command["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
@@ -83,7 +84,7 @@ export const run: Command["run"] = async (_, interaction) => {
                     modstring += ")";
                 }
 
-                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ❌ | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
             } else {
                 embed.addField(`${i+1}. -`, "-");
             }
