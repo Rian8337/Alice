@@ -117,7 +117,7 @@ export const run: Command["run"] = async (_, interaction) => {
     if (firstBindInfo.pptotal < secondBindInfo.pptotal) {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${Symbols.crown} ${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     } else if (firstBindInfo.pptotal > secondBindInfo.pptotal) {
-        ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})pp**`
+        ppDescription = `**${Symbols.crown} ${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`
     } else {
         ppDescription = `**${firstBindInfo.pptotal.toFixed(2)}pp (#${firstPlayerPPRank.toLocaleString()})** vs **${secondBindInfo.pptotal.toFixed(2)}pp (#${secondPlayerPPRank.toLocaleString()})**`;
     }
