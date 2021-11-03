@@ -22,5 +22,6 @@ export enum Symbols {
     repeatSingleButton = "🔂",
     heart = "❤️",
     playButton = "▶️",
-    memo = "📝"
+    memo = "📝",
+    crown = "👑"
 };
