@@ -124,7 +124,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     embed.setTitle("Top PP Plays Comparison")
         .setDescription(
-            `Player: **${firstBindInfo.username} (Player 1)** vs **${secondBindInfo.username} (Player 2)**\n` +
+            `Player: **${firstBindInfo.username}** vs **${secondBindInfo.username}**\n` +
             `Total PP: ${ppDescription}`
         );
 
@@ -174,8 +174,8 @@ export const run: Command["run"] = async (_, interaction) => {
 
             embed.addField(
                 `${i + 1}. ${firstPP.title}`,
-                `**Player 1**: ${firstPlayerDescription}\n` +
-                `**Player 2**: ${secondPlayerDescription}`
+                `**${firstBindInfo!.username}**: ${firstPlayerDescription}\n` +
+                `**${secondBindInfo!.username}**: ${secondPlayerDescription}`
             );
         }
     };
