@@ -5,6 +5,7 @@ import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/Use
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
@@ -17,6 +18,8 @@ export const run: EventUtil["run"] = async (client) => {
     let calculatedCount: number = await dbManager.getRecalcCalculatedPlayerCount();
 
     const uncalculatedCount: number = await dbManager.getRecalcUncalculatedPlayerCount();
+
+    CommandUtilManager.globalCommandCooldown = 5;
 
     const total: number = calculatedCount + uncalculatedCount;
 
