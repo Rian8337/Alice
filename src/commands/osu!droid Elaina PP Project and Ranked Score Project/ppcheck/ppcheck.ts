@@ -52,7 +52,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const ppRank: number = await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
+    const ppRank: number = await dbManager.getUserDPPRank(bindInfo.pptotal);
 
     const embed: MessageEmbed = await EmbedCreator.createDPPListEmbed(interaction, bindInfo, ppRank);
 
