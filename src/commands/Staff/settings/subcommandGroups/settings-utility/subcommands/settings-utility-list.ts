@@ -1,12 +1,10 @@
-import { EventUtil } from "@alice-interfaces/core/EventUtil";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Collection, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
     if (!interaction.inCachedGuild()) {
@@ -17,12 +15,10 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         { author: interaction.user, color: interaction.member.displayColor }
     );
 
-    const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: Collection<string, EventUtil> }[]) => {
-        const content: { key: string, value: Collection<string, EventUtil> } = contents[page - 1];
+    const onPageChange: OnButtonPageChange = async (_, page) => {
+        embed.setDescription(`**Event name: \`${client.eventUtilities.keyAt(page - 1)}\`**`);
 
-        embed.setDescription(`**Event name: \`${content.key}\`**`);
-
-        for (const [utilName, utility] of content.value) {
+        for (const [ utilName, utility ] of client.eventUtilities.at(page - 1)!) {
             embed.addField(
                 `- ${utilName}`,
                 `${utility.config.description}\n` +
@@ -36,7 +32,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         { embeds: [ embed ] },
         [interaction.user.id],
-        ArrayHelper.collectionToArray(client.eventUtilities),
+        [ ...client.eventUtilities.values() ],
         1,
         1,
         180,

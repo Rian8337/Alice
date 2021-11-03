@@ -8,8 +8,6 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { helpStrings } from "./helpStrings";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 
@@ -143,12 +141,10 @@ export const run: Command["run"] = async (client, interaction) => {
             )
             .setThumbnail(client.user?.avatarURL({dynamic: true})!);
 
-        const onPageChange: OnButtonPageChange = async (_, page, contents: { key: string, value: string[] }[]) => {
-            const list: { key: string, value: string[] } = contents[page - 1];
-
+        const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addField(
-                `**Category**: ${list.key}`,
-                list.value.map(v => `\`${v}\``).join(" • ")
+                `**Category**: ${commandList.keyAt(page - 1)}`,
+                commandList.at(page - 1)!.map(v => `\`${v}\``).join(" • ")
             );
         };
 
@@ -156,7 +152,7 @@ export const run: Command["run"] = async (client, interaction) => {
             interaction,
             { embeds: [embed] },
             [interaction.user.id],
-            ArrayHelper.collectionToArray(commandList),
+            [ ...commandList.values() ],
             1,
             1,
             120,
