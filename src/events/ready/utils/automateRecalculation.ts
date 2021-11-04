@@ -9,9 +9,9 @@ import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 import { Message, TextChannel } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
-    const channel: TextChannel = <TextChannel> await client.channels.fetch("546135349533868072");
+    const channel: TextChannel = <TextChannel> await client.channels.fetch("549109230284701718");
 
-    const message: Message = await channel.messages.fetch("905354500380954644");
+    const message: Message = await channel.messages.fetch("905658272810426378");
 
     const dbManager: UserBindCollectionManager = DatabaseManager.elainaDb.collections.userBind;
 
@@ -25,30 +25,26 @@ export const run: EventUtil["run"] = async (client) => {
 
     let player: UserBind | undefined;
 
+    const msg: string = "Recalculating players (%s/%s (%s%))...\nCurrently calculating <@%s> (uid: %s)";
+
     while (player = (await dbManager.getRecalcUnscannedPlayers(1)).first()) {
+        await message.edit({
+            content: MessageCreator.createWarn(
+                msg,
+                calculatedCount.toLocaleString(),
+                total.toLocaleString(),
+                (calculatedCount * 100 / total).toFixed(2),
+                player.discordid,
+                player.uid.toString()
+            )
+        });
+
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
         await player.recalculateAllScores(false, true);
 
         client.logger.info(`${++calculatedCount} players recalculated`);
-
-        await message.edit({
-            content: MessageCreator.createWarn(
-                recalcStrings.fullRecalcTrackProgress,
-                calculatedCount.toLocaleString(),
-                total.toLocaleString(),
-                (calculatedCount * 100 / total).toFixed(2)
-            )
-        });
     }
-
-    await dbManager.update({}, { $unset: { dppScanComplete: "" } });
-
-    channel.send({
-        content: MessageCreator.createAccept(
-            recalcStrings.fullRecalcSuccess, `<@${Config.botOwners[1]}>`
-        )
-    });
 };
 
 export const config: EventUtil["config"] = {
