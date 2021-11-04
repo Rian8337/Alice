@@ -55,7 +55,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed({ author: message.author, color: message.member?.displayColor });
     const responseType: EightBallResponseType = getResponseType(message, res);
 
-    let answer: string = ArrayHelper.getRandomArrayElement(res.response);
+    let answer: string = "";
     switch (responseType) {
         case EightBallResponseType.LIKE:
             answer = "Yes, absolutely.";
@@ -66,8 +66,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         case EightBallResponseType.NEUTRAL:
             answer = "Um... Uh...";
             break;
-        default:
+        case EightBallResponseType.NO_ANSWER:
             answer = "Uh, I don't think I want to answer that.";
+            break;
+        default:
+            answer = ArrayHelper.getRandomArrayElement(res.response);
     }
 
     embed.setDescription(`**Q**: ${message.content}\n**A**: ${answer}`);
