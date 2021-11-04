@@ -42,7 +42,7 @@ export abstract class EventHelper {
                 client.logger.info(`Triggered ${utility} event utility from ${eventName} event`);
             }
 
-            await utility.run(client, ...utilArgs);
+            utility.run(client, ...utilArgs);
         }
     }
 
