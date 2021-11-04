@@ -10,11 +10,6 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
         { discordid: "386742340968120321" }, { $inc: { dailyreset: 86400 } }
     );
 
-    // Reset coin streak
-    await DatabaseManager.aliceDb.collections.playerInfo.update(
-        { hasClaimedDaily: false }, { $set: { streak: 0 } }
-    );
-
     await DatabaseManager.aliceDb.collections.playerInfo.update(
         {}, { $set: { hasClaimedDaily: false, hasSubmittedMapShare: false, transferred: 0 } }
     );
