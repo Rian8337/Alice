@@ -97,8 +97,6 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const replayAttachment: MessageAttachment = new MessageAttachment(zip.toBuffer(), `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName}]-${json.replaydata.time}.edr`);
 
-    const hitErrorInformation: HitErrorInformation = <HitErrorInformation> score.replay?.calculateHitError();
-
     if (!beatmapInfo) {
         return interaction.editReply({
             content: MessageCreator.createAccept(
@@ -110,10 +108,7 @@ export const run: Command["run"] = async (_, interaction) => {
                 score.accuracy.n300.toString(),
                 score.accuracy.n100.toString(),
                 score.accuracy.n50.toString(),
-                score.accuracy.nmiss.toString(),
-                hitErrorInformation.negativeAvg.toFixed(2),
-                hitErrorInformation.positiveAvg.toFixed(2),
-                hitErrorInformation.unstableRate.toFixed(2)
+                score.accuracy.nmiss.toString()
             ),
             files: [ replayAttachment ]
         });
@@ -128,10 +123,12 @@ export const run: Command["run"] = async (_, interaction) => {
         (<GuildMember | null> interaction.member)?.displayHexColor
     );
 
+    const hitErrorInformation: HitErrorInformation = score.replay!.calculateHitError()!;
+
     (<MessageEmbed> calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, (<MessageEmbed> calcEmbedOptions.embeds![0]).author?.iconURL)
         .addField("Hit Error Information", `${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(2)} UR`);
 
-    calcEmbedOptions.files = [ replayAttachment ];
+    calcEmbedOptions.files?.push(replayAttachment);
 
     interaction.editReply(calcEmbedOptions);
 };

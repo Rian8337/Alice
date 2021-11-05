@@ -241,14 +241,6 @@ export abstract class EmbedCreator {
                 `${(score.accuracy.value() * 100).toFixed(2)}%\n` +
                 `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
-            await score.downloadReplay();
-
-            if (score.replay) {
-                const hitErrorInformation: HitErrorInformation = score.replay.calculateHitError()!;
-
-                beatmapInformation += `\n${arrow} ${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg ${arrow} ${hitErrorInformation.unstableRate.toFixed(2)} UR`;
-            }
-
             embed.setDescription(beatmapInformation);
             return embed;
         }
