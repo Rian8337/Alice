@@ -18,6 +18,7 @@ import { Mod } from '../mods/Mod';
 import { Accuracy } from '../utils/Accuracy';
 import { ModHidden } from '../mods/ModHidden';
 import { ModFlashlight } from '../mods/ModFlashlight';
+import { Spinner } from '../beatmap/hitobjects/Spinner';
 
 interface HitErrorInformation {
     negativeAvg: number;
@@ -353,7 +354,7 @@ export class ReplayAnalyzer {
             let hit0: number = 0;
             let grantsGekiOrKatu: boolean = true;
 
-            const objects: HitObject[] = this.map instanceof DroidStarRating ? (<HitObject[]> this.map.map.objects) : this.map.objects;
+            const objects: HitObject[] = (this.map instanceof DroidStarRating ? this.map.map : this.map).objects;
 
             for (let i = 0; i < resultObject.hitObjectData.length; ++i) {
                 // Hit result
@@ -443,7 +444,7 @@ export class ReplayAnalyzer {
      * `analyze()` must be called before calling this.
      */
     calculateHitError(): HitErrorInformation|null {
-        if (!this.data) {
+        if (!this.data || !this.map) {
             return null;
         }
 
@@ -452,6 +453,27 @@ export class ReplayAnalyzer {
         let negativeCount: number = 0;
         let positiveTotal: number = 0;
         let negativeTotal: number = 0;
+
+        const objects: HitObject[] = (this.map instanceof DroidStarRating ? this.map.map : this.map).objects;
+
+        for (let i = 0; i < hitObjectData.length; ++i) {
+            const v: ReplayObjectData = hitObjectData[i];
+            const o: HitObject = objects[i];
+
+            if (o instanceof Spinner || v.result === hitResult.RESULT_0) {
+                continue;
+            }
+
+            const accuracy: number = v.accuracy;
+
+            if (accuracy >= 0) {
+                positiveTotal += accuracy;
+                ++positiveCount;
+            } else {
+                negativeTotal += accuracy;
+                ++negativeCount;
+            }
+        }
 
         hitObjectData.forEach(v => {
             if (v.result === hitResult.RESULT_0) {
