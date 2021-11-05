@@ -251,7 +251,7 @@ export class Score {
             nmiss: parseInt(play[11])
         });
         const date: Date = new Date(parseInt(play[12]) * 1000);
-        date.setUTCHours(date.getUTCHours() + 8);
+        date.setUTCHours(date.getUTCHours() + 9);
         this.date = date;
         this.title = play[13].substring(0, play[13].length - 4).replace(/_/g, " ");
         this.hash = play[14];
