@@ -429,8 +429,6 @@ export class UserBind extends Manager {
                 while (score = scores.shift()) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false).catch(() => null);
 
-                    await HelperFunctions.sleep(0.25);
-
                     if (isDPPRecalc) {
                         this.client.logger.info(`${++calculatedCount}/${scoreCount} scores calculated`);
                     }
