@@ -59,9 +59,11 @@ export abstract class DPPHelper {
             scoreID: score.scoreID
         };
 
-        if ((dppList.get(calculationResult.map.hash)?.pp ?? 0) < ppEntry.pp) {
-            dppList.set(calculationResult.map.hash, ppEntry);
+        if ((dppList.get(calculationResult.map.hash)?.pp ?? 0) >= ppEntry.pp || (dppList.size === 75 && dppList.at(-1)!.pp >= ppEntry.pp)) {
+            return;
         }
+
+        dppList.set(calculationResult.map.hash, ppEntry);
 
         dppList.sort((a, b) => {
             return b.pp - a.pp;
