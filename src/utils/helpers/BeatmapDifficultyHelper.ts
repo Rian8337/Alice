@@ -1,4 +1,4 @@
-import { Accuracy, DroidPerformanceCalculator, MapInfo, MapStars, MapStats, Mod, ModUtil, OsuPerformanceCalculator, ReplayAnalyzer, Score } from "osu-droid";
+import { Accuracy, DroidPerformanceCalculator, MapInfo, MapStars, MapStats, Mod, ModNightCore, ModUtil, OsuPerformanceCalculator, ReplayAnalyzer, Score, ThreeFingerChecker } from "osu-droid";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { StarRatingCalculationResult } from "@alice-utils/dpp/StarRatingCalculationResult";
@@ -80,11 +80,11 @@ export abstract class BeatmapDifficultyHelper {
      * Gets calculation parameters from a score.
      * 
      * @param score The score.
-     * @param useReplay Whether to use replay in the calculation. Defaults to `true`.
+     * @param useReplay Whether to use replay in the calculation when needed. Defaults to `true`.
      * @returns Calculation parameters of the score.
      */
     static async getCalculationParamsFromScore(score: Score, useReplay: boolean = true): Promise<PerformanceCalculationParameters> {
-        if (!score.replay && useReplay) {
+        if (!score.replay && useReplay && score.mods.some(m => m instanceof ModNightCore)) {
             await score.downloadReplay();
         }
 
@@ -109,7 +109,7 @@ export abstract class BeatmapDifficultyHelper {
      * Calculates the difficulty and performance value of a score.
      * 
      * @param score The score.
-     * @param useReplay Whether to use replay in the calculation. Defaults to `true`.
+     * @param useReplay Whether to use replay in the calculation when needed. Defaults to `true`.
      * @param calcParams Calculation parameters to override the score's default calculation parameters.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
@@ -120,25 +120,40 @@ export abstract class BeatmapDifficultyHelper {
             return null;
         }
 
-        if (!score.replay && useReplay) {
+        calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
+
+        const star: StarRatingCalculationResult = this.calculateDifficulty(beatmap, calcParams);
+
+        // Determine whether to use replay for 3f nerf or not.
+        if (!score.replay && useReplay && ThreeFingerChecker.isEligibleToDetect(star.droid)) {
             await score.downloadReplay();
         }
 
-        calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
-
-        return this.calculatePerformance(beatmap, calcParams, useReplay ? score.replay : undefined);
+        return this.calculatePerformance(star, calcParams, useReplay ? score.replay : undefined);
     }
 
     /**
-     * Calculates the difficulty and performance value of a beatmap.
+     * Calculates the difficulty and/or performance value of a beatmap.
+     * 
+     * @param star The result of difficulty calculation.
+     * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
+     * @param replay The replay to use in calculation, used for calculating a replay's performance.
+     * @returns The result of the calculation, `null` if the beatmap is not found.
+     */
+    static async calculateBeatmapPerformance(star: StarRatingCalculationResult, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null>;
+
+    /**
+     * Calculates the difficulty and/or performance value of a beatmap.
      * 
      * @param beatmapIDorHash The ID or MD5 hash of the beatmap.
      * @param calculationParams Calculation parameters. If unspecified, will calculate for No Mod SS.
      * @param replay The replay to use in calculation, used for calculating a replay's performance.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
-    static async calculateBeatmapPerformance(beatmapIDorHash: number | string, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null> {
-        const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(beatmapIDorHash);
+    static async calculateBeatmapPerformance(beatmapIDorHash: number | string, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null>;
+
+    static async calculateBeatmapPerformance(beatmapIDorHashorStar: number | string | StarRatingCalculationResult, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null> {
+        const beatmap: MapInfo | null = beatmapIDorHashorStar instanceof StarRatingCalculationResult ? beatmapIDorHashorStar.map : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
 
         if (!beatmap) {
             return null;
@@ -153,7 +168,9 @@ export abstract class BeatmapDifficultyHelper {
             beatmap.maxCombo
         );
 
-        return this.calculatePerformance(beatmap, calculationParams, replay);
+        const star: StarRatingCalculationResult = beatmapIDorHashorStar instanceof StarRatingCalculationResult ? beatmapIDorHashorStar : this.calculateDifficulty(beatmap, calculationParams);
+
+        return this.calculatePerformance(star, calculationParams, replay);
     }
 
     /**
@@ -214,20 +231,21 @@ export abstract class BeatmapDifficultyHelper {
     /**
      * Calculates the performance value of a beatmap.
      * 
-     * @param beatmap The beatmap.
+     * @param star The result of difficulty calculation.
      * @param calculationParams Calculation parameters.
      * @param replay The replay of the score in the beatmap, if available. This will be used to analyze if the score uses 3 finger abuse.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
-    private static calculatePerformance(beatmap: MapInfo, calculationParams: PerformanceCalculationParameters, replay?: ReplayAnalyzer): PerformanceCalculationResult {
-        calculationParams.applyFromBeatmap(beatmap);
-
-        const star: StarRatingCalculationResult = this.calculateDifficulty(beatmap, calculationParams);
+    private static calculatePerformance(star: StarRatingCalculationResult, calculationParams: PerformanceCalculationParameters, replay?: ReplayAnalyzer): PerformanceCalculationResult {
+        calculationParams.applyFromBeatmap(star.map);
 
         if (replay) {
             replay.map = star.droid;
-            replay.checkFor3Finger();
-            calculationParams.tapPenalty = replay.tapPenalty;
+
+            if (!replay.hasBeenCheckedFor3Finger) {
+                replay.checkFor3Finger();
+                calculationParams.tapPenalty = replay.tapPenalty;
+            }
         }
 
         const dpp: DroidPerformanceCalculator = new DroidPerformanceCalculator().calculate({
@@ -245,6 +263,6 @@ export abstract class BeatmapDifficultyHelper {
             stats: calculationParams.customStatistics
         });
 
-        return new PerformanceCalculationResult(beatmap, dpp, pp, replay);
+        return new PerformanceCalculationResult(star.map, dpp, pp, replay);
     }
 }

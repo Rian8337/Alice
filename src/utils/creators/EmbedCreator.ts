@@ -265,9 +265,8 @@ export abstract class EmbedCreator {
                 nmiss: 0
             });
 
-            const fcCalcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(
-                score,
-                false,
+            const fcCalcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateBeatmapPerformance(
+                new StarRatingCalculationResult(calcResult.map, calcResult.droid.stars, calcResult.osu.stars),
                 calcParams
             ))!;
 
@@ -278,9 +277,15 @@ export abstract class EmbedCreator {
             `${arrow} ${(score.accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${score.score.toLocaleString()} ${arrow} ${score.combo}x/${calcResult.map.maxCombo}x ${arrow} [${score.accuracy.n300}/${score.accuracy.n100}/${score.accuracy.n50}/${score.accuracy.nmiss}]`;
 
-        const replayData: ReplayData | undefined | null = calcResult.replay?.data;
+        if (!score.replay) {
+            await score.downloadReplay();
+        }
+
+        const replayData: ReplayData | undefined | null = score.replay?.data;
 
         if (replayData) {
+            score.replay!.map ??= calcResult.droid.stars;
+
             // Get amount of slider ticks and ends hit
             let collectedSliderTicks: number = 0;
             let collectedSliderEnds: number = 0;
@@ -312,7 +317,7 @@ export abstract class EmbedCreator {
             beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${calcResult.droid.stars.map.sliderTicks} slider ticks ${arrow} ${collectedSliderEnds}/${calcResult.droid.stars.map.sliderEnds} slider ends`;
 
             // Get hit error average and UR
-            const hitErrorInformation: HitErrorInformation = <HitErrorInformation> calcResult.replay!.calculateHitError();
+            const hitErrorInformation: HitErrorInformation = score.replay!.calculateHitError()!;
 
             beatmapInformation += `\n${arrow} ${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg ${arrow} ${hitErrorInformation.unstableRate.toFixed(2)} UR`;
         }
