@@ -79,6 +79,16 @@ export class ReplayAnalyzer {
      */
     tapPenalty: number = 1;
 
+    /**
+     * Whether this replay has been checked against 3 finger usage.
+     */
+    hasBeenCheckedFor3Finger: boolean = false;
+
+    /**
+     * Whether this replay has been checked against 2 hand usage.
+     */
+    hasBeenCheckedFor2Hand: boolean = false;
+
     private readonly BYTE_LENGTH = 1;
     private readonly SHORT_LENGTH = 2;
     private readonly INT_LENGTH = 4;
@@ -558,6 +568,7 @@ export class ReplayAnalyzer {
 
         this.is3Finger = result.is3Finger;
         this.tapPenalty = result.penalty;
+        this.hasBeenCheckedFor3Finger = true;
     }
 
     /**
@@ -572,5 +583,6 @@ export class ReplayAnalyzer {
 
         const twoHandChecker: TwoHandChecker = new TwoHandChecker(this.map, this.data);
         this.is2Hand = twoHandChecker.check();
+        this.hasBeenCheckedFor2Hand = true;
     }
 }
