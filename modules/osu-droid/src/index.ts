@@ -67,6 +67,7 @@ import { SliderPath } from './utils/SliderPath';
 import { SliderTick } from './beatmap/hitobjects/sliderObjects/SliderTick';
 import { Spinner } from './beatmap/hitobjects/Spinner';
 import { TailCircle } from './beatmap/hitobjects/sliderObjects/TailCircle';
+import { ThreeFingerChecker } from './replay/analysis/ThreeFingerChecker';
 import { TimingPoint } from './beatmap/timings/TimingPoint';
 import { Utils } from './utils/Utils';
 import { Vector2 } from './mathutil/Vector2';
@@ -451,6 +452,11 @@ export = {
      * Represents the tailcircle of a slider (sliderend).
      */
     TailCircle,
+
+    /**
+     * Utility to check whether or not a beatmap is three-fingered.
+     */
+    ThreeFingerChecker,
 
     /**
      * Represents a timing point in a beatmap.

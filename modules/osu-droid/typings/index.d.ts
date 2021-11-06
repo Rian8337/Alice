@@ -2132,6 +2132,14 @@ declare module "osu-droid" {
          * Penalty value used to penalize dpp for 3 finger abuse.
          */
         tapPenalty: number;
+        /**
+         * Whether this replay has been checked against 3 finger usage.
+         */
+        hasBeenCheckedFor3Finger: boolean;
+        /**
+         * Whether this replay has been checked against 2 hand usage.
+         */
+        hasBeenCheckedFor2Hand: boolean;
         private readonly BYTE_LENGTH: number;
         private readonly SHORT_LENGTH: number;
         private readonly INT_LENGTH: number;
@@ -2572,6 +2580,26 @@ declare module "osu-droid" {
      * Represents the tailcircle of a slider (sliderend).
      */
     export class TailCircle extends Circle { }
+
+    /**
+     * Utility to check whether or not a beatmap is three-fingered.
+     */
+    export class ThreeFingerChecker {
+        /**
+         * The beatmap to analyze.
+         */
+        readonly map: DroidStarRating;
+        /**
+         * The data of the replay.
+         */
+        readonly data: ReplayData;
+        /**
+         * Checks whether a beatmap is eligible to be detected for 3-finger.
+         * 
+         * @param map The beatmap.
+         */
+        static isEligibleToDetect(map: DroidStarRating): boolean;
+    }
 
     /**
      * Represents a timing point that changes the beatmap's BPM.
