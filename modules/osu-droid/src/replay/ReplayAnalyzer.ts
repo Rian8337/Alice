@@ -453,7 +453,7 @@ export class ReplayAnalyzer {
      * 
      * `analyze()` must be called before calling this.
      */
-    calculateHitError(): HitErrorInformation|null {
+    calculateHitError(): HitErrorInformation | null {
         if (!this.data || !this.map) {
             return null;
         }
@@ -485,26 +485,10 @@ export class ReplayAnalyzer {
             }
         }
 
-        hitObjectData.forEach(v => {
-            if (v.result === hitResult.RESULT_0) {
-                return;
-            }
-
-            const accuracy: number = v.accuracy;
-
-            if (accuracy >= 0) {
-                positiveTotal += accuracy;
-                ++positiveCount;
-            } else {
-                negativeTotal += accuracy;
-                ++negativeCount;
-            }
-        });
-
         return {
             positiveAvg: positiveTotal / positiveCount || 0,
             negativeAvg: negativeTotal / negativeCount || 0,
-            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map(v => v.result !== hitResult.RESULT_0 ? v.accuracy : 0)) * 10
+            unstableRate: MathUtils.calculateStandardDeviation(hitObjectData.map((v, i) => v.result !== hitResult.RESULT_0 && !(objects[i] instanceof Spinner) ? v.accuracy : 0)) * 10
         };
     }
 
