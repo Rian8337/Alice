@@ -83,7 +83,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // PP
-    const calcResult: PerformanceCalculationResult = <PerformanceCalculationResult> await BeatmapDifficultyHelper.calculateScorePerformance(score);
+    const calcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(score))!;
 
     DPPHelper.insertScore(bindInfo.pp, score, calcResult);
 
