@@ -170,7 +170,8 @@ export abstract class EmbedCreator {
             const accuracy: Accuracy = calculationParams.accuracy;
             const customStatistics: MapStats | undefined = calculationParams.customStatistics;
 
-            embed.spliceFields(embed.fields.length - 1, 1)
+            embed.setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(pcPP.stars.total))
+                .spliceFields(embed.fields.length - 1, 1)
                 .addField(
                     map.showStatistics(4, mods, customStatistics),
                     `${map.showStatistics(5, mods, customStatistics)}\n**Result**: ${combo}/${map.maxCombo}x | ${(accuracy.value() * 100).toFixed(2)}% | [${accuracy.n300}/${accuracy.n100}/${accuracy.n50}/${accuracy.nmiss}]`
@@ -180,11 +181,12 @@ export abstract class EmbedCreator {
                     `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
                 );
         } else {
-            embed.addField(
+            embed.setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calculationResult.osu.total))
+                .addField(
                 `**Star Rating**`,
                 `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.droid.total)))} ${calculationResult.droid.total.toFixed(2)} droid stars\n` +
                 `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.osu.total)))} ${calculationResult.osu.total.toFixed(2)} PC stars`
-            )
+            );
         }
 
         const newRating: OsuStarRating = calculationResult instanceof PerformanceCalculationResult ? calculationResult.osu.stars : calculationResult.osu;
