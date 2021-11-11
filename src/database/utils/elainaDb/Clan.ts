@@ -280,7 +280,7 @@ export class Clan extends Manager {
      * @param user The user to remove.
      * @returns An object containing information about the operation.
      */
-    async removeMember(user: User): Promise<OperationResult>;
+    async removeMember(user: User, force?: boolean): Promise<OperationResult>;
 
     /**
      * Removes a member from the clan.
@@ -292,14 +292,15 @@ export class Clan extends Manager {
      * be checked by using the `exists` field.
      * 
      * @param userID The ID of the user to remove.
+     * @param force Whether to forcefully remove the user even if they're the leader.
      * @returns An object containing information about the operation.
      */
-    async removeMember(userID: Snowflake): Promise<OperationResult>;
+    async removeMember(userID: Snowflake, force?: boolean): Promise<OperationResult>;
 
-    async removeMember(userOrId: User | Snowflake): Promise<OperationResult> {
+    async removeMember(userOrId: User | Snowflake, force: boolean = false): Promise<OperationResult> {
         const id: Snowflake = userOrId instanceof User ? userOrId.id : userOrId;
 
-        if (id === this.leader) {
+        if (id === this.leader && !force) {
             return this.createOperationResult(false, "clan leader cannot leave the clan");
         }
 
@@ -309,6 +310,10 @@ export class Clan extends Manager {
 
         if (this.member_list.size === 0) {
             return this.disband();
+        }
+
+        if (id === this.leader) {
+            this.changeLeader();
         }
 
         await this.removeClanRole(userOrId);

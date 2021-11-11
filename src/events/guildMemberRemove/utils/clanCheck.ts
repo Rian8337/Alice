@@ -16,9 +16,11 @@ export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     }
 
     if (clan.member_list.get(member.id)) {
-        await clan.removeMember(member.id);
-        await clan.notifyLeader(`Hey, your member (${member}) has left the server, therefore he/she has been kicked from your clan!`);
-        await clan.updateClan();
+        await clan.removeMember(member.id, true);
+        if (clan.exists) {
+            await clan.notifyLeader(`Hey, your member (${member}) has left the server, therefore they have been kicked from your clan!`);
+            await clan.updateClan();
+        }
     }
 };
 
