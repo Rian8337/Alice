@@ -83,21 +83,27 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     // PP
-    const calcResult: PerformanceCalculationResult = (await BeatmapDifficultyHelper.calculateScorePerformance(score))!;
-
-    DPPHelper.insertScore(bindInfo.pp, score, calcResult);
-
-    const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
+    const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
         { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
     );
 
-    let fieldContent: string = `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | ${dpp}pp`;
+    let fieldContent: string = `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | `;
+
+    if (calcResult) {
+        DPPHelper.insertScore(bindInfo.pp, score, calcResult);
+
+        const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
+
+        fieldContent += `${dpp}pp`;
+    }
 
     const currentTotalPP: number = bindInfo.pptotal;
 
-    await bindInfo.setNewDPPValue(bindInfo.pp, 1);
+    if (calcResult) {
+        await bindInfo.setNewDPPValue(bindInfo.pp, 1);
+    }
 
     const totalPP: number = DPPHelper.calculateFinalPerformancePoints(bindInfo.pp);
 

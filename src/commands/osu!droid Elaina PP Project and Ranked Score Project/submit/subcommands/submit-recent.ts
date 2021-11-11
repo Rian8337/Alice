@@ -93,8 +93,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 fieldContent += "Unranked features";
                 break;
             default:
-                const calcResult: PerformanceCalculationResult =
-                    (await BeatmapDifficultyHelper.calculateScorePerformance(score))!;
+                const calcResult: PerformanceCalculationResult | null =
+                    await BeatmapDifficultyHelper.calculateScorePerformance(score);
+
+                if (!calcResult) {
+                    fieldContent += "Beatmap not found";
+                    break;
+                }
 
                 DPPHelper.insertScore(bindInfo.pp, score, calcResult);
 

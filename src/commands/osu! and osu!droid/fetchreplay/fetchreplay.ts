@@ -97,7 +97,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const replayAttachment: MessageAttachment = new MessageAttachment(zip.toBuffer(), `${data.fileName.substring(0, data.fileName.length - 4)} [${data.playerName}]-${json.replaydata.time}.edr`);
 
-    if (!beatmapInfo) {
+    if (!beatmapInfo?.map) {
         return interaction.editReply({
             content: MessageCreator.createAccept(
                 fetchreplayStrings.fetchReplayNoBeatmapSuccessful,

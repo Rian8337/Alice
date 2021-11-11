@@ -80,8 +80,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    await beatmapInfo?.retrieveBeatmapFile();
-
     leaderboardCache.set(1, firstPageScores);
 
     const arrow: Symbols = Symbols.rightArrowSmall;

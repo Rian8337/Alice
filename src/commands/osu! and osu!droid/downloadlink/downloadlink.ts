@@ -24,7 +24,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const embedOptions: MessageOptions = await EmbedCreator.createBeatmapEmbed(beatmapInfo);
+    const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmapInfo);
 
     const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
 

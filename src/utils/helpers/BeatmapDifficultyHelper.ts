@@ -116,7 +116,7 @@ export abstract class BeatmapDifficultyHelper {
     static async calculateScorePerformance(score: Score, useReplay: boolean = true, calcParams?: PerformanceCalculationParameters): Promise<PerformanceCalculationResult | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
-        if (!beatmap) {
+        if (!beatmap?.map) {
             return null;
         }
 
@@ -155,7 +155,7 @@ export abstract class BeatmapDifficultyHelper {
     static async calculateBeatmapPerformance(beatmapIDorHashorStar: number | string | StarRatingCalculationResult, calculationParams?: PerformanceCalculationParameters, replay?: ReplayAnalyzer): Promise<PerformanceCalculationResult | null> {
         const beatmap: MapInfo | null = beatmapIDorHashorStar instanceof StarRatingCalculationResult ? beatmapIDorHashorStar.map : await BeatmapManager.getBeatmap(beatmapIDorHashorStar);
 
-        if (!beatmap) {
+        if (!beatmap?.map) {
             return null;
         }
 
@@ -182,7 +182,7 @@ export abstract class BeatmapDifficultyHelper {
     static async calculateScoreDifficulty(score: Score): Promise<StarRatingCalculationResult | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(score.hash);
 
-        if (!beatmap) {
+        if (!beatmap?.map) {
             return null;
         }
 
@@ -202,7 +202,7 @@ export abstract class BeatmapDifficultyHelper {
     static async calculateBeatmapDifficulty(beatmapIDorHash: number | string, calculationParams: StarRatingCalculationParameters): Promise<StarRatingCalculationResult | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(beatmapIDorHash);
 
-        if (!beatmap) {
+        if (!beatmap?.map) {
             return null;
         }
 

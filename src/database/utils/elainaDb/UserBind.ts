@@ -212,7 +212,7 @@ export class UserBind extends Manager {
      * @returns An object containing information about the operation.
      */
     async setNewDPPValue(list: Collection<string, PPEntry>, playCountIncrement: number): Promise<OperationResult> {
-        this.pp = list.clone();
+        this.pp = list;
 
         this.pp.sort((a, b) => {
             return b.pp - a.pp;

@@ -79,9 +79,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             let string: string = "";
 
             if (beatmapInformations.length > 3) {
-                string = MessageCreator.createAccept(`I found ${beatmapInformations.length} maps, but only displaying 3 due to my limitations.`);
-
-                beatmapInformations.splice(3);
+                string = MessageCreator.createAccept(`I found ${beatmapInformations.length} maps, but only displaying up to 3 due to my limitations.`);
             }
 
             for await (const beatmapInfo of beatmapInformations) {
@@ -117,8 +115,15 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 );
 
             for await (const beatmapInfo of beatmapInformations) {
-                const calcResult: PerformanceCalculationResult =
-                    (await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapInfo.hash, calcParams))!;
+                if (embed.fields.length === 3) {
+                    break;
+                }
+
+                const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateBeatmapPerformance(beatmapInfo.hash, calcParams);
+
+                if (!calcResult) {
+                    continue;
+                }
 
                 embed.addField(
                     `__${beatmapInfo.version}__ (${calcResult.droid.stars.total.toFixed(2)} ${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)} ${Symbols.star})`,
