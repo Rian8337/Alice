@@ -122,7 +122,11 @@ export abstract class BeatmapDifficultyHelper {
 
         calcParams ??= await this.getCalculationParamsFromScore(score, useReplay);
 
-        const star: StarRatingCalculationResult = this.calculateDifficulty(beatmap, calcParams);
+        const star: StarRatingCalculationResult | null = this.calculateDifficulty(beatmap, calcParams);
+
+        if (!star) {
+            return null;
+        }
 
         // Determine whether to use replay for 3f nerf or not.
         if (!score.replay && useReplay && ThreeFingerChecker.isEligibleToDetect(star.droid)) {
@@ -168,7 +172,11 @@ export abstract class BeatmapDifficultyHelper {
             beatmap.maxCombo
         );
 
-        const star: StarRatingCalculationResult = beatmapIDorHashorStar instanceof StarRatingCalculationResult ? beatmapIDorHashorStar : this.calculateDifficulty(beatmap, calculationParams);
+        const star: StarRatingCalculationResult | null = beatmapIDorHashorStar instanceof StarRatingCalculationResult ? beatmapIDorHashorStar : this.calculateDifficulty(beatmap, calculationParams);
+
+        if (!star) {
+            return null;
+        }
 
         return this.calculatePerformance(star, calculationParams, replay);
     }
@@ -216,7 +224,11 @@ export abstract class BeatmapDifficultyHelper {
      * @param calculationParams Calculation parameters.
      * @returns The calculation result.
      */
-    private static calculateDifficulty(beatmap: MapInfo, calculationParams: StarRatingCalculationParameters): StarRatingCalculationResult {
+    private static calculateDifficulty(beatmap: MapInfo, calculationParams: StarRatingCalculationParameters): StarRatingCalculationResult | null {
+        if (!beatmap.map || beatmap.map.objects.length === 0) {
+            return null;
+        }
+
         calculationParams.applyFromBeatmap(beatmap);
 
         const star: MapStars = new MapStars().calculate({
@@ -236,7 +248,11 @@ export abstract class BeatmapDifficultyHelper {
      * @param replay The replay of the score in the beatmap, if available. This will be used to analyze if the score uses 3 finger abuse.
      * @returns The result of the calculation, `null` if the beatmap is not found.
      */
-    private static calculatePerformance(star: StarRatingCalculationResult, calculationParams: PerformanceCalculationParameters, replay?: ReplayAnalyzer): PerformanceCalculationResult {
+    private static calculatePerformance(star: StarRatingCalculationResult, calculationParams: PerformanceCalculationParameters, replay?: ReplayAnalyzer): PerformanceCalculationResult | null {
+        if (!star.map.map || star.map.map.objects.length === 0) {
+            return null;
+        }
+
         calculationParams.applyFromBeatmap(star.map);
 
         if (replay) {
