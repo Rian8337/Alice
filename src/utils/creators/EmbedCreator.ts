@@ -1,4 +1,4 @@
-import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModUtil, OsuPerformanceCalculator, OsuStarRating, Precision, ReplayData, ReplayObjectData, Score, Slider } from "osu-droid";
+import { Accuracy, DroidPerformanceCalculator, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModUtil, OsuPerformanceCalculator, OsuStarRating, Precision, ReplayData, ReplayObjectData, Score, Slider, SliderTick, TailCircle } from "osu-droid";
 import { ColorResolvable, CommandInteraction, Guild, GuildEmoji, GuildMember, MessageAttachment, MessageEmbed, MessageOptions, User } from "discord.js";
 import { Config } from "@alice-core/Config";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
@@ -294,6 +294,7 @@ export abstract class EmbedCreator {
             let collectedSliderEnds: number = 0;
 
             for (let i = 0; i < replayData.hitObjectData.length; ++i) {
+                // Using droid star rating as legacy slider tail doesn't exist.
                 const object: HitObject = calcResult.droid.stars.map.objects[i];
                 const objectData: ReplayObjectData = replayData.hitObjectData[i];
 
@@ -301,9 +302,20 @@ export abstract class EmbedCreator {
                     continue;
                 }
 
-                // Exclude head circle
-                collectedSliderTicks += objectData.tickset.slice(0, object.ticks).filter(Boolean).length;
-                collectedSliderEnds += Number(objectData.tickset.at(object.ticks)!);
+                // Exclude the head circle.
+                for (let j = 1; j < object.nestedHitObjects.length; ++j) {
+                    const nested: HitObject = object.nestedHitObjects[j];
+
+                    if (!objectData.tickset[j - 1]) {
+                        continue;
+                    }
+
+                    if (nested instanceof SliderTick) {
+                        ++collectedSliderTicks;
+                    } else if (nested instanceof TailCircle) {
+                        ++collectedSliderEnds;
+                    }
+                }
             }
 
             beatmapInformation += `\n${arrow} ${collectedSliderTicks}/${calcResult.droid.stars.map.sliderTicks} slider ticks ${arrow} ${collectedSliderEnds}/${calcResult.droid.stars.map.sliderEnds} slider ends`;
