@@ -36,7 +36,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const badgeIndexInput: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        "Choose the slot number that you want to unequip the badge on.",
+        {
+            content: MessageCreator.createWarn("Choose the slot number that you want to unequip the badge on.")
+        },
         ArrayHelper.initializeArray(10, 1).map((v, i) => {
             return {
                 label: (v + i).toLocaleString(),

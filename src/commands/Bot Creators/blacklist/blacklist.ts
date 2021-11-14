@@ -23,7 +23,9 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        `Detected Beatmap ID: ${beatmapID}. Choose the action that you want to do.`,
+        {
+            content: MessageCreator.createWarn(`Detected Beatmap ID: ${beatmapID}. Choose the action that you want to do.`)
+        },
         [
             {
                 label: "Blacklist",

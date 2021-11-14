@@ -32,7 +32,9 @@ export abstract class CommandHelper extends Manager {
     static async runSubcommandNotFromInteraction(interaction: CommandInteraction, mainCommandDirectory: string, subcommandChoices: MessageSelectOptionData[], placeholder: string): Promise<any> {
         const pickedSubcommand: string = (await SelectMenuCreator.createSelectMenu(
             interaction,
-            placeholder,
+            {
+                content: MessageCreator.createWarn(placeholder)
+            },
             subcommandChoices,
             [interaction.user.id],
             20

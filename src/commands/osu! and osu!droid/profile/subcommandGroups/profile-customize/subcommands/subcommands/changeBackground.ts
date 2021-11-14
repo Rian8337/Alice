@@ -28,7 +28,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     const bgId: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        "Choose the background that you want to use.",
+        {
+            content: MessageCreator.createWarn("Choose the background that you want to use.")
+        },
         backgroundList.map(v => {
             return {
                 label: v.name,

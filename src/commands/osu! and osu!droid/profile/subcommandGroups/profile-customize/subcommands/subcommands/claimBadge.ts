@@ -32,7 +32,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const badgeID: string | undefined = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        "Choose the badge that you want to claim.",
+        {
+            content: MessageCreator.createWarn("Choose the badge that you want to claim.")
+        },
         badgeList.map(v => {
             return {
                 label: v.name,

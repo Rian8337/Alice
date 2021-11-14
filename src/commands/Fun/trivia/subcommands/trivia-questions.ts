@@ -21,7 +21,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     if (interaction.options.getBoolean("forcecategory")) {
         const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
             interaction,
-            "Choose the category that you want to enforce.",
+            {
+                content: MessageCreator.createWarn("Choose the category that you want to enforce.")
+            },
             TriviaHelper.getCategoryChoices(),
             [interaction.user.id],
             30

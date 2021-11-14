@@ -22,7 +22,9 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const pickedChoice: string = (await SelectMenuCreator.createSelectMenu(
         interaction,
-        "Choose the video that you want to queue.",
+        {
+            content: MessageCreator.createWarn("Choose the video that you want to queue.")
+        },
         videos.map(v => {
             return {
                 label: v.title.substring(0, 101),
