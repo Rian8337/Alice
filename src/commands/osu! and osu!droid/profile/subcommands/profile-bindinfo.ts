@@ -61,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember> interaction.member).displayColor }
+        { color: (<GuildMember | null> interaction.member)?.displayColor }
     );
 
     embed.setAuthor(`Player Information for ${player.username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${player.uid}`)
