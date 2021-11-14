@@ -43,7 +43,7 @@ export const run: EventUtil["run"] = async client => {
         const selectedLanguage: keyof typeof VerifyLanguage | undefined = <keyof typeof VerifyLanguage | undefined> (await SelectMenuCreator.createSelectMenu(
             i,
             {
-                content: MessageCreator.createWarn("__Do not dismiss this message. You will be forced to wait for a minute if you do so__.\n\nSelect your preferred language.")
+                content: MessageCreator.createWarn("__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__.\n\nSelect your preferred language.")
             },
             (<(keyof typeof VerifyLanguage)[]> Object.keys(VerifyLanguage)).map(v => {
                 return {
