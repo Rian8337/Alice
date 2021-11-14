@@ -122,6 +122,16 @@ export const run: EventUtil["run"] = async client => {
                 });
                 break;
             case "verification":
+                // I know this doesn't make sense, but just in case a staff clicks the button, this rejection message will appear
+                if (member.roles.cache.find(v => v.name === "Member")) {
+                    i.reply({
+                        content: MessageCreator.createReject("I'm sorry, you have been verified!"),
+                        ephemeral: true
+                    });
+
+                    return;
+                }
+
                 await i.editReply({
                     content: MessageCreator.createAccept("A thread will be created for you. Please wait."),
                 });
