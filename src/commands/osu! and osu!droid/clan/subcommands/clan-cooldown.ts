@@ -73,6 +73,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 responses.push(MessageCreator.createAccept(
                     clanStrings.userInOldJoinCooldown,
                     interaction.options.getUser("user") ? "The user" : "You",
+                    interaction.options.getUser("user") ? "their" : "your",
                     DateTimeFormatHelper.secondsToDHMS(Math.ceil(oldJoinCooldownDifference / 1000)).toString()
                 ));
             } else {
