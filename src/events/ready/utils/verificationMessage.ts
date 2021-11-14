@@ -95,6 +95,8 @@ export const run: EventUtil["run"] = async client => {
             i.reply({
                 content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment.")
             });
+
+            return;
         }
 
         const member: GuildMember = <GuildMember> i.member;
@@ -182,6 +184,8 @@ export const run: EventUtil["run"] = async client => {
             i.reply({
                 content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment.")
             });
+
+            return;
         }
 
         const selectedLanguage: keyof typeof VerifyLanguage | undefined = await getUserLanguagePreference(i);
