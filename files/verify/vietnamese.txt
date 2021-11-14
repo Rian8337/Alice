@@ -1,0 +1,13 @@
+THỚT XÁC NHẬN THAM GIA SERVER OSU!DROID
+
+Chào mừng đến với thớt (chủ đề) xác nhận
+Để xác minh rằng bạn là người chơi osu!droid hoặc có hứng thú với game. Xin thực hiện các bước sau để tiến hành xác nhận và mở tất cả các kênh còn lại trong server:
+
+```md
+- Đăng một ảnh chụp màn hình trong game osu!droid (màn hình chính nếu chơi online hoặc màn hình điểm số bất kì nếu như chơi offline). Nếu bạn vừa tạo tài khoản, hãy cố để chơi được 1 bài trước khi thực hiện xác nhận
+
+- Đăng ảnh hồ sơ tài khoản osu! của bạn (hoặc là post đường link tới nó) và nêu lý do muốn tham gia server.
+```
+Sau đó bạn có thể ping (mention) @Moderator hoặc @Helper trong thớt của bạn và đợi họ hoàn tất việc xác nhận cho bạn
+LƯU Ý: KHÔNG ĐƯỢC RỜI THỚT
+Nếu bạn không thấy thớt của mình hiển thị trên danh sách kênh. Có thể nó đã được lưu trữ. Vào menu thread (chủ đề) và tìm thớt của bạn trong mục ở mục archived (đã lưu trữ)
