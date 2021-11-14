@@ -1,0 +1,10 @@
+Bem-vindo ao servidor de osu!droid internacional!
+
+Para começar, leia as regras do servidor em #rules.
+
+Depois disso, pressione o botão abaixo para começar seu processo de verificação.
+
+Se o botão não estiver funcionando, tente novamente em alguns segundos.
+Se o botão ainda não estiver funcionando, saia do servidor e entre novamente. Caso ainda não consiga prosseguir, entre em contato com algum membro da staff <@&595667274707370024> ou <@&369108742077284353>) para obter assistência.
+
+Se o bot estiver offline, na mesma categoria do canal onde você está, deverá ter outro canal reserva para que você começe o processo de verificação, caso não haja nenhum, espere até que algum membro da staff libere o canal para você, estando lá, leia atentamente o tópico do canal que contém os métodos de verificação.
