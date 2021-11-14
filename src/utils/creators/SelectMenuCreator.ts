@@ -1,4 +1,4 @@
-import { CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction, Snowflake } from "discord.js";
+import { CommandInteraction, InteractionCollector, InteractionReplyOptions, Message, MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction, Snowflake } from "discord.js";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
@@ -18,11 +18,10 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param duration The duration the select menu will be active for.
      * @returns The choices that the user picked.
      */
-    static createSelectMenu(interaction: CommandInteraction, placeholder: string, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string[]> {
+    static createSelectMenu(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string[]> {
         return new Promise(async resolve => {
             const selectMenu: MessageSelectMenu = new MessageSelectMenu()
                 .setCustomId("whatever")
-                .setPlaceholder(placeholder)
                 .addOptions(choices.slice(0, 25));
 
             const component: MessageActionRow = new MessageActionRow()
@@ -36,12 +35,12 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                     .addComponents(selectMenu);
             };
 
+            options.components ??= [];
+            options.components.push(component);
+
             const message: Message = await MessageButtonCreator.createLimitedButtonBasedPaging(
                 interaction,
-                {
-                    content: MessageCreator.createWarn("A select menu has appeared..."),
-                    components: [ component ]
-                },
+                options,
                 [interaction.user.id],
                 choices,
                 25,

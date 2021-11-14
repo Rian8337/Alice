@@ -1,7 +1,7 @@
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { ButtonInteraction, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed, MessageOptions, Snowflake } from "discord.js";
+import { ButtonInteraction, CommandInteraction, InteractionCollector, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Snowflake } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 
 /**
@@ -24,7 +24,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    static createLimitedButtonBasedPaging(interaction: CommandInteraction, options: MessageOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    static createLimitedButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
         return this.createButtonBasedPaging(
             interaction,
             options,
@@ -52,7 +52,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    static createLimitlessButtonBasedPaging(interaction: CommandInteraction, options: MessageOptions, users: Snowflake[], contents: any[], startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    static createLimitlessButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
         return this.createButtonBasedPaging(
             interaction,
             options,
@@ -76,7 +76,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param duration The duration the confirmation button collector will remain active, in seconds.
      * @returns A boolean determining whether the user confirmed.
      */
-    static createConfirmation(interaction: CommandInteraction, options: MessageOptions, users: Snowflake[], duration: number): Promise<boolean> {
+    static createConfirmation(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], duration: number): Promise<boolean> {
         return new Promise(async resolve => {
             const buttons: MessageButton[] = this.createConfirmationButtons();
 
@@ -147,7 +147,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    private static async createButtonBasedPaging(interaction: CommandInteraction, options: MessageOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, limitless: boolean, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    private static async createButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, limitless: boolean, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
         const pages: number = limitless ? Number.POSITIVE_INFINITY : Math.ceil(contents.length / contentsPerPage);
 
         let currentPage: number = startPage;

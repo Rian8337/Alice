@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, MessageCollector, MessageOptions, Snowflake } from "discord.js";
+import { CommandInteraction, InteractionReplyOptions, Message, MessageCollector, Snowflake } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
 
 /**
@@ -16,7 +16,7 @@ export abstract class MessageInputCreator {
      * @param deleteOnInput Whether to delete the input after given. Defaults to `true`.
      * @returns The picked choice or given input, `undefined` if the users didn't pick any choice or give any input.
      */
-    static createInputDetector(interaction: CommandInteraction, options: MessageOptions, choices: string[], users: Snowflake[], duration: number, deleteOnInput: boolean = true): Promise<string|undefined> {
+    static createInputDetector(interaction: CommandInteraction, options: InteractionReplyOptions, choices: string[], users: Snowflake[], duration: number, deleteOnInput: boolean = true): Promise<string|undefined> {
         return new Promise(async resolve => {
             const message: Message = <Message> await interaction.editReply(options);
 
