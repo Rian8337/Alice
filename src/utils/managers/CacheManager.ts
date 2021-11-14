@@ -43,4 +43,11 @@ export abstract class CacheManager {
      * Recalculation queue for per-user recalculation, mapped by the user's ID.
      */
     static readonly recalculationQueue: Collection<Snowflake, CommandInteraction> = new Collection();
+
+    /**
+     * The users that still has a verification menu open.
+     * 
+     * This is used to prevent collector creation spam.
+     */
+    static readonly userHasActiveVerificationMenu: Set<Snowflake> = new Set();
 }

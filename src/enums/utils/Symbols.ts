@@ -23,5 +23,6 @@ export enum Symbols {
     heart = "❤️",
     playButton = "▶️",
     memo = "📝",
-    crown = "👑"
+    crown = "👑",
+    personRunning = "🏃"
 };
