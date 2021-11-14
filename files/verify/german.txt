@@ -7,7 +7,7 @@ Um dich als jemand zu verifizieren, der osu!droid spielt oder Interesse an dem S
 
 - Schicke einen screenshot oder einen Link von deinem osu! Profil (PC Version) und gib einen Grund an, warum du diesem Server beigetreten bist.
 ```
-Wenn du hiermit fertig bist, kannst du die @Moderator und/oder die @Helper rolle in deinem Thread markieren und warten, bis jemand kommt um dich zu verifizieren.
+Wenn du hiermit fertig bist, kannst du die <@&369108742077284353> und/oder die <@&595667274707370024> rolle in deinem Thread markieren und warten, bis jemand kommt um dich zu verifizieren.
 
 **VERLASSE ABER NICHT DEINEN THREAD**
 

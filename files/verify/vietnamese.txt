@@ -8,6 +8,6 @@ Chào mừng đến với thớt (chủ đề) xác nhận
 
 - Đăng ảnh hồ sơ tài khoản osu! của bạn (hoặc là post đường link tới nó) và nêu lý do muốn tham gia server.
 ```
-Sau đó bạn có thể ping (mention) @Moderator hoặc @Helper trong thớt của bạn và đợi họ hoàn tất việc xác nhận cho bạn
+Sau đó bạn có thể ping (mention) <@&369108742077284353> hoặc <@&595667274707370024> trong thớt của bạn và đợi họ hoàn tất việc xác nhận cho bạn
 LƯU Ý: KHÔNG ĐƯỢC RỜI THỚT
 Nếu bạn không thấy thớt của mình hiển thị trên danh sách kênh. Có thể nó đã được lưu trữ. Vào menu thread (chủ đề) và tìm thớt của bạn trong mục ở mục archived (đã lưu trữ)

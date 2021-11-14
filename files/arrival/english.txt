@@ -6,6 +6,6 @@ After that, you can begin your verification process by simply pressing the butto
 
 If the button doesn't work, please try again after 5-10 seconds.
 
-If the button still doesn't work, you can try rejoining the server. If it still doesn't work, you may contact a staff member (a @Helper or @Moderator) for assistance.
+If the button still doesn't work, you can try rejoining the server. If it still doesn't work, you may contact a staff member (a <@&595667274707370024> or <@&369108742077284353>) for assistance.
 
 If the bot is offline, another channel should be available in the same channel category for you to begin your verification process. If there is none, please wait until one of our staff members opens the channel. Once you're there, please read the channel's topic for verification methods.

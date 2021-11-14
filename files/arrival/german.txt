@@ -6,6 +6,6 @@ Danach kannst du die Verifikation beginnen, indem du den Knopf darunter drückst
 
 Wenn der Knopf nicht funktioniert, versuche es erneut nach 5-10 Sekunden.
 
-Wenn der Knopf immer noch nicht funktioniert, kannst du versuchen den Server zu verlassen und wieder beizutreten. Wenn es jedoch immer noch nicht klappt, wende dich bitte an jemanden aus unserem Team (@Helper oder @Moderator).
+Wenn der Knopf immer noch nicht funktioniert, kannst du versuchen den Server zu verlassen und wieder beizutreten. Wenn es jedoch immer noch nicht klappt, wende dich bitte an jemanden aus unserem Team (<@&595667274707370024> oder <@&369108742077284353>).
 
 Wenn der Bot offline ist, sollte ein anderer Kanal verfügbar sein, um mit der Verifikation zu beginnen. Wenn der Kanal jedoch nicht verfügbar ist, warte bitte bis ihn jemand aus unserem Team öffnet. Wenn du endlich da bist, dann lies bitte die Kanalbeschreibung für die Verifikationsmethoden.
