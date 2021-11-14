@@ -63,7 +63,8 @@ export const run: EventUtil["run"] = async client => {
     arrivalMessage.createMessageComponentCollector().on("collect", async i => {
         if (CacheManager.userHasActiveVerificationMenu.has(i.user.id)) {
             i.reply({
-                content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment.")
+                content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment."),
+                ephemeral: true
             });
 
             return;
@@ -162,7 +163,8 @@ export const run: EventUtil["run"] = async client => {
     verificationTranslationMessage.createMessageComponentCollector().on("collect", async i => {
         if (CacheManager.userHasActiveVerificationMenu.has(i.user.id)) {
             i.reply({
-                content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment.")
+                content: MessageCreator.createReject("I'm sorry, you're still in cooldown! Please wait for a moment."),
+                ephemeral: true
             });
 
             return;
