@@ -10,6 +10,7 @@ import { MuteManager } from "@alice-utils/managers/MuteManager";
 import { Collection, Guild, GuildMember, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { Config } from "@alice-core/Config";
 
 export const run: EventUtil["run"] = async client => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
@@ -68,7 +69,9 @@ export const run: EventUtil["run"] = async client => {
             ephemeral: true
         });
 
-        CacheManager.userHasActiveVerificationMenu.add(i.user.id);
+        if (!Config.botOwners.includes(i.user.id)) {
+            CacheManager.userHasActiveVerificationMenu.add(i.user.id);
+        }
 
         const selectedLanguage: keyof typeof VerifyLanguage | undefined = <keyof typeof VerifyLanguage | undefined> (await SelectMenuCreator.createSelectMenu(
             i,
