@@ -7,7 +7,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
 import { MuteManager } from "@alice-utils/managers/MuteManager";
-import { Collection, Guild, GuildMember, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
+import { Collection, Guild, GuildMember, InteractionReplyOptions, Message, MessageComponentInteraction, MessageEmbed, Role, Snowflake, TextChannel, ThreadChannel } from "discord.js";
 import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { CacheManager } from "@alice-utils/managers/CacheManager";
 import { Config } from "@alice-core/Config";
@@ -22,6 +22,7 @@ export const run: EventUtil["run"] = async client => {
     const arrivalChannel: TextChannel = <TextChannel> await guild.channels.fetch("885364743076982834");
 
     const arrivalMessage: Message = await arrivalChannel.messages.fetch("894379931121876992");
+
     const onVerificationRole: Role = guild.roles.cache.find(v => v.name === "On Verification")!;
 
     const mutedRejectionOptions: InteractionReplyOptions = {
