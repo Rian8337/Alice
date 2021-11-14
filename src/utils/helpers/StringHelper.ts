@@ -158,10 +158,8 @@ export abstract class StringHelper {
      * @param str The string to determine.
      */
     static isValidURL(str: string): boolean {
-        let url: URL;
-
         try {
-            url = new URL(str);
+            new URL(str);
             return true;
         } catch {
             return false;
