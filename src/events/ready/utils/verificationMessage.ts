@@ -22,40 +22,6 @@ export const run: EventUtil["run"] = async client => {
     const arrivalChannel: TextChannel = <TextChannel> await guild.channels.fetch("885364743076982834");
 
     const arrivalMessage: Message = await arrivalChannel.messages.fetch("894379931121876992");
-
-    await arrivalMessage.edit({
-        content: MessageCreator.createWarn("Here are the available actions."),
-        components: [
-            new MessageActionRow()
-                .addComponents(
-                    new MessageButton()
-                        .setCustomId("translations")
-                        .setLabel("List Available Translations")
-                        .setEmoji(Symbols.memo)
-                        .setStyle("SUCCESS"),
-                    new MessageButton()
-                        .setCustomId("verification")
-                        .setLabel("Begin Verification Process")
-                        .setEmoji(Symbols.personRunning)
-                        .setStyle("PRIMARY")
-                )
-        ]
-    });
-
-    await verificationTranslationMessage.edit({
-        content: MessageCreator.createWarn("Here are the available actions."),
-        components: [
-            new MessageActionRow()
-                .addComponents(
-                    new MessageButton()
-                        .setCustomId("whatever")
-                        .setLabel("List Available Translations")
-                        .setEmoji(Symbols.memo)
-                        .setStyle("SUCCESS")
-                )
-        ]
-    });
-
     const onVerificationRole: Role = guild.roles.cache.find(v => v.name === "On Verification")!;
 
     const mutedRejectionOptions: InteractionReplyOptions = {
