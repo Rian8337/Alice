@@ -11,5 +11,6 @@ export enum VerifyLanguage {
     vietnamese = "Vietnamese",
     german = "German",
     indonesian = "Indonesian",
-    portuguese = "Portuguese"
+    portuguese = "Portuguese",
+    italian = "Italian"
 };

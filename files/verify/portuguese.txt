@@ -5,7 +5,7 @@ Para se verificar como alguém que joga droid ou está interessado no jogo e lib
 ```md
 - tirar um print da tela do seu osu!droid (no menu principal se você joga online ou um print de algum score seu se você joga offline). Se você for um jogador novo e criou sua conta recentemente, por favor jogue um map (até acabar, o map pode ser qualquer um de sua escolha) para ser verificado.
 
-- mandar um link do seu perfil do osu! e dizer qual a sua razão para ter entrado no servidor, depois disso, marque @Helper ou @Moderator na sua thread e espere até alguém verificá-lo.
+- mandar um link do seu perfil do osu! e dizer qual a sua razão para ter entrado no servidor, depois disso, marque <@&369108742077284353> ou <@&595667274707370024> na sua thread e espere até alguém verificá-lo.
 ```
 **LEMBRE-SE DE NÃO SAIR DA SUA THREAD**
 
