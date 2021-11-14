@@ -149,7 +149,7 @@ export const run: EventUtil["run"] = async client => {
                 const verifyText: string = await readFile(`${process.cwd()}/files/verify/${selectedLanguage}.txt`, { encoding: "utf-8" });
 
                 mainEmbed.setAuthor(`Language: ${VerifyLanguage[selectedLanguage]}`)
-                    .setDescription(verifyText);
+                    .setDescription(`**If you chose the wrong language, please go to #verification to show another language of this message**.\n\n${verifyText}`);
 
                 await thread.send({
                     content: member.toString(),
