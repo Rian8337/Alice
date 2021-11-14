@@ -4,6 +4,7 @@
 export enum VerifyLanguage {
     chinese_simplified = "Chinese (Simplified)",
     chinese_traditional = "Chinese (Traditional)",
+    english = "English",
     korean = "Korean",
     russian = "Russian",
     thai = "Thai",
