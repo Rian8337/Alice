@@ -1,0 +1,11 @@
+Selamat datang di server Discord osu!droid (International)!
+
+Untuk memulai, mohon ke #rules untuk membaca peraturan server.
+
+Setelah itu, Anda dapat memulai proses verifikasi Anda dengan menekan tombol di bawah.
+
+Jika tombol tersebut tidak bekerja, mohon coba lagi setelah 5-10 detik.
+
+Jika tombol tersebut masih tidak bekerja, Anda dapat mencoba keluar dari server dan masuk kembali. Jika masih tidak bekerja, Anda dapat menghubungi seorang anggota staff (seorang <@&595667274707370024> atau <@&369108742077284353>) untuk meminta bantuan.
+
+Jika bot tidak menyala (offline), suatu channel seharusnya ada di kategori yang sama agar Anda bisa memulai proses verifikasi. Jika tidak ada, mohon tunggu hingga seorang anggota staff membuka channel tersebut. Saat Anda di sana, mohon baca topik channel untuk mengetahui metode-metode verifikasi yang tersedia.

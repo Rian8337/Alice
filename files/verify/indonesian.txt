@@ -1,0 +1,14 @@
+Selamat datang di thread verifikasi Anda!
+
+Untuk memverifikasi diri Anda sebagai seseorang yang bermain osu!droid atau tertarik kepada gim tersebut dan membuka seisi server, Anda dapat mengikuti salah satu dari metode verifikasi berikut:
+
+```md
+- kirim sebuah tangkapan layar osu!droid (menu utama apabila Anda pemain daring atau sebuah skor apabila Anda pemain luring). Jika Anda baru saja membuat sebuah akun osu!droid, mohon kirimkan sebuah skor ke akun tersebut sebelum melakukan verifikasi
+
+- kirim sebuah tangkapan layar yang berisi profil osu! Anda (atau kirimkan tautannya) dan beritahu mengapa alasan Anda masuk ke server ini
+```
+setelah itu, Anda dapat memanggil (*ping*/*mention*) role <@&369108742077284353> dan/atau <@&595667274707370024> di thread Anda dan tunggu seorang staff untuk datang dan memverifikasi Anda.
+
+**MOHON UNTUK TIDAK MENINGGALKAN THREAD ANDA.**
+
+Apabila Anda tidak bisa melihat thread Anda, kemungkinan thread Anda telah diarsip. Silakan pergi ke menu "*threads*" and cari thread Anda di bagian "*archived*".
