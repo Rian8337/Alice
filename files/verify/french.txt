@@ -1,0 +1,14 @@
+Bienvenue dans votre thread de vérification !
+
+Pour vérifier que vous êtes bien un joueur d'osu!droid ou que vous êtes intéressé par le jeu et accéder au reste du serveur, vous pouvez suivre l'une des méthodes suivantes :
+
+```md
+- Postez une capture d'écran d'osu!droid (menu principal si vous êtes un joueur en ligne ou un score si vous êtes un joueur hors ligne). Si vous venez de créer un compte osu!droid, veuillez soumettre un score avant de vérifier votre compte.
+
+- Si vous venez d'osu! version pc, postez une capture d'écran de votre profil osu! (ou un lien vers votre profil) et indiquez la raison pour laquelle vous rejoignez ce serveur.
+```
+Après cela, vous pouvez envoyer un ping au @Moderator et/ou @Helper dans votre thread de vérification et attendre que l'un d'eux vienne vous vérifier.
+
+**N'OUBLIEZ PAS DE NE PAS QUITTER VOTRE FIL DE DISCUSSION**.
+
+Si vous ne voyez pas votre thread, il a peut-être été archivé. Allez dans le menu des threads et trouvez votre thread dans la section archivée.
