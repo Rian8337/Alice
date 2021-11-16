@@ -1,0 +1,11 @@
+Bienvenido al servidor de discord de osu!droid (Internacional)
+
+Para empezar, diríjase a #rules para leer las reglas del servidor.
+
+Después de ello, puedes empezar con el proceso de verificación simplemente presionando el botón que aparece debajo.
+
+Si el botón no funciona, por favor, inténtalo de nuevo después de 5-10 segundos.
+
+Si el botón sigue sin funcionar, puedes intentar re-ingresar al servidor. Si aún sigue sin funcionar, puedes contactarte con los miembros del staff (un <@&595667274707370024> o <@&369108742077284353>) para solicitar asistencia.
+
+Si el bot se encuentra inactivo, otro canal debería estar disponible en la misma categoría de canal para que puedas iniciar con tu proceso de verificación. Si no hay alguno, por favor espera hasta que uno de nuestros miembros del staff abran el canal. Una vez que estés ahí, por favor, lee la temática del canal para conocer los métodos de verificación.

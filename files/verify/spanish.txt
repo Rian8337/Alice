@@ -1,0 +1,11 @@
+Bienvenido al canal de verificación de Osu!droid International Server!
+Para poder verificarte como alguien que juega o está interesado en osu!droid, debes seguir cualquiera de los métodos a continuación:
+
+```md
+-Publica una captura de pantalla del juego (Una captura del menú principal con tu cuenta logueada si eres un jugador Online, o una captura de una jugada reciente que hayas hecho, si eres un jugador Offline).
+
+-Publica tu perfil de osu! (cliente de pc) y escribe la razón por la que quieres acceder a este servidor.
+```
+Luego de haber realizado cualquiera de los dos métodos anteriores, puedes hacer un ping al <@&369108742077284353> o al <@&595667274707370024> y esperar a que uno venga a verificarte.
+
+NOTA: Ten en cuenta que tienes una semana para lograr que te verifiquen, de lo contrario, serás expulsado automáticamente.
