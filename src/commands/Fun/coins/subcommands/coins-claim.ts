@@ -7,7 +7,7 @@ import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 
-export const run: Subcommand["run"] = async (client, interaction) => {
+export const run: Subcommand["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null = await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(interaction.user);
 
     if (playerInfo) {
