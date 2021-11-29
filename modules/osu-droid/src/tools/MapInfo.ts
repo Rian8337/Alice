@@ -1,4 +1,4 @@
-import * as request from 'request';
+import request from 'request';
 import { modes } from '../constants/modes';
 import { Beatmap } from '../beatmap/Beatmap';
 import { MapStats } from '../utils/MapStats';
@@ -71,7 +71,7 @@ export class MapInfo {
      */
     get fullTitle(): string {
         return `${this.artist} - ${this.title} (${this.creator}) [${this.version}]`;
-    };
+    }
 
     /**
      * The artist of the song of the beatmap.
@@ -228,7 +228,7 @@ export class MapInfo {
      */
     get map(): Beatmap | undefined {
         return Utils.deepCopy(this.cachedBeatmap);
-    };
+    }
 
     private cachedBeatmap?: Beatmap;
 
@@ -258,8 +258,8 @@ export class MapInfo {
                 params.file = true;
             }
 
-            const beatmapID: number|undefined = params.beatmapID;
-            const hash: string|undefined = params.hash;
+            const beatmapID: number | undefined = params.beatmapID;
+            const hash: string | undefined = params.hash;
 
             if (!beatmapID && !hash) {
                 throw new Error("Beatmap ID or MD5 hash must be defined");
@@ -313,9 +313,9 @@ export class MapInfo {
         this.plays = parseInt(mapinfo.playcount);
         this.favorites = parseInt(mapinfo.favourite_count);
         const t: number[] = mapinfo.last_update.split(/[- :]/).map(e => parseInt(e));
-        this.lastUpdate = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        this.lastUpdate = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
         const s: number[] = mapinfo.submit_date.split(/[- :]/).map(e => parseInt(e));
-        this.submitDate = new Date(Date.UTC(s[0], s[1]-1, s[2], s[3], s[4], s[5]));
+        this.submitDate = new Date(Date.UTC(s[0], s[1] - 1, s[2], s[3], s[4], s[5]));
         this.hitLength = parseInt(mapinfo.hit_length);
         this.totalLength = parseInt(mapinfo.total_length);
         this.bpm = parseFloat(mapinfo.bpm);
@@ -353,7 +353,7 @@ export class MapInfo {
 
             const url: string = `https://osu.ppy.sh/osu/${this.beatmapID}`;
             const dataArray: Buffer[] = [];
-            request(url, {timeout: 10000})
+            request(url, { timeout: 10000 })
                 .on("data", chunk => {
                     dataArray.push(Buffer.from(chunk));
                 })
@@ -441,7 +441,7 @@ export class MapInfo {
             mapParams.isForceAR = stats.isForceAR ?? mapParams.isForceAR;
             mapParams.speedMultiplier = stats.speedMultiplier ?? mapParams.speedMultiplier;
         }
-        const mapStatistics: MapStats = new MapStats(mapParams).calculate({mode: modes.osu});
+        const mapStatistics: MapStats = new MapStats(mapParams).calculate({ mode: modes.osu });
         mapStatistics.cs = parseFloat((mapStatistics.cs as number).toFixed(2));
         mapStatistics.ar = parseFloat((mapStatistics.ar as number).toFixed(2));
         mapStatistics.od = parseFloat((mapStatistics.od as number).toFixed(2));
@@ -479,12 +479,12 @@ export class MapInfo {
                 string += `\n🖼️ ${this.storyboardAvailable ? "✅" : "❎"} **|** 🎞️ ${this.videoAvailable ? "✅" : "❎"}`;
                 return string;
             }
-            case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "": ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "": ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "": ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "": ` (${mapStatistics.hp})`}`;
+            case 2: return `**Circles**: ${this.circles} - **Sliders**: ${this.sliders} - **Spinners**: ${this.spinners}\n**CS**: ${this.cs}${this.cs === mapStatistics.cs ? "" : ` (${mapStatistics.cs})`} - **AR**: ${this.ar}${this.ar === mapStatistics.ar ? "" : ` (${mapStatistics.ar})`} - **OD**: ${this.od}${this.od === mapStatistics.od ? "" : ` (${mapStatistics.od})`} - **HP**: ${this.hp}${this.hp === mapStatistics.hp ? "" : ` (${mapStatistics.hp})`}`;
             case 3: {
                 const maxScore: number = this.maxScore(mapStatistics);
                 const convertedBPM: number = this.convertBPM(mapStatistics);
                 let string = "**BPM**: ";
-                if (this.map) {    
+                if (this.map) {
                     const uninheritedTimingPoints: TimingControlPoint[] = this.map.timingPoints;
 
                     if (uninheritedTimingPoints.length === 1) {
@@ -504,7 +504,7 @@ export class MapInfo {
 
                         string +=
                             Precision.almostEqualsNumber(minBPM, this.bpm) && Precision.almostEqualsNumber(maxBPM, this.bpm) ?
-                            `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
+                                `${this.bpm} ` : `${minBPM}-${maxBPM} (${this.bpm}) `;
 
                         if (!Precision.almostEqualsNumber(this.bpm, convertedBPM)) {
                             if (!Precision.almostEqualsNumber(speedMulMinBPM, speedMulMaxBPM)) {
@@ -557,7 +557,7 @@ export class MapInfo {
         if (!this.map) {
             return 0;
         }
-    
+
         const difficultyMultiplier: number = 1 + this.od / 10 + this.hp / 10 + (this.cs - 3) / 4;
 
         // score multiplier

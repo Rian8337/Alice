@@ -1,4 +1,4 @@
-import * as request from 'request';
+import request from 'request';
 
 export interface RequestResponse {
     /**
@@ -44,14 +44,14 @@ abstract class APIRequestBuilder {
     /**
      * The parameters of this builder.
      */
-    protected readonly params: Map<string, string|number> = new Map();
+    protected readonly params: Map<string, string | number> = new Map();
 
     /**
      * Sets the API endpoint.
      * 
      * @param endpoint The endpoint to set.
      */
-    abstract setEndpoint(endpoint: DroidAPIEndpoint|OsuAPIEndpoint): this;
+    abstract setEndpoint(endpoint: DroidAPIEndpoint | OsuAPIEndpoint): this;
 
     /**
      * Sets if this builder includes the API key in the request URL.
@@ -122,7 +122,7 @@ abstract class APIRequestBuilder {
      * @param param The parameter to add.
      * @param value The value to add for the parameter.
      */
-    addParameter(param: string, value: string|number): this {
+    addParameter(param: string, value: string | number): this {
         this.params.set(param, value);
         return this;
     }
