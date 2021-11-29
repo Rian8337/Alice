@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import { AudioResource, demuxProbe, createAudioResource } from "@discordjs/voice";
 import { Snowflake } from "discord.js";
-import { raw as ytdl } from "youtube-dl-exec";
+import { exec as ytdl } from "youtube-dl-exec";
 import { VideoSearchResult } from "yt-search";
 
 /**
@@ -24,17 +24,16 @@ export class MusicQueue {
     }
 
     /**
-	 * Creates an `AudioResource` from this queue.
-	 */
+     * Creates an `AudioResource` from this queue.
+     */
     createAudioResource(): Promise<AudioResource<MusicQueue>> {
         return new Promise((resolve, reject) => {
             const process = ytdl(
                 this.information.url,
                 {
-                    o: '-',
-                    q: '',
-                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
-                    r: '100K',
+                    output: "-",
+                    format: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
+                    quiet: true
                 },
                 { stdio: ['ignore', 'pipe', 'ignore'] }
             );
@@ -46,10 +45,10 @@ export class MusicQueue {
             const stream: Readable = process.stdout;
 
             const onError = (error: Error) => {
-				if (!process.killed) process.kill();
-				stream.resume();
-				reject(error);
-			};
+                if (!process.killed) process.kill();
+                stream.resume();
+                reject(error);
+            };
 
             process.once("spawn", () => {
                 demuxProbe(stream)

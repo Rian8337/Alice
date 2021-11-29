@@ -1,7 +1,7 @@
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "@alice-interfaces/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Collection as MongoDBCollection, FilterQuery } from "mongodb";
+import { Collection as MongoDBCollection, Filter, WithId } from "mongodb";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
@@ -127,7 +127,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
      * @param clan The clan to get the leaderboard for.
      */
     async getDPPLeaderboard(clan?: string): Promise<DiscordCollection<string, UserBind>> {
-        const query: FilterQuery<DatabaseUserBind> = {};
+        const query: Filter<WithId<DatabaseUserBind>> = {};
 
         if (clan) {
             query.clan = clan;

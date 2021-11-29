@@ -2,7 +2,7 @@
   "name": "alice",
   "version": "2.0.0",
   "description": "A Discord bot for osu!droid",
-  "main": "dist/main.js",
+  "main": "src/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile-windows": "npm run build-osu-droid-windows && rmdir dist /s /q & npm run compile-build",
@@ -11,8 +11,8 @@
     "build-osu-droid-windows": "npm run write-libraries-declaration && cd ./modules/osu-droid & rmdir dist /s /q & tsc --build tsconfig.json",
     "build-osu-droid-linux": "npm run write-libraries-declaration && cd ./modules/osu-droid && tsc --build tsconfig.json",
     "write-libraries-declaration": "dts-gen -m java-deserialization -o -f ./node_modules/java-deserialization/src/index.d.ts",
-    "startDebug": "node --trace-warnings --inspect dist/main.js",
-    "start": "node --trace-warnings dist/main.js",
+    "startDebug": "node --trace-warnings --inspect -r ts-node/register .",
+    "start": "node --trace-warnings -r ts-node/register .",
     "startHeroku": "pm2-runtime start ecosystem.config.js --env production",
     "heroku-postbuild": "npm run compile-linux"
   },
@@ -35,8 +35,7 @@
     "@types/adm-zip": "^0.4.34",
     "@types/crypto-js": "^4.0.1",
     "@types/d3": "^6.7.0",
-    "@types/lodash": "^4.14.175",
-    "@types/mongodb": "^3.6.12",
+    "@types/lodash.clonedeep": "^4.5.6",
     "@types/request": "^2.48.5",
     "@types/unzipper": "^0.10.3",
     "@types/yt-search": "^2.3.2",
@@ -44,6 +43,7 @@
     "@typescript-eslint/parser": "^5.4.0",
     "dts-gen": "^0.6.0",
     "eslint": "^8.3.0",
+    "prettier": "^2.5.0",
     "typescript": "^4.2.4"
   },
   "dependencies": {
@@ -59,26 +59,27 @@
     "html-entities": "^2.3.2",
     "java-deserialization": "^0.1.0",
     "libsodium-wrappers": "^0.7.9",
-    "lodash": "^4.17.21",
+    "lodash.clonedeep": "^4.5.0",
     "module-alias": "^2.2.2",
-    "mongodb": "^3.6.6",
+    "mongodb": "^4.2.0",
     "osu-droid": "file:modules/osu-droid",
     "request": "^2.88.2",
+    "ts-node": "^10.4.0",
     "unzipper": "^0.10.11",
     "utf-8-validate": "^5.0.5",
-    "youtube-dl-exec": "^1.2.6",
+    "youtube-dl-exec": "^2.0.0",
     "yt-search": "^2.10.2",
     "zlib-sync": "^0.1.7"
   },
   "_moduleAliases": {
-    "@alice-commands": "dist/commands",
-    "@alice-core": "dist/core",
-    "@alice-database": "dist/database",
-    "@alice-enums": "dist/enums",
-    "@alice-events": "dist/events",
-    "@alice-interfaces": "dist/interfaces",
-    "@alice-types": "dist/types",
-    "@alice-utils": "dist/utils"
+    "@alice-commands": "src/commands",
+    "@alice-core": "src/core",
+    "@alice-database": "src/database",
+    "@alice-enums": "src/enums",
+    "@alice-events": "src/events",
+    "@alice-interfaces": "src/interfaces",
+    "@alice-types": "src/types",
+    "@alice-utils": "src/utils"
   },
   "eslintConfig": {
     "env": {

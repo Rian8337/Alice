@@ -14,12 +14,11 @@ import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { RankedScoreHelper } from "@alice-utils/helpers/RankedScoreHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
-import { UpdateQuery } from "mongodb";
 import { DroidAPIRequestBuilder, MapInfo, Player, Precision, RequestResponse, Score } from "osu-droid";
 import { Clan } from "./Clan";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { ObjectId, UpdateFilter } from "mongodb";
 
 /**
  * Represents a Discord user who has at least one osu!droid account binded.
@@ -485,7 +484,7 @@ export class UserBind extends Manager {
         this.pp = newList;
         this.pptotal = DPPHelper.calculateFinalPerformancePoints(newList);
 
-        const query: UpdateQuery<DatabaseUserBind> = {
+        const query: UpdateFilter<DatabaseUserBind> = {
             $set: {
                 pp: [...this.pp.values()],
                 pptotal: this.pptotal,

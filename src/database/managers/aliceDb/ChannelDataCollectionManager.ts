@@ -3,7 +3,7 @@ import { ChannelData } from "@alice-database/utils/aliceDb/ChannelData";
 import { DatabaseChannelData } from "@alice-interfaces/database/aliceDb/DatabaseChannelData";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Collection as DiscordCollection } from "discord.js";
-import { Collection as MongoDBCollection, FilterQuery } from "mongodb";
+import { Collection as MongoDBCollection, Filter, WithId } from "mongodb";
 
 /**
  * A manager for the `channeldata` collection.
@@ -28,7 +28,7 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
     constructor(collection: MongoDBCollection<DatabaseChannelData>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>> new ChannelData().constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseChannelData, ChannelData>>new ChannelData().constructor
     }
 
     /**
@@ -39,7 +39,7 @@ export class ChannelDataCollectionManager extends DatabaseCollectionManager<Data
      * @returns The channel statistics from the given range.
      */
     getFromTimestampRange(from: number, to: number): Promise<DiscordCollection<number, ChannelData>> {
-        const query: FilterQuery<DatabaseChannelData> = {
+        const query: Filter<WithId<DatabaseChannelData>> = {
             timestamp: {
                 $gte: from,
                 $lte: to

@@ -1,5 +1,4 @@
 import { MessageOptions, Snowflake, TextChannel } from "discord.js";
-import { UpdateQuery } from "mongodb";
 import { MapInfo, rankedStatus } from "osu-droid";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapWhitelist } from "@alice-interfaces/database/elainaDb/DatabaseMapWhitelist";
@@ -11,6 +10,7 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
 import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { UpdateFilter } from "mongodb";
 
 /**
  * A manager for whitelisted and blacklisted beatmaps.
@@ -30,7 +30,7 @@ export abstract class WhitelistManager extends Manager {
      * Initializes the manager.
      */
     static override async init(): Promise<void> {
-        this.whitelistLogChannel = <TextChannel> await (await this.client.guilds.fetch(Constants.testingServer)).channels.fetch("638671295470370827");
+        this.whitelistLogChannel = <TextChannel>await (await this.client.guilds.fetch(Constants.testingServer)).channels.fetch("638671295470370827");
     }
 
     /**
@@ -94,7 +94,7 @@ export abstract class WhitelistManager extends Manager {
             return this.createOperationResult(false, "Beatmap is not graveyarded");
         }
 
-        const updateQuery: UpdateQuery<DatabaseMapWhitelist> = {
+        const updateQuery: UpdateFilter<DatabaseMapWhitelist> = {
             $set: {
                 hashid: beatmap.hash,
                 mapname: beatmap.fullTitle,

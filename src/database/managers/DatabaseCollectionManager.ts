@@ -3,7 +3,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { DatabaseUtilityConstructor } from "@alice-types/database/DatabaseUtilityConstructor";
 import { Manager } from "@alice-utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
-import { Collection as MongoDBCollection, FilterQuery, FindOneOptions, OptionalId, UpdateManyOptions, UpdateQuery, WithoutProjection } from "mongodb";
+import { Collection as MongoDBCollection, Filter, FindOptions, OptionalId, UpdateFilter, UpdateOptions, WithId } from "mongodb";
 
 /**
  * A MongoDB collection manager.
@@ -48,7 +48,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options Options for the update operation.
      * @returns An object containing information about the operation.
      */
-    update(filter: FilterQuery<T>, query: UpdateQuery<T> | Partial<T>, options: UpdateManyOptions = {}): Promise<OperationResult> {
+    update(filter: Filter<T>, query: UpdateFilter<T> | Partial<T>, options: UpdateOptions = {}): Promise<OperationResult> {
         return new Promise(resolve => {
             this.collection.updateMany(filter, query, options, err => {
                 if (err) {
@@ -68,7 +68,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param filter The document filter.
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter?: FilterQuery<T>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(key: K, filter?: Filter<WithId<T>>): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -79,7 +79,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: FilterQuery<T>, options?: WithoutProjection<FindOneOptions<T>>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>>, options?: FindOptions<T>): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -90,7 +90,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: FilterQuery<T>, options: FindOneOptions<T extends T ? T : T>): Promise<DiscordCollection<T[K], C>>;
+    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>>, options: FindOptions<T>): Promise<DiscordCollection<T[K], C>>;
 
     /**
      * Gets multiple documents from the collection and then
@@ -101,9 +101,8 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents. 
      * @returns The indexed documents in a discord.js collection.
      */
-    async get<K extends keyof T>(key: K, filter: FilterQuery<T> = { }, options?: WithoutProjection<FindOneOptions<T>> | FindOneOptions<T extends T ? T : T>): Promise<DiscordCollection<T[K], C>> {
-        //@ts-expect-error: Overload is a bit wonky, but this should work
-        const res: T[] = await this.collection.find(filter, options).toArray();
+    async get<K extends keyof T>(key: K, filter: Filter<WithId<T>> = {}, options?: FindOptions<T>): Promise<DiscordCollection<T[K], C>> {
+        const res: T[] = <T[]>await this.collection.find(filter, options).toArray();
 
         const collection: DiscordCollection<T[K], C> = new DiscordCollection();
 
@@ -121,7 +120,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param filter The document filter.
      * @returns The converted document.
      */
-    async getOne(filter?: FilterQuery<T>): Promise<C | null>;
+    async getOne(filter?: Filter<T>): Promise<C | null>;
 
     /**
      * Gets a document from the collection and convert it
@@ -131,7 +130,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: FilterQuery<T>, options: FindOneOptions<T extends T ? T : T>): Promise<C | null>;
+    async getOne(filter: Filter<T>, options: FindOptions<T>): Promise<C | null>;
 
     /**
      * Gets a document from the collection and convert it
@@ -141,7 +140,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: FilterQuery<T>, options?: WithoutProjection<FindOneOptions<T>>): Promise<C | null>;
+    async getOne(filter: Filter<T>, options?: FindOptions<T>): Promise<C | null>;
 
     /**
      * Gets a document from the collection and convert it
@@ -151,7 +150,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param options The options for retrieving the documents.
      * @returns The converted document.
      */
-    async getOne(filter: FilterQuery<T> = { }, options?: WithoutProjection<FindOneOptions<T>> | FindOneOptions<T extends T ? T : T>): Promise<C | null> {
+    async getOne(filter: Filter<T> = {}, options?: FindOptions<T>): Promise<C | null> {
         const res: T | null = await this.collection.findOne(filter, options);
 
         return res ? new this.utilityInstance(res) : null;
@@ -163,7 +162,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      * @param filter The filter used to select the documents to remove.
      * @returns An object containing information about the operation.
      */
-    delete(filter: FilterQuery<T>): Promise<OperationResult> {
+    delete(filter: Filter<T>): Promise<OperationResult> {
         return new Promise(resolve => {
             this.collection.deleteMany(filter, err => {
                 if (err) {
@@ -182,7 +181,7 @@ export abstract class DatabaseCollectionManager<T extends BaseDocument, C extend
      */
     insert(...docs: Partial<T>[]): Promise<OperationResult> {
         return new Promise(resolve => {
-            this.collection.insertMany(docs.map(v => <OptionalId<T>> Object.assign(this.defaultDocument, v)), err => {
+            this.collection.insertMany(docs.map(v => <OptionalId<T>>Object.assign(this.defaultDocument, v)), err => {
                 if (err) {
                     return resolve(this.createOperationResult(false, err.message));
                 }
