@@ -40,7 +40,10 @@
     "@types/request": "^2.48.5",
     "@types/unzipper": "^0.10.3",
     "@types/yt-search": "^2.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "dts-gen": "^0.6.0",
+    "eslint": "^8.3.0",
     "typescript": "^4.2.4"
   },
   "dependencies": {
@@ -76,5 +79,28 @@
     "@alice-interfaces": "dist/interfaces",
     "@alice-types": "dist/types",
     "@alice-utils": "dist/utils"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2021,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "off"
+    }
   }
 }
