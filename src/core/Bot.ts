@@ -288,13 +288,13 @@ export class Bot extends Client {
             await this.application?.fetch();
         }
 
-        const deployCommandID: Snowflake = <Snowflake> (Config.isDebug ? process.env.DEBUG_BOT_DEPLOY_ID : process.env.BOT_DEPLOY_ID);
-        const undeployCommandID: Snowflake = <Snowflake> (Config.isDebug ? process.env.DEBUG_BOT_UNDEPLOY_ID : process.env.BOT_UNDEPLOY_ID);
+        const deployCommandID: Snowflake = <Snowflake>(Config.isDebug ? process.env.DEBUG_BOT_DEPLOY_ID : process.env.BOT_DEPLOY_ID);
+        const undeployCommandID: Snowflake = <Snowflake>(Config.isDebug ? process.env.DEBUG_BOT_UNDEPLOY_ID : process.env.BOT_UNDEPLOY_ID);
 
         const registerCommand = async (name: string): Promise<void> => {
             this.logger.info(`Registering ${name} command`);
 
-            const command: Command = <Command> this.commands.get(name);
+            const command: Command = <Command>this.commands.get(name);
 
             const data: ApplicationCommandData = {
                 name: command.config.name,
@@ -318,4 +318,4 @@ export class Bot extends Client {
             await registerCommand("undeploy");
         }
     }
-};
+}

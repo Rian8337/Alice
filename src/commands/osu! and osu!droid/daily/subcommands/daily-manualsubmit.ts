@@ -14,7 +14,7 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { RESTManager } from "@alice-utils/managers/RESTManager";
-import { Collection, GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { Collection, GuildMember, MessageEmbed, Snowflake } from "discord.js";
 import { Player, ReplayAnalyzer, ReplayData, RequestResponse } from "osu-droid";
 import { dailyStrings } from "../dailyStrings";
 
@@ -102,7 +102,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     const staffMembers: Collection<Snowflake, GuildMember> = await PermissionHelper.getMainGuildStaffMembers(client);
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: (<GuildMember>interaction.member).displayColor }
     );
 
     embed.setTitle("Score Statistics")
@@ -123,7 +123,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         interaction,
         {
             content: MessageCreator.createWarn(dailyStrings.manualSubmissionConfirmation),
-            embeds: [ embed ]
+            embeds: [embed]
         },
         [...staffMembers.keys()],
         30

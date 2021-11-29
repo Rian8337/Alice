@@ -25,4 +25,4 @@ export interface DatabaseVoting extends BaseDocument {
      * The choices for the vote.
      */
     choices: VoteChoice[];
-};
+}

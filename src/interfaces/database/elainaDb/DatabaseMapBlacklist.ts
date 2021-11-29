@@ -13,4 +13,4 @@ export interface DatabaseMapBlacklist extends BaseDocument {
      * The reason the beatmap was blacklisted.
      */
     reason: string;
-};
+}

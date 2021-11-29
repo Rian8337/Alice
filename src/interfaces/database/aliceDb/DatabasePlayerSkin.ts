@@ -14,4 +14,4 @@ export interface DatabasePlayerSkin extends BaseDocument {
      * The URL to the user's skin.
      */
     skin: string;
-};
+}

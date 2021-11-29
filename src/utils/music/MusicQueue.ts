@@ -58,4 +58,4 @@ export class MusicQueue {
             }).catch(onError);
         });
     }
-};
+}

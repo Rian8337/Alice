@@ -121,7 +121,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     let languageDescription: string = "";
 
     for await (const [id, count] of sortedChannelData) {
-        const channel: GuildChannel | null | void = await guild.channels.fetch(id).catch(() => {});
+        const channel: GuildChannel | null = await guild.channels.fetch(id).catch(() => null);
 
         if (!channel) {
             continue;
@@ -129,7 +129,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
         const msg: string = `${channel}: ${count.toLocaleString()} messages\n`;
 
-        if ([generalParent, droidParent].includes(<Snowflake> channel.parentId)) {
+        if ([generalParent, droidParent].includes(<Snowflake>channel.parentId)) {
             generalDescription += msg;
         } else if (channel.parentId === clansParent) {
             clansDescription += msg;

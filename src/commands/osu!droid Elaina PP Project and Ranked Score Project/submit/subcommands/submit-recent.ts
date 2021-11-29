@@ -7,7 +7,6 @@ import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
 import { Symbols } from "@alice-enums/utils/Symbols";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
@@ -65,7 +64,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     let totalScore: number = rankedScoreInfo?.score ?? 0;
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember> interaction.member).displayColor }
+        { author: interaction.user, color: (<GuildMember>interaction.member).displayColor }
     );
 
     for await (const score of scoresToSubmit) {
@@ -92,7 +91,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             case DPPSubmissionValidity.SCORE_USES_CUSTOM_SPEED:
                 fieldContent += "Unranked features";
                 break;
-            default:
+            default: {
                 const calcResult: PerformanceCalculationResult | null =
                     await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
@@ -106,6 +105,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 const dpp: number = parseFloat(calcResult.droid.total.toFixed(2));
 
                 fieldContent += `${dpp}pp`;
+            }
         }
 
         fieldContent += "**\n";

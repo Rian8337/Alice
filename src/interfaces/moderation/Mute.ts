@@ -26,4 +26,4 @@ export interface Mute {
      * The epoch time at which the user will be unmuted, in seconds.
      */
     muteEndTime: number;
-};
+}

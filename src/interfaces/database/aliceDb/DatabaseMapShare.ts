@@ -40,4 +40,4 @@ export interface DatabaseMapShare extends BaseDocument {
      * The status of the shared beatmap submission.
      */
     status: MapShareSubmissionStatus;
-};
+}

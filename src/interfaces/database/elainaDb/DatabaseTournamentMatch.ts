@@ -47,4 +47,4 @@ export interface DatabaseTournamentMatch extends BaseDocument {
      * in `player` field.
      */
     result: number[][];
-};
+}

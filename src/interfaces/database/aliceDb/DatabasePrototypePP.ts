@@ -54,4 +54,4 @@ export interface DatabasePrototypePP extends BaseDocument {
      * Whether this prototype entry has been calculated against the latest changes.
      */
     scanDone: boolean;
-};
+}

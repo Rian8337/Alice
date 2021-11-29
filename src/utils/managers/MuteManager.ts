@@ -71,7 +71,7 @@ export abstract class MuteManager extends PunishmentManager {
 
         const isInfiniteMute: boolean = !Number.isFinite(duration);
 
-        if (!await this.userCanMute(<GuildMember> interaction.member, duration)) {
+        if (!await this.userCanMute(<GuildMember>interaction.member, duration)) {
             return this.createOperationResult(false, `Not enough permission to mute ${isInfiniteMute ? "permanently" : `for ${DateTimeFormatHelper.secondsToDHMS(duration)}`}`);
         }
 
@@ -264,7 +264,7 @@ export abstract class MuteManager extends PunishmentManager {
             }
 
             const unmuteEmbed: MessageEmbed = new MessageEmbed()
-                .setAuthor(interaction.user.tag, <string> interaction.user.avatarURL({ dynamic: true }))
+                .setAuthor(interaction.user.tag, <string>interaction.user.avatarURL({ dynamic: true }))
                 .setTitle("Unmute executed")
                 .setFooter(`User ID: ${member.id} | Channel ID: ${interaction.channel?.id}`)
                 .setTimestamp(new Date())
@@ -443,10 +443,10 @@ export abstract class MuteManager extends PunishmentManager {
      * @param client The instance of the bot.
      */
     private static async cacheOngoingMute(): Promise<void> {
-        const muteEntries: Collection<string, GuildPunishmentConfig> = await this.punishmentDb.get("guildID", {}, { projection: { guildID: 1, currentMutes: 1 } } );
+        const muteEntries: Collection<string, GuildPunishmentConfig> = await this.punishmentDb.get("guildID", {}, { projection: { guildID: 1, currentMutes: 1 } });
 
         for await (const entry of muteEntries.values()) {
-            const guild: Guild | void = await this.client.guilds.fetch(entry.guildID).catch(() => {});
+            const guild: Guild | null = await this.client.guilds.fetch(entry.guildID).catch(() => null);
 
             if (!guild) {
                 continue;
@@ -459,7 +459,7 @@ export abstract class MuteManager extends PunishmentManager {
             }
 
             for await (const mute of entry.currentMutes.values()) {
-                const guildMember: GuildMember | void = await guild.members.fetch(mute.userID).catch(() => {});
+                const guildMember: GuildMember | null = await guild.members.fetch(mute.userID).catch(() => null);
 
                 if (!guildMember) {
                     continue;

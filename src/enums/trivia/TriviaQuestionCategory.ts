@@ -33,4 +33,4 @@ export enum TriviaQuestionCategory {
     ENTERTAINMENT_VIDEO_GAMES,
     ENGLISH_LANGUAGE,
     LOGICAL_REASONING
-};
+}

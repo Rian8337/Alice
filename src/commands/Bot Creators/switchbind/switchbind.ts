@@ -1,4 +1,4 @@
-import { GuildMember, User } from "discord.js";
+import { GuildMember } from "discord.js";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { CommandCategory } from "@alice-enums/core/CommandCategory";
 import { Command } from "@alice-interfaces/core/Command";
@@ -36,7 +36,7 @@ export const run: Command["run"] = async (client, interaction) => {
 
     if (!result.success) {
         return interaction.editReply({
-            content: MessageCreator.createReject(switchbindStrings.switchFailed, <string> result.reason)
+            content: MessageCreator.createReject(switchbindStrings.switchFailed, <string>result.reason)
         });
     }
 

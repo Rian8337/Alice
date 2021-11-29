@@ -12,7 +12,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     if (playerInfo) {
         let dailyCoin: number = 50;
-        let streak: number = playerInfo.streak + 1;
+        const streak: number = playerInfo.streak + 1;
         const streakComplete: boolean = streak === 5;
 
         if (streakComplete) {
@@ -23,7 +23,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         if (!result.success) {
             return interaction.editReply({
-                content: MessageCreator.createReject(coinsStrings.dailyClaimFailed, <string> result.reason)
+                content: MessageCreator.createReject(coinsStrings.dailyClaimFailed, <string>result.reason)
             });
         }
 

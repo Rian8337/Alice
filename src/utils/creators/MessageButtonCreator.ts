@@ -24,7 +24,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    static createLimitedButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    static createLimitedButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: unknown[], contentsPerPage: number, startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: unknown[]): Promise<Message> {
         return this.createButtonBasedPaging(
             interaction,
             options,
@@ -52,7 +52,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    static createLimitlessButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    static createLimitlessButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: unknown[], startPage: number, duration: number, onPageChange: OnButtonPageChange, ...onPageChangeArgs: unknown[]): Promise<Message> {
         return this.createButtonBasedPaging(
             interaction,
             options,
@@ -76,25 +76,25 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param duration The duration the confirmation button collector will remain active, in seconds.
      * @returns A boolean determining whether the user confirmed.
      */
-    static createConfirmation(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], duration: number): Promise<boolean> {
-        return new Promise(async resolve => {
-            const buttons: MessageButton[] = this.createConfirmationButtons();
+    static async createConfirmation(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], duration: number): Promise<boolean> {
+        const buttons: MessageButton[] = this.createConfirmationButtons();
 
-            const component: MessageActionRow = new MessageActionRow()
-                .addComponents(buttons);
+        const component: MessageActionRow = new MessageActionRow()
+            .addComponents(buttons);
 
-            options.components ??= [];
-            options.components.push(component);
+        options.components ??= [];
+        options.components.push(component);
 
-            const message: Message = <Message> await interaction.editReply(options);
+        const message: Message = <Message>await interaction.editReply(options);
 
-            const collector: InteractionCollector<ButtonInteraction> =
-                this.createButtonCollector(message, users, duration);
+        const collector: InteractionCollector<ButtonInteraction> =
+            this.createButtonCollector(message, users, duration);
 
-            collector.on("collect", () => {
-                collector.stop();
-            });
+        collector.on("collect", () => {
+            collector.stop();
+        });
 
+        return new Promise(resolve => {
             collector.on("end", async collected => {
                 const pressed: ButtonInteraction | undefined = collected.first();
 
@@ -147,7 +147,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param onPageChangeArgs Arguments for `onPageChange` function.
      * @returns The collector that collects the button-pressing event.
      */
-    private static async createButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: any[], contentsPerPage: number, startPage: number, duration: number, limitless: boolean, onPageChange: OnButtonPageChange, ...onPageChangeArgs: any[]): Promise<Message> {
+    private static async createButtonBasedPaging(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, users: Snowflake[], contents: unknown[], contentsPerPage: number, startPage: number, duration: number, limitless: boolean, onPageChange: OnButtonPageChange, ...onPageChangeArgs: unknown[]): Promise<Message> {
         const pages: number = limitless ? Number.POSITIVE_INFINITY : Math.ceil(contents.length / contentsPerPage);
 
         let currentPage: number = startPage;
@@ -168,7 +168,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         function onPageChangeEmbedEdit(): void {
             if (options.embeds) {
                 for (let i = 0; i < options.embeds.length; ++i) {
-                    const embed: MessageEmbed = <MessageEmbed> options.embeds[i];
+                    const embed: MessageEmbed = <MessageEmbed>options.embeds[i];
 
                     embed.spliceFields(0, embed.fields.length);
 
@@ -179,13 +179,13 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         await onPageChange(options, startPage, contents, ...onPageChangeArgs);
 
-        const message: Message = <Message> await interaction.editReply(options);
+        const message: Message = <Message>await interaction.editReply(options);
 
         if (pages === 1) {
             return message;
         }
 
-        const collector: InteractionCollector<ButtonInteraction> =    
+        const collector: InteractionCollector<ButtonInteraction> =
             this.createButtonCollector(message, users, duration);
 
         collector.on("collect", async i => {
@@ -235,6 +235,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
             try {
                 await interaction.editReply(options);
+                // eslint-disable-next-line no-empty
             } catch { }
         });
 

@@ -26,4 +26,4 @@ export interface DatabaseMusicCollection extends BaseDocument {
      * Basically, the IDs of each YouTube video.
      */
     videoIds: string[];
-};
+}

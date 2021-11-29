@@ -13,7 +13,7 @@ import { OperationResult } from "@alice-interfaces/core/OperationResult";
 export const run: Subcommand["run"] = async (client, interaction) => {
     const toTransfer: User = interaction.options.getUser("user", true);
 
-    const toTransferGuildMember: GuildMember| void = await interaction.guild!.members.fetch(toTransfer).catch(() => {});
+    const toTransferGuildMember: GuildMember | null = await interaction.guild!.members.fetch(toTransfer).catch(() => null);
 
     if (!toTransferGuildMember) {
         return interaction.editReply({
@@ -33,11 +33,11 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         });
     }
 
-    if (DateTimeFormatHelper.getTimeDifference(<Date> toTransferGuildMember.joinedAt) > -86400 * 1000 * 7) {
+    if (DateTimeFormatHelper.getTimeDifference(<Date>toTransferGuildMember.joinedAt) > -86400 * 1000 * 7) {
         return interaction.editReply(MessageCreator.createReject(coinsStrings.userToTransferNotInServerForAWeek));
     }
 
-    const transferAmount: number = <number> interaction.options.getInteger("amount");
+    const transferAmount: number = <number>interaction.options.getInteger("amount");
 
     if (!NumberHelper.isPositive(transferAmount)) {
         return interaction.editReply({

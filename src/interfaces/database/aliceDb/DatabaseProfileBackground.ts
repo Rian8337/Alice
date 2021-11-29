@@ -13,4 +13,4 @@ export interface DatabaseProfileBackground extends BaseDocument {
      * The name of the background.
      */
     name: string;
-};
+}

@@ -1,4 +1,4 @@
 /**
  * Strings for the `avatar` command.
  */
-export enum avatarStrings { };
+export enum avatarStrings { }

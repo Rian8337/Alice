@@ -15,11 +15,11 @@ import { Config } from "@alice-core/Config";
 export const run: EventUtil["run"] = async client => {
     const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 
-    const verificationChannel: TextChannel = <TextChannel> await guild.channels.fetch(Constants.verificationChannel);
+    const verificationChannel: TextChannel = <TextChannel>await guild.channels.fetch(Constants.verificationChannel);
 
     const verificationTranslationMessage: Message = await verificationChannel.messages.fetch("909284852724035655");
 
-    const arrivalChannel: TextChannel = <TextChannel> await guild.channels.fetch("885364743076982834");
+    const arrivalChannel: TextChannel = <TextChannel>await guild.channels.fetch("885364743076982834");
 
     const arrivalMessage: Message = await arrivalChannel.messages.fetch("894379931121876992");
 
@@ -40,12 +40,12 @@ export const run: EventUtil["run"] = async client => {
             CacheManager.userHasActiveVerificationMenu.add(i.user.id);
         }
 
-        const selectedLanguage: keyof typeof VerifyLanguage | undefined = <keyof typeof VerifyLanguage | undefined> (await SelectMenuCreator.createSelectMenu(
+        const selectedLanguage: keyof typeof VerifyLanguage | undefined = <keyof typeof VerifyLanguage | undefined>(await SelectMenuCreator.createSelectMenu(
             i,
             {
                 content: MessageCreator.createWarn("__Do not dismiss this message until you select a language. You will be forced to wait for a minute if you do so__.\n\nSelect your preferred language.")
             },
-            (<(keyof typeof VerifyLanguage)[]> Object.keys(VerifyLanguage)).map(v => {
+            (<(keyof typeof VerifyLanguage)[]>Object.keys(VerifyLanguage)).map(v => {
                 return {
                     label: VerifyLanguage[v],
                     value: v
@@ -70,7 +70,7 @@ export const run: EventUtil["run"] = async client => {
             return;
         }
 
-        const member: GuildMember = <GuildMember> i.member;
+        const member: GuildMember = <GuildMember>i.member;
 
         if (MuteManager.isUserMuted(member)) {
             i.reply(mutedRejectionOptions);
@@ -85,14 +85,15 @@ export const run: EventUtil["run"] = async client => {
         }
 
         switch (i.customId) {
-            case "translations":
+            case "translations": {
                 const arrivalText: string = await readFile(`${process.cwd()}/files/arrival/${selectedLanguage}.txt`, { encoding: "utf-8" });
 
                 await i.editReply({
                     content: MessageCreator.createAccept(`Here is the arrival message translated in \`${VerifyLanguage[selectedLanguage]}\`.`) + `\n\n${arrivalText}`
                 });
                 break;
-            case "verification":
+            }
+            case "verification": {
                 // I know this doesn't make sense, but just in case a staff clicks the button, this rejection message will appear
                 if (member.roles.cache.find(v => v.name === "Member")) {
                     i.reply({
@@ -154,9 +155,10 @@ export const run: EventUtil["run"] = async client => {
 
                 await thread.send({
                     content: member.toString(),
-                    embeds: [ infoEmbed, mainEmbed ]
+                    embeds: [infoEmbed, mainEmbed]
                 });
                 break;
+            }
         }
     });
 

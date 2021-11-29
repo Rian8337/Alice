@@ -400,21 +400,17 @@ export class UserBind extends Manager {
             if (isDPPRecalc && this.calculationInfo) {
                 page = this.calculationInfo.page;
 
-                newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [ v.hash, v ])));
+                newList.concat(new Collection(this.calculationInfo.currentPPEntries.map(v => [v.hash, v])));
             } else {
                 // Do manual operations to reduce memory usage (we don't need to cache
                 // submitted scores)
                 await DatabaseManager.aliceDb.collections.rankedScore.delete({ uid: uid });
             }
 
-            while (true) {
-                const scores: Score[] = await getScores(uid, ++page);
+            let scores: Score[];
 
+            while ((scores = await getScores(uid, ++page)).length) {
                 const scoreCount: number = scores.length;
-
-                if (scoreCount === 0) {
-                    break;
-                }
 
                 if (isDPPRecalc) {
                     this.client.logger.info(`Calculating ${scoreCount} scores from page ${page}`);
@@ -426,7 +422,7 @@ export class UserBind extends Manager {
 
                 let score: Score | undefined;
 
-                while (score = scores.shift()) {
+                while ((score = scores.shift())) {
                     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(score.hash, false).catch(() => null);
 
                     if (isDPPRecalc) {

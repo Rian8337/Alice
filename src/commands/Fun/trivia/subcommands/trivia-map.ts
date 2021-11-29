@@ -46,7 +46,7 @@ async function getBeatmaps(fetchAttempt: number = 0): Promise<MapInfo[]> {
     });
 
     return beatmapList;
-};
+}
 
 function shuffleString(str: string, amount: number): {
     readonly splittedString: string[];
@@ -89,7 +89,7 @@ function shuffleString(str: string, amount: number): {
         splittedString: splitStr,
         replacedStrings: replacedStrings
     };
-};
+}
 
 function createEmbed(level: number, beatmapInfo: MapInfo, artist: string, title: string): MessageEmbed {
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
@@ -152,8 +152,8 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         // Shuffling empty words
         // Shuffle between 25-75% of title and artist
-        let artistBlankAmount: number = Math.max(Math.ceil(tempArtist.length / 4), Math.floor(Math.min(level * tempArtist.length / 20, tempArtist.length * 3 / 4)));
-        let titleBlankAmount: number = Math.max(Math.ceil(tempTitle.length / 4), Math.floor(Math.min(level * tempTitle.length / 20, tempTitle.length * 3 / 4)));
+        const artistBlankAmount: number = Math.max(Math.ceil(tempArtist.length / 4), Math.floor(Math.min(level * tempArtist.length / 20, tempArtist.length * 3 / 4)));
+        const titleBlankAmount: number = Math.max(Math.ceil(tempTitle.length / 4), Math.floor(Math.min(level * tempTitle.length / 20, tempTitle.length * 3 / 4)));
 
         const artistGuessData = shuffleString(beatmapInfo.artist, artistBlankAmount);
         const titleGuessData = shuffleString(beatmapInfo.title, titleBlankAmount);
@@ -220,7 +220,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
         const message: Message = await interaction.channel!.send({
             content: MessageCreator.createWarn("Guess the beatmap!"),
-            embeds: [ createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim()) ],
+            embeds: [createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim())],
             components: components
         });
 
@@ -318,7 +318,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 } else {
                     // There are still more characters to guess left
                     await message.edit({
-                        embeds: [ createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim()) ],
+                        embeds: [createEmbed(level, beatmapInfo, artistGuessData.splittedString.join("").trim(), titleGuessData.splittedString.join("").trim())],
                         components: components
                     });
                 }
@@ -329,7 +329,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
                 // Remove buttons from original message
                 await message.edit({
-                    embeds: [ embed ],
+                    embeds: [embed],
                     components: []
                 });
 
@@ -342,14 +342,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 if (artistGuessData.replacedStrings.length === 0 && titleGuessData.replacedStrings.length === 0) {
                     await interaction.channel!.send({
                         content: MessageCreator.createAccept(`Everyone got the beatmap correct (it took ${((Date.now() - message.createdTimestamp) / 1000).toFixed(2)} seconds)!`),
-                        embeds: [ embed ]
+                        embeds: [embed]
                     });
 
                     ++level;
                 } else {
                     await interaction.channel!.send({
                         content: MessageCreator.createReject("No one guessed the beatmap!"),
-                        embeds: [ embed ]
+                        embeds: [embed]
                     });
 
                     hasEnded = true;
@@ -384,7 +384,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     interaction.channel!.send({
         content: MessageCreator.createAccept("Game ended!"),
-        embeds: [ embed ]
+        embeds: [embed]
     });
 };
 

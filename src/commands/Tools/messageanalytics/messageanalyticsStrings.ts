@@ -9,4 +9,4 @@ export enum messageanalyticsStrings {
     channelIsFiltered = "I'm sorry, this channel is filtered from message analytics!",
     notATextChannel = "I'm sorry, you can only execute this command in a text channel!",
     messageFetchStarted = "Successfully started message data fetching."
-};
+}

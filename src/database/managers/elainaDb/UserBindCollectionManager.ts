@@ -31,7 +31,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
     constructor(collection: MongoDBCollection<DatabaseUserBind>) {
         super(collection);
 
-        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseUserBind, UserBind>> new UserBind().constructor
+        this.utilityInstance = <DatabaseUtilityConstructor<DatabaseUserBind, UserBind>>new UserBind().constructor
     }
 
     /**
@@ -109,7 +109,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
      * @param uid The uid of the osu!droid account.
      */
     getFromUid(uid: number): Promise<UserBind | null> {
-        return this.getOne({ previous_bind: { $all: [ uid ] } });
+        return this.getOne({ previous_bind: { $all: [uid] } });
     }
 
     /**
@@ -139,5 +139,14 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<Databas
         ).sort({ pptotal: -1 }).toArray();
 
         return ArrayHelper.arrayToCollection(userBind.map(v => new UserBind(v)), "discordid");
+    }
+
+    aggregateDuplicate() {
+        return this.collection.aggregate([
+            { $group: { _id: "$uid", count: { $sum: 1 } } },
+            { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
+            { $sort: { count: -1 } },
+            { $project: { uid: "$_id", _id: 0 } }
+        ]).toArray();
     }
 }

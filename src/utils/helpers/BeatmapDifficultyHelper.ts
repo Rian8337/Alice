@@ -16,7 +16,7 @@ export abstract class BeatmapDifficultyHelper {
      * @returns The calculation parameters from the user's message.
      */
     static getCalculationParamsFromMessage(message: string): PerformanceCalculationParameters {
-        let mods: Mod[] = [];
+        const mods: Mod[] = [];
         let combo: number | undefined;
         let forceAR: number | undefined;
         let speedMultiplier: number = 1;
@@ -59,7 +59,7 @@ export abstract class BeatmapDifficultyHelper {
         const stats: MapStats = new MapStats({
             ar: forceAR,
             speedMultiplier: speedMultiplier,
-            isForceAR: !isNaN(<number> forceAR)
+            isForceAR: !isNaN(<number>forceAR)
         });
 
         return new PerformanceCalculationParameters(
@@ -228,8 +228,6 @@ export abstract class BeatmapDifficultyHelper {
         if (!beatmap.map || beatmap.map.objects.length === 0) {
             return null;
         }
-
-        calculationParams.applyFromBeatmap(beatmap);
 
         const star: MapStars = new MapStars().calculate({
             map: beatmap.map!,

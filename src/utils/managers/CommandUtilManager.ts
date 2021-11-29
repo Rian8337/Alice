@@ -132,7 +132,7 @@ export abstract class CommandUtilManager extends Manager {
                 },
                 { upsert: true }
             );
-        };
+        }
     }
 
     /**

@@ -13,4 +13,4 @@ export interface Powerup {
      * The amount of this powerup that the clan has.
      */
     amount: number;
-};
+}

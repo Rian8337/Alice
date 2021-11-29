@@ -31,4 +31,4 @@ export interface WhitelistDifficultyStatistics {
      * The BPM of the beatmap.
      */
     bpm: number;
-};
+}

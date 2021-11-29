@@ -21,4 +21,4 @@ export interface YouTubeVideoInformation {
      * The snippet of the video.
      */
     readonly snippet: YouTubeVideoSnippet;
-};
+}

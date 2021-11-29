@@ -29,7 +29,7 @@ export abstract class CommandHelper extends Manager {
      * @param subcommandChoices The subcommands of the command. The user will be prompted to choose one of these subcommands in order.
      * @param placeholder The placeholder text for the subcommand's select menu.
      */
-    static async runSubcommandNotFromInteraction(interaction: CommandInteraction, mainCommandDirectory: string, subcommandChoices: MessageSelectOptionData[], placeholder: string): Promise<any> {
+    static async runSubcommandNotFromInteraction(interaction: CommandInteraction, mainCommandDirectory: string, subcommandChoices: MessageSelectOptionData[], placeholder: string): Promise<unknown> {
         const pickedSubcommand: string = (await SelectMenuCreator.createSelectMenu(
             interaction,
             {
@@ -55,7 +55,7 @@ export abstract class CommandHelper extends Manager {
      * 
      * @param interaction The interaction that triggered the subcommand or subcommand group.
      */
-    static runSubcommandOrGroup(interaction: CommandInteraction): Promise<any> {
+    static runSubcommandOrGroup(interaction: CommandInteraction): Promise<unknown> {
         if (interaction.options.getSubcommandGroup(false)) {
             return this.runSubcommandGroup(interaction);
         } else {
@@ -68,7 +68,7 @@ export abstract class CommandHelper extends Manager {
      * 
      * @param interaction The interaction that triggered the subcommand.
      */
-    static runSubcommandFromInteraction(interaction: CommandInteraction): Promise<any> {
+    static runSubcommandFromInteraction(interaction: CommandInteraction): Promise<unknown> {
         return this.runSubOrGroup(interaction, this.getSubcommand(interaction));
     }
 
@@ -79,7 +79,7 @@ export abstract class CommandHelper extends Manager {
      * 
      * @param interaction The interaction that triggered the command.
      */
-    static runSubcommandGroup(interaction: CommandInteraction): Promise<any> {
+    static runSubcommandGroup(interaction: CommandInteraction): Promise<unknown> {
         return this.runSubOrGroup(interaction, this.getSubcommandGroup(interaction));
     }
 
@@ -89,7 +89,7 @@ export abstract class CommandHelper extends Manager {
      * @param interaction The interaction that triggered the subcommand group or subcommand.
      * @param subcommand The subcommand to run.
      */
-    private static runSubOrGroup(interaction: CommandInteraction, subcommand?: Subcommand): Promise<any> {
+    private static runSubOrGroup(interaction: CommandInteraction, subcommand?: Subcommand): Promise<unknown> {
         if (!subcommand) {
             return interaction.editReply({
                 content: MessageCreator.createReject("I'm sorry, I cannot find the command that you are looking for!")
@@ -187,13 +187,13 @@ export abstract class CommandHelper extends Manager {
             return true;
         }
 
-        const member: GuildMember | null = <GuildMember | null> interaction.member;
+        const member: GuildMember | null = <GuildMember | null>interaction.member;
 
         if (!member || interaction.channel instanceof DMChannel) {
             return false;
         }
 
-        return (<TextChannel | null> interaction.channel)?.permissionsFor(member).has(permissions) ?? false;
+        return (<TextChannel | null>interaction.channel)?.permissionsFor(member).has(permissions) ?? false;
     }
 
     /**

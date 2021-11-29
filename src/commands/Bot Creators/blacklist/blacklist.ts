@@ -55,7 +55,7 @@ export const run: Command["run"] = async (_, interaction) => {
     }
 
     switch (pickedChoice) {
-        case "blacklist":
+        case "blacklist": {
             if (!reason) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(blacklistStrings.noBlacklistReasonProvided)
@@ -79,7 +79,8 @@ export const run: Command["run"] = async (_, interaction) => {
             });
 
             break;
-        case "unblacklist":
+        }
+        case "unblacklist": {
             const unblacklistResult: OperationResult = await WhitelistManager.unblacklist(beatmapInfo);
 
             if (!unblacklistResult.success) {
@@ -97,6 +98,7 @@ export const run: Command["run"] = async (_, interaction) => {
             });
 
             break;
+        }
     }
 };
 

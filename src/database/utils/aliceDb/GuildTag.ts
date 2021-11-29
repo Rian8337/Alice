@@ -2,9 +2,7 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseGuildTag } from "@alice-interfaces/database/aliceDb/DatabaseGuildTag";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
-import { Collection, Snowflake } from "discord.js";
 
 /**
  * Represents guild-specific tags.

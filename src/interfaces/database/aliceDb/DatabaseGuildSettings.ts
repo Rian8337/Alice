@@ -27,4 +27,4 @@ export interface DatabaseGuildSettings extends BaseDocument {
      * The event utilities that are disabled in the guild.
      */
     disabledEventUtils: DisabledEventUtil[];
-};
+}

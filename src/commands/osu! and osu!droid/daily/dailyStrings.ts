@@ -22,4 +22,4 @@ export enum dailyStrings {
     replayDoesntHaveSameUsername = "I'm sorry, that replay file does not contain the same username as your binded osu!droid account!",
     replayTooOld = "I'm sorry, that replay's format version is too old!",
     manualSubmissionConfirmation = "Please ask a staff member to confirm your manual submission!"
-};
+}

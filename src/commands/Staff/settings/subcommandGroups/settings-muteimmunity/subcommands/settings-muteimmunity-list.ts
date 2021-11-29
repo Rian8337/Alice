@@ -5,7 +5,7 @@ import { OnButtonPageChange } from "@alice-interfaces/utils/OnButtonPageChange";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildMember, MessageEmbed, Snowflake } from "discord.js";
+import { MessageEmbed, Snowflake } from "discord.js";
 import { settingsStrings } from "../../../settingsStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
@@ -40,7 +40,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         immuneMuteRoles,
         10,

@@ -3,8 +3,6 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
-import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { User } from "discord.js";
 import { mapshareStrings } from "../mapshareStrings";
@@ -22,8 +20,6 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null = await dbManager.getFromUser(user);
 
-    let result: OperationResult;
-
     if (!playerInfo || playerInfo.isBannedFromMapShare) {
         return interaction.editReply({
             content: MessageCreator.createReject(mapshareStrings.userIsNotBanned)
@@ -32,7 +28,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     playerInfo.isBannedFromMapShare = false;
 
-    result = await dbManager.update(
+    const result = await dbManager.update(
         { discordid: user.id },
         {
             $set: {

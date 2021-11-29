@@ -18,4 +18,4 @@ export interface MapTriviaPlayer {
      * This player's lives.
      */
     lives: number;
-};
+}

@@ -11,4 +11,4 @@ export enum mathgameStrings {
     singleGamemodeQuestion = `%s, solve this equation within 30 seconds!\n\`Operator count %s, level %s\`\n\`\`\`fix\n%s = ...\`\`\``,
     multiGamemodeQuestion = `Solve this equation within 30 seconds (level %s, %s operator(s))!\n\`\`\`fix\n%s = ...\`\`\``,
     correctAnswer = `%s got the correct answer! That took %ss.\n\`\`\`fix\n%s = %s\`\`\``
-};
+}

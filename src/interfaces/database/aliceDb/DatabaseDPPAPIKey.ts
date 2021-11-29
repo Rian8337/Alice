@@ -13,4 +13,4 @@ export interface DatabaseDPPAPIKey extends BaseDocument {
      * The owner of the API key.
      */
     owner: string;
-};
+}

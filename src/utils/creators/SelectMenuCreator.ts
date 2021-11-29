@@ -18,46 +18,46 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
      * @param duration The duration the select menu will be active for.
      * @returns The choices that the user picked.
      */
-    static createSelectMenu(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string[]> {
-        return new Promise(async resolve => {
-            const selectMenu: MessageSelectMenu = new MessageSelectMenu()
-                .setCustomId("whatever")
-                .addOptions(choices.slice(0, 25));
+    static async createSelectMenu(interaction: CommandInteraction | MessageComponentInteraction, options: InteractionReplyOptions, choices: MessageSelectOptionData[], users: Snowflake[], duration: number): Promise<string[]> {
+        const selectMenu: MessageSelectMenu = new MessageSelectMenu()
+            .setCustomId("whatever")
+            .addOptions(choices.slice(0, 25));
 
-            const component: MessageActionRow = new MessageActionRow()
+        const component: MessageActionRow = new MessageActionRow()
+            .addComponents(selectMenu);
+
+        const onPageChange: OnButtonPageChange = async (_, page) => {
+            selectMenu.spliceOptions(0, selectMenu.options.length)
+                .addOptions(choices.slice(25 * (page - 1), 25 + 25 * (page - 1)));
+
+            component.spliceComponents(0, component.components.length)
                 .addComponents(selectMenu);
+        };
 
-            const onPageChange: OnButtonPageChange = async (_, page) => {
-                selectMenu.spliceOptions(0, selectMenu.options.length)
-                    .addOptions(choices.slice(25 * (page - 1), 25 + 25 * (page - 1)));
+        options.components ??= [];
+        options.components.push(component);
 
-                component.spliceComponents(0, component.components.length)
-                    .addComponents(selectMenu);
-            };
+        const message: Message = await MessageButtonCreator.createLimitedButtonBasedPaging(
+            interaction,
+            options,
+            [interaction.user.id],
+            choices,
+            25,
+            1,
+            duration,
+            onPageChange
+        );
 
-            options.components ??= [];
-            options.components.push(component);
+        const collector: InteractionCollector<SelectMenuInteraction> =
+            this.createSelectMenuCollector(message, users, duration);
 
-            const message: Message = await MessageButtonCreator.createLimitedButtonBasedPaging(
-                interaction,
-                options,
-                [interaction.user.id],
-                choices,
-                25,
-                1,
-                duration,
-                onPageChange
-            );
+        collector.on("collect", async i => {
+            await i.deferUpdate();
 
-            const collector: InteractionCollector<SelectMenuInteraction> =
-                this.createSelectMenuCollector(message, users, duration);
+            collector.stop();
+        });
 
-            collector.on("collect", async i => {
-                await i.deferUpdate();
-
-                collector.stop();
-            });
-
+        return new Promise(resolve => {
             collector.on("end", async collected => {
                 try {
                     if (collected.size > 0) {
@@ -75,9 +75,10 @@ export abstract class SelectMenuCreator extends InteractionCollectorCreator {
                             interaction.deleteReply();
                         }, 5 * 1000);
                     }
+                    // eslint-disable-next-line no-empty
                 } catch { }
 
-                resolve((<SelectMenuInteraction | undefined> collected.first())?.values ?? []);
+                resolve((<SelectMenuInteraction | undefined>collected.first())?.values ?? []);
             });
         });
     }

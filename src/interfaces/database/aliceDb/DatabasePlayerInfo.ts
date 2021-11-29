@@ -76,4 +76,4 @@ export interface DatabasePlayerInfo extends BaseDocument {
      * The amount of Alice coins the user has transferred to other user.
      */
     transferred: number;
-};
+}

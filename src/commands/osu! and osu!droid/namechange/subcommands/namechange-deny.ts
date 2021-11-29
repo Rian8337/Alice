@@ -55,7 +55,8 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                 content: MessageCreator.createReject(namechangeStrings.denyUserNotification, reason),
                 embeds: [embed]
             });
-        } catch {}
+            // eslint-disable-next-line no-empty
+        } catch { }
     }
 };
 

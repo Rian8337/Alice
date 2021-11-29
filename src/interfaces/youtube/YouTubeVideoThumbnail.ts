@@ -16,4 +16,4 @@ export interface YouTubeVideoThumbnail {
      * The height of the thumbnail.
      */
     readonly height: number;
-};
+}

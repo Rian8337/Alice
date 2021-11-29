@@ -45,4 +45,4 @@ export interface DatabaseClanAuction extends BaseDocument {
      * The bids that have been made in this auction, sorted by highest amount.
      */
     bids: AuctionBid[];
-};
+}

@@ -36,7 +36,7 @@ export abstract class StringHelper {
 
         let finalString: string = "";
         const words: string[] = string.split(/\s+/g);
-        
+
         // There may be a word longer than the specified max length.
         // In that case, we use the longest word's length.
         let currentLineLength: number = 0;
@@ -48,7 +48,7 @@ export abstract class StringHelper {
                 finalString += "\n";
                 currentLineLength = word.length + 1;
             }
-            
+
             finalString += word + " ";
         });
 
@@ -90,7 +90,7 @@ export abstract class StringHelper {
         const replacementsNeeded: number = (str.match(/%s/g) || []).length;
 
         if (replacements.length !== replacementsNeeded) {
-            throw new Error(`Amount of replacements for string \"${str}\" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`);
+            throw new Error(`Amount of replacements for string "${str}" doesn't match; expected ${replacementsNeeded}, got ${replacements.length}`);
         }
 
         let count: number = 0;

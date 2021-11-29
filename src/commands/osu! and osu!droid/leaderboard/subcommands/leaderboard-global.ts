@@ -70,7 +70,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             output += `${(actualPage * 100 + i + 1).toString().padEnd(4)} | ${c[1].padEnd(longestUsernameLength)} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${((parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%").padEnd(8)} | ${parseInt(c[3]).toLocaleString()}\n`;
         }
 
-        options.content = "```c\n" + output + "```";;
+        options.content = "```c\n" + output + "```";
     };
 
     MessageButtonCreator.createLimitlessButtonBasedPaging(

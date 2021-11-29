@@ -30,7 +30,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     let player: UserBind | undefined;
 
-    while (player = (await dbManager.getRecalcUnscannedPlayers(1)).first()) {
+    while ((player = (await dbManager.getRecalcUnscannedPlayers(1)).first())) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
         if (interaction.options.getBoolean("full")) {

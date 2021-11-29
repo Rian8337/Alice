@@ -6,4 +6,4 @@ export enum fetchreplayStrings {
     noScoreFound = "I'm sorry, %s not have a score submitted on that beatmap!",
     noReplayFound = "I'm sorry, I cannot find the replay of the score!",
     fetchReplayNoBeatmapSuccessful = "Successfully fetched replay.\n\nRank: %s\nScore: %s\nMax Combo: %sx\nAccuracy: %s% [%s/%s/%s/%s]"
-};
+}

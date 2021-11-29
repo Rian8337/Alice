@@ -8,4 +8,4 @@ export enum DPPSubmissionValidity {
     SCORE_USES_FORCE_AR,
     SCORE_USES_CUSTOM_SPEED,
     VALID
-};
+}

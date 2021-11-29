@@ -45,7 +45,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const content: string = result.data.toString("utf-8");
-    const requestResult: string = <string> content.split(" ").shift();
+    const requestResult: string = <string>content.split(" ").shift();
 
     if (requestResult === "FAILED") {
         // Update database first, then we can deal with notifying the user
@@ -59,7 +59,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
                 { color: 16711711, timestamp: true }
             );
-    
+
             embed.setTitle("Request Details")
                 .setDescription(
                     `**Old Username**: ${currentUsername}\n` +
@@ -68,12 +68,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
                     "**Status**: Denied\n" +
                     "**Reason**: New username taken"
                 );
-    
+
             try {
                 user.send({
                     content: MessageCreator.createReject(namechangeStrings.denyUserNotification, "new username taken"),
-                    embeds:[embed]
+                    embeds: [embed]
                 });
+                // eslint-disable-next-line no-empty
             } catch { }
         }
 
@@ -104,6 +105,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             user.send({
                 content: MessageCreator.createReject(namechangeStrings.acceptUserNotification, new Date(nameChange.cooldown * 1000).toUTCString()), embeds: [embed]
             });
+            // eslint-disable-next-line no-empty
         } catch { }
     }
 };

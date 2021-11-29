@@ -16,13 +16,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
         content: MessageCreator.createAccept(scanStrings.scanStarted)
     });
 
-    while (true) {
-        const players: Collection<Snowflake, UserBind> = await dbManager.getDPPUnscannedPlayers(50);
+    let players: Collection<Snowflake, UserBind>;
 
-        if (players.size === 0) {
-            break;
-        }
-
+    while ((players = await dbManager.getDPPUnscannedPlayers(50)).size) {
         for await (const player of players.values()) {
             client.logger.info(`Now calculating ID ${player.discordid}`);
 

@@ -20,127 +20,126 @@ export abstract class TriviaHelper {
      * @param type The question type to force.
      * @returns The result of the trivia question.
      */
-    static askQuestion(interaction: CommandInteraction, category?: TriviaQuestionCategory, type?: TriviaQuestionType): Promise<TriviaQuestionResult> {
-        return new Promise(async resolve => {
-            category ??= ArrayHelper.getRandomArrayElement(<TriviaQuestionCategory[]> Object.values(TriviaQuestionCategory).filter(v => typeof v === "number"));
+    static async askQuestion(interaction: CommandInteraction, category?: TriviaQuestionCategory, type?: TriviaQuestionType): Promise<TriviaQuestionResult> {
+        category ??= ArrayHelper.getRandomArrayElement(<TriviaQuestionCategory[]>Object.values(TriviaQuestionCategory).filter(v => typeof v === "number"));
 
-            const file: string = await readFile(`${process.cwd()}/files/trivia/${this.getCategoryFileName(category)}`, { encoding: "utf-8" });
+        const file: string = await readFile(`${process.cwd()}/files/trivia/${this.getCategoryFileName(category)}`, { encoding: "utf-8" });
 
-            const questionData: string[][] = file.split("\n").map(v => v.split(" | "));
+        const questionData: string[][] = file.split("\n").map(v => v.split(" | "));
 
-            let components: string[];
+        let components: string[];
 
-            if (type) {
-                const availableQuestions: string[][] = questionData.filter(v => {
-                    const questionType: number = parseInt(v[1]);
+        if (type) {
+            const availableQuestions: string[][] = questionData.filter(v => {
+                const questionType: number = parseInt(v[1]);
 
-                    if (type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE) {
-                        return questionType === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE || questionType === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE;
-                    } else {
-                        return questionType === type;
-                    }
-                });
-
-                if (availableQuestions.length === 0) {
-                    return resolve({
-                        category: category,
-                        type: type,
-                        correctAnswers: [],
-                        results: []
-                    });
+                if (type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE) {
+                    return questionType === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE || questionType === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE;
+                } else {
+                    return questionType === type;
                 }
+            });
 
-                components = ArrayHelper.getRandomArrayElement(availableQuestions);
-            } else {
-                components = ArrayHelper.getRandomArrayElement(questionData);
+            if (availableQuestions.length === 0) {
+                return {
+                    category: category,
+                    type: type,
+                    correctAnswers: [],
+                    results: []
+                };
             }
 
-            // First entry is the difficulty of the question.
-            const difficulty: number = parseInt(components.shift()!);
+            components = ArrayHelper.getRandomArrayElement(availableQuestions);
+        } else {
+            components = ArrayHelper.getRandomArrayElement(questionData);
+        }
 
-            // Second entry is the type of the question.
-            type = parseInt(components.shift()!);
+        // First entry is the difficulty of the question.
+        const difficulty: number = parseInt(components.shift()!);
 
-            // Third entry is the link of the image related to the question.
-            const imageLink: string = components.shift()!;
+        // Second entry is the type of the question.
+        type = parseInt(components.shift()!);
 
-            // Fourth entry is the question itself.
-            const question: string = components.shift()!;
+        // Third entry is the link of the image related to the question.
+        const imageLink: string = components.shift()!;
 
-            // TODO: this is a bit trippy considering it should never be undefined, but apparently
-            // an error was thrown for that reason.
-            if (components.length > 0) {
-                components[components.length - 1] = components.at(-1)!.replace("\r", "");
+        // Fourth entry is the question itself.
+        const question: string = components.shift()!;
+
+        // TODO: this is a bit trippy considering it should never be undefined, but apparently
+        // an error was thrown for that reason.
+        if (components.length > 0) {
+            components[components.length - 1] = components.at(-1)!.replace("\r", "");
+        }
+
+        // The rest is a combination of correct answers and all answers.
+        const correctAnswers: string[] = [];
+
+        const isMultipleChoice: boolean = type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE || type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE;
+
+        if (isMultipleChoice) {
+            correctAnswers.push(components[0]);
+
+            if (type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE) {
+                components.shift();
             }
+        } else {
+            correctAnswers.push(...components);
+        }
 
-            // The rest is a combination of correct answers and all answers.
-            const correctAnswers: string[] = [];
+        let allAnswers: string[] = components;
 
-            const isMultipleChoice: boolean = type === TriviaQuestionType.MULTIPLE_CHOICE_FIRST_TYPE || type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE;
+        ArrayHelper.shuffle(allAnswers);
 
-            if (isMultipleChoice) {
-                correctAnswers.push(components[0]);
+        const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
+            { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor }
+        );
 
-                if (type === TriviaQuestionType.MULTIPLE_CHOICE_SECOND_TYPE) {
-                    components.shift();
-                }
-            } else {
-                correctAnswers.push(...components);
-            }
+        embed.setTitle("Trivia Question")
+            .setDescription(`${difficulty} ${Symbols.star} - ${this.getCategoryName(category)} Question\n\n${question}`)
 
-            let allAnswers: string[] = components;
+        if (isMultipleChoice) {
+            // Convert to letter choices (A, B, etc.) first.
+            // There can only be one correct answer in a multiple choice question, so this
+            // assumption is safe.
+            correctAnswers[0] = String.fromCharCode(65 + allAnswers.indexOf(correctAnswers[0]));
 
-            ArrayHelper.shuffle(allAnswers);
+            allAnswers = allAnswers.map((v, i) => v = `${String.fromCharCode(65 + i)}. ${v}`);
 
-            const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-                { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+            embed.addField(
+                "Answers",
+                allAnswers.join("\n")
             );
+        }
 
-            embed.setTitle("Trivia Question")
-                .setDescription(`${difficulty} ${Symbols.star} - ${this.getCategoryName(category)} Question\n\n${question}`)
+        if (imageLink !== "-") {
+            embed.setImage(imageLink);
+        }
 
-            if (isMultipleChoice) {
-                // Convert to letter choices (A, B, etc.) first.
-                // There can only be one correct answer in a multiple choice question, so this
-                // assumption is safe.
-                correctAnswers[0] = String.fromCharCode(65 + allAnswers.indexOf(correctAnswers[0]));
+        const options: MessageOptions = {
+            components: [],
+            embeds: [embed]
+        };
 
-                allAnswers = allAnswers.map((v, i) => v = `${String.fromCharCode(65 + i)}. ${v}`);
+        if (isMultipleChoice) {
+            const component: MessageActionRow = new MessageActionRow();
 
-                embed.addField(
-                    "Answers",
-                    allAnswers.join("\n")
-                );
+            for (let i = 0; i < allAnswers.length; ++i) {
+                const button: MessageButton = new MessageButton()
+                    .setCustomId(String.fromCharCode(65 + i))
+                    .setStyle("PRIMARY")
+                    .setLabel(String.fromCharCode(65 + i));
+
+                component.addComponents(button);
             }
 
-            if (imageLink !== "-") {
-                embed.setImage(imageLink);
-            }
+            options.components!.push(component);
+        }
 
-            const options: MessageOptions = {
-                components: [],
-                embeds: [ embed ]
-            };
+        const questionMessage: Message = <Message>await interaction.editReply(options);
 
-            if (isMultipleChoice) {
-                const component: MessageActionRow = new MessageActionRow();
-
-                for (let i = 0; i < allAnswers.length; ++i) {
-                    const button: MessageButton = new MessageButton()
-                        .setCustomId(String.fromCharCode(65 + i))
-                        .setStyle("PRIMARY")
-                        .setLabel(String.fromCharCode(65 + i));
-
-                    component.addComponents(button);
-                }
-
-                options.components!.push(component);
-            }
-
-            const questionMessage: Message = <Message> await interaction.editReply(options);
-
-            const time: number = (isMultipleChoice ? 5 + (difficulty * 2) : 7 + (difficulty * 3)) * 1000;
-
+        const time: number = (isMultipleChoice ? 5 + (difficulty * 2) : 7 + (difficulty * 3)) * 1000;
+        return new Promise(resolve => {
             if (isMultipleChoice) {
                 const collector: InteractionCollector<ButtonInteraction> = questionMessage.createMessageComponentCollector({
                     filter: i => i.isButton(),
@@ -166,12 +165,13 @@ export abstract class TriviaHelper {
 
                     try {
                         await interaction.editReply(options);
+                        // eslint-disable-next-line no-empty
                     } catch { }
 
                     resolve({
                         category: category!,
                         type: type!,
-                        correctAnswers: [ allAnswers.find(v => v.startsWith(correctAnswers[0]))! ],
+                        correctAnswers: [allAnswers.find(v => v.startsWith(correctAnswers[0]))!],
                         results: answers.filter(v => v.customId === correctAnswers[0]).map(v => {
                             return {
                                 user: v.user,
@@ -211,7 +211,7 @@ export abstract class TriviaHelper {
     static getCategoryChoices(): MessageSelectOptionData[] {
         return Object.values(TriviaQuestionCategory).filter(v => typeof v === "number").map(v => {
             return {
-                label: this.getCategoryName(<TriviaQuestionCategory> v),
+                label: this.getCategoryName(<TriviaQuestionCategory>v),
                 value: v.toString()
             };
         });

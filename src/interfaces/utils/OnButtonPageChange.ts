@@ -11,5 +11,6 @@ export interface OnButtonPageChange {
      * @param contents The contents to be displayed in the page. This is automatically provided by the utility.
      * @param args Additional arguments for the function.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (options: MessageOptions, page: number, contents: any[], ...args: any[]): Promise<any>;
 }

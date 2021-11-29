@@ -15,7 +15,7 @@ export const run: Command["run"] = async (_, interaction) => {
         });
     }
 
-    const toReport: GuildMember | void = await interaction.guild!.members.fetch(interaction.options.getUser("user", true)).catch(() => {});
+    const toReport: GuildMember | null = await interaction.guild!.members.fetch(interaction.options.getUser("user", true)).catch(() => null);
 
     if (!toReport) {
         return interaction.editReply({
@@ -48,7 +48,7 @@ export const run: Command["run"] = async (_, interaction) => {
             `**Reason**: ${reason}`
         );
 
-    const reportChannel: TextChannel = <TextChannel> interaction.guild!.channels.cache.find(c => c.name === Config.reportChannel);
+    const reportChannel: TextChannel = <TextChannel>interaction.guild!.channels.cache.find(c => c.name === Config.reportChannel);
 
     reportChannel.send({ embeds: [embed] });
 
@@ -63,7 +63,7 @@ export const run: Command["run"] = async (_, interaction) => {
             `**Reason**: ${reason}\n\n` +
             `Remember to save your evidence in case it is needed.`
         );
-    
+
     interaction.user.send({ embeds: [replyEmbed] })
         .catch(
             () => interaction.editReply({

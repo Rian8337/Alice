@@ -7,7 +7,7 @@ import { Collection } from "discord.js";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
 
-export const run: EventUtil["run"] = async (_) => {
+export const run: EventUtil["run"] = async () => {
     setInterval(async () => {
         if (Config.maintenance || CommandUtilManager.globallyDisabledEventUtils.get("ready")?.includes("clanRankUpdating")) {
             return;

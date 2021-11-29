@@ -16,7 +16,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
         return;
     }
 
-    const ytRegex: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]+).*/;
+    const ytRegex: RegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]+).*/;
 
     const calcParams: PerformanceCalculationParameters = BeatmapDifficultyHelper.getCalculationParamsFromMessage(message.content);
 
@@ -69,7 +69,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
                 const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmapInfo);
 
-                const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+                const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
                 embed.spliceFields(0, embed.fields.length);
 
@@ -107,7 +107,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 // Empty files, we don't need it here.
                 embedOptions.files = [];
 
-                const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+                const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
                 const stats: MapStats = new MapStats({
                     mods: calcParams.mods,
@@ -151,7 +151,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     }
 };
 
-export const config: EventUtil["config"] =  {
+export const config: EventUtil["config"] = {
     description: "Responsible for loading beatmaps that is linked from YouTube.",
     togglePermissions: ["MANAGE_CHANNELS"],
     toggleScope: ["GLOBAL", "GUILD", "CHANNEL"]

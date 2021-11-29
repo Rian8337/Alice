@@ -20,13 +20,9 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     let scannedCount: number = 0;
 
-    while (true) {
-        const entries: Collection<number, MapWhitelist> = await whitelistDb.getUnscannedBeatmaps(250);
+    let entries: Collection<number, MapWhitelist>;
 
-        if (entries.size === 0) {
-            break;
-        }
-
+    while ((entries = await whitelistDb.getUnscannedBeatmaps(250)).size) {
         for await (const entry of entries.values()) {
             const validity: WhitelistValidity = await entry.checkValidity();
 
@@ -37,12 +33,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
                     await whitelistDb.delete({ mapid: entry.mapid });
                     break;
-                case WhitelistValidity.OUTDATED_HASH:
+                case WhitelistValidity.OUTDATED_HASH: {
                     await DPPHelper.deletePlays(entry.hashid);
 
                     const beatmapInfo: MapInfo = (await BeatmapManager.getBeatmap(entry.mapid, false))!;
 
                     entry.hashid = beatmapInfo.hash;
+                }
+                // eslint-disable-next-line no-fallthrough
                 case WhitelistValidity.VALID:
                     client.logger.info(++scannedCount);
 

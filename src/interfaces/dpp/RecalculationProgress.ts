@@ -16,4 +16,4 @@ export interface RecalculationProgress {
      * The current pp entries that contains scores that have been processed up to this point.
      */
     currentPPEntries: PPEntry[];
-};
+}

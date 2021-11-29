@@ -21,7 +21,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
     let player: PrototypePP | undefined;
 
-    while (player = (await dbManager.getUnscannedPlayers(1)).first()) {
+    while ((player = (await dbManager.getUnscannedPlayers(1)).first())) {
         client.logger.info(`Now calculating ID ${player.discordid}`);
 
         const bindInfo: UserBind = (await DatabaseManager.elainaDb.collections.userBind.getFromUser(player.discordid))!;

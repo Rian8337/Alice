@@ -19,4 +19,4 @@ export interface DatabaseProfileBadge extends BaseDocument, PartialProfileBackgr
      * The requirement needed to get the badge in respect of its type.
      */
     requirement: number;
-};
+}

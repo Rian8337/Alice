@@ -14,4 +14,4 @@ export interface SayobotAPIResponse {
     readonly status: number;
     readonly time_cost: number;
     readonly data: SayobotBeatmap[];
-};
+}

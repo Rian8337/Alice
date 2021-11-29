@@ -3,4 +3,4 @@
  */
 export enum gamestatsStrings {
     cannotRetrieveGameStatistics = "I'm sorry, I cannot retrieve game statistics!"
-};
+}

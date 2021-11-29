@@ -11,4 +11,4 @@ export interface AuctionBid {
      * The amount of coins that the clan has bid.
      */
     amount: number;
-};
+}

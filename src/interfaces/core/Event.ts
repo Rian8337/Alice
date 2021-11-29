@@ -3,4 +3,4 @@ import { BaseRunnable } from "./BaseRunnable";
 /**
  * Defines an event.
  */
-export interface Event extends BaseRunnable { };
+export type Event = BaseRunnable;

@@ -15,4 +15,4 @@ export interface DatabaseOsuBind extends BaseDocument {
      * The osu! username the user is binded to.
      */
     username: string;
-};
+}

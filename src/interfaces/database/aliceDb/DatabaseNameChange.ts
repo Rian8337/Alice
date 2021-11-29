@@ -40,4 +40,4 @@ export interface DatabaseNameChange extends BaseDocument {
      * The usernames that the osu!droid account has had in the past.
      */
     previous_usernames: string[];
-};
+}

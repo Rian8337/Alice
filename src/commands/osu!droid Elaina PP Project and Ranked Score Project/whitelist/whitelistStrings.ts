@@ -13,4 +13,4 @@ export enum whitelistStrings {
     beatmapNotFound = "I'm sorry, I cannot find the beatmap in osu! beatmap listing!",
     beatmapDoesntNeedWhitelist = "Hey, this beatmap doesn't need to be whitelisted!",
     whitelistStatus = "`%s` is %s."
-};
+}

@@ -8,4 +8,4 @@ export interface DatabasePlayerTracking extends BaseDocument {
      * The UID of the tracked osu!droid account.
      */
     uid: number;
-};
+}

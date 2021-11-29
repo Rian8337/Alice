@@ -1,8 +1,6 @@
-import { Bot } from "@alice-core/Bot";
 import { Constants } from "@alice-core/Constants";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
-import { DatabasePlayerInfo } from "@alice-interfaces/database/aliceDb/DatabasePlayerInfo";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MapShareSubmissionStatus } from "@alice-types/utils/MapShareSubmissionStatus";
 import { Manager } from "@alice-utils/base/Manager";
@@ -126,7 +124,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
             });
         }
 
-        const channel: TextChannel = <TextChannel> await (await this.client.guilds.fetch(Constants.mainServer)).channels.fetch("430002296160649229");
+        const channel: TextChannel = <TextChannel>await (await this.client.guilds.fetch(Constants.mainServer)).channels.fetch("430002296160649229");
 
         await channel.send(embedOptions);
 

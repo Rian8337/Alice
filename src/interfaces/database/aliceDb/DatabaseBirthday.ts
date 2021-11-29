@@ -29,4 +29,4 @@ export interface DatabaseBirthday extends BaseDocument {
      * Whether the user was born in leap year.
      */
     isLeapYear: boolean;
-};
+}

@@ -37,6 +37,7 @@ export abstract class HelperFunctions {
      * @param args The arguments for the function.
      * @returns The execution time of the function, in milliseconds.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static async getFunctionExecutionTime(fn: (...args: any[]) => Promise<any>, ...args: any[]): Promise<number> {
         const start: bigint = hrtime.bigint();
 

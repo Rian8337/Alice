@@ -29,4 +29,4 @@ export interface DatabaseMapWhitelist extends BaseDocument {
      * Whether the ongoing whitelist scan is completed for this beatmap.
      */
     whitelistScanDone?: boolean;
-};
+}

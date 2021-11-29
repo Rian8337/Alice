@@ -11,4 +11,4 @@ export interface DisabledEventUtil {
      * The name of the event utility.
      */
     name: string;
-};
+}

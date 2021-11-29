@@ -4,4 +4,4 @@ import { DatabaseProfileBackground } from "@alice-interfaces/database/aliceDb/Da
  * Partial profile background object used for
  * storing backgrounds in `PlayerInfo` instances.
  */
-export interface PartialProfileBackground extends Pick<DatabaseProfileBackground, "id" | "name"> { };
+export type PartialProfileBackground = Pick<DatabaseProfileBackground, "id" | "name">;

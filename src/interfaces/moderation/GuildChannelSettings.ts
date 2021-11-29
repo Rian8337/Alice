@@ -20,4 +20,4 @@ export interface GuildChannelSettings {
      * The event utilities that are disabled in this channel.
      */
     disabledEventUtils: DisabledEventUtil[];
-};
+}

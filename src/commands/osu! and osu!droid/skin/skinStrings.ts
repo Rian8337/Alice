@@ -7,4 +7,4 @@ export enum skinStrings {
 
     noSkinSetForUser = "I'm sorry, this user doesn't have any skins!",
     userSkinInfo = "%s's skin: %s"
-};
+}

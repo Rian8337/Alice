@@ -47,7 +47,12 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
         this.inputAccuracy = inputAccuracy;
     }
 
-    override applyFromBeatmap(beatmap: MapInfo): void {
+    /**
+     * Applies a beatmap to alter this parameter.
+     * 
+     * @param beatmap The beatmap.
+     */
+    applyFromBeatmap(beatmap: MapInfo): void {
         if (this.accuracy.n50 || this.accuracy.n100) {
             this.accuracy = new Accuracy({
                 n300: beatmap.objects - this.accuracy.n100 - this.accuracy.n50 - this.accuracy.nmiss,
@@ -64,7 +69,5 @@ export class PerformanceCalculationParameters extends StarRatingCalculationParam
 
             this.isEstimated = !Precision.almostEqualsNumber(this.accuracy.value() * 100, this.inputAccuracy, 1e-2);
         }
-
-        super.applyFromBeatmap(beatmap);
     }
 }

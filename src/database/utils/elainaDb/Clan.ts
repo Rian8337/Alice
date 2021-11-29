@@ -172,14 +172,14 @@ export class Clan extends Manager {
      * @param message The message for the clan leader.
      * @returns An object containing information about the operation.
      */
-    notifyLeader(message: string): Promise<OperationResult> {
-        return new Promise(async resolve => {
-            const leader: User = await this.client.users.fetch(this.leader);
+    async notifyLeader(message: string): Promise<OperationResult> {
+        const leader: User = await this.client.users.fetch(this.leader);
 
-            if (!leader) {
-                return resolve(this.createOperationResult(false, "clan leader not found"));
-            }
+        if (!leader) {
+            return this.createOperationResult(false, "clan leader not found");
+        }
 
+        return new Promise(resolve => {
             leader.send(MessageCreator.createWarn(message)).then(() => {
                 resolve(this.createOperationResult(true));
             }).catch((e: Error) => {
@@ -444,6 +444,8 @@ export class Clan extends Manager {
      * @returns An object containing information about the operation.
      */
     async disband(): Promise<OperationResult> {
+        this.exists = false;
+
         await DatabaseManager.elainaDb.collections.clan.delete(
             { name: this.name }
         );
@@ -538,7 +540,7 @@ export class Clan extends Manager {
         const globalClanRole: Role = await this.getGlobalClanRole();
 
         for await (const user of users) {
-            const member: GuildMember | void = await mainServer.members.fetch(user).catch(() => {});
+            const member: GuildMember | null = await mainServer.members.fetch(user).catch(() => null);
 
             if (!member) {
                 continue;
@@ -567,7 +569,7 @@ export class Clan extends Manager {
         const globalClanRole: Role = await this.getGlobalClanRole();
 
         for await (const user of users) {
-            const member: GuildMember | void = await mainServer.members.fetch(user).catch(() => {});
+            const member: GuildMember | null = await mainServer.members.fetch(user).catch(() => null);
 
             if (!member) {
                 continue;
@@ -616,7 +618,7 @@ export class Clan extends Manager {
     async getClanChannel(): Promise<TextChannel | undefined> {
         const mainServer: Guild = await this.client.guilds.fetch(Constants.mainServer);
 
-        return <TextChannel | undefined> mainServer.channels.cache.find(c => c.name === this.name);
+        return <TextChannel | undefined>mainServer.channels.cache.find(c => c.name === this.name);
     }
 
     /**
@@ -711,7 +713,7 @@ export class Clan extends Manager {
                 content:
                     `Type: Icon\n` +
                     `Clan: ${this.name}`,
-                files: [ attachment ]
+                files: [attachment]
             });
 
             this.iconMessage = message.id;
@@ -760,7 +762,7 @@ export class Clan extends Manager {
                 content:
                     `Type: Banner\n` +
                     `Clan: ${this.name}`,
-                files: [ attachment ]
+                files: [attachment]
             });
 
             this.bannerMessage = message.id;
@@ -819,7 +821,7 @@ export class Clan extends Manager {
      * Gets the channel that contains attachments of clan icons and banners.
      */
     private async getAttachmentChannel(): Promise<TextChannel> {
-        const channel: TextChannel = <TextChannel> await this.client.channels.fetch(this.attachmentChannelId);
+        const channel: TextChannel = <TextChannel>await this.client.channels.fetch(this.attachmentChannelId);
 
         return channel;
     }

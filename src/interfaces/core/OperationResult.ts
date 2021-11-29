@@ -11,4 +11,4 @@ export interface OperationResult {
      * The reason for why the operation failed.
      */
     reason?: string;
-};
+}

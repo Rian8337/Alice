@@ -14,4 +14,4 @@ export interface DatabaseAskCount extends BaseDocument {
      * The amount of times the user has asked the bot via 8ball.
      */
     count: number;
-};
+}

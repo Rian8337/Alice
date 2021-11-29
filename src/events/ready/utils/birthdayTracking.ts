@@ -69,7 +69,7 @@ export const run: EventUtil["run"] = async (client) => {
         }
 
         for await (const birthday of validBirthdays) {
-            const user: GuildMember|void = await guild.members.fetch(birthday.discordid).catch(() => {});
+            const user: GuildMember | null = await guild.members.fetch(birthday.discordid).catch(() => null);
 
             if (!user) {
                 continue;

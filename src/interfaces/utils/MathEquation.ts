@@ -18,4 +18,4 @@ export interface MathEquation {
      * The answer to the equation.
      */
     answer: number;
-};
+}

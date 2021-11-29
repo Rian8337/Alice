@@ -3,4 +3,4 @@
  */
 export enum pingStrings {
     pong = "Pong!"
-};
+}

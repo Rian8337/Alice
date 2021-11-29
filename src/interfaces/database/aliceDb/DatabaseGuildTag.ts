@@ -39,4 +39,4 @@ export interface DatabaseGuildTag extends BaseDocument {
      * The URL of the attachments of the tag.
      */
     attachments: string[];
-};
+}

@@ -28,4 +28,4 @@ export interface ClanMember {
      * The epoch time at which the clan member can have a match again, in seconds.
      */
     battle_cooldown: number;
-};
+}

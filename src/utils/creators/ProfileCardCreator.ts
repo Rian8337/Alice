@@ -36,7 +36,7 @@ export class ProfileCardCreator {
      * Information about the binded Discord account of the player.
      */
     private readonly playerInfo?: PlayerInfo | null;
-    
+
     /**
      * The canvas that will be used to draw.
      */
@@ -199,6 +199,7 @@ export class ProfileCardCreator {
 
                 this.context.fillText(this.player.location, 440 + flagImage.width / 3, flagImage.height + 15);
             }
+            // eslint-disable-next-line no-empty
         } catch { }
 
         this.context.restore();
@@ -378,7 +379,7 @@ export class ProfileCardCreator {
             if (!profileBadge) {
                 continue;
             }
-        
+
             const badgeImage: Image = await loadImage(`${process.cwd()}/files/images/badges/${profileBadge.id}.png`);
             if (i / 5 < 1) {
                 this.context.drawImage(badgeImage, i * 94 + 19.5, 312, 85, 85);

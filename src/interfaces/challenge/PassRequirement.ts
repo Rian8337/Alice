@@ -13,4 +13,4 @@ export interface PassRequirement {
      * The value that must be fulfilled to pass the challenge.
      */
     value: string | number;
-};
+}

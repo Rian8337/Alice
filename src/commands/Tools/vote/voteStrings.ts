@@ -9,4 +9,4 @@ export enum voteStrings {
     voteRegistered = "%s, %s!",
     tooFewChoices = "I'm sorry, you must specify at least 2 choices!",
     voteStartSuccess = "Successfully started vote."
-};
+}

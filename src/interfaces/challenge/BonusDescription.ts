@@ -11,4 +11,4 @@ export interface BonusDescription {
      * The description of the bonus.
      */
     description: string;
-};
+}

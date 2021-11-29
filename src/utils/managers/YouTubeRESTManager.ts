@@ -22,6 +22,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return null;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let info: any;
         try {
             info = JSON.parse(result.data.toString("utf-8"));
@@ -58,6 +59,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return [];
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let info: any;
         try {
             info = JSON.parse(result.data.toString("utf-8"));
@@ -65,6 +67,7 @@ export abstract class YouTubeRESTManager extends RESTManager {
             return [];
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const items: any[] = info.items ?? [];
 
         if (!items) {

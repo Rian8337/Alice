@@ -14,4 +14,4 @@ export interface SayobotBeatmap {
     readonly order: number;
     readonly play_count: number;
     readonly sid: number;
-};
+}

@@ -35,7 +35,7 @@ export const run: Command["run"] = async (client, interaction) => {
     const commandName: string | null = interaction.options.getString("commandname");
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+        { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor }
     );
 
     if (commandName) {
@@ -87,7 +87,7 @@ export const run: Command["run"] = async (client, interaction) => {
                         break;
                     default:
                         isOptional ||=
-                            !(<Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>> arg).required;
+                            !(<Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>>arg).required;
 
                         if (isOptional) {
                             mappedArgs.push(`[${arg.name}]`);
@@ -123,7 +123,7 @@ export const run: Command["run"] = async (client, interaction) => {
                 `\`${cmd.config.name}${argsString ? ` ${argsString}` : ""}\``,
                 "**Details**\n" +
                 cmd.config.options.map(v =>
-                    "`" + v.name + "`: *" + CommandHelper.optionTypeToString(<ApplicationCommandOptionTypes> v.type) + "*\n" +
+                    "`" + v.name + "`: *" + CommandHelper.optionTypeToString(<ApplicationCommandOptionTypes>v.type) + "*\n" +
                     v.description
                 ).join("\n\n") || "None",
                 true
@@ -136,10 +136,10 @@ export const run: Command["run"] = async (client, interaction) => {
         embed.setTitle("Alice Synthesis Thirty Help")
             .setDescription(
                 "Made by <@132783516176875520> and <@386742340968120321>.\n\n" +
-                "For detailed information about a command, use `/help [command name]`.\n" + 
+                "For detailed information about a command, use `/help [command name]`.\n" +
                 "If you encounter any bugs or issues with the bot, please contact bot creators."
             )
-            .setThumbnail(client.user?.avatarURL({dynamic: true})!);
+            .setThumbnail(client.user!.avatarURL({ dynamic: true })!);
 
         const onPageChange: OnButtonPageChange = async (_, page) => {
             embed.addField(
@@ -152,7 +152,7 @@ export const run: Command["run"] = async (client, interaction) => {
             interaction,
             { embeds: [embed] },
             [interaction.user.id],
-            [ ...commandList.values() ],
+            [...commandList.values()],
             1,
             1,
             120,

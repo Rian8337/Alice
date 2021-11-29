@@ -28,4 +28,4 @@ export interface DatabaseEightBallFilter extends BaseDocument {
      * Sentences used to respond to an 8ball.
      */
     response: string[];
-};
+}

@@ -39,7 +39,7 @@ export const run: EventUtil["run"] = async (client) => {
                     break;
                 }
 
-                const guildMember: GuildMember | void = await guild.members.fetch(member.id).catch(() => {});
+                const guildMember: GuildMember | null = await guild.members.fetch(member.id).catch(() => null);
 
                 // If the person is not in the server, kick the person
                 if (!guildMember) {

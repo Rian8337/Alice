@@ -6,4 +6,4 @@ export enum WhitelistValidity {
     DOESNT_NEED_WHITELISTING,
     OUTDATED_HASH,
     VALID
-};
+}

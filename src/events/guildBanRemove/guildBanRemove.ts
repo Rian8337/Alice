@@ -1,4 +1,4 @@
-import { Guild, GuildBan, User } from "discord.js";
+import { GuildBan } from "discord.js";
 import { Event } from "@alice-interfaces/core/Event";
 import { EventHelper } from "@alice-utils/helpers/EventHelper";
 

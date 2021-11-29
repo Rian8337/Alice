@@ -13,4 +13,4 @@ export enum recalcStrings {
     recalcInProgress = "Recalculating the user...",
     recalcFailed = "%s, the recalculation failed: %s.",
     recalcSuccess = "%s, successfully recalculated %s."
-};
+}

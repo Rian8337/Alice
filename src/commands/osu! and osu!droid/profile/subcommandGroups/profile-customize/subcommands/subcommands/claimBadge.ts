@@ -91,14 +91,16 @@ export const run: Subcommand["run"] = async (_, interaction) => {
                 }
             }
             break;
-        case "star_fc":
+        case "star_fc": {
             const beatmapIDInput: string | undefined = await MessageInputCreator.createInputDetector(
                 interaction,
-                { embeds: [ EmbedCreator.createInputEmbed(
-                    interaction,
-                    "Claim a Profile Badge",
-                    `Enter the beatmap ID or link that is at least ${badge.requirement}${Symbols.star} in PC rating and you have a full combo on.\n\nThe beatmap must be a ranked or approved beatmap.`
-                ) ] },
+                {
+                    embeds: [EmbedCreator.createInputEmbed(
+                        interaction,
+                        "Claim a Profile Badge",
+                        `Enter the beatmap ID or link that is at least ${badge.requirement}${Symbols.star} in PC rating and you have a full combo on.\n\nThe beatmap must be a ranked or approved beatmap.`
+                    )]
+                },
                 [],
                 [interaction.user.id],
                 20
@@ -158,6 +160,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
 
             break;
+        }
         case "unclaimable":
             return interaction.editReply({
                 content: MessageCreator.createReject(profileStrings.badgeUnclaimable)

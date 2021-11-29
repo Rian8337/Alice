@@ -41,14 +41,14 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         case !!discordid:
             bindInfo = await dbManager.getFromUser(discordid!);
             if (bindInfo?.uid) {
-                player = await Player.getInformation({ uid: bindInfo?.uid! });
+                player = await Player.getInformation({ uid: bindInfo.uid });
             }
             break;
         default:
             // If no arguments are specified, default to self
             bindInfo = await dbManager.getFromUser(interaction.user);
             if (bindInfo?.uid) {
-                player = await Player.getInformation({ uid: bindInfo?.uid! });
+                player = await Player.getInformation({ uid: bindInfo.uid });
             }
     }
 
@@ -61,7 +61,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember | null> interaction.member)?.displayColor }
+        { color: (<GuildMember | null>interaction.member)?.displayColor }
     );
 
     embed.setAuthor(`Player Information for ${player.username} (click to view profile)`, interaction.user.avatarURL({ dynamic: true })!, `http://ops.dgsrz.com/profile.php?uid=${player.uid}`)
@@ -70,13 +70,13 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             `[Avatar Link](${player.avatarURL})\n\n` +
             `**Uid**: ${player.uid}\n` +
             `**Rank**: ${player.rank.toLocaleString()}\n` +
-            `**Play Count**: ${player.playCount.toLocaleString()}\n` + 
-            `**Country**: ${player.location}\n\n` + 
+            `**Play Count**: ${player.playCount.toLocaleString()}\n` +
+            `**Country**: ${player.location}\n\n` +
             `**Bind Information**: ${bindInfo ? `Binded to <@${bindInfo.discordid}> (user ID: ${bindInfo.discordid})` : "Not binded"}`
         );
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed]
     });
 };
 

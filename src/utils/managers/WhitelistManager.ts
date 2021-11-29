@@ -25,7 +25,7 @@ export abstract class WhitelistManager extends Manager {
      * The ID of the role that permits whitelisting actions.
      */
     static readonly whitelistRole: Snowflake = "551662273962180611";
-    
+
     /**
      * Initializes the manager.
      */

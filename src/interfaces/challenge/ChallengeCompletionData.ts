@@ -11,4 +11,4 @@ export interface ChallengeCompletionData {
      * The highest level achieved in the challenge.
      */
     highestLevel: number;
-};
+}

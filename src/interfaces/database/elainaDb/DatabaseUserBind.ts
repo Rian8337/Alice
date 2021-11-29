@@ -84,4 +84,4 @@ export interface DatabaseUserBind extends BaseDocument {
      * Progress of ongoing dpp calculation.
      */
     calculationInfo?: RecalculationProgress;
-};
+}

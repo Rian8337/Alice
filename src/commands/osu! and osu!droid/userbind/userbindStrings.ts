@@ -11,4 +11,4 @@ export enum userbindStrings {
     accountHasBeenBindedError = "I'm sorry, that osu!droid account has been binded to another Discord account!",
     oldAccountBindSuccessful = "Successfully binded your account to %s %s.",
     verificationMapInformation = "Use this beatmap to verify that you are the owner of an osu!droid account. This is required if you want to bind it for the first time."
-};
+}

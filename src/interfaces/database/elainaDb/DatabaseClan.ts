@@ -102,4 +102,4 @@ export interface DatabaseClan extends BaseDocument {
      * The members of the clan.
      */
     member_list: ClanMember[];
-};
+}

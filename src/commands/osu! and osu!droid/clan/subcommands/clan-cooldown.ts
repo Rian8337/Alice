@@ -10,7 +10,7 @@ import { User } from "discord.js";
 import { clanStrings } from "../clanStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    const type: "battle" | "join" = <"battle" | "join"> interaction.options.getString("type", true);
+    const type: "battle" | "join" = <"battle" | "join">interaction.options.getString("type", true);
 
     const user: User = interaction.options.getUser("user") ?? interaction.user;
 
@@ -25,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     }
 
     switch (type) {
-        case "battle":
+        case "battle": {
             if (!bindInfo.clan) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(
@@ -58,14 +58,15 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             }
 
             break;
-        case "join":
+        }
+        case "join": {
             if (bindInfo.clan) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(clanStrings.userIsAlreadyInClan)
                 });
             }
 
-            let responses: string[] = [];
+            const responses: string[] = [];
 
             const oldJoinCooldownDifference = DateTimeFormatHelper.getTimeDifference((bindInfo.oldjoincooldown ?? 0) * 1000);
 
@@ -104,6 +105,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
             });
 
             break;
+        }
     }
 };
 

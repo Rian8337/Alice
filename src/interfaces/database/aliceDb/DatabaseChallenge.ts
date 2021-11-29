@@ -64,4 +64,4 @@ export interface DatabaseChallenge extends BaseDocument {
      * The bonuses for the challenge.
      */
     bonus: Bonus[];
-};
+}

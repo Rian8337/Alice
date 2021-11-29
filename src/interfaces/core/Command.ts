@@ -15,7 +15,7 @@ export interface Command {
      * @param message The interaction that executes the command.
      * @param args The arguments of the command specified by the user.
      */
-    run(client: Bot, interaction: CommandInteraction): Promise<any>;
+    run(client: Bot, interaction: CommandInteraction): Promise<unknown>;
 
     /**
      * The category of the command.
@@ -95,5 +95,4 @@ export interface Command {
          */
         readonly replyEphemeral?: boolean;
     }
-};
-
+}

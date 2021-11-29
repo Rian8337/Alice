@@ -7,7 +7,6 @@ import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { Constants } from "@alice-core/Constants";
 import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
-import { DatabaseRankedScore } from "@alice-interfaces/database/aliceDb/DatabaseRankedScore";
 import { Collection, GuildMember, MessageEmbed } from "discord.js";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { Symbols } from "@alice-enums/utils/Symbols";
@@ -86,7 +85,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
     const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+        { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor }
     );
 
     let fieldContent: string = `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${score.accuracy.nmiss} ${Symbols.missIcon} | `;

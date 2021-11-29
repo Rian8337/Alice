@@ -14,4 +14,4 @@ export interface RoleMutePermission {
      * permanently mute a user, this will be -1.
      */
     maxTime: number;
-};
+}

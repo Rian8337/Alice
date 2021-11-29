@@ -12,7 +12,7 @@ export interface Subcommand {
      * @param client The instance of the bot.
      * @param message The interaction that executes the subcommand.
      */
-    run(client: Bot, interaction: CommandInteraction): Promise<any>;
+    run(client: Bot, interaction: CommandInteraction): Promise<unknown>;
 
     /**
      * Configuration for the subcommand.
@@ -35,4 +35,4 @@ export interface Subcommand {
          */
         readonly replyEphemeral?: boolean;
     }
-};
+}

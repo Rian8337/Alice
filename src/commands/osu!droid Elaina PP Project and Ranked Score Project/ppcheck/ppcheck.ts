@@ -17,7 +17,7 @@ import { Symbols } from "@alice-enums/utils/Symbols";
 
 export const run: Command["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
@@ -84,16 +84,16 @@ export const run: Command["run"] = async (_, interaction) => {
                     modstring += ")";
                 }
 
-                embed.addField(`${i+1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
+                embed.addField(`${i + 1}. ${pp.title} ${modstring}`, `${pp.combo}x | ${pp.accuracy.toFixed(2)}% | ${pp.miss} ${Symbols.missIcon} | __${pp.pp} pp__ (Net pp: ${(pp.pp * Math.pow(0.95, i)).toFixed(2)} pp)`);
             } else {
-                embed.addField(`${i+1}. -`, "-");
+                embed.addField(`${i + 1}. -`, "-");
             }
         }
     };
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         [...bindInfo.pp.values()],
         5,

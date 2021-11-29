@@ -14,4 +14,4 @@ export interface Bonus {
      * The list of tiers that the bonus has.
      */
     list: BonusTier[];
-};
+}

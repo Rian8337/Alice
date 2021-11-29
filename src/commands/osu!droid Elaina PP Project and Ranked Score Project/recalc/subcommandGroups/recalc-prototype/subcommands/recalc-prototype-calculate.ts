@@ -9,7 +9,7 @@ import { recalcStrings } from "../../../recalcStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
     const discordid: Snowflake | undefined = interaction.options.getUser("user")?.id;
-    let uid: number | undefined | null = interaction.options.getInteger("uid");
+    const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {

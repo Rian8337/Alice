@@ -11,4 +11,4 @@ export interface ActivityCategory {
      * The description of the category.
      */
     description: string;
-};
+}

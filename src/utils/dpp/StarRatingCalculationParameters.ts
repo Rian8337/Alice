@@ -1,4 +1,4 @@
-import { MapInfo, MapStats, Mod } from "osu-droid";
+import { MapStats, Mod } from "osu-droid";
 
 /**
  * Represents a parameter to alter difficulty calculation result.
@@ -22,14 +22,5 @@ export class StarRatingCalculationParameters {
     constructor(mods: Mod[], customStatistics?: MapStats) {
         this.mods = mods;
         this.customStatistics = customStatistics;
-    }
-
-    /**
-     * Applies a beatmap to alter this parameter.
-     * 
-     * @param beatmap The beatmap.
-     */
-    applyFromBeatmap(beatmap: MapInfo): void {
-        
     }
 }

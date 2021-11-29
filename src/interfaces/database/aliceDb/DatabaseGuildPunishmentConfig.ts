@@ -31,4 +31,4 @@ export interface DatabaseGuildPunishmentConfig extends BaseDocument {
      * Temporary mutes that are currently active in the guild.
      */
     currentMutes: Mute[];
-};
+}

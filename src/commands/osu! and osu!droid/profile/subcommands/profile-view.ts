@@ -6,7 +6,6 @@ import { Constants } from "@alice-core/Constants";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { profileStrings } from "../profileStrings";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
 

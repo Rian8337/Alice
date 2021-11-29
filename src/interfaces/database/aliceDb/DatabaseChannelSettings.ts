@@ -20,4 +20,4 @@ export interface DatabaseChannelSettings extends BaseDocument {
      * The utilities that are disabled in this channel.
      */
     disabledUtils: string[];
-};
+}

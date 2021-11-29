@@ -31,19 +31,19 @@ export abstract class Config {
 
     static readonly reportChannel: string = "reports";
 
-    static readonly activityList: [ string, Exclude<ActivityType, "CUSTOM"> ][] = [
-		["Underworld Console", "PLAYING"],
-		["Rulid Village", "WATCHING"],
-		["/help", "LISTENING"],
-		["Dark Territory", "WATCHING"],
-		["in Axiom church", "PLAYING"],
-		["with Integrity Knights", "PLAYING"],
-		["flowers from my beloved Fragnant Olive", "WATCHING"],
-		["Uncle Bercoulli's orders", "LISTENING"],
-		["Centoria", "WATCHING"],
-		["Human Empire", "WATCHING"],
-		["The Great War of Underworld", "COMPETING"]
-	];
+    static readonly activityList: [string, Exclude<ActivityType, "CUSTOM">][] = [
+        ["Underworld Console", "PLAYING"],
+        ["Rulid Village", "WATCHING"],
+        ["/help", "LISTENING"],
+        ["Dark Territory", "WATCHING"],
+        ["in Axiom church", "PLAYING"],
+        ["with Integrity Knights", "PLAYING"],
+        ["flowers from my beloved Fragnant Olive", "WATCHING"],
+        ["Uncle Bercoulli's orders", "LISTENING"],
+        ["Centoria", "WATCHING"],
+        ["Human Empire", "WATCHING"],
+        ["The Great War of Underworld", "COMPETING"]
+    ];
 
     static readonly avatarList: string[] = [
         "https://i.imgur.com/FAWi2Yl.png",
@@ -62,4 +62,4 @@ export abstract class Config {
         "https://i.imgur.com/luf34Ql.png",
         "https://i.imgur.com/hAdTeAU.jpg"
     ];
-};
+}

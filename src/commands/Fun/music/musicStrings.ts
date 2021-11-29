@@ -39,4 +39,4 @@ export enum musicStrings {
     userDoesntOwnCollection = "I'm sorry, you don't own this music collection!",
     collectionLimitReached = "I'm sorry, you can only insert up to 10 videos into a music collection!",
     enqueueFromCollectionSuccess = "Successfully enqueued %s video(s) from the music collection."
-};
+}

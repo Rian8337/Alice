@@ -7,4 +7,4 @@ export enum recentStrings {
     playerHasNoRecentPlays = "I'm sorry, this player has not submitted any scores!",
     playIndexOutOfBounds = "I'm sorry, this player does not have a %s-th recent play!",
     recentPlayDisplay = "Recent play for %s:"
-};
+}

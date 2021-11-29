@@ -15,7 +15,7 @@ import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCa
 import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
 import { Collection, GuildEmoji, MessageOptions, Snowflake, TextChannel } from "discord.js";
 import { ObjectId } from "mongodb";
-import { Accuracy, Beatmap, Circle, DroidHitWindow, HitErrorInformation, HitObject, hitResult, MapInfo, MapStats, Mod, ModEasy, modes, ModHalfTime, ModNoFail, ModPrecise, ModUtil, ReplayAnalyzer, ReplayData, ReplayObjectData, Score } from "osu-droid";
+import { Accuracy, HitErrorInformation, MapInfo, MapStats, Mod, ModEasy, ModHalfTime, ModNoFail, ModUtil, ReplayAnalyzer, ReplayData, Score } from "osu-droid";
 import { Manager } from "@alice-utils/base/Manager";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
@@ -174,7 +174,7 @@ export class Challenge extends Manager {
             }
         );
 
-        const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
+        const notificationChannel: TextChannel = <TextChannel>await this.client.channels.fetch(this.challengeChannelID);
 
         const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
 
@@ -207,7 +207,7 @@ export class Challenge extends Manager {
             { challengeid: this.challengeid }, { $set: { status: this.status } }
         );
 
-        const notificationChannel: TextChannel = <TextChannel> await this.client.channels.fetch(this.challengeChannelID);
+        const notificationChannel: TextChannel = <TextChannel>await this.client.channels.fetch(this.challengeChannelID);
 
         const challengeEmbedOptions: MessageOptions = await EmbedCreator.createChallengeEmbed(this, this.isWeekly ? "#af46db" : "#e3b32d");
 
@@ -401,51 +401,61 @@ export class Challenge extends Manager {
                 let bonusComplete: boolean = false;
 
                 switch (bonus.id) {
-                    case "score":
+                    case "score": {
                         const score: number = scoreOrReplay instanceof Score ? scoreOrReplay.score : scoreOrReplay.data!.score;
                         bonusComplete = score >= tier.value;
                         break;
-                    case "acc":
+                    }
+                    case "acc": {
                         const accuracy: Accuracy = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy : scoreOrReplay.data!.accuracy;
                         bonusComplete = accuracy.value() * 100 >= tier.value;
                         break;
-                    case "miss":
+                    }
+                    case "miss": {
                         const miss: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.nmiss : scoreOrReplay.data!.accuracy.nmiss;
                         bonusComplete = miss < tier.value || !miss;
                         break;
-                    case "combo":
+                    }
+                    case "combo": {
                         const combo: number = scoreOrReplay instanceof Score ? scoreOrReplay.combo : scoreOrReplay.data!.maxCombo;
                         bonusComplete = combo >= tier.value;
                         break;
-                    case "scorev2":
+                    }
+                    case "scorev2": {
                         bonusComplete = scoreV2 >= tier.value;
                         break;
-                    case "mod":
+                    }
+                    case "mod": {
                         const mods: Mod[] = scoreOrReplay instanceof Score ? scoreOrReplay.mods : scoreOrReplay.data!.convertedMods;
-                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet((<string> tier.value).toUpperCase());
+                        bonusComplete = StringHelper.sortAlphabet(mods.map(v => v.acronym).join("")) === StringHelper.sortAlphabet((<string>tier.value).toUpperCase());
                         break;
-                    case "rank":
+                    }
+                    case "rank": {
                         const rank: string = scoreOrReplay instanceof Score ? scoreOrReplay.rank : scoreOrReplay.data!.rank;
-                        bonusComplete = this.getRankTier(rank) >= this.getRankTier(<string> tier.value);
+                        bonusComplete = this.getRankTier(rank) >= this.getRankTier(<string>tier.value);
                         break;
+                    }
                     case "dpp":
                         bonusComplete = calcResult.droid.total >= tier.value;
                         break;
                     case "pp":
                         bonusComplete = calcResult.osu.total >= tier.value;
                         break;
-                    case "m300":
+                    case "m300": {
                         const n300: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n300 : scoreOrReplay.data!.accuracy.n300;
                         bonusComplete = n300 >= tier.value;
                         break;
-                    case "m100":
+                    }
+                    case "m100": {
                         const n100: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n100 : scoreOrReplay.data!.accuracy.n100;
                         bonusComplete = n100 <= tier.value;
                         break;
-                    case "m50":
+                    }
+                    case "m50": {
                         const n50: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n50 : scoreOrReplay.data!.accuracy.n50;
                         bonusComplete = n50 <= tier.value;
                         break;
+                    }
                     case "ur":
                         bonusComplete = hitErrorInformation.unstableRate <= tier.value;
                         break;
@@ -539,39 +549,48 @@ export class Challenge extends Manager {
 
     private async verifyPassCompletion(scoreOrReplay: Score | ReplayAnalyzer, calcResult: PerformanceCalculationResult, hitErrorInformation: HitErrorInformation): Promise<boolean> {
         switch (this.pass.id) {
-            case "score":
+            case "score": {
                 const score: number = scoreOrReplay instanceof Score ? scoreOrReplay.score : scoreOrReplay.data!.score;
                 return score >= this.pass.value;
-            case "acc":
+            }
+            case "acc": {
                 const accuracy: Accuracy = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy : scoreOrReplay.data!.accuracy;
                 return accuracy.value() * 100 >= this.pass.value;
-            case "miss":
+            }
+            case "miss": {
                 const miss: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.nmiss : scoreOrReplay.data!.accuracy.nmiss;
                 return miss < this.pass.value || !miss;
-            case "combo":
+            }
+            case "combo": {
                 const combo: number = scoreOrReplay instanceof Score ? scoreOrReplay.combo : scoreOrReplay.data!.maxCombo;
                 return combo >= this.pass.value;
-            case "scorev2":
+            }
+            case "scorev2": {
                 const scoreV2: number = scoreOrReplay instanceof Score ?
                     await this.calculateChallengeScoreV2(scoreOrReplay) :
                     await this.calculateChallengeScoreV2(scoreOrReplay.data!);
                 return scoreV2 >= this.pass.value;
-            case "rank":
+            }
+            case "rank": {
                 const rank: string = scoreOrReplay instanceof Score ? scoreOrReplay.rank : scoreOrReplay.data!.rank;
-                return this.getRankTier(rank) >= this.getRankTier(<string> this.pass.value);
+                return this.getRankTier(rank) >= this.getRankTier(<string>this.pass.value);
+            }
             case "dpp":
                 return calcResult.droid.total >= this.pass.value;
             case "pp":
                 return calcResult.osu.total >= this.pass.value;
-            case "m300":
+            case "m300": {
                 const n300: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n300 : scoreOrReplay.data!.accuracy.n300;
                 return n300 >= this.pass.value;
-            case "m100":
+            }
+            case "m100": {
                 const n100: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n100 : scoreOrReplay.data!.accuracy.n100;
                 return n100 <= this.pass.value;
-            case "m50":
+            }
+            case "m50": {
                 const n50: number = scoreOrReplay instanceof Score ? scoreOrReplay.accuracy.n50 : scoreOrReplay.data!.accuracy.n50;
                 return n50 <= this.pass.value;
+            }
             case "ur":
                 return hitErrorInformation.unstableRate <= this.pass.value;
         }
@@ -585,25 +604,25 @@ export class Challenge extends Manager {
      */
     private bonusIdToString(id: BonusID): string {
         switch (id) {
-            case "score": 
+            case "score":
                 return "ScoreV1";
-            case "acc": 
+            case "acc":
                 return "Accuracy";
-            case "scorev2": 
+            case "scorev2":
                 return "ScoreV2";
-            case "miss": 
+            case "miss":
                 return "Miss Count";
-            case "combo": 
+            case "combo":
                 return "Combo";
-            case "rank": 
+            case "rank":
                 return "Rank";
             case "mod":
                 return "Mods";
-            case "dpp": 
+            case "dpp":
                 return "Droid PP";
-            case "pp": 
+            case "pp":
                 return "PC PP";
-            case "m300": 
+            case "m300":
                 return "Minimum 300";
             case "m100":
                 return "Maximum 100";
@@ -625,23 +644,23 @@ export class Challenge extends Manager {
         switch (id) {
             case "score":
                 return `Score V1 at least **${value.toLocaleString()}**`;
-            case "acc": 
+            case "acc":
                 return `Accuracy at least **${value}%**`;
-            case "scorev2": 
+            case "scorev2":
                 return `Score V2 at least **${value.toLocaleString()}**`;
-            case "miss": 
+            case "miss":
                 return value === 0 ? "No misses" : `Miss count below **${value}**`;
             case "mod":
-                return `Usage of **${(<string> value).toUpperCase()}** mod only`;
-            case "combo": 
+                return `Usage of **${(<string>value).toUpperCase()}** mod only`;
+            case "combo":
                 return `Combo at least **${value}**`;
-            case "rank": 
-                return `**${(<string> value).toUpperCase()}** rank or above`;
-            case "dpp": 
+            case "rank":
+                return `**${(<string>value).toUpperCase()}** rank or above`;
+            case "dpp":
                 return `**${value}** dpp or more`;
-            case "pp": 
+            case "pp":
                 return `**${value}** pp or more`;
-            case "m300": 
+            case "m300":
                 return `300 hit result at least **${value}**`;
             case "m100":
                 return `100 hit result less than or equal to **${value}**`;

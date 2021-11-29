@@ -10,4 +10,4 @@ export enum CommandCategory {
     STAFF = "Staff",
     TOOLS = "Tools",
     TOURNAMENT = "Tournament"
-};
+}

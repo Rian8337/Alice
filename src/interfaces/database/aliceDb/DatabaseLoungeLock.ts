@@ -23,4 +23,4 @@ export interface DatabaseLoungeLock extends BaseDocument {
      * taken out.
      */
     expiration?: number;
-};
+}

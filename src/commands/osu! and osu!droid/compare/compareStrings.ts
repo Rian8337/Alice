@@ -7,4 +7,4 @@ export enum compareStrings {
     playerNotFound = "I'm sorry, I cannot find the player that you are looking for!",
     scoreNotFound = "I'm sorry, %s not submitted any scores in the beatmap!",
     comparePlayDisplay = "Comparison play for %s:"
-};
+}

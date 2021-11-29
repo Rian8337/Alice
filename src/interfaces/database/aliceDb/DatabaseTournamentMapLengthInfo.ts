@@ -19,4 +19,4 @@ export interface DatabaseTournamentMapLengthInfo extends BaseDocument {
      * using `parseInt()` is advised.
      */
     map: [string, number | string][];
-};
+}

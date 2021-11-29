@@ -17,10 +17,10 @@ export abstract class EventHelper {
      * @param channel The channel at which the event was triggered.
      * @param utilArgs Arguments for the utility.
      */
-    static async runUtilities(client: Bot, eventDirectory: string, guild?: Guild | null, channel?: Channel | null, ...utilArgs: any[]): Promise<void> {
-        const eventName: string = <string> eventDirectory.split(/[\/\\]/g).pop();
+    static async runUtilities(client: Bot, eventDirectory: string, guild?: Guild | null, channel?: Channel | null, ...utilArgs: unknown[]): Promise<void> {
+        const eventName: string = <string>eventDirectory.split(/[/\\]/g).pop();
 
-        for await (const [ utilityName, utility ] of client.eventUtilities.get(eventName) ?? new Collection()) {
+        for await (const [utilityName, utility] of client.eventUtilities.get(eventName) ?? new Collection()) {
             if (Config.isDebug && !utility.config.debugEnabled) {
                 continue;
             }

@@ -8,9 +8,9 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { GuildEmoji, GuildMember, MessageEmbed } from "discord.js";
-import { emojistatisticsStrings } from "./emoistatisticsStrings";
+import { emojistatisticsStrings } from "./emojistatisticsStrings";
 
-export const run: Command["run"] = async (_, interaction) => {    
+export const run: Command["run"] = async (_, interaction) => {
     const stats: EmojiStatistics | null = await DatabaseManager.aliceDb.collections.emojiStatistics.getGuildStatistics(interaction.guild!);
 
     if (!stats) {
@@ -28,7 +28,7 @@ export const run: Command["run"] = async (_, interaction) => {
     const currentDate: Date = new Date();
 
     for await (const emoji of stats.emojiStats.values()) {
-        const actualEmoji: GuildEmoji | void = await interaction.guild!.emojis.fetch(emoji.id).catch(() => {});
+        const actualEmoji: GuildEmoji | null = await interaction.guild!.emojis.fetch(emoji.id).catch(() => null);
 
         if (!actualEmoji) {
             continue;
@@ -59,7 +59,7 @@ export const run: Command["run"] = async (_, interaction) => {
     });
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember> interaction.member).displayColor }
+        { color: (<GuildMember>interaction.member).displayColor }
     );
 
     embed.setAuthor(`Emoji Statistics for ${interaction.guild!.name}`, interaction.guild!.iconURL({ dynamic: true })!)
@@ -79,7 +79,7 @@ export const run: Command["run"] = async (_, interaction) => {
 
     MessageButtonCreator.createLimitedButtonBasedPaging(
         interaction,
-        { embeds: [ embed ] },
+        { embeds: [embed] },
         [interaction.user.id],
         validEmojis,
         5,

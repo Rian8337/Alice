@@ -30,4 +30,4 @@ export interface EventUtil extends Event {
          */
         readonly debugEnabled?: boolean;
     }
-};
+}

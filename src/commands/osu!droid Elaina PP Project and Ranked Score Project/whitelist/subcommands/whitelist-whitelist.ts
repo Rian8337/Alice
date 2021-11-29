@@ -11,7 +11,7 @@ import { MapInfo } from "osu-droid";
 import { whitelistStrings } from "../whitelistStrings";
 
 export const run: Subcommand["run"] = async (_, interaction) => {
-    if (!CommandHelper.isExecutedByBotOwner(interaction) && !(<GuildMember> interaction.member).roles.cache.has(WhitelistManager.whitelistRole)) {
+    if (!CommandHelper.isExecutedByBotOwner(interaction) && !(<GuildMember>interaction.member).roles.cache.has(WhitelistManager.whitelistRole)) {
         return interaction.editReply({
             content: MessageCreator.createReject(Constants.noPermissionReject)
         });
@@ -25,7 +25,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
         });
     }
 
-    let beatmapID: number = BeatmapManager.getBeatmapID(beatmapLink)[0];
+    const beatmapID: number = BeatmapManager.getBeatmapID(beatmapLink)[0];
     let beatmapsetID: number = BeatmapManager.getBeatmapsetID(beatmapLink)[0];
 
     if (!beatmapID && !beatmapsetID) {
@@ -62,7 +62,7 @@ export const run: Subcommand["run"] = async (_, interaction) => {
 
     const embedOptions: MessageOptions = EmbedCreator.createBeatmapEmbed(beatmaps[0]);
 
-    const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+    const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
     embed.spliceFields(0, embed.fields.length)
         .addField(beatmaps[0].showStatistics(4), `Star Rating:\n${beatmaps.map(v => `- [${v.version}](https://osu.ppy.sh/b/${v.beatmapID}) - **${v.totalDifficulty.toFixed(2)}**`).join("\n")}`);

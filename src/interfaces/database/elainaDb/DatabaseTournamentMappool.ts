@@ -19,4 +19,4 @@ export interface DatabaseTournamentMappool extends BaseDocument {
      * The beatmaps in this tournament.
      */
     map: MainBeatmapData[];
-};
+}

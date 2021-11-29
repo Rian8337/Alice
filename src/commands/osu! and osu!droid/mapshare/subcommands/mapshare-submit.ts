@@ -4,7 +4,6 @@ import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
 import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
 import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
 import { Subcommand } from "@alice-interfaces/core/Subcommand";
-import { DatabaseMapShare } from "@alice-interfaces/database/aliceDb/DatabaseMapShare";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";

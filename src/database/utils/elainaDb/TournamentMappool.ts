@@ -1,4 +1,3 @@
-import { Bot } from "@alice-core/Bot";
 import { DatabaseManager } from "@alice-database/DatabaseManager";
 import { DatabaseTournamentMappool } from "@alice-interfaces/database/elainaDb/DatabaseTournamentMappool";
 import { MainBeatmapData } from "@alice-types/tournament/MainBeatmapData";

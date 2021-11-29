@@ -11,4 +11,4 @@ export interface DisabledCommand {
      * The cooldown of the command for each user. If the command is disabled, this will be -1.
      */
     cooldown: number;
-};
+}

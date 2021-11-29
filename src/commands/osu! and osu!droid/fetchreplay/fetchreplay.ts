@@ -69,12 +69,12 @@ export const run: Command["run"] = async (_, interaction) => {
 
     const zip: AdmZip = new AdmZip();
 
-    zip.addFile(`${score.scoreID}.odr`, score.replay?.originalODR!);
+    zip.addFile(`${score.scoreID}.odr`, score.replay!.originalODR!);
 
     const json: ExportedReplayJSON = {
         version: 1,
         replaydata: {
-            filename: `${data.folderName}\/${data.fileName}`,
+            filename: `${data.folderName}\\/${data.fileName}`,
             playername: data.replayVersion < 3 ? score.username : data.playerName,
             replayfile: `${score.scoreID}.odr`,
             mod: `${score.mods.map(v => v.droidString).join("")}${score.speedMultiplier !== 1 ? `|${score.speedMultiplier}x` : ""}${score.forcedAR ? `|AR${score.forcedAR}` : ""}`,
@@ -110,22 +110,22 @@ export const run: Command["run"] = async (_, interaction) => {
                 score.accuracy.n50.toString(),
                 score.accuracy.nmiss.toString()
             ),
-            files: [ replayAttachment ]
+            files: [replayAttachment]
         });
     }
 
     const calcResult: PerformanceCalculationResult =
-        <PerformanceCalculationResult> await BeatmapDifficultyHelper.calculateScorePerformance(score);
+        <PerformanceCalculationResult>await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
     const calcEmbedOptions: MessageOptions = await EmbedCreator.createCalculationEmbed(
         await BeatmapDifficultyHelper.getCalculationParamsFromScore(score),
         calcResult,
-        (<GuildMember | null> interaction.member)?.displayHexColor
+        (<GuildMember | null>interaction.member)?.displayHexColor
     );
 
     const hitErrorInformation: HitErrorInformation = score.replay!.calculateHitError()!;
 
-    (<MessageEmbed> calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, (<MessageEmbed> calcEmbedOptions.embeds![0]).author?.iconURL)
+    (<MessageEmbed>calcEmbedOptions.embeds![0]).setAuthor(`Play Information for ${score.username}`, (<MessageEmbed>calcEmbedOptions.embeds![0]).author?.iconURL)
         .addField("Hit Error Information", `${hitErrorInformation.negativeAvg.toFixed(2)}ms - ${hitErrorInformation.positiveAvg.toFixed(2)}ms hit error avg | ${hitErrorInformation.unstableRate.toFixed(2)} UR`);
 
     calcEmbedOptions.files?.push(replayAttachment);

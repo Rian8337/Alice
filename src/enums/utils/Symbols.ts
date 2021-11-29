@@ -25,4 +25,4 @@ export enum Symbols {
     memo = "📝",
     crown = "👑",
     personRunning = "🏃"
-};
+}

@@ -13,4 +13,4 @@ export interface EmojiStat {
      * The amount of times the emoji has been used.
      */
     count: number;
-};
+}

@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, GuildChannel, GuildMember, MessageEmbed, TextChannel, User } from "discord.js";
+import { CommandInteraction, GuildChannel, GuildMember, MessageEmbed, TextChannel, User } from "discord.js";
 import { OperationResult } from "@alice-interfaces/core/OperationResult";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { PunishmentManager } from "./PunishmentManager";
@@ -34,10 +34,10 @@ export abstract class BanManager extends PunishmentManager {
             return this.createOperationResult(false, this.logChannelNotValidReject);
         }
 
-        await banned.ban({ reason: reason + ` (banned by ${interaction.user.tag} (${interaction.user.id}))`});
+        await banned.ban({ reason: reason + ` (banned by ${interaction.user.tag} (${interaction.user.id}))` });
 
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-            { author: interaction.user, color: (<GuildMember> interaction.member).displayColor, timestamp: true }
+            { author: interaction.user, color: (<GuildMember>interaction.member).displayColor, timestamp: true }
         );
 
         embed.setThumbnail(banned.user.avatarURL({ dynamic: true })!)
@@ -45,7 +45,7 @@ export abstract class BanManager extends PunishmentManager {
             .addField(`Banned user: ${banned.user.username}`, `User ID: ${banned.id}`)
             .addField("=========================", `Reason:\n${reason}`);
 
-        logChannel.send({embeds: [embed]});
+        logChannel.send({ embeds: [embed] });
 
         return this.createOperationResult(true);
     }
@@ -78,7 +78,7 @@ export abstract class BanManager extends PunishmentManager {
         await interaction.guild!.members.unban(toUnban, reason + ` (unbanned by ${interaction.user.tag} (${interaction.user.id}))`);
 
         const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-            { author: interaction.user, color: (<GuildMember> interaction.member).displayColor, timestamp: true }
+            { author: interaction.user, color: (<GuildMember>interaction.member).displayColor, timestamp: true }
         );
 
         embed.setThumbnail(toUnban.avatarURL({ dynamic: true })!)
@@ -86,7 +86,7 @@ export abstract class BanManager extends PunishmentManager {
             .addField(`Unbanned user: ${toUnban.username}`, `User ID: ${toUnban.id}`)
             .addField("=========================", `Reason:\n${reason}`);
 
-        logChannel.send({embeds: [embed]});
+        logChannel.send({ embeds: [embed] });
 
         return this.createOperationResult(true);
     }

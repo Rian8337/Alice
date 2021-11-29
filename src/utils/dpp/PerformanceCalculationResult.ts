@@ -30,4 +30,4 @@ export class PerformanceCalculationResult {
         this.osu = osu;
         this.replay = replay;
     }
-};
+}

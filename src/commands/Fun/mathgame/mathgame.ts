@@ -21,7 +21,7 @@ import { CacheManager } from "@alice-utils/managers/CacheManager";
  * @param operatorAmount The amount of operators in the equation.
  * @param callback Callback function.
  */
-function generateEquation(level: number, operatorAmount: number, callback: (mathEquation: MathEquation, ...args: any[]) => any) {
+function generateEquation(level: number, operatorAmount: number, callback: (mathEquation: MathEquation, ...args: unknown[]) => unknown) {
     callback(MathEquationCreator.createEquation(level, operatorAmount));
 }
 
@@ -41,14 +41,14 @@ function endGame(interaction: CommandInteraction, mode: MathGameType, gameStats:
     });
 
     const answerString: string = ArrayHelper.collectionToArray(gameStats)
-        .map((v, i) => `#${i+1}: <@${v.key}> - ${v.value} ${v.value === 1 ? "answer" : "answers"}`)
+        .map((v, i) => `#${i + 1}: <@${v.key}> - ${v.value} ${v.value === 1 ? "answer" : "answers"}`)
         .join("\n");
 
     const totalAnswers: number = [...gameStats.values()]
         .reduce((acc, value) => acc + value, 0);
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember | null> interaction.member)?.displayColor, timestamp: true }
+        { color: (<GuildMember | null>interaction.member)?.displayColor, timestamp: true }
     );
 
     embed.setTitle("Math Game Statistics")
@@ -70,7 +70,7 @@ function endGame(interaction: CommandInteraction, mode: MathGameType, gameStats:
 }
 
 export const run: Command["run"] = async (_, interaction) => {
-    const mode: MathGameType = <MathGameType> (!interaction.inGuild() ? "single" : (interaction.options.getString("mode") ?? "single"));
+    const mode: MathGameType = <MathGameType>(!interaction.inGuild() ? "single" : (interaction.options.getString("mode") ?? "single"));
 
     switch (mode) {
         case "single":
@@ -100,8 +100,8 @@ export const run: Command["run"] = async (_, interaction) => {
     const prevEquations: string[] = [];
 
     generateEquation(level, operatorAmount, async function createCollector(mathEquation) {
-        let realEquation: string = mathEquation.realEquation;
-        let answer: number = mathEquation.answer;
+        const realEquation: string = mathEquation.realEquation;
+        const answer: number = mathEquation.answer;
 
         if (isNaN(answer) || prevEquations.includes(realEquation)) {
             if (fetchAttempt < 5) {
@@ -118,14 +118,14 @@ export const run: Command["run"] = async (_, interaction) => {
 
         const questionString: string = MessageCreator.createWarn(
             mode === "single" ?
-            StringHelper.formatString(
-                mathgameStrings.singleGamemodeQuestion,
-                interaction.user.toString(),
-                operatorAmount.toString(),
-                level.toString(),
-                realEquation
-            ) :
-            StringHelper.formatString(mathgameStrings.multiGamemodeQuestion, level.toString(), operatorAmount.toString(), realEquation)
+                StringHelper.formatString(
+                    mathgameStrings.singleGamemodeQuestion,
+                    interaction.user.toString(),
+                    operatorAmount.toString(),
+                    level.toString(),
+                    realEquation
+                ) :
+                StringHelper.formatString(mathgameStrings.multiGamemodeQuestion, level.toString(), operatorAmount.toString(), realEquation)
         );
 
         if (!interaction.replied) {
@@ -136,20 +136,20 @@ export const run: Command["run"] = async (_, interaction) => {
 
         interaction.channel!.send(questionString).then(msg => {
             const collector: MessageCollector = mode === "single" ?
-            msg.channel.createMessageCollector({
-                filter: m => parseInt(m.content) === answer && m.author.id === interaction.user.id,
-                time: 30000
-            }) :
-            msg.channel.createMessageCollector({
-                filter: m => parseInt(m.content) === answer,
-                time: 30000
-            });
+                msg.channel.createMessageCollector({
+                    filter: m => parseInt(m.content) === answer && m.author.id === interaction.user.id,
+                    time: 30000
+                }) :
+                msg.channel.createMessageCollector({
+                    filter: m => parseInt(m.content) === answer,
+                    time: 30000
+                });
 
             let correct: boolean = false;
 
             collector.on("collect", m => {
                 msg.delete();
-            
+
                 correct = true;
 
                 gameStats.set(m.author.id, (gameStats.get(m.author.id) ?? 0) + 1);

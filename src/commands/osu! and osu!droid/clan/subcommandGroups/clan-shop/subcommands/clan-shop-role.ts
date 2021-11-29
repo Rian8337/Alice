@@ -96,7 +96,7 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     });
 
     for await (const member of clan.member_list.values()) {
-        const guildMember: GuildMember | void = await guild.members.fetch(member.id).catch(() => {});
+        const guildMember: GuildMember | null = await guild.members.fetch(member.id).catch(() => null);
 
         if (guildMember) {
             await guildMember.roles.add([globalClanRole, clanRole], "Clan leader bought clan role");

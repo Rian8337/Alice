@@ -57,7 +57,7 @@ export abstract class EmbedCreator {
             .setFooter(this.botSign, iconURL);
 
         if (embedOptions.author) {
-            embed.setAuthor(embedOptions.author.tag, <string> embedOptions.author.avatarURL({ dynamic: true }));
+            embed.setAuthor(embedOptions.author.tag, <string>embedOptions.author.avatarURL({ dynamic: true }));
         }
 
         if (embedOptions.color) {
@@ -83,7 +83,7 @@ export abstract class EmbedCreator {
      */
     static createBeatmapEmbed(beatmapInfo: MapInfo, calculationParams?: StarRatingCalculationParameters): MessageOptions {
         const embed: MessageEmbed = this.createNormalEmbed(
-            { color: <ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) }
+            { color: <ColorResolvable>BeatmapManager.getBeatmapDifficultyColor(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) }
         );
 
         return {
@@ -96,7 +96,7 @@ export abstract class EmbedCreator {
                     .addField(beatmapInfo.showStatistics(2, calculationParams?.mods, calculationParams?.customStatistics), beatmapInfo.showStatistics(3, calculationParams?.mods, calculationParams?.customStatistics))
                     .addField(beatmapInfo.showStatistics(4, calculationParams?.mods, calculationParams?.customStatistics), beatmapInfo.showStatistics(5, calculationParams?.mods, calculationParams?.customStatistics))
             ],
-            files: [ BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(beatmapInfo.totalDifficulty.toFixed(2))) ]
+            files: [BeatmapManager.getBeatmapDifficultyIconAttachment(parseFloat(beatmapInfo.totalDifficulty.toFixed(2)))]
         };
     }
 
@@ -110,7 +110,7 @@ export abstract class EmbedCreator {
      */
     static async createDPPListEmbed(interaction: CommandInteraction, bindInfo: UserBind, ppRank?: number): Promise<MessageEmbed> {
         const embed: MessageEmbed = this.createNormalEmbed(
-            { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor }
+            { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor }
         );
 
         ppRank ??= await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(bindInfo.pptotal);
@@ -134,7 +134,7 @@ export abstract class EmbedCreator {
      */
     static createInputEmbed(interaction: CommandInteraction, title: string, description: string): MessageEmbed {
         const embed: MessageEmbed = this.createNormalEmbed(
-            { author: interaction.user, color: (<GuildMember | null> interaction.member)?.displayColor, footerText: "Type \"exit\" to exit this menu" }
+            { author: interaction.user, color: (<GuildMember | null>interaction.member)?.displayColor, footerText: "Type \"exit\" to exit this menu" }
         );
 
         embed.setTitle(title)
@@ -157,7 +157,7 @@ export abstract class EmbedCreator {
             calculationParams
         );
 
-        const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+        const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
         const map: MapInfo = calculationResult.map;
         const mods: Mod[] = calculationParams.mods;
         const files: NonNullable<MessageOptions["files"]> = embedOptions.files!;
@@ -170,7 +170,7 @@ export abstract class EmbedCreator {
             const accuracy: Accuracy = calculationParams.accuracy;
             const customStatistics: MapStats | undefined = calculationParams.customStatistics;
 
-            embed.setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(pcPP.stars.total))
+            embed.setColor(<ColorResolvable>BeatmapManager.getBeatmapDifficultyColor(pcPP.stars.total))
                 .spliceFields(embed.fields.length - 1, 1)
                 .addField(
                     map.showStatistics(4, mods, customStatistics),
@@ -181,12 +181,12 @@ export abstract class EmbedCreator {
                     `**PC pp**: ${pcPP.total.toFixed(2)} pp${calculationParams.isEstimated ? " (estimated)" : ""} - ${pcPP.stars.total.toFixed(2)} stars`
                 );
         } else {
-            embed.setColor(<ColorResolvable> BeatmapManager.getBeatmapDifficultyColor(calculationResult.osu.total))
+            embed.setColor(<ColorResolvable>BeatmapManager.getBeatmapDifficultyColor(calculationResult.osu.total))
                 .addField(
-                `**Star Rating**`,
-                `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.droid.total)))} ${calculationResult.droid.total.toFixed(2)} droid stars\n` +
-                `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.osu.total)))} ${calculationResult.osu.total.toFixed(2)} PC stars`
-            );
+                    `**Star Rating**`,
+                    `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.droid.total)))} ${calculationResult.droid.total.toFixed(2)} droid stars\n` +
+                    `${Symbols.star.repeat(Math.min(10, Math.floor(calculationResult.osu.total)))} ${calculationResult.osu.total.toFixed(2)} PC stars`
+                );
         }
 
         const newRating: OsuStarRating = calculationResult instanceof PerformanceCalculationResult ? calculationResult.osu.stars : calculationResult.osu;
@@ -212,7 +212,7 @@ export abstract class EmbedCreator {
         }
 
         return {
-            embeds: [ embed ],
+            embeds: [embed],
             files: files
         };
     }
@@ -236,7 +236,7 @@ export abstract class EmbedCreator {
 
         const calcResult: PerformanceCalculationResult | null = await BeatmapDifficultyHelper.calculateScorePerformance(score);
 
-        let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank> score.rank)}** ${arrow} `;
+        let beatmapInformation: string = `${arrow} **${BeatmapManager.getRankEmote(<ScoreRank>score.rank)}** ${arrow} `;
 
         if (!calcResult) {
             beatmapInformation +=
@@ -248,10 +248,10 @@ export abstract class EmbedCreator {
         }
 
         embed.setAuthor(
-                `${calcResult.map.fullTitle} ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(2)}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${Symbols.star}]`,
-                playerAvatarURL,
-                `https://osu.ppy.sh/b/${calcResult.map.beatmapID}`
-            )
+            `${calcResult.map.fullTitle} ${score.getCompleteModString()} [${calcResult.droid.stars.total.toFixed(2)}${Symbols.star} | ${calcResult.osu.stars.total.toFixed(2)}${Symbols.star}]`,
+            playerAvatarURL,
+            `https://osu.ppy.sh/b/${calcResult.map.beatmapID}`
+        )
             .setThumbnail(`https://b.ppy.sh/thumb/${calcResult.map.beatmapsetID}l.jpg`);
 
         beatmapInformation += `**${calcResult.droid.total.toFixed(2)}DPP**${(calcResult.replay?.tapPenalty ?? 1) !== 1 ? " (*penalized*)" : ""} | **${calcResult.osu.total.toFixed(2)}PP** `;
@@ -346,12 +346,12 @@ export abstract class EmbedCreator {
         const embedOptions: MessageOptions =
             await this.createCalculationEmbed(calcParams, calcResult);
 
-        const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+        const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
         embed.setFooter(
-                embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000) / 1000))}`,
-                embed.footer!.iconURL
-            )
+            embed.footer!.text! + ` | Challenge ID: ${challenge.challengeid} | Time left: ${DateTimeFormatHelper.secondsToDHMS(Math.max(0, DateTimeFormatHelper.getTimeDifference(challenge.timelimit * 1000) / 1000))}`,
+            embed.footer!.iconURL
+        )
             .setAuthor(
                 challenge.type === "weekly" ? "osu!droid Weekly Bounty Challenge" : "osu!droid Daily Challenge",
                 `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`
@@ -367,7 +367,7 @@ export abstract class EmbedCreator {
                 `**Point(s)**: ${challenge.points} points\n` +
                 `**Pass Condition**: ${challenge.getPassInformation()}\n` +
                 `**Constrain**: ${challenge.constrain ? `${challenge.constrain.toUpperCase()} mod only` : "Any rankable mod except EZ, NF, and HT"}\n\n` +
-                "Use \`/daily challenges\` to check bonuses."
+                "Use `/daily challenges` to check bonuses."
             );
 
         const chart: Buffer | null = await calcResult.osu.getStrainChart(
@@ -384,7 +384,7 @@ export abstract class EmbedCreator {
         }
 
         return {
-            embeds: [ embed ],
+            embeds: [embed],
             files: files
         };
     }
@@ -474,7 +474,7 @@ export abstract class EmbedCreator {
         const embedOptions: MessageOptions =
             await this.createCalculationEmbed(calcParams, calcResult, "#28ebda");
 
-        const embed: MessageEmbed = <MessageEmbed> embedOptions.embeds![0];
+        const embed: MessageEmbed = <MessageEmbed>embedOptions.embeds![0];
 
         embed.setImage("attachment://chart.png")
             .setAuthor(`Submission by ${submission.submitter}`, `attachment://osu-${calcResult.osu.total.toFixed(2)}.png`)

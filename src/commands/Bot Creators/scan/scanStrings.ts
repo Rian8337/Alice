@@ -4,4 +4,4 @@
 export enum scanStrings {
     scanComplete = "%s, scan complete!",
     scanStarted = "Scan started!"
-};
+}

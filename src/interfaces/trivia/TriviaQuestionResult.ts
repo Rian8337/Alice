@@ -35,4 +35,4 @@ export interface TriviaQuestionResult {
          */
         readonly timeTaken: number;
     }[];
-};
+}

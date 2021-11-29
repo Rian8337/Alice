@@ -15,5 +15,5 @@ export interface DatabaseChannelData extends BaseDocument {
      * 
      * The first element is the channel's ID, the second element is its message count in that day.
      */
-    channels: [ Snowflake, number ][];
-};
+    channels: [Snowflake, number][];
+}

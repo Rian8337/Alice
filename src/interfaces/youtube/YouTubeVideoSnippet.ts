@@ -34,4 +34,4 @@ export interface YouTubeVideoSnippet {
      * The name of the channel containing this video.
      */
     readonly channelTitle: string;
-};
+}

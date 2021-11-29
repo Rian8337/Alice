@@ -15,7 +15,7 @@ export class MathEquationCreator {
      */
     static createEquation(level: number, operatorAmount: number): MathEquation {
         const operators: string[] = ["/", "*", "+", "-"];
-        let prevOperatorAmount: number = NumberHelper.clamp(operatorAmount, 1, 10);
+        const prevOperatorAmount: number = NumberHelper.clamp(operatorAmount, 1, 10);
         let equation: string = "";
         let realEquation: string = "";
         let answer: number = Number.NaN;
@@ -86,7 +86,7 @@ export class MathEquationCreator {
 
             const minMulDivThreshold: number = Math.min(operatorAmount + 1, Math.floor(level / 10));
             const maxMulDivThreshold: number = level / 5;
-            const mulDivAmount: number = (equation.match(/[\/\*]/g) || []).length;
+            const mulDivAmount: number = (equation.match(/[/*]/g) || []).length;
 
             if (
                 !Number.isInteger(answer) ||
@@ -156,11 +156,11 @@ export class MathEquationCreator {
         if (num < 2) {
             return false;
         }
-    
+
         for (let i = 2; i < Math.floor(Math.sqrt(num)); ++i) {
             if (num % i === 0) return false;
         }
-        
+
         return true;
     }
 

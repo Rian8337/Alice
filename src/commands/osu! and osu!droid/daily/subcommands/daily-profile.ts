@@ -7,7 +7,6 @@ import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { ProfileManager } from "@alice-utils/managers/ProfileManager";
 import { GuildEmoji, GuildMember, MessageEmbed, Snowflake } from "discord.js";
-import { Player } from "osu-droid";
 import { dailyStrings } from "../dailyStrings";
 
 export const run: Subcommand["run"] = async (client, interaction) => {
@@ -43,14 +42,14 @@ export const run: Subcommand["run"] = async (client, interaction) => {
     }
 
     const embed: MessageEmbed = EmbedCreator.createNormalEmbed(
-        { color: (<GuildMember> interaction.member).displayColor }
+        { color: (<GuildMember>interaction.member).displayColor }
     );
 
     embed.setAuthor(`Daily/Weekly Challenge Profile for ${playerInfo.username}`, "https://image.frl/p/beyefgeq5m7tobjg.jpg", ProfileManager.getProfileLink(playerInfo.uid).toString())
         .addField("Statistics", `**Points**: ${playerInfo.points}\n**Alice Coins**: ${coin}${playerInfo.alicecoins}\n**Challenges completed**: ${playerInfo.challenges.size}`);
 
     interaction.editReply({
-        embeds: [ embed ]
+        embeds: [embed]
     });
 };
 

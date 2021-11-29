@@ -6,4 +6,4 @@ export enum prototypecheckStrings {
     invalidUid = "Hey, please enter a valid uid!",
     selfInfoNotAvailable = "I'm sorry, your prototype dpp information is not available!",
     userInfoNotAvailable = "I'm sorry, the user's prototype dpp information is not available!"
-};
+}

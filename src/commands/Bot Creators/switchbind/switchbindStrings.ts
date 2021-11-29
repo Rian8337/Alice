@@ -6,4 +6,4 @@ export enum switchbindStrings {
     uidNotBinded = "I'm sorry, this uid is not binded to anyone!",
     switchFailed = "I'm sorry, I'm unable to switch the bind: %s.",
     switchSuccessful = "Successfully switched bind."
-};
+}

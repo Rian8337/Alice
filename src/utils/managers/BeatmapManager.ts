@@ -63,47 +63,45 @@ export abstract class BeatmapManager extends Manager {
      * @param checkFile Whether to check if beatmap file for each beatmap is downloaded, and downloads it if it's not downloaded. Defaults to `true`.
      * @returns An array of `MapInfo` instance representing each beatmap in the beatmapset.
      */
-    static getBeatmaps(beatmapsetID: number, checkFile: boolean = true): Promise<MapInfo[]> {
-        return new Promise(async (resolve, reject) => {
-            const apiRequestBuilder: OsuAPIRequestBuilder = new OsuAPIRequestBuilder();
+    static async getBeatmaps(beatmapsetID: number, checkFile: boolean = true): Promise<MapInfo[]> {
+        const apiRequestBuilder: OsuAPIRequestBuilder = new OsuAPIRequestBuilder();
 
-            apiRequestBuilder.setEndpoint("get_beatmaps")
-                .addParameter("s", beatmapsetID);
+        apiRequestBuilder.setEndpoint("get_beatmaps")
+            .addParameter("s", beatmapsetID);
 
-            const result = await apiRequestBuilder.sendRequest();
+        const result = await apiRequestBuilder.sendRequest();
 
-            if (result.statusCode !== 200) {
-                return reject("osu! API request returned a non-200 response");
+        if (result.statusCode !== 200) {
+            throw new Error("osu! API request returned a non-200 response");
+        }
+
+        const beatmaps: MapInfo[] = [];
+
+        const beatmapsData: OsuAPIResponse[] = JSON.parse(result.data.toString("utf-8"));
+
+        for (const beatmapData of beatmapsData) {
+            if (beatmapData.mode !== "0") {
+                continue;
             }
 
-            const beatmaps: MapInfo[] = [];
+            const beatmapInfo: MapInfo = new MapInfo();
 
-            const beatmapsData: OsuAPIResponse[] = JSON.parse(result.data.toString("utf-8"));
+            beatmapInfo.fillMetadata(beatmapData);
 
-            for (const beatmapData of beatmapsData) {
-                if (beatmapData.mode !== "0") {
-                    continue;
-                }
-
-                const beatmapInfo: MapInfo = new MapInfo();
-
-                beatmapInfo.fillMetadata(beatmapData);
-
-                if (!beatmapInfo.title) {
-                    continue;
-                }
-
-                if (checkFile) {
-                    await beatmapInfo.retrieveBeatmapFile(true);
-                }
-
-                beatmaps.push(beatmapInfo);
-
-                CacheManager.beatmapCache.set(beatmapInfo.beatmapID, beatmapInfo);
+            if (!beatmapInfo.title) {
+                continue;
             }
 
-            resolve(beatmaps);
-        });
+            if (checkFile) {
+                await beatmapInfo.retrieveBeatmapFile(true);
+            }
+
+            beatmaps.push(beatmapInfo);
+
+            CacheManager.beatmapCache.set(beatmapInfo.beatmapID, beatmapInfo);
+        }
+
+        return beatmaps;
     }
 
     /**
@@ -112,7 +110,7 @@ export abstract class BeatmapManager extends Manager {
      * @param channelID The ID of the channel.
      * @returns The MD5 hash of the beatmap, `undefined` if not found.
      */
-    static getChannelLatestBeatmap(channelID: Snowflake): string|undefined {
+    static getChannelLatestBeatmap(channelID: Snowflake): string | undefined {
         return CacheManager.channelMapCache.get(channelID);
     }
 

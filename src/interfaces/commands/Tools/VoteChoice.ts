@@ -13,4 +13,4 @@ export interface VoteChoice {
      * The Discord IDs of users who have voted for the choice.
      */
     voters: Snowflake[];
-};
+}

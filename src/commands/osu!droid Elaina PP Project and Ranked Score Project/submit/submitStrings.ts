@@ -14,4 +14,4 @@ export enum submitStrings {
     submitSuccessful = "Successfully submitted your play(s). More info in embed.",
     profileNotFound = "I'm sorry, I cannot find your profile!",
     submissionAmountExceedsRecentPlayCount = "I'm sorry, you don't have that many recent plays!"
-};
+}

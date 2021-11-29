@@ -15,4 +15,4 @@ export interface DatabaseEmojiStatistics extends BaseDocument {
      * Statistics for each guild-specific emoji in the guild.
      */
     emojiStats: EmojiStat[];
-};
+}

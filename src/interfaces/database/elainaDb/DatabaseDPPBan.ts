@@ -13,4 +13,4 @@ export interface DatabaseDPPBan extends BaseDocument {
      * The reason the account was banned.
      */
     reason: string;
-};
+}

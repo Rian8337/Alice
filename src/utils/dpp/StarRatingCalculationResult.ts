@@ -24,4 +24,4 @@ export class StarRatingCalculationResult {
         this.droid = droid;
         this.osu = osu;
     }
-};
+}

@@ -17,4 +17,4 @@ export enum VerifyLanguage {
     french = "French",
     spanish = "Spanish",
     malay = "Malay"
-};
+}
