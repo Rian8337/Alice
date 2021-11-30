@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import { AudioResource, demuxProbe, createAudioResource } from "@discordjs/voice";
 import { Snowflake } from "discord.js";
-import { exec as ytdl } from "youtube-dl-exec";
+import { raw as ytdl } from "youtube-dl-exec";
 import { VideoSearchResult } from "yt-search";
 
 /**
@@ -31,9 +31,10 @@ export class MusicQueue {
             const process = ytdl(
                 this.information.url,
                 {
-                    output: "-",
-                    format: "bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio",
-                    quiet: true
+                    o: '-',
+                    q: '',
+                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                    r: '500K',
                 },
                 { stdio: ['ignore', 'pipe', 'ignore'] }
             );
