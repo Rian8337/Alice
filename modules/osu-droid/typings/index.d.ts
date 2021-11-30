@@ -1,10 +1,9 @@
-//@ts-ignore
+//@ts-expect-error: Import conflict for whatever reason
 import { Canvas, Image, NodeCanvasRenderingContext2D } from "canvas";
 
 declare module "osu-droid" {
 
     //#region Classes
-
     /**
      * An accuracy calculator that calculates accuracy based on given parameters.
      */
@@ -2039,6 +2038,10 @@ declare module "osu-droid" {
             username?: string;
         }): Promise<Player>;
         /**
+         * Checks if this player has played the verification beatmap.
+         */
+        hasPlayedVerificationMap(): Promise<boolean>;
+        /**
          * Returns a string representative of the class.
          */
         toString(): string;
@@ -2163,7 +2166,7 @@ declare module "osu-droid" {
         /**
          * Downloads the given score ID's replay.
          */
-        private downloadReplay(): Promise<Buffer|null>;
+        private downloadReplay(): Promise<Buffer | null>;
         /**
          * Decompresses a replay.
          *
@@ -2187,7 +2190,7 @@ declare module "osu-droid" {
          * 
          * `analyze()` must be called before calling this.
          */
-        calculateHitError(): HitErrorInformation|null;
+        calculateHitError(): HitErrorInformation | null;
         /**
          * Checks if a play is using 3 fingers.
          *
@@ -2315,7 +2318,7 @@ declare module "osu-droid" {
          * The date of which the play was set.
          */
         date: Date;
-        
+
         /**
          * The accuracy achieved in the play.
          */
@@ -2911,7 +2914,7 @@ declare module "osu-droid" {
          */
         readonly yValueType?: AxisType;
     }
-    
+
     /**
      * Contains information about a cursor instance.
      */

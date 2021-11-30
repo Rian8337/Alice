@@ -156,6 +156,15 @@ export class Player {
     }
 
     /**
+     * Checks if this player has played the verification beatmap.
+     */
+    async hasPlayedVerificationMap(): Promise<boolean> {
+        const score: Score = await Score.getFromHash({ uid: this.uid, hash: "0eb866a0f36ce88b21c5a3d4c3d76ab0" });
+
+        return !!score.title;
+    }
+
+    /**
      * Returns a string representative of the class.
      */
     toString(): string {

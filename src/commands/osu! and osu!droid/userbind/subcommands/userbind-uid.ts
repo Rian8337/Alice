@@ -48,19 +48,28 @@ export const run: Subcommand["run"] = async (client, interaction) => {
 
             const role: Role = mainServer.roles.cache.find(r => r.name === "Member")!;
 
-            if (!(<GuildMember> interaction.member).roles.cache.has(role.id)) {
+            if (!(<GuildMember>interaction.member).roles.cache.has(role.id)) {
                 return interaction.editReply({
                     content: MessageCreator.createReject(userbindStrings.newAccountBindNotVerified)
                 });
             }
 
+            // Check if account has played verification map
+            if (!(await player.hasPlayedVerificationMap())) {
+                return interaction.editReply({
+                    content: MessageCreator.createReject(userbindStrings.verificationMapNotFound)
+                });
+            }
+
             const confirmation: boolean = await MessageButtonCreator.createConfirmation(
                 interaction,
-                { content: MessageCreator.createWarn(
-                    userbindStrings.newAccountBindConfirmation,
-                    "uid",
-                    uid.toString()
-                ) },
+                {
+                    content: MessageCreator.createWarn(
+                        userbindStrings.newAccountBindConfirmation,
+                        "uid",
+                        uid.toString()
+                    )
+                },
                 [interaction.user.id],
                 10
             );
@@ -103,6 +112,13 @@ export const run: Subcommand["run"] = async (client, interaction) => {
             });
         }
     } else {
+        // Check if account has played verification map
+        if (!(await player.hasPlayedVerificationMap())) {
+            return interaction.editReply({
+                content: MessageCreator.createReject(userbindStrings.verificationMapNotFound)
+            });
+        }
+
         const result: OperationResult = await dbManager.insert({
             discordid: interaction.user.id,
             uid: player.uid,

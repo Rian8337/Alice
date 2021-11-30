@@ -621,13 +621,6 @@ export class UserBind extends Manager {
                 return this.createOperationResult(false, "account bind limit reached");
             }
 
-            // Check if account has played verification map
-            const score: Score = await Score.getFromHash({ uid: player.uid, hash: "0eb866a0f36ce88b21c5a3d4c3d76ab0" });
-
-            if (!score.title) {
-                return this.createOperationResult(false, "account has not played verification map. Please use `/userbind verifymap` to get the verification map");
-            }
-
             this.previous_bind.push(player.uid);
         }
 
