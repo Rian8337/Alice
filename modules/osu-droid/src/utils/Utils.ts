@@ -1,4 +1,4 @@
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash.clonedeep";
 
 /**
  * Some utilities, no biggie.
@@ -28,7 +28,7 @@ export abstract class Utils {
      * @param length The length of the array.
      * @param initialValue The initial value of each array value.
      */
-    static initializeArray<T>(length: number, initialValue?: T): T[]  {
+    static initializeArray<T>(length: number, initialValue?: T): T[] {
         const array: T[] = [];
 
         if (initialValue !== undefined) {
